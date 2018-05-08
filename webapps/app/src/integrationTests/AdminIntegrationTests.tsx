@@ -12,6 +12,8 @@ import { modellingGroupActions } from "../main/shared/actions/ModellingGroupActi
 import { userStore } from "../main/admin/stores/UserStore";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
 import { AuthService } from "../main/shared/services/AuthService";
+import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
+import {UsersService} from "../main/admin/services/UsersService";
 
 
 class AdminIntegrationTests extends IntegrationTestSuite {
@@ -30,79 +32,81 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
     addTestsToMocha() {
 
-        it("can fetch shiny cookie", (done: DoneCallback) => {
-            (new AuthService(this.store.dispatch, this.store.getState)).setShinyCookie()
-                .then(result => {
-                    expect(result).to.be.eq("OK");
-                    done();
-                })
+        it("can fetch shiny cookie", async () => {
+            const result = await (new AuthService(this.store.dispatch, this.store.getState)).setShinyCookie();
+            expect(result).to.be.eq("OK");
         });
 
-        it("can clear shiny cookie", (done: DoneCallback) => {
-            (new AuthService(this.store.dispatch, this.store.getState)).clearShinyCookie()
-                .then(result => {
-                    expect(result).to.be.eq("OK");
-                    done();
-                })
+        it("can clear shiny cookie", async () => {
+            const result = await (new AuthService(this.store.dispatch, this.store.getState)).clearShinyCookie();
+            expect(result).to.be.eq("OK");
         });
 
-        it("forgot password", (done: DoneCallback) => {
-            (new AuthService(this.store.dispatch, this.store.getState)).forgotPassword("test@test.com")
-                .then(result => {
-                    expect(result).to.be.eq("OK");
-                    done();
-                })
+        it("forgot password", async () => {
+            const result = await (new AuthService(this.store.dispatch, this.store.getState)).forgotPassword("test@test.com");
+            expect(result).to.be.eq("OK");
         });
 
-        it("can fetch groups", (done: DoneCallback) => {
-            const promise = addGroups(this.db)
-                .then(() => groupStore.fetchGroups());
-            checkPromise(done, promise, groups => {
-                expectIsEqual<ModellingGroup[]>(groups, [
-                    { id: "g1", description: "Group 1" },
-                    { id: "g2", description: "Group 2" }
-                ]);
+        it("can fetch groups", async () => {
+            await addGroups(this.db);
+            const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState)).getAllGroups();
+            expect(result).to.eql([
+                { id: "g1", description: "Group 1" },
+                { id: "g2", description: "Group 2" }
+            ]);
+        });
+
+        it("can fetch group details", async () => {
+            await addGroups(this.db);
+            const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState)).getGroupDetails('g1');
+            expect(result).to.eql({
+                id: "g1",
+                description: "Group 1",
+                members: ['bob'],
+                models: [
+                    {
+                        id: "model",
+                        modelling_group: "g1",
+                        description: "A model",
+                        citation: "Citation"
+                    }
+                ]
             });
         });
 
-        it("can fetch group details", (done: DoneCallback) => {
-            const promise = addGroups(this.db)
-                .then(() => {
-                    modellingGroupActions.setCurrentGroup("g1");
-                    return groupStore.fetchGroupDetails();
-                });
-            checkPromise(done, promise, details => {
-                expectIsEqual<ModellingGroupDetails>(details, {
-                    id: "g1",
-                    description: "Group 1",
-                    members: ['bob'],
-                    models: [
-                        {
-                            id: "model",
-                            modelling_group: "g1",
-                            description: "A model",
-                            citation: "Citation"
-                        }
-                    ]
-                });
-            })
+        it("can add member to a group", async () => {
+            await addGroups(this.db);
+            const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
+                .addMember("g1", "test.user");
+            expect(result).to.equal("OK");
+            const groupDetails = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
+                .getGroupDetails('g1');
+            expect(groupDetails.members.indexOf("test.user") > -1).to.be.true;
         });
 
-        it("can fetch users", (done: DoneCallback) => {
-            const promise = addUsers(this.db)
-                .then(() => userStore.fetchUsers());
-            checkPromise(done, promise, users => {
-                const bob: User = users.find(x => x.username == 'bob');
-                expectIsEqual<User>(bob, {
-                    username: "bob",
-                    name: "Bob Jones",
-                    email: "bob@example.com",
-                    roles: [
-                        { name: "member", scope_prefix: "modelling-group", scope_id: "some-group" },
-                        { name: "user-manager", scope_prefix: null, scope_id: null }
-                    ],
-                    last_logged_in: "2017-01-01T08:36:23Z"
-                });
+        it("can remove member from a group", async () => {
+            await addGroups(this.db);
+            const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
+                .removeMember("g1", "bob");
+            expect(result).to.equal("OK");
+            const groupDetails = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
+                .getGroupDetails('g1');
+            expect(groupDetails.members.indexOf("bob") === -1).to.be.true;
+        });
+
+        it("can fetch users", async () => {
+            await addUsers(this.db);
+            const users: User[] = await (new UsersService(this.store.dispatch, this.store.getState)).getAllUsers();
+            const bob: User = users.find(x => x.username == 'bob');
+            expect(bob).to.eql({
+                username: "bob",
+                name: "Bob Jones",
+                email: "bob@example.com",
+                roles: [
+                    { name: "member", scope_prefix: "modelling-group", scope_id: "some-group" },
+                    { name: "user-manager", scope_prefix: null, scope_id: null }
+                ],
+                last_logged_in: "2017-01-01T08:36:23Z"
             });
         });
     }

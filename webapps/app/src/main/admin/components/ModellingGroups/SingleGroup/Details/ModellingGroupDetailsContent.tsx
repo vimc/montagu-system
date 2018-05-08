@@ -1,61 +1,46 @@
 import * as React from "react";
 import { connect } from 'react-redux';
+import { compose, branch, renderComponent} from "recompose";
 
-import { RemoteContent } from "../../../../../shared/models/RemoteContent";
 import { ModellingGroupDetails, User } from "../../../../../shared/models/Generated";
-import { RemoteContentComponent } from "../../../../../shared/components/RemoteContentComponent/RemoteContentComponent";
-import { groupStore } from "../../../../stores/GroupStore";
-import { connectToStores } from "../../../../../shared/alt";
-import { GroupMembersSummary } from "./GroupMembersSummary";
-import { userStore } from "../../../../stores/UserStore";
+import { ModellingGroupDetailsMembers } from "./ModellingGroupDetailsMembers";
 
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
+import {LoadingElement} from "../../../../../shared/partials/LoadingElement/LoadingElement";
 
-interface Props extends RemoteContent {
+interface ModellingGroupDetailsContentProps {
     group: ModellingGroupDetails;
-    users: User[];
+    members: User[];
     canManageGroupMembers: boolean;
 }
 
-class ModellingGroupDetailsContentComponent extends RemoteContentComponent<Props, undefined> {
-    static getStores() {
-        return [ groupStore, userStore ];
-    }
-    static getPropsFromStores(): Partial<Props> {
-        const group = groupStore.getCurrentGroupDetails();
-        const users = userStore.getState();
-        return {
-            group: group,
-            users: users.users,
-            ready: group != null && users.ready
-        };
-    }
-
-    renderContent(props: Props) {
-        return <div className="col">
-            <table className="specialColumn">
-                <tbody>
-                    <tr><td>ID</td><td>{ props.group.id }</td></tr>
-                    <tr>
-                        <td>Group members</td>
-                        <td><GroupMembersSummary
-                            group={props.group}
-                            allUsers={props.users}
-                            canEdit={props.canManageGroupMembers}
-                        /></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    }
+export const ModellingGroupDetailsContentComponent: React.SFC<ModellingGroupDetailsContentProps> = (props: ModellingGroupDetailsContentProps) => {
+    return <div className="col">
+        <table className="specialColumn">
+            <tbody>
+                <tr><td>ID</td><td>{ props.group.id }</td></tr>
+                <tr>
+                    <td>Group members</td>
+                    <td><ModellingGroupDetailsMembers
+                        group={props.group}
+                        members={props.members}
+                        canEdit={props.canManageGroupMembers}
+                    /></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>;
 }
 
-export const ModellingGroupDetailsContentAltWrapped = connectToStores(ModellingGroupDetailsContentComponent);
-
-const mapStateToProps = (state: AdminAppState) :Partial<Props> => {
+const mapStateToProps = (state: AdminAppState) :Partial<ModellingGroupDetailsContentProps> => {
     return {
+        group: state.groups.currentGroupDetails,
+        members: state.groups.currentGroupMembers,
         canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1
     }
 };
 
-export const ModellingGroupDetailsContent = connect(mapStateToProps)(ModellingGroupDetailsContentAltWrapped);
+export const ModellingGroupDetailsContent = compose(
+    connect(mapStateToProps),
+    branch((props: ModellingGroupDetailsContentProps) => !props.group, renderComponent(LoadingElement))
+)(ModellingGroupDetailsContentComponent);

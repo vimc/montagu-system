@@ -7,4 +7,5 @@ export class ModellingGroupListItem extends React.Component<ModellingGroup, unde
         const url = `/modelling-groups/${ this.props.id }/`
         return <InternalLink href={ url }>{ this.props.description }</InternalLink>;
     }
+
 }

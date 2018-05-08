@@ -7,11 +7,11 @@ import { AbstractLocalService } from "../../../main/shared/services/AbstractLoca
 import { settings } from "../../../main/shared/Settings";
 import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
 import { createMockStore } from "../../mocks/mockStore";
-import {mockGlobalState} from "../../mocks/mockStates";
 import {SingletonVariableCache} from "../../../main/shared/modules/cache/singletonVariableCache";
 import {Dispatch} from "react-redux";
 import {GlobalState} from "../../../main/shared/reducers/GlobalState";
 import {CacheInterface} from "../../../main/shared/modules/cache/CacheInterface";
+import {mockContribState} from "../../mocks/mockStates";
 
 describe('Local service class initialization tests', () => {
 
@@ -22,7 +22,7 @@ describe('Local service class initialization tests', () => {
     });
 
     it('initializes default service with default option url', () => {
-        const store = createStore(state => state, mockGlobalState({auth: {bearerToken: null}}));
+        const store = createStore(state => state, mockContribState({auth: {bearerToken: null}}));
         class TestService extends AbstractLocalService {
             test() {
                 return {
@@ -38,7 +38,7 @@ describe('Local service class initialization tests', () => {
     });
 
     it('initializes default service with request engine and token', () => {
-        const store = createStore(state => state, mockGlobalState({auth: {bearerToken: "token"}}));
+        const store = createStore(state => state, mockContribState({auth: {bearerToken: "token"}}));
 
         class TestService extends AbstractLocalService {
             test() {
@@ -56,7 +56,7 @@ describe('Local service class initialization tests', () => {
     });
 
     it('initializes default service with request engine, token and withCredentials option', () => {
-        const store = createStore(state => state, mockGlobalState({auth: {bearerToken: "token"}}));
+        const store = createStore(state => state, mockContribState({auth: {bearerToken: "token"}}));
 
         class TestService extends AbstractLocalService {
             test() {
@@ -76,7 +76,7 @@ describe('Local service class initialization tests', () => {
     });
 
     it('initializes default service with request engine and basic authorization', () => {
-        const store = createStore(state => state, mockGlobalState());
+        const store = createStore(state => state, mockContribState());
         const email = "abc@abc.com";
         const password = "abc";
 
@@ -107,7 +107,7 @@ describe('Local service class requests tests', () => {
     });
 
     it('performs successful query', async () => {
-        const store = createStore(state => state, mockGlobalState());
+        const store = createStore(state => state, mockContribState());
         class TestService extends AbstractLocalService {
             test() {
                 return this.get("/test/");

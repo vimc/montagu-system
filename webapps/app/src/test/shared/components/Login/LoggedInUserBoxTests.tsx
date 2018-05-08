@@ -8,7 +8,7 @@ import { MemoryRouter as Router } from 'react-router-dom';
 import { initialAuthState } from "../../../../main/shared/reducers/authReducer";
 import { InternalLink } from "../../../../main/shared/components/InternalLink";
 import { LoggedInUserBoxComponent, LoggedInUserBox } from "../../../../main/shared/components/Login/LoggedInUserBox";
-import { mockGlobalState } from "../../../mocks/mockStates";
+import {mockContribState} from "../../../mocks/mockStates";
 import { mapStateToProps } from "../../../../main/shared/components/Login/LoggedInUserBox";
 import { createMockStore } from "../../../mocks/mockStore";
 import { AuthTypeKeys } from "../../../../main/shared/actionTypes/AuthTypes";
@@ -52,8 +52,8 @@ describe("LoggedInUserBoxComponent", () => {
     });
 
     it("maps state to props", () => {
-        const globalStateMock = mockGlobalState({ auth: {loggedIn: true, username: "test.user"} })
-        const props = mapStateToProps(globalStateMock)
+        const contribStateMock = mockContribState({ auth: {loggedIn: true, username: "test.user"} })
+        const props = mapStateToProps(contribStateMock)
         expect(props.username).to.eq("test.user");
         expect(props.loggedIn).to.eq(true);
     });

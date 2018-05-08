@@ -3,13 +3,14 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 import {History} from "history";
 
+// import {AdminPageHeader} from "./AdminPageHeader";
 // Pages
 import { MainMenu } from "./MainMenu/MainMenu";
 import { AdminLoginPage } from "./AdminLoginPage";
 import { AdminNoRouteFoundPage } from "./AdminNoRouteFoundPage";
-import { ViewAllModellingGroupsPage } from "./ModellingGroups/List/ViewAllModellingGroupsPage";
-import { ViewModellingGroupDetailsPage } from "./ModellingGroups/SingleGroup/Details/ViewModellingGroupDetailsPage";
-import { GroupMembersPage } from "./ModellingGroups/SingleGroup/Members/GroupMembersPage";
+import { ModellingGroupsListPage } from "./ModellingGroups/List/ModellingGroupsListPage";
+import { ModellingGroupDetailsPage } from "./ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
+import { ModellingGroupMembersPage } from "./ModellingGroups/SingleGroup/Members/ModellingGroupMembersPage";
 import {ViewAllUsersPage} from "./Users/List/ViewAllUsersPage";
 import {ViewUserDetailsPage} from "./Users/SingleUser/ViewUserDetailsPage";
 import { AdminForgottenPasswordPage } from "./AdminForgottenPasswordPage";
@@ -24,9 +25,9 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
 
     const loggedIn = <Switch>
         <Route exact path="/" component={MainMenu}/>
-        <Route exact path="/modelling-groups/" component={ViewAllModellingGroupsPage}/>
-        <Route exact path="/modelling-groups/:groupId/" component={ViewModellingGroupDetailsPage}/>
-        <Route exact path="/modelling-groups/:groupId/admin/" component={GroupMembersPage}/>
+        <Route exact path="/modelling-groups/" component={ModellingGroupsListPage}/>
+        <Route exact path="/modelling-groups/:groupId/" component={ModellingGroupDetailsPage}/>
+        <Route exact path="/modelling-groups/:groupId/admin/" component={ModellingGroupMembersPage}/>
         <Route exact path="/users/" component={ViewAllUsersPage}/>
         <Route exact path="/users/:username" component={ViewUserDetailsPage}/>
         <Route exact path="/set-password/" component={ResetPasswordPage} />
@@ -43,6 +44,8 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
     const routes = props.loggedIn ? loggedIn : notLoggedIn;
 
     return <ConnectedRouter history={props.history}>
-        {routes}
+        <div>
+            {routes}
+        </div>
     </ConnectedRouter>;
 }

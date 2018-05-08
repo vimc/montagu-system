@@ -1,28 +1,31 @@
 import * as React from "react";
-import { AssociateUser, User } from "../../../../../shared/models/Generated";
-import { modellingGroupActions } from "../../../../../shared/actions/ModellingGroupActions";
-import fetcher from "../../../../../shared/sources/Fetcher";
-import { processResponseAndNotifyOnErrors } from "../../../../../shared/sources/Source";
-import { notificationActions, NotificationException } from "../../../../../shared/actions/NotificationActions";
+import {compose} from "recompose";
+import { connect } from 'react-redux';
+import { Dispatch } from "redux";
 
-interface Props {
+import { User } from "../../../../../shared/models/Generated";
+import {AdminAppState} from "../../../../reducers/adminAppReducers";
+import {modellingGroupsActionCreators} from "../../../../actions/modellingGroupsActionCreators";
+
+export interface ModellingGroupMembersAddProps {
     members: string[];
     users: User[];
     groupId: string;
-}
+    addUserToGroup: (groupId: string, username: string) => void;
+};
 
-export interface AddMemberState {
+export interface ModellingGroupMembersAddState {
     options: User[];
     selectedUser: string;
-}
+};
 
-export class AddMember extends React.Component<Props, AddMemberState> {
+export class ModellingGroupMembersAddComponent extends React.Component<ModellingGroupMembersAddProps, ModellingGroupMembersAddState> {
 
     componentWillMount() {
         this.componentWillReceiveProps(this.props);
     }
 
-    componentWillReceiveProps(props: Props) {
+    componentWillReceiveProps(props: ModellingGroupMembersAddProps) {
         const options = props.users
             .filter(x => props.members.indexOf(x.username) == -1)
             .sort((a, b) => a.username.localeCompare(b.username));
@@ -42,25 +45,8 @@ export class AddMember extends React.Component<Props, AddMemberState> {
     }
 
     handleClick(e: React.MouseEvent<HTMLButtonElement>) {
-
         e.preventDefault();
-
-        const href = `/modelling-groups/${this.props.groupId}/actions/associate-member/`;
-        const associateUser: AssociateUser = {
-            username: this.state.selectedUser,
-            action: "add"
-        };
-
-        fetcher.fetcher.fetch(href, {
-            method: "post",
-            body: JSON.stringify(associateUser)
-        }).then((response: Response) => {
-            return processResponseAndNotifyOnErrors(response)
-                .then(() => {
-                    modellingGroupActions.addMember(this.state.selectedUser)
-                })
-                .catch((e: NotificationException) => notificationActions.notify(e))
-        });
+        this.props.addUserToGroup(this.props.groupId, this.state.selectedUser);
     }
 
     render() {
@@ -89,5 +75,24 @@ export class AddMember extends React.Component<Props, AddMemberState> {
             </div>
         </form>;
     }
-
 }
+
+export const mapStateToProps = (state: AdminAppState, props: Partial<ModellingGroupMembersAddProps>) :Partial<ModellingGroupMembersAddProps> => {
+    return {
+        members: props.members,
+        users: state.users.users,
+        groupId: props.groupId
+    }
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<ModellingGroupMembersAddProps> => {
+    return {
+        addUserToGroup: (groupId: string, username: string) => dispatch(modellingGroupsActionCreators.addUserToGroup(groupId, username))
+    }
+};
+
+export const ModellingGroupMembersAdd = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+)(ModellingGroupMembersAddComponent) as React.ComponentClass<Partial<ModellingGroupMembersAddProps>>;
+
+
