@@ -4,12 +4,12 @@ import java.beans.ConstructorProperties
 import java.time.Instant
 
 data class Report
-@ConstructorProperties("name", "displayname", "latestVersion", "published", "creationDate", "author",
+@ConstructorProperties("name", "displayname", "latestVersion", "published", "updatedOn", "author",
         "requester")
 constructor(val name: String,
             val displayName: String?,
             val latestVersion: String,
             val published: Boolean,
-            val creationDate: Instant,
+            val updatedOn: Instant,
             val author: String?,
             val requester: String?)
