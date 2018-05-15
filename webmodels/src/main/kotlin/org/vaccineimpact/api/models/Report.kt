@@ -11,5 +11,5 @@ constructor(val name: String,
             val latestVersion: String,
             val published: Boolean,
             val updatedOn: Instant,
-            val author: String?,
-            val requester: String?)
+            val author: String,
+            val requester: String)
