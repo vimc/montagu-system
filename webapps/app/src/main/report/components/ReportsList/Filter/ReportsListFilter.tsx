@@ -7,7 +7,7 @@ import {reportActionCreators} from "../../../actions/reportActionCreators";
 import {ReportsFilterFields, ReportsFilterPublishTypes,} from "../../../actionTypes/ReportsActionsTypes";
 import {ReportAppState} from "../../../reducers/reportAppReducers";
 import {ReportsListFilterPublished} from "./ReportsListFilterPublished";
-import {ReportsListFilterDate} from "./ReportsListFilterDate";
+import {DateRangePicker} from "../../../../shared/components/DatePicker/DateRangePicker";
 
 interface ReportsListFilterProps {
     filterData: ReportsFilterFields;
@@ -17,19 +17,20 @@ interface ReportsListFilterProps {
     isReviewer: boolean;
 }
 
+const fromMonth = new Date("2017-03-01T00:00:00");
+const toMonth = new Date;
+
 export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFilterProps> = (props: ReportsListFilterProps) => (
     <div className="row">
         {props.isReviewer &&
-            <ReportsListFilterPublished
-                filterData={props.filterData}
-                filterPublish={props.filterPublish}
-            />
-        }
-        <ReportsListFilterDate
+        <ReportsListFilterPublished
             filterData={props.filterData}
-            timeFromSelected={props.timeFromSelected}
-            timeUntilSelected={props.timeUntilSelected}
+            filterPublish={props.filterPublish}
         />
+        }
+
+        <DateRangePicker value={{end: fromMonth, start: toMonth}} startDate={fromMonth} endDate={toMonth}
+                         timeFromSelected={props.timeFromSelected} timeUntilSelected={props.timeUntilSelected}/>
         <div className="clearfix"/>
     </div>
 );
