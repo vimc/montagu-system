@@ -20,8 +20,12 @@ interface ReportsListFilterProps {
 const fromMonth = new Date("2017-03-01T00:00:00");
 const toMonth = new Date;
 
-export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFilterProps> = (props: ReportsListFilterProps) => (
-    <div className="row">
+export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFilterProps> = (props: ReportsListFilterProps) => {
+
+    const start = props.filterData.timeFrom ? new Date(props.filterData.timeFrom) : fromMonth;
+    const end = props.filterData.timeUntil ? new Date(props.filterData.timeUntil) : toMonth;
+
+    return <div className="row mb-2">
         {props.isReviewer &&
         <ReportsListFilterPublished
             filterData={props.filterData}
@@ -29,11 +33,14 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
         />
         }
 
-        <DateRangePicker value={{end: fromMonth, start: toMonth}} startDate={fromMonth} endDate={toMonth}
-                         timeFromSelected={props.timeFromSelected} timeUntilSelected={props.timeUntilSelected}/>
+        <DateRangePicker
+            value={{end, start}}
+            startDate={fromMonth} endDate={toMonth}
+            timeFromSelected={props.timeFromSelected} timeUntilSelected={props.timeUntilSelected}/>
+
         <div className="clearfix"/>
     </div>
-);
+}
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportsListFilterProps> => {
     return {

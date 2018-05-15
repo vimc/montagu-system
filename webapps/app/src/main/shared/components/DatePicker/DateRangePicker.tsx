@@ -11,7 +11,7 @@ interface DateRangePickerProps {
 }
 
 export const DateRangePicker: React.StatelessComponent<DateRangePickerProps> = (props: DateRangePickerProps) => (
-    <div className="report-date-filters">
+    <div>
         <div className="d-inline-block date-filter">
             <div className="input-group">
                 <div className="input-group-prepend">
