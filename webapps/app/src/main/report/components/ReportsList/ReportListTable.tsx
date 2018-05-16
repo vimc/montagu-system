@@ -1,11 +1,12 @@
 import * as React from "react";
 import {Report} from "../../../shared/models/Generated";
 import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps} from 'react-table'
-import {LatestVersion, latestVersionAccessorFunction, LatestVersionCell} from "./ReportListColumns/VersionColumn";
+import {LatestVersion, latestVersionAccessorFunction, LatestVersionCell, versionFilterMethod} from "./ReportListColumns/VersionColumn";
 import {
     PublishStatusCell, PublishStatusFilter,
     publishStatusFilterMethod
 } from "./ReportListColumns/PublishStatusColumn";
+import {ReportLatestVersionFilter} from "./ReportListColumns/LatestVersionFilter";
 
 export interface ReportsListTableProps {
     reports: Report[]

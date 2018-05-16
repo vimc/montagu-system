@@ -1,7 +1,8 @@
 import * as React from "react";
 
-import {FilterProps} from "./ReportsListComponent";
 import {ChangeEvent} from "react";
+import {DateRangePicker} from "../../../../shared/components/DatePicker/DateRangePicker";
+import {FilterProps} from "../ReportListTable";
 
 const startDate = new Date("2017-03-01T00:00:00");
 const endDate = new Date;
