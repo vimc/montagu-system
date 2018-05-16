@@ -50,7 +50,7 @@ describe("ReportListFilter", () => {
 
     it("does not render publish filter if user is not reviewer", () => {
         const rendered = shallow(<ReportsListFilterComponent
-            isReviewer={false} filterData={null} filterPublish={null}
+            isReviewer={false} filterData={{}} filterPublish={null}
             timeFromSelected={null} timeUntilSelected={null}
         />);
         const publishFilter = rendered.find(ReportsListFilterPublished);
@@ -59,7 +59,7 @@ describe("ReportListFilter", () => {
 
     it("renders publish filter if user is not reviewer", () => {
         const rendered = shallow(<ReportsListFilterComponent
-            isReviewer={true} filterData={null} filterPublish={null}
+            isReviewer={true} filterData={{}} filterPublish={null}
             timeFromSelected={null} timeUntilSelected={null}
         />);
         const publishFilter = rendered.find(ReportsListFilterPublished);
