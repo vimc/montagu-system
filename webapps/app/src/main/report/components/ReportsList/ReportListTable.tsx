@@ -7,6 +7,7 @@ import {
     publishStatusFilterMethod
 } from "./ReportListColumns/PublishStatusColumn";
 import {ReportLatestVersionFilter} from "./ReportListColumns/LatestVersionFilter";
+import {nameAccessorFunction, NameCell} from "./ReportListColumns/NameColumn";
 
 export interface ReportsListTableProps {
     reports: Report[]
@@ -53,7 +54,8 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
         [{
             Header: "Name",
             id: "name",
-            accessor: "name",
+            Cell: NameCell,
+            accessor: nameAccessorFunction,
             Filter: TextFilter
         },
             {
