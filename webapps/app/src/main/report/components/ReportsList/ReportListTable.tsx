@@ -19,12 +19,13 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
     = (props: ReportsListTableProps) => {
 
     const columns: Column[] =
-        [{
-            Header: "Name",
-            id: "name",
-            Cell: NameCell,
-            accessor: nameAccessorFunction
-        },
+        [
+            {
+                Header: "Name",
+                id: "name",
+                Cell: NameCell,
+                accessor: nameAccessorFunction
+            },
             {
                 Header: "Latest version",
                 id: "latest_version",
@@ -39,7 +40,6 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 Header: "Requester",
                 accessor: "requester"
             },
-
         ];
 
     if (props.isReviewer) {
