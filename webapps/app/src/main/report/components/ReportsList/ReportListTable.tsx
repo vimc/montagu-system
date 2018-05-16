@@ -59,6 +59,12 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             Filter: TextFilter
         },
             {
+                Header: "Name",
+                id: "name",
+                Cell: NameCell,
+                accessor: nameAccessorFunction
+            },
+            {
                 Header: "Latest version",
                 id: "latest_version",
                 width: 340,
@@ -77,7 +83,6 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 accessor: "requester",
                 Filter: TextFilter
             },
-
         ];
 
     if (props.isReviewer) {

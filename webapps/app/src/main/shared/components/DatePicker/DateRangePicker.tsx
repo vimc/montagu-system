@@ -27,7 +27,7 @@ export const DateRangePicker: React.StatelessComponent<DateRangePickerProps> = (
                 />
             </div>
         </div>
-        <span> to </span>
+        <span className="px-2">to</span>
         <div className="d-inline-block date-picker">
             <div className="input-group picker-on-right">
                 <div className="input-group-prepend">
