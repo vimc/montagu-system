@@ -22,20 +22,20 @@ describe("ReportListComponent", () => {
 
         it("creates data object with id and last updated date", function () {
 
-            const now = new Date("2018-05-14T23:00:00.000Z");
+            const now = new Date(2018, 4, 15);
             const result = latestVersionAccessorFunction(mockReport({
                 latest_version: "1234",
                 updated_on: now.toDateString()
             }));
 
-            expect(result).to.eql({version: "1234", date: new Date("2018-05-14T23:00:00.000Z")});
+            expect(result).to.eql({version: "1234", date: new Date(2018, 4, 15)});
         });
 
         it("renders version id and date", function () {
             const result = shallow(<LatestVersionCell original={mockReport({display_name: null})}
                                                       value={{
                                                           version: "46324",
-                                                          date: new Date("2018-05-14T23:00:00.000Z")
+                                                          date: new Date(2018, 4, 15)
                                                       }}/>);
 
             expect(result.find(".small").childAt(0).text()).to.eq("46324");
