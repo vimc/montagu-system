@@ -108,6 +108,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             defaultFilterMethod={(filter: Filter, row: ReportRowProps) =>
                 String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
             filterable
+            defaultPageSize={10}
             className="-striped -highlight responsive"
             data={props.reports}
             columns={columns}/>

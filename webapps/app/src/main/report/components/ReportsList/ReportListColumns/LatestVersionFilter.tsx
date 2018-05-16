@@ -46,11 +46,6 @@ export const ReportLatestVersionFilter: React.SFC<FilterProps<VersionFilterValue
     };
 
     return <div>
-        <input type={"text"} className={"form-control mb-1 "}
-               value={value.versionId}
-               placeholder="Type to filter by id..."
-               onChange={onTextChange}/>
-
         <div className={"report-date-filter"}>
         <DateRangePicker value={{end: value.end, start: value.start}}
                          startDate={startDate}
@@ -58,5 +53,9 @@ export const ReportLatestVersionFilter: React.SFC<FilterProps<VersionFilterValue
                          timeFromSelected={onStartDateChange}
                          timeUntilSelected={onEndDateChange}/>
         </div>
+        <input type={"text"} className={"form-control mt-1 "}
+               value={value.versionId}
+               placeholder="Type to filter by id..."
+               onChange={onTextChange}/>
     </div>
 };

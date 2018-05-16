@@ -22,7 +22,7 @@ export const versionFilterMethod = (filter: FilterGeneric<VersionFilterValue>, r
 
     return lastUpdatedDate <= filter.value.end
         && lastUpdatedDate >= filter.value.start &&
-        lastVersionId.indexOf(filter.value.versionId) > -1;
+        lastVersionId.toLowerCase().indexOf(filter.value.versionId.toLowerCase()) > -1;
 };
 
 export interface LatestVersion {

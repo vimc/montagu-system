@@ -34,14 +34,45 @@
   font-weight: 700;
 }
 
-.-filters {
-  .rt-th {
-    overflow: visible !important;
-  }
-}
+.ReactTable {
 
-.rt-th {
-  padding: 10px !important;
+  .-filters {
+    border-bottom: 1px solid $gray-300 !important;
+    border-top: 1px solid $gray-200 !important;
+
+    .rt-th {
+      overflow: visible !important;
+    }
+
+  }
+
+  .rt-th {
+    padding: 10px !important;
+  }
+
+  .-pagination {
+
+    box-shadow: none !important;
+    border-width: 1px !important;
+
+    .-btn {
+      background: white !important;
+      color: #007bff;
+      border: none !important;
+      box-shadow: none !important;
+      font-weight: normal !important;
+
+      &:hover:not(:disabled) {
+        color: #0056b3 !important;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .-header {
+    box-shadow: none !important;
+  }
+
 }
 
 // adapted from https://css-tricks.com/responsive-data-tables/
@@ -66,7 +97,7 @@
       width: auto !important;
     }
 
-      /* Hide filters and resizer */
+    /* Hide filters and resizer */
     .-filters, .rt-resizer {
       display: none;
     }
