@@ -3,7 +3,7 @@ import {Report} from "../../../shared/models/Generated";
 import ReactTable, {Column, RowRenderProps} from 'react-table'
 import {LatestVersion, latestVersionAccessorFunction, LatestVersionCell} from "./ReportListColumns/VersionColumn";
 import {PublishStatusCell} from "./ReportListColumns/PublishStatusColumn";
-import {NameCell} from "./ReportListColumns/NameColumn";
+import {nameAccessorFunction, NameCell} from "./ReportListColumns/NameColumn";
 
 export interface ReportsListTableProps {
     reports: Report[]
@@ -23,7 +23,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             Header: "Name",
             id: "name",
             Cell: NameCell,
-            accessor: "name"
+            accessor: nameAccessorFunction
         },
             {
                 Header: "Latest version",
