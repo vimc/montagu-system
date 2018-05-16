@@ -5,7 +5,10 @@ import {shallow} from "enzyme";
 import {mockReport} from "../../../../mocks/mockModels";
 import {Sandbox} from "../../../../Sandbox";
 import ReactTable from "react-table";
-import {PublishStatusCell} from "../../../../../main/report/components/ReportsList/ReportListColumns/PublishStatusColumn";
+import {
+    PublishStatusCell, PublishStatusFilter,
+    publishStatusFilterMethod
+} from "../../../../../main/report/components/ReportsList/ReportListColumns/PublishStatusColumn";
 import {ReportsListTable} from "../../../../../main/report/components/ReportsList/ReportListTable";
 
 describe("ReportListComponent", () => {
@@ -38,6 +41,51 @@ describe("ReportListComponent", () => {
             expect(result.find(".badge-internal")).to.have.lengthOf(1);
         });
 
+        it("renders options to filter by status", function () {
+            const onChange = sandbox.sinon.stub();
+            const result = shallow(<PublishStatusFilter onChange={onChange}/>);
+            expect(result.find("option").map(o => o.prop("value"))).to.have.members(["all", "published", "internal"])
+        });
+
+        it("filters reports by status", function () {
+            let row = {
+                published: true
+            };
+
+            let filter = {value: "published"};
+
+            expect(publishStatusFilterMethod(filter as any, row as any),
+                "published reports should show if filter is set to 'published'").to.be.true;
+
+            filter = {value: "all"};
+
+            expect(publishStatusFilterMethod(filter as any, row as any),
+                "published reports should show if filter is set to 'all'").to.be.true;
+
+            filter = {value: "internal"};
+
+            expect(publishStatusFilterMethod(filter as any, row as any),
+                "published reports should not show if filter is set to 'internal'").to.be.false;
+
+            row = {
+                published: false
+            };
+
+            filter = {value: "internal"};
+
+            expect(publishStatusFilterMethod(filter as any, row as any),
+                "internal reports should show if filter is set to 'internal'").to.be.true;
+
+            filter = {value: "all"};
+
+            expect(publishStatusFilterMethod(filter as any, row as any),
+                "internal reports should show if filter is set to 'all'").to.be.true;
+
+            filter = {value: "published"};
+
+            expect(publishStatusFilterMethod(filter as any, row as any),
+                "internal reports should not show if filter is set to 'published'").to.be.false;
+        });
     });
 
 });

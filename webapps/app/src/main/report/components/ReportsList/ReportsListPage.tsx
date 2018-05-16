@@ -1,20 +1,14 @@
 import * as React from "react";
-import { compose } from "recompose";
+import {compose} from "recompose";
 
 import {ReportsList} from "./ReportsList";
 import {ReportsListSorting} from "./ReportsListSorting";
 import {ReportsListFilter} from "./Filter/ReportsListFilter";
-import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
 import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {BreadcrumbInitializer} from "../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
-import {ReportsListTable} from "./ReportListTable";
 
 export class ReportsListPageComponent extends React.Component<PageProperties<undefined>> {
-    componentDidMount(){
-        this.props.createBreadcrumbs(ReportsListPageComponent.breadcrumb());
-    }
-
-    static breadcrumb() : PageBreadcrumb {
+    static breadcrumb(): PageBreadcrumb {
         return {
             name: "Main menu",
             urlFragment: "/",
@@ -22,12 +16,20 @@ export class ReportsListPageComponent extends React.Component<PageProperties<und
         }
     }
 
-    render() :JSX.Element {
-        return <PageArticle title="Choose a report to view">
-            <ReportsListFilter/>
-            <ReportsListSorting/>
-            <ReportsList/>
-        </PageArticle>;
+    componentDidMount() {
+        this.props.createBreadcrumbs(ReportsListPageComponent.breadcrumb());
+    }
+
+    render(): JSX.Element {
+        return <div className={"container-fluid pt-5"}>
+            <div className={"row"}>
+                <div className={"col-12 col-lg-10 offset-lg-1"}>
+                    <ReportsListFilter/>
+                    <ReportsListSorting/>
+                    <ReportsList/>
+                </div>
+            </div>
+        </div>;
     }
 }
 

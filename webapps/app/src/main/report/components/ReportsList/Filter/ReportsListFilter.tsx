@@ -32,12 +32,12 @@ export const ReportsListFilterComponent: React.StatelessComponent<ReportsListFil
             filterPublish={props.filterPublish}
         />
         }
-
-        <DateRangePicker
-            value={{end, start}}
-            startDate={fromMonth} endDate={toMonth}
-            timeFromSelected={props.timeFromSelected} timeUntilSelected={props.timeUntilSelected}/>
-
+        <div className={"col-12"}>
+            <DateRangePicker
+                value={{end, start}}
+                startDate={fromMonth} endDate={toMonth}
+                timeFromSelected={props.timeFromSelected} timeUntilSelected={props.timeUntilSelected}/>
+        </div>
         <div className="clearfix"/>
     </div>
 }
