@@ -51,10 +51,12 @@ export const ReportLatestVersionFilter: React.SFC<FilterProps<VersionFilterValue
                placeholder="Type to filter by id..."
                onChange={onTextChange}/>
 
+        <div className={"report-date-filter"}>
         <DateRangePicker value={{end: value.end, start: value.start}}
                          startDate={startDate}
                          endDate={endDate}
                          timeFromSelected={onStartDateChange}
                          timeUntilSelected={onEndDateChange}/>
+        </div>
     </div>
 };
