@@ -56,6 +56,8 @@ export const TextFilter: FilterRender = (props: FilterProps<string>) => {
 export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
     = (props: ReportsListTableProps) => {
 
+    // Note: if these column headers change, you must also change ./styles/report-table.scss
+    // where the headers are hard-coded for small devices
     const columns: Column[] =
         [
             {
