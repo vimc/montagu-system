@@ -79,4 +79,26 @@ describe('JwtTokenAuth Module Tests', () => {
         expect(authData.isModeller).to.eql(false);
     });
 
+    it('sets isReportReviewer', () => {
+        let testData = {
+            sub: "test.user",
+            permissions: "*/reports.review",
+            roles,
+            iss: "test.iss",
+            exp: Math.round(Date.now() / 1000) + 1000
+        };
+
+        let testToken = jwt.sign(testData, "secret");
+        let result = jwtTokenAuth.getDataFromToken(testToken);
+
+        expect(result.isReportReviewer).to.be.true;
+
+        testData.permissions = "*/can-login";
+        testToken = jwt.sign(testData, "secret");
+        result = jwtTokenAuth.getDataFromToken(testToken);
+
+        expect(result.isReportReviewer).to.be.false;
+
+    });
+
 });

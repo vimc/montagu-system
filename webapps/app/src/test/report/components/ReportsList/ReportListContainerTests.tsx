@@ -31,7 +31,7 @@ describe("ReportListComponent", () => {
     });
 
     it ("tests lifecycle, triggers get reports on component mount ", () => {
-        let store = createMockStore({reports: {reports: null}});
+        let store = createMockStore(mockReportAppState({reports: {reports: null}}));
         const getReportsActionStub = sandbox.setStubReduxAction(reportActionCreators, 'getReports');
         // 1 dive leads us to bypass first hoc, so we pass connect and stop on lifecycle
         const rendered = shallow(<ReportsList />, {context: {store}}).dive();
@@ -39,7 +39,7 @@ describe("ReportListComponent", () => {
     });
 
     it ("tests branch, doesn't branch rendering to component is loading is state is ready ", () => {
-        let store = createMockStore({reports: {reports: [], reportsFilter: {}}});
+        let store = createMockStore(mockReportAppState({reports: {reports: [], reportsFilter: {}}}));
         sandbox.setStubReduxAction(reportActionCreators, 'getReports');
         // 2 dives leads us to branch
         const rendered = shallow(<ReportsList />, {context: {store}}).dive().dive();
@@ -48,7 +48,7 @@ describe("ReportListComponent", () => {
     });
 
     it ("tests branch, branches rendering to component is loading is state not ready ", () => {
-        let store = createMockStore({reports: {reports: null}});
+        let store = createMockStore(mockReportAppState({reports: {reports: null}}));
         sandbox.setStubReduxAction(reportActionCreators, 'getReports');
         // 2 dives leads us to branch, 3rd needed to pass renderComponent
         const rendered = shallow(<ReportsList />, {context: {store}}).dive().dive().dive();

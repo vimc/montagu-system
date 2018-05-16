@@ -9,7 +9,8 @@ const testAuthData: AuthState = {
     bearerToken: 'testtoken',
     permissions: [],
     isAccountActive: true,
-    isModeller: false
+    isModeller: false,
+    isReportReviewer: false
 };
 
 describe('Modelling groups reducer tests', () => {
