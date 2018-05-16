@@ -6,13 +6,10 @@ import withLifecycle, {LifecycleMethods} from '@hocs/with-lifecycle';
 
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import { reportActionCreators } from "../../actions/reportActionCreators";
-import {ReportsListComponent, ReportsListComponentProps} from "./ReportsListComponent";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
-import {reportsListSelectors} from "./reportsListSelectors";
+import {ReportsListTable, ReportsListTableProps} from "./ReportListTable";
 
-const reportsDisplayListSelector = reportsListSelectors.createDisplayListSelector();
-
-export interface ReportsListContainerProps extends ReportsListComponentProps {
+export interface ReportsListContainerProps extends ReportsListTableProps {
     getReports: () => void;
     ready: boolean;
 }
@@ -25,7 +22,7 @@ const lifecyleProps: Partial<LifecycleMethods<ReportsListContainerProps>> = {
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportsListContainerProps> => {
     return {
-        reports: reportsDisplayListSelector(state),
+        reports: state.reports.reports,
         isReviewer: state.auth.isReportReviewer,
         ready: Array.isArray(state.reports.reports)
     }
@@ -42,4 +39,4 @@ const enhance = compose(
     withLifecycle(lifecyleProps),
     branch((props: ReportsListContainerProps) => !props.ready, renderComponent(LoadingElement))
 );
-export const ReportsList = enhance(ReportsListComponent);
+export const ReportsList = enhance(ReportsListTable);
