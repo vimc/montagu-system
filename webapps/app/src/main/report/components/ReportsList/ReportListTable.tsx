@@ -1,9 +1,15 @@
 import * as React from "react";
 import {Report} from "../../../shared/models/Generated";
 import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps} from 'react-table'
-import {LatestVersion, latestVersionAccessorFunction, LatestVersionCell, versionFilterMethod} from "./ReportListColumns/VersionColumn";
 import {
-    PublishStatusCell, PublishStatusFilter,
+    LatestVersion,
+    latestVersionAccessorFunction,
+    LatestVersionCell,
+    versionFilterMethod
+} from "./ReportListColumns/VersionColumn";
+import {
+    PublishStatusCell,
+    PublishStatusFilter,
     publishStatusFilterMethod
 } from "./ReportListColumns/PublishStatusColumn";
 import {ReportLatestVersionFilter} from "./ReportListColumns/LatestVersionFilter";
@@ -38,7 +44,7 @@ export interface FilterProps<T> {
     onChange: ReactTableFunction
 }
 
-export const TextFilter: FilterRender = (props: FilterProps<string> ) => {
+export const TextFilter: FilterRender = (props: FilterProps<string>) => {
 
     const value = props.filter ? props.filter.value : "";
 
@@ -51,13 +57,14 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
     = (props: ReportsListTableProps) => {
 
     const columns: Column[] =
-        [{
-            Header: "Name",
-            id: "name",
-            Cell: NameCell,
-            accessor: nameAccessorFunction,
-            Filter: TextFilter
-        },
+        [
+            {
+                Header: "Name",
+                id: "name",
+                Cell: NameCell,
+                accessor: nameAccessorFunction,
+                Filter: TextFilter
+            },
             {
                 Header: "Name",
                 id: "name",
@@ -103,7 +110,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
         </h5>
         <ReactTable
             defaultFilterMethod={(filter: Filter, row: ReportRowProps) =>
-                                String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
+                String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
             filterable
             className="-striped -highlight responsive"
             data={props.reports}
