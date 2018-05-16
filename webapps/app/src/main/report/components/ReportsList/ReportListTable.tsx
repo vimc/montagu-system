@@ -1,8 +1,11 @@
 import * as React from "react";
 import {Report} from "../../../shared/models/Generated";
-import ReactTable, {Column, RowRenderProps} from 'react-table'
+import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps} from 'react-table'
 import {LatestVersion, latestVersionAccessorFunction, LatestVersionCell} from "./ReportListColumns/VersionColumn";
-import {PublishStatusCell} from "./ReportListColumns/PublishStatusColumn";
+import {
+    PublishStatusCell, PublishStatusFilter,
+    publishStatusFilterMethod
+} from "./ReportListColumns/PublishStatusColumn";
 
 export interface ReportsListTableProps {
     reports: Report[]
@@ -14,6 +17,34 @@ export interface ReportRowRenderProps extends RowRenderProps {
     value: string | LatestVersion | boolean;
 }
 
+export interface ReportRowProps {
+    latest_version: LatestVersion,
+    name: string,
+    author: string,
+    requester: string,
+    published: boolean,
+
+    [key: string]: string | boolean | LatestVersion
+}
+
+export interface FilterGeneric<T> extends Filter {
+    value: T
+}
+
+export interface FilterProps<T> {
+    filter?: FilterGeneric<T>,
+    onChange: ReactTableFunction
+}
+
+export const TextFilter: FilterRender = (props: FilterProps<string> ) => {
+
+    const value = props.filter ? props.filter.value : "";
+
+    return <input type={"text"} className={"form-control mb-1 "} value={value}
+                  placeholder="Type to filter..."
+                  onChange={event => props.onChange(event.target.value)}/>
+};
+
 export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
     = (props: ReportsListTableProps) => {
 
@@ -21,22 +52,27 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
         [{
             Header: "Name",
             id: "name",
-            accessor: "name"
+            accessor: "name",
+            Filter: TextFilter
         },
             {
                 Header: "Latest version",
                 id: "latest_version",
                 width: 340,
                 accessor: latestVersionAccessorFunction,
-                Cell: LatestVersionCell
+                Cell: LatestVersionCell,
+                filterMethod: versionFilterMethod,
+                Filter: ReportLatestVersionFilter
             },
             {
                 Header: "Author",
-                accessor: "author"
+                accessor: "author",
+                Filter: TextFilter
             },
             {
                 Header: "Requester",
-                accessor: "requester"
+                accessor: "requester",
+                Filter: TextFilter
             },
 
         ];
@@ -47,7 +83,9 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             accessor: "published",
             id: "published",
             width: 110,
-            Cell: PublishStatusCell
+            Cell: PublishStatusCell,
+            filterMethod: publishStatusFilterMethod,
+            Filter: PublishStatusFilter
         })
     }
 
