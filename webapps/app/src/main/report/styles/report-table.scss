@@ -1,0 +1,109 @@
+.DayPickerInput {
+  input.form-control {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.picker-on-right {
+  .DayPickerInput {
+    .DayPickerInput-Overlay {
+      left: initial;
+      right: 0;
+    }
+  }
+}
+
+.report-date-filters {
+  font-size: 90%;
+
+  .input-group {
+    flex-wrap: nowrap !important;
+  }
+
+  .date-filter {
+    width: 47%;
+  }
+
+}
+
+.-filters {
+  .rt-th {
+    overflow: visible !important;
+  }
+}
+
+.rt-th {
+  padding: 10px !important;
+}
+
+// adapted from https://css-tricks.com/responsive-data-tables/
+@media only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px) {
+
+  .ReactTable.responsive {
+
+    display: block;
+
+    .rt-thead, .rt-tbody, .rt-td, .rt-tr {
+      display: block;
+      min-width: 0 !important;
+    }
+
+    .rt-th {
+      display: inline-block;
+      width: auto !important;
+    }
+
+    /* Hide filters */
+    .-filters {
+      display: none;
+    }
+
+    .rt-tbody {
+      .rt-tr {
+        border: 1px solid #ccc;
+      }
+
+      .rt-td {
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 30%;
+        width: auto !important;
+        max-width: none !important;
+      }
+
+      .rt-td:before {
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+      }
+
+      /*
+      Label the data
+      */
+      .rt-td:nth-of-type(1):before {
+        content: "Name";
+      }
+      .rt-td:nth-of-type(2):before {
+        content: "Latest version";
+      }
+      .rt-td:nth-of-type(3):before {
+        content: "Author";
+      }
+      .rt-td:nth-of-type(4):before {
+        content: "Requester";
+      }
+      .rt-td:nth-of-type(5):before {
+        content: "Published";
+      }
+    }
+  }
+}
