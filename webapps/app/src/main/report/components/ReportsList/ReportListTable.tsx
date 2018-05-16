@@ -61,6 +61,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             {
                 Header: "Latest version",
                 id: "latest_version",
+                width: 340,
                 accessor: latestVersionAccessorFunction,
                 Cell: LatestVersionCell,
                 filterMethod: versionFilterMethod,
