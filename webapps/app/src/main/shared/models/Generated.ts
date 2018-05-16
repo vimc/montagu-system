@@ -69,6 +69,10 @@ export interface Report {
     display_name: string | null;
     latest_version: string;
     name: string;
+    published: boolean;
+    author: string | null;
+    requester: string | null;
+    updated_on: string;
 }
 
 export type BurdenEstimateSetStatus = "empty" | "partial" | "complete";

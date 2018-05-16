@@ -11,13 +11,13 @@ import {mockReportAppState} from "../../../mocks/mockStates";
 describe("ReportListComponent", () => {
     it("can render two reports", () => {
         const reports = [ mockReport(), mockReport() ];
-        const rendered = shallow(<ReportsListComponent reports={ reports } />);
+        const rendered = shallow(<ReportsListComponent reports={ reports } isReviewer={false}/>);
         const items = rendered.find(ReportListItem);
         expect(items).to.have.length(2);
     });
 
     it("renders no items if no reports given", () => {
-       const rendered = shallow(<ReportsListComponent reports={ [] } />);
+       const rendered = shallow(<ReportsListComponent reports={ [] } isReviewer={false}/>);
         const items = rendered.find(ReportListItem);
         expect(items).to.have.length(0);
     });

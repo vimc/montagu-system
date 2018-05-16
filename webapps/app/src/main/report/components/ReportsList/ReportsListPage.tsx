@@ -7,6 +7,7 @@ import {ReportsListFilter} from "./Filter/ReportsListFilter";
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
 import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {BreadcrumbInitializer} from "../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {ReportsListTable} from "./ReportListTable";
 
 export class ReportsListPageComponent extends React.Component<PageProperties<undefined>> {
     componentDidMount(){

@@ -19,7 +19,7 @@ const mapStateToProps = (state: ReportAppState): Partial<SidebarAdminProps> => {
 
     return {
         ready: ready,
-        isReviewer: state.auth.permissions.indexOf("*/reports.review") > -1,
+        isReviewer: state.auth.isReportReviewer,
         isAdmin: state.auth.permissions.indexOf("*/roles.read") > -1,
         published: versionDetails && versionDetails.published,
         allVersions: state.reports.versions,

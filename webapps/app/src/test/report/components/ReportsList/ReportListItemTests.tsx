@@ -15,7 +15,11 @@ describe("ReportListItem", () => {
         const defaultProps: Report = {
             name: "name",
             display_name: "display name",
-            latest_version: null
+            latest_version: null,
+            published: false,
+            author: "someone",
+            requester: "someone else",
+            updated_on: new Date().toDateString()
         };
         const combined: Report = Object.assign({}, defaultProps, props);
         const rendered = shallow(<ReportListItem {...combined} />);

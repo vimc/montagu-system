@@ -26,6 +26,7 @@ const lifecyleProps: Partial<LifecycleMethods<ReportsListContainerProps>> = {
 export const mapStateToProps = (state: ReportAppState): Partial<ReportsListContainerProps> => {
     return {
         reports: reportsDisplayListSelector(state),
+        isReviewer: state.auth.isReportReviewer,
         ready: Array.isArray(state.reports.reports)
     }
 };

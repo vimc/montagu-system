@@ -82,7 +82,7 @@ describe("SidebarAdmin", () => {
     it("gets reviewer status from app state", () => {
 
         let state = mockReportAppState({
-            auth: mockAuthState({permissions: ["*/reports.review"]}),
+            auth: mockAuthState({permissions: ["*/reports.review"], isReportReviewer: true}),
             reports: readyReportsState
         });
 
