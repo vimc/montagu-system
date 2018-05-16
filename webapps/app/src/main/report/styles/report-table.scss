@@ -66,8 +66,8 @@
       width: auto !important;
     }
 
-      /* Hide filters */
-    .-filters {
+      /* Hide filters and resizer */
+    .-filters, .rt-resizer {
       display: none;
     }
 
