@@ -95,6 +95,8 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             Click on a column heading to sort reports by that field
         </h5>
         <ReactTable
+            defaultFilterMethod={(filter: Filter, row: ReportRowProps) =>
+                                String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
             filterable
             className="-striped -highlight responsive"
             data={props.reports}
