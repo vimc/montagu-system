@@ -10,6 +10,7 @@ import {settings} from "../../shared/Settings";
 import {responsibilitiesActionCreators} from "./responsibilitiesActionCreators";
 import {mapStateToPropsHelper} from "../helpers/mapStateToPropsHelper";
 import {ContribAppState} from "../reducers/contribAppReducers";
+import {helpers} from "../../shared/Helpers";
 
 export const estimatesActionCreators = {
 
@@ -22,7 +23,7 @@ export const estimatesActionCreators = {
             const ids = mapStateToPropsHelper.getResponsibilityIds(getState());
 
             const redirectPath = getState().estimates.redirectPath;
-            const queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + '/' + redirectPath);
+            const queryString = helpers.buildRedirectUrl(redirectPath);
 
             if (!ids.estimateSetId) {
                 return dispatch({
