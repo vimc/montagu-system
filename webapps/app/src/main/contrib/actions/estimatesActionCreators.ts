@@ -22,7 +22,7 @@ export const estimatesActionCreators = {
             const ids = mapStateToPropsHelper.getResponsibilityIds(getState());
 
             const redirectPath = getState().estimates.redirectPath;
-            const queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + '/' + redirectPath);
+            const queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + redirectPath);
 
             if (!ids.estimateSetId) {
                 return dispatch({

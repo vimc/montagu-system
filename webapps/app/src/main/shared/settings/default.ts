@@ -9,15 +9,15 @@ export const settings: Settings = {
     isApplicantTouchstone: (id: string) => id.indexOf("rfp-") > -1,
     isStochasticTouchstone: (id: string) => id.indexOf("201804rfp") > -1,
     admin: {
-        publicPath: "",
+        publicPath: "/admin",
         requiresModellingGroupMembership: false
     },
     contrib: {
-        publicPath: "contribution",
+        publicPath: "/contribution",
         requiresModellingGroupMembership: true
     },
     report: {
-        publicPath: "",
+        publicPath: "/reports",
         requiresModellingGroupMembership: false
     }
 };
