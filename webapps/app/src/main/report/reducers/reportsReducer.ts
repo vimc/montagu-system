@@ -1,6 +1,6 @@
 import {
     ReportPublished,
-    ReportsAction, ReportsFilterFields, ReportsFilterPublishTypes, ReportsSortingFields,
+    ReportsAction,
     ReportTypeKeys,
     ReportUnpublished
 } from "../actionTypes/ReportsActionsTypes";
@@ -9,8 +9,6 @@ import {Version} from "../../shared/models/reports/Report";
 
 export interface ReportsState {
     reports: Report[];
-    reportsSortBy: ReportsSortingFields;
-    reportsFilter: ReportsFilterFields;
     versions: string[];
     currentReport: string;
     versionDetails: Version;
@@ -18,12 +16,6 @@ export interface ReportsState {
 
 export const reportsInitialState: ReportsState = {
     reports: null,
-    reportsSortBy: ReportsSortingFields.name,
-    reportsFilter: {
-        published: ReportsFilterPublishTypes.all,
-        timeFrom: null,
-        timeUntil: null
-    },
     versions: null,
     currentReport: null,
     versionDetails: null
@@ -33,10 +25,6 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
     switch (action.type) {
         case ReportTypeKeys.REPORTS_FETCHED:
             return { ...state, reports: action.data };
-        case ReportTypeKeys.SORT_REPORTS:
-            return { ...state, reportsSortBy: action.data};
-        case ReportTypeKeys.FILTER_REPORTS:
-            return { ...state, reportsFilter: Object.assign({}, state.reportsFilter, action.data)};
         case ReportTypeKeys.REPORT_VERSIONS_FETCHED:
             return {...state, versions: action.data};
         case ReportTypeKeys.SET_CURRENT_REPORT:

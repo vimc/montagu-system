@@ -10,7 +10,7 @@ import {Sandbox} from "../../../Sandbox";
 import {reportActionCreators} from "../../../../main/report/actions/reportActionCreators";
 import {createMockStore} from "../../../mocks/mockStore";
 import { LoadingElement } from "../../../../main/shared/partials/LoadingElement/LoadingElement";
-import {ReportsListComponent} from "../../../../main/report/components/ReportsList/ReportsListComponent";
+import {ReportsListTable} from "../../../../main/report/components/ReportsList/ReportListTable";
 
 describe("ReportListComponent", () => {
 
@@ -43,7 +43,7 @@ describe("ReportListComponent", () => {
         sandbox.setStubReduxAction(reportActionCreators, 'getReports');
         // 2 dives leads us to branch
         const rendered = shallow(<ReportsList />, {context: {store}}).dive().dive();
-        const branchedElement = rendered.find(ReportsListComponent);
+        const branchedElement = rendered.find(ReportsListTable);
         expect(branchedElement.length).to.eq(1);
     });
 

@@ -70,7 +70,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             {
                 Header: "Latest version",
                 id: "latest_version",
-                width: 340,
+                width: 345,
                 accessor: latestVersionAccessorFunction,
                 Cell: LatestVersionCell,
                 filterMethod: versionFilterMethod,
@@ -101,9 +101,12 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
     }
 
     return <div>
-        <h5 className="mb-5">
-            Click on a column heading to sort reports by that field
-        </h5>
+        <h1 className="h3 mb-3">
+            Find a report
+        </h1>
+        <p className="helper-text text-muted">
+            Click on a column heading to sort by that field. Hold shift to mulit-sort.
+        </p>
         <ReactTable
             defaultFilterMethod={(filter: Filter, row: ReportRowProps) =>
                 String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
