@@ -26,6 +26,7 @@ import {appSettings, settings} from "../main/shared/Settings";
 import {EstimatesService} from "../main/contrib/services/EstimatesService";
 import {EstimatesCreateBurdenData} from "../main/contrib/actionTypes/EstimatesTypes";
 import {UserService} from "../main/contrib/services/UserService";
+import {helpers} from "../main/shared/Helpers";
 
 const FormData = require('form-data');
 const jwt_decode = require('jwt-decode');
@@ -258,7 +259,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const estimatesSet = responsibilities.responsibilities[0].current_estimate_set;
 
             const redirectPath = appSettings.publicPath + '/test';
-            const queryString = "?redirectUrl=" + encodeURI(settings.montaguUrl() + '/' + redirectPath);
+            const queryString = helpers.buildRedirectUrl(redirectPath);
 
             const token: string = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .getOneTimeToken(groupId, touchstoneId, scenarioId, estimatesSet.id, queryString);

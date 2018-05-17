@@ -1,5 +1,6 @@
 import {jwtDecoder} from "./sources/JwtDecoder";
 import {Result} from "./models/Generated";
+import {settings} from "./Settings";
 
 export function doNothing() {
 
@@ -69,6 +70,9 @@ export const helpers = {
             removeQueryString();
             return null;
         }
+    },
+    buildRedirectUrl(redirectPath: String) {
+       return "?redirectUrl=" + encodeURI(settings.montaguUrl() + redirectPath);
     }
 };
 
