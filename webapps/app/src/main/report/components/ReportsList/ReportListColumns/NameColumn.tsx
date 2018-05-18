@@ -5,8 +5,17 @@ import {ReportRowRenderProps} from "../ReportListTable";
 
 export const NameCell: React.SFC<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
 
-    let name = props.value as string;
     const report = props.original;
+    let name = <div>{report.name}</div>;
+
+    if (report.display_name) {
+        name =
+            <div>
+                {report.display_name}
+                <br/>
+                ({report.name})
+            </div>
+    }
 
     return <div>
         <InternalLink href={`/${report.name}/${report.latest_version}/`}>

@@ -79,11 +79,13 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             {
                 Header: "Author",
                 accessor: "author",
+                width: 220,
                 Filter: TextFilter
             },
             {
                 Header: "Requester",
                 accessor: "requester",
+                width: 220,
                 Filter: TextFilter
             },
         ];
@@ -93,7 +95,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             Header: "Status",
             accessor: "published",
             id: "published",
-            width: 110,
+            width: 120,
             Cell: PublishStatusCell,
             filterMethod: publishStatusFilterMethod,
             Filter: PublishStatusFilter
