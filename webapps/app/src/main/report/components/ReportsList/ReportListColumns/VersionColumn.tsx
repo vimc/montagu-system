@@ -6,9 +6,9 @@ import {VersionFilterValue} from "./LatestVersionFilter";
 
 export const LatestVersionCell: React.StatelessComponent<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
     const value = props.value as LatestVersion;
-    return <div className="small">
-        <div>{value.version}</div>
-        <div>({longDate(value.date)})</div>
+    return <div>
+        <div>{longDate(value.date)}</div>
+        <div className="small">({value.version})</div>
     </div>
 };
 
@@ -23,6 +23,13 @@ export const versionFilterMethod = (filter: FilterGeneric<VersionFilterValue>, r
     return lastUpdatedDate <= filter.value.end
         && lastUpdatedDate >= filter.value.start &&
         lastVersionId.toLowerCase().indexOf(filter.value.versionId.toLowerCase()) > -1;
+};
+
+export const versionSortMethod = (a: LatestVersion, b: LatestVersion) => {
+    if (a.date > b.date){
+        return -1
+    }
+    return 1
 };
 
 export interface LatestVersion {
