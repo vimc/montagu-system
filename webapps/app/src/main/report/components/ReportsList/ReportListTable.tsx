@@ -5,7 +5,8 @@ import {
     LatestVersion,
     latestVersionAccessorFunction,
     LatestVersionCell,
-    versionFilterMethod
+    versionFilterMethod,
+    versionSortMethod
 } from "./ReportListColumns/VersionColumn";
 import {
     PublishStatusCell,
@@ -73,6 +74,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 width: 345,
                 accessor: latestVersionAccessorFunction,
                 Cell: LatestVersionCell,
+                sortMethod: versionSortMethod,
                 filterMethod: versionFilterMethod,
                 Filter: ReportLatestVersionFilter
             },
@@ -107,9 +109,10 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             Find a report
         </h1>
         <p className="helper-text text-muted">
-            Click on a column heading to sort by that field. Hold shift to mulit-sort.
+            Click on a column heading to sort by that field. Hold shift to multi-sort.
         </p>
         <ReactTable
+            defaultSorted={[{id: "latest_version"}]}
             defaultFilterMethod={(filter: Filter, row: ReportRowProps) =>
                 String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
             filterable

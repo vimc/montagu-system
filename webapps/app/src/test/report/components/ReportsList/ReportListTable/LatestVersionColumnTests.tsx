@@ -7,7 +7,7 @@ import {Sandbox} from "../../../../Sandbox";
 import {
     latestVersionAccessorFunction,
     LatestVersionCell,
-    versionFilterMethod,
+    versionFilterMethod, versionSortMethod,
 } from "../../../../../main/report/components/ReportsList/ReportListColumns/VersionColumn";
 import {ReportLatestVersionFilter} from "../../../../../main/report/components/ReportsList/ReportListColumns/LatestVersionFilter";
 import {DateRangePicker} from "../../../../../main/shared/components/DatePicker/DateRangePicker";
@@ -42,8 +42,8 @@ describe("ReportListComponent", () => {
                                                           date: new Date(2018, 4, 15)
                                                       }}/>);
 
-            expect(result.find(".small").childAt(0).text()).to.eq("46324");
-            expect(result.find(".small").childAt(1).text()).to.eq("(Tue May 15 2018)");
+            expect(result.find("div").first().childAt(0).text()).to.eq("Tue May 15 2018");
+            expect(result.find("div").first().childAt(1).text()).to.eq("(46324)");
         });
 
         const filterValue = {
@@ -189,6 +189,16 @@ describe("ReportListComponent", () => {
 
             const result = versionFilterMethod(filter, row as any);
             expect(result).to.be.false;
+        });
+
+
+        it("sorts by date descending", function () {
+
+            const a = {date: new Date(2018, 5, 14), version: "1234"};
+            const b = {date: new Date(2018, 5, 13), version: "1234"};
+
+            const result = versionSortMethod(a, b);
+            expect(result).to.eq(-1);
         });
 
 
