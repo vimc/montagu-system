@@ -116,7 +116,7 @@ describe("ReportListComponent", () => {
         it("filters reports by start date inclusive", function () {
 
             const row = {
-                latest_version: {date: new Date(2017, 5, 14), version: "1234"}
+                latest_version: {date: new Date(2017, 5, 14, 12, 1, 2), version: "1234"}
             };
 
             let filter = {
@@ -146,7 +146,7 @@ describe("ReportListComponent", () => {
         it("filters reports by end date inclusive", function () {
 
             const row = {
-                latest_version: {date: new Date(2018, 5, 14), version: "1234"}
+                latest_version: {date: new Date(2018, 5, 14, 12, 1, 2), version: "1234"}
             };
 
             let filter = {

@@ -17,6 +17,10 @@ export const latestVersionAccessorFunction = (data: Report): LatestVersion => {
 };
 
 export const versionFilterMethod = (filter: FilterGeneric<VersionFilterValue>, row: ReportRowProps) => {
+
+    // make sure end date is the end of the day, to get an inclusive date range
+    filter.value.end.setHours(23,59,59);
+
     const lastUpdatedDate = row.latest_version.date;
     const lastVersionId = row.latest_version.version;
 
