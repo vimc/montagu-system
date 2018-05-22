@@ -49,9 +49,13 @@ export const demographicActionCreators = {
                 type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR,
             } as Demographic.OneTimeTokenClear );
 
-            const dataSet = getState().demographic.selectedDataSet;
+            const demographicState = getState().demographic;
+
+            const dataSet = demographicState.selectedDataSet;
             const touchstone = getState().touchstones.currentTouchstone;
-            const format = getState().demographic.selectedFormat;
+            const format = demographicState.selectedFormat;
+
+            const gender = dataSet.gender_is_applicable ? demographicState.selectedGender : 'both';
 
             if (!dataSet || !touchstone || !format ) {
                 return dispatch({
@@ -60,7 +64,7 @@ export const demographicActionCreators = {
             }
 
             const token: string = await (new DemographicService(dispatch, getState))
-                .getOneTimeToken(touchstone.id, dataSet.source, dataSet.id, format);
+                .getOneTimeToken(touchstone.id, dataSet.source, dataSet.id, format, gender);
 
             return dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_FETCHED,
