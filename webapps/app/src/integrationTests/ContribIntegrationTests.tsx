@@ -213,7 +213,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const demographicDataSet = demographicDataSets[0];
 
             const token: string = await (new DemographicService(this.store.dispatch, this.store.getState))
-                .getOneTimeToken(touchstoneId, demographicDataSet.source, demographicDataSet.id,'long');
+                .getOneTimeToken(touchstoneId, demographicDataSet.source, demographicDataSet.id,'long', 'female');
 
             const decoded = jwt_decode(token);
 

@@ -37,10 +37,10 @@ describe('Demographic service tests', () => {
             return Promise.resolve();
         });
 
-        demographicService.getOneTimeToken("touchstone-1", "source-1", "set-1", "long");
+        demographicService.getOneTimeToken("touchstone-1", "source-1", "set-1", "long", "female");
 
         expect(getStub.getCall(0).args[0])
-            .to.equal("/touchstones/touchstone-1/demographics/source-1/set-1/get_onetime_link/?format=long");
+            .to.equal("/touchstones/touchstone-1/demographics/source-1/set-1/get_onetime_link/?format=long&gender=female");
     });
 
 });

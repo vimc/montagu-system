@@ -1,4 +1,4 @@
-import { AbstractLocalService } from "../../shared/services/AbstractLocalService";
+import {AbstractLocalService} from "../../shared/services/AbstractLocalService";
 
 export class DemographicService extends AbstractLocalService {
     getDataSetsByTouchstoneId(touchstoneId: string) {
@@ -6,8 +6,9 @@ export class DemographicService extends AbstractLocalService {
             .get(`/touchstones/${touchstoneId}/demographics/`);
     }
 
-    getOneTimeToken(touchstoneId: string, dataSetSource: string, datasetId: string, format: string) {
-        return this.get(`/touchstones/${touchstoneId}/demographics/${dataSetSource}/${datasetId}/get_onetime_link/?format=${format}`);
+    getOneTimeToken(touchstoneId: string, dataSetSource: string, datasetId: string, format: string, gender: string) {
+        return this.get(`/touchstones/${touchstoneId}/demographics/${dataSetSource}/${datasetId}/get_onetime_link/` +
+            `?format=${format}&gender=${gender}`);
     }
 }
 
