@@ -1,35 +1,41 @@
 import * as React from "react";
-import { alt } from "../../../../../main/shared/alt";
-import { expect } from "chai";
+import {expect} from "chai";
 import {mockUser} from "../../../../mocks/mockModels";
-import { shallow } from "enzyme";
+import {shallow} from "enzyme";
 
-import {UsersListComponent} from "../../../../../main/admin/components/Users/List/UsersList";
+import {UsersList} from "../../../../../main/admin/components/Users/List/UsersList";
 import {UserListItem} from "../../../../../main/admin/components/Users/List/UserListItem";
+import {createMockStore} from "../../../../mocks/mockStore";
+import {Sandbox} from "../../../../Sandbox";
+import {Store} from "redux";
+import {AdminAppState} from "../../../../../main/admin/reducers/adminAppReducers";
+import {mockAdminState, mockAdminUsersState, mockUsersState} from "../../../../mocks/mockStates";
 
 describe("UsersListComponent", () => {
-    it("can get props from stores", () => {
-        const users = [ mockUser(), mockUser() ];
-        alt.bootstrap(JSON.stringify({
-            UserStore: {
-                ready: true,
-                users: users
-            }
-        }));
 
-        expect(UsersListComponent.getPropsFromStores()).to.eql({
-            ready: true,
-            users: users
-        });
+    let store: Store<AdminAppState>;
+
+    const sandbox = new Sandbox();
+
+    const users = [
+        mockUser({username: "z"}),
+        mockUser({username: "a"}),
+        mockUser({username: "m"})
+    ];
+
+    beforeEach(() => {
+        store = createMockStore(mockAdminState({users: mockAdminUsersState({users: users})}));
+    });
+
+    afterEach(() => {
+        sandbox.restore();
     });
 
     it("renders items alphabetically", () => {
-        const users = [
-            mockUser({ username: "z" }),
-            mockUser({ username: "a" }),
-            mockUser({ username: "m" })
-        ];
-        const rendered = shallow(<UsersListComponent ready={ true } users={ users} />);
+
+        const rendered = shallow(<UsersList/>, {context: {store}}).dive();
+
+        console.log(rendered.text())
         const items = rendered.find(UserListItem);
         expect(items).to.have.length(3);
         expect(items.at(0).prop("username")).to.equal("a");

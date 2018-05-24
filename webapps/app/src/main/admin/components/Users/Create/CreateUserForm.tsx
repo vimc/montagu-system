@@ -45,6 +45,7 @@ export class CreateUserFormComponent extends React.Component<ReformProps, undefi
                 </div>
                 <div className="gapAbove">
                     <button type="submit">Save user</button>
+                    <p>Note: please refresh the page after adding a user to see them appear</p>
                 </div>
             </fieldset>
         </form>;

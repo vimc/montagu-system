@@ -1,37 +1,32 @@
 import * as React from "react";
 
 import { expect } from "chai";
-import { Provider } from "react-redux";
 import { Sandbox } from "../../../../Sandbox";
 import {mockLocation, mockMatch} from "../../../../mocks/mocks";
-import { checkAsync } from "../../../../testHelpers";
 
-import {ViewAllUsersPage} from "../../../../../main/admin/components/Users/List/ViewAllUsersPage";
-import {userStore} from "../../../../../main/admin/stores/UserStore";
-import {addNavigationTests} from "../../../../shared/NavigationTests";
+import {UsersListPage, UsersListPageComponent} from "../../../../../main/admin/components/Users/List/UsersListPage";
+import {createMockStore} from "../../../../mocks/mockStore";
+import {shallow} from "enzyme";
+import {UsersList} from "../../../../../main/admin/components/Users/List/UsersList";
+import {CreateUserSection} from "../../../../../main/admin/components/Users/Create/CreateUserSection";
+import {usersListPageActionCreators} from "../../../../../main/admin/actions/pages/usersListPageActionCreators";
 
-import { reduxHelper } from "../../../../reduxHelper";
-import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
-import {mockUsersEndpoint} from "../../../../mocks/mockEndpoints";
-
-describe("ViewAllUsersPageTests", () => {
+describe("UserListPageTests", () => {
     const sandbox = new Sandbox();
 
     afterEach(() => sandbox.restore());
 
-    it("triggers fetch on load", (done: DoneCallback) => {
-        const spy = sandbox.sinon.spy(userStore, "fetchUsers");
-        const store = reduxHelper.createAdminUserStore();
-        sandbox.mount(<Provider store={store}><ViewAllUsersPage location={ mockLocation() } router={null} match={mockMatch()} history={null}/></Provider>);
-        checkAsync(done, () => {
-            expect(spy.called).to.equal(true, "Expected usersStore.fetchUsers to be triggered");
-        });
-    });
+    it("renders page component, title and sub component", () => {
+        let match = mockMatch<undefined>();
+        let store = createMockStore();
+        const onLoadStub = sandbox.setStubReduxAction(usersListPageActionCreators, "onLoad");
+        const rendered = shallow(<UsersListPage location={null} router={null} history={null} match={match} />,
+            {context: {store}}).dive();
 
-    const page = new ViewAllUsersPage({location: mockLocation(), router: null, match: mockMatch(), history: null});
-    addNavigationTests(page, sandbox, () => {
-        mockFetcherForMultipleResponses([
-            mockUsersEndpoint([])
-        ]);
+        const pageArticle = rendered.find('PageArticle');
+        expect(onLoadStub.called).is.equal(true);
+        expect(pageArticle.props().title).is.equal(UsersListPageComponent.title);
+        expect(pageArticle.find(UsersList).length).is.equal(1);
+        expect(pageArticle.find(CreateUserSection).length).is.equal(1);
     });
 });

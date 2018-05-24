@@ -11,6 +11,7 @@ import {reportsInitialState, ReportsState} from "../../main/report/reducers/repo
 import {ReportAppState} from "../../main/report/reducers/reportAppReducers";
 import {usersInitialState, UsersState} from "../../main/report/reducers/userReducer";
 import {usersInitialState as adminUsersInitialState} from "../../main/admin/reducers/usersReducer";
+import {UsersState as AdminUsersState} from "../../main/admin/reducers/usersReducer";
 import {BreadcrumbsState, initialBreadcrumbsState} from "../../main/shared/reducers/breadcrumbsReducer";
 import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
 import {touchstonesInitialState, TouchstonesState} from "../../main/contrib/reducers/touchstonesReducer";
@@ -21,6 +22,8 @@ import {coverageInitialState, CoverageState} from "../../main/contrib/reducers/c
 import {estimatesInitialState, EstimatesState} from "../../main/contrib/reducers/estimatesReducer";
 import {runParametersInitialState, RunParametersState} from "../../main/contrib/reducers/runParametersReducer";
 import { initialState as UserInitialState, UserState} from "../../main/contrib/reducers/userReducer";
+import {AdminAppState} from "../../main/admin/reducers/adminAppReducers";
+import {ModellingGroupsState as AdminModellingGroupsState} from "../../main/admin/reducers/modellingGroupsReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -49,10 +52,14 @@ export const mockUsersState = (props?: RecursivePartial<UsersState>): UsersState
     return Object.assign({}, usersInitialState, props);
 };
 
-export const mockAdminState = (props?: any) => {
+export const mockAdminUsersState = (props?: RecursivePartial<AdminUsersState>): AdminUsersState => {
+    return Object.assign({}, adminUsersInitialState, props);
+};
+
+export const mockAdminState = (props?: Partial<AdminAppState>): AdminAppState => {
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
-    const groupsMock: ModellingGroupsState = props && props.groups ? props.groups : AdminModellingGroupsInitialState;
-    const usersMock: UserState = props && props.user ? props.user : adminUsersInitialState;
+    const groupsMock: AdminModellingGroupsState = props && props.groups ? props.groups : AdminModellingGroupsInitialState;
+    const usersMock: AdminUsersState = props && props.users ? props.users : adminUsersInitialState;
     const breadcrumbsMock: BreadcrumbsState = props && props.breadcrumbs ? props && props.breadcrumbs : initialBreadcrumbsState;
     return {
         auth: authMock,

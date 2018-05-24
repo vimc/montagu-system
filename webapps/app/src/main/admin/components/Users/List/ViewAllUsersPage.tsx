@@ -1,6 +1,5 @@
 import * as React from "react";
 import { AdminPageWithHeader } from "../../AdminPageWithHeader";
-import { doNothing } from "../../../../shared/Helpers";
 import { userStore } from "../../../stores/UserStore";
 import { UsersList } from "./UsersList";
 import { CreateUserSection } from "../Create/CreateUserSection";
