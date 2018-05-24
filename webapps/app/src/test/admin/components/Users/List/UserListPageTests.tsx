@@ -16,7 +16,7 @@ describe("UserListPageTests", () => {
 
     afterEach(() => sandbox.restore());
 
-    it("renders page component, title and sub component", () => {
+    it("renders page component, title and sub components", () => {
         let match = mockMatch<undefined>();
         let store = createMockStore();
         const onLoadStub = sandbox.setStubReduxAction(usersListPageActionCreators, "onLoad");

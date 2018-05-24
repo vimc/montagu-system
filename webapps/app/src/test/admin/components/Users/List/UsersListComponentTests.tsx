@@ -35,7 +35,6 @@ describe("UsersListComponent", () => {
 
         const rendered = shallow(<UsersList/>, {context: {store}}).dive();
 
-        console.log(rendered.text())
         const items = rendered.find(UserListItem);
         expect(items).to.have.length(3);
         expect(items.at(0).prop("username")).to.equal("a");
