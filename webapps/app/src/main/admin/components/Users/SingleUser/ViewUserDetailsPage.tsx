@@ -6,8 +6,8 @@ import {UserDetailsContent} from "./UserDetailsContent";
 import {userActions} from "../../../actions/UserActions";
 import {userStore} from "../../../stores/UserStore";
 import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
-import {ViewAllUsersPage} from "../List/ViewAllUsersPage";
 import { Page } from "../../../../shared/components/PageWithHeader/Page";
+import {ViewAllUsersPage} from "../List/ViewAllUsersPage";
 
 export interface UserDetailsPageProps {
     username: string;
