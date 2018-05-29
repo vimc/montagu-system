@@ -116,7 +116,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const result = await usersService
                 .createUser("new user", "user@example.com", "new.user");
 
-            expect(result).to.equal("http://api:8080/v1/users/new.user");
+            expect(result).to.equal("http://api:8080/v1/users/new.user/");
             const allUsers = await usersService.getAllUsers();
             expect(allUsers.map((u: User) => u.username).indexOf("new.user") > -1).to.be.true;
         });
