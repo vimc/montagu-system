@@ -3,7 +3,7 @@ import { Dispatch } from "redux";
 import {AdminAppState} from "../reducers/adminAppReducers";
 import {User} from "../../shared/models/Generated";
 import {UsersService} from "../services/UsersService";
-import {AllUsersFetched, SetCreateUserError, UsersTypes} from "../actionTypes/UsersTypes";
+import {AllUsersFetched, SetCreateUserError, ShowCreateUser, UsersTypes} from "../actionTypes/UsersTypes";
 
 export const usersActionCreators = {
 
@@ -27,6 +27,7 @@ export const usersActionCreators = {
                 } as SetCreateUserError);
             } else if (result) {
                 dispatch(this.clearUsersListCache());
+                dispatch(this.setShowCreateUser(false));
                 await dispatch(this.getAllUsers());
             } else {
                 dispatch({
@@ -41,5 +42,12 @@ export const usersActionCreators = {
         return (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             (new UsersService(dispatch, getState)).clearUsersListCache();
         }
+    },
+
+    setShowCreateUser(value: boolean) {
+        return {
+            type: UsersTypes.SHOW_CREATE_USER,
+            data: value
+        } as ShowCreateUser;
     },
 };
