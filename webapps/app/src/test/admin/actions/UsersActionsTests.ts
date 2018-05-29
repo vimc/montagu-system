@@ -83,4 +83,13 @@ describe("Admin Users actions tests", () => {
         expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
             .to.be.true
     });
+
+    it('setShowCreateUser dispatches SHOW_CREATE_USER', async () => {
+
+        const result = usersActionCreators.setShowCreateUser(true);
+        expect(result).to.eql({
+            type: UsersTypes.SHOW_CREATE_USER,
+            data: true
+        })
+    });
 });

@@ -23,4 +23,16 @@ describe('Admin Users reducer tests', () => {
         })).to.eql(usersInitialState);
     });
 
+    it('sets showCreateUser ', () => {
+        expect(usersReducer(undefined, {
+            type: UsersTypes.SHOW_CREATE_USER,
+            data: true
+        })).to.eql({...usersInitialState, showCreateUser: true});
+
+        expect(usersReducer(undefined, {
+            type: UsersTypes.SHOW_CREATE_USER,
+            data: false
+        })).to.eql({...usersInitialState, showCreateUser: false});
+    });
+
 });
