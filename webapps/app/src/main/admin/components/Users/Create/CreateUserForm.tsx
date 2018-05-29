@@ -1,5 +1,5 @@
 import * as React from "react";
-import {reduxForm, Field, change} from "redux-form";
+import {change, Field, reduxForm} from "redux-form";
 import {connect} from "react-redux";
 import {compose} from "recompose";
 import {Dispatch} from "redux";
@@ -88,13 +88,14 @@ export class CreateUserFormComponent extends React.Component<CreateUserFormProps
     }
 }
 
+
 function mapStateToProps(state: AdminAppState) {
     return {
         errorMessage: state.users.createUserError,
     }
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>): Partial <CreateUserFormProps> {
+export function mapDispatchToProps(dispatch: Dispatch<any>): Partial<CreateUserFormProps> {
     return {
         submit: (values: CreateUserFormFields) => dispatch(usersActionCreators.createUser(
             values.name, values.email, values.username

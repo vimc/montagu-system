@@ -4,7 +4,7 @@ import {mount, shallow} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {
     CreateUserForm,
-    CreateUserFormComponent, suggestUsername
+    CreateUserFormComponent, mapDispatchToProps, suggestUsername
 } from "../../../../../main/admin/components/Users/Create/CreateUserForm";
 
 import {mockAdminState} from "../../../../mocks/mockStates";
@@ -65,7 +65,7 @@ describe("CreateUserForm", () => {
         expect(newValue).to.eq("joe.bloggs");
     });
 
-    it("creates user on form submission", () => {
+    it("calls creates user on form submission", () => {
 
         const stub = sandbox.setStubReduxAction(usersActionCreators, "createUser");
 
@@ -75,17 +75,19 @@ describe("CreateUserForm", () => {
             </Provider>
         );
 
-        const inputs = mounted.find("input");
-
-        // Our form, when connected to Redux-Form, won't submit unless it's
-        // valid. So populate inputs first
-        inputs.at(0).simulate('change', {target: {value: 'Joe'}});
-        inputs.at(1).simulate('change', {target: {value: 'Joe@email.com'}});
-        inputs.at(2).simulate('change', {target: {value: 'Joe.Bloggs'}});
-
-        mounted.find("button").simulate("click");
+        mounted.simulate("submit");
         expect(stub.called).to.be.true;
-        expect(stub.calledWith({name: "Joe", email: "Joe@email.com", username: "Joe.Bloggs"})).to.be.true;
+    });
+
+    it("passes name, email and username to createUser", () => {
+
+        const dispatchStub = sandbox.sinon.stub();
+        const userActionCreatorStub = sandbox.setStubReduxAction(usersActionCreators, "createUser");
+
+        const props = mapDispatchToProps(dispatchStub);
+        props.submit({name: "Joe Bloggs", email: "joe@email.com", username: "joe.b"});
+
+        expect(userActionCreatorStub.calledWith("Joe Bloggs", "joe@email.com", "joe.b")).to.be.true;
     });
 
     describe("username suggestor", () => {

@@ -6,6 +6,8 @@ import {createMockStore} from "../../mocks/mockStore";
 import {UsersService} from "../../../main/admin/services/UsersService";
 import {UsersTypes} from "../../../main/admin/actionTypes/UsersTypes";
 import {mockUser} from "../../mocks/mockModels";
+import {mockResult} from "../../mocks/mockRemote";
+import {ErrorInfo} from "../../../main/shared/models/Generated";
 
 describe("Admin Users actions tests", () => {
     const sandbox = new Sandbox();
@@ -24,9 +26,41 @@ describe("Admin Users actions tests", () => {
         });
         store.dispatch(usersActionCreators.getAllUsers());
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = { type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]};
-            expect(actions).to.eql([expectedPayload])
+            expect(actions).to.eql([expectedPayload]);
+            done();
+        });
+    });
+
+    it("fetches all users after successful user creation", (done) => {
+        const store = createMockStore({});
+        const createUserStub = sandbox.setStubFunc(UsersService.prototype, "createUser", ()=>{
+            return Promise.resolve("OK");
+        });
+        sandbox.setStubFunc(UsersService.prototype, "getAllUsers", ()=>{
+            return Promise.resolve([testUser, testUser2]);
+        });
+        store.dispatch(usersActionCreators.createUser("joe bloggs", "joe@email.com", "joe.b"));
+        setTimeout(() => {
+            expect(createUserStub.calledWith("joe bloggs", "joe@email.com", "joe.b")).to.be.true;
+            const actions = store.getActions();
+            const expectedPayload = { type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]};
+            expect(actions).to.eql([expectedPayload]);
+            done();
+        });
+    });
+
+    it("dispatches error if user creation fails", (done) => {
+        const store = createMockStore({});
+        sandbox.setStubFunc(UsersService.prototype, "createUser", ()=>{
+            return Promise.resolve(mockResult(null, [{code: "e", message: "error message"}]));
+        });
+        store.dispatch(usersActionCreators.createUser("joe bloggs", "joe@email.com", "joe.b"));
+        setTimeout(() => {
+            const actions = store.getActions();
+            const expectedPayload = { type: UsersTypes.SET_CREATE_USER_ERROR, error: "error message"};
+            expect(actions).to.eql([expectedPayload]);
             done();
         });
     });
