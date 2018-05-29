@@ -45,7 +45,7 @@ describe("Admin Users actions tests", () => {
             expect(createUserStub.calledWith("joe bloggs", "joe@email.com", "joe.b")).to.be.true;
             const actions = store.getActions();
             const expectedPayload = { type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).to.deep.include.members([expectedPayload]);
             done();
         });
     });
