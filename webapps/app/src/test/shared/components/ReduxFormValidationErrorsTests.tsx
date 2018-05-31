@@ -4,7 +4,6 @@ import {shallow} from "enzyme";
 import {ReduxFormValidationErrors} from "../../../main/shared/components/ReduxForm/ReduxFormValidationError";
 import {Alert} from "reactstrap";
 
-
 describe("ReduxFormValidationErrors", () => {
 
     it("should return null if no errors", () => {
@@ -17,7 +16,7 @@ describe("ReduxFormValidationErrors", () => {
 
         const rendered = shallow(<ReduxFormValidationErrors errors={[{message: "first error", code: "e"},
             {code: "e", message: "second error"}]}/>);
-        expect(rendered.find(Alert).text()).to.eq("first error, second error")
+        expect(rendered.find(Alert).childAt(0).text()).to.eq("first error, second error")
     })
 
 });
