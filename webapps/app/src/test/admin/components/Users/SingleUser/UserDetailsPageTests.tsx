@@ -20,7 +20,7 @@ describe("UserDetailsPage", () => {
     const sandbox = new Sandbox();
 
     const mockUsersState = mockAdminUsersState({currentUser: mockUser({username: "fake.name", name: "Fake Name"})});
-    const mockAdminAppState = mockAdminState({users:mockUsersState});
+    const mockAdminAppState = mockAdminState({users: mockUsersState});
 
     let store: AdminAppState = null;
 
@@ -47,8 +47,8 @@ describe("UserDetailsPage", () => {
     });
 
     it("creates breadcrumb", () => {
-        console.log(mockAdminAppState)
-       const breadcrumb = UserDetailsPageComponent.breadcrumb(mockAdminAppState);
+
+        const breadcrumb = UserDetailsPageComponent.breadcrumb(mockAdminAppState);
 
         expect(breadcrumb.name).is.equal("fake.name");
         expect(breadcrumb.urlFragment).is.equal("fake.name/");

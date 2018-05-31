@@ -4,7 +4,7 @@ import {AdminAppState} from "../reducers/adminAppReducers";
 import {User} from "../../shared/models/Generated";
 import {UsersService} from "../services/UsersService";
 import {
-    AllUserRolesFetched, AllUsersFetched, SetCreateUserError, SetCurrentUser,
+    AllUsersFetched, SetCreateUserError, SetCurrentUser,
     UsersTypes
 } from "../actionTypes/UsersTypes";
 
