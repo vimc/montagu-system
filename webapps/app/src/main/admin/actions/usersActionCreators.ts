@@ -1,4 +1,4 @@
-import { Dispatch } from "redux";
+import {Dispatch} from "redux";
 
 import {AdminAppState} from "../reducers/adminAppReducers";
 import {User} from "../../shared/models/Generated";
@@ -22,16 +22,16 @@ export const usersActionCreators = {
             const result = await (new UsersService(dispatch, getState)).createUser(name, email, username);
             if (result && result.errors) {
                 dispatch({
-                    type: UsersTypes.SET_CREATE_USER_ERROR,
-                    error: result.errors[0].message
+                    type: UsersTypes.SET_CREATE_USER_ERRORS,
+                    errors: result.errors
                 } as SetCreateUserError);
             } else if (result) {
                 dispatch(this.clearUsersListCache());
                 await dispatch(this.getAllUsers());
             } else {
                 dispatch({
-                    type: UsersTypes.SET_CREATE_USER_ERROR,
-                    error: "Could not create user"
+                    type: UsersTypes.SET_CREATE_USER_ERRORS,
+                    errors: [{message: "Could not create user"}]
                 } as SetCreateUserError);
             }
         }

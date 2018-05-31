@@ -58,7 +58,8 @@ describe("Admin Users actions tests", () => {
         store.dispatch(usersActionCreators.createUser("joe bloggs", "joe@email.com", "joe.b"));
         setTimeout(() => {
             const actions = store.getActions();
-            const expectedPayload = { type: UsersTypes.SET_CREATE_USER_ERROR, error: "error message"};
+            const expectedPayload = { type: UsersTypes.SET_CREATE_USER_ERRORS,
+                errors: [{message: "error message", code: "e"}]};
             expect(actions).to.eql([expectedPayload]);
             done();
         });

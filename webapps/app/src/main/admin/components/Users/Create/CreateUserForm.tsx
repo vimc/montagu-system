@@ -5,14 +5,22 @@ import {compose} from "recompose";
 import {Dispatch} from "redux";
 import {validations} from "../../../../shared/modules/reduxForm";
 import {ReduxFormField} from "../../../../shared/components/ReduxForm/ReduxFormField";
-import {ReduxFormValidationError} from "../../../../shared/components/ReduxForm/ReduxFormValidationError";
+import {
+    ReduxFormValidationErrors
+} from "../../../../shared/components/ReduxForm/ReduxFormValidationError";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {usersActionCreators} from "../../../actions/usersActionCreators";
+import {FormEvent} from "react";
+import {ErrorInfo} from "../../../../shared/models/Generated";
 
 export interface CreateUserFormProps {
-    handleSubmit: (F: Function) => any,
+    // https://redux-form.com/7.3.0/docs/api/props.md/#-code-handlesubmit-eventorsubmit-function-code-
+    // this function is added by redux form. it takes a function with the form values as arguments and
+    // returns a function that can be used as an 'onSubmit' handler
+    handleSubmit: (submitFunction: (values: CreateUserFormFields) => void)
+        => (event: FormEvent<HTMLFormElement>) => void,
     submit: (values: CreateUserFormFields) => void,
-    errorMessage?: string,
+    errors: ErrorInfo[],
     changeFieldValue: (field: string, value: string) => void
 }
 
@@ -50,6 +58,7 @@ export class CreateUserFormComponent extends React.Component<CreateUserFormProps
                     <td>
                         <Field
                             name="name"
+                            label={"Full name"}
                             component={ReduxFormField}
                             type="text"
                             validate={[validations.required]}
@@ -62,6 +71,7 @@ export class CreateUserFormComponent extends React.Component<CreateUserFormProps
                     <td>
                         <Field
                             name="email"
+                            label={"Email address"}
                             component={ReduxFormField}
                             type="text"
                             validate={[validations.required, validations.email]}
@@ -72,6 +82,7 @@ export class CreateUserFormComponent extends React.Component<CreateUserFormProps
                     <td>Username</td>
                     <td>
                         <Field
+                            label={"Username"}
                             name="username"
                             component={ReduxFormField}
                             type="text"
@@ -82,16 +93,16 @@ export class CreateUserFormComponent extends React.Component<CreateUserFormProps
                 </tbody>
             </table>
 
-            <ReduxFormValidationError message={this.props.errorMessage}/>
+            <ReduxFormValidationErrors errors={this.props.errors}/>
             <button type="submit">Save user</button>
         </form>
     }
 }
 
 
-function mapStateToProps(state: AdminAppState) {
+function mapStateToProps(state: AdminAppState): Partial<CreateUserFormProps> {
     return {
-        errorMessage: state.users.createUserError,
+        errors: state.users.createUserErrors,
     }
 }
 
