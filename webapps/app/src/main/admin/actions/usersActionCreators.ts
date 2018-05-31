@@ -3,7 +3,10 @@ import {Dispatch} from "redux";
 import {AdminAppState} from "../reducers/adminAppReducers";
 import {User} from "../../shared/models/Generated";
 import {UsersService} from "../services/UsersService";
-import {AllUsersFetched, SetCreateUserError, UsersTypes} from "../actionTypes/UsersTypes";
+import {
+    AllUserRolesFetched, AllUsersFetched, SetCreateUserError, SetCurrentUser,
+    UsersTypes
+} from "../actionTypes/UsersTypes";
 
 export const usersActionCreators = {
 
@@ -35,6 +38,13 @@ export const usersActionCreators = {
                 } as SetCreateUserError);
             }
         }
+    },
+
+    setCurrentUser(username: string) {
+        return {
+            type: UsersTypes.SET_CURRENT_USER,
+            data: username
+        } as SetCurrentUser
     },
 
     clearUsersListCache() {
