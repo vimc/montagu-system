@@ -3,7 +3,10 @@ import {Dispatch} from "redux";
 import {AdminAppState} from "../reducers/adminAppReducers";
 import {User} from "../../shared/models/Generated";
 import {UsersService} from "../services/UsersService";
-import {AllUsersFetched, SetCreateUserError, ShowCreateUser, UsersTypes} from "../actionTypes/UsersTypes";
+import {
+    AllUsersFetched, SetCreateUserError, SetCurrentUser, ShowCreateUser,
+    UsersTypes
+} from "../actionTypes/UsersTypes";
 
 export const usersActionCreators = {
 

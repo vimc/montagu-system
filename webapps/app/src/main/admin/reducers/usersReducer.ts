@@ -6,7 +6,6 @@ export interface UsersState {
     users: User[],
     showCreateUser: boolean,
     createUserErrors: ErrorInfo[],
-    showCreateUser: boolean,
     currentUser: User
 }
 
