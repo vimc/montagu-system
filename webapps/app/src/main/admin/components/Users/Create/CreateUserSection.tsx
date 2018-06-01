@@ -1,48 +1,44 @@
 import * as React from "react";
-import { connectToStores } from "../../../../shared/alt";
-import { userStore } from "../../../stores/UserStore";
-import { userActions } from "../../../actions/UserActions";
-import { CreateUserForm } from "./CreateUserForm";
+import {compose} from "recompose";
+import { connect } from 'react-redux';
 
-interface Props {
+import {AdminAppState} from "../../../reducers/adminAppReducers";
+import {CreateUserForm} from "./CreateUserForm";
+import {Dispatch} from "redux";
+import {usersActionCreators} from "../../../actions/usersActionCreators";
+
+interface CreateUserSectionProps {
     show: boolean;
+    setShowCreateUser: () => void;
 }
 
-export class CreateUserSectionComponent extends React.Component<Props, undefined> {
-    static getStores() {
-        return [userStore];
-    }
+export class CreateUserSectionComponent extends React.Component<Partial<CreateUserSectionProps>, undefined> {
 
-    static getPropsFromStores(): Props {
-        return {
-            show: userStore.getState().showCreateUser
-        }
-    }
-
-    renderForm() {
+    render() {
         if (this.props.show) {
-            return <CreateUserForm/>;
+            return <div>
+                <CreateUserForm/>
+            </div>;
         } else {
-            return null;
-        }
-    }
-
-    renderButton() {
-        if (this.props.show) {
-            return null;
-        } else {
-            return <button onClick={() => userActions.setShowCreateUser(true)}>
+            return <button onClick={() => this.props.setShowCreateUser()}>
                 Add new user
             </button>;
         }
     }
-
-    render() {
-        return <div>
-            {this.renderButton()}
-            {this.renderForm()}
-        </div>;
-    }
 }
 
-export const CreateUserSection = connectToStores(CreateUserSectionComponent);
+export const mapStateToProps = (state: AdminAppState): Partial<CreateUserSectionProps> => {
+    return {
+        show: state.users.showCreateUser
+    }
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<CreateUserSectionProps> => {
+    return {
+        setShowCreateUser: () => dispatch(usersActionCreators.setShowCreateUser(true))
+    }
+};
+
+export const CreateUserSection = compose(
+    connect(mapStateToProps, mapDispatchToProps)
+)(CreateUserSectionComponent) as React.ComponentClass<Partial<CreateUserSectionProps>>;

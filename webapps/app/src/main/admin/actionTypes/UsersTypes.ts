@@ -27,8 +27,14 @@ export interface SetCurrentUser {
     data: string;
 }
 
+export interface ShowCreateUser {
+    type: UsersTypes.SHOW_CREATE_USER;
+    data: boolean;
+}
+
 export type UsersAction =
     | AllUsersFetched
     | ShowCreateUser
     | SetCreateUserError
     | SetCurrentUser
+    | ShowCreateUser
