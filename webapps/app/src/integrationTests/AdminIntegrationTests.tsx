@@ -1,17 +1,17 @@
 import * as React from "react";
-import { createMemoryHistory } from 'history';
+import {createMemoryHistory} from 'history';
 
-import { expectIsEqual, IntegrationTestSuite } from "./IntegrationTest";
-import { AdminFetcher } from "../main/admin/sources/AdminFetcher";
-import { groupStore } from "../main/admin/stores/GroupStore";
-import { checkPromise } from "../test/testHelpers";
-import { expect } from "chai";
-import { Client, QueryResult } from "pg";
-import { ModellingGroup, ModellingGroupDetails, User } from "../main/shared/models/Generated";
-import { modellingGroupActions } from "../main/shared/actions/ModellingGroupActions";
-import { userStore } from "../main/admin/stores/UserStore";
+import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
+import {AdminFetcher} from "../main/admin/sources/AdminFetcher";
+import {groupStore} from "../main/admin/stores/GroupStore";
+import {checkPromise} from "../test/testHelpers";
+import {expect} from "chai";
+import {Client, QueryResult} from "pg";
+import {ModellingGroup, ModellingGroupDetails, User} from "../main/shared/models/Generated";
+import {modellingGroupActions} from "../main/shared/actions/ModellingGroupActions";
+import {userStore} from "../main/admin/stores/UserStore";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
-import { AuthService } from "../main/shared/services/AuthService";
+import {AuthService} from "../main/shared/services/AuthService";
 import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
 import {UsersService} from "../main/admin/services/UsersService";
 
@@ -51,8 +51,8 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             await addGroups(this.db);
             const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState)).getAllGroups();
             expect(result).to.eql([
-                { id: "g1", description: "Group 1" },
-                { id: "g2", description: "Group 2" }
+                {id: "g1", description: "Group 1"},
+                {id: "g2", description: "Group 2"}
             ]);
         });
 
@@ -103,11 +103,22 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                 name: "Bob Jones",
                 email: "bob@example.com",
                 roles: [
-                    { name: "member", scope_prefix: "modelling-group", scope_id: "some-group" },
-                    { name: "user-manager", scope_prefix: null, scope_id: null }
+                    {name: "member", scope_prefix: "modelling-group", scope_id: "some-group"},
+                    {name: "user-manager", scope_prefix: null, scope_id: null}
                 ],
                 last_logged_in: "2017-01-01T08:36:23Z"
             });
+        });
+
+        it("can create a user", async () => {
+
+            const usersService = new UsersService(this.store.dispatch, this.store.getState);
+            const result = await usersService
+                .createUser("new user", "user@example.com", "new.user");
+
+            expect(result).to.equal("http://api:8080/v1/users/new.user/");
+            const allUsers = await usersService.getAllUsers();
+            expect(allUsers.map((u: User) => u.username).indexOf("new.user") > -1).to.be.true;
         });
     }
 }

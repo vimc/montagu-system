@@ -1,43 +1,25 @@
 import * as React from "react";
-import { Reform } from "alt-reform";
-import { expect } from "chai";
-import { shallow } from "enzyme";
-import * as sinon from "sinon";
-import { Sandbox } from "../../../../Sandbox";
-import { mockFormProperties, numberOfSubmissionActions } from "../../../../mocks/mockForm";
-import { ValidationError } from "../../../../../main/shared/components/Login/ValidationError";
-import { mockFetcher, mockResponse, mockResult } from "../../../../mocks/mockRemote";
-import { userStore } from "../../../../../main/admin/stores/UserStore";
-import { mockEvent } from "../../../../mocks/mocks";
-import { expectOrderedActions } from "../../../../actionHelpers";
-import {
-    CreateUserFields,
-    createUserFormStore, suggestUsername
-} from "../../../../../main/admin/components/Users/Create/CreateUserFormStore";
+import {expect} from "chai";
+import {mount, shallow} from "enzyme";
+import {Sandbox} from "../../../../Sandbox";
 import {
     CreateUserForm,
-    CreateUserFormComponent
+    CreateUserFormComponent, mapDispatchToProps, suggestUsername
 } from "../../../../../main/admin/components/Users/Create/CreateUserForm";
 
-function checkSubmit(form: Reform<CreateUserFields>,
-                     done: DoneCallback,
-                     sandbox: Sandbox,
-                     callback: (spy: sinon.SinonSpy) => void) {
-    const spy = sandbox.dispatchSpy();
-    form.submit(mockEvent()).then(() => {
-        callback(spy);
-        done();
-    }).catch(x => {
-        done(Error(x));
-    });
-}
+import {mockAdminState} from "../../../../mocks/mockStates";
+import {createMockStore} from "../../../../mocks/mockStore";
+import {Field} from "redux-form";
+import {validations} from "../../../../../main/shared/modules/reduxForm";
+import {usersActionCreators} from "../../../../../main/admin/actions/usersActionCreators";
+import {Provider} from "react-redux";
 
 describe("CreateUserForm", () => {
     const sandbox = new Sandbox();
-    let form: Reform<CreateUserFields>;
+    let store: any = null;
 
     before(() => {
-        form = createUserFormStore("test");
+        store = createMockStore(mockAdminState());
     });
 
     afterEach(() => {
@@ -45,80 +27,67 @@ describe("CreateUserForm", () => {
     });
 
     it("renders fields", () => {
-        form.change({
-            name: "Saruman the Wise",
-            email: "saruman@isengard",
-            username: "the.wise"
-        });
 
-        const rendered = shallow(<CreateUserFormComponent {...mockFormProperties(form)} />);
-        expect(rendered.find({ name: "name" }).prop("value")).to.equal("Saruman the Wise");
-        expect(rendered.find({ name: "email" }).prop("value")).to.equal("saruman@isengard");
-        expect(rendered.find({ name: "username" }).prop("value")).to.equal("the.wise");
-    });
+        const rendered = shallow(<CreateUserFormComponent errors={[]}
+            handleSubmit={() => null} submit={null} changeFieldValue={null}/>);
 
-    it("renders validation errors", () => {
-        const errors = {
-            username: "Blah blah"
-        };
-        const rendered = shallow(<CreateUserFormComponent {...mockFormProperties(form, errors)} />);
-        const validationErrors = rendered.find(ValidationError);
-        let hasMessage: boolean = false;
-        validationErrors.forEach(x => {
-            hasMessage = hasMessage || x.prop("message") == "Blah blah";
-        });
-        expect(hasMessage).to.equal(true, "Expected there to be at least one ValidationError containing the message 'Blah blah'");
-    });
+        const fields = rendered.find(Field);
 
-    it("posts when form is submitted", (done: DoneCallback) => {
-        mockFetcher(mockResponse(mockResult("")));
-        const spy = sandbox.fetcherSpy();
-        const fetchUsers = sandbox.stubFetch(userStore, "fetchUsers");
-        const data = {
-            name: "Name",
-            email: "email@example.com",
-            username: "user.name"
-        };
-        form.change(data);
-        checkSubmit(form, done, sandbox, _ => {
-            expect(spy.called).to.be.true;
-            expect(spy.args[0][0]).to.equal("/users/");
-            expect(spy.args[0][1]).to.eql({
-                method: "post",
-                body: JSON.stringify(data)
-            });
-            expect(fetchUsers.called).to.equal(true, "Expected fetchUsers to be called");
-        });
-    });
+        expect(fields.at(0).prop("name")).to.eq("name");
+        expect(fields.at(0).prop("validate")).to.have.members([validations.required]);
 
-    it("displays error when post fails", (done: DoneCallback) => {
-        mockFetcher(Promise.reject(true));
-        form.change({
-            name: "Name",
-            email: "email@example.com",
-            username: "user.name"
-        });
-        checkSubmit(form, done, sandbox, spy => {
-            expectOrderedActions(
-                spy,
-                [{ action: "CreateUser_test/submitFailed", payload: "An error occurred creating the user" }],
-                numberOfSubmissionActions
-            );
-        });
+        expect(fields.at(1).prop("name")).to.eq("email");
+        expect(fields.at(1).prop("validate")).to.have.members([validations.required, validations.email]);
+
+        expect(fields.at(2).prop("name")).to.eq("username");
+        expect(fields.at(2).prop("validate")).to.have.members([validations.required, validations.username]);
     });
 
     it("sets username to suggestion when name changes", () => {
-        const props = mockFormProperties(form);
-        const baseCallbackSpy = sandbox.sinon.stub(props.fields.name, "onChange");
-        const changeSpy = sandbox.sinon.stub(props, "change");
 
-        const rendered = shallow(<CreateUserFormComponent {...props} />);
-        const event = { target: { value: "Joe Bloggs" } };
-        rendered.find({ name: "name" }).simulate("change", event);
-        expect(baseCallbackSpy.args[0][0]).to.eql(event);
-        expect(changeSpy.args[0][0]).to.eql({
-            username: "joe.bloggs"
-        });
+        let fieldName = "";
+        let newValue = "";
+
+        const changeFieldMock = (field: string, value: string) => {
+            fieldName = field;
+            newValue = value;
+        };
+
+        const rendered = shallow(<CreateUserFormComponent errors={[]}
+            handleSubmit={() => null} submit={null} changeFieldValue={changeFieldMock}/>);
+
+        const event = {target: {value: "Joe Bloggs"}};
+        const field = rendered.find(Field).at(0);
+
+        field.simulate("change", event);
+
+        expect(fieldName).to.eq("username");
+        expect(newValue).to.eq("joe.bloggs");
+    });
+
+    it("calls creates user on form submission", () => {
+
+        const stub = sandbox.setStubReduxAction(usersActionCreators, "createUser");
+
+        const mounted = mount(
+            <Provider store={store}>
+                <CreateUserForm />
+            </Provider>
+        );
+
+        mounted.simulate("submit");
+        expect(stub.called).to.be.true;
+    });
+
+    it("passes name, email and username to createUser", () => {
+
+        const dispatchStub = sandbox.sinon.stub();
+        const userActionCreatorStub = sandbox.setStubReduxAction(usersActionCreators, "createUser");
+
+        const props = mapDispatchToProps(dispatchStub);
+        props.submit({name: "Joe Bloggs", email: "joe@email.com", username: "joe.b"});
+
+        expect(userActionCreatorStub.calledWith("Joe Bloggs", "joe@email.com", "joe.b")).to.be.true;
     });
 
     describe("username suggestor", () => {
