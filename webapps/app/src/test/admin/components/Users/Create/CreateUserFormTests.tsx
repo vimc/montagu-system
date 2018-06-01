@@ -28,7 +28,7 @@ describe("CreateUserForm", () => {
 
     it("renders fields", () => {
 
-        const rendered = shallow(<CreateUserFormComponent
+        const rendered = shallow(<CreateUserFormComponent errors={[]}
             handleSubmit={() => null} submit={null} changeFieldValue={null}/>);
 
         const fields = rendered.find(Field);
@@ -53,7 +53,7 @@ describe("CreateUserForm", () => {
             newValue = value;
         };
 
-        const rendered = shallow(<CreateUserFormComponent
+        const rendered = shallow(<CreateUserFormComponent errors={[]}
             handleSubmit={() => null} submit={null} changeFieldValue={changeFieldMock}/>);
 
         const event = {target: {value: "Joe Bloggs"}};
