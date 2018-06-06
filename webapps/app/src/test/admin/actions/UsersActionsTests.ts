@@ -68,8 +68,7 @@ describe("Admin Users actions tests", () => {
         store.dispatch(usersActionCreators.createUser("joe bloggs", "joe@email.com", "joe.b"));
         setTimeout(() => {
             const actions = store.getActions();
-            const expectedPayload = { type: UsersTypes.SET_CREATE_USER_ERRORS,
-                errors: [{message: "error message", code: "e"}]};
+            const expectedPayload = { type: UsersTypes.SET_CREATE_USER_ERRORS, errors: [{message: "error message", code: "e"}]};
             expect(actions).to.eql([expectedPayload]);
             done();
         });
@@ -106,4 +105,18 @@ describe("Admin Users actions tests", () => {
             data: true
         })
     });
+
+    it('should set current user', (done) => {
+
+        const store = createMockStore({});
+        store.dispatch(usersActionCreators.setCurrentUser("joe.bloggs"));
+
+        setTimeout(() => {
+            const actions = store.getActions();
+            const expectedPayload = { type: UsersTypes.SET_CURRENT_USER, data: "joe.bloggs"};
+            expect(actions).to.eql([expectedPayload]);
+            done();
+        });
+    });
+
 });
