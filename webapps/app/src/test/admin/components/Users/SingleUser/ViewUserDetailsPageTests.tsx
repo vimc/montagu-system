@@ -13,7 +13,6 @@ import { alt } from "../../../../../main/shared/alt";
 import { mockUser } from "../../../../mocks/mockModels";
 import {addNavigationTests} from "../../../../shared/NavigationTests";
 import {mockFetcherForMultipleResponses} from "../../../../mocks/mockMultipleEndpoints";
-import {successResult} from "../../../../mocks/mockRemote";
 import {mockUsersEndpoint} from "../../../../mocks/mockEndpoints";
 
 describe("ViewUserDetailsPage", () => {
