@@ -1,15 +1,11 @@
 import * as React from "react";
 import {createMemoryHistory} from 'history';
 
-import {expectIsEqual, IntegrationTestSuite} from "./IntegrationTest";
+import {IntegrationTestSuite} from "./IntegrationTest";
 import {AdminFetcher} from "../main/admin/sources/AdminFetcher";
-import {groupStore} from "../main/admin/stores/GroupStore";
-import {checkPromise} from "../test/testHelpers";
 import {expect} from "chai";
 import {Client, QueryResult} from "pg";
-import {ModellingGroup, ModellingGroupDetails, User} from "../main/shared/models/Generated";
-import {modellingGroupActions} from "../main/shared/actions/ModellingGroupActions";
-import {userStore} from "../main/admin/stores/UserStore";
+import {User} from "../main/shared/models/Generated";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
 import {AuthService} from "../main/shared/services/AuthService";
 import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
@@ -116,7 +112,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const result = await usersService
                 .createUser("new user", "user@example.com", "new.user");
 
-            expect(result).to.equal("http://api:8080/v1/users/new.user/");
+            expect(result).to.match(new RegExp("/v1/users/new.user/$"));
             const allUsers = await usersService.getAllUsers();
             expect(allUsers.map((u: User) => u.username).indexOf("new.user") > -1).to.be.true;
         });
