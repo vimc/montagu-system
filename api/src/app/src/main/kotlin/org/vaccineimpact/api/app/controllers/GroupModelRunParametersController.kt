@@ -7,7 +7,7 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.app.requests.csvData
-import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
+import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstoneVersion
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.ModelRun
 import org.vaccineimpact.api.models.ModelRunParameterSet
@@ -29,7 +29,7 @@ class GroupModelRunParametersController(
     {
         val touchstoneId = context.params(":touchstoneVersion-id")
         val groupId = context.params(":group-id")
-        context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
+        context.checkEstimatePermissionsForTouchstoneVersion(groupId, touchstoneId, estimateRepository)
         return estimateRepository.getModelRunParameterSets(groupId, touchstoneId)
     }
 
@@ -37,7 +37,7 @@ class GroupModelRunParametersController(
     {
         val touchstoneId = context.params(":touchstoneVersion-id")
         val groupId = context.params(":group-id")
-        context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
+        context.checkEstimatePermissionsForTouchstoneVersion(groupId, touchstoneId, estimateRepository)
 
         val parts = context.getParts()
         val disease = parts["disease"].contents
@@ -63,7 +63,7 @@ class GroupModelRunParametersController(
             FlexibleDataTable<ModelRun>
     {
         val path = ModelRunParametersSetPath(context)
-        val touchstone = touchstoneRepository.touchstones.get(path.touchstoneId)
+        val touchstone = touchstoneRepository.touchstoneVersions.get(path.touchstoneId)
         context.checkIsAllowedToSeeTouchstone(touchstone.id, touchstone.status)
         return estimateRepository.getModelRunParameterSet(path.setId)
     }

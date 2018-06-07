@@ -18,7 +18,7 @@ class ResponsibilityControllerTests : MontaguTests()
     {
         val groupId = "test-group"
         val repo = mock<ModellingGroupRepository> {
-            on { getTouchstonesByGroupId(groupId) } doReturn mockTouchstones
+            on { getTouchstoneVersionsByGroupId(groupId) } doReturn mockTouchstones
         }
 
         val context = mock<ActionContext> {
@@ -34,7 +34,7 @@ class ResponsibilityControllerTests : MontaguTests()
     {
         val groupId = "test-group"
         val repo = mock<ModellingGroupRepository> {
-            on { getTouchstonesByGroupId(groupId) } doReturn mockTouchstones
+            on { getTouchstoneVersionsByGroupId(groupId) } doReturn mockTouchstones
         }
 
         val context = mock<ActionContext> {
@@ -110,8 +110,8 @@ class ResponsibilityControllerTests : MontaguTests()
 
 
     private val mockTouchstones = listOf(
-            TouchstoneVersion("touchstoneVersion-1", "touchstoneVersion", 1, "Description", TouchstoneStatus.OPEN),
-            TouchstoneVersion("touchstoneVersion-bad", "touchstoneVersion", 1, "not open", TouchstoneStatus.IN_PREPARATION)
+            TouchstoneVersion("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN),
+            TouchstoneVersion("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     )
 
     private fun mockContextForSpecificResponsibility(hasPermissions: Boolean): ActionContext

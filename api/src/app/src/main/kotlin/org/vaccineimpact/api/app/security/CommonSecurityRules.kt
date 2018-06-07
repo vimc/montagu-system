@@ -4,7 +4,9 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.models.TouchstoneStatus
+import org.vaccineimpact.api.models.TouchstoneVersion
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
 fun ActionContext.checkIsAllowedToSeeTouchstone(touchstoneId: String, touchstoneStatus: TouchstoneStatus)
@@ -16,27 +18,23 @@ fun ActionContext.checkIsAllowedToSeeTouchstone(touchstoneId: String, touchstone
     }
 }
 
-fun ActionContext.isAllowedToSeeTouchstone(touchstoneStatus: TouchstoneStatus): Boolean
+fun ActionContext.isAllowedToSeeTouchstoneVersion(touchstoneVersion: TouchstoneVersion): Boolean
 {
     val permission = ReifiedPermission("touchstones.prepare", Scope.Global())
-    if (!this.hasPermission(permission) && touchstoneStatus == TouchstoneStatus.IN_PREPARATION)
-    {
-        return false
-    }
-    return true
+    return this.hasPermission(permission)
+            || touchstoneVersion.status != TouchstoneStatus.IN_PREPARATION
 }
 
-fun ActionContext.checkEstimatePermissionsForTouchstone(
+fun ActionContext.checkEstimatePermissionsForTouchstoneVersion(
         groupId: String,
-        touchstoneId: String,
+        touchstoneVersionId: String,
         estimateRepository: BurdenEstimateRepository,
         readEstimatesRequired: Boolean = false
 )
 {
-
-    val touchstones = estimateRepository.touchstoneRepository.touchstones
-    val touchstone = touchstones.get(touchstoneId)
-    this.checkIsAllowedToSeeTouchstone(touchstoneId, touchstone.status)
+    val touchstones = estimateRepository.touchstoneRepository.touchstoneVersions
+    val touchstone = touchstones.get(touchstoneVersionId)
+    this.checkIsAllowedToSeeTouchstone(touchstoneVersionId, touchstone.status)
     if (readEstimatesRequired)
     {
         if (touchstone.status == TouchstoneStatus.OPEN)

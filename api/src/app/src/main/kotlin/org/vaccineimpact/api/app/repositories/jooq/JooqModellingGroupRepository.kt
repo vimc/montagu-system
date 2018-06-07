@@ -93,7 +93,7 @@ class JooqModellingGroupRepository(
                                      scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
     {
         getModellingGroup(groupId)
-        val touchstone = getTouchstone(touchstoneId)
+        val touchstone = getTouchstoneVersion(touchstoneId)
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneId)
         val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneId)
         return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstone.status)
@@ -102,7 +102,7 @@ class JooqModellingGroupRepository(
     override fun getResponsibility(groupId: String, touchstoneId: String, scenarioId: String): ResponsibilityAndTouchstone
     {
         getModellingGroup(groupId)
-        val touchstone = getTouchstone(touchstoneId)
+        val touchstone = getTouchstoneVersion(touchstoneId)
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneId)
         if (responsibilitySet != null)
         {
@@ -141,7 +141,7 @@ class JooqModellingGroupRepository(
         ), scenarioAndData.tableData)
     }
 
-    override fun getTouchstonesByGroupId(groupId: String): List<TouchstoneVersion>
+    override fun getTouchstoneVersionsByGroupId(groupId: String): List<TouchstoneVersion>
     {
         val group = getModellingGroup(groupId)
         val query = dsl
@@ -156,7 +156,7 @@ class JooqModellingGroupRepository(
                 .where(RESPONSIBILITY.IS_OPEN).orNot(TOUCHSTONE.STATUS.eq("open"))
                 .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))
 
-        return query.fetch().map { touchstoneRepository.mapTouchstone(it) }
+        return query.fetch().map { touchstoneRepository.mapTouchstoneVersion(it) }
     }
 
     private fun convertScenarioToResponsibility(scenario: Scenario, responsibilityId: Int): Responsibility
@@ -275,5 +275,5 @@ class JooqModellingGroupRepository(
 
     private fun mapModellingGroup(x: ModellingGroupRecord) = ModellingGroup(x.id, x.description)
 
-    private fun getTouchstone(touchstoneId: String) = touchstoneRepository.touchstones.get(touchstoneId)
+    private fun getTouchstoneVersion(touchstoneId: String) = touchstoneRepository.touchstoneVersions.get(touchstoneId)
 }

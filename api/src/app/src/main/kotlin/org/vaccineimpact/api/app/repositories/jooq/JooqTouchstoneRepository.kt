@@ -27,6 +27,18 @@ class JooqTouchstoneRepository(
         private val mapper: MappingHelper = MappingHelper()
 ) : JooqRepository(dsl), TouchstoneRepository
 {
+    override fun getTouchstones(): List<Touchstone>
+    {
+        return dsl.select(TOUCHSTONE_NAME.fieldsAsList())
+                .select(TOUCHSTONE.fieldsAsList())
+                .fromJoinPath(TOUCHSTONE_NAME, TOUCHSTONE)
+                .asSequence()
+                .groupBy { it[TOUCHSTONE_NAME.ID] }
+                .map { mapTouchstone(it.value) }
+    }
+    override val touchstoneVersions: SimpleDataSet<TouchstoneVersion, String>
+        get() = JooqSimpleDataSet.new(dsl, TOUCHSTONE, { it.ID }, { mapTouchstoneVersion(it) })
+
     override fun getDemographicData(statisticTypeCode: String,
                                     source: String,
                                     touchstoneId: String,
@@ -49,7 +61,7 @@ class JooqTouchstoneRepository(
     {
         val statisticType = getDemographicStatisticType(statisticTypeCode)
                 .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
-        val touchstone = touchstones.get(touchstoneId)
+        val touchstone = touchstoneVersions.get(touchstoneId)
         val countries = dsl.selectDistinct(TOUCHSTONE_COUNTRY.COUNTRY)
                 .from(TOUCHSTONE_COUNTRY)
                 .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
@@ -78,9 +90,6 @@ class JooqTouchstoneRepository(
             mapDemographicDataset(it)
         }.sortedBy { it.name }
     }
-
-    override val touchstones: SimpleDataSet<TouchstoneVersion, String>
-        get() = JooqSimpleDataSet.new(dsl, TOUCHSTONE, { it.ID }, { mapTouchstone(it) })
 
     override fun scenarios(touchstoneId: String, filterParams: ScenarioFilterParameters): List<ScenarioAndCoverageSets>
     {
@@ -279,7 +288,22 @@ class JooqTouchstoneRepository(
                     .distinctBy { it[COVERAGE_SET.ID] }
                     .map { mapCoverageSet(it) }
 
-    override fun mapTouchstone(record: Record) = TouchstoneVersion(
+    /** Takes a list of TOUCHSTONE_NAME + TOUCHSTONE records.
+     * The TOUCHSTONE_NAME fields should be the same for each record.
+     * The TOUCHSTONE fields should be different for each record.
+     */
+    fun mapTouchstone(records: List<Record>): Touchstone
+    {
+        val shared = records.first()
+        return Touchstone(
+                shared[TOUCHSTONE_NAME.ID],
+                shared[TOUCHSTONE_NAME.DESCRIPTION],
+                shared[TOUCHSTONE_NAME.COMMENT],
+                versions = records.map(this::mapTouchstoneVersion)
+        )
+    }
+
+    override fun mapTouchstoneVersion(record: Record) = TouchstoneVersion(
             record[TOUCHSTONE.ID],
             record[TOUCHSTONE.TOUCHSTONE_NAME],
             record[TOUCHSTONE.VERSION],

@@ -34,11 +34,11 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
             addResponsibilitySetWithResponsibility(it, "scenario-3", groupId2, "$touchstone3Name-1", open = true)
 
         } check { repo ->
-            val touchstones = repo.getTouchstonesByGroupId(groupId)
+            val touchstones = repo.getTouchstoneVersionsByGroupId(groupId)
             assertThat(touchstones).isInstanceOf(List::class.java)
             assertThat(touchstones).hasSize(2)
             assertThat(touchstones[0])
-                    .isEqualTo(TouchstoneVersion(touchstoneId, "touchstoneVersion", 1, "descr 1", TouchstoneStatus.OPEN))
+                    .isEqualTo(TouchstoneVersion(touchstoneId, "touchstone", 1, "descr 1", TouchstoneStatus.OPEN))
             assertThat(touchstones[1])
                     .isEqualTo(TouchstoneVersion("$touchstone2Name-1", touchstone2Name, 1, "descr 2", TouchstoneStatus.OPEN)
             )
@@ -53,7 +53,7 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
             setUpDb(it)
 
         } check { repo ->
-            val touchstones = repo.getTouchstonesByGroupId(groupId)
+            val touchstones = repo.getTouchstoneVersionsByGroupId(groupId)
             assertThat(touchstones).hasSize(0)
         }
     }
@@ -65,7 +65,7 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
             setUpDb(it, touchstoneStatus = "finished")
 
         } check { repo ->
-            val touchstones = repo.getTouchstonesByGroupId(groupId)
+            val touchstones = repo.getTouchstoneVersionsByGroupId(groupId)
             assertThat(touchstones).hasSize(0)
         }
     }
@@ -80,7 +80,7 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
             addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneId, open = false)
 
         } check { repo ->
-            val touchstones = repo.getTouchstonesByGroupId(groupId)
+            val touchstones = repo.getTouchstoneVersionsByGroupId(groupId)
             assertThat(touchstones).hasSize(0)
         }
     }
@@ -95,7 +95,7 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
             addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneId, open = false)
 
         } check { repo ->
-            val touchstones = repo.getTouchstonesByGroupId(groupId)
+            val touchstones = repo.getTouchstoneVersionsByGroupId(groupId)
             assertThat(touchstones).hasSize(1)
         }
     }
@@ -110,7 +110,7 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
             addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneId, open = false)
 
         } check { repo ->
-            val touchstones = repo.getTouchstonesByGroupId(groupId)
+            val touchstones = repo.getTouchstoneVersionsByGroupId(groupId)
             assertThat(touchstones).hasSize(1)
         }
     }
@@ -120,7 +120,7 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
     {
         withRepo { repo ->
             Assertions.assertThatThrownBy {
-                repo.getTouchstonesByGroupId("bad-id")
+                repo.getTouchstoneVersionsByGroupId("bad-id")
             }.isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
         }
     }

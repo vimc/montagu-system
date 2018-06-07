@@ -6,7 +6,7 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstone
+import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstoneVersion
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.FlexibleDataTable
@@ -25,28 +25,29 @@ class TouchstoneController(
 
     fun getTouchstones(): List<TouchstoneVersion>
     {
-        var touchstones = repo.touchstones.all()
-        touchstones = touchstones.filter { context.isAllowedToSeeTouchstone(it.status) }
-        return touchstones.toList()
+        return repo.getTouchstones()
+                .map { it.copy(versions = filteredVersions(it.versions)) }
+                .filter { it.versions.any() }
+                .toList()
     }
 
     fun getScenarios(): List<ScenarioAndCoverageSets>
     {
-        val touchstone = touchstone(context, repo)
+        val touchstone = touchstoneVersion(context, repo)
         val filterParameters = ScenarioFilterParameters.fromContext(context)
         return repo.scenarios(touchstone.id, filterParameters)
     }
 
     fun getDemographicDatasets(): List<DemographicDataset>
     {
-        val touchstone = touchstone(context, repo)
+        val touchstone = touchstoneVersion(context, repo)
         return repo.getDemographicDatasets(touchstone.id)
     }
 
     fun getDemographicDataAndMetadata():
             SplitData<DemographicDataForTouchstone, DemographicRow>
     {
-        val touchstone = touchstone(context, repo)
+        val touchstone = touchstoneVersion(context, repo)
         val source = context.params(":source-code")
         val type = context.params(":type-code")
         val gender = context.queryParams("gender")
@@ -117,20 +118,23 @@ class TouchstoneController(
 
     fun getScenario(): ScenarioTouchstoneAndCoverageSets
     {
-        val touchstone = touchstone(context, repo)
+        val touchstone = touchstoneVersion(context, repo)
         val scenarioId: String = context.params(":scenario-id")
         val data = repo.getScenario(touchstone.id, scenarioId)
         return ScenarioTouchstoneAndCoverageSets(touchstone, data.scenario, data.coverageSets)
     }
 
-    private fun touchstone(context: ActionContext, repo: TouchstoneRepository): TouchstoneVersion
+    private fun touchstoneVersion(context: ActionContext, repo: TouchstoneRepository): TouchstoneVersion
     {
         val id = context.params(":touchstoneVersion-id")
-        val touchstone = repo.touchstones.get(id)
+        val touchstone = repo.touchstoneVersions.get(id)
         if (touchstone.status == TouchstoneStatus.IN_PREPARATION)
         {
             context.requirePermission(touchstonePreparer)
         }
         return touchstone
     }
+
+    private fun filteredVersions(versions: List<TouchstoneVersion>) =
+            versions.filter { context.isAllowedToSeeTouchstoneVersion(it) }
 }

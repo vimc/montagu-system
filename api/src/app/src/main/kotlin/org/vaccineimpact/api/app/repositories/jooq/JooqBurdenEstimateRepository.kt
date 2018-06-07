@@ -434,34 +434,34 @@ class JooqBurdenEstimateRepository(
         return setRecord.id
     }
 
-    private fun getResponsibilityInfo(groupId: String, touchstoneId: String, scenarioId: String): ResponsibilityInfo
+    private fun getResponsibilityInfo(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityInfo
     {
         // Get responsibility ID
         return dsl.select(RESPONSIBILITY.ID, SCENARIO_DESCRIPTION.DISEASE, RESPONSIBILITY_SET.STATUS, RESPONSIBILITY_SET.ID.`as`("setId"))
                 .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .joinPath(RESPONSIBILITY_SET, TOUCHSTONE)
                 .where(MODELLING_GROUP.ID.eq(groupId))
-                .and(TOUCHSTONE.ID.eq(touchstoneId))
+                .and(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
                 .fetchOne()
                 ?.into(ResponsibilityInfo::class.java)
-                ?: findMissingObjects(touchstoneId, scenarioId)
+                ?: findMissingObjects(touchstoneVersionId, scenarioId)
     }
 
-    private fun getResponsibilitySetId(groupId: String, touchstoneId: String): Int
+    private fun getResponsibilitySetId(groupId: String, touchstoneVersionId: String): Int
     {
         // Get responsibility ID
         return dsl.select(RESPONSIBILITY_SET.ID)
                 .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, TOUCHSTONE)
                 .where(MODELLING_GROUP.ID.eq(groupId))
-                .and(TOUCHSTONE.ID.eq(touchstoneId))
+                .and(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .fetchOneInto(Int::class.java)
-                ?: throw UnknownObjectError(touchstoneId, "touchstoneVersion")
+                ?: throw UnknownObjectError(touchstoneVersionId, "touchstoneVersion")
     }
 
-    private fun <T> findMissingObjects(touchstoneId: String, scenarioId: String): T
+    private fun <T> findMissingObjects(touchstoneVersionId: String, scenarioId: String): T
     {
-        touchstoneRepository.touchstones.get(touchstoneId)
+        touchstoneRepository.touchstoneVersions.get(touchstoneVersionId)
         scenarioRepository.checkScenarioDescriptionExists(scenarioId)
         // Note this is where the scenario_description *does* exist, but
         // the group is not responsible for it in this touchstoneVersion
