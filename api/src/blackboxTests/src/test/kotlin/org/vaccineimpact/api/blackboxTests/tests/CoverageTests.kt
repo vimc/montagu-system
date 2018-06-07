@@ -21,7 +21,7 @@ import java.math.BigDecimal
 class CoverageTests : DatabaseTest()
 {
     val groupId = "group-1"
-    val touchstoneId = "touchstoneVersion-1"
+    val touchstoneId = "touchstone-1"
     val scenarioId = "scenario-1"
     val coverageSetId = 1
     val groupScope = "modelling-group:$groupId"
