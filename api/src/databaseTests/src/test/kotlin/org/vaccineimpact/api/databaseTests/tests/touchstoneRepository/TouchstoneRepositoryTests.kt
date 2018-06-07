@@ -12,7 +12,7 @@ import org.vaccineimpact.api.db.direct.addVaccine
 
 abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>()
 {
-    val touchstoneName = "touchstone"
+    val touchstoneName = "touchstoneVersion"
     val touchstoneVersion = 1
     val touchstoneId = "$touchstoneName-$touchstoneVersion"
     val scenarioId = "yf-1"

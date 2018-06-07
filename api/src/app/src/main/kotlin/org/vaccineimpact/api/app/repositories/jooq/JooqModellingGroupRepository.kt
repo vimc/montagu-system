@@ -121,11 +121,11 @@ class JooqModellingGroupRepository(
     override fun getCoverageSets(groupId: String, touchstoneId: String, scenarioId: String): ScenarioTouchstoneAndCoverageSets
     {
         // We don't use the returned responsibility, but by using this method we check that the group exists
-        // and that the group is responsible for the given scenario in the given touchstone
+        // and that the group is responsible for the given scenario in the given touchstoneVersion
         val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneId, scenarioId)
         val scenario = touchstoneRepository.getScenario(touchstoneId, scenarioId)
         return ScenarioTouchstoneAndCoverageSets(
-                responsibilityAndTouchstone.touchstone,
+                responsibilityAndTouchstone.touchstoneVersion,
                 scenario.scenario,
                 scenario.coverageSets)
     }
@@ -135,13 +135,13 @@ class JooqModellingGroupRepository(
         val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneId, scenarioId)
         val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneId, scenarioId)
         return SplitData(ScenarioTouchstoneAndCoverageSets(
-                responsibilityAndTouchstone.touchstone,
+                responsibilityAndTouchstone.touchstoneVersion,
                 scenarioAndData.structuredMetadata.scenario,
                 scenarioAndData.structuredMetadata.coverageSets
         ), scenarioAndData.tableData)
     }
 
-    override fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
+    override fun getTouchstonesByGroupId(groupId: String): List<TouchstoneVersion>
     {
         val group = getModellingGroup(groupId)
         val query = dsl
@@ -253,7 +253,7 @@ class JooqModellingGroupRepository(
                 .where(RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibilitySet.id))
                 // TODO remove this once VIMC-1240 is done
                 // this check is needed for the situation where a group has a responsibility set with
-                // multiple diseases, but we want to 'close' some and not others for a touchstone
+                // multiple diseases, but we want to 'close' some and not others for a touchstoneVersion
                 // it will be obsolete when we refactor responsibility sets to be single disease only
                 .and(RESPONSIBILITY.IS_OPEN)
                 .applyWhereFilter()

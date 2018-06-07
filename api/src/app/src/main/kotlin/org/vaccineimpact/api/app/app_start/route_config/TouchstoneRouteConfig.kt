@@ -19,27 +19,27 @@ object TouchstoneRouteConfig : RouteConfig
                     .json()
                     .secure(permissions),
 
-            Endpoint("$baseUrl:touchstone-id/scenarios/", controller, "getScenarios")
+            Endpoint("$baseUrl:touchstoneVersion-id/scenarios/", controller, "getScenarios")
                     .json()
                     .secure(scenarioPermissions),
 
-            Endpoint("$baseUrl:touchstone-id/scenarios/:scenario-id/", controller, "getScenario")
+            Endpoint("$baseUrl:touchstoneVersion-id/scenarios/:scenario-id/", controller, "getScenario")
                     .json()
                     .secure(scenarioPermissions),
 
-            Endpoint("$baseUrl:touchstone-id/demographics/", controller, "getDemographicDatasets")
+            Endpoint("$baseUrl:touchstoneVersion-id/demographics/", controller, "getDemographicDatasets")
                     .json()
                     .secure(demographicPermissions),
 
-            Endpoint("$baseUrl:touchstone-id/demographics/:source-code/:type-code/", controller, "getDemographicDataAndMetadata")
+            Endpoint("$baseUrl:touchstoneVersion-id/demographics/:source-code/:type-code/", controller, "getDemographicDataAndMetadata")
                     .json().streamed()
                     .secure(demographicPermissions),
 
-            Endpoint("$baseUrl:touchstone-id/demographics/:source-code/:type-code/", controller, "getDemographicData")
+            Endpoint("$baseUrl:touchstoneVersion-id/demographics/:source-code/:type-code/", controller, "getDemographicData")
                     .csv().streamed()
                     .secure(demographicPermissions),
 
-            Endpoint("$baseUrl:touchstone-id/demographics/:source-code/:type-code/get_onetime_link/",
+            Endpoint("$baseUrl:touchstoneVersion-id/demographics/:source-code/:type-code/get_onetime_link/",
                     OneTimeLinkController::class, "getTokenForDemographicData")
                     .json()
                     .secure(demographicPermissions)

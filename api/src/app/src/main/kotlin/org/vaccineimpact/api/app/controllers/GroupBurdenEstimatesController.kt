@@ -33,7 +33,7 @@ open class GroupBurdenEstimatesController(
 
     fun createBurdenEstimateSet(): String
     {
-        // First check if we're allowed to see this touchstone
+        // First check if we're allowed to see this touchstoneVersion
         val path = getValidResponsibilityPath(context, estimateRepository)
         val properties = context.postData<CreateBurdenEstimateSet>()
 
@@ -50,7 +50,7 @@ open class GroupBurdenEstimatesController(
 
     fun populateBurdenEstimateSet(source: RequestDataSource): String
     {
-        // First check if we're allowed to see this touchstone
+        // First check if we're allowed to see this touchstoneVersion
         val path = getValidResponsibilityPath(context, estimateRepository)
 
         // Next, get the metadata that will enable us to interpret the CSV

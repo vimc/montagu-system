@@ -10,7 +10,7 @@ import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.Responsibilities
 import org.vaccineimpact.api.models.ResponsibilityAndTouchstone
-import org.vaccineimpact.api.models.Touchstone
+import org.vaccineimpact.api.models.TouchstoneVersion
 
 class ResponsibilityController(
         context: ActionContext,
@@ -20,7 +20,7 @@ class ResponsibilityController(
     constructor(context: ActionContext, repositories: Repositories)
             : this(context, repositories.modellingGroup)
 
-    fun getResponsibleTouchstones(): List<Touchstone>
+    fun getResponsibleTouchstones(): List<TouchstoneVersion>
     {
         val groupId = groupId(context)
 
@@ -32,7 +32,7 @@ class ResponsibilityController(
     fun getResponsibilities(): Responsibilities
     {
         val groupId = groupId(context)
-        val touchstoneId = context.params(":touchstone-id")
+        val touchstoneId = context.params(":touchstoneVersion-id")
         val filterParameters = ScenarioFilterParameters.fromContext(context)
 
         val data = repo.getResponsibilities(groupId, touchstoneId, filterParameters)
@@ -44,7 +44,7 @@ class ResponsibilityController(
     {
         val path = ResponsibilityPath(context)
         val data = repo.getResponsibility(path.groupId, path.touchstoneId, path.scenarioId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstone.status)
+        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstoneVersion.status)
         return data
     }
 

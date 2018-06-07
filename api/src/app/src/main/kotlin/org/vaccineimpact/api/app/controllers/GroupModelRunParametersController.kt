@@ -27,7 +27,7 @@ class GroupModelRunParametersController(
 
     fun getModelRunParameterSets(): List<ModelRunParameterSet>
     {
-        val touchstoneId = context.params(":touchstone-id")
+        val touchstoneId = context.params(":touchstoneVersion-id")
         val groupId = context.params(":group-id")
         context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
         return estimateRepository.getModelRunParameterSets(groupId, touchstoneId)
@@ -35,7 +35,7 @@ class GroupModelRunParametersController(
 
     fun addModelRunParameters(): String
     {
-        val touchstoneId = context.params(":touchstone-id")
+        val touchstoneId = context.params(":touchstoneVersion-id")
         val groupId = context.params(":group-id")
         context.checkEstimatePermissionsForTouchstone(groupId, touchstoneId, estimateRepository)
 
@@ -72,7 +72,7 @@ class GroupModelRunParametersController(
     data class ModelRunParametersSetPath(val touchstoneId: String, val setId: Int)
     {
         constructor(context: ActionContext)
-                : this(context.params(":touchstone-id"), context.params(":model-run-parameter-set-id").toInt())
+                : this(context.params(":touchstoneVersion-id"), context.params(":model-run-parameter-set-id").toInt())
 
     }
 }

@@ -15,7 +15,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class ResponsibilityTests : DatabaseTest()
 {
-    private val touchstoneId = "touchstone-1"
+    private val touchstoneId = "touchstoneVersion-1"
     private val groupId = "awesome-group"
     private val groupScope = "modelling-group:$groupId"
     private val scenarioId = "yf-scenario"
@@ -29,7 +29,7 @@ class ResponsibilityTests : DatabaseTest()
         } requiringPermissions {
             PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
         } andCheck {
-            assertThat(it["touchstone"]).isEqualTo(touchstoneId)
+            assertThat(it["touchstoneVersion"]).isEqualTo(touchstoneId)
             assertThat(it["status"]).isEqualTo("submitted")
             assertThat(it["problems"]).isEqualTo("")
 
@@ -43,7 +43,7 @@ class ResponsibilityTests : DatabaseTest()
                         "description" to
                                 "description 1",
                         "disease" to "disease-1",
-                        "touchstones" to array("touchstone-1")
+                        "touchstones" to array("touchstoneVersion-1")
                 )
             })
             assertThat(responsibility["status"]).isEqualTo("invalid")
@@ -62,7 +62,7 @@ class ResponsibilityTests : DatabaseTest()
         } andCheck {
             assertThat(it).isEqualTo(json {
                 obj(
-                        "touchstone" to touchstoneId,
+                        "touchstoneVersion" to touchstoneId,
                         "status" to "not-applicable",
                         "problems" to "",
                         "responsibilities" to array()
@@ -83,7 +83,7 @@ class ResponsibilityTests : DatabaseTest()
                 array(
                         obj(
                                 "id" to touchstoneId,
-                                "name" to "touchstone",
+                                "name" to "touchstoneVersion",
                                 "version" to 1,
                                 "description" to "description",
                                 "status" to "open"
@@ -103,7 +103,7 @@ class ResponsibilityTests : DatabaseTest()
         val checker = PermissionChecker(url, minimumPermissions + permissionUnderTest)
         checker.checkPermissionIsRequired(
                 permissionUnderTest,
-                expectedProblem = ExpectedProblem("unknown-touchstone", touchstoneId),
+                expectedProblem = ExpectedProblem("unknown-touchstoneVersion", touchstoneId),
                 given = { addResponsibilities(it, touchstoneStatus = "in-preparation") }
         )
     }
@@ -116,13 +116,13 @@ class ResponsibilityTests : DatabaseTest()
         } requiringPermissions {
             PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
         } andCheck {
-            val touchstone = it["touchstone"] as JsonObject
+            val touchstone = it["touchstoneVersion"] as JsonObject
             val responsibility = it["responsibility"] as JsonObject
             val scenario = responsibility["scenario"] as JsonObject
             assertThat(touchstone).isEqualTo(json {
                 obj(
                         "id" to touchstoneId,
-                        "name" to "touchstone",
+                        "name" to "touchstoneVersion",
                         "version" to 1,
                         "description" to "description",
                         "status" to "open"
@@ -134,7 +134,7 @@ class ResponsibilityTests : DatabaseTest()
                         "id" to scenarioId,
                         "description" to "description 1",
                         "disease" to "disease-1",
-                        "touchstones" to array("touchstone-1")
+                        "touchstones" to array("touchstoneVersion-1")
                 )
             })
             assertThat(responsibility["status"]).isEqualTo("invalid")
@@ -152,7 +152,7 @@ class ResponsibilityTests : DatabaseTest()
         val checker = PermissionChecker(url, minimumPermissions + permissionUnderTest)
         checker.checkPermissionIsRequired(
                 permissionUnderTest,
-                expectedProblem = ExpectedProblem("unknown-touchstone", touchstoneId),
+                expectedProblem = ExpectedProblem("unknown-touchstoneVersion", touchstoneId),
                 given = { addResponsibilities(it, touchstoneStatus = "in-preparation") }
         )
     }
@@ -171,9 +171,9 @@ class ResponsibilityTests : DatabaseTest()
         } andCheck {
             assertThat(it).isEqualTo(json {
                 obj(
-                        "touchstone" to obj(
+                        "touchstoneVersion" to obj(
                                 "id" to touchstoneId,
-                                "name" to "touchstone",
+                                "name" to "touchstoneVersion",
                                 "version" to 1,
                                 "description" to "description",
                                 "status" to "open"
@@ -186,7 +186,7 @@ class ResponsibilityTests : DatabaseTest()
                         ),
                         "coverage_sets" to array(obj(
                                 "id" to coverageSetId,
-                                "touchstone" to touchstoneId,
+                                "touchstoneVersion" to touchstoneId,
                                 "name" to "coverage set name",
                                 "vaccine" to "vaccine-1",
                                 "gavi_support" to "no gavi",
@@ -206,7 +206,7 @@ class ResponsibilityTests : DatabaseTest()
         val checker = PermissionChecker(url, minimumPermissions + permissionUnderTest)
         checker.checkPermissionIsRequired(
                 permissionUnderTest,
-                expectedProblem = ExpectedProblem("unknown-touchstone", touchstoneId),
+                expectedProblem = ExpectedProblem("unknown-touchstoneVersion", touchstoneId),
                 given = { addResponsibilities(it, touchstoneStatus = "in-preparation") }
         )
     }
@@ -217,7 +217,7 @@ class ResponsibilityTests : DatabaseTest()
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
         db.addScenarioDescription("scenario-2", "description 2", "disease-2", addDisease = true)
-        db.addTouchstone("touchstone", 1, "description", touchstoneStatus, addName = true)
+        db.addTouchstone("touchstoneVersion", 1, "description", touchstoneStatus, addName = true)
     }
 
     private fun addResponsibilities(db: JooqContext, touchstoneStatus: String)

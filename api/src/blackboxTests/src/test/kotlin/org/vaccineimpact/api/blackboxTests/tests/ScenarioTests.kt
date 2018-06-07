@@ -16,7 +16,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseTest
 class ScenarioTests : DatabaseTest()
 {
     val requiredPermissions = PermissionSet("*/can-login", "*/touchstones.read", "*/scenarios.read", "*/coverage.read")
-    val touchstoneId = "touchstone-1"
+    val touchstoneId = "touchstoneVersion-1"
     val setId = 1
     val scenarioId = "scenario"
 
@@ -59,9 +59,9 @@ class ScenarioTests : DatabaseTest()
         } andCheck {
             assertThat(it).isEqualTo(json {
                 obj(
-                        "touchstone" to obj(
+                        "touchstoneVersion" to obj(
                                 "id" to touchstoneId,
-                                "name" to "touchstone",
+                                "name" to "touchstoneVersion",
                                 "version" to 1,
                                 "description" to "Description",
                                 "status" to "open"
@@ -81,7 +81,7 @@ class ScenarioTests : DatabaseTest()
             coverageSetId: Int = 1
     )
     {
-        it.addTouchstone("touchstone", 1, status = touchstoneStatus, addName = true)
+        it.addTouchstone("touchstoneVersion", 1, status = touchstoneStatus, addName = true)
         it.addScenarioDescription("scenario", "description", "disease", addDisease = true)
         it.addScenarioToTouchstone(touchstoneId, "scenario", id = scenarioId)
         it.addCoverageSet(touchstoneId, "Set 1", "vaccine", "none", "routine",
@@ -95,7 +95,7 @@ class ScenarioTests : DatabaseTest()
         return obj(
                 "id" to "scenario",
                 "description" to "description",
-                "touchstones" to array("touchstone-1"),
+                "touchstones" to array("touchstoneVersion-1"),
                 "disease" to "disease"
         )
     }
@@ -104,7 +104,7 @@ class ScenarioTests : DatabaseTest()
     {
         return array(obj(
                 "id" to setId,
-                "touchstone" to "touchstone-1",
+                "touchstoneVersion" to "touchstoneVersion-1",
                 "name" to "Set 1",
                 "vaccine" to "vaccine",
                 "gavi_support" to "no vaccine",

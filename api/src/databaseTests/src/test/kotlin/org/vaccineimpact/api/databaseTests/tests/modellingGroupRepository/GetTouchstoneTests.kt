@@ -11,15 +11,15 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
 {
     private val diseaseId = "d1"
     private val groupId = "group-1"
-    private val touchstoneName = "touchstone"
-    private val touchstoneId = "touchstone-1"
+    private val touchstoneName = "touchstoneVersion"
+    private val touchstoneId = "touchstoneVersion-1"
 
     @Test
     fun `can get touchstones list for modelling group`()
     {
         val groupId2 = "group-2"
-        val touchstone2Name = "touchstone-2"
-        val touchstone3Name = "touchstone-3"
+        val touchstone2Name = "touchstoneVersion-2"
+        val touchstone3Name = "touchstoneVersion-3"
 
         given {
             setUpDb(it)
@@ -38,9 +38,9 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
             assertThat(touchstones).isInstanceOf(List::class.java)
             assertThat(touchstones).hasSize(2)
             assertThat(touchstones[0])
-                    .isEqualTo(Touchstone(touchstoneId, "touchstone", 1, "descr 1", TouchstoneStatus.OPEN))
+                    .isEqualTo(TouchstoneVersion(touchstoneId, "touchstoneVersion", 1, "descr 1", TouchstoneStatus.OPEN))
             assertThat(touchstones[1])
-                    .isEqualTo(Touchstone("$touchstone2Name-1", touchstone2Name, 1, "descr 2", TouchstoneStatus.OPEN)
+                    .isEqualTo(TouchstoneVersion("$touchstone2Name-1", touchstone2Name, 1, "descr 2", TouchstoneStatus.OPEN)
             )
 
         }

@@ -6,5 +6,5 @@ import org.vaccineimpact.api.app.context.ActionContext
 data class ResponsibilityPath(val groupId: String, val touchstoneId: String, val scenarioId: String)
 {
     constructor(context: ActionContext)
-            : this(context.params(":group-id"), context.params(":touchstone-id"), context.params(":scenario-id"))
+            : this(context.params(":group-id"), context.params(":touchstoneVersion-id"), context.params(":scenario-id"))
 }

@@ -6,13 +6,12 @@ import org.junit.Test
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.db.toDecimalOrNull
 import org.vaccineimpact.api.models.*
 
 class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
 {
     val groupId = "group-1"
-    val touchstoneName = "touchstone"
+    val touchstoneName = "touchstoneVersion"
     val touchstoneVersion = 1
     val touchstoneId = "$touchstoneName-$touchstoneVersion"
     val scenarioId = "scenario-1"
@@ -100,7 +99,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
 
     private fun checkMetadataIsAsExpected(result: ScenarioTouchstoneAndCoverageSets)
     {
-        assertThat(result.touchstone).isEqualTo(Touchstone(
+        assertThat(result.touchstoneVersion).isEqualTo(TouchstoneVersion(
                 touchstoneId, touchstoneName, touchstoneVersion,
                 "description", TouchstoneStatus.OPEN
         ))

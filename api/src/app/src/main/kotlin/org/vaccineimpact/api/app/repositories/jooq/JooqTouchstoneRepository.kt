@@ -16,7 +16,6 @@ import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord
-import org.vaccineimpact.api.db.tables.records.TouchstoneRecord
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.SplitData
@@ -80,7 +79,7 @@ class JooqTouchstoneRepository(
         }.sortedBy { it.name }
     }
 
-    override val touchstones: SimpleDataSet<Touchstone, String>
+    override val touchstones: SimpleDataSet<TouchstoneVersion, String>
         get() = JooqSimpleDataSet.new(dsl, TOUCHSTONE, { it.ID }, { mapTouchstone(it) })
 
     override fun scenarios(touchstoneId: String, filterParams: ScenarioFilterParameters): List<ScenarioAndCoverageSets>
@@ -280,7 +279,7 @@ class JooqTouchstoneRepository(
                     .distinctBy { it[COVERAGE_SET.ID] }
                     .map { mapCoverageSet(it) }
 
-    override fun mapTouchstone(record: Record) = Touchstone(
+    override fun mapTouchstone(record: Record) = TouchstoneVersion(
             record[TOUCHSTONE.ID],
             record[TOUCHSTONE.TOUCHSTONE_NAME],
             record[TOUCHSTONE.VERSION],

@@ -23,7 +23,7 @@ class TouchstoneController(
 
     private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
 
-    fun getTouchstones(): List<Touchstone>
+    fun getTouchstones(): List<TouchstoneVersion>
     {
         var touchstones = repo.touchstones.all()
         touchstones = touchstones.filter { context.isAllowedToSeeTouchstone(it.status) }
@@ -90,7 +90,7 @@ class TouchstoneController(
         val metadata = data.structuredMetadata
         val source = context.params(":source-code")
         val gender = context.queryParams("gender") ?: "both"
-        val filename = "${metadata.touchstone.id}_${source}_${metadata.demographicData.id}_$gender.csv"
+        val filename = "${metadata.touchstoneVersion.id}_${source}_${metadata.demographicData.id}_$gender.csv"
         context.addAttachmentHeader(filename)
 
         return data.tableData
@@ -123,9 +123,9 @@ class TouchstoneController(
         return ScenarioTouchstoneAndCoverageSets(touchstone, data.scenario, data.coverageSets)
     }
 
-    private fun touchstone(context: ActionContext, repo: TouchstoneRepository): Touchstone
+    private fun touchstone(context: ActionContext, repo: TouchstoneRepository): TouchstoneVersion
     {
-        val id = context.params(":touchstone-id")
+        val id = context.params(":touchstoneVersion-id")
         val touchstone = repo.touchstones.get(id)
         if (touchstone.status == TouchstoneStatus.IN_PREPARATION)
         {

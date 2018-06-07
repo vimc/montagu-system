@@ -11,7 +11,7 @@ import org.vaccineimpact.api.validateSchema.JSONValidator
 abstract class BurdenEstimateTests : DatabaseTest()
 {
     protected val groupId = "group-1"
-    protected val touchstoneId = "touchstone-1"
+    protected val touchstoneId = "touchstoneVersion-1"
     protected val scenarioId = "scenario-1"
     protected val groupScope = "modelling-group:$groupId"
     protected val urlBase = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId"
@@ -26,7 +26,7 @@ abstract class BurdenEstimateTests : DatabaseTest()
 
     protected fun setUp(db: JooqContext): ReturnedIds
     {
-        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
+        db.addTouchstone("touchstoneVersion", 1, "TouchstoneVersion 1", addName = true)
         db.addDisease(diseaseId, diseaseName)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = false)
         db.addGroup(groupId, "Test group")

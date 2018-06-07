@@ -48,7 +48,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `cannot close burden estimate set that belongs to other group`()
     {
-        // Create another group that is also responsible for the same scenario in the same touchstone
+        // Create another group that is also responsible for the same scenario in the same touchstoneVersion
         val otherGroup = "other-group"
         withDatabase {
             setupDatabase(it)
@@ -62,12 +62,12 @@ class CloseBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `cannot close burden estimate set with wrong touchstone`()
     {
-        // Create another touchstone in which the modelling group
+        // Create another touchstoneVersion in which the modelling group
         // is also responsible for the same scenario
-        val otherTouchstone = "touchstone-2"
+        val otherTouchstone = "touchstoneVersion-2"
         withDatabase {
             setupDatabase(it)
-            it.addTouchstone("touchstone", 2)
+            it.addTouchstone("touchstoneVersion", 2)
             val responsibilitySet = it.addResponsibilitySet(groupId, otherTouchstone)
             it.addResponsibility(responsibilitySet, otherTouchstone, scenarioId)
         }

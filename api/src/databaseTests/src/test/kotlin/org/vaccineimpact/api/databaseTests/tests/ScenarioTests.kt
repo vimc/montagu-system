@@ -14,7 +14,7 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
     override fun makeRepository(db: JooqContext): ScenarioRepository = JooqScenarioRepository(db.dsl)
 
     private val groupId = "group-1"
-    private val touchstoneId = "touchstone-1"
+    private val touchstoneId = "touchstoneVersion-1"
 
     @Test
     fun `scenarios are returned in order of disease, then activity type`()
@@ -52,7 +52,7 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
     {
         db.addUserForTesting("model.user")
         db.addGroup(groupId, "description")
-        db.addTouchstone("touchstone", 1, "description", "open", addName = true)
+        db.addTouchstone("touchstoneVersion", 1, "description", "open", addName = true)
     }
 
     private fun setUpDisease(db: JooqContext, diseaseId: String)
