@@ -34,7 +34,7 @@ class GroupCoverageControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(false)
         Assertions.assertThatThrownBy {
             GroupCoverageController(context, repo).getCoverageSets()
-        }.hasMessageContaining("Unknown touchstoneVersion")
+        }.hasMessageContaining("Unknown touchstone-version")
     }
 
     @Test
@@ -169,7 +169,7 @@ class GroupCoverageControllerTests : MontaguTests()
 
         Assertions.assertThatThrownBy {
             GroupCoverageController(context, repo).getCoverageData()
-        }.hasMessageContaining("Unknown touchstoneVersion")
+        }.hasMessageContaining("Unknown touchstone-version")
     }
 
     private fun mockContextForSpecificResponsibility(hasPermissions: Boolean): ActionContext

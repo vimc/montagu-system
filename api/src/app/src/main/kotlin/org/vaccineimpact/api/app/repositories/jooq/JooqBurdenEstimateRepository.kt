@@ -456,7 +456,7 @@ class JooqBurdenEstimateRepository(
                 .where(MODELLING_GROUP.ID.eq(groupId))
                 .and(TOUCHSTONE.ID.eq(touchstoneId))
                 .fetchOneInto(Int::class.java)
-                ?: throw UnknownObjectError(touchstoneId, "touchstoneVersion")
+                ?: throw UnknownObjectError(touchstoneId, TouchstoneVersion::class)
     }
 
     private fun <T> findMissingObjects(touchstoneId: String, scenarioId: String): T

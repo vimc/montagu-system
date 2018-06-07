@@ -84,7 +84,7 @@ class ResponsibilityControllerTests : MontaguTests()
 
         Assertions.assertThatThrownBy {
             ResponsibilityController(context, repo).getResponsibilities()
-        }.hasMessageContaining("Unknown touchstoneVersion")
+        }.hasMessageContaining("Unknown touchstone-version")
     }
 
     @Test
@@ -105,7 +105,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(false)
         Assertions.assertThatThrownBy {
             ResponsibilityController(context, repo).getResponsibility()
-        }.hasMessageContaining("Unknown touchstoneVersion")
+        }.hasMessageContaining("Unknown touchstone-version")
     }
 
 

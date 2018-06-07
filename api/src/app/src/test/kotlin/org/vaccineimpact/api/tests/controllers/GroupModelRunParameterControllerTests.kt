@@ -69,7 +69,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         }
         Assertions.assertThatThrownBy {
             GroupModelRunParametersController(context, mockRepository(), mockTouchstoneRepository()).getModelRunParameterSet()
-        }.hasMessageContaining("Unknown touchstoneVersion")
+        }.hasMessageContaining("Unknown touchstone-version")
     }
 
 
