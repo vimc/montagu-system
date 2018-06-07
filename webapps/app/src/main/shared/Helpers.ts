@@ -72,10 +72,33 @@ export const helpers = {
         }
     },
     buildRedirectUrl(redirectPath: String) {
-       return "?redirectUrl=" + encodeURI(settings.montaguUrl() + redirectPath);
+        return "?redirectUrl=" + encodeURI(settings.montaguUrl() + redirectPath);
     }
 };
 
 export const isNonEmptyArray = (arrayData: any[]) => {
     return Array.isArray(arrayData) && arrayData.length;
+};
+export const isNullOrEmptyArray = (arrayData: any[]) => {
+    return !Array.isArray(arrayData) || !arrayData.length;
+};
+
+interface Grouping<TKey, TValue> {
+    key: TKey,
+    values: TValue[]
+}
+
+export function groupBy<TItem>(
+    items: TItem[],
+    groupingFunction: (item: TItem) => string
+): Grouping<string, TItem>[] {
+    const result: { [index: string]: Grouping<string, TItem> } = {};
+    items.forEach(item => {
+        const key = groupingFunction(item);
+        if (!result[key]) {
+            result[key] = {key, values: []};
+        }
+        result[key].values.push(item);
+    });
+    return Object.keys(result).map(x => result[x]);
 }

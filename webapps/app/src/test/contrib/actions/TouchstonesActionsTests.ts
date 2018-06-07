@@ -1,9 +1,9 @@
 import { expect } from "chai";
 
 import { Sandbox } from "../../Sandbox";
-import { touchstonesActionCreators } from "../../../main/contrib/actions/touchstonesActionCreators";
-import { TouchstonesService } from "../../../main/contrib/services/TouchstonesService";
-import { TouchstoneTypes } from "../../../main/contrib/actionTypes/TouchstonesTypes";
+import { contribTouchstonesActionCreators } from "../../../main/contrib/actions/contribTouchstonesActionCreators";
+import { TouchstonesService } from "../../../main/shared/services/TouchstonesService";
+import { TouchstoneTypes } from "../../../main/shared/actionTypes/TouchstonesTypes";
 import {createMockStore} from "../../mocks/mockStore";
 import {mockTouchstone} from "../../mocks/mockModels";
 
@@ -21,10 +21,10 @@ describe("Touchstone actions tests", () => {
         sandbox.setStubFunc(TouchstonesService.prototype, "getTouchstonesByGroupId", ()=>{
             return Promise.resolve([testTouchstone]);
         });
-        store.dispatch(touchstonesActionCreators.getTouchstonesByGroupId('group-1'))
+        store.dispatch(contribTouchstonesActionCreators.getTouchstonesByGroupId('group-1'))
         setTimeout(() => {
             const actions = store.getActions()
-            const expectedPayload = { type: TouchstoneTypes.TOUCHSTONES_FETCHED, data: [testTouchstone] }
+            const expectedPayload = { type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone] }
             expect(actions).to.eql([expectedPayload])
             done();
         });
@@ -35,7 +35,7 @@ describe("Touchstone actions tests", () => {
             touchstones: {touchstones: [testTouchstone]}
         };
         const store = createMockStore(initialState);
-        store.dispatch(touchstonesActionCreators.setCurrentTouchstone("touchstone-1"))
+        store.dispatch(contribTouchstonesActionCreators.setCurrentTouchstone("touchstone-1"))
         setTimeout(() => {
             const actions = store.getActions()
             // console.log(actions);

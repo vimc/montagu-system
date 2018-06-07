@@ -10,8 +10,8 @@ import {
     mockBreadcrumbs, mockCoverageSet, mockDisease, mockModellingGroup, mockResponsibilitySet, mockScenario,
     mockTouchstone
 } from "../../../mocks/mockModels";
-import {TouchstonesService} from "../../../../main/contrib/services/TouchstonesService";
-import {TouchstoneTypes} from "../../../../main/contrib/actionTypes/TouchstonesTypes";
+import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
+import {TouchstoneTypes} from "../../../../main/shared/actionTypes/TouchstonesTypes";
 import {DiseasesService} from "../../../../main/contrib/services/DiseasesService";
 import {ResponsibilitiesService} from "../../../../main/contrib/services/ResponsibilitiesService";
 import {DiseasesTypes} from "../../../../main/contrib/actionTypes/DiseasesTypes";
@@ -93,7 +93,7 @@ describe("Download Coverage Page actions tests", () => {
             const expectedPayload = [
                 { type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup] },
                 { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup },
-                { type: TouchstoneTypes.TOUCHSTONES_FETCHED, data: [testTouchstone]},
+                { type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]},
                 { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
                 { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE, data: testTouchstone},
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},

@@ -14,7 +14,7 @@ import {usersInitialState as adminUsersInitialState} from "../../main/admin/redu
 import {UsersState as AdminUsersState} from "../../main/admin/reducers/usersReducer";
 import {BreadcrumbsState, initialBreadcrumbsState} from "../../main/shared/reducers/breadcrumbsReducer";
 import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
-import {touchstonesInitialState, TouchstonesState} from "../../main/contrib/reducers/touchstonesReducer";
+import {touchstonesInitialState, TouchstonesState} from "../../main/contrib/reducers/contribTouchstonesReducer";
 import {responsibilitiesInitialState, ResponsibilitiesState} from "../../main/contrib/reducers/responsibilitiesReducer";
 import {diseasesInitialState, DiseasesState} from "../../main/contrib/reducers/diseasesReducer";
 import {demographicInitialState, DemographicState} from "../../main/contrib/reducers/demographicReducer";

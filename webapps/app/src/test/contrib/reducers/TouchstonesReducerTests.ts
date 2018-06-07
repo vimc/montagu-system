@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
-import {touchstonesInitialState, touchstonesReducer} from "../../../main/contrib/reducers/touchstonesReducer";
-import { TouchstoneTypes } from "../../../main/contrib/actionTypes/TouchstonesTypes";
+import {touchstonesInitialState, contribTouchstonesReducer} from "../../../main/contrib/reducers/contribTouchstonesReducer";
+import { TouchstoneTypes } from "../../../main/shared/actionTypes/TouchstonesTypes";
 import {mockTouchstone} from "../../mocks/mockModels";
 
 describe('Touchstones reducer tests', () => {
@@ -9,28 +9,28 @@ describe('Touchstones reducer tests', () => {
     const testTouchstone = mockTouchstone({id: "touchstone-1"});
 
     it('sets fetched touchstones', () => {
-        expect(touchstonesReducer(undefined, {
-            type: TouchstoneTypes.TOUCHSTONES_FETCHED,
+        expect(contribTouchstonesReducer(undefined, {
+            type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP,
             data: [testTouchstone]
         })).to.eql({...touchstonesInitialState, touchstones: [testTouchstone]});
     });
 
     it('sets empty fetched touchstones', () => {
-        expect(touchstonesReducer(undefined, {
-            type: TouchstoneTypes.TOUCHSTONES_FETCHED,
+        expect(contribTouchstonesReducer(undefined, {
+            type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP,
             data: null
         })).to.eql(touchstonesInitialState);
     });
 
     it('sets current touchstone', () => {
-        expect(touchstonesReducer(undefined, {
+        expect(contribTouchstonesReducer(undefined, {
             type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
             data: testTouchstone
         })).to.eql({...touchstonesInitialState, currentTouchstone: testTouchstone});
     });
 
     it('sets current touchstone empty', () => {
-        expect(touchstonesReducer(undefined, {
+        expect(contribTouchstonesReducer(undefined, {
             type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
             data: null
         })).to.eql(touchstonesInitialState);

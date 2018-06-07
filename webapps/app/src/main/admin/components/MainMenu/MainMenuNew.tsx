@@ -27,7 +27,7 @@ export class MainMenuNew extends React.Component<PageProperties<undefined>> {
                         <ButtonLink href="/modelling-groups/">Modelling groups</ButtonLink>
                     </li>
                     <li>
-                        <ButtonLink href="/touchstones/">Touchstones</ButtonLink>
+                        <ButtonLink href="/touchstones/">TouchstonesNEW</ButtonLink>
                     </li>
                     <li>
                         <ButtonLink href="/users/">Users and permissions</ButtonLink>
