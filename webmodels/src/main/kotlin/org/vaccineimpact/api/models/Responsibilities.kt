@@ -15,7 +15,7 @@ data class Responsibilities(
 }
 
 data class ResponsibilityAndTouchstone(
-        val touchstoneVersion: TouchstoneVersion,
+        val touchstone: TouchstoneVersion,
         val responsibility: Responsibility
 )
 

@@ -19,7 +19,7 @@ data class DemographicMetadata(
         val source: String?) : HasKey<String>
 
 data class DemographicDataForTouchstone(
-        val touchstoneVersion: TouchstoneVersion,
+        val touchstone: TouchstoneVersion,
         val demographicData: DemographicMetadata
 )
 
