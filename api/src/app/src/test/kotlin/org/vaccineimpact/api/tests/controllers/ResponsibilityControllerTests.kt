@@ -111,7 +111,7 @@ class ResponsibilityControllerTests : MontaguTests()
 
     private val mockTouchstones = listOf(
             TouchstoneVersion("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN),
-            TouchstoneVersion("touchstoneVersion", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
+            TouchstoneVersion("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     )
 
     private fun mockContextForSpecificResponsibility(hasPermissions: Boolean): ActionContext
