@@ -110,7 +110,7 @@ class ResponsibilityControllerTests : MontaguTests()
 
 
     private val mockTouchstones = listOf(
-            TouchstoneVersion("touchstoneVersion-1", "touchstoneVersion", 1, "Description", TouchstoneStatus.OPEN),
+            TouchstoneVersion("touchstone-1", "touchstoneVersion", 1, "Description", TouchstoneStatus.OPEN),
             TouchstoneVersion("touchstoneVersion-bad", "touchstoneVersion", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     )
 

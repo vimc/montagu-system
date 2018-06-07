@@ -32,7 +32,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
 
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstoneVersion-1"
+            on { params(":touchstoneVersion-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
         val repo = mockRepository(modelRunParameterSets = modelRunParameterSets)
@@ -46,7 +46,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     {
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstoneVersion-id") } doReturn "touchstoneVersion-1"
+            on { it.params(":touchstoneVersion-id") } doReturn "touchstone-1"
             on { it.params(":model-run-parameter-set-id") } doReturn "1"
             on { hasPermission(any()) } doReturn true
         }
@@ -98,7 +98,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { username } doReturn "user.name"
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstoneVersion-1"
+            on { params(":touchstoneVersion-id") } doReturn "touchstone-1"
             on { getParts(anyOrNull()) } doReturn MultipartDataMap(
                     "disease" to InMemoryRequestData("disease-1"),
                     "description" to InMemoryRequestData("some description"),
@@ -142,9 +142,9 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         }
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
-            on { it.getModelRunParameterSets(eq("group-1"), eq("touchstoneVersion-1")) } doReturn modelRunParameterSets
+            on { it.getModelRunParameterSets(eq("group-1"), eq("touchstone-1")) } doReturn modelRunParameterSets
             on {
-                it.addModelRunParameterSet(eq("group-1"), eq("touchstoneVersion-1"), eq("disease-1"),
+                it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("disease-1"),
                         eq(modelRuns), eq("user.name"), any())
             } doReturn 11
             on { it.getModelRunParameterSet(any()) } doReturn FlexibleDataTable.new(
@@ -155,7 +155,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     }
 
     private fun mockTouchstones() = mock<SimpleDataSet<TouchstoneVersion, String>> {
-        on { get("touchstoneVersion-1") } doReturn TouchstoneVersion("touchstoneVersion-1", "touchstoneVersion", 1, "Description", TouchstoneStatus.OPEN)
+        on { get("touchstone-1") } doReturn TouchstoneVersion("touchstone-1", "touchstoneVersion", 1, "Description", TouchstoneStatus.OPEN)
         on { get("touchstoneVersion-bad") } doReturn TouchstoneVersion("touchstoneVersion-bad", "touchstoneVersion", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     }
 

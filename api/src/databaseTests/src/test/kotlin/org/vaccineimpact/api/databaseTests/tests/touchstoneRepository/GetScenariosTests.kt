@@ -82,7 +82,7 @@ class GetScenariosTests : TouchstoneRepositoryTests()
     @Test
     fun `scenarios from other touchstones are not returned`()
     {
-        val otherTouchstone = "touchstoneVersion-2"
+        val otherTouchstone = "touchstone-2"
         var goodSet = 0
         given {
             createTouchstoneAndScenarioDescriptions(it)

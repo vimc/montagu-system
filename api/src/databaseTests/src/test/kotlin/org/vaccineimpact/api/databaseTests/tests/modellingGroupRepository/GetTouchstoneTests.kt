@@ -12,14 +12,14 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
     private val diseaseId = "d1"
     private val groupId = "group-1"
     private val touchstoneName = "touchstoneVersion"
-    private val touchstoneId = "touchstoneVersion-1"
+    private val touchstoneId = "touchstone-1"
 
     @Test
     fun `can get touchstones list for modelling group`()
     {
         val groupId2 = "group-2"
-        val touchstone2Name = "touchstoneVersion-2"
-        val touchstone3Name = "touchstoneVersion-3"
+        val touchstone2Name = "touchstone-2"
+        val touchstone3Name = "touchstone-3"
 
         given {
             setUpDb(it)

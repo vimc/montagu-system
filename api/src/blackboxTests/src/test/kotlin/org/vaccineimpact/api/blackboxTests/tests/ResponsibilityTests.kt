@@ -15,7 +15,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class ResponsibilityTests : DatabaseTest()
 {
-    private val touchstoneId = "touchstoneVersion-1"
+    private val touchstoneId = "touchstone-1"
     private val groupId = "awesome-group"
     private val groupScope = "modelling-group:$groupId"
     private val scenarioId = "yf-scenario"
@@ -43,7 +43,7 @@ class ResponsibilityTests : DatabaseTest()
                         "description" to
                                 "description 1",
                         "disease" to "disease-1",
-                        "touchstones" to array("touchstoneVersion-1")
+                        "touchstones" to array("touchstone-1")
                 )
             })
             assertThat(responsibility["status"]).isEqualTo("invalid")
@@ -134,7 +134,7 @@ class ResponsibilityTests : DatabaseTest()
                         "id" to scenarioId,
                         "description" to "description 1",
                         "disease" to "disease-1",
-                        "touchstones" to array("touchstoneVersion-1")
+                        "touchstones" to array("touchstone-1")
                 )
             })
             assertThat(responsibility["status"]).isEqualTo("invalid")

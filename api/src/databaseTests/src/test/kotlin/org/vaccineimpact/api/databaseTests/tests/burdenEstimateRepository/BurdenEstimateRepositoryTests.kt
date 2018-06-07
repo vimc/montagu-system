@@ -49,7 +49,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
 
     protected val scenarioId = "scenario-1"
     protected val groupId = "group-1"
-    protected val touchstoneId = "touchstoneVersion-1"
+    protected val touchstoneId = "touchstone-1"
     protected val modelId = "model-1"
     protected val modelVersion = "version-1"
     protected val username = "some.user"

@@ -42,12 +42,12 @@ class GroupEstimatesControllerTests : MontaguTests()
         }
         val context = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstoneVersion-1"
+            on { params(":touchstoneVersion-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
         assertThat(GroupBurdenEstimatesController(context, repo).getBurdenEstimates())
                 .hasSameElementsAs(data.toList())
-        verify(repo).getBurdenEstimateSets("group-1", "touchstoneVersion-1", "scenario-1")
+        verify(repo).getBurdenEstimateSets("group-1", "touchstone-1", "scenario-1")
     }
 
     @Test
@@ -64,16 +64,16 @@ class GroupEstimatesControllerTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { username } doReturn "username"
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstoneVersion-1"
+            on { params(":touchstoneVersion-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
             on { postData<CreateBurdenEstimateSet>() } doReturn properties
         }
         val url = GroupBurdenEstimatesController(mockContext, repo).createBurdenEstimateSet()
         val after = Instant.now()
-        assertThat(url).endsWith("/modelling-groups/group-1/responsibilities/touchstoneVersion-1/scenario-1/estimate-sets/1/")
-        verify(touchstoneSet).get("touchstoneVersion-1")
+        assertThat(url).endsWith("/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimate-sets/1/")
+        verify(touchstoneSet).get("touchstone-1")
         verify(repo).createBurdenEstimateSet(
-                eq("group-1"), eq("touchstoneVersion-1"), eq("scenario-1"),
+                eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
                 eq(properties),
                 eq("username"),
                 timestamp = check { it > before && it < after })
@@ -164,7 +164,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         val mockPostData = mockCSVPostData(normalCSVData)
         GroupBurdenEstimatesController(mockContext, repo, postDataHelper = mockPostData).populateBurdenEstimateSet()
         verify(repo, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
-                "group-1", "touchstoneVersion-1", "scenario-1")
+                "group-1", "touchstone-1", "scenario-1")
     }
 
     @Test
@@ -174,11 +174,11 @@ class GroupEstimatesControllerTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstoneVersion-1"
+            on { params(":touchstoneVersion-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
         GroupBurdenEstimatesController(mockContext, repo).closeBurdenEstimateSet()
-        verify(repo).closeBurdenEstimateSet(1, "group-1", "touchstoneVersion-1", "scenario-1")
+        verify(repo).closeBurdenEstimateSet(1, "group-1", "touchstone-1", "scenario-1")
     }
 
     @Test
@@ -228,7 +228,7 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstoneVersion-1"
+            on { params(":touchstoneVersion-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
             on { queryParams("keepOpen") } doReturn keepOpen
         }
@@ -245,15 +245,15 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { csvData<T>(any(), any()) } doReturn actualData
         }
         GroupBurdenEstimatesController(actionContext, repo, postDataHelper = postDataHelper).populateBurdenEstimateSet()
-        verify(touchstoneVersionSet).get("touchstoneVersion-1")
+        verify(touchstoneVersionSet).get("touchstone-1")
         verify(repo).populateBurdenEstimateSet(eq(1),
-                eq("group-1"), eq("touchstoneVersion-1"), eq("scenario-1"),
+                eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
                 argWhere { it.toSet() == expectedData.toSet() }
         )
     }
 
     private fun mockTouchstones() = mock<SimpleDataSet<TouchstoneVersion, String>> {
-        on { get("touchstoneVersion-1") } doReturn TouchstoneVersion("touchstoneVersion-1", "touchstoneVersion", 1, "Description", TouchstoneStatus.OPEN)
+        on { get("touchstone-1") } doReturn TouchstoneVersion("touchstone-1", "touchstoneVersion", 1, "Description", TouchstoneStatus.OPEN)
         on { get("touchstoneVersion-bad") } doReturn TouchstoneVersion("touchstoneVersion-bad", "touchstoneVersion", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     }
 
