@@ -183,7 +183,7 @@ class CoverageTests : DatabaseTest()
         val checker = PermissionChecker(url, minimumPermissions + permission, SplitValidator())
         checker.checkPermissionIsRequired(permission,
                 given = { addCoverageData(it, touchstoneStatus = "in-preparation") },
-                expectedProblem = ExpectedProblem("unknown-touchstoneVersion", touchstoneId))
+                expectedProblem = ExpectedProblem("unknown-touchstone-version", touchstoneId))
     }
 
     private fun addCoverageData(db: JooqContext, touchstoneStatus: String,
@@ -193,7 +193,7 @@ class CoverageTests : DatabaseTest()
     {
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
-        db.addTouchstone("touchstoneVersion", 1, "description", touchstoneStatus, addName = true)
+        db.addTouchstone("touchstone", 1, "description", touchstoneStatus, addName = true)
         val setId = db.addResponsibilitySet(groupId, touchstoneId, "submitted")
         db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addCoverageSet(touchstoneId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
@@ -222,7 +222,7 @@ class CoverageTests : DatabaseTest()
     private fun createUnorderedCoverageData(db: JooqContext)
     {
         db.addGroup(groupId, "description")
-        db.addTouchstone("touchstoneVersion", 1, "description", "open", addName = true)
+        db.addTouchstone("touchstone", 1, "description", "open", addName = true)
         db.addScenarioDescription(scenarioId, "Blue Fever Scenario", "BF", addDisease = true)
         db.addVaccine("BF", "Blue Fever")
         db.addVaccine("AF", "Alpha Fever")

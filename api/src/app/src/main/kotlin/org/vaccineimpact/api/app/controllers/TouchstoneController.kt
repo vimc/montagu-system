@@ -90,7 +90,7 @@ class TouchstoneController(
         val metadata = data.structuredMetadata
         val source = context.params(":source-code")
         val gender = context.queryParams("gender") ?: "both"
-        val filename = "${metadata.touchstoneVersion.id}_${source}_${metadata.demographicData.id}_$gender.csv"
+        val filename = "${metadata.touchstone.id}_${source}_${metadata.demographicData.id}_$gender.csv"
         context.addAttachmentHeader(filename)
 
         return data.tableData
@@ -125,7 +125,7 @@ class TouchstoneController(
 
     private fun touchstone(context: ActionContext, repo: TouchstoneRepository): TouchstoneVersion
     {
-        val id = context.params(":touchstoneVersion-id")
+        val id = context.params(":touchstone-version-id")
         val touchstone = repo.touchstones.get(id)
         if (touchstone.status == TouchstoneStatus.IN_PREPARATION)
         {

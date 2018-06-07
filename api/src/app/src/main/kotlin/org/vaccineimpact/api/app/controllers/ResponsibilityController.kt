@@ -32,7 +32,7 @@ class ResponsibilityController(
     fun getResponsibilities(): Responsibilities
     {
         val groupId = groupId(context)
-        val touchstoneId = context.params(":touchstoneVersion-id")
+        val touchstoneId = context.params(":touchstone-version-id")
         val filterParameters = ScenarioFilterParameters.fromContext(context)
 
         val data = repo.getResponsibilities(groupId, touchstoneId, filterParameters)
@@ -44,7 +44,7 @@ class ResponsibilityController(
     {
         val path = ResponsibilityPath(context)
         val data = repo.getResponsibility(path.groupId, path.touchstoneId, path.scenarioId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstoneVersion.status)
+        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstone.status)
         return data
     }
 

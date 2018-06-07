@@ -59,9 +59,9 @@ class ScenarioTests : DatabaseTest()
         } andCheck {
             assertThat(it).isEqualTo(json {
                 obj(
-                        "touchstoneVersion" to obj(
+                        "touchstone" to obj(
                                 "id" to touchstoneId,
-                                "name" to "touchstoneVersion",
+                                "name" to "touchstone",
                                 "version" to 1,
                                 "description" to "Description",
                                 "status" to "open"
@@ -104,7 +104,7 @@ class ScenarioTests : DatabaseTest()
     {
         return array(obj(
                 "id" to setId,
-                "touchstoneVersion" to "touchstone-1",
+                "touchstone" to "touchstone-1",
                 "name" to "Set 1",
                 "vaccine" to "vaccine",
                 "gavi_support" to "no vaccine",

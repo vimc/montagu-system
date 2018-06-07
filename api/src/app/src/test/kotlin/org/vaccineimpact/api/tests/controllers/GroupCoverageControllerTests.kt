@@ -52,7 +52,7 @@ class GroupCoverageControllerTests : MontaguTests()
         val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstoneVersion-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
             on { it.queryParams("format") } doReturn "long"
             on { hasPermission(any()) } doReturn true
@@ -92,7 +92,7 @@ class GroupCoverageControllerTests : MontaguTests()
 
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstoneVersion-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
             on { it.queryParams("format") } doReturn "wide"
             on { hasPermission(any()) } doReturn true
@@ -130,7 +130,7 @@ class GroupCoverageControllerTests : MontaguTests()
 
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstoneVersion-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
             on { it.queryParams("format") } doReturn "wide"
             on { hasPermission(any()) } doReturn true
@@ -150,7 +150,7 @@ class GroupCoverageControllerTests : MontaguTests()
         val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstoneVersion-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
             on { it.queryParams("format") } doReturn "78493hfjk"
             on { hasPermission(any()) } doReturn true
@@ -176,7 +176,7 @@ class GroupCoverageControllerTests : MontaguTests()
     {
         return mock {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstoneVersion-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
             on { hasPermission(any()) } doReturn hasPermissions
         }

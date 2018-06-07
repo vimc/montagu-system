@@ -42,7 +42,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         }
         val context = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstone-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
         assertThat(GroupBurdenEstimatesController(context, repo).getBurdenEstimates())
@@ -64,7 +64,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { username } doReturn "username"
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstone-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
             on { postData<CreateBurdenEstimateSet>() } doReturn properties
         }
@@ -174,7 +174,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstone-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
         GroupBurdenEstimatesController(mockContext, repo).closeBurdenEstimateSet()
@@ -228,7 +228,7 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstone-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
             on { queryParams("keepOpen") } doReturn keepOpen
         }
