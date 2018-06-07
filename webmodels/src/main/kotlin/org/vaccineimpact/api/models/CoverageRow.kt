@@ -18,7 +18,7 @@ data class ScenarioAndCoverageSets(
 )
 
 data class ScenarioTouchstoneAndCoverageSets(
-        val touchstone: Touchstone,
+        val touchstoneVersion: TouchstoneVersion,
         val scenario: Scenario,
         val coverageSets: List<CoverageSet>
 )
