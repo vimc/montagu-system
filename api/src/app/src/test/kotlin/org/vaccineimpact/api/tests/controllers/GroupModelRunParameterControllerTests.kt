@@ -155,8 +155,8 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     }
 
     private fun mockTouchstones() = mock<SimpleDataSet<TouchstoneVersion, String>> {
-        on { get("touchstone-1") } doReturn TouchstoneVersion("touchstone-1", "touchstoneVersion", 1, "Description", TouchstoneStatus.OPEN)
-        on { get("touchstoneVersion-bad") } doReturn TouchstoneVersion("touchstoneVersion-bad", "touchstoneVersion", 1, "not open", TouchstoneStatus.IN_PREPARATION)
+        on { get("touchstone-1") } doReturn TouchstoneVersion("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
+        on { get("touchstoneVersion-bad") } doReturn TouchstoneVersion("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     }
 
     private fun mockTouchstoneRepository(): TouchstoneRepository

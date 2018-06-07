@@ -141,7 +141,7 @@ class GetResponsibilityTests : ModellingGroupRepositoryTests()
         } check { repo ->
             val data = repo.getResponsibility("group-1", "touchstone-1", "scenario-1")
             assertThat(data).isEqualTo(org.vaccineimpact.api.models.ResponsibilityAndTouchstone(
-                    TouchstoneVersion("touchstone-1", "touchstoneVersion", 1, "description", TouchstoneStatus.OPEN),
+                    TouchstoneVersion("touchstone-1", "touchstone", 1, "description", TouchstoneStatus.OPEN),
                     Responsibility(
                             Scenario("scenario-1", "description", "disease", listOf("touchstone-1")),
                             ResponsibilityStatus.EMPTY, emptyList(), null
