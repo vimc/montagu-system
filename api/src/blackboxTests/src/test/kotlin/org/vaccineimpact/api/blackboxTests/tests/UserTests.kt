@@ -174,7 +174,7 @@ class UserTests : DatabaseTest()
             it.addUserWithRoles("testuser",
                     ReifiedRole("member", Scope.Specific("modelling-group", "group")),
                     ReifiedRole("member", Scope.Specific("modelling-group", "group2")),
-                    ReifiedRole("touchstoneVersion-preparer", Scope.Global()))
+                    ReifiedRole("touchstone-preparer", Scope.Global()))
         } withPermissions {
             PermissionSet("*/users.read", "*/roles.read")
         } andCheck {
@@ -187,7 +187,7 @@ class UserTests : DatabaseTest()
                         "last_logged_in" to null,
                         "roles" to array(
                                 obj(
-                                        "name" to "touchstoneVersion-preparer",
+                                        "name" to "touchstone-preparer",
                                         "scope_id" to "",
                                         "scope_prefix" to null),
                                 obj(
@@ -214,7 +214,7 @@ class UserTests : DatabaseTest()
                     ReifiedRole("member", Scope.Specific("modelling-group", "group")),
                     ReifiedRole("member", Scope.Specific("modelling-group", "group2")),
                     ReifiedRole("test", Scope.Specific("fake", "group")),
-                    ReifiedRole("touchstoneVersion-preparer", Scope.Global()))
+                    ReifiedRole("touchstone-preparer", Scope.Global()))
 
         } withPermissions {
             PermissionSet("*/users.read", "modelling-group:group/roles.read")

@@ -63,7 +63,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     {
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstoneVersion-id") } doReturn "touchstoneVersion-bad"
+            on { it.params(":touchstoneVersion-id") } doReturn "touchstone-bad"
             on { it.params(":model-run-parameter-set-id") } doReturn "1"
             on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn false
         }
@@ -78,7 +78,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     {
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstoneVersion-bad"
+            on { params(":touchstoneVersion-id") } doReturn "touchstone-bad"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
 
@@ -120,7 +120,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         val uploaded = StringReader("disease-1")
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstoneVersion-bad"
+            on { params(":touchstoneVersion-id") } doReturn "touchstone-bad"
             on { getPart(eq("disease"), anyOrNull()) } doReturn uploaded
         }
         val touchstoneSet = mockTouchstones()
@@ -156,7 +156,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
 
     private fun mockTouchstones() = mock<SimpleDataSet<TouchstoneVersion, String>> {
         on { get("touchstone-1") } doReturn TouchstoneVersion("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
-        on { get("touchstoneVersion-bad") } doReturn TouchstoneVersion("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
+        on { get("touchstone-bad") } doReturn TouchstoneVersion("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     }
 
     private fun mockTouchstoneRepository(): TouchstoneRepository
