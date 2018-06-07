@@ -60,7 +60,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     protected fun setupDatabase(db: JooqContext, addModel: Boolean = true,
                                 responsibilitySetStatus: String = "incomplete"): ReturnedIds
     {
-        db.addTouchstone("touchstoneVersion", 1, "TouchstoneVersion 1", addName = true)
+        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
         db.addDisease(diseaseId, diseaseName)
         db.addScenarioDescription(scenarioId, "Test scenario", diseaseId, addDisease = false)
         db.addGroup(groupId, "Test group")
@@ -93,7 +93,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     protected fun setupDatabaseWithModelRunParameterSet(db: JooqContext,
                                                         responsibilitySetStatus: String = "incomplete"): ReturnedIds
     {
-        db.addTouchstone("touchstoneVersion", 1, "TouchstoneVersion 1", addName = true)
+        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
         db.addGroup(groupId, "Test group")
 
@@ -111,7 +111,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
 
     protected fun setupDatabaseWithModelRunParameterSetValues(db: JooqContext)
     {
-        db.addTouchstone("touchstoneVersion", 1, "TouchstoneVersion 1", addName = true)
+        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
         db.addGroup(groupId, "Test group")
 

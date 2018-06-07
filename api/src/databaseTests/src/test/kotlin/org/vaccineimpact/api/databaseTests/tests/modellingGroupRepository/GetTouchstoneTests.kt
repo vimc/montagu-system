@@ -11,7 +11,7 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
 {
     private val diseaseId = "d1"
     private val groupId = "group-1"
-    private val touchstoneName = "touchstoneVersion"
+    private val touchstoneName = "touchstone"
     private val touchstoneId = "touchstone-1"
 
     @Test
