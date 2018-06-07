@@ -21,7 +21,7 @@ class DemographicTests : DatabaseTest()
 {
     val requiredPermissions = PermissionSet("*/can-login", "*/touchstones.read", "*/demographics.read")
     val touchstoneId = "touchstone-1"
-    val touchstoneName = "touchstoneVersion"
+    val touchstoneName = "touchstone"
     val touchstoneVersion = 1
     val url = "/touchstones/$touchstoneId/demographics/unwpp2015/tot-pop/"
     val fertilityUrl = "/touchstones/$touchstoneId/demographics/unwpp2015/as-fert/"

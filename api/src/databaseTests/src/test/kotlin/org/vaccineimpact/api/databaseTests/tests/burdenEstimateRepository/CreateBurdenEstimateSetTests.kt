@@ -103,7 +103,7 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             assertThatThrownBy {
                 repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             }.isInstanceOf(InvalidOperationError::class.java)
-                    .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstoneVersion have been submitted for review." +
+                    .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been submitted for review." +
                             " You cannot upload any new estimates.")
         }
     }
@@ -117,7 +117,7 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             assertThatThrownBy {
                 repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
             }.isInstanceOf(InvalidOperationError::class.java)
-                    .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstoneVersion have been reviewed and approved." +
+                    .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been reviewed and approved." +
                             " You cannot upload any new estimates.")
         }
     }

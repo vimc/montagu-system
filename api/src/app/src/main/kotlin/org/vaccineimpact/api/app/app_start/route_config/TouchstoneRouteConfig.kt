@@ -19,27 +19,27 @@ object TouchstoneRouteConfig : RouteConfig
                     .json()
                     .secure(permissions),
 
-            Endpoint("$baseUrl:touchstoneVersion-id/scenarios/", controller, "getScenarios")
+            Endpoint("$baseUrl:touchstone-version-id/scenarios/", controller, "getScenarios")
                     .json()
                     .secure(scenarioPermissions),
 
-            Endpoint("$baseUrl:touchstoneVersion-id/scenarios/:scenario-id/", controller, "getScenario")
+            Endpoint("$baseUrl:touchstone-version-id/scenarios/:scenario-id/", controller, "getScenario")
                     .json()
                     .secure(scenarioPermissions),
 
-            Endpoint("$baseUrl:touchstoneVersion-id/demographics/", controller, "getDemographicDatasets")
+            Endpoint("$baseUrl:touchstone-version-id/demographics/", controller, "getDemographicDatasets")
                     .json()
                     .secure(demographicPermissions),
 
-            Endpoint("$baseUrl:touchstoneVersion-id/demographics/:source-code/:type-code/", controller, "getDemographicDataAndMetadata")
+            Endpoint("$baseUrl:touchstone-version-id/demographics/:source-code/:type-code/", controller, "getDemographicDataAndMetadata")
                     .json().streamed()
                     .secure(demographicPermissions),
 
-            Endpoint("$baseUrl:touchstoneVersion-id/demographics/:source-code/:type-code/", controller, "getDemographicData")
+            Endpoint("$baseUrl:touchstone-version-id/demographics/:source-code/:type-code/", controller, "getDemographicData")
                     .csv().streamed()
                     .secure(demographicPermissions),
 
-            Endpoint("$baseUrl:touchstoneVersion-id/demographics/:source-code/:type-code/get_onetime_link/",
+            Endpoint("$baseUrl:touchstone-version-id/demographics/:source-code/:type-code/get_onetime_link/",
                     OneTimeLinkController::class, "getTokenForDemographicData")
                     .json()
                     .secure(demographicPermissions)

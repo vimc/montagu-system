@@ -26,7 +26,7 @@ abstract class BurdenEstimateTests : DatabaseTest()
 
     protected fun setUp(db: JooqContext): ReturnedIds
     {
-        db.addTouchstone("touchstoneVersion", 1, "TouchstoneVersion 1", addName = true)
+        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
         db.addDisease(diseaseId, diseaseName)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = false)
         db.addGroup(groupId, "Test group")

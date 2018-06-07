@@ -14,7 +14,7 @@ fun ActionContext.checkIsAllowedToSeeTouchstone(touchstoneId: String, touchstone
     val permission = ReifiedPermission("touchstones.prepare", Scope.Global())
     if (touchstoneStatus == TouchstoneStatus.IN_PREPARATION && !this.hasPermission(permission))
     {
-        throw UnknownObjectError(touchstoneId, "TouchstoneVersion")
+        throw UnknownObjectError(touchstoneId, TouchstoneVersion::class)
     }
 }
 

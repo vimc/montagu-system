@@ -57,7 +57,7 @@ class ResponsibilityControllerTests : MontaguTests()
         }
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstoneVersion-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { hasPermission(any()) } doReturn true
         }
 
@@ -78,13 +78,13 @@ class ResponsibilityControllerTests : MontaguTests()
         }
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstoneVersion-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { hasPermission(any()) } doReturn false
         }
 
         Assertions.assertThatThrownBy {
             ResponsibilityController(context, repo).getResponsibilities()
-        }.hasMessageContaining("Unknown touchstoneVersion")
+        }.hasMessageContaining("Unknown touchstone-version")
     }
 
     @Test
@@ -105,7 +105,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(false)
         Assertions.assertThatThrownBy {
             ResponsibilityController(context, repo).getResponsibility()
-        }.hasMessageContaining("Unknown touchstoneVersion")
+        }.hasMessageContaining("Unknown touchstone-version")
     }
 
 
@@ -118,7 +118,7 @@ class ResponsibilityControllerTests : MontaguTests()
     {
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstoneVersion-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
             on { hasPermission(any()) } doReturn hasPermissions
         }

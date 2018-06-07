@@ -75,14 +75,14 @@ class TouchstoneControllerTests : MontaguTests()
 
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstoneVersion-id") } doReturn openTouchstone.id
+            on { params(":touchstone-version-id") } doReturn openTouchstone.id
             on { params(":scenario-id") } doReturn scenario.id
         }
 
         val data = TouchstoneController(context, repo).getScenario()
 
         verify(repo).getScenario(eq(openTouchstone.id), eq(scenario.id))
-        assertThat(data.touchstoneVersion).isEqualTo(openTouchstone)
+        assertThat(data.touchstone).isEqualTo(openTouchstone)
         assertThat(data.scenario).isEqualTo(scenario)
         assertThat(data.coverageSets).hasSameElementsAs(coverageSets)
     }
@@ -95,7 +95,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { getScenario(any(), any()) } doReturn ScenarioAndCoverageSets(scenario, emptyList())
         }
         val context = mock<ActionContext> {
-            on { params(":touchstoneVersion-id") } doReturn inPrepTouchstone.id
+            on { params(":touchstone-version-id") } doReturn inPrepTouchstone.id
             on { params(":scenario-id") } doReturn scenario.id
         }
         TouchstoneController(context, repo).getScenario()
@@ -117,7 +117,7 @@ class TouchstoneControllerTests : MontaguTests()
 
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstoneVersion-id") } doReturn openTouchstone.id
+            on { params(":touchstone-version-id") } doReturn openTouchstone.id
             on { params(":type-code") } doReturn type
             on { params(":source-code") } doReturn source
         }
@@ -133,7 +133,7 @@ class TouchstoneControllerTests : MontaguTests()
 
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstoneVersion-id") } doReturn openTouchstone.id
+            on { params(":touchstone-version-id") } doReturn openTouchstone.id
             on { params(":type-code") } doReturn type
             on { params(":source-code") } doReturn source
             on { queryParams("format") } doReturn "wide"
@@ -164,7 +164,7 @@ class TouchstoneControllerTests : MontaguTests()
 
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstoneVersion-id") } doReturn openTouchstone.id
+            on { params(":touchstone-version-id") } doReturn openTouchstone.id
             on { params(":type-code") } doReturn type
             on { params(":source-code") } doReturn source
             on { queryParams("format") } doReturn "long"
@@ -183,7 +183,7 @@ class TouchstoneControllerTests : MontaguTests()
 
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstoneVersion-id") } doReturn openTouchstone.id
+            on { params(":touchstone-version-id") } doReturn openTouchstone.id
             on { params(":type-code") } doReturn type
             on { params(":source-code") } doReturn source
             on { queryParams("format") } doReturn "678hj"

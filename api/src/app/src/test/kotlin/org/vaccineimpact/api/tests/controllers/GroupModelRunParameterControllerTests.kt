@@ -32,7 +32,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
 
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstone-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
         val repo = mockRepository(modelRunParameterSets = modelRunParameterSets)
@@ -46,7 +46,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     {
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstoneVersion-id") } doReturn "touchstone-1"
+            on { it.params(":touchstone-version-id") } doReturn "touchstone-1"
             on { it.params(":model-run-parameter-set-id") } doReturn "1"
             on { hasPermission(any()) } doReturn true
         }
@@ -63,13 +63,13 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     {
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstoneVersion-id") } doReturn "touchstone-bad"
+            on { it.params(":touchstone-version-id") } doReturn "touchstone-bad"
             on { it.params(":model-run-parameter-set-id") } doReturn "1"
             on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn false
         }
         Assertions.assertThatThrownBy {
             GroupModelRunParametersController(context, mockRepository(), mockTouchstoneRepository()).getModelRunParameterSet()
-        }.hasMessageContaining("Unknown touchstoneVersion")
+        }.hasMessageContaining("Unknown touchstone-version")
     }
 
 
@@ -78,7 +78,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     {
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstone-bad"
+            on { params(":touchstone-version-id") } doReturn "touchstone-bad"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
 
@@ -98,7 +98,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { username } doReturn "user.name"
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstone-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { getParts(anyOrNull()) } doReturn MultipartDataMap(
                     "disease" to InMemoryRequestData("disease-1"),
                     "description" to InMemoryRequestData("some description"),
@@ -120,7 +120,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
         val uploaded = StringReader("disease-1")
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstoneVersion-id") } doReturn "touchstone-bad"
+            on { params(":touchstone-version-id") } doReturn "touchstone-bad"
             on { getPart(eq("disease"), anyOrNull()) } doReturn uploaded
         }
         val touchstoneSet = mockTouchstones()
