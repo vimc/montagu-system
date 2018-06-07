@@ -23,7 +23,7 @@ class TouchstoneController(
 
     private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
 
-    fun getTouchstones(): List<TouchstoneVersion>
+    fun getTouchstones(): List<Touchstone>
     {
         return repo.getTouchstones()
                 .map { it.copy(versions = filteredVersions(it.versions)) }

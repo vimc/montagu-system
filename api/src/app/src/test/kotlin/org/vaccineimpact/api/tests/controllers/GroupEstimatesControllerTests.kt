@@ -259,7 +259,7 @@ class GroupEstimatesControllerTests : MontaguTests()
 
     private fun mockTouchstoneRepository(touchstoneVersionSet: SimpleDataSet<TouchstoneVersion, String> = mockTouchstones()) =
             mock<TouchstoneRepository> {
-                on { touchstones } doReturn touchstoneVersionSet
+                on { touchstoneVersions } doReturn touchstoneVersionSet
             }
 
     private fun mockRepository(

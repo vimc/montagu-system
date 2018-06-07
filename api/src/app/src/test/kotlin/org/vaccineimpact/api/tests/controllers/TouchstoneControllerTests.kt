@@ -18,8 +18,14 @@ import java.math.BigDecimal
 
 class TouchstoneControllerTests : MontaguTests()
 {
-    private val openTouchstone = TouchstoneVersion("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
-    private val inPrepTouchstone = TouchstoneVersion("t-2", "t", 2, "description", TouchstoneStatus.IN_PREPARATION)
+    private val openTouchstoneVersion = TouchstoneVersion("t-1", "t", 1, "description", TouchstoneStatus.OPEN)
+    private val inPrepTouchstoneVersion = TouchstoneVersion("t-2", "t", 2, "description", TouchstoneStatus.IN_PREPARATION)
+    private val touchstone = Touchstone(
+            id = "t",
+            description = "touchstone description",
+            comment = "comment",
+            versions = listOf(openTouchstoneVersion, inPrepTouchstoneVersion)
+    )
     private val source = "test-source"
     private val type = "test-type"
     private val scenario = Scenario("id", "desc", "disease", listOf("t1, t2"))
@@ -27,11 +33,14 @@ class TouchstoneControllerTests : MontaguTests()
     @Test
     fun `getTouchstones returns touchstones`()
     {
-        val touchstones = listOf(
-                openTouchstone
-        )
+        val touchstones = listOf(Touchstone(
+                id = "t",
+                description = "touchstone description",
+                comment = "comment",
+                versions = listOf(openTouchstoneVersion)
+        ))
         val repo = mock<TouchstoneRepository> {
-            on { this.touchstones } doReturn InMemoryDataSet(touchstones)
+            on { this.getTouchstones() } doReturn listOf(touchstone)
         }
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
@@ -45,10 +54,10 @@ class TouchstoneControllerTests : MontaguTests()
     fun `getTouchstones filters out in-preparation touchstones if the user doesn't have the permissions`()
     {
         val touchstones = listOf(
-                openTouchstone, inPrepTouchstone
+                openTouchstoneVersion, inPrepTouchstoneVersion
         )
         val repo = mock<TouchstoneRepository> {
-            on { this.touchstones } doReturn InMemoryDataSet(touchstones)
+            on { this.touchstoneVersions } doReturn InMemoryDataSet(touchstones)
         }
 
         val permissiveContext = mock<ActionContext> {
@@ -70,19 +79,19 @@ class TouchstoneControllerTests : MontaguTests()
 
         val repo = mock<TouchstoneRepository> {
             on { getScenario(any(), any()) } doReturn result
-            on { touchstones } doReturn InMemoryDataSet(listOf(openTouchstone))
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
         }
 
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstone-version-id") } doReturn openTouchstone.id
+            on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
             on { params(":scenario-id") } doReturn scenario.id
         }
 
         val data = TouchstoneController(context, repo).getScenario()
 
-        verify(repo).getScenario(eq(openTouchstone.id), eq(scenario.id))
-        assertThat(data.touchstone).isEqualTo(openTouchstone)
+        verify(repo).getScenario(eq(openTouchstoneVersion.id), eq(scenario.id))
+        assertThat(data.touchstone).isEqualTo(openTouchstoneVersion)
         assertThat(data.scenario).isEqualTo(scenario)
         assertThat(data.coverageSets).hasSameElementsAs(coverageSets)
     }
@@ -91,11 +100,11 @@ class TouchstoneControllerTests : MontaguTests()
     fun `getScenario requires touchstones prepare permission for in-preparation touchstone`()
     {
         val repo = mock<TouchstoneRepository> {
-            on { touchstones } doReturn InMemoryDataSet(listOf(inPrepTouchstone))
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(inPrepTouchstoneVersion))
             on { getScenario(any(), any()) } doReturn ScenarioAndCoverageSets(scenario, emptyList())
         }
         val context = mock<ActionContext> {
-            on { params(":touchstone-version-id") } doReturn inPrepTouchstone.id
+            on { params(":touchstone-version-id") } doReturn inPrepTouchstoneVersion.id
             on { params(":scenario-id") } doReturn scenario.id
         }
         TouchstoneController(context, repo).getScenario()
@@ -106,18 +115,18 @@ class TouchstoneControllerTests : MontaguTests()
     @Test
     fun `getDemographicData fetches from repository`()
     {
-        val demographicMetadata = DemographicDataForTouchstone(openTouchstone,
+        val demographicMetadata = DemographicDataForTouchstone(openTouchstoneVersion,
                 DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
 
         val repo = mock<TouchstoneRepository> {
-            on { getDemographicData(type, source, openTouchstone.id) } doReturn
+            on { getDemographicData(type, source, openTouchstoneVersion.id) } doReturn
                     SplitData(demographicMetadata, DataTable.new(emptySequence()))
-            on { touchstones } doReturn InMemoryDataSet(listOf(openTouchstone))
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
         }
 
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstone-version-id") } doReturn openTouchstone.id
+            on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
             on { params(":type-code") } doReturn type
             on { params(":source-code") } doReturn source
         }
@@ -133,7 +142,7 @@ class TouchstoneControllerTests : MontaguTests()
 
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstone-version-id") } doReturn openTouchstone.id
+            on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
             on { params(":type-code") } doReturn type
             on { params(":source-code") } doReturn source
             on { queryParams("format") } doReturn "wide"
@@ -164,7 +173,7 @@ class TouchstoneControllerTests : MontaguTests()
 
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstone-version-id") } doReturn openTouchstone.id
+            on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
             on { params(":type-code") } doReturn type
             on { params(":source-code") } doReturn source
             on { queryParams("format") } doReturn "long"
@@ -183,7 +192,7 @@ class TouchstoneControllerTests : MontaguTests()
 
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
-            on { params(":touchstone-version-id") } doReturn openTouchstone.id
+            on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
             on { params(":type-code") } doReturn type
             on { params(":source-code") } doReturn source
             on { queryParams("format") } doReturn "678hj"
@@ -196,7 +205,7 @@ class TouchstoneControllerTests : MontaguTests()
 
     private fun getRepoWithDemographicData(): TouchstoneRepository
     {
-        val demographicMetadata = DemographicDataForTouchstone(openTouchstone,
+        val demographicMetadata = DemographicDataForTouchstone(openTouchstoneVersion,
                 DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
 
         val fakeRows = sequenceOf(
@@ -209,9 +218,9 @@ class TouchstoneControllerTests : MontaguTests()
         )
 
         return mock<TouchstoneRepository> {
-            on { getDemographicData(type, source, openTouchstone.id) } doReturn
+            on { getDemographicData(type, source, openTouchstoneVersion.id) } doReturn
                     SplitData(demographicMetadata, DataTable.new(fakeRows))
-            on { touchstones } doReturn InMemoryDataSet(listOf(openTouchstone))
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
         }
     }
 }
