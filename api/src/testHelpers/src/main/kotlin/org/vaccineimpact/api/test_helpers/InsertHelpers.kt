@@ -82,12 +82,12 @@ fun JooqContext.addModelVersion(
     return record.id
 }
 
-fun JooqContext.addTouchstoneName(id: String, description: String)
+fun JooqContext.addTouchstoneName(id: String, description: String, comment: String = "Comment")
 {
     this.dsl.newRecord(TOUCHSTONE_NAME).apply {
         this.id = id
         this.description = description
-        this.comment = "Comment"
+        this.comment = comment
     }.store()
 }
 

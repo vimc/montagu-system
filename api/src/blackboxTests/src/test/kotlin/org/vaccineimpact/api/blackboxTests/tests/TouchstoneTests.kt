@@ -6,6 +6,7 @@ import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addTouchstone
+import org.vaccineimpact.api.db.direct.addTouchstoneName
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
@@ -13,8 +14,9 @@ class TouchstoneTests : DatabaseTest()
 {
     private fun JooqContext.setupTouchstones()
     {
-        addTouchstone("open", 6, "description-1", "open", addName = true)
-        addTouchstone("prep", 1, "description-2", "in-preparation", addName = true)
+        addTouchstoneName("touchstone", "touchstone-description", comment = "comment")
+        addTouchstone("touchstone", 1, "description-1", "open")
+        addTouchstone("touchstone", 2, "description-2", "in-preparation")
     }
 
     @Test
@@ -28,11 +30,18 @@ class TouchstoneTests : DatabaseTest()
             assertThat(it).isEqualTo(json {
                 array(
                         obj(
-                                "id" to "open-6",
-                                "name" to "open",
-                                "version" to 6,
-                                "status" to "open",
-                                "description" to "description-1"
+                                "id" to "touchstone",
+                                "description" to "touchstone-description",
+                                "comment" to "comment",
+                                "versions" to array(
+                                        obj(
+                                                "id" to "touchstone-1",
+                                                "name" to "touchstone",
+                                                "version" to 1,
+                                                "status" to "open",
+                                                "description" to "description-1"
+                                        )
+                                )
                         )
                 )
             })
@@ -47,23 +56,29 @@ class TouchstoneTests : DatabaseTest()
         } withPermissions {
             PermissionSet("*/touchstones.read", "*/touchstones.prepare")
         } andCheckArray {
-            assertThat(it.size).isEqualTo(2)
-            assertThat(it).contains(json {
-                obj(
-                        "id" to "open-6",
-                        "name" to "open",
-                        "version" to 6,
-                        "status" to "open",
-                        "description" to "description-1"
-                )
-            })
-            assertThat(it).contains(json {
-                obj(
-                        "id" to "prep-1",
-                        "name" to "prep",
-                        "version" to 1,
-                        "status" to "in-preparation",
-                        "description" to "description-2"
+            assertThat(it).isEqualTo(json {
+                array(
+                        obj(
+                                "id" to "touchstone",
+                                "description" to "touchstone-description",
+                                "comment" to "comment",
+                                "versions" to array(
+                                        obj(
+                                                "id" to "touchstone-2",
+                                                "name" to "touchstone",
+                                                "version" to 2,
+                                                "status" to "in-preparation",
+                                                "description" to "description-2"
+                                        ),
+                                        obj(
+                                                "id" to "touchstone-1",
+                                                "name" to "touchstone",
+                                                "version" to 1,
+                                                "status" to "open",
+                                                "description" to "description-1"
+                                        )
+                                )
+                        )
                 )
             })
         }

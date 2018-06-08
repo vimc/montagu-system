@@ -299,7 +299,7 @@ class JooqTouchstoneRepository(
                 shared[TOUCHSTONE_NAME.ID],
                 shared[TOUCHSTONE_NAME.DESCRIPTION],
                 shared[TOUCHSTONE_NAME.COMMENT],
-                versions = records.map(this::mapTouchstoneVersion)
+                versions = records.map(this::mapTouchstoneVersion).sortedByDescending { it.version }
         )
     }
 
