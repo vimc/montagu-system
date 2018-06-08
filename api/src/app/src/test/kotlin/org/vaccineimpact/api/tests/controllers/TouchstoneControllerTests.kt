@@ -33,12 +33,6 @@ class TouchstoneControllerTests : MontaguTests()
     @Test
     fun `getTouchstones returns touchstones`()
     {
-        val touchstones = listOf(Touchstone(
-                id = "t",
-                description = "touchstone description",
-                comment = "comment",
-                versions = listOf(openTouchstoneVersion)
-        ))
         val repo = mock<TouchstoneRepository> {
             on { this.getTouchstones() } doReturn listOf(touchstone)
         }
@@ -47,28 +41,30 @@ class TouchstoneControllerTests : MontaguTests()
         }
 
         val controller = TouchstoneController(context, repo)
-        assertThat(controller.getTouchstones()).hasSameElementsAs(touchstones)
+        assertThat(controller.getTouchstones()).hasSameElementsAs(listOf(touchstone))
     }
 
     @Test
     fun `getTouchstones filters out in-preparation touchstones if the user doesn't have the permissions`()
     {
-        val touchstones = listOf(
-                openTouchstoneVersion, inPrepTouchstoneVersion
-        )
         val repo = mock<TouchstoneRepository> {
-            on { this.touchstoneVersions } doReturn InMemoryDataSet(touchstones)
+            on { this.getTouchstones() } doReturn listOf(touchstone)
         }
 
         val permissiveContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
         }
-        assertThat(TouchstoneController(permissiveContext, repo).getTouchstones()).hasSize(2)
+        assertThat(TouchstoneController(permissiveContext, repo).getTouchstones()).isEqualTo(listOf(touchstone))
 
         val limitedContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn false
         }
-        assertThat(TouchstoneController(limitedContext, repo).getTouchstones()).hasSize(1)
+        assertThat(TouchstoneController(limitedContext, repo).getTouchstones()).isEqualTo(listOf(Touchstone(
+                id = "t",
+                description = "touchstone description",
+                comment = "comment",
+                versions = listOf(openTouchstoneVersion)
+        )))
     }
 
     @Test
