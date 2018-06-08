@@ -18,15 +18,15 @@ import java.util.*
 open class WebTokenHelper(keyPair: KeyPair,
                           private val serializer: Serializer = MontaguSerializer.instance)
 {
-    open val lifeSpan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
+    open val defaultLifespan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
     val issuer = Config["token.issuer"]
     val signatureConfiguration = RSASignatureConfiguration(keyPair)
     val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
     private val random = SecureRandom()
 
-    open fun generateToken(user: InternalUser): String
+    open fun generateToken(user: InternalUser, lifeSpan: Duration = defaultLifespan): String
     {
-        return generator.generate(claims(user))
+        return generator.generate(claims(user, lifeSpan))
     }
 
     open fun generateOldStyleOneTimeActionToken(action: String,
@@ -78,7 +78,7 @@ open class WebTokenHelper(keyPair: KeyPair,
                         "result" to json))
     }
 
-    fun claims(user: InternalUser): Map<String, Any>
+    fun claims(user: InternalUser, lifeSpan: Duration = defaultLifespan): Map<String, Any>
     {
         return mapOf(
                 "iss" to issuer,
@@ -97,7 +97,7 @@ open class WebTokenHelper(keyPair: KeyPair,
                 "iss" to issuer,
                 "token_type" to TokenType.SHINY,
                 "sub" to user.username,
-                "exp" to Date.from(Instant.now().plus(lifeSpan)),
+                "exp" to Date.from(Instant.now().plus(defaultLifespan)),
                 "allowed_shiny" to allowedShiny.toString()
         )
     }

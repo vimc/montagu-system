@@ -39,7 +39,7 @@ class AuthenticationController(context: ActionContext,
                 val user = context.userProfile!!.internalUser!!
                 val token = tokenHelper.generateToken(user)
                 userRepository.updateLastLoggedIn(user.username)
-                return SuccessfulAuthentication(token, tokenHelper.lifeSpan)
+                return SuccessfulAuthentication(token, tokenHelper.defaultLifespan)
             }
             is HTMLForm.InvalidForm -> FailedAuthentication(validationResult.problem)
         }
