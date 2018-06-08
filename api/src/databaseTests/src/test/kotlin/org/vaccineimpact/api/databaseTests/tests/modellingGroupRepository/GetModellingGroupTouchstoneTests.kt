@@ -7,7 +7,7 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
 
-class GetTouchstoneTests : ModellingGroupRepositoryTests()
+class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
 {
     private val diseaseId = "d1"
     private val groupId = "group-1"
