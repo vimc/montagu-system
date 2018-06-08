@@ -82,7 +82,7 @@ fun JooqContext.addModelVersion(
     return record.id
 }
 
-fun JooqContext.addTouchstoneName(id: String, description: String, comment: String = "Comment")
+fun JooqContext.addTouchstone(id: String, description: String, comment: String = "Comment")
 {
     this.dsl.newRecord(TOUCHSTONE_NAME).apply {
         this.id = id
@@ -91,20 +91,20 @@ fun JooqContext.addTouchstoneName(id: String, description: String, comment: Stri
     }.store()
 }
 
-fun JooqContext.addTouchstone(
-        name: String,
+fun JooqContext.addTouchstoneVersion(
+        touchstoneName: String,
         version: Int,
         description: String = "Description",
         status: String = "open",
-        addName: Boolean = false)
+        addTouchstone: Boolean = false)
 {
-    if (addName)
+    if (addTouchstone)
     {
-        addTouchstoneName(name, description)
+        addTouchstone(touchstoneName, description)
     }
     this.dsl.newRecord(TOUCHSTONE).apply {
-        this.id = "$name-$version"
-        this.touchstoneName = name
+        this.id = "$touchstoneName-$version"
+        this.touchstoneName = touchstoneName
         this.version = version
         this.description = description
         this.status = status

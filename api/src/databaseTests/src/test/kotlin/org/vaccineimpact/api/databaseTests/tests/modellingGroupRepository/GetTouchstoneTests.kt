@@ -26,8 +26,8 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
 
             it.addGroup(groupId2)
 
-            it.addTouchstone(touchstone2Name, 1, addName = true, description = "descr 2", status = "open")
-            it.addTouchstone(touchstone3Name, 1, addName = true, description = "descr 3", status = "open")
+            it.addTouchstoneVersion(touchstone2Name, 1, addTouchstone = true, description = "descr 2", status = "open")
+            it.addTouchstoneVersion(touchstone3Name, 1, addTouchstone = true, description = "descr 3", status = "open")
 
             addResponsibilitySetWithResponsibility(it, "scenario-1", groupId, touchstoneId, open = true)
             addResponsibilitySetWithResponsibility(it, "scenario-2", groupId, "$touchstone2Name-1", open = true)
@@ -140,7 +140,7 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
     {
         db.addDisease(diseaseId)
         db.addGroup(groupId)
-        db.addTouchstone(touchstoneName, 1, addName = true, description = "descr 1", status = touchstoneStatus)
+        db.addTouchstoneVersion(touchstoneName, 1, addTouchstone = true, description = "descr 1", status = touchstoneStatus)
 
     }
 

@@ -15,7 +15,6 @@ import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
-import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneOffset
@@ -60,7 +59,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     protected fun setupDatabase(db: JooqContext, addModel: Boolean = true,
                                 responsibilitySetStatus: String = "incomplete"): ReturnedIds
     {
-        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
+        db.addTouchstoneVersion("touchstone", 1, "Touchstone 1", addTouchstone = true)
         db.addDisease(diseaseId, diseaseName)
         db.addScenarioDescription(scenarioId, "Test scenario", diseaseId, addDisease = false)
         db.addGroup(groupId, "Test group")
@@ -93,7 +92,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     protected fun setupDatabaseWithModelRunParameterSet(db: JooqContext,
                                                         responsibilitySetStatus: String = "incomplete"): ReturnedIds
     {
-        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
+        db.addTouchstoneVersion("touchstone", 1, "Touchstone 1", addTouchstone = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
         db.addGroup(groupId, "Test group")
 
@@ -111,7 +110,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
 
     protected fun setupDatabaseWithModelRunParameterSetValues(db: JooqContext)
     {
-        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
+        db.addTouchstoneVersion("touchstone", 1, "Touchstone 1", addTouchstone = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
         db.addGroup(groupId, "Test group")
 

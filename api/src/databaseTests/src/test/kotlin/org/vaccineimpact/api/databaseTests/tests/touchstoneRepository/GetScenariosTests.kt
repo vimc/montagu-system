@@ -86,7 +86,7 @@ class GetScenariosTests : TouchstoneRepositoryTests()
         var goodSet = 0
         given {
             createTouchstoneAndScenarioDescriptions(it)
-            it.addTouchstone(touchstoneName, 2)
+            it.addTouchstoneVersion(touchstoneName, 2)
             val goodScenario = it.addScenarioToTouchstone(touchstoneId, "yf-1")
             val sameScenarioWrongTouchstone = it.addScenarioToTouchstone(otherTouchstone, "yf-1")
             val otherScenario = it.addScenarioToTouchstone(otherTouchstone, "ms-1")

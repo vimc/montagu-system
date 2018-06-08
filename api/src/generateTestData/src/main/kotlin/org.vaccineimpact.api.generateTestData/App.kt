@@ -12,9 +12,9 @@ fun main(args: Array<String>)
         db.addScenarioDescription("yf-routine", "Yellow Fever, routine", "YF")
         db.addScenarioDescription("yf-campaign", "Yellow Fever, campaign", "YF")
 
-        db.addTouchstoneName("op-2017", "Operational Forecast 2017")
-        db.addTouchstone("op-2017", 1, "Operational Forecast 2017 (v1)", "finished")
-        db.addTouchstone("op-2017", 2, "Operational Forecast 2017 (v2)", "open")
+        db.addTouchstone("op-2017", "Operational Forecast 2017")
+        db.addTouchstoneVersion("op-2017", 1, "Operational Forecast 2017 (v1)", "finished")
+        db.addTouchstoneVersion("op-2017", 2, "Operational Forecast 2017 (v2)", "open")
 
         val demographicTestData = DemographicTestData(db)
         demographicTestData.generate("op-2017-1", listOf("YF"))

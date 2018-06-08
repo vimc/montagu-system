@@ -33,7 +33,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         val extraTouchstoneId = "extra-1"
         given {
             createTouchstoneAndScenarioDescriptions(it)
-            it.addTouchstone("extra", 1, addName = true)
+            it.addTouchstoneVersion("extra", 1, addTouchstone = true)
             it.addScenarioToTouchstone(touchstoneId, scenarioId, id = scenarioInTouchstoneId)
             it.addScenarioToTouchstone(touchstoneId, "yf-2", id = scenarioInTouchstoneId + 1)
             it.addScenarioToTouchstone(extraTouchstoneId, scenarioId, id = scenarioInTouchstoneId + 2)

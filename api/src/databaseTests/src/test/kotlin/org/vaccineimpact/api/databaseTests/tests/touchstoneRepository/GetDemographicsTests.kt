@@ -260,7 +260,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         given {
 
             it.addDisease("measles", "Measles")
-            it.addTouchstone(this.touchstoneName, this.touchstoneVersion, addName = true)
+            it.addTouchstoneVersion(this.touchstoneName, this.touchstoneVersion, addTouchstone = true)
             it.addTouchstoneCountries("$touchstoneName-$touchstoneVersion", it.fetchCountries(1), "measles")
 
         } check {
@@ -318,7 +318,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
                     .withPopulation(countries = countries)
                     .withPopulation(countries = countries.take(2), addDataset = false)
 
-            it.addTouchstone(anotherTouchstoneName, touchstoneVersion, source, addName = true)
+            it.addTouchstoneVersion(anotherTouchstoneName, touchstoneVersion, source, addTouchstone = true)
             it.addTouchstoneCountries("$anotherTouchstoneName-$touchstoneVersion", countries.take(2), "measles")
             it.addDemographicDatasetsToTouchstone("$anotherTouchstoneName-$touchstoneVersion", data.sourceId, data.pop)
 
@@ -350,7 +350,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
                     .withPopulation()
                     .withPopulation(source = newSourceId, addDataset = false)
 
-            it.addTouchstone(anotherTouchstoneName, touchstoneVersion, addName = true)
+            it.addTouchstoneVersion(anotherTouchstoneName, touchstoneVersion, addTouchstone = true)
             it.addTouchstoneCountries("$anotherTouchstoneName-$touchstoneVersion", data.countries, "measles")
             it.addDemographicDatasetsToTouchstone("$anotherTouchstoneName-$touchstoneVersion",
                     newSourceId, data.pop)

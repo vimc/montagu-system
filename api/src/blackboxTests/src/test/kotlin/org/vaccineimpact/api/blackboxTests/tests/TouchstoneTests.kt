@@ -6,7 +6,7 @@ import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addTouchstone
-import org.vaccineimpact.api.db.direct.addTouchstoneName
+import org.vaccineimpact.api.db.direct.addTouchstoneVersion
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
@@ -14,9 +14,9 @@ class TouchstoneTests : DatabaseTest()
 {
     private fun JooqContext.setupTouchstones()
     {
-        addTouchstoneName("touchstone", "touchstone-description", comment = "comment")
-        addTouchstone("touchstone", 1, "description-1", "open")
-        addTouchstone("touchstone", 2, "description-2", "in-preparation")
+        addTouchstone("touchstone", "touchstone-description", comment = "comment")
+        addTouchstoneVersion("touchstone", 1, "description-1", "open")
+        addTouchstoneVersion("touchstone", 2, "description-2", "in-preparation")
     }
 
     @Test
