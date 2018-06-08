@@ -217,7 +217,7 @@ class ResponsibilityTests : DatabaseTest()
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
         db.addScenarioDescription("scenario-2", "description 2", "disease-2", addDisease = true)
-        db.addTouchstone("touchstone", 1, "description", touchstoneStatus, addName = true)
+        db.addTouchstoneVersion("touchstone", 1, "description", touchstoneStatus, addTouchstone = true)
     }
 
     private fun addResponsibilities(db: JooqContext, touchstoneStatus: String)

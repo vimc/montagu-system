@@ -52,7 +52,7 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
     {
         db.addUserForTesting("model.user")
         db.addGroup(groupId, "description")
-        db.addTouchstone("touchstone", 1, "description", "open", addName = true)
+        db.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
     }
 
     private fun setUpDisease(db: JooqContext, diseaseId: String)

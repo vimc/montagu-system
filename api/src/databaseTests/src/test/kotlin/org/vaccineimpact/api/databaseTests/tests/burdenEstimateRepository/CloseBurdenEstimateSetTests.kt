@@ -67,7 +67,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         val otherTouchstone = "touchstone-2"
         withDatabase {
             setupDatabase(it)
-            it.addTouchstone("touchstone", 2)
+            it.addTouchstoneVersion("touchstone", 2)
             val responsibilitySet = it.addResponsibilitySet(groupId, otherTouchstone)
             it.addResponsibility(responsibilitySet, otherTouchstone, scenarioId)
         }

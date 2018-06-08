@@ -193,7 +193,7 @@ class CoverageTests : DatabaseTest()
     {
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
-        db.addTouchstone("touchstone", 1, "description", touchstoneStatus, addName = true)
+        db.addTouchstoneVersion("touchstone", 1, "description", touchstoneStatus, addTouchstone = true)
         val setId = db.addResponsibilitySet(groupId, touchstoneId, "submitted")
         db.addResponsibility(setId, touchstoneId, scenarioId)
         db.addCoverageSet(touchstoneId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
@@ -222,7 +222,7 @@ class CoverageTests : DatabaseTest()
     private fun createUnorderedCoverageData(db: JooqContext)
     {
         db.addGroup(groupId, "description")
-        db.addTouchstone("touchstone", 1, "description", "open", addName = true)
+        db.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
         db.addScenarioDescription(scenarioId, "Blue Fever Scenario", "BF", addDisease = true)
         db.addVaccine("BF", "Blue Fever")
         db.addVaccine("AF", "Alpha Fever")

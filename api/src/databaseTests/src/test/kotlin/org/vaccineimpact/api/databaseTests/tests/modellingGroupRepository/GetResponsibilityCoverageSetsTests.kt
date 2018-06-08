@@ -119,8 +119,8 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     private fun createGroupAndSupportingObjects(db: JooqContext)
     {
         db.addGroup(groupId, "description")
-        db.addTouchstone(touchstoneName, touchstoneVersion, "description", "open",
-                addName = true)
+        db.addTouchstoneVersion(touchstoneName, touchstoneVersion, "description", "open",
+                addTouchstone = true)
         db.addScenarioDescription(scenarioId, "Yellow Fever Scenario", "YF", addDisease = true)
         db.addVaccine("YF", "Yellow Fever")
         db.addVaccine("BF", "Blue Fever")

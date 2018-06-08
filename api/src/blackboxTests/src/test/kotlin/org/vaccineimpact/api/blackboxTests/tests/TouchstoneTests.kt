@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.addTouchstone
+import org.vaccineimpact.api.db.direct.addTouchstoneVersion
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
@@ -13,8 +13,8 @@ class TouchstoneTests : DatabaseTest()
 {
     private fun JooqContext.setupTouchstones()
     {
-        addTouchstone("open", 6, "description-1", "open", addName = true)
-        addTouchstone("prep", 1, "description-2", "in-preparation", addName = true)
+        addTouchstoneVersion("open", 6, "description-1", "open", addTouchstone = true)
+        addTouchstoneVersion("prep", 1, "description-2", "in-preparation", addTouchstone = true)
     }
 
     @Test
