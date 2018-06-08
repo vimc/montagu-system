@@ -41,7 +41,7 @@ class AuthenticationControllerTests : MontaguTests()
         }
 
         val fakeWebTokenHelper = mock<WebTokenHelper> {
-            on { it.generateToken(fakeUser) } doReturn "token"
+            on { it.generateToken(eq(fakeUser), any()) } doReturn "token"
             on { it.defaultLifespan } doReturn Duration.ofHours(1)
         }
 
