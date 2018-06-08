@@ -141,22 +141,17 @@ class JooqModellingGroupRepository(
         ), scenarioAndData.tableData)
     }
 
-    override fun getTouchstoneVersionsByGroupId(groupId: String): List<TouchstoneVersion>
+    override fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
     {
         val group = getModellingGroup(groupId)
-        val query = dsl
-                .selectDistinct(
-                        TOUCHSTONE.ID,
-                        TOUCHSTONE.TOUCHSTONE_NAME,
-                        TOUCHSTONE.STATUS,
-                        TOUCHSTONE.DESCRIPTION,
-                        TOUCHSTONE.VERSION
-                )
-                .fromJoinPath(TOUCHSTONE, RESPONSIBILITY_SET, RESPONSIBILITY)
+        return dsl
+                .selectDistinct(TOUCHSTONE_NAME.fieldsAsList() + TOUCHSTONE.fieldsAsList())
+                .fromJoinPath(TOUCHSTONE_NAME, TOUCHSTONE, RESPONSIBILITY_SET, RESPONSIBILITY)
                 .where(RESPONSIBILITY.IS_OPEN).orNot(TOUCHSTONE.STATUS.eq("open"))
                 .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))
-
-        return query.fetch().map { touchstoneRepository.mapTouchstoneVersion(it) }
+                .fetch()
+                .groupBy { it[TOUCHSTONE_NAME.ID] }
+                .map { touchstoneRepository.mapTouchstone(it.value) }
     }
 
     private fun convertScenarioToResponsibility(scenario: Scenario, responsibilityId: Int): Responsibility

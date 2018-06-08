@@ -292,7 +292,7 @@ class JooqTouchstoneRepository(
      * The TOUCHSTONE_NAME fields should be the same for each record.
      * The TOUCHSTONE fields should be different for each record.
      */
-    fun mapTouchstone(records: List<Record>): Touchstone
+    override fun mapTouchstone(records: List<Record>): Touchstone
     {
         val shared = records.first()
         return Touchstone(

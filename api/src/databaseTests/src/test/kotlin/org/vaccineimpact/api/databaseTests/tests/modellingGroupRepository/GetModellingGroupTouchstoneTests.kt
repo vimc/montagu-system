@@ -11,38 +11,42 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
 {
     private val diseaseId = "d1"
     private val groupId = "group-1"
-    private val touchstoneName = "touchstone"
-    private val touchstoneId = "touchstone-1"
+    private val touchstoneName = "touchstoneA"
+    private val touchstoneId = "touchstoneA-1"
 
     @Test
     fun `can get touchstones list for modelling group`()
     {
         val groupId2 = "group-2"
-        val touchstone2Name = "touchstone-2"
-        val touchstone3Name = "touchstone-3"
+        val touchstoneBName = "touchstoneB"
 
         given {
             setUpDb(it)
 
             it.addGroup(groupId2)
 
-            it.addTouchstoneVersion(touchstone2Name, 1, addTouchstone = true, description = "descr 2", status = "open")
-            it.addTouchstoneVersion(touchstone3Name, 1, addTouchstone = true, description = "descr 3", status = "open")
+            it.addTouchstone(touchstoneBName, "b-desc", "b-comment")
+            val touchstoneB1 = it.addTouchstoneVersion(touchstoneBName, 1, "b-desc-1")
+            val touchstoneB2 = it.addTouchstoneVersion(touchstoneBName, 2, "b-desc-2")
+            val touchstoneB3 = it.addTouchstoneVersion(touchstoneBName, 3, "b-desc-3")
+
 
             addResponsibilitySetWithResponsibility(it, "scenario-1", groupId, touchstoneId, open = true)
-            addResponsibilitySetWithResponsibility(it, "scenario-2", groupId, "$touchstone2Name-1", open = true)
-            addResponsibilitySetWithResponsibility(it, "scenario-3", groupId2, "$touchstone3Name-1", open = true)
+            addResponsibilitySetWithResponsibility(it, "scenario-2", groupId, touchstoneB1, open = true)
+            // Note that this responsibility belongs to a different group, and shouldn't be returned
+            addResponsibilitySetWithResponsibility(it, "scenario-3", groupId2, touchstoneB2, open = true)
+            addResponsibilitySetWithResponsibility(it, "scenario-4", groupId, touchstoneB3, open = true)
 
         } check { repo ->
-            val touchstones = repo.getTouchstoneVersionsByGroupId(groupId)
-            assertThat(touchstones).isInstanceOf(List::class.java)
-            assertThat(touchstones).hasSize(2)
-            assertThat(touchstones[0])
-                    .isEqualTo(TouchstoneVersion(touchstoneId, "touchstone", 1, "descr 1", TouchstoneStatus.OPEN))
-            assertThat(touchstones[1])
-                    .isEqualTo(TouchstoneVersion("$touchstone2Name-1", touchstone2Name, 1, "descr 2", TouchstoneStatus.OPEN)
-            )
-
+            assertThat(repo.getTouchstonesByGroupId(groupId)).isEqualTo(listOf(
+                    Touchstone(touchstoneName, "a-desc", "a-comment", listOf(
+                            TouchstoneVersion("touchstoneA-1", touchstoneName, 1, "a-desc-1", TouchstoneStatus.OPEN)
+                    )),
+                    Touchstone(touchstoneBName, "b-desc", "b-comment", listOf(
+                            TouchstoneVersion("touchstoneB-3", touchstoneBName, 3, "b-desc-3", TouchstoneStatus.OPEN),
+                            TouchstoneVersion("touchstoneB-1", touchstoneBName, 1, "b-desc-1", TouchstoneStatus.OPEN)
+                    ))
+            ))
         }
     }
 
@@ -53,7 +57,7 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
             setUpDb(it)
 
         } check { repo ->
-            val touchstones = repo.getTouchstoneVersionsByGroupId(groupId)
+            val touchstones = repo.getTouchstonesByGroupId(groupId)
             assertThat(touchstones).hasSize(0)
         }
     }
@@ -65,7 +69,7 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
             setUpDb(it, touchstoneStatus = "finished")
 
         } check { repo ->
-            val touchstones = repo.getTouchstoneVersionsByGroupId(groupId)
+            val touchstones = repo.getTouchstonesByGroupId(groupId)
             assertThat(touchstones).hasSize(0)
         }
     }
@@ -80,7 +84,7 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
             addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneId, open = false)
 
         } check { repo ->
-            val touchstones = repo.getTouchstoneVersionsByGroupId(groupId)
+            val touchstones = repo.getTouchstonesByGroupId(groupId)
             assertThat(touchstones).hasSize(0)
         }
     }
@@ -95,7 +99,7 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
             addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneId, open = false)
 
         } check { repo ->
-            val touchstones = repo.getTouchstoneVersionsByGroupId(groupId)
+            val touchstones = repo.getTouchstonesByGroupId(groupId)
             assertThat(touchstones).hasSize(1)
         }
     }
@@ -110,7 +114,7 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
             addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneId, open = false)
 
         } check { repo ->
-            val touchstones = repo.getTouchstoneVersionsByGroupId(groupId)
+            val touchstones = repo.getTouchstonesByGroupId(groupId)
             assertThat(touchstones).hasSize(1)
         }
     }
@@ -120,7 +124,7 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
     {
         withRepo { repo ->
             Assertions.assertThatThrownBy {
-                repo.getTouchstoneVersionsByGroupId("bad-id")
+                repo.getTouchstonesByGroupId("bad-id")
             }.isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
         }
     }
@@ -140,7 +144,8 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
     {
         db.addDisease(diseaseId)
         db.addGroup(groupId)
-        db.addTouchstoneVersion(touchstoneName, 1, addTouchstone = true, description = "descr 1", status = touchstoneStatus)
+        db.addTouchstone(touchstoneName, "a-desc", "a-comment")
+        db.addTouchstoneVersion(touchstoneName, 1,  "a-desc-1", status = touchstoneStatus)
 
     }
 

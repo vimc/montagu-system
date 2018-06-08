@@ -6,7 +6,7 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstoneVersion
+import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.FlexibleDataTable
@@ -25,10 +25,7 @@ class TouchstoneController(
 
     fun getTouchstones(): List<Touchstone>
     {
-        return repo.getTouchstones()
-                .map { it.copy(versions = filteredVersions(it.versions)) }
-                .filter { it.versions.any() }
-                .toList()
+        return repo.getTouchstones().filterByPermission(context)
     }
 
     fun getScenarios(): List<ScenarioAndCoverageSets>
@@ -134,7 +131,4 @@ class TouchstoneController(
         }
         return touchstone
     }
-
-    private fun filteredVersions(versions: List<TouchstoneVersion>) =
-            versions.filter { context.isAllowedToSeeTouchstoneVersion(it) }
 }

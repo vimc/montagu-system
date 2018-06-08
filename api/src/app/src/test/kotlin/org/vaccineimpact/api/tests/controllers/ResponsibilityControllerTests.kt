@@ -18,7 +18,7 @@ class ResponsibilityControllerTests : MontaguTests()
     {
         val groupId = "test-group"
         val repo = mock<ModellingGroupRepository> {
-            on { getTouchstoneVersionsByGroupId(groupId) } doReturn mockTouchstones
+            on { getTouchstonesByGroupId(groupId) } doReturn mockTouchstones
         }
 
         val context = mock<ActionContext> {
@@ -26,7 +26,7 @@ class ResponsibilityControllerTests : MontaguTests()
             on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn true
         }
         val data = ResponsibilityController(context, repo).getResponsibleTouchstones()
-        assertThat(data.count()).isEqualTo(2)
+        assertThat(data).isEqualTo(mockTouchstones)
     }
 
     @Test
@@ -34,7 +34,7 @@ class ResponsibilityControllerTests : MontaguTests()
     {
         val groupId = "test-group"
         val repo = mock<ModellingGroupRepository> {
-            on { getTouchstoneVersionsByGroupId(groupId) } doReturn mockTouchstones
+            on { getTouchstonesByGroupId(groupId) } doReturn mockTouchstones
         }
 
         val context = mock<ActionContext> {
@@ -110,8 +110,10 @@ class ResponsibilityControllerTests : MontaguTests()
 
 
     private val mockTouchstones = listOf(
-            TouchstoneVersion("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN),
-            TouchstoneVersion("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
+            Touchstone("touchstone", "description", "comment", listOf(
+                    TouchstoneVersion("touchstone-1", "touchstone", 1, "open", TouchstoneStatus.OPEN),
+                    TouchstoneVersion("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
+            ))
     )
 
     private fun mockContextForSpecificResponsibility(hasPermissions: Boolean): ActionContext

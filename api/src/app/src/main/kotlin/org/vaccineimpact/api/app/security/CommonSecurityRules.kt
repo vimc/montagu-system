@@ -4,6 +4,7 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.models.TouchstoneStatus
 import org.vaccineimpact.api.models.TouchstoneVersion
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -23,6 +24,15 @@ fun ActionContext.isAllowedToSeeTouchstoneVersion(touchstoneVersion: TouchstoneV
     return this.hasPermission(permission)
             || touchstoneVersion.status != TouchstoneStatus.IN_PREPARATION
 }
+
+fun List<Touchstone>.filterByPermission(context: ActionContext) = this
+        .map { it.copy(versions = it.versions.filterByPermission(context)) }
+        .filter { it.versions.any() }
+        .toList()
+
+@JvmName("filterTouchstoneVersionByPermission")
+private fun List<TouchstoneVersion>.filterByPermission(context: ActionContext) =
+        this.filter { context.isAllowedToSeeTouchstoneVersion(it) }
 
 fun ActionContext.checkEstimatePermissionsForTouchstoneVersion(
         groupId: String,
