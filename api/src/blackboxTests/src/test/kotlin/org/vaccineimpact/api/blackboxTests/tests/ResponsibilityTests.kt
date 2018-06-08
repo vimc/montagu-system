@@ -82,12 +82,16 @@ class ResponsibilityTests : DatabaseTest()
             assertThat(it).isEqualTo(json {
                 array(
                         obj(
-                                "id" to touchstoneId,
-                                "name" to "touchstone",
-                                "version" to 1,
+                                "id" to "touchstone",
                                 "description" to "description",
-                                "status" to "open"
-
+                                "comment" to "comment",
+                                "versions" to array(obj(
+                                        "id" to touchstoneId,
+                                        "name" to "touchstone",
+                                        "version" to 1,
+                                        "description" to "version description",
+                                        "status" to "open"
+                                ))
                         )
                 )
             })
@@ -217,7 +221,8 @@ class ResponsibilityTests : DatabaseTest()
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
         db.addScenarioDescription("scenario-2", "description 2", "disease-2", addDisease = true)
-        db.addTouchstoneVersion("touchstone", 1, "description", touchstoneStatus, addTouchstone = true)
+        db.addTouchstone("touchstone", "description", "comment")
+        db.addTouchstoneVersion("touchstone", 1, "version description", touchstoneStatus)
     }
 
     private fun addResponsibilities(db: JooqContext, touchstoneStatus: String)
