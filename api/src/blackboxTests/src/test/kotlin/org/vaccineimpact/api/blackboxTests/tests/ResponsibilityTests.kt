@@ -128,7 +128,7 @@ class ResponsibilityTests : DatabaseTest()
                         "id" to touchstoneId,
                         "name" to "touchstone",
                         "version" to 1,
-                        "description" to "description",
+                        "description" to "version description",
                         "status" to "open"
                 )
             })
@@ -179,7 +179,7 @@ class ResponsibilityTests : DatabaseTest()
                                 "id" to touchstoneId,
                                 "name" to "touchstone",
                                 "version" to 1,
-                                "description" to "description",
+                                "description" to "version description",
                                 "status" to "open"
                         ),
                         "scenario" to obj(
