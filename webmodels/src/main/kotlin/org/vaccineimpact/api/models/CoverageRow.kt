@@ -5,7 +5,7 @@ import java.math.BigDecimal
 
 data class CoverageSet(
         override val id: Int,
-        val touchstone: String,
+        val touchstoneVersion: String,
         val name: String,
         val vaccine: String,
         val gaviSupport: GAVISupportLevel,
@@ -18,7 +18,7 @@ data class ScenarioAndCoverageSets(
 )
 
 data class ScenarioTouchstoneAndCoverageSets(
-        val touchstone: TouchstoneVersion,
+        val touchstoneVersion: TouchstoneVersion,
         val scenario: Scenario,
         val coverageSets: List<CoverageSet>
 )
