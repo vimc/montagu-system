@@ -6,7 +6,7 @@ data class ResponsibilitiesAndTouchstoneStatus(
 )
 
 data class Responsibilities(
-        val touchstone: String,
+        val touchstoneVersion: String,
         val problems: String,
         val status: ResponsibilitySetStatus?,
         val responsibilities: List<Responsibility>) : Iterable<Responsibility>
@@ -15,7 +15,7 @@ data class Responsibilities(
 }
 
 data class ResponsibilityAndTouchstone(
-        val touchstone: Touchstone,
+        val touchstoneVersion: TouchstoneVersion,
         val responsibility: Responsibility
 )
 

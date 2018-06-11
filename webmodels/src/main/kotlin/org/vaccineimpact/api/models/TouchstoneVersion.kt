@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.models
 
-data class Touchstone(
+data class TouchstoneVersion(
         override val id: String,
         val name: String,
         val version: Int,
