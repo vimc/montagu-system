@@ -35,4 +35,11 @@ describe('Admin Users reducer tests', () => {
         })).to.eql({...usersInitialState, showCreateUser: false});
     });
 
+    it('sets createUserErrors ', () => {
+        expect(usersReducer(undefined, {
+            type: UsersTypes.SET_CREATE_USER_ERRORS,
+            errors: [{code: "e", message: "error"}]
+        })).to.eql({...usersInitialState, createUserErrors:  [{code: "e", message: "error"}]});
+    });
+
 });
