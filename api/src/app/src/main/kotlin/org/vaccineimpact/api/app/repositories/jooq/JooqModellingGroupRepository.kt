@@ -125,7 +125,7 @@ class JooqModellingGroupRepository(
         val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneId, scenarioId)
         val scenario = touchstoneRepository.getScenario(touchstoneId, scenarioId)
         return ScenarioTouchstoneAndCoverageSets(
-                responsibilityAndTouchstone.touchstone,
+                responsibilityAndTouchstone.touchstoneVersion,
                 scenario.scenario,
                 scenario.coverageSets)
     }
@@ -135,7 +135,7 @@ class JooqModellingGroupRepository(
         val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneId, scenarioId)
         val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneId, scenarioId)
         return SplitData(ScenarioTouchstoneAndCoverageSets(
-                responsibilityAndTouchstone.touchstone,
+                responsibilityAndTouchstone.touchstoneVersion,
                 scenarioAndData.structuredMetadata.scenario,
                 scenarioAndData.structuredMetadata.coverageSets
         ), scenarioAndData.tableData)

@@ -82,7 +82,7 @@ class TouchstoneControllerTests : MontaguTests()
         val data = TouchstoneController(context, repo).getScenario()
 
         verify(repo).getScenario(eq(openTouchstone.id), eq(scenario.id))
-        assertThat(data.touchstone).isEqualTo(openTouchstone)
+        assertThat(data.touchstoneVersion).isEqualTo(openTouchstone)
         assertThat(data.scenario).isEqualTo(scenario)
         assertThat(data.coverageSets).hasSameElementsAs(coverageSets)
     }

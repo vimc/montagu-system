@@ -99,7 +99,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
 
     private fun checkMetadataIsAsExpected(result: ScenarioTouchstoneAndCoverageSets)
     {
-        assertThat(result.touchstone).isEqualTo(TouchstoneVersion(
+        assertThat(result.touchstoneVersion).isEqualTo(TouchstoneVersion(
                 touchstoneId, touchstoneName, touchstoneVersion,
                 "description", TouchstoneStatus.OPEN
         ))

@@ -29,7 +29,7 @@ class ResponsibilityTests : DatabaseTest()
         } requiringPermissions {
             PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
         } andCheck {
-            assertThat(it["touchstone"]).isEqualTo(touchstoneId)
+            assertThat(it["touchstone_version"]).isEqualTo(touchstoneId)
             assertThat(it["status"]).isEqualTo("submitted")
             assertThat(it["problems"]).isEqualTo("")
 
@@ -62,7 +62,7 @@ class ResponsibilityTests : DatabaseTest()
         } andCheck {
             assertThat(it).isEqualTo(json {
                 obj(
-                        "touchstone" to touchstoneId,
+                        "touchstone_version" to touchstoneId,
                         "status" to "not-applicable",
                         "problems" to "",
                         "responsibilities" to array()
@@ -116,7 +116,7 @@ class ResponsibilityTests : DatabaseTest()
         } requiringPermissions {
             PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
         } andCheck {
-            val touchstone = it["touchstone"] as JsonObject
+            val touchstone = it["touchstone_version"] as JsonObject
             val responsibility = it["responsibility"] as JsonObject
             val scenario = responsibility["scenario"] as JsonObject
             assertThat(touchstone).isEqualTo(json {
@@ -171,7 +171,7 @@ class ResponsibilityTests : DatabaseTest()
         } andCheck {
             assertThat(it).isEqualTo(json {
                 obj(
-                        "touchstone" to obj(
+                        "touchstone_version" to obj(
                                 "id" to touchstoneId,
                                 "name" to "touchstone",
                                 "version" to 1,
@@ -186,7 +186,7 @@ class ResponsibilityTests : DatabaseTest()
                         ),
                         "coverage_sets" to array(obj(
                                 "id" to coverageSetId,
-                                "touchstone" to touchstoneId,
+                                "touchstone_version" to touchstoneId,
                                 "name" to "coverage set name",
                                 "vaccine" to "vaccine-1",
                                 "gavi_support" to "no gavi",

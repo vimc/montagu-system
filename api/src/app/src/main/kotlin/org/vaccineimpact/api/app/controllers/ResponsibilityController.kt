@@ -44,7 +44,7 @@ class ResponsibilityController(
     {
         val path = ResponsibilityPath(context)
         val data = repo.getResponsibility(path.groupId, path.touchstoneId, path.scenarioId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstone.status)
+        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstoneVersion.status)
         return data
     }
 

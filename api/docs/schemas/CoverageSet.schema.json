@@ -3,7 +3,7 @@
 	"type": "object",
 	"properties": {
 		"id": { "type": "integer" },
-		"touchstone": { "$ref": "StandardIdentifier.schema.json" },
+		"touchstone_version": { "$ref": "StandardIdentifier.schema.json" },
         "name": { "type": "string" },
 		"activity_type": { "$ref": "ActivityType.schema.json" },
 		"vaccine": { "$ref": "StandardIdentifier.schema.json" },
@@ -12,7 +12,7 @@
 	"additionalProperties": false,
 	"required": [ 
 		"id", 
-		"touchstone", 
+		"touchstone_version", 
 		"name", 
 		"activity_type", 
 		"vaccine", 
