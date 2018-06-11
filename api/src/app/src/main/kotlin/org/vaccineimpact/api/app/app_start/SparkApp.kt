@@ -17,13 +17,6 @@ import java.net.ServerSocket
 import kotlin.system.exitProcess
 import spark.Spark as spk
 
-fun main(args: Array<String>)
-{
-    waitForGoSignal()
-    val api = MontaguApi()
-    api.run(RepositoryFactory())
-}
-
 class MontaguApi
 {
     private val urlBase = "/v1"
@@ -96,19 +89,4 @@ class MontaguApi
             return false
         }
     }
-}
-
-// This is so that we can copy files into the Docker container after it exists
-// but before the API starts running.
-private fun waitForGoSignal()
-{
-    val path = File("/etc/montagu/api/go_signal")
-    println("Waiting for signal file at $path.")
-    println("(In development environments, run `sudo touch $path`)")
-
-    while (!path.exists())
-    {
-        Thread.sleep(2000)
-    }
-    println("Go signal detected. Running API")
 }
