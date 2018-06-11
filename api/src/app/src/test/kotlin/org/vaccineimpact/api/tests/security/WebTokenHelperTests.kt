@@ -17,7 +17,9 @@ import org.vaccineimpact.api.security.*
 import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.tests.mocks.MockRepositoryFactory
+import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
 import java.util.*
 
 class WebTokenHelperTests : MontaguTests()
@@ -62,6 +64,15 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
         assertThat(claims["roles"]).isEqualTo("*/roleA,prefix:id/roleB")
         assertThat(claims["permissions"]).isEqualTo("*/p1,prefix:id/p2")
+    }
+
+    @Test
+    fun `can generate long-lived bearer token`()
+    {
+        val token = sut.generateToken(InternalUser(properties, roles, permissions), lifeSpan = Duration.ofDays(365))
+        val claims = sut.verify(token, TokenType.BEARER, mock())
+
+        assertThat(claims["exp"] as Date).isAfter(Date.from(Instant.now() + Duration.ofDays(364)))
     }
 
     @Test

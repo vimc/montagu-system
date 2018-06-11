@@ -41,8 +41,8 @@ class AuthenticationControllerTests : MontaguTests()
         }
 
         val fakeWebTokenHelper = mock<WebTokenHelper> {
-            on { it.generateToken(fakeUser) } doReturn "token"
-            on { it.lifeSpan } doReturn Duration.ofHours(1)
+            on { it.generateToken(eq(fakeUser), any()) } doReturn "token"
+            on { it.defaultLifespan } doReturn Duration.ofHours(1)
         }
 
         val sut = AuthenticationController(fakeContext, fakeUserRepo,
@@ -86,7 +86,7 @@ class AuthenticationControllerTests : MontaguTests()
         }
 
         val fakeWebTokenHelper = mock<WebTokenHelper> (){
-            on { it.lifeSpan } doReturn Duration.ofHours(1)
+            on { it.defaultLifespan } doReturn Duration.ofHours(1)
             on {it.generateShinyToken(fakeUser)} doReturn "token"
         }
 
@@ -113,7 +113,7 @@ class AuthenticationControllerTests : MontaguTests()
         }
 
         val fakeWebTokenHelper = mock<WebTokenHelper> (){
-            on { it.lifeSpan } doReturn Duration.ofHours(1)
+            on { it.defaultLifespan } doReturn Duration.ofHours(1)
             on {it.generateShinyToken(fakeUser)} doReturn "token"
         }
 
