@@ -30,8 +30,8 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             setupDatabase(db)
         }
         val setId = withRepo { repo ->
-            val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
-            repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data())
+            val setId = repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
+            repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data())
             setId
         }
         withDatabase { db ->
@@ -46,9 +46,9 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         val d = data()
         val returnedIds = withDatabase { db -> setupDatabase(db) }
         val setId = withRepo { repo ->
-            val setId = repo.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
-            repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, d.take(1))
-            repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, d.drop(1))
+            val setId = repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
+            repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, d.take(1))
+            repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, d.drop(1))
             setId
         }
         withDatabase { db ->
@@ -70,7 +70,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 
         withRepo { repo ->
             val data = data(modelRunData.externalIds)
-            repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
+            repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data)
         }
         withDatabase { db ->
             checkStochasticBurdenEstimates(db, setId)
@@ -88,8 +88,8 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             setupDatabase(db)
             val data = data()
             val sut = makeRepository(db, mockCentralEstimateWriter, mockStochasticEstimateWriter)
-            val setId = sut.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultProperties, username, timestamp)
-            sut.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
+            val setId = sut.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
+            sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data)
 
             verify(mockCentralEstimateWriter).addEstimatesToSet(setId, data, diseaseId)
             verify(mockStochasticEstimateWriter, times(0)).addEstimatesToSet(setId, data, diseaseId)
@@ -105,8 +105,8 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             setupDatabase(db)
             val data = data()
             val sut = makeRepository(db, mockCentralEstimateWriter, mockStochasticEstimateWriter)
-            val setId = sut.createBurdenEstimateSet(groupId, touchstoneId, scenarioId, defaultStochasticProperties, username, timestamp)
-            sut.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data)
+            val setId = sut.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultStochasticProperties, username, timestamp)
+            sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data)
 
             verify(mockCentralEstimateWriter, times(0)).addEstimatesToSet(setId, data, diseaseId)
             verify(mockStochasticEstimateWriter).addEstimatesToSet(setId, data, diseaseId)
@@ -122,7 +122,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 
             val repo = makeRepository(it)
             assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data())
+                repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data())
             }.isInstanceOf(InvalidOperationError::class.java)
                     .hasMessageContaining("You must create a new set if you want to upload any new estimates.")
         }
@@ -135,7 +135,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             setupDatabase(it)
             val repo = makeRepository(it)
             assertThatThrownBy {
-                repo.populateBurdenEstimateSet(12, groupId, touchstoneId, scenarioId, data())
+                repo.populateBurdenEstimateSet(12, groupId, touchstoneVersionId, scenarioId, data())
             }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
@@ -147,12 +147,12 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         val setId = withDatabase {
             val returnedIds = setupDatabase(it)
             it.addScenarioDescription(scenario2, "Test scenario 2", diseaseId, addDisease = false)
-            val responsibilityId = it.addResponsibility(returnedIds.responsibilitySetId, touchstoneId, scenario2)
+            val responsibilityId = it.addResponsibility(returnedIds.responsibilitySetId, touchstoneVersionId, scenario2)
             it.addBurdenEstimateSet(responsibilityId, returnedIds.modelVersion!!, username, "complete")
         }
         withRepo { repo ->
             assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, data())
+                repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data())
             }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
@@ -166,7 +166,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         val estimates = sequenceOf(estimateObject(), estimateObject())
         withRepo { repo ->
             assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
+                repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, estimates)
             }.isInstanceOf(PSQLException::class.java)
         }
         assertThatTableIsEmpty(BURDEN_ESTIMATE)
@@ -188,7 +188,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         )
         withRepo { repo ->
             assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId, estimates)
+                repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, estimates)
             }.isInstanceOf(PSQLException::class.java)
         }
         assertThatTableIsEmpty(BURDEN_ESTIMATE_STOCHASTIC)

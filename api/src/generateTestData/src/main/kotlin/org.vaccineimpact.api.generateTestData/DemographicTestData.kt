@@ -18,13 +18,13 @@ class DemographicTestData(val db: JooqContext)
                     "Total births")
     )
 
-    fun generate(touchstoneId: String, diseases: List<String>)
+    fun generate(touchstoneVersionId: String, diseases: List<String>)
     {
         val sources = sourceNames.map { Pair<String, Int>(it, db.generateDemographicSource(it)) }
 
         for (disease in diseases)
         {
-            db.addTouchstoneCountries(touchstoneId, countries, disease)
+            db.addTouchstoneCountries(touchstoneVersionId, countries, disease)
         }
 
         for ((typeCode, typeId) in statisticTypes)
@@ -35,7 +35,7 @@ class DemographicTestData(val db: JooqContext)
                 {
                     for (variant in variantIds)
                     {
-                        println("Generating demographic data for $touchstoneId/$typeCode/$sourceId/$variant")
+                        println("Generating demographic data for $touchstoneVersionId/$typeCode/$sourceId/$variant")
                         db.generateDemographicData(sourceId, typeId,
                                 genderId = gender,
                                 variantId = variant,
@@ -44,7 +44,7 @@ class DemographicTestData(val db: JooqContext)
                     }
                 }
 
-                db.addDemographicDatasetsToTouchstone(touchstoneId, sourceId, typeId)
+                db.addDemographicDatasetsToTouchstone(touchstoneVersionId, sourceId, typeId)
             }
 
         }

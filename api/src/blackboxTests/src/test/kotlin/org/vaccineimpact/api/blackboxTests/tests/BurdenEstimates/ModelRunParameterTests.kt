@@ -24,7 +24,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
    "4",   997,    51
 """
 
-    private val modelRunParameterUrl = "/modelling-groups/$groupId/model-run-parameters/$touchstoneId/"
+    private val modelRunParameterUrl = "/modelling-groups/$groupId/model-run-parameters/$touchstoneVersionId/"
     private val modelRunParameterCsvUrl = "$modelRunParameterUrl/1/"
 
     @Test

@@ -362,7 +362,7 @@ fun JooqContext.addResponsibility(responsibilitySetId: Int, touchstone: String, 
 }
 
 fun JooqContext.addCoverageSet(
-        touchstoneId: String,
+        touchstoneVersionId: String,
         name: String,
         vaccine: String,
         supportLevel: String,
@@ -381,7 +381,7 @@ fun JooqContext.addCoverageSet(
         {
             this.id = id
         }
-        this.touchstone = touchstoneId
+        this.touchstone = touchstoneVersionId
         this.name = name
         this.vaccine = vaccine
         this.gaviSupportLevel = supportLevel
@@ -402,21 +402,21 @@ fun JooqContext.addCoverageSetToScenario(scenarioId: Int, coverageSetId: Int, or
     return record.id
 }
 
-fun JooqContext.addCoverageSetToScenario(scenarioId: String, touchstoneId: String, coverageSetId: Int, order: Int): Int
+fun JooqContext.addCoverageSetToScenario(scenarioId: String, touchstoneVersionId: String, coverageSetId: Int, order: Int): Int
 {
     val record = this.dsl.select(SCENARIO.ID)
             .fromJoinPath(SCENARIO, SCENARIO_DESCRIPTION)
-            .where(SCENARIO.TOUCHSTONE.eq(touchstoneId))
+            .where(SCENARIO.TOUCHSTONE.eq(touchstoneVersionId))
             .and(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
             .fetchOne()
     return this.addCoverageSetToScenario(record[SCENARIO.ID], coverageSetId, order)
 }
 
-fun JooqContext.addFocalCoverageSetToScenario(scenarioDescription: String, touchstoneId: String, coverageSetId: Int, order: Int)
+fun JooqContext.addFocalCoverageSetToScenario(scenarioDescription: String, touchstoneVersionId: String, coverageSetId: Int, order: Int)
 {
     val scenarioId = this.dsl.select(SCENARIO.ID)
             .fromJoinPath(SCENARIO, SCENARIO_DESCRIPTION)
-            .where(SCENARIO.TOUCHSTONE.eq(touchstoneId))
+            .where(SCENARIO.TOUCHSTONE.eq(touchstoneVersionId))
             .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescription))
             .fetchOneInto(Int::class.java)
 
@@ -441,11 +441,11 @@ fun JooqContext.addCountries(ids: List<String>)
     this.dsl.batchStore(records).execute()
 }
 
-fun JooqContext.addTouchstoneCountries(touchstoneId: String, countryIds: List<String>, disease: String)
+fun JooqContext.addTouchstoneCountries(touchstoneVersionId: String, countryIds: List<String>, disease: String)
 {
     val records = countryIds.map { country ->
         this.dsl.newRecord(TOUCHSTONE_COUNTRY).apply {
-            this.touchstone = touchstoneId
+            this.touchstone = touchstoneVersionId
             this.country = country
             this.disease = disease
         }
@@ -575,7 +575,7 @@ fun JooqContext.generateDemographicData(
     this.dsl.batchStore(records).execute()
 }
 
-fun JooqContext.addDemographicDatasetsToTouchstone(touchstoneId: String,
+fun JooqContext.addDemographicDatasetsToTouchstone(touchstoneVersionId: String,
                                                    source: Int,
                                                    type: Int)
 {
@@ -589,7 +589,7 @@ fun JooqContext.addDemographicDatasetsToTouchstone(touchstoneId: String,
 
     val record =
             this.dsl.newRecord(TOUCHSTONE_DEMOGRAPHIC_DATASET).apply {
-                this.touchstone = touchstoneId
+                this.touchstone = touchstoneVersionId
                 this.demographicDataset = set.id
             }
 

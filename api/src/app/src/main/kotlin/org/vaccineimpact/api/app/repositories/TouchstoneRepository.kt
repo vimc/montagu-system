@@ -8,10 +8,10 @@ import org.vaccineimpact.api.serialization.SplitData
 interface TouchstoneRepository : Repository
 {
     val touchstones: SimpleDataSet<TouchstoneVersion, String>
-    fun scenarios(touchstoneId: String, filterParams: ScenarioFilterParameters): List<ScenarioAndCoverageSets>
-    fun getScenario(touchstoneId: String, scenarioDescId: String): ScenarioAndCoverageSets
-    fun getScenarioAndCoverageData(touchstoneId: String, scenarioDescId: String): SplitData<ScenarioAndCoverageSets, LongCoverageRow>
-    fun getDemographicDatasets(touchstoneId: String): List<DemographicDataset>
-    fun getDemographicData(statisticTypeCode: String, source: String, touchstoneId: String, gender: String = "both"): SplitData<DemographicDataForTouchstone, LongDemographicRow>
+    fun scenarios(touchstoneVersionId: String, filterParams: ScenarioFilterParameters): List<ScenarioAndCoverageSets>
+    fun getScenario(touchstoneVersionId: String, scenarioDescId: String): ScenarioAndCoverageSets
+    fun getScenarioAndCoverageData(touchstoneVersionId: String, scenarioDescId: String): SplitData<ScenarioAndCoverageSets, LongCoverageRow>
+    fun getDemographicDatasets(touchstoneVersionId: String): List<DemographicDataset>
+    fun getDemographicData(statisticTypeCode: String, source: String, touchstoneVersionId: String, gender: String = "both"): SplitData<DemographicDataForTouchstone, LongDemographicRow>
     fun mapTouchstone(record: Record): TouchstoneVersion
 }

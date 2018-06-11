@@ -14,7 +14,7 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
     override fun makeRepository(db: JooqContext): ScenarioRepository = JooqScenarioRepository(db.dsl)
 
     private val groupId = "group-1"
-    private val touchstoneId = "touchstone-1"
+    private val touchstoneVersionId = "touchstone-1"
 
     @Test
     fun `scenarios are returned in order of disease, then activity type`()
@@ -61,19 +61,19 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
         db.addScenarioDescription("scenario-3$diseaseId", "campaign", diseaseId, addDisease = false)
         db.addScenarioDescription("scenario-2$diseaseId", "none", diseaseId, addDisease = false)
 
-        db.addScenarioToTouchstone(touchstoneId, "scenario-2$diseaseId")
-        db.addScenarioToTouchstone(touchstoneId, "scenario-3$diseaseId")
-        db.addScenarioToTouchstone(touchstoneId, "scenario-1$diseaseId")
+        db.addScenarioToTouchstone(touchstoneVersionId, "scenario-2$diseaseId")
+        db.addScenarioToTouchstone(touchstoneVersionId, "scenario-3$diseaseId")
+        db.addScenarioToTouchstone(touchstoneVersionId, "scenario-1$diseaseId")
 
-        val c1 = db.addCoverageSet(touchstoneId, "coverage name", "v1$diseaseId", "with",
+        val c1 = db.addCoverageSet(touchstoneVersionId, "coverage name", "v1$diseaseId", "with",
                 "routine", addVaccine = true)
-        val c2 = db.addCoverageSet(touchstoneId, "coverage name", "v1$diseaseId", "with",
+        val c2 = db.addCoverageSet(touchstoneVersionId, "coverage name", "v1$diseaseId", "with",
                 "none", addVaccine = false)
-        val c3 = db.addCoverageSet(touchstoneId, "coverage name", "v1$diseaseId", "with",
+        val c3 = db.addCoverageSet(touchstoneVersionId, "coverage name", "v1$diseaseId", "with",
                 "campaign", addVaccine = false)
 
-        db.addFocalCoverageSetToScenario("scenario-1$diseaseId", touchstoneId, c1, 0)
-        db.addFocalCoverageSetToScenario("scenario-2$diseaseId", touchstoneId, c2, 0)
-        db.addFocalCoverageSetToScenario("scenario-3$diseaseId", touchstoneId, c3, 0)
+        db.addFocalCoverageSetToScenario("scenario-1$diseaseId", touchstoneVersionId, c1, 0)
+        db.addFocalCoverageSetToScenario("scenario-2$diseaseId", touchstoneVersionId, c2, 0)
+        db.addFocalCoverageSetToScenario("scenario-3$diseaseId", touchstoneVersionId, c3, 0)
     }
 }

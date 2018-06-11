@@ -26,8 +26,8 @@ class GroupCoverageController(
     fun getCoverageSets(): ScenarioTouchstoneAndCoverageSets
     {
         val path = ResponsibilityPath(context)
-        val data = repo.getCoverageSets(path.groupId, path.touchstoneId, path.scenarioId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstoneVersion.status)
+        val data = repo.getCoverageSets(path.groupId, path.touchstoneVersionId, path.scenarioId)
+        context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, data.touchstoneVersion.status)
         return data
     }
 
@@ -45,8 +45,8 @@ class GroupCoverageController(
     fun getCoverageDataAndMetadata(): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
         val path = ResponsibilityPath(context)
-        val splitData = repo.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, splitData.structuredMetadata.touchstoneVersion.status)
+        val splitData = repo.getCoverageData(path.groupId, path.touchstoneVersionId, path.scenarioId)
+        context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, splitData.structuredMetadata.touchstoneVersion.status)
 
         val format = context.queryParams("format")
 

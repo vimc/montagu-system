@@ -14,7 +14,7 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
 {
     val touchstoneName = "touchstoneVersion"
     val touchstoneVersion = 1
-    val touchstoneId = "$touchstoneName-$touchstoneVersion"
+    val touchstoneVersionId = "$touchstoneName-$touchstoneVersion"
     val scenarioId = "yf-1"
 
     override fun makeRepository(db: JooqContext): TouchstoneRepository
