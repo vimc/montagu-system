@@ -33,7 +33,7 @@ class DemographicDummyData(val it: JooqContext,
 
     fun withTouchstone(countries: List<String>? = null): DemographicDummyData
     {
-        it.addTouchstone(this.touchstoneName, this.touchstoneVersion, addName = true)
+        it.addTouchstoneVersion(this.touchstoneName, this.touchstoneVersion, addTouchstone = true)
 
         for (disease in diseases)
         {

@@ -7,7 +7,7 @@ import org.vaccineimpact.api.app.app_start.streamed
 
 object GroupCoverageRouteConfig : RouteConfig
 {
-    private val baseUrl = "/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id"
+    private val baseUrl = "/modelling-groups/:group-id/responsibilities/:touchstone-version-id/:scenario-id"
     private val controller = GroupCoverageController::class
 
     private val groupScope = "modelling-group:<group-id>"

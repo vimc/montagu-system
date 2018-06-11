@@ -5,14 +5,15 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.TouchstoneStatus
+import org.vaccineimpact.api.models.TouchstoneVersion
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 
-fun ActionContext.checkIsAllowedToSeeTouchstone(touchstoneId: String, touchstoneStatus: TouchstoneStatus)
+fun ActionContext.checkIsAllowedToSeeTouchstone(touchstoneVersionId: String, touchstoneStatus: TouchstoneStatus)
 {
     val permission = ReifiedPermission("touchstones.prepare", Scope.Global())
     if (touchstoneStatus == TouchstoneStatus.IN_PREPARATION && !this.hasPermission(permission))
     {
-        throw UnknownObjectError(touchstoneId, "Touchstone")
+        throw UnknownObjectError(touchstoneVersionId, TouchstoneVersion::class)
     }
 }
 
@@ -28,15 +29,15 @@ fun ActionContext.isAllowedToSeeTouchstone(touchstoneStatus: TouchstoneStatus): 
 
 fun ActionContext.checkEstimatePermissionsForTouchstone(
         groupId: String,
-        touchstoneId: String,
+        touchstoneVersionId: String,
         estimateRepository: BurdenEstimateRepository,
         readEstimatesRequired: Boolean = false
 )
 {
 
     val touchstones = estimateRepository.touchstoneRepository.touchstones
-    val touchstone = touchstones.get(touchstoneId)
-    this.checkIsAllowedToSeeTouchstone(touchstoneId, touchstone.status)
+    val touchstone = touchstones.get(touchstoneVersionId)
+    this.checkIsAllowedToSeeTouchstone(touchstoneVersionId, touchstone.status)
     if (readEstimatesRequired)
     {
         if (touchstone.status == TouchstoneStatus.OPEN)

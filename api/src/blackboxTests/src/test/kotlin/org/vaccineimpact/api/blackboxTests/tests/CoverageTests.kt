@@ -21,12 +21,12 @@ import java.math.BigDecimal
 class CoverageTests : DatabaseTest()
 {
     val groupId = "group-1"
-    val touchstoneId = "touchstone-1"
+    val touchstoneVersionId = "touchstone-1"
     val scenarioId = "scenario-1"
     val coverageSetId = 1
     val groupScope = "modelling-group:$groupId"
     val minimumPermissions = PermissionSet("*/can-login", "*/scenarios.read", "$groupScope/responsibilities.read", "$groupScope/coverage.read")
-    val url = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId/coverage/"
+    val url = "/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/coverage/"
 
     @Test
     fun `can get coverage data for responsibility`()
@@ -183,7 +183,7 @@ class CoverageTests : DatabaseTest()
         val checker = PermissionChecker(url, minimumPermissions + permission, SplitValidator())
         checker.checkPermissionIsRequired(permission,
                 given = { addCoverageData(it, touchstoneStatus = "in-preparation") },
-                expectedProblem = ExpectedProblem("unknown-touchstone", touchstoneId))
+                expectedProblem = ExpectedProblem("unknown-touchstone-version", touchstoneVersionId))
     }
 
     private fun addCoverageData(db: JooqContext, touchstoneStatus: String,
@@ -193,12 +193,12 @@ class CoverageTests : DatabaseTest()
     {
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
-        db.addTouchstone("touchstone", 1, "description", touchstoneStatus, addName = true)
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, "submitted")
-        db.addResponsibility(setId, touchstoneId, scenarioId)
-        db.addCoverageSet(touchstoneId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
+        db.addTouchstoneVersion("touchstone", 1, "description", touchstoneStatus, addTouchstone = true)
+        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "submitted")
+        db.addResponsibility(setId, touchstoneVersionId, scenarioId)
+        db.addCoverageSet(touchstoneVersionId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
                 addVaccine = true)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId, 0)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, coverageSetId, 0)
         db.generateCoverageData(coverageSetId, countryCount = 2, yearRange = 1985..2000 step 5,
                 ageRange = 0..20 step 5, testYear = testYear, target = target, coverage = coverage)
     }
@@ -222,19 +222,19 @@ class CoverageTests : DatabaseTest()
     private fun createUnorderedCoverageData(db: JooqContext)
     {
         db.addGroup(groupId, "description")
-        db.addTouchstone("touchstone", 1, "description", "open", addName = true)
+        db.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
         db.addScenarioDescription(scenarioId, "Blue Fever Scenario", "BF", addDisease = true)
         db.addVaccine("BF", "Blue Fever")
         db.addVaccine("AF", "Alpha Fever")
 
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, "incomplete")
-        db.addResponsibility(setId, touchstoneId, scenarioId)
-        db.addCoverageSet(touchstoneId, "First", "AF", "without", "routine", id = 1)
-        db.addCoverageSet(touchstoneId, "Second", "BF", "without", "campaign", id = 2)
-        db.addCoverageSet(touchstoneId, "Third", "BF", "without", "routine", id = 3)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId = 1, order = 0)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId = 2, order = 1)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, coverageSetId = 3, order = 2)
+        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "incomplete")
+        db.addResponsibility(setId, touchstoneVersionId, scenarioId)
+        db.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = 1)
+        db.addCoverageSet(touchstoneVersionId, "Second", "BF", "without", "campaign", id = 2)
+        db.addCoverageSet(touchstoneVersionId, "Third", "BF", "without", "routine", id = 3)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, coverageSetId = 1, order = 0)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, coverageSetId = 2, order = 1)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, coverageSetId = 3, order = 2)
 
         db.addCountries(listOf("AAA", "BBB"))
 

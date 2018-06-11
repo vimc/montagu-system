@@ -89,21 +89,21 @@ class JooqModellingGroupRepository(
         return ModellingGroupDetails(group.id, group.description, models, users)
     }
 
-    override fun getResponsibilities(groupId: String, touchstoneId: String,
+    override fun getResponsibilities(groupId: String, touchstoneVersionId: String,
                                      scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
     {
         getModellingGroup(groupId)
-        val touchstone = getTouchstone(touchstoneId)
-        val responsibilitySet = getResponsibilitySet(groupId, touchstoneId)
-        val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneId)
+        val touchstone = getTouchstone(touchstoneVersionId)
+        val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
+        val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneVersionId)
         return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstone.status)
     }
 
-    override fun getResponsibility(groupId: String, touchstoneId: String, scenarioId: String): ResponsibilityAndTouchstone
+    override fun getResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityAndTouchstone
     {
         getModellingGroup(groupId)
-        val touchstone = getTouchstone(touchstoneId)
-        val responsibilitySet = getResponsibilitySet(groupId, touchstoneId)
+        val touchstone = getTouchstone(touchstoneVersionId)
+        val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
         if (responsibilitySet != null)
         {
             val responsibility = getResponsibilitiesInResponsibilitySet(
@@ -118,30 +118,30 @@ class JooqModellingGroupRepository(
         }
     }
 
-    override fun getCoverageSets(groupId: String, touchstoneId: String, scenarioId: String): ScenarioTouchstoneAndCoverageSets
+    override fun getCoverageSets(groupId: String, touchstoneVersionId: String, scenarioId: String): ScenarioTouchstoneAndCoverageSets
     {
         // We don't use the returned responsibility, but by using this method we check that the group exists
-        // and that the group is responsible for the given scenario in the given touchstone
-        val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneId, scenarioId)
-        val scenario = touchstoneRepository.getScenario(touchstoneId, scenarioId)
+        // and that the group is responsible for the given scenario in the given touchstoneVersion
+        val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneVersionId, scenarioId)
+        val scenario = touchstoneRepository.getScenario(touchstoneVersionId, scenarioId)
         return ScenarioTouchstoneAndCoverageSets(
-                responsibilityAndTouchstone.touchstone,
+                responsibilityAndTouchstone.touchstoneVersion,
                 scenario.scenario,
                 scenario.coverageSets)
     }
 
-    override fun getCoverageData(groupId: String, touchstoneId: String, scenarioId: String): SplitData<ScenarioTouchstoneAndCoverageSets, LongCoverageRow>
+    override fun getCoverageData(groupId: String, touchstoneVersionId: String, scenarioId: String): SplitData<ScenarioTouchstoneAndCoverageSets, LongCoverageRow>
     {
-        val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneId, scenarioId)
-        val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneId, scenarioId)
+        val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneVersionId, scenarioId)
+        val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
         return SplitData(ScenarioTouchstoneAndCoverageSets(
-                responsibilityAndTouchstone.touchstone,
+                responsibilityAndTouchstone.touchstoneVersion,
                 scenarioAndData.structuredMetadata.scenario,
                 scenarioAndData.structuredMetadata.coverageSets
         ), scenarioAndData.tableData)
     }
 
-    override fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
+    override fun getTouchstonesByGroupId(groupId: String): List<TouchstoneVersion>
     {
         val group = getModellingGroup(groupId)
         val query = dsl
@@ -225,7 +225,7 @@ class JooqModellingGroupRepository(
 
     private fun getResponsibilities(responsibilitySet: ResponsibilitySetRecord?,
                                     scenarioFilterParameters: ScenarioFilterParameters,
-                                    touchstoneId: String): Responsibilities
+                                    touchstoneVersionId: String): Responsibilities
     {
         if (responsibilitySet != null)
         {
@@ -234,11 +234,11 @@ class JooqModellingGroupRepository(
                     { this.whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters) }
             )
             val status = mapper.mapEnum<ResponsibilitySetStatus>(responsibilitySet.status)
-            return Responsibilities(touchstoneId, "", status, responsibilities)
+            return Responsibilities(touchstoneVersionId, "", status, responsibilities)
         }
         else
         {
-            return Responsibilities(touchstoneId, "", ResponsibilitySetStatus.NOT_APPLICABLE, emptyList())
+            return Responsibilities(touchstoneVersionId, "", ResponsibilitySetStatus.NOT_APPLICABLE, emptyList())
         }
     }
 
@@ -253,7 +253,7 @@ class JooqModellingGroupRepository(
                 .where(RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibilitySet.id))
                 // TODO remove this once VIMC-1240 is done
                 // this check is needed for the situation where a group has a responsibility set with
-                // multiple diseases, but we want to 'close' some and not others for a touchstone
+                // multiple diseases, but we want to 'close' some and not others for a touchstoneVersion
                 // it will be obsolete when we refactor responsibility sets to be single disease only
                 .and(RESPONSIBILITY.IS_OPEN)
                 .applyWhereFilter()
@@ -267,13 +267,13 @@ class JooqModellingGroupRepository(
         }
     }
 
-    private fun getResponsibilitySet(groupId: String, touchstoneId: String): ResponsibilitySetRecord?
+    private fun getResponsibilitySet(groupId: String, touchstoneVersionId: String): ResponsibilitySetRecord?
     {
         return dsl.fetchAny(RESPONSIBILITY_SET,
-                RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId).and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneId)))
+                RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId).and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId)))
     }
 
     private fun mapModellingGroup(x: ModellingGroupRecord) = ModellingGroup(x.id, x.description)
 
-    private fun getTouchstone(touchstoneId: String) = touchstoneRepository.touchstones.get(touchstoneId)
+    private fun getTouchstone(touchstoneVersionId: String) = touchstoneRepository.touchstones.get(touchstoneVersionId)
 }

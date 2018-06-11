@@ -57,7 +57,7 @@ class ResponsibilityControllerTests : MontaguTests()
         }
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstone-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { hasPermission(any()) } doReturn true
         }
 
@@ -78,13 +78,13 @@ class ResponsibilityControllerTests : MontaguTests()
         }
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstone-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { hasPermission(any()) } doReturn false
         }
 
         Assertions.assertThatThrownBy {
             ResponsibilityController(context, repo).getResponsibilities()
-        }.hasMessageContaining("Unknown touchstone")
+        }.hasMessageContaining("Unknown touchstone-version")
     }
 
     @Test
@@ -105,20 +105,20 @@ class ResponsibilityControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(false)
         Assertions.assertThatThrownBy {
             ResponsibilityController(context, repo).getResponsibility()
-        }.hasMessageContaining("Unknown touchstone")
+        }.hasMessageContaining("Unknown touchstone-version")
     }
 
 
     private val mockTouchstones = listOf(
-            Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN),
-            Touchstone("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
+            TouchstoneVersion("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN),
+            TouchstoneVersion("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     )
 
     private fun mockContextForSpecificResponsibility(hasPermissions: Boolean): ActionContext
     {
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstone-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
             on { hasPermission(any()) } doReturn hasPermissions
         }
@@ -128,7 +128,7 @@ class ResponsibilityControllerTests : MontaguTests()
     private fun makeRepoMockingGetResponsibility(status: TouchstoneStatus): ModellingGroupRepository
     {
         val data = ResponsibilityAndTouchstone(
-                Touchstone("tId", "t", 1, "desc", status),
+                TouchstoneVersion("tId", "t", 1, "desc", status),
                 Responsibility(
                         Scenario("sId", "scDesc", "disease", listOf("t-1")),
                         ResponsibilityStatus.EMPTY, emptyList(), null

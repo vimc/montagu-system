@@ -7,7 +7,7 @@ import org.vaccineimpact.api.app.app_start.streamed
 
 object GroupModelRunParametersRouteConfig : RouteConfig
 {
-    private val baseUrl = "/modelling-groups/:group-id/model-run-parameters/:touchstone-id"
+    private val baseUrl = "/modelling-groups/:group-id/model-run-parameters/:touchstone-version-id"
     private val controller = GroupModelRunParametersController::class
 
     private val groupScope = "modelling-group:<group-id>"

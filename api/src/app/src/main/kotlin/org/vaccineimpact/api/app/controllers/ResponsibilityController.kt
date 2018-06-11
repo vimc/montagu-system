@@ -10,7 +10,7 @@ import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.Responsibilities
 import org.vaccineimpact.api.models.ResponsibilityAndTouchstone
-import org.vaccineimpact.api.models.Touchstone
+import org.vaccineimpact.api.models.TouchstoneVersion
 
 class ResponsibilityController(
         context: ActionContext,
@@ -20,7 +20,7 @@ class ResponsibilityController(
     constructor(context: ActionContext, repositories: Repositories)
             : this(context, repositories.modellingGroup)
 
-    fun getResponsibleTouchstones(): List<Touchstone>
+    fun getResponsibleTouchstones(): List<TouchstoneVersion>
     {
         val groupId = groupId(context)
 
@@ -32,19 +32,19 @@ class ResponsibilityController(
     fun getResponsibilities(): Responsibilities
     {
         val groupId = groupId(context)
-        val touchstoneId = context.params(":touchstone-id")
+        val touchstoneVersionId = context.params(":touchstone-version-id")
         val filterParameters = ScenarioFilterParameters.fromContext(context)
 
-        val data = repo.getResponsibilities(groupId, touchstoneId, filterParameters)
-        context.checkIsAllowedToSeeTouchstone(touchstoneId, data.touchstoneStatus)
+        val data = repo.getResponsibilities(groupId, touchstoneVersionId, filterParameters)
+        context.checkIsAllowedToSeeTouchstone(touchstoneVersionId, data.touchstoneStatus)
         return data.responsibilities
     }
 
     fun getResponsibility(): ResponsibilityAndTouchstone
     {
         val path = ResponsibilityPath(context)
-        val data = repo.getResponsibility(path.groupId, path.touchstoneId, path.scenarioId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstone.status)
+        val data = repo.getResponsibility(path.groupId, path.touchstoneVersionId, path.scenarioId)
+        context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, data.touchstoneVersion.status)
         return data
     }
 

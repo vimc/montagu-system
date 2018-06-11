@@ -28,21 +28,21 @@ open class GroupBurdenEstimatesController(
     fun getBurdenEstimates(): List<BurdenEstimateSet>
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
-        return estimateRepository.getBurdenEstimateSets(path.groupId, path.touchstoneId, path.scenarioId)
+        return estimateRepository.getBurdenEstimateSets(path.groupId, path.touchstoneVersionId, path.scenarioId)
     }
 
     fun createBurdenEstimateSet(): String
     {
-        // First check if we're allowed to see this touchstone
+        // First check if we're allowed to see this touchstoneVersion
         val path = getValidResponsibilityPath(context, estimateRepository)
         val properties = context.postData<CreateBurdenEstimateSet>()
 
-        val id = estimateRepository.createBurdenEstimateSet(path.groupId, path.touchstoneId, path.scenarioId,
+        val id = estimateRepository.createBurdenEstimateSet(path.groupId, path.touchstoneVersionId, path.scenarioId,
                 properties = properties,
                 uploader = context.username!!,
                 timestamp = Instant.now())
 
-        val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneId}/${path.scenarioId}/estimate-sets/$id/"
+        val url = "/modelling-groups/${path.groupId}/responsibilities/${path.touchstoneVersionId}/${path.scenarioId}/estimate-sets/$id/"
         return objectCreation(context, url)
     }
 
@@ -50,7 +50,7 @@ open class GroupBurdenEstimatesController(
 
     fun populateBurdenEstimateSet(source: RequestDataSource): String
     {
-        // First check if we're allowed to see this touchstone
+        // First check if we're allowed to see this touchstoneVersion
         val path = getValidResponsibilityPath(context, estimateRepository)
 
         // Next, get the metadata that will enable us to interpret the CSV
@@ -61,7 +61,7 @@ open class GroupBurdenEstimatesController(
         val data = getBurdenEstimateDataFromCSV(metadata, source)
         estimateRepository.populateBurdenEstimateSet(
                 setId,
-                path.groupId, path.touchstoneId, path.scenarioId,
+                path.groupId, path.touchstoneVersionId, path.scenarioId,
                 data
         )
 
@@ -70,7 +70,7 @@ open class GroupBurdenEstimatesController(
         if (!keepOpen)
         {
             estimateRepository.closeBurdenEstimateSet(setId,
-                    path.groupId, path.touchstoneId, path.scenarioId)
+                    path.groupId, path.touchstoneVersionId, path.scenarioId)
         }
 
         return okayResponse()
@@ -80,7 +80,7 @@ open class GroupBurdenEstimatesController(
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
         val setId = context.params(":set-id").toInt()
-        estimateRepository.clearBurdenEstimateSet(setId, path.groupId, path.touchstoneId, path.scenarioId)
+        estimateRepository.clearBurdenEstimateSet(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
         return okayResponse()
     }
 
@@ -88,7 +88,7 @@ open class GroupBurdenEstimatesController(
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
         val setId = context.params(":set-id").toInt()
-        estimateRepository.closeBurdenEstimateSet(setId, path.groupId, path.touchstoneId, path.scenarioId)
+        estimateRepository.closeBurdenEstimateSet(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
         return okayResponse()
     }
 
@@ -121,7 +121,7 @@ open class GroupBurdenEstimatesController(
     ): ResponsibilityPath
     {
         val path = ResponsibilityPath(context)
-        context.checkEstimatePermissionsForTouchstone(path.groupId, path.touchstoneId, estimateRepository, readEstimatesRequired)
+        context.checkEstimatePermissionsForTouchstone(path.groupId, path.touchstoneVersionId, estimateRepository, readEstimatesRequired)
         return path
     }
 

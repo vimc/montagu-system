@@ -7,14 +7,14 @@ import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addDisease
 import org.vaccineimpact.api.db.direct.addScenarioDescription
-import org.vaccineimpact.api.db.direct.addTouchstone
+import org.vaccineimpact.api.db.direct.addTouchstoneVersion
 import org.vaccineimpact.api.db.direct.addVaccine
 
 abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>()
 {
-    val touchstoneName = "touchstone"
+    val touchstoneName = "touchstoneVersion"
     val touchstoneVersion = 1
-    val touchstoneId = "$touchstoneName-$touchstoneVersion"
+    val touchstoneVersionId = "$touchstoneName-$touchstoneVersion"
     val scenarioId = "yf-1"
 
     override fun makeRepository(db: JooqContext): TouchstoneRepository
@@ -25,7 +25,7 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
 
     protected fun createTouchstoneAndScenarioDescriptions(it: JooqContext)
     {
-        it.addTouchstone(touchstoneName, touchstoneVersion, addName = true)
+        it.addTouchstoneVersion(touchstoneName, touchstoneVersion, addTouchstone = true)
         it.addDisease("YF", "Yellow Fever")
         it.addDisease("Measles", "Measles")
         it.addScenarioDescription(scenarioId, "Yellow Fever 1", "YF")

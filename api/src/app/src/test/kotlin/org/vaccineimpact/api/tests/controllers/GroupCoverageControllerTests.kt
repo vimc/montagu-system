@@ -34,7 +34,7 @@ class GroupCoverageControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(false)
         Assertions.assertThatThrownBy {
             GroupCoverageController(context, repo).getCoverageSets()
-        }.hasMessageContaining("Unknown touchstone")
+        }.hasMessageContaining("Unknown touchstone-version")
     }
 
     @Test
@@ -52,7 +52,7 @@ class GroupCoverageControllerTests : MontaguTests()
         val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstone-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
             on { it.queryParams("format") } doReturn "long"
             on { hasPermission(any()) } doReturn true
@@ -92,7 +92,7 @@ class GroupCoverageControllerTests : MontaguTests()
 
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstone-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
             on { it.queryParams("format") } doReturn "wide"
             on { hasPermission(any()) } doReturn true
@@ -130,7 +130,7 @@ class GroupCoverageControllerTests : MontaguTests()
 
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstone-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
             on { it.queryParams("format") } doReturn "wide"
             on { hasPermission(any()) } doReturn true
@@ -150,7 +150,7 @@ class GroupCoverageControllerTests : MontaguTests()
         val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstone-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
             on { it.queryParams("format") } doReturn "78493hfjk"
             on { hasPermission(any()) } doReturn true
@@ -169,14 +169,14 @@ class GroupCoverageControllerTests : MontaguTests()
 
         Assertions.assertThatThrownBy {
             GroupCoverageController(context, repo).getCoverageData()
-        }.hasMessageContaining("Unknown touchstone")
+        }.hasMessageContaining("Unknown touchstone-version")
     }
 
     private fun mockContextForSpecificResponsibility(hasPermissions: Boolean): ActionContext
     {
         return mock {
             on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstone-id") } doReturn "tId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
             on { hasPermission(any()) } doReturn hasPermissions
         }
@@ -200,7 +200,7 @@ class GroupCoverageControllerTests : MontaguTests()
     }
 
     private fun mockCoverageSetsData(status: TouchstoneStatus) = ScenarioTouchstoneAndCoverageSets(
-            Touchstone("tId", "t", 1, "desc", status),
+            TouchstoneVersion("tId", "t", 1, "desc", status),
             Scenario("sId", "scDesc", "disease", listOf("t-1")),
             listOf(
                     CoverageSet(1, "tId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)

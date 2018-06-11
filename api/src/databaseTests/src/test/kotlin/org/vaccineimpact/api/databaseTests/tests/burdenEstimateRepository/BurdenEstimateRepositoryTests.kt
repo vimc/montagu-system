@@ -15,7 +15,6 @@ import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
-import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneOffset
@@ -49,7 +48,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
 
     protected val scenarioId = "scenario-1"
     protected val groupId = "group-1"
-    protected val touchstoneId = "touchstone-1"
+    protected val touchstoneVersionId = "touchstone-1"
     protected val modelId = "model-1"
     protected val modelVersion = "version-1"
     protected val username = "some.user"
@@ -60,7 +59,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     protected fun setupDatabase(db: JooqContext, addModel: Boolean = true,
                                 responsibilitySetStatus: String = "incomplete"): ReturnedIds
     {
-        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
+        db.addTouchstoneVersion("touchstone", 1, "Touchstone 1", addTouchstone = true)
         db.addDisease(diseaseId, diseaseName)
         db.addScenarioDescription(scenarioId, "Test scenario", diseaseId, addDisease = false)
         db.addGroup(groupId, "Test group")
@@ -73,8 +72,8 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         {
             null
         }
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, responsibilitySetStatus)
-        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
+        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, responsibilitySetStatus)
+        val responsibilityId = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
         db.addUserForTesting(username)
         return ReturnedIds(modelVersionId, responsibilityId, setId)
     }
@@ -93,15 +92,15 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     protected fun setupDatabaseWithModelRunParameterSet(db: JooqContext,
                                                         responsibilitySetStatus: String = "incomplete"): ReturnedIds
     {
-        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
+        db.addTouchstoneVersion("touchstone", 1, "Touchstone 1", addTouchstone = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
         db.addGroup(groupId, "Test group")
 
         db.addModel(modelId, groupId, diseaseId)
         val modelVersionId = db.addModelVersion(modelId, modelVersion, setCurrent = true)
 
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, responsibilitySetStatus)
-        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
+        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, responsibilitySetStatus)
+        val responsibilityId = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
         db.addUserForTesting(username)
 
         db.addModelRunParameterSet(setId, modelVersionId, username)
@@ -111,15 +110,15 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
 
     protected fun setupDatabaseWithModelRunParameterSetValues(db: JooqContext)
     {
-        db.addTouchstone("touchstone", 1, "Touchstone 1", addName = true)
+        db.addTouchstoneVersion("touchstone", 1, "Touchstone 1", addTouchstone = true)
         db.addScenarioDescription(scenarioId, "Test scenario", "Hib3", addDisease = true)
         db.addGroup(groupId, "Test group")
 
         db.addModel(modelId, groupId, diseaseId)
         val modelVersionId = db.addModelVersion(modelId, modelVersion, setCurrent = true)
 
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, "incomplete")
-        db.addResponsibility(setId, touchstoneId, scenarioId)
+        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "incomplete")
+        db.addResponsibility(setId, touchstoneVersionId, scenarioId)
         db.addUserForTesting(username)
 
         val paramsSetId = db.addModelRunParameterSet(setId, modelVersionId, username)

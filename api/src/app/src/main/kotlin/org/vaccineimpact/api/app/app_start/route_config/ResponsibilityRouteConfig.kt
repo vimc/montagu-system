@@ -23,11 +23,11 @@ object ResponsibilityRouteConfig : RouteConfig
                     .json()
                     .secure(setOf("*/touchstones.read", "$groupScope/responsibilities.read")),
 
-            Endpoint("$baseUrl/:touchstone-id/", controller, "getResponsibilities")
+            Endpoint("$baseUrl/:touchstone-version-id/", controller, "getResponsibilities")
                     .json()
                     .secure(permissions),
 
-            Endpoint("$baseUrl/:touchstone-id/:scenario-id/", controller, "getResponsibility")
+            Endpoint("$baseUrl/:touchstone-version-id/:scenario-id/", controller, "getResponsibility")
                     .json()
                     .secure(permissions)
     )

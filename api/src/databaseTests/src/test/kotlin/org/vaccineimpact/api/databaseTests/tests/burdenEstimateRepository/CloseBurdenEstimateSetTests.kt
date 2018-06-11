@@ -20,7 +20,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             setId
         }
         withRepo { repo ->
-            repo.closeBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
+            repo.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
         }
         withDatabase { db ->
             val record = db.dsl.fetchOne(BURDEN_ESTIMATE_SET)
@@ -36,7 +36,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         }
         withRepo { repo ->
             assertThatThrownBy {
-                repo.closeBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
+                repo.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
             }.isInstanceOf(InvalidOperationError::class.java)
         }
         withDatabase { db ->
@@ -48,13 +48,13 @@ class CloseBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `cannot close burden estimate set that belongs to other group`()
     {
-        // Create another group that is also responsible for the same scenario in the same touchstone
+        // Create another group that is also responsible for the same scenario in the same touchstoneVersion
         val otherGroup = "other-group"
         withDatabase {
             setupDatabase(it)
             it.addGroup(otherGroup, "Other test group")
-            val responsibilitySet = it.addResponsibilitySet(otherGroup, touchstoneId)
-            it.addResponsibility(responsibilitySet, touchstoneId, scenarioId)
+            val responsibilitySet = it.addResponsibilitySet(otherGroup, touchstoneVersionId)
+            it.addResponsibility(responsibilitySet, touchstoneVersionId, scenarioId)
         }
         assertCannotCloseEstimateSetWithWrongPath(closeGroupId = otherGroup)
     }
@@ -62,12 +62,12 @@ class CloseBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `cannot close burden estimate set with wrong touchstone`()
     {
-        // Create another touchstone in which the modelling group
+        // Create another touchstoneVersion in which the modelling group
         // is also responsible for the same scenario
         val otherTouchstone = "touchstone-2"
         withDatabase {
             setupDatabase(it)
-            it.addTouchstone("touchstone", 2)
+            it.addTouchstoneVersion("touchstone", 2)
             val responsibilitySet = it.addResponsibilitySet(groupId, otherTouchstone)
             it.addResponsibility(responsibilitySet, otherTouchstone, scenarioId)
         }
@@ -83,20 +83,20 @@ class CloseBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         withDatabase {
             val ids = setupDatabase(it)
             it.addScenarioDescription(otherScenario, "Other scenario", diseaseId)
-            it.addResponsibility(ids.responsibilitySetId, touchstoneId, otherScenario)
+            it.addResponsibility(ids.responsibilitySetId, touchstoneVersionId, otherScenario)
         }
         assertCannotCloseEstimateSetWithWrongPath(closeScenarioId = otherScenario)
     }
 
     private fun assertCannotCloseEstimateSetWithWrongPath(
             closeGroupId: String = groupId,
-            closeTouchstoneId: String = touchstoneId,
+            closeTouchstoneId: String = touchstoneVersionId,
             closeScenarioId: String = scenarioId
     )
     {
         withRepo { repo ->
             val setId = repo.createBurdenEstimateSet(groupId,
-                    touchstoneId, scenarioId, defaultProperties, username, timestamp)
+                    touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
             assertThatThrownBy { repo.closeBurdenEstimateSet(setId, closeGroupId, closeTouchstoneId, closeScenarioId) }
                     .isInstanceOf(UnknownObjectError::class.java)
                     .hasMessageContaining("Unknown burden-estimate-set with id '1'")

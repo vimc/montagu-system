@@ -9,7 +9,7 @@ import spark.route.HttpMethod
 
 object GroupBurdenEstimatesRouteConfig : RouteConfig
 {
-    private val baseUrl = "/modelling-groups/:group-id/responsibilities/:touchstone-id/:scenario-id/estimate-sets"
+    private val baseUrl = "/modelling-groups/:group-id/responsibilities/:touchstone-version-id/:scenario-id/estimate-sets"
     private val controller = GroupBurdenEstimatesController::class
 
     private val groupScope = "modelling-group:<group-id>"

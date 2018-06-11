@@ -20,16 +20,16 @@ import org.vaccineimpact.api.validateSchema.JSONValidator
 class DemographicTests : DatabaseTest()
 {
     val requiredPermissions = PermissionSet("*/can-login", "*/touchstones.read", "*/demographics.read")
-    val touchstoneId = "touchstone-1"
+    val touchstoneVersionId = "touchstone-1"
     val touchstoneName = "touchstone"
     val touchstoneVersion = 1
-    val url = "/touchstones/$touchstoneId/demographics/unwpp2015/tot-pop/"
-    val fertilityUrl = "/touchstones/$touchstoneId/demographics/unwpp2015/as-fert/"
+    val url = "/touchstones/$touchstoneVersionId/demographics/unwpp2015/tot-pop/"
+    val fertilityUrl = "/touchstones/$touchstoneVersionId/demographics/unwpp2015/as-fert/"
 
     @Test
     fun `can get demographic stat types for touchstone`()
     {
-        validate("/touchstones/$touchstoneId/demographics/") against "Demographics" given {
+        validate("/touchstones/$touchstoneVersionId/demographics/") against "Demographics" given {
 
             DemographicDummyData(it, touchstoneName, touchstoneVersion)
                     .withTouchstone()
@@ -247,7 +247,7 @@ class DemographicTests : DatabaseTest()
         }
 
         val validator = SplitValidator()
-        val response = requestHelper.get("/touchstones/$touchstoneId/demographics/unwpp2015/tot-pop/",
+        val response = requestHelper.get("/touchstones/$touchstoneVersionId/demographics/unwpp2015/tot-pop/",
                 requiredPermissions)
 
         val csv = validator.getSplitText(response.text).csv

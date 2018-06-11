@@ -12,7 +12,6 @@ import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.requests.PostDataHelper
-import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -43,7 +42,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         }
         val context = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
         assertThat(GroupBurdenEstimatesController(context, repo).getBurdenEstimates())
@@ -65,7 +64,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { username } doReturn "username"
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
             on { postData<CreateBurdenEstimateSet>() } doReturn properties
         }
@@ -175,7 +174,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
         GroupBurdenEstimatesController(mockContext, repo).closeBurdenEstimateSet()
@@ -229,7 +228,7 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { username } doReturn "username"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-id") } doReturn "touchstone-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
             on { queryParams("keepOpen") } doReturn keepOpen
         }
@@ -237,7 +236,7 @@ class GroupEstimatesControllerTests : MontaguTests()
 
     private fun <T : Any> verifyRepositoryIsInvokedToPopulateSet(
             actionContext: ActionContext, repo: BurdenEstimateRepository,
-            touchstoneSet: SimpleDataSet<Touchstone, String>,
+            touchstoneVersionSet: SimpleDataSet<TouchstoneVersion, String>,
             actualData: Sequence<T>,
             expectedData: List<BurdenEstimateWithRunId>
     )
@@ -246,29 +245,29 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { csvData<T>(any(), any()) } doReturn actualData
         }
         GroupBurdenEstimatesController(actionContext, repo, postDataHelper = postDataHelper).populateBurdenEstimateSet()
-        verify(touchstoneSet).get("touchstone-1")
+        verify(touchstoneVersionSet).get("touchstone-1")
         verify(repo).populateBurdenEstimateSet(eq(1),
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
                 argWhere { it.toSet() == expectedData.toSet() }
         )
     }
 
-    private fun mockTouchstones() = mock<SimpleDataSet<Touchstone, String>> {
-        on { get("touchstone-1") } doReturn Touchstone("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
-        on { get("touchstone-bad") } doReturn Touchstone("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
+    private fun mockTouchstones() = mock<SimpleDataSet<TouchstoneVersion, String>> {
+        on { get("touchstone-1") } doReturn TouchstoneVersion("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
+        on { get("touchstone-bad") } doReturn TouchstoneVersion("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     }
 
-    private fun mockTouchstoneRepository(touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones()) =
+    private fun mockTouchstoneRepository(touchstoneVersionSet: SimpleDataSet<TouchstoneVersion, String> = mockTouchstones()) =
             mock<TouchstoneRepository> {
-                on { touchstones } doReturn touchstoneSet
+                on { touchstones } doReturn touchstoneVersionSet
             }
 
     private fun mockRepository(
-            touchstoneSet: SimpleDataSet<Touchstone, String> = mockTouchstones(),
+            touchstoneVersionSet: SimpleDataSet<TouchstoneVersion, String> = mockTouchstones(),
             existingBurdenEstimateSet: BurdenEstimateSet = defaultEstimateSet
     ): BurdenEstimateRepository
     {
-        val touchstoneRepo = mockTouchstoneRepository(touchstoneSet)
+        val touchstoneRepo = mockTouchstoneRepository(touchstoneVersionSet)
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
             on { getBurdenEstimateSet(any()) } doReturn existingBurdenEstimateSet

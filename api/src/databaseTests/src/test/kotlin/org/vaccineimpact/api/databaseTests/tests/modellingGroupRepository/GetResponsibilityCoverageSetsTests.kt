@@ -6,15 +6,14 @@ import org.junit.Test
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.db.toDecimalOrNull
 import org.vaccineimpact.api.models.*
 
 class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
 {
     val groupId = "group-1"
-    val touchstoneName = "touchstone"
+    val touchstoneName = "touchstoneVersion"
     val touchstoneVersion = 1
-    val touchstoneId = "$touchstoneName-$touchstoneVersion"
+    val touchstoneVersionId = "$touchstoneName-$touchstoneVersion"
     val scenarioId = "scenario-1"
     val setA = 1
     val setB = 2
@@ -28,9 +27,9 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     {
         given {
             createGroupAndSupportingObjects(it)
-            it.addResponsibilitySet(groupId, touchstoneId, "incomplete")
+            it.addResponsibilitySet(groupId, touchstoneVersionId, "incomplete")
         } check {
-            assertThatThrownBy { it.getCoverageSets(groupId, touchstoneId, scenarioId) }
+            assertThatThrownBy { it.getCoverageSets(groupId, touchstoneVersionId, scenarioId) }
                     .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
                     .hasMessageContaining("responsibility")
         }
@@ -43,7 +42,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
             createGroupAndSupportingObjects(it)
             giveCoverageSetsToResponsibility(it)
         } check {
-            val result = it.getCoverageSets(groupId, touchstoneId, scenarioId)
+            val result = it.getCoverageSets(groupId, touchstoneVersionId, scenarioId)
             checkMetadataIsAsExpected(result)
         }
     }
@@ -53,9 +52,9 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     {
         given {
             createGroupAndSupportingObjects(it)
-            it.addResponsibilitySet(groupId, touchstoneId, "incomplete")
+            it.addResponsibilitySet(groupId, touchstoneVersionId, "incomplete")
         } check {
-            assertThatThrownBy { it.getCoverageData(groupId, touchstoneId, scenarioId) }
+            assertThatThrownBy { it.getCoverageData(groupId, touchstoneVersionId, scenarioId) }
                     .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
                     .hasMessageContaining("responsibility")
         }
@@ -68,7 +67,7 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
             createGroupAndSupportingObjects(it)
             giveCoverageSetsAndDataToResponsibility(it)
         } check {
-            val result = it.getCoverageData(groupId, touchstoneId, scenarioId)
+            val result = it.getCoverageData(groupId, touchstoneVersionId, scenarioId)
 
             assertThat(result.structuredMetadata.coverageSets.count()).isEqualTo(3)
 
@@ -100,28 +99,28 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
 
     private fun checkMetadataIsAsExpected(result: ScenarioTouchstoneAndCoverageSets)
     {
-        assertThat(result.touchstone).isEqualTo(Touchstone(
-                touchstoneId, touchstoneName, touchstoneVersion,
+        assertThat(result.touchstoneVersion).isEqualTo(TouchstoneVersion(
+                touchstoneVersionId, touchstoneName, touchstoneVersion,
                 "description", TouchstoneStatus.OPEN
         ))
         assertThat(result.scenario).isEqualTo(Scenario(
-                scenarioId, "Yellow Fever Scenario", "YF", listOf(touchstoneId)
+                scenarioId, "Yellow Fever Scenario", "YF", listOf(touchstoneVersionId)
         ))
         assertThat(result.coverageSets).containsExactlyElementsOf(listOf(
-                CoverageSet(setA, touchstoneId, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
-                CoverageSet(setB, touchstoneId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN),
-                CoverageSet(setC, touchstoneId, "Third", "YF", GAVISupportLevel.BESTMINUS, ActivityType.CAMPAIGN),
-                CoverageSet(setD, touchstoneId, "Fourth", "BF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN),
-                CoverageSet(setE, touchstoneId, "Fifth", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
-                CoverageSet(setF, touchstoneId, "Sixth", "BF", GAVISupportLevel.BESTMINUS, ActivityType.CAMPAIGN)
+                CoverageSet(setA, touchstoneVersionId, "First", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
+                CoverageSet(setB, touchstoneVersionId, "Second", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN),
+                CoverageSet(setC, touchstoneVersionId, "Third", "YF", GAVISupportLevel.BESTMINUS, ActivityType.CAMPAIGN),
+                CoverageSet(setD, touchstoneVersionId, "Fourth", "BF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN),
+                CoverageSet(setE, touchstoneVersionId, "Fifth", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
+                CoverageSet(setF, touchstoneVersionId, "Sixth", "BF", GAVISupportLevel.BESTMINUS, ActivityType.CAMPAIGN)
         ))
     }
 
     private fun createGroupAndSupportingObjects(db: JooqContext)
     {
         db.addGroup(groupId, "description")
-        db.addTouchstone(touchstoneName, touchstoneVersion, "description", "open",
-                addName = true)
+        db.addTouchstoneVersion(touchstoneName, touchstoneVersion, "description", "open",
+                addTouchstone = true)
         db.addScenarioDescription(scenarioId, "Yellow Fever Scenario", "YF", addDisease = true)
         db.addVaccine("YF", "Yellow Fever")
         db.addVaccine("BF", "Blue Fever")
@@ -130,35 +129,35 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
 
     private fun giveCoverageSetsToResponsibility(db: JooqContext)
     {
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, "incomplete")
-        db.addResponsibility(setId, touchstoneId, scenarioId)
-        db.addCoverageSet(touchstoneId, "First", "YF", "without", "campaign", id = setA)
-        db.addCoverageSet(touchstoneId, "Second", "YF", "with", "campaign", id = setB)
-        db.addCoverageSet(touchstoneId, "Third", "YF", "bestminus", "campaign", id = setC)
-        db.addCoverageSet(touchstoneId, "Fourth", "BF", "with", "campaign", id = setD)
-        db.addCoverageSet(touchstoneId, "Fifth", "BF", "without", "campaign", id = setE)
-        db.addCoverageSet(touchstoneId, "Sixth", "BF", "bestminus", "campaign", id = setF)
+        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "incomplete")
+        db.addResponsibility(setId, touchstoneVersionId, scenarioId)
+        db.addCoverageSet(touchstoneVersionId, "First", "YF", "without", "campaign", id = setA)
+        db.addCoverageSet(touchstoneVersionId, "Second", "YF", "with", "campaign", id = setB)
+        db.addCoverageSet(touchstoneVersionId, "Third", "YF", "bestminus", "campaign", id = setC)
+        db.addCoverageSet(touchstoneVersionId, "Fourth", "BF", "with", "campaign", id = setD)
+        db.addCoverageSet(touchstoneVersionId, "Fifth", "BF", "without", "campaign", id = setE)
+        db.addCoverageSet(touchstoneVersionId, "Sixth", "BF", "bestminus", "campaign", id = setF)
 
         // Deliberately out of order, to check ordering logic later
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, setF, 5)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, setB, 1)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, setA, 0)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, setC, 2)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, setD, 3)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, setE, 4)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setF, 5)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setB, 1)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setC, 2)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setD, 3)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setE, 4)
 
     }
 
     private fun giveCoverageSetsAndDataToResponsibility(db: JooqContext)
     {
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, "incomplete")
-        db.addResponsibility(setId, touchstoneId, scenarioId)
-        db.addCoverageSet(touchstoneId, "First", "AF", "without", "routine", id = setA)
-        db.addCoverageSet(touchstoneId, "Second", "BF", "without", "campaign", id = setB)
-        db.addCoverageSet(touchstoneId, "Third", "BF", "without", "routine", id = setC)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, setA, 0)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, setB, 1)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, setC, 2)
+        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "incomplete")
+        db.addResponsibility(setId, touchstoneVersionId, scenarioId)
+        db.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = setA)
+        db.addCoverageSet(touchstoneVersionId, "Second", "BF", "without", "campaign", id = setB)
+        db.addCoverageSet(touchstoneVersionId, "Third", "BF", "without", "routine", id = setC)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setB, 1)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setC, 2)
 
         db.addCountries(listOf("AAA", "BBB", "CCC"))
 

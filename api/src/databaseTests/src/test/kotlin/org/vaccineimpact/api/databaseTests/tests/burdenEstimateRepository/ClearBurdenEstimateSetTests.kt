@@ -28,7 +28,7 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         withDatabase { db ->
             val setId = setupDatabaseWithBurdenEstimateSet(db, type = "central-averaged")
             val (repo, central, stochastic) = getRepoWithMockedWriters(db)
-            repo.clearBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
+            repo.clearBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
             verify(central, Times(1)).clearEstimateSet(setId)
             verifyZeroInteractions(stochastic)
         }
@@ -40,7 +40,7 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         withDatabase { db ->
             val setId = setupDatabaseWithBurdenEstimateSet(db, type = "stochastic")
             val (repo, central, stochastic) = getRepoWithMockedWriters(db)
-            repo.clearBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
+            repo.clearBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
             verify(stochastic, Times(1)).clearEstimateSet(setId)
             verifyZeroInteractions(central)
         }
@@ -51,7 +51,7 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     {
         val setId = withDatabase { setupDatabaseWithBurdenEstimateSet(it, status = "partial") }
         withRepo { repo ->
-            repo.clearBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
+            repo.clearBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
         }
         withDatabase { db ->
             val record = db.dsl.fetchOne(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET.ID.eq(setId))
@@ -65,7 +65,7 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         val setId = withDatabase { setupDatabaseWithBurdenEstimateSet(it, status = "complete") }
         withRepo { repo ->
             Assertions.assertThatThrownBy {
-                repo.clearBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
+                repo.clearBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
             }.isInstanceOf(InvalidOperationError::class.java)
         }
     }
@@ -82,7 +82,7 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     fun `cannot clear burden estimate set if group doesn't exist`()
     {
         assertUnknownObjectError { repo, setId ->
-            repo.clearBurdenEstimateSet(setId, "wrong-id", touchstoneId, scenarioId)
+            repo.clearBurdenEstimateSet(setId, "wrong-id", touchstoneVersionId, scenarioId)
         }
     }
 
@@ -90,7 +90,7 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     fun `cannot clear burden estimate set if scenario doesn't exist`()
     {
         assertUnknownObjectError { repo, setId ->
-            repo.clearBurdenEstimateSet(setId, groupId, touchstoneId, "wrong-id")
+            repo.clearBurdenEstimateSet(setId, groupId, touchstoneVersionId, "wrong-id")
         }
     }
 
@@ -98,7 +98,7 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     fun `cannot clear burden estimate set if set doesn't exist`()
     {
         assertUnknownObjectError { repo, setId ->
-            repo.clearBurdenEstimateSet(setId + 1, groupId, touchstoneId, scenarioId)
+            repo.clearBurdenEstimateSet(setId + 1, groupId, touchstoneVersionId, scenarioId)
         }
     }
 
@@ -109,12 +109,12 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         val setId = withDatabase {
             val returnedIds = setupDatabase(it)
             it.addScenarioDescription(scenario2, "Test scenario 2", diseaseId, addDisease = false)
-            val responsibilityId = it.addResponsibility(returnedIds.responsibilitySetId, touchstoneId, scenario2)
+            val responsibilityId = it.addResponsibility(returnedIds.responsibilitySetId, touchstoneVersionId, scenario2)
             it.addBurdenEstimateSet(responsibilityId, returnedIds.modelVersion!!, username, "partial")
         }
         withRepo { repo ->
             Assertions.assertThatThrownBy {
-                repo.clearBurdenEstimateSet(setId, groupId, touchstoneId, scenarioId)
+                repo.clearBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
             }.isInstanceOf(UnknownObjectError::class.java)
         }
     }

@@ -24,15 +24,15 @@ class GetScenariosTests : TouchstoneRepositoryTests()
     {
         given {
             createTouchstoneAndScenarioDescriptions(it)
-            it.addScenarios(touchstoneId, "yf-1", "ms-1")
+            it.addScenarios(touchstoneVersionId, "yf-1", "ms-1")
         } check {
             checkResult(getScenarios(it), listOf(
                     ScenarioAndCoverageSets(
-                            Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId)),
+                            Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneVersionId)),
                             emptyList()
                     ),
                     ScenarioAndCoverageSets(
-                            Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneId)),
+                            Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneVersionId)),
                             emptyList()
                     )
             ))
@@ -48,12 +48,12 @@ class GetScenariosTests : TouchstoneRepositoryTests()
         var measlesSet = 0
         given {
             createTouchstoneAndScenarioDescriptions(it)
-            val yf = it.addScenarioToTouchstone(touchstoneId, "yf-1")
-            val measles = it.addScenarioToTouchstone(touchstoneId, "ms-1")
-            yfSet1 = it.addCoverageSet(touchstoneId, "YF, No vacc", "YF", "none", "none")
-            yfSet2 = it.addCoverageSet(touchstoneId, "YF, Routine vacc", "YF", "without", "routine")
-            yfSet3 = it.addCoverageSet(touchstoneId, "YF, Routine GAVI vacc", "YF", "with", "routine")
-            measlesSet = it.addCoverageSet(touchstoneId, "Measles, No vacc", "Measles", "none", "none")
+            val yf = it.addScenarioToTouchstone(touchstoneVersionId, "yf-1")
+            val measles = it.addScenarioToTouchstone(touchstoneVersionId, "ms-1")
+            yfSet1 = it.addCoverageSet(touchstoneVersionId, "YF, No vacc", "YF", "none", "none")
+            yfSet2 = it.addCoverageSet(touchstoneVersionId, "YF, Routine vacc", "YF", "without", "routine")
+            yfSet3 = it.addCoverageSet(touchstoneVersionId, "YF, Routine GAVI vacc", "YF", "with", "routine")
+            measlesSet = it.addCoverageSet(touchstoneVersionId, "Measles, No vacc", "Measles", "none", "none")
             // We add them out of order, to check the ordering
             it.addCoverageSetToScenario(yf, yfSet2, 0)
             it.addCoverageSetToScenario(yf, yfSet3, 2)
@@ -62,17 +62,17 @@ class GetScenariosTests : TouchstoneRepositoryTests()
         } check {
             checkResult(getScenarios(it), listOf(
                     ScenarioAndCoverageSets(
-                            Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId)),
+                            Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneVersionId)),
                             listOf(
-                                    CoverageSet(yfSet1, touchstoneId, "YF, No vacc", "YF", GAVISupportLevel.NONE, ActivityType.NONE),
-                                    CoverageSet(yfSet2, touchstoneId, "YF, Routine vacc", "YF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE),
-                                    CoverageSet(yfSet3, touchstoneId, "YF, Routine GAVI vacc", "YF", GAVISupportLevel.WITH, ActivityType.ROUTINE)
+                                    CoverageSet(yfSet1, touchstoneVersionId, "YF, No vacc", "YF", GAVISupportLevel.NONE, ActivityType.NONE),
+                                    CoverageSet(yfSet2, touchstoneVersionId, "YF, Routine vacc", "YF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE),
+                                    CoverageSet(yfSet3, touchstoneVersionId, "YF, Routine GAVI vacc", "YF", GAVISupportLevel.WITH, ActivityType.ROUTINE)
                             )
                     ),
                     ScenarioAndCoverageSets(
-                            Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneId)),
+                            Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneVersionId)),
                             listOf(
-                                    CoverageSet(measlesSet, touchstoneId, "Measles, No vacc", "Measles", GAVISupportLevel.NONE, ActivityType.NONE)
+                                    CoverageSet(measlesSet, touchstoneVersionId, "Measles, No vacc", "Measles", GAVISupportLevel.NONE, ActivityType.NONE)
                             )
                     )
             ))
@@ -86,11 +86,11 @@ class GetScenariosTests : TouchstoneRepositoryTests()
         var goodSet = 0
         given {
             createTouchstoneAndScenarioDescriptions(it)
-            it.addTouchstone(touchstoneName, 2)
-            val goodScenario = it.addScenarioToTouchstone(touchstoneId, "yf-1")
+            it.addTouchstoneVersion(touchstoneName, 2)
+            val goodScenario = it.addScenarioToTouchstone(touchstoneVersionId, "yf-1")
             val sameScenarioWrongTouchstone = it.addScenarioToTouchstone(otherTouchstone, "yf-1")
             val otherScenario = it.addScenarioToTouchstone(otherTouchstone, "ms-1")
-            goodSet = it.addCoverageSet(touchstoneId, "YF, No vacc", "YF", "none", "none")
+            goodSet = it.addCoverageSet(touchstoneVersionId, "YF, No vacc", "YF", "none", "none")
             val badSet = it.addCoverageSet(otherTouchstone, "YF, Routine vacc", "YF", "without", "routine")
             it.addCoverageSetToScenario(goodScenario, goodSet, 0)
             it.addCoverageSetToScenario(sameScenarioWrongTouchstone, badSet, 0)
@@ -98,9 +98,9 @@ class GetScenariosTests : TouchstoneRepositoryTests()
         } check {
             checkResult(getScenarios(it), listOf(
                     ScenarioAndCoverageSets(
-                            Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId, otherTouchstone)),
+                            Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneVersionId, otherTouchstone)),
                             listOf(
-                                    CoverageSet(goodSet, touchstoneId, "YF, No vacc", "YF", GAVISupportLevel.NONE, ActivityType.NONE)
+                                    CoverageSet(goodSet, touchstoneVersionId, "YF, No vacc", "YF", GAVISupportLevel.NONE, ActivityType.NONE)
                             )
                     )
             ))
@@ -112,15 +112,15 @@ class GetScenariosTests : TouchstoneRepositoryTests()
     {
         given {
             createTouchstoneAndScenarioDescriptions(it)
-            it.addScenarios(touchstoneId, "yf-1", "yf-2", "ms-1", "ms-2")
+            it.addScenarios(touchstoneVersionId, "yf-1", "yf-2", "ms-1", "ms-2")
         } check {
             Assertions.assertThat(getScenarios(it, filter())).hasSize(4)
             checkResultAssumingNoCoverageSets(getScenarios(it, filter(scenarioId = "yf-1")), listOf(
-                    Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneId))
+                    Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneVersionId))
             ))
             checkResultAssumingNoCoverageSets(getScenarios(it, filter(disease = "Measles")), listOf(
-                    Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneId)),
-                    Scenario("ms-2", "Measles 2", "Measles", listOf(touchstoneId))
+                    Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneVersionId)),
+                    Scenario("ms-2", "Measles 2", "Measles", listOf(touchstoneVersionId))
             ))
             Assertions.assertThat(getScenarios(it, filter(scenarioId = "yf-1", disease = "Measles"))).isEmpty()
         }
@@ -133,7 +133,7 @@ class GetScenariosTests : TouchstoneRepositoryTests()
                              filterParameters: ScenarioFilterParameters = ScenarioFilterParameters())
             : List<ScenarioAndCoverageSets>
     {
-        return it.scenarios(touchstoneId, filterParameters)
+        return it.scenarios(touchstoneVersionId, filterParameters)
     }
 
     private fun checkResult(actuals: List<ScenarioAndCoverageSets?>, expecteds: List<ScenarioAndCoverageSets?>)
