@@ -17,7 +17,25 @@ Start the database by navigating to the `src` folder and running
 Run the app
 
     ./gradlew :run
-    
+   
+## Generating a root token
+For use with the Ebola work, we wanted to be able to run the [reporting API](https://github.com/vimc/montagu-reporting-api)
+without this main API. To circumvent the normal authorization, we added a mode
+that allows you to run generate a root token with a 1 year expiry that gives 
+access to all reports. This can then be hardcoded into the reporting portal and
+any other code that needs access to this API-less version of Montagu.
+
+To generate, first create a keypair at some TOKEN_KEY_PATH and then run:
+
+```
+docker run --rm \
+    -v $TOKEN_KEY_PATH:/etc/montagu/api/token_key \
+    docker.montagu.dide.ic.ac.uk:5000/montagu-api:$MONTAGU_API_VERSION \
+    generate-token */can-login */reports.read */reports.review
+```
+
+The reporting API needs to be run with the public key from the keypair.
+
 ## Running tests
 To run the Blackbox tests, you will need to start the database and run the app as described above. Note that if you want to run individual tests through IntelliJ, you will need to manually run the `copySpec` Gradle task first.
 

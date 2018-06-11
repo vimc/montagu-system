@@ -7,7 +7,7 @@ import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
 import java.time.Duration
 
-class RootTokenGenerator(val helper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair))
+class RootTokenGenerator(val helper: WebTokenHelper = WebTokenHelper(KeyHelper.loadKeyPair()))
 {
     fun generate(permissions: List<String>): String
     {

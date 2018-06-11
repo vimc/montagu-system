@@ -25,7 +25,7 @@ object KeyHelper
         }
     }
 
-    private fun loadKeyPair(): KeyPair
+    fun loadKeyPair(): KeyPair
     {
         logger.info("Loading token signing keypair from $keyPath")
         return KeyPair(loadPublicKey(), loadPrivateKey())

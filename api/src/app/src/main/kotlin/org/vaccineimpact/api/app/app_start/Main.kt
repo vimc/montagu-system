@@ -16,6 +16,7 @@ Usage:
 fun main(args: Array<String>)
 {
     val options = Docopt(doc).parse(args.toList())
+    // See "Generating a root token" in README.md
     if (options["generate-token"] as Boolean)
     {
         // Bit of a hack to disable logging messing up our neat output
