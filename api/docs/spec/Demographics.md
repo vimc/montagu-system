@@ -31,7 +31,7 @@ Schema: [`DemographicDataForTouchstone.schema.json`](../schemas/DemographicDataF
 
 #### Example
     {
-        "touchstone": { 
+        "touchstone_version": { 
             "id": "2017-op-1",
             "name": "2017-op",
             "version": 1,            
@@ -64,7 +64,7 @@ Schema: [`DemographicDataForTouchstone.schema.json`](../schemas/DemographicDataF
          
 ### Example
     {
-        "touchstone": { 
+        "touchstone_version": { 
             "id": "2017-op-1",
             "name": "2017-op",
             "version": 1,            

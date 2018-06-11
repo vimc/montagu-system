@@ -11,7 +11,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
 
 ### Example
     {
-        "touchstone": { 
+        "touchstone_version": { 
             "id": "2017-op-1",
             "name": "2017-op",
             "version": 1,            
@@ -27,7 +27,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
         "coverage_sets": [ 
             { 
                 "id": 101,
-                "touchstone": "2017-op-1",
+                "touchstone_version": "2017-op-1",
                 "name": "Menigitis without GAVI support",
                 "vaccine": "MenA",
                 "gavi_support": "no gavi",
@@ -35,7 +35,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
             },
             { 
                 "id": 136,
-                "touchstone": "2017-op-1",
+                "touchstone_version": "2017-op-1",
                 "name": "Menigitis with GAVI support",
                 "vaccine": "MenA",
                 "gavi_support": "total",
@@ -62,7 +62,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
 
 #### Example
     {
-        "touchstone": { 
+        "touchstone_version": { 
             "id": "2017-op-1",
             "name": "2017-op",
             "version": 1,            
@@ -78,7 +78,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
         "coverage_sets": [ 
             { 
                 "id": 101,
-                "touchstone": "2017-op-1",
+                "touchstone_version": "2017-op-1",
                 "name": "Menigitis without GAVI support",
                 "vaccine": "MenA",
                 "gavi_support": "no gavi",
@@ -86,7 +86,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
             },
             { 
                 "id": 136,
-                "touchstone": "2017-op-1",
+                "touchstone_version": "2017-op-1",
                 "name": "Menigitis with GAVI support",
                 "vaccine": "MenA",
                 "gavi_support": "total",
