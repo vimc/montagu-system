@@ -39,7 +39,7 @@ describe("Touchstone actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions()
             // console.log(actions);
-            const expectedPayload = { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE, data: testTouchstone }
+            const expectedPayload = { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstone }
             expect(actions).to.eql([expectedPayload])
             done();
         });

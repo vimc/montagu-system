@@ -24,14 +24,14 @@ describe('Touchstones reducer tests', () => {
 
     it('sets current touchstone', () => {
         expect(touchstonesReducer(undefined, {
-            type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
+            type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION,
             data: testTouchstone
         })).to.eql({...touchstonesInitialState, currentTouchstone: testTouchstone});
     });
 
     it('sets current touchstone empty', () => {
         expect(touchstonesReducer(undefined, {
-            type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
+            type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION,
             data: null
         })).to.eql(touchstonesInitialState);
     });

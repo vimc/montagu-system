@@ -1,9 +1,10 @@
-import { Dispatch } from "redux";
+import {Dispatch} from "redux";
 
 import {ContribAppState} from "../reducers/contribAppReducers";
 import {TouchstonesService} from "../services/TouchstonesService";
-import {SetCurrentTouchstone, TouchstonesFetched, TouchstoneTypes} from "../actionTypes/TouchstonesTypes";
+import {SetCurrentTouchstoneVersion, TouchstonesFetched, TouchstoneTypes} from "../actionTypes/TouchstonesTypes";
 import {Touchstone} from "../../shared/models/Generated";
+import {flatMap} from "../../shared/Helpers";
 
 export const touchstonesActionCreators = {
 
@@ -20,11 +21,12 @@ export const touchstonesActionCreators = {
     setCurrentTouchstone(touchstoneId: string) {
         return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             const touchstones = getState().touchstones.touchstones;
-            const currentTouchstone = touchstones.find(touchstone => touchstone.id === touchstoneId);
+            const versions = flatMap(touchstones, x => x.versions);
+            const currentTouchstone = versions.find(touchstone => touchstone.id === touchstoneId);
             dispatch({
-                type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
+                type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION,
                 data: currentTouchstone
-            } as SetCurrentTouchstone );
+            } as SetCurrentTouchstoneVersion );
         }
     }
 };

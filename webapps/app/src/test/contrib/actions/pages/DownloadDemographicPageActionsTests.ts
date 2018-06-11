@@ -74,7 +74,7 @@ describe("Download Demographic Page actions tests", () => {
                 { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup },
                 { type: TouchstoneTypes.TOUCHSTONES_FETCHED, data: [testTouchstone]},
                 { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
-                { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE, data: testTouchstone},
+                { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstone},
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
                 { type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED, data: [testDemographicDataSet]},
                 { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs },

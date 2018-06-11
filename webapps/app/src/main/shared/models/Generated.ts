@@ -138,7 +138,7 @@ export interface ScenarioAndCoverageSets {
 
 export type TouchstoneStatus = "in-preparation" | "open" | "finished";
 
-export interface Touchstone {
+export interface TouchstoneVersion {
     description: string;
     id: string;
     name: string;
@@ -149,7 +149,14 @@ export interface Touchstone {
 export interface ScenarioTouchstoneAndCoverageSets {
     coverage_sets: CoverageSet[];
     scenario: Scenario;
-    touchstone: Touchstone;
+    touchstone: TouchstoneVersion;
+}
+
+export interface Touchstone {
+    comment: string;
+    description: string;
+    id: string;
+    versions: TouchstoneVersion[];
 }
 
 export interface RoleAssignment {

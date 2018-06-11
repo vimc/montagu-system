@@ -4,7 +4,7 @@ import {Client, QueryResult} from "pg";
 import { createMemoryHistory } from 'history';
 
 import {
-    Responsibilities, Touchstone, Disease, Result, ModellingGroup, ScenarioTouchstoneAndCoverageSets,
+    Responsibilities, TouchstoneVersion, Disease, Result, ModellingGroup, ScenarioTouchstoneAndCoverageSets,
     DemographicDataset,
     ModelRunParameterSet,
 } from "../main/shared/models/Generated";
@@ -111,10 +111,10 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         it("fetches touchstones", async () => {
             await addResponsibilities(this.db);
 
-            const fetchedTouchstonesResult: Touchstone[] = await (new TouchstonesService(this.store.dispatch, this.store.getState))
+            const fetchedTouchstonesResult: TouchstoneVersion[] = await (new TouchstonesService(this.store.dispatch, this.store.getState))
                 .getTouchstonesByGroupId(groupId);
 
-            const touchstone: Touchstone = {
+            const touchstone: TouchstoneVersion = {
                 id: touchstoneId,
                 name: "test",
                 version: 1,

@@ -2,12 +2,12 @@ import * as React from "react";
 import { connect } from 'react-redux';
 
 import { InternalLink } from "../../../shared/components/InternalLink";
-import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
+import { ModellingGroup, TouchstoneVersion } from "../../../shared/models/Generated";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 
 interface ResponsibilitiesPageTitleProps {
     title: string;
-    touchstone: Touchstone;
+    touchstone: TouchstoneVersion;
     group: ModellingGroup;
 }
 
@@ -35,7 +35,7 @@ export class ResponsibilitiesPageTitleComponent extends React.Component<Responsi
 
 export const mapStateToProps = (state: ContribAppState, props: Partial<ResponsibilitiesPageTitleProps>): Partial<ResponsibilitiesPageTitleProps> => {
     return {
-        touchstone: state.touchstones.currentTouchstone,
+        touchstone: state.touchstones.currentTouchstoneVersion,
         group: state.groups.currentUserGroup,
         title: props.title
     }

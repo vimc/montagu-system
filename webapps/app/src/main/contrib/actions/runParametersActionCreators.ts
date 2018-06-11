@@ -44,7 +44,7 @@ export const runParametersActionCreators = {
         return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
 
             const group = getState().groups.currentUserGroup;
-            const touchstone = getState().touchstones.currentTouchstone;
+            const touchstone = getState().touchstones.currentTouchstoneVersion;
 
             dispatch(this.clearCacheForGetParameterSets(group.id, touchstone.id))
             dispatch(this.getParameterSets(group.id, touchstone.id))
@@ -59,7 +59,7 @@ export const runParametersActionCreators = {
             })
 
             const group = getState().groups.currentUserGroup;
-            const touchstone = getState().touchstones.currentTouchstone;
+            const touchstone = getState().touchstones.currentTouchstoneVersion;
 
             const result: Result = await (new RunParametersService(dispatch, getState))
                 .uploadSet(group.id, touchstone.id, data);

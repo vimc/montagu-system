@@ -1,17 +1,17 @@
 import * as React from "react";
 import { compose, branch, renderComponent } from "recompose";
 
-import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
+import { ModellingGroup, TouchstoneVersion } from "../../../shared/models/Generated";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 
 export interface TouchstoneListProps {
-    touchstones: Touchstone[];
+    touchstones: TouchstoneVersion[];
     group: ModellingGroup;
 }
 
 export class TouchstoneList extends React.Component<TouchstoneListProps, undefined> {
-    renderButtonList(touchstones: Touchstone[]): JSX.Element {
-        const items = touchstones.map((touchstone: Touchstone) =>
+    renderButtonList(touchstones: TouchstoneVersion[]): JSX.Element {
+        const items = touchstones.map((touchstone: TouchstoneVersion) =>
             <li key={ touchstone.id}>
                 { this.renderButton(touchstone) }
             </li>
@@ -37,7 +37,7 @@ export class TouchstoneList extends React.Component<TouchstoneListProps, undefin
         }
     }
 
-    renderButton(touchstone: Touchstone): JSX.Element {
+    renderButton(touchstone: TouchstoneVersion): JSX.Element {
         const url = `/${this.props.group.id}/responsibilities/${touchstone.id}/`;
         return <ButtonLink className="d-inline-block mb-2" href={ url }>{ touchstone.description }</ButtonLink>
     }

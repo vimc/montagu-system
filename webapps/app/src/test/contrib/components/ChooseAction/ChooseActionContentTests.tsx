@@ -43,7 +43,7 @@ describe("Choose Action Content Component", () => {
         const rendered = shallow(<ChooseActionContent/>, {context: {store}}).dive();
         const props = rendered.props() as ChooseActionContentProps;
         expect(props.group).to.eql(testCurrentGroup);
-        expect(props.touchstones).to.eql(testTouchstones);
+        expect(props.touchstoneVersions).to.eql(testTouchstones);
         expect(rendered.find(ChooseActionContentComponent).length).to.eql(1);
     });
 
@@ -70,7 +70,7 @@ describe("Choose Action Content Component", () => {
         });
         const props = mapStateToProps(contribStateMock);
         expect(props.group).to.eql(testCurrentGroup);
-        expect(props.touchstones).to.eql(testTouchstones);
+        expect(props.touchstoneVersions).to.eql(testTouchstones);
     });
 
     it("maps state to props with no group", () => {
@@ -81,6 +81,6 @@ describe("Choose Action Content Component", () => {
         });
         const props = mapStateToProps(contribStateMock);
         expect(props.group).to.eql(emptyGroup);
-        expect(props.touchstones).to.eql(testTouchstones);
+        expect(props.touchstoneVersions).to.eql(testTouchstones);
     });
 });

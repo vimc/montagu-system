@@ -60,9 +60,9 @@ export function mockExtendedResponsibility(properties?: any, scenarioProperties?
     return new ExtendedResponsibility(values);
 }
 
-export function mockTouchstone(properties?: any): models.Touchstone {
+export function mockTouchstone(properties?: any): models.TouchstoneVersion {
     counter++;
-    const template: models.Touchstone = {
+    const template: models.TouchstoneVersion = {
         id: "touchstone-" + counter,
         name: "touchstone",
         version: 1,
@@ -89,7 +89,7 @@ export function mockResponsibilitySet(properties?: any,
 
 export function mockExtendedResponsibilitySet(properties?: any,
                                               responsibilities?: Array<models.Responsibility>,
-                                              touchstone?: models.Touchstone,
+                                              touchstone?: models.TouchstoneVersion,
                                               modellingGroup?: models.ModellingGroup): ExtendedResponsibilitySet {
     touchstone = touchstone || mockTouchstone();
     modellingGroup = modellingGroup || mockModellingGroup();
@@ -111,7 +111,7 @@ export function mockCoverageSet(properties?: Partial<models.CoverageSet>): model
 }
 
 export function mockScenarioTouchstoneAndCoverageSets(scenarioProperties?: Partial<models.Scenario>,
-                                                      touchstoneProperties?: Partial<models.Touchstone>,
+                                                      touchstoneProperties?: Partial<models.TouchstoneVersion>,
                                                       coverageSets?: models.CoverageSet[]): models.ScenarioTouchstoneAndCoverageSets {
     const touchstone = mockTouchstone(touchstoneProperties);
     return {

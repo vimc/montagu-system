@@ -95,7 +95,7 @@ describe("Download Coverage Page actions tests", () => {
                 { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup },
                 { type: TouchstoneTypes.TOUCHSTONES_FETCHED, data: [testTouchstone]},
                 { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
-                { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE, data: testTouchstone},
+                { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstone},
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
                 { type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility},
                 { type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR},

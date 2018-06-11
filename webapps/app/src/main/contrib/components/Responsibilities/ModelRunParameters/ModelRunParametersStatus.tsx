@@ -4,7 +4,7 @@ import { compose, branch, renderComponent} from "recompose";
 import { Dispatch } from "redux";
 import {isEqual} from "lodash";
 
-import {ModellingGroup, ModelRunParameterSet, Touchstone} from "../../../../shared/models/Generated";
+import {ModellingGroup, ModelRunParameterSet, TouchstoneVersion} from "../../../../shared/models/Generated";
 import {Alert} from 'reactstrap';
 import {longestTimestamp} from "../../../../shared/Helpers";
 import {ModelRunParameterDownloadCertificate} from "./ModelRunParameterDownloadCertificate";
@@ -18,7 +18,7 @@ export interface ModelRunParametersStatusProps {
     disease: string;
     set: ModelRunParameterSet;
     group: ModellingGroup;
-    touchstone: Touchstone;
+    touchstone: TouchstoneVersion;
     loadToken: (groupId: string, touchstoneId: string, setId: number) => void;
     token: string;
 }
@@ -94,7 +94,7 @@ export const mapStateToProps = (state: ContribAppState, props: Partial<ModelRunP
         disease: props.disease,
         set: state.runParameters.sets && state.runParameters.sets.length ? getLastSetForDisease(state.runParameters.sets, props.disease) : null,
         group: state.groups.currentUserGroup,
-        touchstone: state.touchstones.currentTouchstone,
+        touchstone: state.touchstones.currentTouchstoneVersion,
     }
     newProps.token = newProps.set ? getTokenBySet(newProps.set, state.runParameters.tokens) : null;
 
