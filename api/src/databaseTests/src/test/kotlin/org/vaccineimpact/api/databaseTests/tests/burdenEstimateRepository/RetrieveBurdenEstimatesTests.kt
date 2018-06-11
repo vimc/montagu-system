@@ -31,7 +31,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             db.addBurdenEstimateProblem("some problem", setB)
         } check { repo ->
             val after = Instant.now()
-            val sets = repo.getBurdenEstimateSets(groupId, touchstoneId, scenarioId).toList()
+            val sets = repo.getBurdenEstimateSets(groupId, touchstoneVersionId, scenarioId).toList()
             val a = sets.single { it.id == setA }
             Assertions.assertThat(a.uploadedBy).isEqualTo(username)
             Assertions.assertThat(a.uploadedOn).isAfter(before)
@@ -60,7 +60,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             setC = addBurdenEstimateSet(db, ids, setType = "central-averaged", setTypeDetails = "mean")
             setD = addBurdenEstimateSet(db, ids, setType = "stochastic", setTypeDetails = null)
         } check { repo ->
-            val sets = repo.getBurdenEstimateSets(groupId, touchstoneId, scenarioId)
+            val sets = repo.getBurdenEstimateSets(groupId, touchstoneVersionId, scenarioId)
             checkSetHasExpectedType(sets, setA, BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_UNKNOWN, "unknown"))
             checkSetHasExpectedType(sets, setB, BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN, null))
             checkSetHasExpectedType(sets, setC, BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean"))

@@ -26,8 +26,8 @@ class GroupCoverageController(
     fun getCoverageSets(): ScenarioTouchstoneAndCoverageSets
     {
         val path = ResponsibilityPath(context)
-        val data = repo.getCoverageSets(path.groupId, path.touchstoneId, path.scenarioId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, data.touchstone.status)
+        val data = repo.getCoverageSets(path.groupId, path.touchstoneVersionId, path.scenarioId)
+        context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, data.touchstoneVersion.status)
         return data
     }
 
@@ -35,7 +35,7 @@ class GroupCoverageController(
     {
         val data = getCoverageDataAndMetadata()
         val metadata = data.structuredMetadata
-        val filename = "coverage_${metadata.touchstone.id}_${metadata.scenario.id}.csv"
+        val filename = "coverage_${metadata.touchstoneVersion.id}_${metadata.scenario.id}.csv"
         context.addAttachmentHeader(filename)
         return data.tableData
     }
@@ -45,8 +45,8 @@ class GroupCoverageController(
     fun getCoverageDataAndMetadata(): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
         val path = ResponsibilityPath(context)
-        val splitData = repo.getCoverageData(path.groupId, path.touchstoneId, path.scenarioId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneId, splitData.structuredMetadata.touchstone.status)
+        val splitData = repo.getCoverageData(path.groupId, path.touchstoneVersionId, path.scenarioId)
+        context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, splitData.structuredMetadata.touchstoneVersion.status)
 
         val format = context.queryParams("format")
 

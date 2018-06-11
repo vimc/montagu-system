@@ -27,23 +27,23 @@ class GroupModelRunParametersController(
 
     fun getModelRunParameterSets(): List<ModelRunParameterSet>
     {
-        val touchstoneId = context.params(":touchstone-version-id")
+        val touchstoneVersionId = context.params(":touchstone-version-id")
         val groupId = context.params(":group-id")
-        context.checkEstimatePermissionsForTouchstoneVersion(groupId, touchstoneId, estimateRepository)
-        return estimateRepository.getModelRunParameterSets(groupId, touchstoneId)
+        context.checkEstimatePermissionsForTouchstoneVersion(groupId, touchstoneVersionId, estimateRepository)
+        return estimateRepository.getModelRunParameterSets(groupId, touchstoneVersionId)
     }
 
     fun addModelRunParameters(): String
     {
-        val touchstoneId = context.params(":touchstone-version-id")
+        val touchstoneVersionId = context.params(":touchstone-version-id")
         val groupId = context.params(":group-id")
-        context.checkEstimatePermissionsForTouchstoneVersion(groupId, touchstoneId, estimateRepository)
+        context.checkEstimatePermissionsForTouchstoneVersion(groupId, touchstoneVersionId, estimateRepository)
 
         val parts = context.getParts()
         val disease = parts["disease"].contents
         val modelRuns = postDataHelper.csvData<ModelRun>(parts["file"])
 
-        val id = estimateRepository.addModelRunParameterSet(groupId, touchstoneId, disease,
+        val id = estimateRepository.addModelRunParameterSet(groupId, touchstoneVersionId, disease,
                 modelRuns.toList(), context.username!!, Instant.now())
 
         return objectCreation(context, "/modelling-groups/$groupId/model-run-parameters/$id/")
@@ -63,13 +63,13 @@ class GroupModelRunParametersController(
             FlexibleDataTable<ModelRun>
     {
         val path = ModelRunParametersSetPath(context)
-        val touchstone = touchstoneRepository.touchstoneVersions.get(path.touchstoneId)
+        val touchstone = touchstoneRepository.touchstoneVersions.get(path.touchstoneVersionId)
         context.checkIsAllowedToSeeTouchstone(touchstone.id, touchstone.status)
         return estimateRepository.getModelRunParameterSet(path.setId)
     }
 
     // path parameters for model run parameters by set
-    data class ModelRunParametersSetPath(val touchstoneId: String, val setId: Int)
+    data class ModelRunParametersSetPath(val touchstoneVersionId: String, val setId: Int)
     {
         constructor(context: ActionContext)
                 : this(context.params(":touchstone-version-id"), context.params(":model-run-parameter-set-id").toInt())

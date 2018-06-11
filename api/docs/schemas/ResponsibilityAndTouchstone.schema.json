@@ -2,12 +2,12 @@
     "id": "ResponsibilityAndTouchstone",
     "type": "object",
     "properties": {
-        "touchstone": { "$ref": "TouchstoneVersion.schema.json" },
+        "touchstone_version": { "$ref": "TouchstoneVersion.schema.json" },
         "responsibility": { "$ref": "Responsibility.schema.json" }
     },
     "additionalProperties": false,
     "required": [
-        "touchstone",
+        "touchstone_version",
         "responsibility"
     ]
 }

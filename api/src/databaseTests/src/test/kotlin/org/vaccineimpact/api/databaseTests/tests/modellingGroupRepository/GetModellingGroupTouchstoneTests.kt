@@ -12,7 +12,7 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
     private val diseaseId = "d1"
     private val groupId = "group-1"
     private val touchstoneName = "touchstoneA"
-    private val touchstoneId = "touchstoneA-1"
+    private val touchstoneVersionId = "touchstoneA-1"
 
     @Test
     fun `can get touchstones list for modelling group`()
@@ -31,7 +31,7 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
             val touchstoneB3 = it.addTouchstoneVersion(touchstoneBName, 3, "b-desc-3")
 
 
-            addResponsibilitySetWithResponsibility(it, "scenario-1", groupId, touchstoneId, open = true)
+            addResponsibilitySetWithResponsibility(it, "scenario-1", groupId, touchstoneVersionId, open = true)
             addResponsibilitySetWithResponsibility(it, "scenario-2", groupId, touchstoneB1, open = true)
             // Note that this responsibility belongs to a different group, and shouldn't be returned
             addResponsibilitySetWithResponsibility(it, "scenario-3", groupId2, touchstoneB2, open = true)
@@ -81,7 +81,7 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
 
         given {
             setUpDb(it)
-            addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneId, open = false)
+            addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneVersionId, open = false)
 
         } check { repo ->
             val touchstones = repo.getTouchstonesByGroupId(groupId)
@@ -96,7 +96,7 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
 
         given {
             setUpDb(it, touchstoneStatus = "finished")
-            addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneId, open = false)
+            addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneVersionId, open = false)
 
         } check { repo ->
             val touchstones = repo.getTouchstonesByGroupId(groupId)
@@ -111,7 +111,7 @@ class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
 
         given {
             setUpDb(it, touchstoneStatus = "in-preparation")
-            addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneId, open = false)
+            addResponsibilitySetWithResponsibility(it, scenarioId, groupId, touchstoneVersionId, open = false)
 
         } check { repo ->
             val touchstones = repo.getTouchstonesByGroupId(groupId)

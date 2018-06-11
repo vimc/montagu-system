@@ -70,7 +70,7 @@ Schema: [`ScenariosInTouchstone.schema.json`](../schemas/ScenariosInTouchstone.s
             "coverage_sets": [ 
                 { 
                     "id": 101,
-                    "touchstone": "2017-op-1",
+                    "touchstone_version": "2017-op-1",
                     "name": "Menigitis no vaccination",
                     "vaccine": "MenA",
                     "gavi_support": "no vaccine",
@@ -88,7 +88,7 @@ Schema: [`ScenariosInTouchstone.schema.json`](../schemas/ScenariosInTouchstone.s
             "coverage_sets": [
                 { 
                     "id": 643,
-                    "touchstone": "2017-op-1",
+                    "touchstone_version": "2017-op-1",
                     "name": "Yellow fever birth dose (with GAVI support)",
                     "vaccine": "YF",
                     "gavi_support": "total",
@@ -96,7 +96,7 @@ Schema: [`ScenariosInTouchstone.schema.json`](../schemas/ScenariosInTouchstone.s
                 },
                 { 
                     "id": 643,
-                    "touchstone": "2017-op-1",
+                    "touchstone_version": "2017-op-1",
                     "name": "Yellow fever reactive campaign (with GAVI support)",
                     "vaccine": "YF",
                     "gavi_support": "total",
@@ -125,7 +125,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
 
 ### Example
     {
-        "touchstone": { 
+        "touchstone_version": { 
             "id": "2017-op-1",
             "name": "2017-op",
             "version": 1,            
@@ -141,7 +141,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
         "coverage_sets": [ 
             { 
                 "id": 101,
-                "touchstone": "2017-op-1",
+                "touchstone_version": "2017-op-1",
                 "name": "Menigitis no vaccination",
                 "vaccine": "MenA",
                 "gavi_support": "no vaccine",

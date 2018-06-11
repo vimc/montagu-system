@@ -169,7 +169,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
 
 #### Example
     {
-        "touchstone": { 
+        "touchstone_version": { 
             "id": "2017-op-1",
             "name": "2017-op",
             "version": 1,            
@@ -185,7 +185,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
         "coverage_sets": [ 
             { 
                 "id": 101,
-                "touchstone": "2017-op-1",
+                "touchstone_version": "2017-op-1",
                 "name": "Menigitis without GAVI support",
                 "vaccine": "MenA",
                 "gavi_support": "no gavi",
@@ -193,7 +193,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
             },
             { 
                 "id": 136,
-                "touchstone": "2017-op-1",
+                "touchstone_version": "2017-op-1",
                 "name": "Menigitis with GAVI support",
                 "vaccine": "MenA",
                 "gavi_support": "total",
@@ -348,7 +348,7 @@ Schema: [`CoverageSets.schema.json`](../schemas/CoverageSets.schema.json)
     [
         {
             "id": 189,
-            "touchstone": "2017-op-1",
+            "touchstone_version": "2017-op-1",
             "name": "Measles 1st Dose (without GAVI support)",
             "activity_type": "routine",
             "vaccine": "MCV1",
@@ -356,7 +356,7 @@ Schema: [`CoverageSets.schema.json`](../schemas/CoverageSets.schema.json)
         },
         {
             "id": 278,
-            "touchstone": "2017-op-1",
+            "touchstone_version": "2017-op-1",
             "name": "Measles 2nd Dose (without GAVI support)",
             "activity_type": "routine",
             "vaccine": "MCV2",
@@ -364,7 +364,7 @@ Schema: [`CoverageSets.schema.json`](../schemas/CoverageSets.schema.json)
         },
         {
             "id": 290,
-            "touchstone": "2017-op-1",
+            "touchstone_version": "2017-op-1",
             "name": "Yellow Fever reactive campaign (with GAVI support)",
             "activity_type": "campaign",
             "vaccine": "YF",
@@ -401,7 +401,7 @@ Schema: [`CoverageSet.schema.json`](../schemas/CoverageSet.schema.json)
 ### Example
     {
         "id": 189,
-        "touchstone": "2017-op-1",        
+        "touchstone_version": "2017-op-1",        
         "name": "Measles 1st Dose (With GAVI support)",
         "vaccine": "Measles",
         "gavi_support": "total",        

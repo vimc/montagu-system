@@ -89,21 +89,21 @@ class JooqModellingGroupRepository(
         return ModellingGroupDetails(group.id, group.description, models, users)
     }
 
-    override fun getResponsibilities(groupId: String, touchstoneId: String,
+    override fun getResponsibilities(groupId: String, touchstoneVersionId: String,
                                      scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
     {
         getModellingGroup(groupId)
-        val touchstone = getTouchstoneVersion(touchstoneId)
-        val responsibilitySet = getResponsibilitySet(groupId, touchstoneId)
-        val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneId)
+        val touchstone = getTouchstoneVersion(touchstoneVersionId)
+        val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
+        val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneVersionId)
         return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstone.status)
     }
 
-    override fun getResponsibility(groupId: String, touchstoneId: String, scenarioId: String): ResponsibilityAndTouchstone
+    override fun getResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityAndTouchstone
     {
         getModellingGroup(groupId)
-        val touchstone = getTouchstoneVersion(touchstoneId)
-        val responsibilitySet = getResponsibilitySet(groupId, touchstoneId)
+        val touchstone = getTouchstoneVersion(touchstoneVersionId)
+        val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
         if (responsibilitySet != null)
         {
             val responsibility = getResponsibilitiesInResponsibilitySet(
@@ -118,24 +118,24 @@ class JooqModellingGroupRepository(
         }
     }
 
-    override fun getCoverageSets(groupId: String, touchstoneId: String, scenarioId: String): ScenarioTouchstoneAndCoverageSets
+    override fun getCoverageSets(groupId: String, touchstoneVersionId: String, scenarioId: String): ScenarioTouchstoneAndCoverageSets
     {
         // We don't use the returned responsibility, but by using this method we check that the group exists
         // and that the group is responsible for the given scenario in the given touchstoneVersion
-        val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneId, scenarioId)
-        val scenario = touchstoneRepository.getScenario(touchstoneId, scenarioId)
+        val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneVersionId, scenarioId)
+        val scenario = touchstoneRepository.getScenario(touchstoneVersionId, scenarioId)
         return ScenarioTouchstoneAndCoverageSets(
-                responsibilityAndTouchstone.touchstone,
+                responsibilityAndTouchstone.touchstoneVersion,
                 scenario.scenario,
                 scenario.coverageSets)
     }
 
-    override fun getCoverageData(groupId: String, touchstoneId: String, scenarioId: String): SplitData<ScenarioTouchstoneAndCoverageSets, LongCoverageRow>
+    override fun getCoverageData(groupId: String, touchstoneVersionId: String, scenarioId: String): SplitData<ScenarioTouchstoneAndCoverageSets, LongCoverageRow>
     {
-        val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneId, scenarioId)
-        val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneId, scenarioId)
+        val responsibilityAndTouchstone = getResponsibility(groupId, touchstoneVersionId, scenarioId)
+        val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
         return SplitData(ScenarioTouchstoneAndCoverageSets(
-                responsibilityAndTouchstone.touchstone,
+                responsibilityAndTouchstone.touchstoneVersion,
                 scenarioAndData.structuredMetadata.scenario,
                 scenarioAndData.structuredMetadata.coverageSets
         ), scenarioAndData.tableData)
@@ -220,7 +220,7 @@ class JooqModellingGroupRepository(
 
     private fun getResponsibilities(responsibilitySet: ResponsibilitySetRecord?,
                                     scenarioFilterParameters: ScenarioFilterParameters,
-                                    touchstoneId: String): Responsibilities
+                                    touchstoneVersionId: String): Responsibilities
     {
         if (responsibilitySet != null)
         {
@@ -229,11 +229,11 @@ class JooqModellingGroupRepository(
                     { this.whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters) }
             )
             val status = mapper.mapEnum<ResponsibilitySetStatus>(responsibilitySet.status)
-            return Responsibilities(touchstoneId, "", status, responsibilities)
+            return Responsibilities(touchstoneVersionId, "", status, responsibilities)
         }
         else
         {
-            return Responsibilities(touchstoneId, "", ResponsibilitySetStatus.NOT_APPLICABLE, emptyList())
+            return Responsibilities(touchstoneVersionId, "", ResponsibilitySetStatus.NOT_APPLICABLE, emptyList())
         }
     }
 
@@ -262,13 +262,13 @@ class JooqModellingGroupRepository(
         }
     }
 
-    private fun getResponsibilitySet(groupId: String, touchstoneId: String): ResponsibilitySetRecord?
+    private fun getResponsibilitySet(groupId: String, touchstoneVersionId: String): ResponsibilitySetRecord?
     {
         return dsl.fetchAny(RESPONSIBILITY_SET,
-                RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId).and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneId)))
+                RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId).and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId)))
     }
 
     private fun mapModellingGroup(x: ModellingGroupRecord) = ModellingGroup(x.id, x.description)
 
-    private fun getTouchstoneVersion(touchstoneId: String) = touchstoneRepository.touchstoneVersions.get(touchstoneId)
+    private fun getTouchstoneVersion(touchstoneVersionId: String) = touchstoneRepository.touchstoneVersions.get(touchstoneVersionId)
 }

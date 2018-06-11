@@ -11,10 +11,10 @@ import org.vaccineimpact.api.validateSchema.JSONValidator
 abstract class BurdenEstimateTests : DatabaseTest()
 {
     protected val groupId = "group-1"
-    protected val touchstoneId = "touchstone-1"
+    protected val touchstoneVersionId = "touchstone-1"
     protected val scenarioId = "scenario-1"
     protected val groupScope = "modelling-group:$groupId"
-    protected val urlBase = "/modelling-groups/$groupId/responsibilities/$touchstoneId/$scenarioId"
+    protected val urlBase = "/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId"
     protected val setUrl = "$urlBase/estimate-sets/"
     protected val requiredWritePermissions = PermissionSet(
             "$groupScope/estimates.write",
@@ -32,8 +32,8 @@ abstract class BurdenEstimateTests : DatabaseTest()
         db.addGroup(groupId, "Test group")
         db.addModel("model-1", groupId, diseaseId)
         val modelVersionId = db.addModelVersion("model-1", "version-1", setCurrent = true)
-        val setId = db.addResponsibilitySet(groupId, touchstoneId)
-        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
+        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId)
+        val responsibilityId = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
         return ReturnedIds(responsibilityId, modelVersionId, setId)
     }
 

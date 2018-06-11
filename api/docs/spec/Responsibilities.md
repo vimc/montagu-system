@@ -40,7 +40,7 @@ Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.js
 
 ### Example
     {
-        "touchstone": "2017-op-1",
+        "touchstone_version": "2017-op-1",
         "status": "incomplete",
         "problems": "",
         "responsibilities": [
@@ -98,7 +98,7 @@ Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.js
 
 ### Example
     {
-        "touchstone": "2017-op-1",
+        "touchstone_version": "2017-op-1",
         "status": "not-applicable",
         "problems": "",
         "responsibilities": []
@@ -119,7 +119,7 @@ Schema: [`ResponsibilityAndTouchstone.schema.json`](../schemas/ResponsibilityAnd
 
 ### Example
     {
-        "touchstone": { 
+        "touchstone_version": { 
             "id": "2017-op-1",
             "name": "2017-op",
             "version": 1,            

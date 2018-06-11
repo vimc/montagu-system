@@ -48,7 +48,7 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
 
     protected val scenarioId = "scenario-1"
     protected val groupId = "group-1"
-    protected val touchstoneId = "touchstone-1"
+    protected val touchstoneVersionId = "touchstone-1"
     protected val modelId = "model-1"
     protected val modelVersion = "version-1"
     protected val username = "some.user"
@@ -72,8 +72,8 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         {
             null
         }
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, responsibilitySetStatus)
-        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
+        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, responsibilitySetStatus)
+        val responsibilityId = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
         db.addUserForTesting(username)
         return ReturnedIds(modelVersionId, responsibilityId, setId)
     }
@@ -99,8 +99,8 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         db.addModel(modelId, groupId, diseaseId)
         val modelVersionId = db.addModelVersion(modelId, modelVersion, setCurrent = true)
 
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, responsibilitySetStatus)
-        val responsibilityId = db.addResponsibility(setId, touchstoneId, scenarioId)
+        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, responsibilitySetStatus)
+        val responsibilityId = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
         db.addUserForTesting(username)
 
         db.addModelRunParameterSet(setId, modelVersionId, username)
@@ -117,8 +117,8 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         db.addModel(modelId, groupId, diseaseId)
         val modelVersionId = db.addModelVersion(modelId, modelVersion, setCurrent = true)
 
-        val setId = db.addResponsibilitySet(groupId, touchstoneId, "incomplete")
-        db.addResponsibility(setId, touchstoneId, scenarioId)
+        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "incomplete")
+        db.addResponsibility(setId, touchstoneVersionId, scenarioId)
         db.addUserForTesting(username)
 
         val paramsSetId = db.addModelRunParameterSet(setId, modelVersionId, username)

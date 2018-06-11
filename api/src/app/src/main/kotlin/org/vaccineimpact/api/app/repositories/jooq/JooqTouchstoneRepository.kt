@@ -41,11 +41,11 @@ class JooqTouchstoneRepository(
 
     override fun getDemographicData(statisticTypeCode: String,
                                     source: String,
-                                    touchstoneId: String,
+                                    touchstoneVersionId: String,
                                     gender: String): SplitData<DemographicDataForTouchstone, LongDemographicRow>
     {
-        val metadata = getDemographicMetadata(statisticTypeCode, source, touchstoneId, gender)
-        val data = getDemographicStatistics(touchstoneId, statisticTypeCode, source, gender)
+        val metadata = getDemographicMetadata(statisticTypeCode, source, touchstoneVersionId, gender)
+        val data = getDemographicStatistics(touchstoneVersionId, statisticTypeCode, source, gender)
                 .orderBy(DEMOGRAPHIC_STATISTIC.COUNTRY, DEMOGRAPHIC_STATISTIC.YEAR, DEMOGRAPHIC_STATISTIC.AGE_FROM)
                 .fetchSequence()
                 .map { mapDemographicRow(it) }
@@ -55,16 +55,16 @@ class JooqTouchstoneRepository(
     private fun getDemographicMetadata(
             statisticTypeCode: String,
             source: String,
-            touchstoneId: String,
+            touchstoneVersionId: String,
             gender: String
     ): DemographicDataForTouchstone
     {
         val statisticType = getDemographicStatisticType(statisticTypeCode)
                 .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
-        val touchstone = touchstoneVersions.get(touchstoneId)
+        val touchstone = touchstoneVersions.get(touchstoneVersionId)
         val countries = dsl.selectDistinct(TOUCHSTONE_COUNTRY.COUNTRY)
                 .from(TOUCHSTONE_COUNTRY)
-                .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+                .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneVersionId))
                 .fetch()
                 .map { it.value1() }
 
@@ -81,9 +81,9 @@ class JooqTouchstoneRepository(
         return DemographicDataForTouchstone(touchstone, metadata)
     }
 
-    override fun getDemographicDatasets(touchstoneId: String): List<DemographicDataset>
+    override fun getDemographicDatasets(touchstoneVersionId: String): List<DemographicDataset>
     {
-        val records = getDemographicDatasetsForTouchstone(touchstoneId)
+        val records = getDemographicDatasetsForTouchstone(touchstoneVersionId)
                 .fetch()
 
         return records.map {
@@ -91,9 +91,9 @@ class JooqTouchstoneRepository(
         }.sortedBy { it.name }
     }
 
-    override fun scenarios(touchstoneId: String, filterParams: ScenarioFilterParameters): List<ScenarioAndCoverageSets>
+    override fun scenarios(touchstoneVersionId: String, filterParams: ScenarioFilterParameters): List<ScenarioAndCoverageSets>
     {
-        val records = getScenariosAndCoverageSets(touchstoneId)
+        val records = getScenariosAndCoverageSets(touchstoneVersionId)
                 .whereMatchesFilter(JooqScenarioFilter(), filterParams)
                 // first by scenario, then by coverage set order within the scenario
                 .orderBy(SCENARIO_DESCRIPTION.ID, SCENARIO_COVERAGE_SET.ORDER)
@@ -104,9 +104,9 @@ class JooqTouchstoneRepository(
         }
     }
 
-    override fun getScenario(touchstoneId: String, scenarioDescId: String): ScenarioAndCoverageSets
+    override fun getScenario(touchstoneVersionId: String, scenarioDescId: String): ScenarioAndCoverageSets
     {
-        val records = getScenariosAndCoverageSets(touchstoneId)
+        val records = getScenariosAndCoverageSets(touchstoneVersionId)
                 .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescId))
                 .orderBy(SCENARIO_COVERAGE_SET.ORDER)
                 .fetch()
@@ -116,7 +116,7 @@ class JooqTouchstoneRepository(
         return ScenarioAndCoverageSets(scenario, getCoverageSetsFromRecord(records, scenario))
     }
 
-    private fun getScenariosAndCoverageSets(touchstoneId: String): SelectConditionStep<Record>
+    private fun getScenariosAndCoverageSets(touchstoneVersionId: String): SelectConditionStep<Record>
     {
         return dsl
                 .select(SCENARIO_DESCRIPTION.fieldsAsList())
@@ -126,16 +126,16 @@ class JooqTouchstoneRepository(
                 .fromJoinPath(TOUCHSTONE, SCENARIO, SCENARIO_DESCRIPTION)
                 // We don't mind if there are no coverage sets, so do a left join
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
-                .where(TOUCHSTONE.ID.eq(touchstoneId))
+                .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
 
     }
 
     override fun getScenarioAndCoverageData(
-            touchstoneId: String,
+            touchstoneVersionId: String,
             scenarioDescId: String
     ): SplitData<ScenarioAndCoverageSets, LongCoverageRow>
     {
-        val records = getCoverageSetsAndCoverageDataForScenario(touchstoneId, scenarioDescId)
+        val records = getCoverageSetsAndCoverageDataForScenario(touchstoneVersionId, scenarioDescId)
         val scenario = getScenariosFromRecords(records).singleOrNull()
                 ?: throw UnknownObjectError(scenarioDescId, "scenario")
         val metadata = ScenarioAndCoverageSets(scenario, getCoverageSetsFromRecord(records, scenario))
@@ -146,7 +146,7 @@ class JooqTouchstoneRepository(
     }
 
     private fun getCoverageSetsAndCoverageDataForScenario(
-            touchstoneId: String,
+            touchstoneVersionId: String,
             scenarioDescriptionId: String)
             : Result<Record>
     {
@@ -162,7 +162,7 @@ class JooqTouchstoneRepository(
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
-                .where(TOUCHSTONE.ID.eq(touchstoneId))
+                .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
                         COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO)
@@ -172,7 +172,7 @@ class JooqTouchstoneRepository(
     private val TOUCHSTONE_SOURCES = "touchstoneSources"
     private val TOUCHSTONE_COUNTRIES = "touchstoneCountries"
 
-    private fun getDemographicDatasetsForTouchstone(touchstoneId: String):
+    private fun getDemographicDatasetsForTouchstone(touchstoneVersionId: String):
             SelectConditionStep<Record5<Int, String, String, Boolean, String>>
     {
 
@@ -186,7 +186,7 @@ class JooqTouchstoneRepository(
                         TOUCHSTONE_DEMOGRAPHIC_DATASET)
                 .join(DEMOGRAPHIC_SOURCE)
                 .on(DEMOGRAPHIC_SOURCE.ID.eq(DEMOGRAPHIC_DATASET.DEMOGRAPHIC_SOURCE))
-                .where(TOUCHSTONE_DEMOGRAPHIC_DATASET.TOUCHSTONE.eq(touchstoneId))
+                .where(TOUCHSTONE_DEMOGRAPHIC_DATASET.TOUCHSTONE.eq(touchstoneVersionId))
 
     }
 
@@ -206,7 +206,7 @@ class JooqTouchstoneRepository(
 
     }
 
-    private fun getDemographicStatistics(touchstoneId: String,
+    private fun getDemographicStatistics(touchstoneVersionId: String,
                                          typeCode: String,
                                          sourceCode: String,
                                          gender: String):
@@ -219,7 +219,7 @@ class JooqTouchstoneRepository(
                 .fromJoinPath(DEMOGRAPHIC_SOURCE, DEMOGRAPHIC_DATASET, TOUCHSTONE_DEMOGRAPHIC_DATASET)
                 .join(DEMOGRAPHIC_STATISTIC_TYPE)
                 .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_DATASET.DEMOGRAPHIC_STATISTIC_TYPE))
-                .where(TOUCHSTONE_DEMOGRAPHIC_DATASET.TOUCHSTONE.eq(touchstoneId))
+                .where(TOUCHSTONE_DEMOGRAPHIC_DATASET.TOUCHSTONE.eq(touchstoneVersionId))
                 .and(DEMOGRAPHIC_SOURCE.CODE.eq(sourceCode))
                 .and(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))
 
@@ -235,7 +235,7 @@ class JooqTouchstoneRepository(
 
         val countries = dsl.selectDistinct(COUNTRY.ID, COUNTRY.NID, COUNTRY.NAME)
                 .fromJoinPath(COUNTRY, TOUCHSTONE_COUNTRY)
-                .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneId))
+                .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneVersionId))
 
         return dsl
                 .with(TOUCHSTONE_SOURCES).`as`(touchstoneSources)

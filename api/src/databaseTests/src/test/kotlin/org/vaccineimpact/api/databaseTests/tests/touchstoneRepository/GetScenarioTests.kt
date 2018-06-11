@@ -21,7 +21,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         given {
             createTouchstoneAndScenarioDescriptions(it)
         } check {
-            Assertions.assertThatThrownBy { it.getScenario(touchstoneId, scenarioId) }
+            Assertions.assertThatThrownBy { it.getScenario(touchstoneVersionId, scenarioId) }
                     .isInstanceOf(UnknownObjectError::class.java)
         }
     }
@@ -34,12 +34,12 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         given {
             createTouchstoneAndScenarioDescriptions(it)
             it.addTouchstoneVersion("extra", 1, addTouchstone = true)
-            it.addScenarioToTouchstone(touchstoneId, scenarioId, id = scenarioInTouchstoneId)
-            it.addScenarioToTouchstone(touchstoneId, "yf-2", id = scenarioInTouchstoneId + 1)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId, id = scenarioInTouchstoneId)
+            it.addScenarioToTouchstone(touchstoneVersionId, "yf-2", id = scenarioInTouchstoneId + 1)
             it.addScenarioToTouchstone(extraTouchstoneId, scenarioId, id = scenarioInTouchstoneId + 2)
             giveScenarioCoverageSets(it, scenarioId, includeCoverageData = false)
         } check {
-            val result = it.getScenario(touchstoneId, "yf-1")
+            val result = it.getScenario(touchstoneVersionId, "yf-1")
             checkScenarioIsAsExpected(result, listOf(extraTouchstoneId))
         }
     }
@@ -50,7 +50,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         given {
             createTouchstoneAndScenarioDescriptions(it)
         } check {
-            Assertions.assertThatThrownBy { it.getScenarioAndCoverageData(touchstoneId, scenarioId) }
+            Assertions.assertThatThrownBy { it.getScenarioAndCoverageData(touchstoneVersionId, scenarioId) }
                     .isInstanceOf(UnknownObjectError::class.java)
         }
 }
@@ -60,10 +60,10 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     {
         given {
             createTouchstoneAndScenarioDescriptions(it)
-            it.addScenarioToTouchstone(touchstoneId, scenarioId)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
             giveScenarioCoverageSets(it, scenarioId, includeCoverageData = true)
         } check {
-            val result = it.getScenarioAndCoverageData(touchstoneId, scenarioId)
+            val result = it.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
             checkScenarioIsAsExpected(result.structuredMetadata)
             assertThat(result.tableData.data.toList()).containsExactlyElementsOf(listOf(
                     LongCoverageRow(scenarioId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
@@ -79,10 +79,10 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     {
         given {
             createTouchstoneAndScenarioDescriptions(it)
-            it.addScenarioToTouchstone(touchstoneId, scenarioId)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
             giveScenarioCoverageSets(it, scenarioId, includeCoverageData = false)
         } check {
-            val result = it.getScenarioAndCoverageData(touchstoneId, scenarioId)
+            val result = it.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
             checkScenarioIsAsExpected(result.structuredMetadata)
             assertThat(result.tableData.data.toList()).isEmpty()
         }
@@ -93,20 +93,20 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         assertThat(result.scenario.description).isEqualTo("Yellow Fever 1")
         assertThat(result.scenario.id).isEqualTo("yf-1")
         assertThat(result.scenario.disease).isEqualTo("YF")
-        assertThat(result.scenario.touchstones).hasSameElementsAs(listOf(touchstoneId) + extraTouchstones)
+        assertThat(result.scenario.touchstones).hasSameElementsAs(listOf(touchstoneVersionId) + extraTouchstones)
 
         assertThat(result.coverageSets).hasSameElementsAs(listOf(
-                CoverageSet(setA, touchstoneId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
-                CoverageSet(setB, touchstoneId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
+                CoverageSet(setA, touchstoneVersionId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
+                CoverageSet(setB, touchstoneVersionId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
         ))
     }
 
     private fun giveScenarioCoverageSets(db: JooqContext, scenarioId: String, includeCoverageData: Boolean)
     {
-        db.addCoverageSet(touchstoneId, "YF without", "YF", "without", "campaign", id = setA)
-        db.addCoverageSet(touchstoneId, "YF with", "YF", "with", "campaign", id = setB)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, setB, 4)
-        db.addCoverageSetToScenario(scenarioId, touchstoneId, setA, 0)
+        db.addCoverageSet(touchstoneVersionId, "YF without", "YF", "without", "campaign", id = setA)
+        db.addCoverageSet(touchstoneVersionId, "YF with", "YF", "with", "campaign", id = setB)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setB, 4)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
         if (includeCoverageData)
         {
             db.addCountries(listOf("AAA", "BBB"))

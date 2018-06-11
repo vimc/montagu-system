@@ -88,7 +88,7 @@ class TouchstoneController(
         val metadata = data.structuredMetadata
         val source = context.params(":source-code")
         val gender = context.queryParams("gender") ?: "both"
-        val filename = "${metadata.touchstone.id}_${source}_${metadata.demographicData.id}_$gender.csv"
+        val filename = "${metadata.touchstoneVersion.id}_${source}_${metadata.demographicData.id}_$gender.csv"
         context.addAttachmentHeader(filename)
 
         return data.tableData
