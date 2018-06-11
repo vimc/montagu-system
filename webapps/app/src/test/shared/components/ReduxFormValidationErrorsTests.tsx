@@ -2,7 +2,6 @@ import * as React from "react";
 import {expect} from "chai";
 import {shallow} from "enzyme";
 import {ReduxFormValidationErrors} from "../../../main/shared/components/ReduxForm/ReduxFormValidationError";
-import {Alert} from "reactstrap";
 
 describe("ReduxFormValidationErrors", () => {
 

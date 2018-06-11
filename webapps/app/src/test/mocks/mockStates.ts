@@ -57,7 +57,7 @@ export const mockAdminUsersState = (props?: RecursivePartial<AdminUsersState>): 
 };
 
 export const mockAdminState = (props?: Partial<AdminAppState>): AdminAppState => {
-    const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
+    const authMock: AuthState = props && props.auth ? props.auth : mockAuthState();
     const groupsMock: AdminModellingGroupsState = props && props.groups ? props.groups : AdminModellingGroupsInitialState;
     const usersMock: AdminUsersState = props && props.users ? props.users : adminUsersInitialState;
     const breadcrumbsMock: BreadcrumbsState = props && props.breadcrumbs ? props && props.breadcrumbs : initialBreadcrumbsState;
