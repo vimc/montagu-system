@@ -4,6 +4,7 @@ import {AdminAppState} from "../reducers/adminAppReducers";
 import {User} from "../../shared/models/Generated";
 import {UsersService} from "../services/UsersService";
 import {
+    AllUserRolesFetched,
     AllUsersFetched, SetCreateUserError, SetCurrentUser, ShowCreateUser,
     UsersTypes
 } from "../actionTypes/UsersTypes";
@@ -37,6 +38,41 @@ export const usersActionCreators = {
                     type: UsersTypes.SET_CREATE_USER_ERRORS,
                     errors: [{message: "Could not create user"}]
                 } as SetCreateUserError);
+            }
+        }
+    },
+
+    getAllUserRoles() {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const userRoles: string[] = await (new UsersService(dispatch, getState)).getAllUserRoles();
+            dispatch({
+                type: UsersTypes.ALL_USER_ROLES_FETCHED,
+                data: userRoles
+            } as AllUserRolesFetched);
+        }
+    },
+
+    addRoleToUser(username: string, role: string) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const result = await (new UsersService(dispatch, getState)).addRoleToUser(username, role);
+
+            if (result === "OK") {
+                dispatch(this.clearUsersListCache());
+                await dispatch(this.getAllUsers());
+                dispatch(this.setCurrentUser(username));
+            }
+        }
+    },
+
+    removeRoleFromUser(username: string, role: string, scopeId: string, scopePrefix: string) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const result = await (new UsersService(dispatch, getState))
+                .removeRoleFromUser(username, role, scopeId, scopePrefix);
+
+            if (result === "OK") {
+                dispatch(this.clearUsersListCache());
+                await dispatch(this.getAllUsers());
+                dispatch(this.setCurrentUser(username));
             }
         }
     },

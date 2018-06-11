@@ -1,49 +1,45 @@
 import * as React from "react";
-import { AssociateRole } from "../../../../shared/models/Generated";
-import fetcher from "../../../../shared/sources/Fetcher";
-import { userActions } from "../../../actions/UserActions";
-import { processResponseAndNotifyOnErrors } from "../../../../shared/sources/Source";
-import { notificationActions, NotificationException } from "../../../../shared/actions/NotificationActions";
+import {connect} from "react-redux";
+import {compose, branch, renderComponent} from "recompose";
+import {Dispatch} from "redux";
+import {isEqual} from "lodash";
 
-export interface RolesProps {
+import {AdminAppState} from "../../../reducers/adminAppReducers";
+import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {usersActionCreators} from "../../../actions/usersActionCreators";
+
+export interface AddRolesPublicProps {
     username: string;
     userRoles: string[];
 }
 
-interface RolesState {
+export interface AddRolesProps extends AddRolesPublicProps {
     allRoles: string[];
+    addRoleToUser: (username:string, role:string) => void;
+}
+
+interface AddRolesState {
     availableRoles: string[];
     selectedRole: string;
 }
 
-export class AddRoles extends React.Component<RolesProps, RolesState> {
-
+export class AddRolesComponent extends React.Component<AddRolesProps, AddRolesState> {
     componentWillMount() {
-
         this.setState({
-            allRoles: [],
             availableRoles: [],
             selectedRole: ""
         });
-
-        fetcher.fetcher.fetch("/users/roles/all/")
-            .then((response: Response) => {
-                processResponseAndNotifyOnErrors(response)
-                    .then((result: string[]) => {
-
-                        this.setState({
-                            allRoles: result
-                        });
-
-                        this.componentWillReceiveProps(this.props);
-                    })
-                    .catch((e: NotificationException) => notificationActions.notify(e))
-            });
+        this.setAvailableRoles(this.props.userRoles);
     }
 
-    componentWillReceiveProps(props: RolesProps) {
+    componentWillReceiveProps(nextProps: AddRolesProps) {
+        if (!isEqual(this.props.userRoles, nextProps.userRoles)) {
+            this.setAvailableRoles(nextProps.userRoles);
+        }
+    }
 
-        const roles = this.state.allRoles.filter(r => props.userRoles.indexOf(r) == -1);
+    setAvailableRoles(userRoles: string[]) {
+        const roles = this.props.allRoles.filter(r => userRoles.indexOf(r) == -1);
         this.setState({
             availableRoles: roles,
             selectedRole: roles.length > 0 ? roles[0] : ""
@@ -51,36 +47,14 @@ export class AddRoles extends React.Component<RolesProps, RolesState> {
     }
 
     handleChange(e: any) {
-
         this.setState({
             selectedRole: e.target.value
         });
     }
 
     handleClick(e: any) {
-
         e.preventDefault();
-
-        const href = `/users/${this.props.username}/actions/associate-role/`;
-        const associateRole: AssociateRole = {
-            name: this.state.selectedRole,
-            action: "add",
-            scope_prefix: null,
-            scope_id: null
-
-        };
-
-        const selectedRole = this.state.selectedRole;
-
-        fetcher.fetcher.fetch(href, {
-            method: "post",
-            body: JSON.stringify(associateRole)
-        }).then((response: Response) => {
-            processResponseAndNotifyOnErrors(response)
-                .then(() => userActions.addRole(selectedRole, null, null))
-                .catch((e: NotificationException) => notificationActions.notify(e))
-        })
-
+        this.props.addRoleToUser(this.props.username, this.state.selectedRole);
     }
 
     render() {
@@ -98,7 +72,8 @@ export class AddRoles extends React.Component<RolesProps, RolesState> {
         return <form>
             <div className="form-group row">
                 <div className="col">
-                    <select className="form-control" onChange={this.handleChange.bind(this)}>
+                    <select className="form-control" onChange={this.handleChange.bind(this)}
+                            value={this.state.selectedRole}>
                         {this.state.availableRoles
                             .map(r => <option value={r} key={r}>{r}</option>)}
                     </select>
@@ -110,3 +85,22 @@ export class AddRoles extends React.Component<RolesProps, RolesState> {
         </form>;
     }
 }
+
+const mapStateToProps = (state: AdminAppState, props: AddRolesPublicProps) :Partial<AddRolesProps> => {
+    return {
+        allRoles: state.users.allUserRoles,
+        userRoles: props.userRoles,
+        username: props.username
+    }
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<AddRolesProps> => {
+    return {
+        addRoleToUser: (username:string, role:string) => dispatch(usersActionCreators.addRoleToUser(username, role))
+    }
+};
+
+export const AddRoles = compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    branch((props: AddRolesProps) => !props.allRoles.length, renderComponent(LoadingElement))
+)(AddRolesComponent) as React.ComponentClass<Partial<AddRolesProps>>;
