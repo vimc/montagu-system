@@ -25,7 +25,7 @@ export class UsersService extends AbstractLocalService {
             .get("/users/roles/all/");
     }
 
-    addRoleToUser(username: string, role: string) {
+    addGlobalRoleToUser(username: string, role: string) {
         const associateRole: AssociateRole = {
             name: role,
             action: "add",

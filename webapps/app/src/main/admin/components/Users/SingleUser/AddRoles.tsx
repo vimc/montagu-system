@@ -96,7 +96,7 @@ const mapStateToProps = (state: AdminAppState, props: AddRolesPublicProps) :Part
 
 export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<AddRolesProps> => {
     return {
-        addRoleToUser: (username:string, role:string) => dispatch(usersActionCreators.addRoleToUser(username, role))
+        addRoleToUser: (username:string, role:string) => dispatch(usersActionCreators.addGlobalRoleToUser(username, role))
     }
 };
 

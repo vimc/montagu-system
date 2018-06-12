@@ -16,8 +16,11 @@ describe("Admin Users actions tests", () => {
         createUserStub: Sinon.SinonStub = null;
 
     beforeEach(() => {
-        sandbox.restore();
         store = createMockStore({});
+    });
+
+    afterEach(() => {
+        sandbox.restore();
     });
 
     const testUser = mockUser();

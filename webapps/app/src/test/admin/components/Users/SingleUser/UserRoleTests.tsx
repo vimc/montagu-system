@@ -1,7 +1,7 @@
 import * as React from "react";
 import {shallow} from "enzyme";
 import {expect} from "chai";
-import {UserRole} from "../../../../../main/admin/components/Users/SingleUser/UserRole";
+import {UserRole, UserRoleComponent} from "../../../../../main/admin/components/Users/SingleUser/UserRole";
 import {RoleAssignment} from "../../../../../main/shared/models/Generated";
 import {mockRole, mockUser} from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
@@ -15,6 +15,8 @@ describe("UserRole", () => {
     const mockUsersState = mockAdminUsersState({currentUser: mockUser({username: "fake.name", name: "Fake Name"})});
     const mockAdminAppState = mockAdminState({users: mockUsersState});
 
+    const fakeRole = mockRole({name: "rolename"});
+
     let store: AdminAppState = null;
 
     beforeEach(() => {
@@ -23,10 +25,8 @@ describe("UserRole", () => {
 
     it("does not show scope if global", () => {
 
-        const role: RoleAssignment = mockRole();
-        role.scope_prefix = "";
-        role.name = "rolename";
-        const rendered = shallow(<UserRole { ...role} username="testuser" showdelete={true}/>, {context: {store}});
+        const rendered = shallow(<UserRoleComponent removeRoleFromUser={null}
+                                                    { ...fakeRole} username="testuser" showdelete={true}/>);
         const text = rendered.find('.role-name').text();
 
         expect(text).to.eq("rolename")
@@ -34,11 +34,9 @@ describe("UserRole", () => {
 
     it("shows scope if not global", () => {
 
-        const role: RoleAssignment = mockRole();
-        role.scope_prefix = "group";
-        role.scope_id = "fake";
-        role.name = "rolename";
-        const rendered = shallow(<UserRole { ...role} username="testuser" showdelete={true}/>, {context: {store}});
+        const role: RoleAssignment = mockRole({name: "rolename", scope_prefix: "group", scope_id: "fake"});
+        const rendered = shallow(<UserRoleComponent removeRoleFromUser={null}
+                                                    { ...role} username="testuser" showdelete={true}/>);
         const text = rendered.find('.role-name').text();
 
         expect(text).to.eq("rolename / group:fake")
@@ -47,27 +45,19 @@ describe("UserRole", () => {
 
     it("shows delete button", () => {
 
-        const sandbox = new Sandbox();
-        const role: RoleAssignment = mockRole();
-        role.scope_prefix = "group";
-        role.scope_id = "fake";
-        role.name = "rolename";
-        const rendered = sandbox.mount(<UserRole { ...role} username="testuser" showdelete={true}/>, {context: {store}});
-        const text = rendered.find(InternalLink).text();
+        const rendered = shallow(<UserRoleComponent removeRoleFromUser={null}
+                                                    { ...fakeRole} username="testuser" showdelete={true}/>);
 
-        expect(text).to.eq("Remove role")
+        const text = rendered.find(InternalLink).dive().text();
+        expect(text).to.eq("Remove role");
 
-        sandbox.restore();
     });
 
     it("does not show delete button", () => {
 
-        const role: RoleAssignment = mockRole();
-        role.scope_prefix = "group";
-        role.scope_id = "fake";
-        role.name = "rolename";
-        const rendered = shallow(<UserRole { ...role} username="testuser" showdelete={false}/>, {context: {store}});
-        expect(rendered.find(InternalLink).length).to.eq(0)
+        const rendered = shallow(<UserRoleComponent removeRoleFromUser={null}
+                                                    { ...fakeRole} username="testuser" showdelete={false}/>);
+        expect(rendered.find(InternalLink).length).to.eq(0);
     });
 
 });

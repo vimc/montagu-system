@@ -19,6 +19,7 @@ describe("User Details Page actions tests", () => {
     const sandbox = new Sandbox();
 
     const testUser = mockUser();
+    const testRole = mockRole();
     const testBreadcrumbs = mockBreadcrumbs();
     let parentStub: Sinon.SinonStub, store: MockStore<AdminAppState>;
 
@@ -33,7 +34,7 @@ describe("User Details Page actions tests", () => {
             return async () => Promise.resolve([testUser]);
         });
         sandbox.setStubFunc(UsersService.prototype, "getAllUserRoles", () => {
-            return Promise.resolve([mockRole()]);
+            return Promise.resolve([testRole]);
         });
     });
 
@@ -54,6 +55,7 @@ describe("User Details Page actions tests", () => {
         const actions = store.getActions();
         const expectedPayload = [
             {type: UsersTypes.SET_CURRENT_USER, data: "test.user"},
+            {type: UsersTypes.ALL_USER_ROLES_FETCHED,data: [testRole]},
             {type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs}
         ];
         expect(actions).to.eql(expectedPayload);

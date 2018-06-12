@@ -52,9 +52,9 @@ export const usersActionCreators = {
         }
     },
 
-    addRoleToUser(username: string, role: string) {
+    addGlobalRoleToUser(username: string, role: string) {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
-            const result = await (new UsersService(dispatch, getState)).addRoleToUser(username, role);
+            const result = await (new UsersService(dispatch, getState)).addGlobalRoleToUser(username, role);
 
             if (result === "OK") {
                 dispatch(this.clearUsersListCache());
