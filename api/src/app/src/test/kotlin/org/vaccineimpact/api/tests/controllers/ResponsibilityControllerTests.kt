@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.ResponsibilityController
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.models.*
@@ -89,6 +90,23 @@ class ResponsibilityControllerTests : MontaguTests()
     }
 
     @Test
+    fun `getResponsibilities checks modelling group exists`()
+    {
+        val repo = mock<ModellingGroupRepository> {
+            on { getModellingGroup(any()) } doThrow UnknownObjectError("badId", "ModellingGroup")
+        }
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "badId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { hasPermission(any()) } doReturn true
+        }
+
+        Assertions.assertThatThrownBy {
+            ResponsibilityController(context, repo, mock()).getResponsibilities()
+        }.hasMessageContaining("Unknown modelling-group")
+    }
+
+    @Test
     fun `getResponsibility gets parameters from URL`()
     {
         val repo = makeRepoMockingGetResponsibility(TouchstoneStatus.OPEN)
@@ -109,6 +127,19 @@ class ResponsibilityControllerTests : MontaguTests()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 
+    @Test
+    fun `getResponsibility checks modelling group exists`()
+    {
+        val repo = mock<ModellingGroupRepository> {
+            on { getModellingGroup(any()) } doThrow UnknownObjectError("badId", "ModellingGroup")
+        }
+        val context = mockContextForSpecificResponsibility(true)
+
+        Assertions.assertThatThrownBy {
+            ResponsibilityController(context, repo, mock()).getResponsibility()
+        }.hasMessageContaining("Unknown modelling-group")
+
+    }
 
     private val mockTouchstones = listOf(
             TouchstoneVersion("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN),

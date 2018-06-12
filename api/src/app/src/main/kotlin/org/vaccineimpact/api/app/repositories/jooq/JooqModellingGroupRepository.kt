@@ -91,6 +91,7 @@ class JooqModellingGroupRepository(
 
     override fun getCoverageSets(groupId: String, touchstoneVersionId: String, scenarioId: String): ScenarioTouchstoneAndCoverageSets
     {
+        getModellingGroup(groupId)
         // We don't use the returned responsibility, but by using this method we check that the group exists
         // and that the group is responsible for the given scenario in the given touchstoneVersion
         val responsibilityAndTouchstone = responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
@@ -103,6 +104,7 @@ class JooqModellingGroupRepository(
 
     override fun getCoverageData(groupId: String, touchstoneVersionId: String, scenarioId: String): SplitData<ScenarioTouchstoneAndCoverageSets, LongCoverageRow>
     {
+        getModellingGroup(groupId)
         val responsibilityAndTouchstone = responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
         val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
         return SplitData(ScenarioTouchstoneAndCoverageSets(

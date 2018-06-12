@@ -5,30 +5,12 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqResponsibilitiesRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
-import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.databaseTests.tests.responsibilitiesRepository.ResponsibilitiesRepositoryTests
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
 
 class GetResponsibilitiesTests : ResponsibilitiesRepositoryTests()
 {
-
-    @Test
-    fun `getResponsibilities throws error for unknown modelling group`()
-    {
-        given {
-            it.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
-        } check { repo ->
-            assertThatThrownBy { repo.getResponsibilitiesForGroupAndTouchstone("group", "touchstone-1", ScenarioFilterParameters()) }
-                    .isInstanceOf(UnknownObjectError::class.java)
-                    .hasMessageContaining("modelling-group")
-        }
-    }
 
     @Test
     fun `getResponsibilities checks that touchstone exists`()

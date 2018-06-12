@@ -132,7 +132,7 @@ class JooqResponsibilitiesRepository(
         return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstone.status)
     }
 
-    override fun getResponsibilitySet(groupId: String, touchstoneVersionId: String): ResponsibilitySetRecord?
+    private fun getResponsibilitySet(groupId: String, touchstoneVersionId: String): ResponsibilitySetRecord?
     {
         return dsl.fetchAny(Tables.RESPONSIBILITY_SET,
                 Tables.RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId).and(Tables.RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId)))
