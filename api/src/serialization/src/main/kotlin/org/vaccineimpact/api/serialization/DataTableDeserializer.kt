@@ -7,6 +7,7 @@ import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.serialization.validation.ValidationException
 import java.io.Reader
 import java.io.StringReader
+import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KType
@@ -35,7 +36,7 @@ open class DataTableDeserializer<out T>(
             throw ValidationException(listOf(ErrorInfo("csv-empty", "CSV was empty - no rows or headers were found")))
         }
 
-        val actualHeaderNames = headerRow.toList()
+        val actualHeaderNames = headerRow.map({it.trim().trim('\'')}).toList()
         checkHeaders(actualHeaderNames)
         val actualHeaders = getActualHeaderDefinitions(actualHeaderNames)
 
@@ -75,7 +76,7 @@ open class DataTableDeserializer<out T>(
                             row: Int, column: String,
                             problems: MutableList<ErrorInfo>): Any?
     {
-        val trimmed = raw.trim()
+        val trimmed = raw.trim().trim('\'')
         checkValueIsPresentIfRequired(trimmed, targetType, row, column, problems)
 
         return try

@@ -12,7 +12,7 @@ import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneId
 
-class SerializerTests : MontaguTests()
+class   SerializerTests : MontaguTests()
 {
     private val serializer = MontaguSerializer.instance
 
