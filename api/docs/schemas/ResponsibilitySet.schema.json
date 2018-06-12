@@ -4,12 +4,13 @@
     "properties": {
         "touchstone_version": { "$ref": "StandardIdentifier.schema.json" },
         "status": { "$ref": "ResponsibilitySetStatus.schema.json" },
+        "modelling_group_id": { "type" : "string" },
         "problems": { "type": "string" },
-        "responsibilities": { 
+        "responsibilities": {
             "type": "array",
             "items": { "$ref": "Responsibility.schema.json" }
          }
     },
     "additionalProperties": false,
-    "required": [ "touchstone_version", "status", "problems", "responsibilities" ]
+    "required": [ "touchstone_version", "status", "responsibilities" ]
 }

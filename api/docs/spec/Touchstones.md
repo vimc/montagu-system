@@ -23,7 +23,71 @@ Schema: [`Touchstones.schema.json`](../schemas/Touchstones.schema.json)
             "status": "open"
         }
     ]
+    
 
+## GET /touchstones/{touchstone-id}/responsibilities/
+Returns all responsibility sets associated with the touchstone.
+
+Required permissions: `touchstones.read`, `responsibilities.read`
+
+Additionally, to view responsibilities for an in-preparation touchstone, `touchstones.prepare` is required.
+
+Schema: [`ResponsibilitySets.schema.json`](../schemas/ResponsibilitySets.schema.json)
+
+### Example
+    [{
+        "touchstone_version": "2017-op-1",
+        "status": "incomplete",
+        "modelling_group_id": "IC-Garske",
+        "responsibilities": [
+            {
+                "scenario": {
+                    "id": "menA-novacc",
+                    "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
+                    "description": "Menigitis A, No vaccination",
+                    "disease": "MenA"
+                },
+                "countries": ["AFG", "AGO"],
+                "years": {
+                    "start": 1900,
+                    "end": 2050
+                },
+                "status": "empty",
+                "problems": [ "No burden estimates have been uploaded" ],
+                "current_estimate_set": null
+            },        
+            {
+                "scenario": {
+                    "id": "yf-campaign-reactive-nogavi",
+                    "touchstones": [ "2017-wuenic-1", "2017-op-1" ],
+                    "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
+                    "disease": "YF"
+                },
+                "countries": ["AFG", "AGO"],
+                "years": {
+                    "start": 1900,
+                    "end": 2050
+                },
+                "status": "invalid",
+                "problems": [
+                    "Missing data for these countries: AFG",
+                    "There are negative burden numbers for some outcomes."
+                ],
+                "current_estimate_set": {                    
+                    "id": 1,                  
+                    "uploaded_on": "2017-10-06T11:18:06Z",
+                    "uploaded_by": "tini.garske",
+                    "type": {
+                        "type": "central-averaged",
+                        "details": "Mean over all stochastic runs"
+                    },
+                    "problems": [],
+                    "status": "complete"
+                }
+            }
+        ]
+    }]
+    
 ## GET /touchstones/{touchstone-id}/scenarios/
 Returns all scenarios associated with the touchstone.
 
