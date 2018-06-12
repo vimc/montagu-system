@@ -7,13 +7,22 @@ import fetcher from "../../../../../main/shared/sources/Fetcher";
 import { mockResponse } from "../../../../mocks/mockRemote";
 import { expectOneAction } from "../../../../actionHelpers";
 import { shallow } from "enzyme";
+import {createMockStore} from "../../../../mocks/mockStore";
+import {AdminAppState} from "../../../../../main/admin/reducers/adminAppReducers";
+import {mockUser} from "../../../../mocks/mockModels";
+import {mockAdminState, mockAdminUsersState} from "../../../../mocks/mockStates";
 
 describe("AddRoles", () => {
 
-    let sandbox: Sandbox;
+    const sandbox: Sandbox = new Sandbox();
+
+    const mockUsersState = mockAdminUsersState({currentUser: mockUser({username: "fake.name", name: "Fake Name"})});
+    const mockAdminAppState = mockAdminState({users: mockUsersState});
+
+    let store: AdminAppState = null;
 
     beforeEach(() => {
-        sandbox = new Sandbox()
+        store = createMockStore(mockAdminAppState);
     });
 
     afterEach(() => {
@@ -25,7 +34,7 @@ describe("AddRoles", () => {
         const fetch = sandbox.sinon.stub(fetcher.fetcher, "fetch")
             .returns(mockResponse({ status: "success", data: ["role1", "role2"], errors: [] }));
 
-        const roles = shallow(<AddRoles username={"testuser"} userRoles={[]}/>);
+        const roles = shallow(<AddRoles username={"testuser"} userRoles={[]}/>, {context: {store}});
         const instance = roles.instance();
         const setState = sandbox.sinon.stub(instance, 'setState');
         instance.componentWillMount();
@@ -43,7 +52,7 @@ describe("AddRoles", () => {
 
     it("only shows roles the user does not have", (done: DoneCallback) => {
 
-        const roles = shallow(<AddRoles username={"testuser"} userRoles={["role1"]}/>);
+        const roles = shallow(<AddRoles username={"testuser"} userRoles={["role1"]}/>, {context: {store}});
         const instance = roles.instance();
         instance.setState({allRoles: ["role1", "role2"]});
 
@@ -67,7 +76,7 @@ describe("AddRoles", () => {
 
         const dispatchSpy = sandbox.dispatchSpy();
 
-        sandbox.mount(<AddRoles username={"testuser"} userRoles={["role1"]}/>);
+        sandbox.mount(<AddRoles username={"testuser"} userRoles={["role1"]}/>, {context: {store}});
 
         checkAsync(done, afterWait => {
             afterWait(done, () => {
@@ -98,7 +107,7 @@ describe("AddRoles", () => {
 
         const dispatchSpy = sandbox.dispatchSpy();
 
-        const addRoles = sandbox.mount(<AddRoles username={"testuser"} userRoles={["role1"]}/>);
+        const addRoles = sandbox.mount(<AddRoles username={"testuser"} userRoles={["role1"]}/>, {context: {store}});
         addRoles.setState({ selectedRole: "rolename", availableRoles: ["rolename"] });
 
         const onClick = addRoles.find("button").prop("onClick");

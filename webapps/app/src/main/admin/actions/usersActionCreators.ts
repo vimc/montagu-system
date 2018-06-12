@@ -77,7 +77,7 @@ export const usersActionCreators = {
         }
     },
 
-    setCurrentUser(username: string) {
+        setCurrentUser(username: string) {
         return {
             type: UsersTypes.SET_CURRENT_USER,
             data: username

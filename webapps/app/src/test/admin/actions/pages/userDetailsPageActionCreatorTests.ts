@@ -5,7 +5,7 @@ import {Sandbox} from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
 import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
-import {mockBreadcrumbs, mockUser} from "../../../mocks/mockModels";
+import {mockBreadcrumbs, mockRole, mockUser} from "../../../mocks/mockModels";
 import {usersListPageActionCreators} from "../../../../main/admin/actions/pages/usersListPageActionCreators";
 import {UsersTypes} from "../../../../main/admin/actionTypes/UsersTypes";
 import {userDetailsPageActionCreators} from "../../../../main/admin/actions/pages/userDetailsPageActionCreators";
@@ -13,6 +13,7 @@ import {AdminAppState} from "../../../../main/admin/reducers/adminAppReducers";
 import {mockAdminState} from "../../../mocks/mockStates";
 import {MockStore} from "redux-mock-store";
 import {UserDetailsPageComponent} from "../../../../main/admin/components/Users/SingleUser/UserDetailsPage";
+import {UsersService} from "../../../../main/admin/services/UsersService";
 
 describe("User Details Page actions tests", () => {
     const sandbox = new Sandbox();
@@ -30,6 +31,9 @@ describe("User Details Page actions tests", () => {
         });
         parentStub = sandbox.setStubFunc(usersListPageActionCreators, "loadData", () => {
             return async () => Promise.resolve([testUser]);
+        });
+        sandbox.setStubFunc(UsersService.prototype, "getAllUserRoles", () => {
+            return Promise.resolve([mockRole()]);
         });
     });
 
