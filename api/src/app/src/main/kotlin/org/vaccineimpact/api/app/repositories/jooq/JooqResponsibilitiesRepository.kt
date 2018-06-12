@@ -150,7 +150,7 @@ class JooqResponsibilitiesRepository(
             val responsibilities = getResponsibilitiesInResponsibilitySet(id,
                     { this })
 
-            ResponsibilitySet(it[Tables.MODELLING_GROUP.ID],
+            ResponsibilitySet(it[Tables.MODELLING_GROUP.ID], touchstoneVersionId,
                     mapper.mapEnum(it[Tables.RESPONSIBILITY_SET.STATUS]), responsibilities)
         })
     }
