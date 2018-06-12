@@ -43,8 +43,11 @@ open class Repositories(val dsl: DSLContext)
     open val scenario: ScenarioRepository by lazy {
         JooqScenarioRepository(dsl)
     }
+    open val responsibilities: ResponsibilitiesRepository by lazy {
+        JooqResponsibilitiesRepository(dsl, scenario, touchstone)
+    }
     open val modellingGroup: ModellingGroupRepository by lazy {
-        JooqModellingGroupRepository(dsl, touchstone, scenario)
+        JooqModellingGroupRepository(dsl, responsibilities, touchstone)
     }
     open val burdenEstimates: BurdenEstimateRepository by lazy {
         JooqBurdenEstimateRepository(dsl, scenario, touchstone, modellingGroup)

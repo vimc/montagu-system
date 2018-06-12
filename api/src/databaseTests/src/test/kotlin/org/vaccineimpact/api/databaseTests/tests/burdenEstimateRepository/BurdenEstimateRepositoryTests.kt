@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.databaseTests.tests
+package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
 import org.assertj.core.api.Assertions
 import org.jooq.Record
@@ -6,10 +6,7 @@ import org.jooq.Result
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
-import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
+import org.vaccineimpact.api.app.repositories.jooq.*
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.*
@@ -27,8 +24,9 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     {
         val scenario = JooqScenarioRepository(db.dsl)
         val touchstone = JooqTouchstoneRepository(db.dsl, scenario)
+        val responsibilities = JooqResponsibilitiesRepository(db.dsl, scenario, touchstone)
 
-        val modellingGroup = JooqModellingGroupRepository(db.dsl, touchstone, scenario)
+        val modellingGroup = JooqModellingGroupRepository(db.dsl, responsibilities, touchstone)
         return JooqBurdenEstimateRepository(db.dsl, scenario, touchstone, modellingGroup)
     }
 
@@ -40,8 +38,9 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
     {
         val scenario = JooqScenarioRepository(db.dsl)
         val touchstone = JooqTouchstoneRepository(db.dsl, scenario)
+        val responsibilities = JooqResponsibilitiesRepository(db.dsl, scenario, touchstone)
 
-        val modellingGroup = JooqModellingGroupRepository(db.dsl, touchstone, scenario)
+        val modellingGroup = JooqModellingGroupRepository(db.dsl, responsibilities, touchstone)
         return JooqBurdenEstimateRepository(db.dsl, scenario, touchstone, modellingGroup, BurdenMappingHelper(),
                 centralEstimateWriter, stochasticBurdenEstimateWriter)
     }

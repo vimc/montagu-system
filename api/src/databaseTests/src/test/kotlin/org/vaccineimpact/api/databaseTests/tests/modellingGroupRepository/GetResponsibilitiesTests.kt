@@ -5,18 +5,26 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqResponsibilitiesRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
+import org.vaccineimpact.api.databaseTests.RepositoryTests
+import org.vaccineimpact.api.databaseTests.tests.responsibilitiesRepository.ResponsibilitiesRepositoryTests
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
 
-class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
+class GetResponsibilitiesTests : ResponsibilitiesRepositoryTests()
 {
+
     @Test
     fun `getResponsibilities throws error for unknown modelling group`()
     {
         given {
             it.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
         } check { repo ->
-            assertThatThrownBy { repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()) }
+            assertThatThrownBy { repo.getResponsibilitiesForGroupAndTouchstone("group", "touchstone-1", ScenarioFilterParameters()) }
                     .isInstanceOf(UnknownObjectError::class.java)
                     .hasMessageContaining("modelling-group")
         }
@@ -28,7 +36,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
         given {
             it.addGroup("group", "description")
         } check { repo ->
-            assertThatThrownBy { repo.getResponsibilities("group", "touchstoneVersion", ScenarioFilterParameters()) }
+            assertThatThrownBy { repo.getResponsibilitiesForGroupAndTouchstone("group", "touchstoneVersion", ScenarioFilterParameters()) }
                     .isInstanceOf(UnknownObjectError::class.java)
                     .hasMessageContaining("touchstoneVersion")
         }
@@ -41,7 +49,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.addGroup("group", "description")
             it.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
         } check { repo ->
-            val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
+            val set = repo.getResponsibilitiesForGroupAndTouchstone("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
             assertThat(set.touchstoneVersion).isEqualTo("touchstone-1")
             assertThat(set.status).isEqualTo(ResponsibilitySetStatus.NOT_APPLICABLE)
             assertThat(set.problems).isEmpty()
@@ -61,7 +69,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
         } check { repo ->
             val filter = ScenarioFilterParameters()
             val getStatus = { id: String ->
-                repo.getResponsibilities("group", id, filter).touchstoneStatus
+                repo.getResponsibilitiesForGroupAndTouchstone("group", id, filter).touchstoneStatus
             }
             assertThat(getStatus("touchstone-1")).isEqualTo(TouchstoneStatus.OPEN)
             assertThat(getStatus("touchstone-2")).isEqualTo(TouchstoneStatus.FINISHED)
@@ -77,7 +85,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
             it.addResponsibilitySet("group", "touchstone-1", "incomplete")
         } check { repo ->
-            val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
+            val set = repo.getResponsibilitiesForGroupAndTouchstone("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
             assertThat(set.touchstoneVersion).isEqualTo("touchstone-1")
             assertThat(set.status).isEqualTo(ResponsibilitySetStatus.INCOMPLETE)
             assertThat(set.problems).isEmpty()
@@ -97,7 +105,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.addResponsibility(setId, "touchstone-1", "scenario-1")
             it.addResponsibility(setId, "touchstone-1", "scenario-2")
         } check { repo ->
-            val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
+            val set = repo.getResponsibilitiesForGroupAndTouchstone("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
             assertThat(set.touchstoneVersion).isEqualTo("touchstone-1")
             assertThat(set.status).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
             assertThat(set.problems).isEmpty()
@@ -130,7 +138,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.addResponsibility(setId, "touchstone-1", "scenario-1")
             it.addResponsibility(setId, "touchstone-1", "scenario-2", open = false)
         } check { repo ->
-            val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
+            val set = repo.getResponsibilitiesForGroupAndTouchstone("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
             assertThat(set).hasSameElementsAs(listOf(
                     Responsibility(
                             Scenario("scenario-1", "description 1", "disease 1", listOf("touchstone-1")),
@@ -158,7 +166,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             burdenEstimateId = it.addBurdenEstimateSet(responsibilityId, version, "test.user")
             it.updateCurrentEstimate(responsibilityId, burdenEstimateId)
         } check { repo ->
-            val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters())
+            val set = repo.getResponsibilitiesForGroupAndTouchstone("group", "touchstone-1", ScenarioFilterParameters())
                     .responsibilities
             assertThat(set.responsibilities.first().currentEstimateSet!!.id).isEqualTo(burdenEstimateId)
             assertThat(set.responsibilities.first().status).isEqualTo(ResponsibilityStatus.VALID)
@@ -182,7 +190,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.updateCurrentEstimate(responsibilityId, burdenEstimateId)
             it.addBurdenEstimateProblem("problem", burdenEstimateId)
         } check { repo ->
-            val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters())
+            val set = repo.getResponsibilitiesForGroupAndTouchstone("group", "touchstone-1", ScenarioFilterParameters())
                     .responsibilities
             assertThat(set.responsibilities.first().currentEstimateSet!!.id).isEqualTo(burdenEstimateId)
             assertThat(set.responsibilities.first().status).isEqualTo(ResponsibilityStatus.INVALID)
@@ -204,7 +212,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.addResponsibility(group1Set, "touchstone-1", "scenario-1")
             it.addResponsibility(group2Set, "touchstone-1", "scenario-2")
         } check { repo ->
-            val set = repo.getResponsibilities("group1", "touchstone-1", ScenarioFilterParameters()).responsibilities
+            val set = repo.getResponsibilitiesForGroupAndTouchstone("group1", "touchstone-1", ScenarioFilterParameters()).responsibilities
             assertThat(set.touchstoneVersion).isEqualTo("touchstone-1")
             assertThat(set.status).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
             assertThat(set.problems).isEmpty()
@@ -238,7 +246,7 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.addScenarioToTouchstone("touchstone-1", "scenario-2")
             it.addScenarioToTouchstone("touchstone-2", "scenario-1")
         } check { repo ->
-            val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
+            val set = repo.getResponsibilitiesForGroupAndTouchstone("group", "touchstone-1", ScenarioFilterParameters()).responsibilities
             assertThat(set.touchstoneVersion).isEqualTo("touchstone-1")
             assertThat(set.status).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
             assertThat(set.problems).isEmpty()
@@ -268,9 +276,9 @@ class GetResponsibilitiesTests : ModellingGroupRepositoryTests()
             it.addResponsibility(setId, "touchstone-1", "scenario-1")
             it.addResponsibility(setId, "touchstone-1", "scenario-2")
         } check { repo ->
-            val set = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters())
+            val set = repo.getResponsibilitiesForGroupAndTouchstone("group", "touchstone-1", ScenarioFilterParameters())
             assertThat(set.responsibilities).hasSize(2)
-            val filteredSet = repo.getResponsibilities("group", "touchstone-1", ScenarioFilterParameters(
+            val filteredSet = repo.getResponsibilitiesForGroupAndTouchstone("group", "touchstone-1", ScenarioFilterParameters(
                     disease = "disease 2"
             ))
             assertThat(filteredSet.responsibilities).hasSameElementsAs(listOf(

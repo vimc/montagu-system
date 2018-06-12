@@ -37,7 +37,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val controller = TouchstoneController(context, repo)
+        val controller = TouchstoneController(context, mock(), repo)
         assertThat(controller.getTouchstones()).hasSameElementsAs(touchstones)
     }
 
@@ -54,12 +54,12 @@ class TouchstoneControllerTests : MontaguTests()
         val permissiveContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
         }
-        assertThat(TouchstoneController(permissiveContext, repo).getTouchstones()).hasSize(2)
+        assertThat(TouchstoneController(permissiveContext, mock(), repo).getTouchstones()).hasSize(2)
 
         val limitedContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn false
         }
-        assertThat(TouchstoneController(limitedContext, repo).getTouchstones()).hasSize(1)
+        assertThat(TouchstoneController(limitedContext, mock(), repo).getTouchstones()).hasSize(1)
     }
 
     @Test
@@ -79,7 +79,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { params(":scenario-id") } doReturn scenario.id
         }
 
-        val data = TouchstoneController(context, repo).getScenario()
+        val data = TouchstoneController(context, mock(), repo).getScenario()
 
         verify(repo).getScenario(eq(openTouchstone.id), eq(scenario.id))
         assertThat(data.touchstoneVersion).isEqualTo(openTouchstone)
@@ -98,7 +98,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { params(":touchstone-version-id") } doReturn inPrepTouchstone.id
             on { params(":scenario-id") } doReturn scenario.id
         }
-        TouchstoneController(context, repo).getScenario()
+        TouchstoneController(context, mock(), repo).getScenario()
         verify(context).requirePermission(ReifiedPermission("touchstones.prepare", Scope.Global()))
     }
 
@@ -122,7 +122,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { params(":source-code") } doReturn source
         }
 
-        val data = TouchstoneController(context, repo).getDemographicDataAndMetadata()
+        val data = TouchstoneController(context, mock(), repo).getDemographicDataAndMetadata()
         assertThat(data.structuredMetadata).isEqualTo(demographicMetadata)
     }
 
@@ -139,7 +139,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { queryParams("format") } doReturn "wide"
         }
 
-        val data = TouchstoneController(context, repo)
+        val data = TouchstoneController(context, mock(), repo)
                 .getDemographicDataAndMetadata()
                 .data.toList()
 
@@ -170,7 +170,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { queryParams("format") } doReturn "long"
         }
 
-        val data = TouchstoneController(context, repo)
+        val data = TouchstoneController(context, mock(), repo)
                 .getDemographicDataAndMetadata().data
 
         Assertions.assertThat(data.first() is LongDemographicRow).isTrue()
@@ -190,7 +190,7 @@ class TouchstoneControllerTests : MontaguTests()
         }
 
         Assertions.assertThatThrownBy {
-            TouchstoneController(context, repo).getDemographicDataAndMetadata()
+            TouchstoneController(context, mock(), repo).getDemographicDataAndMetadata()
         }.isInstanceOf(BadRequest::class.java)
     }
 

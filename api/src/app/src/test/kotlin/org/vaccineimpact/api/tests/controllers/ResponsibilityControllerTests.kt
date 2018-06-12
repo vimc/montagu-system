@@ -7,6 +7,7 @@ import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.ResponsibilityController
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -25,7 +26,7 @@ class ResponsibilityControllerTests : MontaguTests()
             on { params(":group-id") } doReturn groupId
             on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn true
         }
-        val data = ResponsibilityController(context, repo).getResponsibleTouchstones()
+        val data = ResponsibilityController(context, repo, mock()).getResponsibleTouchstones()
         assertThat(data.count()).isEqualTo(2)
     }
 
@@ -41,7 +42,7 @@ class ResponsibilityControllerTests : MontaguTests()
             on { params(":group-id") } doReturn groupId
             on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn false
         }
-        val data = ResponsibilityController(context, repo).getResponsibleTouchstones()
+        val data = ResponsibilityController(context, repo, mock()).getResponsibleTouchstones()
         assertThat(data.count()).isEqualTo(1)
     }
 
@@ -52,8 +53,8 @@ class ResponsibilityControllerTests : MontaguTests()
                 Responsibilities("tId", "", null, emptyList()),
                 TouchstoneStatus.FINISHED
         )
-        val repo = mock<ModellingGroupRepository> {
-            on { getResponsibilities(any(), any(), any()) } doReturn data
+        val repo = mock<ResponsibilitiesRepository> {
+            on { getResponsibilitiesForGroupAndTouchstone(any(), any(), any()) } doReturn data
         }
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
@@ -61,9 +62,9 @@ class ResponsibilityControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        ResponsibilityController(context, repo).getResponsibilities()
+        ResponsibilityController(context, mock(), repo).getResponsibilities()
 
-        verify(repo).getResponsibilities(eq("gId"), eq("tId"), any())
+        verify(repo).getResponsibilitiesForGroupAndTouchstone(eq("gId"), eq("tId"), any())
     }
 
     @Test
@@ -73,8 +74,8 @@ class ResponsibilityControllerTests : MontaguTests()
                 Responsibilities("tId", "", null, emptyList()),
                 TouchstoneStatus.IN_PREPARATION
         )
-        val repo = mock<ModellingGroupRepository> {
-            on { getResponsibilities(any(), any(), any()) } doReturn data
+        val repo = mock<ResponsibilitiesRepository> {
+            on { getResponsibilitiesForGroupAndTouchstone(any(), any(), any()) } doReturn data
         }
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
@@ -83,7 +84,7 @@ class ResponsibilityControllerTests : MontaguTests()
         }
 
         Assertions.assertThatThrownBy {
-            ResponsibilityController(context, repo).getResponsibilities()
+            ResponsibilityController(context, mock(), repo).getResponsibilities()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 
@@ -93,7 +94,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val repo = makeRepoMockingGetResponsibility(TouchstoneStatus.OPEN)
         val context = mockContextForSpecificResponsibility(true)
 
-        ResponsibilityController(context, repo).getResponsibility()
+        ResponsibilityController(context, mock(), repo).getResponsibility()
 
         verify(repo).getResponsibility(eq("gId"), eq("tId"), eq("sId"))
     }
@@ -104,7 +105,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val repo = makeRepoMockingGetResponsibility(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
         Assertions.assertThatThrownBy {
-            ResponsibilityController(context, repo).getResponsibility()
+            ResponsibilityController(context, mock(), repo).getResponsibility()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 
@@ -125,7 +126,7 @@ class ResponsibilityControllerTests : MontaguTests()
         return context
     }
 
-    private fun makeRepoMockingGetResponsibility(status: TouchstoneStatus): ModellingGroupRepository
+    private fun makeRepoMockingGetResponsibility(status: TouchstoneStatus): ResponsibilitiesRepository
     {
         val data = ResponsibilityAndTouchstone(
                 TouchstoneVersion("tId", "t", 1, "desc", status),

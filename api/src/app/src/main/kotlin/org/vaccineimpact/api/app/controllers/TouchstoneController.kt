@@ -5,6 +5,7 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.*
@@ -15,44 +16,51 @@ import org.vaccineimpact.api.serialization.StreamSerializable
 
 class TouchstoneController(
         context: ActionContext,
-        private val repo: TouchstoneRepository
+        private val responsibilitiesRepository: ResponsibilitiesRepository,
+        private val touchstoneRepo: TouchstoneRepository
 ) : Controller(context)
 {
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, repositories.touchstone)
+            : this(context, repositories.responsibilities, repositories.touchstone)
 
     private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
 
     fun getTouchstones(): List<TouchstoneVersion>
     {
-        var touchstones = repo.touchstones.all()
+        var touchstones = touchstoneRepo.touchstones.all()
         touchstones = touchstones.filter { context.isAllowedToSeeTouchstone(it.status) }
         return touchstones.toList()
     }
 
     fun getScenarios(): List<ScenarioAndCoverageSets>
     {
-        val touchstone = touchstone(context, repo)
+        val touchstone = touchstone(context, touchstoneRepo)
         val filterParameters = ScenarioFilterParameters.fromContext(context)
-        return repo.scenarios(touchstone.id, filterParameters)
+        return touchstoneRepo.scenarios(touchstone.id, filterParameters)
+    }
+
+    fun getResponsibilities(): List<ResponsibilitySet>
+    {
+        val touchstone = touchstone(context, touchstoneRepo)
+        return responsibilitiesRepository.getResponsibilitiesForTouchstone(touchstone.id)
     }
 
     fun getDemographicDatasets(): List<DemographicDataset>
     {
-        val touchstone = touchstone(context, repo)
-        return repo.getDemographicDatasets(touchstone.id)
+        val touchstone = touchstone(context, touchstoneRepo)
+        return touchstoneRepo.getDemographicDatasets(touchstone.id)
     }
 
     fun getDemographicDataAndMetadata():
             SplitData<DemographicDataForTouchstone, DemographicRow>
     {
-        val touchstone = touchstone(context, repo)
+        val touchstone = touchstone(context, touchstoneRepo)
         val source = context.params(":source-code")
         val type = context.params(":type-code")
         val gender = context.queryParams("gender")
         val format = context.queryParams("format")
 
-        val splitData = repo.getDemographicData(type, source, touchstone.id, gender ?: "both")
+        val splitData = touchstoneRepo.getDemographicData(type, source, touchstone.id, gender ?: "both")
 
         val tableData = when (format)
         {
@@ -117,9 +125,9 @@ class TouchstoneController(
 
     fun getScenario(): ScenarioTouchstoneAndCoverageSets
     {
-        val touchstone = touchstone(context, repo)
+        val touchstone = touchstone(context, touchstoneRepo)
         val scenarioId: String = context.params(":scenario-id")
-        val data = repo.getScenario(touchstone.id, scenarioId)
+        val data = touchstoneRepo.getScenario(touchstone.id, scenarioId)
         return ScenarioTouchstoneAndCoverageSets(touchstone, data.scenario, data.coverageSets)
     }
 

@@ -3,10 +3,12 @@ package org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
+import org.vaccineimpact.api.databaseTests.tests.responsibilitiesRepository.ResponsibilitiesRepositoryTests
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
 
-class GetResponsibilityTests : ModellingGroupRepositoryTests()
+class GetResponsibilityTests : ResponsibilitiesRepositoryTests()
 {
     @org.junit.Test
     fun `getResponsibility throws error for unknown modelling group`()

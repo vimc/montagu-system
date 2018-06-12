@@ -10,6 +10,7 @@ import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
+import org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository.BurdenEstimateRepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_STOCHASTIC
@@ -17,7 +18,6 @@ import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
 import org.vaccineimpact.api.db.direct.addResponsibility
 import org.vaccineimpact.api.db.direct.addScenarioDescription
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
-import java.math.BigDecimal
 
 class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 {

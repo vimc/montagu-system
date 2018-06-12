@@ -8,7 +8,6 @@ import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.RESPONSIBILITY
 import org.vaccineimpact.api.models.BurdenEstimateSetType
