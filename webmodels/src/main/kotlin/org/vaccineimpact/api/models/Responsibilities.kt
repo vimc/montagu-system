@@ -28,6 +28,7 @@ data class Responsibility(
 
 data class ResponsibilitySet(
         val modellingGroupId: String,
+        val touchstoneVersion: String,
         val status: ResponsibilitySetStatus,
         val responsibilities: List<Responsibility>
 )
