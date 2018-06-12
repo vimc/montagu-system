@@ -109,6 +109,47 @@ class GetResponsibilitiesTests : ResponsibilitiesRepositoryTests()
     }
 
     @Test
+    fun `can get responsibilities for touchstone`()
+    {
+        given {
+            it.addGroup("group", "description")
+            it.addGroup("group2", "description")
+            it.addScenarioDescription("scenario-1", "description 1", "disease 1", addDisease = true)
+            it.addScenarioDescription("scenario-2", "description 2", "disease 2", addDisease = true)
+            it.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
+            val setId = it.addResponsibilitySet("group", "touchstone-1", "submitted")
+            it.addResponsibility(setId, "touchstone-1", "scenario-1")
+            it.addResponsibility(setId, "touchstone-1", "scenario-2")
+
+            it.addResponsibilitySet("group2", "touchstone-1", "submitted")
+
+        } check { repo ->
+            val sets = repo.getResponsibilitiesForTouchstone( "touchstone-1")
+            assertThat(sets.count()).isEqualTo(2)
+
+            val set = sets[0]
+            assertThat(set.touchstoneVersion).isEqualTo("touchstone-1")
+            assertThat(set.status).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
+            assertThat(set.responsibilities).hasSameElementsAs(listOf(
+                    Responsibility(
+                            Scenario("scenario-1", "description 1", "disease 1", listOf("touchstone-1")),
+                            ResponsibilityStatus.EMPTY,
+                            emptyList(),
+                            null
+                    ),
+                    Responsibility(
+                            Scenario("scenario-2", "description 2", "disease 2", listOf("touchstone-1")),
+                            ResponsibilityStatus.EMPTY,
+                            emptyList(),
+                            null
+                    )
+            ))
+
+            assertThat(sets[1].responsibilities.count()).isEqualTo(0)
+        }
+    }
+
+    @Test
     fun `only gets open responsibilities`()
     {
         given {
