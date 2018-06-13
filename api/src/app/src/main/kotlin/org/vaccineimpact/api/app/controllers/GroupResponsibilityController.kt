@@ -13,7 +13,7 @@ import org.vaccineimpact.api.models.Responsibilities
 import org.vaccineimpact.api.models.ResponsibilityAndTouchstone
 import org.vaccineimpact.api.models.TouchstoneVersion
 
-class ResponsibilityController(
+class GroupResponsibilityController(
         context: ActionContext,
         private val modellingGroupRepo: ModellingGroupRepository,
         private val responsibilitiesRepo: ResponsibilitiesRepository

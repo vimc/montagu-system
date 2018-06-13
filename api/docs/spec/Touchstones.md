@@ -28,7 +28,7 @@ Schema: [`Touchstones.schema.json`](../schemas/Touchstones.schema.json)
 ## GET /touchstones/{touchstone-id}/responsibilities/
 Returns all responsibility sets associated with the touchstone.
 
-Required permissions: `touchstones.read`, `responsibilities.read`
+Required permissions: `touchstones.read`, `responsibilities.read`, `scenarios.read`.
 
 Additionally, to view responsibilities for an in-preparation touchstone, `touchstones.prepare` is required.
 
