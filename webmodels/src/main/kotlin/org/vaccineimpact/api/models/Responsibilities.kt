@@ -26,6 +26,13 @@ data class Responsibility(
         val currentEstimateSet: BurdenEstimateSet?
 )
 
+data class ResponsibilitySet(
+        val modellingGroupId: String,
+        val touchstoneVersion: String,
+        val status: ResponsibilitySetStatus,
+        val responsibilities: List<Responsibility>
+)
+
 enum class ResponsibilitySetStatus
 {
     NOT_APPLICABLE,
