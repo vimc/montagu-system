@@ -32,13 +32,12 @@ export const ChooseActionContentComponent: React.SFC<ChooseActionContentProps> =
             group={ props.group }
         />
     </div>;
-}
+};
 
 export const mapStateToProps = (state: ContribAppState): ChooseActionContentProps => {
     return {
         touchstoneVersions: flatMap(state.touchstones.touchstones, x => x.versions),
         group: state.groups.currentUserGroup
-
     }
 };
 

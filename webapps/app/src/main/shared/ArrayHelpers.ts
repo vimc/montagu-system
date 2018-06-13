@@ -3,7 +3,11 @@ export const isNonEmptyArray = (arrayData: any[]) => {
 };
 
 export function flatten<T>(arrayOfArrays: Array<Array<T>>): T[] {
-    return arrayOfArrays.reduce((a, b) => concatArrays(a, b));
+    if (isNonEmptyArray(arrayOfArrays)) {
+        return arrayOfArrays.reduce((a, b) => concatArrays(a, b));
+    } else {
+        return [];
+    }
 }
 
 export function concatArrays<T>(a: Array<T>, b: Array<T>) {

@@ -18,14 +18,14 @@ export const touchstonesActionCreators = {
         }
     },
 
-    setCurrentTouchstone(touchstoneId: string) {
+    setCurrentTouchstoneVersion(touchstoneVersionId: string) {
         return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
             const touchstones = getState().touchstones.touchstones;
             const versions = flatMap(touchstones, x => x.versions);
-            const currentTouchstone = versions.find(touchstone => touchstone.id === touchstoneId);
+            const currentTouchstoneVersion = versions.find(v => v.id === touchstoneVersionId);
             dispatch({
                 type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION,
-                data: currentTouchstone
+                data: currentTouchstoneVersion
             } as SetCurrentTouchstoneVersion );
         }
     }
