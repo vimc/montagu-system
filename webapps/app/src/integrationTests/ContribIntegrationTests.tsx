@@ -148,7 +148,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     disease: "yf",
                     touchstones: [touchstoneId]
                 },
-                touchstone: {
+                touchstone_version: {
                     id: touchstoneId,
                     name: "test",
                     version: 1,
@@ -159,7 +159,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     {
                         id: coverageSetId,
                         name: "Test set",
-                        touchstone: touchstoneId,
+                        touchstone_version: touchstoneId,
                         activity_type: "none",
                         vaccine: "yf",
                         gavi_support: "no vaccine"

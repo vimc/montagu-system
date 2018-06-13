@@ -115,7 +115,7 @@ export interface Responsibilities {
     problems: string;
     responsibilities: Responsibility[];
     status: ResponsibilitySetStatus | null;
-    touchstone: string;
+    touchstone_version: string;
 }
 
 export interface ErrorInfo {
@@ -149,7 +149,7 @@ export interface Touchstone {
 export interface ScenarioTouchstoneAndCoverageSets {
     coverage_sets: CoverageSet[];
     scenario: Scenario;
-    touchstone: Touchstone;
+    touchstone_version: Touchstone;
 }
 
 export interface RoleAssignment {
