@@ -5,19 +5,20 @@ import { estimatesActionCreators } from "../../../main/contrib/actions/estimates
 import { EstimatesService } from "../../../main/contrib/services/EstimatesService";
 import { ResponsibilitiesService } from "../../../main/contrib/services/ResponsibilitiesService";
 import {EstimatesCreateBurdenData, EstimatesTypes} from "../../../main/contrib/actionTypes/EstimatesTypes";
-import {createMockStore} from "../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../mocks/mockStore";
 import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPropsHelper";
-import {mockModellingGroup, mockResponsibilitySet, mockTouchstoneVersion} from "../../mocks/mockModels";
+import {mockModellingGroup, mockResponsibilitySet, mockTouchstone, mockTouchstoneVersion} from "../../mocks/mockModels";
 import {ExtendedResponsibilitySet} from "../../../main/contrib/models/ResponsibilitySet";
 import {ResponsibilitiesTypes} from "../../../main/contrib/actionTypes/ResponsibilitiesTypes";
 
 describe("Estimates actions tests", () => {
     const sandbox = new Sandbox();
 
-    const testTouchstone = mockTouchstoneVersion();
+    const testTouchstone = mockTouchstone();
+    const testTouchstoneVersion = testTouchstone.versions[0];
     const testGroup = mockModellingGroup();
     const testResponsibilitySet = mockResponsibilitySet();
-    const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstone, testGroup);
+    const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
     const testResponsibility = testExtResponsibilitySet.responsibilities[0];
 
     afterEach(() => {
@@ -25,7 +26,7 @@ describe("Estimates actions tests", () => {
     });
 
     it("gets one time token", (done) => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             estimates: {
                 redirectPath: '/test/'
             }
@@ -38,7 +39,7 @@ describe("Estimates actions tests", () => {
         });
         store.dispatch(estimatesActionCreators.getOneTimeToken());
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = [
                 { type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_CLEAR},
                 { type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_FETCHED, data: 'test-token' }
@@ -60,9 +61,9 @@ describe("Estimates actions tests", () => {
     });
 
     it("creates burden", (done) => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
-            touchstones: { currentTouchstone: testTouchstone },
+            touchstones: { currentTouchstoneVersion: testTouchstoneVersion },
             responsibilities: {
                 currentResponsibility: testResponsibility,
                 responsibilitiesSet: testExtResponsibilitySet

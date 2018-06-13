@@ -1,11 +1,11 @@
-import { expect } from "chai";
+import {expect} from "chai";
 
-import { Sandbox } from "../../Sandbox";
-import { responsibilitiesActionCreators } from "../../../main/contrib/actions/responsibilitiesActionCreators";
-import { ResponsibilitiesService } from "../../../main/contrib/services/ResponsibilitiesService";
-import { ResponsibilitiesTypes } from "../../../main/contrib/actionTypes/ResponsibilitiesTypes";
-import {createMockStore} from "../../mocks/mockStore";
-import {mockModellingGroup, mockResponsibilitySet, mockTouchstoneVersion} from "../../mocks/mockModels";
+import {Sandbox} from "../../Sandbox";
+import {responsibilitiesActionCreators} from "../../../main/contrib/actions/responsibilitiesActionCreators";
+import {ResponsibilitiesService} from "../../../main/contrib/services/ResponsibilitiesService";
+import {ResponsibilitiesTypes} from "../../../main/contrib/actionTypes/ResponsibilitiesTypes";
+import {createMockContribStore} from "../../mocks/mockStore";
+import {mockModellingGroup, mockResponsibilitySet, mockTouchstone} from "../../mocks/mockModels";
 import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPropsHelper";
 import {EstimatesTypes} from "../../../main/contrib/actionTypes/EstimatesTypes";
 import {EstimatesService} from "../../../main/contrib/services/EstimatesService";
@@ -14,10 +14,11 @@ import {ExtendedResponsibilitySet} from "../../../main/contrib/models/Responsibi
 describe("Responsibilities actions tests", () => {
     const sandbox = new Sandbox();
 
-    const testTouchstone = mockTouchstoneVersion();
+    const testTouchstone = mockTouchstone();
+    const testTouchstoneVersion = testTouchstone.versions[0];
     const testGroup = mockModellingGroup();
     const testResponsibilitySet = mockResponsibilitySet();
-    const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstone, testGroup);
+    const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
     const testScenarioId = testExtResponsibilitySet.responsibilities[0].scenario.id;
     const testResponsibility = testExtResponsibilitySet.responsibilities[0];
 
@@ -26,25 +27,25 @@ describe("Responsibilities actions tests", () => {
     });
 
     it("clears cache for responsibility set", (done) => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
-            touchstones: { currentTouchstone: testTouchstone }
+            touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
         });
         sandbox.setStubFunc(ResponsibilitiesService.prototype, "clearCacheForResponsibilities", ()=>{
           return Promise.resolve();
         });
         store.dispatch(responsibilitiesActionCreators.clearCacheForResponsibilitySet());
         setTimeout(() => {
-            const actions = store.getActions()
-            expect(actions).to.eql([])
+            const actions = store.getActions();
+            expect(actions).to.eql([]);
             done();
         });
     });
 
     it("gets responsibility set", (done) => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
-            touchstones: { currentTouchstone: testTouchstone }
+            touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
         });
         sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", ()=>{
             return Promise.resolve(testResponsibilitySet);
@@ -59,7 +60,7 @@ describe("Responsibilities actions tests", () => {
     });
 
     it("sets current responsibility set", (done) => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             responsibilities: {responsibilitiesSet: testExtResponsibilitySet}
         });
         store.dispatch(responsibilitiesActionCreators.setCurrentResponsibility(testScenarioId));
@@ -72,9 +73,9 @@ describe("Responsibilities actions tests", () => {
     });
 
     it("refresh responsibilities", (done) => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
-            touchstones: { currentTouchstone: testTouchstone },
+            touchstones: { currentTouchstoneVersion: testTouchstoneVersion },
             responsibilities: {
                 currentResponsibility: testResponsibility,
                 responsibilitiesSet: testExtResponsibilitySet

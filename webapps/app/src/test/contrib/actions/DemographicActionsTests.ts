@@ -4,7 +4,7 @@ import {Sandbox} from "../../Sandbox";
 import {demographicActionCreators} from "../../../main/contrib/actions/demographicActionCreators";
 import {DemographicService} from "../../../main/contrib/services/DemographicService";
 import {DemographicTypes} from "../../../main/contrib/actionTypes/DemographicTypes";
-import {createMockStore} from "../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../mocks/mockStore";
 import {mockDemographicDataset, mockTouchstoneVersion} from "../../mocks/mockModels";
 
 describe("Demographic actions tests", () => {
@@ -68,14 +68,14 @@ describe("Demographic actions tests", () => {
 
     it("clears and sets one time token", (done) => {
         testDemographicDataSet.gender_is_applicable = true;
-        const store = createMockStore({
+        const store = createMockContribStore({
             demographic: {
                 selectedDataSet: testDemographicDataSet,
                 selectedFormat: "wide",
                 selectedGender: "female"
             },
             touchstones: {
-                currentTouchstone: mockTouchstoneVersion({id: "testid"})
+                currentTouchstoneVersion: mockTouchstoneVersion({id: "testid"})
             },
 
         });
