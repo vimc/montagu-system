@@ -38,6 +38,10 @@ describe("Admin Users actions tests", () => {
         sandbox.setStubFunc(UsersService.prototype, "addGlobalRoleToUser", () => {
             return Promise.resolve("OK");
         });
+
+        sandbox.setStubFunc(UsersService.prototype, "removeRoleFromUser", () => {
+            return Promise.resolve("OK");
+        });
     }
 
     it("gets all users", (done) => {
@@ -103,7 +107,7 @@ describe("Admin Users actions tests", () => {
                 .to.be.true;
 
             done();
-        }, 1000);
+        });
     });
 
     it("fetches all users after successful user creation", (done) => {
