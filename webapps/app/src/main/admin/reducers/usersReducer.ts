@@ -22,7 +22,7 @@ export const usersReducer = (state = usersInitialState, action: UsersAction): Us
     switch (action.type) {
         case UsersTypes.ALL_USERS_FETCHED:
             return {...state, users: isNonEmptyArray(action.data) ? action.data : usersInitialState.users};
-        case UsersTypes.ALL_USER_ROLES_FETCHED:
+        case UsersTypes.ALL_ROLES_FETCHED:
             return {...state, allUserRoles: isNonEmptyArray(action.data) ? action.data : usersInitialState.allUserRoles};
         case UsersTypes.SHOW_CREATE_USER:
             return {
