@@ -22,7 +22,7 @@ export interface CoverageSet {
     gavi_support: GAVISupportLevel;
     id: number;
     name: string;
-    touchstone: string;
+    touchstone_version: string;
     vaccine: string;
 }
 

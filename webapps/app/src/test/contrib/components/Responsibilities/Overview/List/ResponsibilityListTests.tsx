@@ -23,7 +23,7 @@ function makeProps(responsibilities: Array<Responsibility>,
         responsibilitySet: new ExtendedResponsibilitySet({
             problems: "",
             status: null,
-            touchstone: touchstone.id,
+            touchstone_version: touchstone.id,
             responsibilities
         }, touchstone, modellingGroup)
     };

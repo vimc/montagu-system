@@ -32,7 +32,7 @@ describe("Download Coverage Content Component", () => {
     const rfpTouchstone = mockTouchstone({id: "rfp-1"});
     const testScenario = mockScenario({disease: testDisease.id, touchstones: [testTouchstone]});
     const testResponsibility = mockResponsibility({scenario: testScenario});
-    const testCoverageSet = mockCoverageSet({touchstone: testTouchstone.id});
+    const testCoverageSet = mockCoverageSet({touchstone_version: testTouchstone.id});
 
     const testState = {
         groups: {currentUserGroup: testGroup},

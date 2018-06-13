@@ -82,7 +82,7 @@ export function mockResponsibilitySet(properties?: any,
         problems: "",
         responsibilities: responsibilities,
         status: "incomplete",
-        touchstone: "touchstone-1"
+        touchstone_version: "touchstone-1"
     };
     return Object.assign(template, properties);
 }
@@ -104,7 +104,7 @@ export function mockCoverageSet(properties?: Partial<models.CoverageSet>): model
         name: "Coverage set name",
         activity_type: "routine",
         gavi_support: "no gavi",
-        touchstone: "touchstone-1",
+        touchstone_version: "touchstone-1",
         vaccine: "some-vaccine"
     };
     return Object.assign(template, properties);
@@ -115,9 +115,9 @@ export function mockScenarioTouchstoneAndCoverageSets(scenarioProperties?: Parti
                                                       coverageSets?: models.CoverageSet[]): models.ScenarioTouchstoneAndCoverageSets {
     const touchstone = mockTouchstone(touchstoneProperties);
     return {
-        touchstone: touchstone,
+        touchstone_version: touchstone,
         scenario: mockScenario(scenarioProperties),
-        coverage_sets: coverageSets || [mockCoverageSet({touchstone: touchstone.id})]
+        coverage_sets: coverageSets || [mockCoverageSet({touchstone_version: touchstone.id})]
     };
 }
 
