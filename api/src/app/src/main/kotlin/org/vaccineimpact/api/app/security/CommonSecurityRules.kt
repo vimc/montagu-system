@@ -4,6 +4,7 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.models.TouchstoneStatus
 import org.vaccineimpact.api.models.TouchstoneVersion
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -17,30 +18,35 @@ fun ActionContext.checkIsAllowedToSeeTouchstone(touchstoneVersionId: String, tou
     }
 }
 
-fun ActionContext.isAllowedToSeeTouchstone(touchstoneStatus: TouchstoneStatus): Boolean
+fun ActionContext.isAllowedToSeeTouchstoneVersion(touchstoneVersion: TouchstoneVersion): Boolean
 {
     val permission = ReifiedPermission("touchstones.prepare", Scope.Global())
-    if (!this.hasPermission(permission) && touchstoneStatus == TouchstoneStatus.IN_PREPARATION)
-    {
-        return false
-    }
-    return true
+    return this.hasPermission(permission)
+            || touchstoneVersion.status != TouchstoneStatus.IN_PREPARATION
 }
 
-fun ActionContext.checkEstimatePermissionsForTouchstone(
+fun List<Touchstone>.filterByPermission(context: ActionContext) = this
+        .map { it.copy(versions = it.versions.filterByPermission(context)) }
+        .filter { it.versions.any() }
+        .toList()
+
+@JvmName("filterTouchstoneVersionByPermission")
+private fun List<TouchstoneVersion>.filterByPermission(context: ActionContext) =
+        this.filter { context.isAllowedToSeeTouchstoneVersion(it) }
+
+fun ActionContext.checkEstimatePermissionsForTouchstoneVersion(
         groupId: String,
         touchstoneVersionId: String,
         estimateRepository: BurdenEstimateRepository,
         readEstimatesRequired: Boolean = false
 )
 {
-
-    val touchstones = estimateRepository.touchstoneRepository.touchstones
-    val touchstone = touchstones.get(touchstoneVersionId)
-    this.checkIsAllowedToSeeTouchstone(touchstoneVersionId, touchstone.status)
+    val versions = estimateRepository.touchstoneRepository.touchstoneVersions
+    val touchstoneVersion = versions.get(touchstoneVersionId)
+    this.checkIsAllowedToSeeTouchstone(touchstoneVersionId, touchstoneVersion.status)
     if (readEstimatesRequired)
     {
-        if (touchstone.status == TouchstoneStatus.OPEN)
+        if (touchstoneVersion.status == TouchstoneStatus.OPEN)
         {
             this.requirePermission(ReifiedPermission(
                     "estimates.read-unfinished",

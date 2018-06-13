@@ -1,26 +1,51 @@
 # Touchstones
 ## GET /touchstones/
-Returns an enumeration of all touchstones.
+Returns an enumeration of all touchstones and their versions.
 
-Required permissions: `touchstones.read`. To see touchstones that are `in-preparation` the user further requires `touchstones.prepare`.
+Required permissions: `touchstones.read`. To see touchstone versions that are `in-preparation` the user further requires `touchstones.prepare`.
+
+If the user does not have permission to see in-preparation touchstone versions,
+these will not be returned. If all versions of a touchstone are in preparation
+the whole touchstone will be omitted.
 
 Schema: [`Touchstones.schema.json`](../schemas/Touchstones.schema.json)
 
 ### Example
     [
         { 
-            "id": "op-2017-1",
-            "name": "op-2017",
-            "version": 1,            
-            "description": "2017 Operational Forecast",
-            "status": "finished"
+            "id": "201710gavi",
+            "description": "October 2017 touchstone",
+            "comment": "Touchstone for 201710gavi",
+            "versions": [
+                {
+                    "id": "201710gavi-1",
+                    "name": "201710gavi",
+                    "version": 1,            
+                    "description": "October 2017 touchstone v1",
+                    "status": "finished"
+                },
+                {
+                    "id": "201710gavi-2",
+                    "name": "201710gavi",
+                    "version": 2,            
+                    "description": "October 2017 touchstone v2",
+                    "status": "open"
+                }
+            ]
         },
-        { 
-            "id": "wuenic-2017-1",
-            "name": "wuenic-2017",
-            "version": 1,
-            "description": "2017 Wuenic Update",
-            "status": "open"
+        {
+            "id": "201804rfp",
+            "description": "2018 April Request for Proposal",
+            "comment": "2018 April Open Call touchstone for PCV Rota Hib HPV HepB",
+            "versions": [
+                {
+                    "id": "201804rfp-1",
+                    "name": "201804rfp",
+                    "version": 1,
+                    "description": "2018 April Request for Proposal v1",
+                    "status": "open"
+                }
+            ]            
         }
     ]
 

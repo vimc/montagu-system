@@ -1,7 +1,10 @@
 package org.vaccineimpact.api.db.direct
 
-import org.vaccineimpact.api.db.*
+import org.vaccineimpact.api.db.AnnexJooqContext
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord
 import org.vaccineimpact.api.db.tables.records.ScenarioRecord
@@ -82,12 +85,12 @@ fun JooqContext.addModelVersion(
     return record.id
 }
 
-fun JooqContext.addTouchstone(id: String, description: String)
+fun JooqContext.addTouchstone(id: String, description: String, comment: String = "Comment")
 {
     this.dsl.newRecord(TOUCHSTONE_NAME).apply {
         this.id = id
         this.description = description
-        this.comment = "Comment"
+        this.comment = comment
     }.store()
 }
 
@@ -96,20 +99,22 @@ fun JooqContext.addTouchstoneVersion(
         version: Int,
         description: String = "Description",
         status: String = "open",
-        addTouchstone: Boolean = false)
+        addTouchstone: Boolean = false): String
 {
     if (addTouchstone)
     {
         addTouchstone(touchstoneName, description)
     }
-    this.dsl.newRecord(TOUCHSTONE).apply {
+    val record = this.dsl.newRecord(TOUCHSTONE).apply {
         this.id = "$touchstoneName-$version"
         this.touchstoneName = touchstoneName
         this.version = version
         this.description = description
         this.status = status
         this.comment = "Comment"
-    }.store()
+    }
+    record.store()
+    return record.id
 }
 
 fun JooqContext.addDisease(id: String, name: String? = null)

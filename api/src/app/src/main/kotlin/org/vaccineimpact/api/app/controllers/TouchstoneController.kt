@@ -6,7 +6,7 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.app.security.isAllowedToSeeTouchstone
+import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.FlexibleDataTable
@@ -23,36 +23,34 @@ class TouchstoneController(
 
     private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
 
-    fun getTouchstones(): List<TouchstoneVersion>
+    fun getTouchstones(): List<Touchstone>
     {
-        var touchstones = repo.touchstones.all()
-        touchstones = touchstones.filter { context.isAllowedToSeeTouchstone(it.status) }
-        return touchstones.toList()
+        return repo.getTouchstones().filterByPermission(context)
     }
 
     fun getScenarios(): List<ScenarioAndCoverageSets>
     {
-        val touchstone = touchstone(context, repo)
+        val touchstoneVersion = touchstoneVersion(context, repo)
         val filterParameters = ScenarioFilterParameters.fromContext(context)
-        return repo.scenarios(touchstone.id, filterParameters)
+        return repo.scenarios(touchstoneVersion.id, filterParameters)
     }
 
     fun getDemographicDatasets(): List<DemographicDataset>
     {
-        val touchstone = touchstone(context, repo)
-        return repo.getDemographicDatasets(touchstone.id)
+        val touchstoneVersion = touchstoneVersion(context, repo)
+        return repo.getDemographicDatasets(touchstoneVersion.id)
     }
 
     fun getDemographicDataAndMetadata():
             SplitData<DemographicDataForTouchstone, DemographicRow>
     {
-        val touchstone = touchstone(context, repo)
+        val touchstoneVersion = touchstoneVersion(context, repo)
         val source = context.params(":source-code")
         val type = context.params(":type-code")
         val gender = context.queryParams("gender")
         val format = context.queryParams("format")
 
-        val splitData = repo.getDemographicData(type, source, touchstone.id, gender ?: "both")
+        val splitData = repo.getDemographicData(type, source, touchstoneVersion.id, gender ?: "both")
 
         val tableData = when (format)
         {
@@ -117,20 +115,20 @@ class TouchstoneController(
 
     fun getScenario(): ScenarioTouchstoneAndCoverageSets
     {
-        val touchstone = touchstone(context, repo)
+        val touchstoneVersion = touchstoneVersion(context, repo)
         val scenarioId: String = context.params(":scenario-id")
-        val data = repo.getScenario(touchstone.id, scenarioId)
-        return ScenarioTouchstoneAndCoverageSets(touchstone, data.scenario, data.coverageSets)
+        val data = repo.getScenario(touchstoneVersion.id, scenarioId)
+        return ScenarioTouchstoneAndCoverageSets(touchstoneVersion, data.scenario, data.coverageSets)
     }
 
-    private fun touchstone(context: ActionContext, repo: TouchstoneRepository): TouchstoneVersion
+    private fun touchstoneVersion(context: ActionContext, repo: TouchstoneRepository): TouchstoneVersion
     {
         val id = context.params(":touchstone-version-id")
-        val touchstone = repo.touchstones.get(id)
-        if (touchstone.status == TouchstoneStatus.IN_PREPARATION)
+        val touchstoneVersion = repo.touchstoneVersions.get(id)
+        if (touchstoneVersion.status == TouchstoneStatus.IN_PREPARATION)
         {
             context.requirePermission(touchstonePreparer)
         }
-        return touchstone
+        return touchstoneVersion
     }
 }

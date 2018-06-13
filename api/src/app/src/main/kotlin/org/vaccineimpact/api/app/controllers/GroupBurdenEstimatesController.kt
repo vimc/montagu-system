@@ -12,7 +12,7 @@ import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.app.requests.csvData
-import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstone
+import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstoneVersion
 import org.vaccineimpact.api.models.*
 import java.time.Instant
 
@@ -121,7 +121,7 @@ open class GroupBurdenEstimatesController(
     ): ResponsibilityPath
     {
         val path = ResponsibilityPath(context)
-        context.checkEstimatePermissionsForTouchstone(path.groupId, path.touchstoneVersionId, estimateRepository, readEstimatesRequired)
+        context.checkEstimatePermissionsForTouchstoneVersion(path.groupId, path.touchstoneVersionId, estimateRepository, readEstimatesRequired)
         return path
     }
 

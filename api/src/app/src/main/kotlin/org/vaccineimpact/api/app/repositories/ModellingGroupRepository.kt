@@ -15,7 +15,7 @@ interface ModellingGroupRepository : Repository
 
     fun getResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityAndTouchstone
 
-    fun getTouchstonesByGroupId(groupId: String): List<TouchstoneVersion>
+    fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
 
     fun getCoverageSets(groupId: String, touchstoneVersionId: String, scenarioId: String): ScenarioTouchstoneAndCoverageSets
     fun getCoverageData(groupId: String, touchstoneVersionId: String, scenarioId: String): SplitData<ScenarioTouchstoneAndCoverageSets, LongCoverageRow>

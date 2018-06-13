@@ -138,7 +138,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
                                modelRunParameterSets: List<ModelRunParameterSet> = listOf()): BurdenEstimateRepository
     {
         val touchstoneRepo = mock<TouchstoneRepository> {
-            on { touchstones } doReturn touchstoneVersionSet
+            on { touchstoneVersions } doReturn touchstoneVersionSet
         }
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
@@ -163,7 +163,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     {
         val simpleDataset = mockTouchstones()
         return mock {
-            on { touchstones } doReturn simpleDataset
+            on { touchstoneVersions } doReturn simpleDataset
         }
     }
 

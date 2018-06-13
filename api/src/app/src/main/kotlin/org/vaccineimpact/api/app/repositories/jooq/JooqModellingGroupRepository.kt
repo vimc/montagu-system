@@ -93,16 +93,16 @@ class JooqModellingGroupRepository(
                                      scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
     {
         getModellingGroup(groupId)
-        val touchstone = getTouchstone(touchstoneVersionId)
+        val touchstoneVersion = getTouchstoneVersion(touchstoneVersionId)
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
         val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneVersionId)
-        return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstone.status)
+        return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstoneVersion.status)
     }
 
     override fun getResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityAndTouchstone
     {
         getModellingGroup(groupId)
-        val touchstone = getTouchstone(touchstoneVersionId)
+        val touchstoneVersion = getTouchstoneVersion(touchstoneVersionId)
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
         if (responsibilitySet != null)
         {
@@ -110,7 +110,7 @@ class JooqModellingGroupRepository(
                     responsibilitySet,
                     { this.and(SCENARIO_DESCRIPTION.ID.eq(scenarioId)) }
             ).singleOrNull() ?: throw UnknownObjectError(scenarioId, "responsibility")
-            return ResponsibilityAndTouchstone(touchstone, responsibility)
+            return ResponsibilityAndTouchstone(touchstoneVersion, responsibility)
         }
         else
         {
@@ -141,22 +141,17 @@ class JooqModellingGroupRepository(
         ), scenarioAndData.tableData)
     }
 
-    override fun getTouchstonesByGroupId(groupId: String): List<TouchstoneVersion>
+    override fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
     {
         val group = getModellingGroup(groupId)
-        val query = dsl
-                .selectDistinct(
-                        TOUCHSTONE.ID,
-                        TOUCHSTONE.TOUCHSTONE_NAME,
-                        TOUCHSTONE.STATUS,
-                        TOUCHSTONE.DESCRIPTION,
-                        TOUCHSTONE.VERSION
-                )
-                .fromJoinPath(TOUCHSTONE, RESPONSIBILITY_SET, RESPONSIBILITY)
+        return dsl
+                .selectDistinct(TOUCHSTONE_NAME.fieldsAsList() + TOUCHSTONE.fieldsAsList())
+                .fromJoinPath(TOUCHSTONE_NAME, TOUCHSTONE, RESPONSIBILITY_SET, RESPONSIBILITY)
                 .where(RESPONSIBILITY.IS_OPEN).orNot(TOUCHSTONE.STATUS.eq("open"))
                 .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))
-
-        return query.fetch().map { touchstoneRepository.mapTouchstone(it) }
+                .fetch()
+                .groupBy { it[TOUCHSTONE_NAME.ID] }
+                .map { touchstoneRepository.mapTouchstone(it.value) }
     }
 
     private fun convertScenarioToResponsibility(scenario: Scenario, responsibilityId: Int): Responsibility
@@ -275,5 +270,5 @@ class JooqModellingGroupRepository(
 
     private fun mapModellingGroup(x: ModellingGroupRecord) = ModellingGroup(x.id, x.description)
 
-    private fun getTouchstone(touchstoneVersionId: String) = touchstoneRepository.touchstones.get(touchstoneVersionId)
+    private fun getTouchstoneVersion(touchstoneVersionId: String) = touchstoneRepository.touchstoneVersions.get(touchstoneVersionId)
 }

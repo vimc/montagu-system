@@ -7,42 +7,46 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
 
-class GetTouchstoneTests : ModellingGroupRepositoryTests()
+class GetModellingGroupTouchstoneTests : ModellingGroupRepositoryTests()
 {
     private val diseaseId = "d1"
     private val groupId = "group-1"
-    private val touchstoneName = "touchstone"
-    private val touchstoneVersionId = "touchstone-1"
+    private val touchstoneName = "touchstoneA"
+    private val touchstoneVersionId = "touchstoneA-1"
 
     @Test
     fun `can get touchstones list for modelling group`()
     {
         val groupId2 = "group-2"
-        val touchstone2Name = "touchstone-2"
-        val touchstone3Name = "touchstone-3"
+        val touchstoneBName = "touchstoneB"
 
         given {
             setUpDb(it)
 
             it.addGroup(groupId2)
 
-            it.addTouchstoneVersion(touchstone2Name, 1, addTouchstone = true, description = "descr 2", status = "open")
-            it.addTouchstoneVersion(touchstone3Name, 1, addTouchstone = true, description = "descr 3", status = "open")
+            it.addTouchstone(touchstoneBName, "b-desc", "b-comment")
+            val touchstoneB1 = it.addTouchstoneVersion(touchstoneBName, 1, "b-desc-1")
+            val touchstoneB2 = it.addTouchstoneVersion(touchstoneBName, 2, "b-desc-2")
+            val touchstoneB3 = it.addTouchstoneVersion(touchstoneBName, 3, "b-desc-3")
+
 
             addResponsibilitySetWithResponsibility(it, "scenario-1", groupId, touchstoneVersionId, open = true)
-            addResponsibilitySetWithResponsibility(it, "scenario-2", groupId, "$touchstone2Name-1", open = true)
-            addResponsibilitySetWithResponsibility(it, "scenario-3", groupId2, "$touchstone3Name-1", open = true)
+            addResponsibilitySetWithResponsibility(it, "scenario-2", groupId, touchstoneB1, open = true)
+            // Note that this responsibility belongs to a different group, and shouldn't be returned
+            addResponsibilitySetWithResponsibility(it, "scenario-3", groupId2, touchstoneB2, open = true)
+            addResponsibilitySetWithResponsibility(it, "scenario-4", groupId, touchstoneB3, open = true)
 
         } check { repo ->
-            val touchstones = repo.getTouchstonesByGroupId(groupId)
-            assertThat(touchstones).isInstanceOf(List::class.java)
-            assertThat(touchstones).hasSize(2)
-            assertThat(touchstones[0])
-                    .isEqualTo(TouchstoneVersion(touchstoneVersionId, "touchstone", 1, "descr 1", TouchstoneStatus.OPEN))
-            assertThat(touchstones[1])
-                    .isEqualTo(TouchstoneVersion("$touchstone2Name-1", touchstone2Name, 1, "descr 2", TouchstoneStatus.OPEN)
-            )
-
+            assertThat(repo.getTouchstonesByGroupId(groupId)).isEqualTo(listOf(
+                    Touchstone(touchstoneName, "a-desc", "a-comment", listOf(
+                            TouchstoneVersion("touchstoneA-1", touchstoneName, 1, "a-desc-1", TouchstoneStatus.OPEN)
+                    )),
+                    Touchstone(touchstoneBName, "b-desc", "b-comment", listOf(
+                            TouchstoneVersion("touchstoneB-3", touchstoneBName, 3, "b-desc-3", TouchstoneStatus.OPEN),
+                            TouchstoneVersion("touchstoneB-1", touchstoneBName, 1, "b-desc-1", TouchstoneStatus.OPEN)
+                    ))
+            ))
         }
     }
 
@@ -128,19 +132,20 @@ class GetTouchstoneTests : ModellingGroupRepositoryTests()
     private fun addResponsibilitySetWithResponsibility(db: JooqContext,
                                                        scenarioId: String,
                                                        groupId: String,
-                                                       touchstoneVersionId: String,
+                                                       touchstoneId: String,
                                                        open: Boolean = true)
     {
-        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId)
+        val setId = db.addResponsibilitySet(groupId, touchstoneId)
         db.addScenarioDescription(scenarioId, "description 1", diseaseId, addDisease = false)
-        db.addResponsibility(setId, touchstoneVersionId, scenarioId, open = open)
+        db.addResponsibility(setId, touchstoneId, scenarioId, open = open)
     }
 
     private fun setUpDb(db: JooqContext, touchstoneStatus: String = "open")
     {
         db.addDisease(diseaseId)
         db.addGroup(groupId)
-        db.addTouchstoneVersion(touchstoneName, 1, addTouchstone = true, description = "descr 1", status = touchstoneStatus)
+        db.addTouchstone(touchstoneName, "a-desc", "a-comment")
+        db.addTouchstoneVersion(touchstoneName, 1,  "a-desc-1", status = touchstoneStatus)
 
     }
 
