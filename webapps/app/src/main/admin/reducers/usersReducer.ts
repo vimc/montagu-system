@@ -4,7 +4,7 @@ import {isNonEmptyArray} from "../../shared/Helpers";
 
 export interface UsersState {
     users: User[],
-    allUserRoles: string[],
+    globalRoles: string[],
     showCreateUser: boolean,
     createUserErrors: ErrorInfo[],
     currentUser: User
@@ -14,7 +14,7 @@ export const usersInitialState: UsersState = {
     users: [],
     showCreateUser: false,
     createUserErrors: [],
-    allUserRoles: [],
+    globalRoles: [],
     currentUser: null
 };
 
@@ -22,8 +22,8 @@ export const usersReducer = (state = usersInitialState, action: UsersAction): Us
     switch (action.type) {
         case UsersTypes.ALL_USERS_FETCHED:
             return {...state, users: isNonEmptyArray(action.data) ? action.data : usersInitialState.users};
-        case UsersTypes.ALL_ROLES_FETCHED:
-            return {...state, allUserRoles: isNonEmptyArray(action.data) ? action.data : usersInitialState.allUserRoles};
+        case UsersTypes.ALL_GLOBAL_ROLES_FETCHED:
+            return {...state, globalRoles: isNonEmptyArray(action.data) ? action.data : usersInitialState.globalRoles};
         case UsersTypes.SHOW_CREATE_USER:
             return {
                 ...state,

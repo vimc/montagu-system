@@ -20,7 +20,7 @@ export class UsersService extends AbstractLocalService {
         );
     }
 
-    getAllRoles() {
+    getGlobalRoles() {
         return this.setOptions({cacheKey: UserCacheKeysEnum.roles})
             .get("/users/roles/all/");
     }

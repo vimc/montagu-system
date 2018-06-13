@@ -33,7 +33,7 @@ describe("User Details Page actions tests", () => {
         parentStub = sandbox.setStubFunc(usersListPageActionCreators, "loadData", () => {
             return async () => Promise.resolve([testUser]);
         });
-        sandbox.setStubFunc(UsersService.prototype, "getAllRoles", () => {
+        sandbox.setStubFunc(UsersService.prototype, "getGlobalRoles", () => {
             return Promise.resolve([testRole]);
         });
     });
@@ -55,7 +55,7 @@ describe("User Details Page actions tests", () => {
         const actions = store.getActions();
         const expectedPayload = [
             {type: UsersTypes.SET_CURRENT_USER, data: "test.user"},
-            {type: UsersTypes.ALL_ROLES_FETCHED,data: [testRole]},
+            {type: UsersTypes.ALL_GLOBAL_ROLES_FETCHED,data: [testRole]},
             {type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs}
         ];
         expect(actions).to.eql(expectedPayload);

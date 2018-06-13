@@ -18,7 +18,7 @@ describe("AddRoles", () => {
     const mockRoles = [mockRole({name: "role1"}), mockRole()];
 
     const mockUsersState = mockAdminUsersState({
-        allUserRoles: mockRoles,
+        globalRoles: mockRoles,
         currentUser: mockUser({username: "fake.name", name: "Fake Name"})
     });
     const mockAdminAppState = mockAdminState({users: mockUsersState});

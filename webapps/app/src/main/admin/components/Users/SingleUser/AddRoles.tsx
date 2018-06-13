@@ -88,7 +88,7 @@ export class AddRolesComponent extends React.Component<AddRolesProps, AddRolesSt
 
 const mapStateToProps = (state: AdminAppState, props: AddRolesPublicProps) :Partial<AddRolesProps> => {
     return {
-        allRoles: state.users.allUserRoles,
+        allRoles: state.users.globalRoles,
         userRoles: props.userRoles,
         username: props.username
     }

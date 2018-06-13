@@ -2,7 +2,7 @@ import {ErrorInfo, User} from "../../shared/models/Generated";
 
 export enum UsersTypes {
     ALL_USERS_FETCHED = "ALL_USERS_FETCHED",
-    ALL_ROLES_FETCHED = "ALL_ROLES_FETCHED",
+    ALL_GLOBAL_ROLES_FETCHED = "ALL_GLOBAL_ROLES_FETCHED",
     SHOW_CREATE_USER = "SHOW_CREATE_USER",
     SET_CREATE_USER_ERRORS = "SET_CREATE_USER_ERRORS",
     SET_CURRENT_USER = "SET_CURRENT_USER"
@@ -13,8 +13,8 @@ export interface AllUsersFetched {
     data: User[];
 }
 
-export interface AllRolesFetched {
-    type: UsersTypes.ALL_ROLES_FETCHED;
+export interface AllGlobalRolesFetched {
+    type: UsersTypes.ALL_GLOBAL_ROLES_FETCHED;
     data: string[];
 }
 
@@ -40,7 +40,7 @@ export interface ShowCreateUser {
 
 export type UsersAction =
     | AllUsersFetched
-    | AllRolesFetched
+    | AllGlobalRolesFetched
     | ShowCreateUser
     | SetCreateUserError
     | SetCurrentUser
