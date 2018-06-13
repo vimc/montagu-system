@@ -61,7 +61,7 @@ class JooqTouchstoneRepository(
     {
         val statisticType = getDemographicStatisticType(statisticTypeCode)
                 .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, "demographic-statistic-type")
-        val touchstone = touchstoneVersions.get(touchstoneVersionId)
+        val touchstoneVersion = touchstoneVersions.get(touchstoneVersionId)
         val countries = dsl.selectDistinct(TOUCHSTONE_COUNTRY.COUNTRY)
                 .from(TOUCHSTONE_COUNTRY)
                 .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneVersionId))
@@ -78,7 +78,7 @@ class JooqTouchstoneRepository(
                 statisticType[type.AGE_INTERPRETATION],
                 source
         )
-        return DemographicDataForTouchstone(touchstone, metadata)
+        return DemographicDataForTouchstone(touchstoneVersion, metadata)
     }
 
     override fun getDemographicDatasets(touchstoneVersionId: String): List<DemographicDataset>

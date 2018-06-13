@@ -41,12 +41,12 @@ fun ActionContext.checkEstimatePermissionsForTouchstoneVersion(
         readEstimatesRequired: Boolean = false
 )
 {
-    val touchstones = estimateRepository.touchstoneRepository.touchstoneVersions
-    val touchstone = touchstones.get(touchstoneVersionId)
-    this.checkIsAllowedToSeeTouchstone(touchstoneVersionId, touchstone.status)
+    val versions = estimateRepository.touchstoneRepository.touchstoneVersions
+    val touchstoneVersion = versions.get(touchstoneVersionId)
+    this.checkIsAllowedToSeeTouchstone(touchstoneVersionId, touchstoneVersion.status)
     if (readEstimatesRequired)
     {
-        if (touchstone.status == TouchstoneStatus.OPEN)
+        if (touchstoneVersion.status == TouchstoneStatus.OPEN)
         {
             this.requirePermission(ReifiedPermission(
                     "estimates.read-unfinished",

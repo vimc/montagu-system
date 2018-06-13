@@ -120,10 +120,10 @@ class ResponsibilityTests : DatabaseTest()
         } requiringPermissions {
             PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
         } andCheck {
-            val touchstone = it["touchstone_version"] as JsonObject
+            val touchstoneVersion = it["touchstone_version"] as JsonObject
             val responsibility = it["responsibility"] as JsonObject
             val scenario = responsibility["scenario"] as JsonObject
-            assertThat(touchstone).isEqualTo(json {
+            assertThat(touchstoneVersion).isEqualTo(json {
                 obj(
                         "id" to touchstoneVersionId,
                         "name" to "touchstone",

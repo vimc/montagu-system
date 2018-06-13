@@ -79,11 +79,11 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
                     .withFertility()
 
         } check {
-            val touchstone = it.getDemographicData("tot-pop", source, touchstoneVersionId).structuredMetadata.touchstoneVersion
-            Assertions.assertThat(touchstone.name).isEqualTo(touchstoneName)
-            Assertions.assertThat(touchstone.description).isEqualTo("Description")
-            Assertions.assertThat(touchstone.status).isEqualTo(TouchstoneStatus.OPEN)
-            Assertions.assertThat(touchstone.version).isEqualTo(touchstoneVersion)
+            val tVersion = it.getDemographicData("tot-pop", source, touchstoneVersionId).structuredMetadata.touchstoneVersion
+            Assertions.assertThat(tVersion.name).isEqualTo(touchstoneName)
+            Assertions.assertThat(tVersion.description).isEqualTo("Description")
+            Assertions.assertThat(tVersion.status).isEqualTo(TouchstoneStatus.OPEN)
+            Assertions.assertThat(tVersion.version).isEqualTo(tVersion)
         }
     }
 

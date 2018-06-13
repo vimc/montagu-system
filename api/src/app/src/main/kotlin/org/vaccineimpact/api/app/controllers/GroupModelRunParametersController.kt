@@ -63,8 +63,8 @@ class GroupModelRunParametersController(
             FlexibleDataTable<ModelRun>
     {
         val path = ModelRunParametersSetPath(context)
-        val touchstone = touchstoneRepository.touchstoneVersions.get(path.touchstoneVersionId)
-        context.checkIsAllowedToSeeTouchstone(touchstone.id, touchstone.status)
+        val touchstoneVersion = touchstoneRepository.touchstoneVersions.get(path.touchstoneVersionId)
+        context.checkIsAllowedToSeeTouchstone(touchstoneVersion.id, touchstoneVersion.status)
         return estimateRepository.getModelRunParameterSet(path.setId)
     }
 

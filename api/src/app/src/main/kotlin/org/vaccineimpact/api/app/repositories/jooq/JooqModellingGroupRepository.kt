@@ -93,16 +93,16 @@ class JooqModellingGroupRepository(
                                      scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
     {
         getModellingGroup(groupId)
-        val touchstone = getTouchstoneVersion(touchstoneVersionId)
+        val touchstoneVersion = getTouchstoneVersion(touchstoneVersionId)
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
         val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneVersionId)
-        return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstone.status)
+        return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstoneVersion.status)
     }
 
     override fun getResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityAndTouchstone
     {
         getModellingGroup(groupId)
-        val touchstone = getTouchstoneVersion(touchstoneVersionId)
+        val touchstoneVersion = getTouchstoneVersion(touchstoneVersionId)
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
         if (responsibilitySet != null)
         {
@@ -110,7 +110,7 @@ class JooqModellingGroupRepository(
                     responsibilitySet,
                     { this.and(SCENARIO_DESCRIPTION.ID.eq(scenarioId)) }
             ).singleOrNull() ?: throw UnknownObjectError(scenarioId, "responsibility")
-            return ResponsibilityAndTouchstone(touchstone, responsibility)
+            return ResponsibilityAndTouchstone(touchstoneVersion, responsibility)
         }
         else
         {
