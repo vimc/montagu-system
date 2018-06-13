@@ -18,7 +18,8 @@ docker run -d \
 	--name reverse-proxy \
 	reverse-proxy 443 localhost
 
-openssl dhparam -out workspace/dhparam.pem 4096
+# the real dhparam will be 4096 bits but that takes ages to generate
+openssl dhparam -out workspace/dhparam.pem 1024
 
 docker cp workspace/certificate.pem reverse-proxy:/etc/montagu/proxy/
 docker cp workspace/ssl_key.pem reverse-proxy:/etc/montagu/proxy/
