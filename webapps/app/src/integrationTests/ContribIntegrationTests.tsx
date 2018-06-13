@@ -528,7 +528,7 @@ function addModelRunParameterSets(db: Client): Promise<QueryResult> {
 function expectedResponsibilitiesResponse(): Responsibilities {
     return {
         status: "incomplete",
-        touchstone: touchstoneId,
+        touchstone_version: touchstoneId,
         problems: "",
         responsibilities: [
             {
