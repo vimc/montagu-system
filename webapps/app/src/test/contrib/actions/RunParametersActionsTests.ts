@@ -8,12 +8,12 @@ import {
     RunParametersUploadStatusData
 } from "../../../main/contrib/actionTypes/RunParametersTypes";
 import {createMockStore} from "../../mocks/mockStore";
-import {mockModellingGroup, mockModelRunParameterSet, mockTouchstone} from "../../mocks/mockModels";
+import {mockModellingGroup, mockModelRunParameterSet, mockTouchstoneVersion} from "../../mocks/mockModels";
 
 describe("Run Parameters actions tests", () => {
     const sandbox = new Sandbox();
 
-    const testTouchstone = mockTouchstone();
+    const testTouchstone = mockTouchstoneVersion();
     const testGroup = mockModellingGroup();
     const testModelRunParametersSet = mockModelRunParameterSet();
 

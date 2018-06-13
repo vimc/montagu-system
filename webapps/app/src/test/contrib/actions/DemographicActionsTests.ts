@@ -5,7 +5,7 @@ import {demographicActionCreators} from "../../../main/contrib/actions/demograph
 import {DemographicService} from "../../../main/contrib/services/DemographicService";
 import {DemographicTypes} from "../../../main/contrib/actionTypes/DemographicTypes";
 import {createMockStore} from "../../mocks/mockStore";
-import {mockDemographicDataset, mockTouchstone} from "../../mocks/mockModels";
+import {mockDemographicDataset, mockTouchstoneVersion} from "../../mocks/mockModels";
 
 describe("Demographic actions tests", () => {
     const sandbox = new Sandbox();
@@ -75,7 +75,7 @@ describe("Demographic actions tests", () => {
                 selectedGender: "female"
             },
             touchstones: {
-                currentTouchstone: mockTouchstone({id: "testid"})
+                currentTouchstone: mockTouchstoneVersion({id: "testid"})
             },
 
         });
@@ -104,7 +104,7 @@ describe("Demographic actions tests", () => {
                 selectedGender: "female"
             },
             touchstones: {
-                currentTouchstone: mockTouchstone({id: "testid"})
+                currentTouchstone: mockTouchstoneVersion({id: "testid"})
             },
 
         });

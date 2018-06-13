@@ -8,7 +8,7 @@ import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTy
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {
     mockBreadcrumbs, mockDisease, mockModellingGroup, mockModelRunParameterSet, mockResponsibilitySet,
-    mockTouchstone
+    mockTouchstoneVersion
 } from "../../../mocks/mockModels";
 import {TouchstonesService} from "../../../../main/contrib/services/TouchstonesService";
 import {TouchstoneTypes} from "../../../../main/contrib/actionTypes/TouchstonesTypes";
@@ -27,7 +27,7 @@ describe("Model Run Parameters Page actions tests", () => {
 
     const testGroup = mockModellingGroup();
     const testBreadcrumbs = mockBreadcrumbs();
-    const testTouchstone = mockTouchstone({id: "touchstone-1"});
+    const testTouchstone = mockTouchstoneVersion({id: "touchstone-1"});
     const testDisease = mockDisease();
     const testResponsibilitySet = mockResponsibilitySet();
     const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstone, testGroup);

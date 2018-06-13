@@ -1,15 +1,12 @@
 import * as React from "react";
-import { shallow} from "enzyme";
-import { expect } from "chai";
-import { Store } from "redux";
+import {shallow} from "enzyme";
+import {expect} from "chai";
+import {Store} from "redux";
 
 import "../../../../helper";
-import {
-    mockDemographicDataset,
-    mockTouchstone
-} from "../../../../mocks/mockModels";
-import { Sandbox } from "../../../../Sandbox";
-import {createMockStore} from "../../../../mocks/mockStore";
+import {mockDemographicDataset, mockTouchstoneVersion} from "../../../../mocks/mockModels";
+import {Sandbox} from "../../../../Sandbox";
+import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 
@@ -22,11 +19,11 @@ import {TimeBlockerProps} from "../../../../../main/shared/components/OneTimeBut
 
 describe("Download Demographic Content Component", () => {
 
-    const testTouchstone = mockTouchstone();
+    const testTouchstone = mockTouchstoneVersion();
     const testDemographicSet = mockDemographicDataset();
 
     const testState = {
-        touchstones: {currentTouchstone: testTouchstone},
+        touchstones: {currentTouchstoneVersion: testTouchstone},
         demographic: {
             dataSets: [testDemographicSet],
             selectedDataSet: testDemographicSet,
@@ -40,7 +37,7 @@ describe("Download Demographic Content Component", () => {
 
     const sandbox = new Sandbox();
     beforeEach(() => {
-        store = createMockStore(testState);
+        store = createMockContribStore(testState);
     });
     afterEach(() => sandbox.restore());
 

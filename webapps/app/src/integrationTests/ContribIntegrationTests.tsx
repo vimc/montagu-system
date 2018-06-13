@@ -6,7 +6,7 @@ import { createMemoryHistory } from 'history';
 import {
     Responsibilities, TouchstoneVersion, Disease, Result, ModellingGroup, ScenarioTouchstoneAndCoverageSets,
     DemographicDataset,
-    ModelRunParameterSet,
+    ModelRunParameterSet, Touchstone,
 } from "../main/shared/models/Generated";
 import { IntegrationTestSuite} from "./IntegrationTest";
 import * as enzyme from "enzyme";
@@ -111,7 +111,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         it("fetches touchstones", async () => {
             await addResponsibilities(this.db);
 
-            const fetchedTouchstonesResult: TouchstoneVersion[] = await (new TouchstonesService(this.store.dispatch, this.store.getState))
+            const fetchedTouchstonesResult: Touchstone[] = await (new TouchstonesService(this.store.dispatch, this.store.getState))
                 .getTouchstonesByGroupId(groupId);
 
             const touchstone: TouchstoneVersion = {
@@ -148,7 +148,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     disease: "yf",
                     touchstones: [touchstoneId]
                 },
-                touchstone: {
+                touchstone_version: {
                     id: touchstoneId,
                     name: "test",
                     version: 1,
@@ -159,7 +159,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     {
                         id: coverageSetId,
                         name: "Test set",
-                        touchstone: touchstoneId,
+                        touchstone_version: touchstoneId,
                         activity_type: "none",
                         vaccine: "yf",
                         gavi_support: "no vaccine"
@@ -528,7 +528,7 @@ function addModelRunParameterSets(db: Client): Promise<QueryResult> {
 function expectedResponsibilitiesResponse(): Responsibilities {
     return {
         status: "incomplete",
-        touchstone: touchstoneId,
+        touchstone_version: touchstoneId,
         problems: "",
         responsibilities: [
             {

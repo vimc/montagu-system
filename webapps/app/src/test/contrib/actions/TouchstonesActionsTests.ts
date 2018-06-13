@@ -5,12 +5,12 @@ import { touchstonesActionCreators } from "../../../main/contrib/actions/touchst
 import { TouchstonesService } from "../../../main/contrib/services/TouchstonesService";
 import { TouchstoneTypes } from "../../../main/contrib/actionTypes/TouchstonesTypes";
 import {createMockStore} from "../../mocks/mockStore";
-import {mockTouchstone} from "../../mocks/mockModels";
+import {mockTouchstoneVersion} from "../../mocks/mockModels";
 
 describe("Touchstone actions tests", () => {
     const sandbox = new Sandbox();
 
-    const testTouchstone = mockTouchstone({id: "touchstone-1"});
+    const testTouchstone = mockTouchstoneVersion({id: "touchstone-1"});
 
     afterEach(() => {
         sandbox.restore();

@@ -5,14 +5,14 @@ import { Store } from "redux";
 
 import "../../../../helper";
 import { Sandbox } from "../../../../Sandbox";
-import {createMockStore} from "../../../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
 import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
 import {mockMatch} from "../../../../mocks/mocks";
 import {
     ResponsibilityOverviewPage, ResponsibilityOverviewPageLocationProps
 } from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewPage";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
-import {mockTouchstone} from "../../../../mocks/mockModels";
+import {mockTouchstoneVersion} from "../../../../mocks/mockModels";
 import {responsibilityOverviewPageActionCreators} from "../../../../../main/contrib/actions/pages/responsibilityOverviewPageActionCreators";
 import {ResponsibilityOverviewDescription} from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewDescription";
 import {ResponsibilityOverviewContent} from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewContent";
@@ -20,12 +20,12 @@ import {ResponsibilityOverviewContent} from "../../../../../main/contrib/compone
 describe("Responsibility Overview Page Component", () => {
 
     const sandbox = new Sandbox();
-    const testTouchstone = mockTouchstone();
+    const testTouchstone = mockTouchstoneVersion();
 
     let store : Store<ContribAppState>;
     beforeEach(() => {
-        store = createMockStore({
-            touchstones: {currentTouchstone: testTouchstone}
+        store = createMockContribStore({
+            touchstones: {currentTouchstoneVersion: testTouchstone}
         });
     });
     afterEach(() => sandbox.restore());

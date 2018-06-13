@@ -7,7 +7,7 @@ import {TouchstoneList} from "./TouchstoneList";
 import {InternalLink} from "../../../shared/components/InternalLink";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../reducers/contribAppReducers";
-import {flatMap} from "../../../shared/Helpers";
+import {flatMap} from "../../../shared/ArrayHelpers";
 
 export interface ChooseActionContentProps {
     touchstoneVersions: TouchstoneVersion[];

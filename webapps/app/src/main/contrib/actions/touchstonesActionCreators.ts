@@ -4,7 +4,7 @@ import {ContribAppState} from "../reducers/contribAppReducers";
 import {TouchstonesService} from "../services/TouchstonesService";
 import {SetCurrentTouchstoneVersion, TouchstonesFetched, TouchstoneTypes} from "../actionTypes/TouchstonesTypes";
 import {Touchstone} from "../../shared/models/Generated";
-import {flatMap} from "../../shared/Helpers";
+import {flatMap} from "../../shared/ArrayHelpers";
 
 export const touchstonesActionCreators = {
 

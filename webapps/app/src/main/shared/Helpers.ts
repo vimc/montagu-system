@@ -76,15 +76,3 @@ export const helpers = {
        return "?redirectUrl=" + encodeURI(settings.montaguUrl() + redirectPath);
     }
 };
-
-export const isNonEmptyArray = (arrayData: any[]) => {
-    return Array.isArray(arrayData) && arrayData.length;
-}
-
-export function flatten<T>(arrayOfArrays: Array<Array<T>>): T[] {
-    return arrayOfArrays.reduce((a, b) => a.concat(b));
-}
-
-export function flatMap<TModel, TResult>(array: TModel[], f: (x: TModel) => TResult[]): TResult[] {
-    return flatten(array.map(f));
-}

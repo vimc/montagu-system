@@ -2,13 +2,11 @@ import { expect } from "chai";
 
 import {touchstonesInitialState, touchstonesReducer} from "../../../main/contrib/reducers/touchstonesReducer";
 import { TouchstoneTypes } from "../../../main/contrib/actionTypes/TouchstonesTypes";
-import {mockTouchstone} from "../../mocks/mockModels";
+import {mockTouchstone, mockTouchstoneVersion} from "../../mocks/mockModels";
 
 describe('Touchstones reducer tests', () => {
-
-    const testTouchstone = mockTouchstone({id: "touchstone-1"});
-
     it('sets fetched touchstones', () => {
+        const testTouchstone = mockTouchstone();
         expect(touchstonesReducer(undefined, {
             type: TouchstoneTypes.TOUCHSTONES_FETCHED,
             data: [testTouchstone]
@@ -23,10 +21,11 @@ describe('Touchstones reducer tests', () => {
     });
 
     it('sets current touchstone', () => {
+        const testTouchstoneVersion = mockTouchstoneVersion();
         expect(touchstonesReducer(undefined, {
             type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION,
-            data: testTouchstone
-        })).to.eql({...touchstonesInitialState, currentTouchstone: testTouchstone});
+            data: testTouchstoneVersion
+        })).to.eql({...touchstonesInitialState, currentTouchstoneVersion: testTouchstoneVersion});
     });
 
     it('sets current touchstone empty', () => {
@@ -35,4 +34,4 @@ describe('Touchstones reducer tests', () => {
             data: null
         })).to.eql(touchstonesInitialState);
     });
-})
+});

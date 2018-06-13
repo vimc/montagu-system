@@ -1,6 +1,6 @@
 import {UsersTypes, UsersAction} from "../actionTypes/UsersTypes";
 import {ErrorInfo, User} from "../../shared/models/Generated";
-import {isNonEmptyArray} from "../../shared/Helpers";
+import {isNonEmptyArray} from "../../shared/ArrayHelpers";
 
 export interface UsersState {
     users: User[],

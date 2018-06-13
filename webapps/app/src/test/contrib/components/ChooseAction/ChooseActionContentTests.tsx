@@ -4,11 +4,11 @@ import { expect } from "chai";
 import { Store } from "redux";
 
 import "../../../helper";
-import {mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
+import {mockModellingGroup, mockTouchstone, mockTouchstoneVersion} from "../../../mocks/mockModels";
 import { mockContribState } from "../../../mocks/mockStates";
-import { ModellingGroup} from "../../../../main/shared/models/Generated";
+import {ModellingGroup, TouchstoneVersion} from "../../../../main/shared/models/Generated";
 import { Sandbox } from "../../../Sandbox";
-import {createMockStore} from "../../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../../mocks/mockStore";
 import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";
 import {
     ChooseActionContentComponent, ChooseActionContent,
@@ -26,7 +26,7 @@ describe("Choose Action Content Component", () => {
 
     const sandbox = new Sandbox();
     beforeEach(() => {
-        store = createMockStore({
+        store = createMockContribStore({
             groups: {currentUserGroup: testCurrentGroup},
             touchstones: {touchstones: testTouchstones}
         });
@@ -76,7 +76,7 @@ describe("Choose Action Content Component", () => {
     it("maps state to props with no group", () => {
         const emptyGroup: ModellingGroup = null;
         const contribStateMock = mockContribState({
-            group: { userGroups: emptyGroup },
+            groups: { userGroups: [emptyGroup] },
             touchstones: {touchstones: testTouchstones}
         });
         const props = mapStateToProps(contribStateMock);

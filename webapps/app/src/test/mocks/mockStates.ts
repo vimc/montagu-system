@@ -70,33 +70,22 @@ export const mockAdminState = (props?: Partial<AdminAppState>): AdminAppState =>
     };
 };
 
-export const mockContribState = (props?: any) :ContribAppState => {
-    const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
-    const groupsMock: ModellingGroupsState = props && props.groups ? props.groups : ModellingGroupsInitialState;
-    const userMock: UserState = props && props.user ? props.user : UserInitialState;
-    const touchstonesMock: TouchstonesState = props && props.touchstones ? props.touchstones : touchstonesInitialState;
-    const responsibilitiesMock : ResponsibilitiesState = props && props.responsibilities ? props.responsibilities : responsibilitiesInitialState;
-    const diseasesMock : DiseasesState = props && props.diseases ? props.diseases : diseasesInitialState;
-    const demographicMock: DemographicState = props && props.demographic ? props.demographic : demographicInitialState;
-    const coverageMock: CoverageState = props && props.coverage ? props.coverage : coverageInitialState;
-    const estimatesMock: EstimatesState = props && props.estimates ? props.estimates : estimatesInitialState;
-    const runParametersMock: RunParametersState = props && props.runParameters ? props.runParameters : runParametersInitialState;
-    const breadcrumbsMock: BreadcrumbsState = props && props.breadcrumbs ? props && props.breadcrumbs : initialBreadcrumbsState;
-
-    return {
-        auth: authMock,
+export const mockContribState = (props?: RecursivePartial<ContribAppState>) :ContribAppState => {
+    const template: ContribAppState = {
+        auth: mockAuthState(),
         form: formReducer,
-        groups: groupsMock,
-        breadcrumbs: breadcrumbsMock,
-        user: userMock,
-        touchstones: touchstonesMock,
-        responsibilities: responsibilitiesMock,
-        diseases: diseasesMock,
-        demographic: demographicMock,
-        coverage: coverageMock,
-        estimates: estimatesMock,
-        runParameters: runParametersMock
+        groups: ModellingGroupsInitialState,
+        breadcrumbs: initialBreadcrumbsState,
+        user: UserInitialState,
+        touchstones: touchstonesInitialState,
+        responsibilities: responsibilitiesInitialState,
+        diseases: diseasesInitialState,
+        demographic: demographicInitialState,
+        coverage: coverageInitialState,
+        estimates: estimatesInitialState,
+        runParameters: runParametersInitialState
     };
+    return Object.assign(template, props);
 };
 
 export const mockReportAppState = (props?: any): ReportAppState => {
