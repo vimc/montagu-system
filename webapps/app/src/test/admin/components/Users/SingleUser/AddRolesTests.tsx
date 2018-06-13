@@ -1,20 +1,13 @@
 import * as React from "react";
 import {expect} from "chai";
 import * as Sinon from "sinon";
-import {checkAsync} from "../../../../testHelpers";
-import {AddRoles} from "../../../../../main/admin/components/Users/SingleUser/AddRoles";
+import {AddRoles, AddRolesComponent} from "../../../../../main/admin/components/Users/SingleUser/AddRoles";
 import {Sandbox} from "../../../../Sandbox";
-import fetcher from "../../../../../main/shared/sources/Fetcher";
-import {mockResponse} from "../../../../mocks/mockRemote";
-import {expectOneAction} from "../../../../actionHelpers";
-import {mount, shallow} from "enzyme";
+import {shallow} from "enzyme";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {AdminAppState} from "../../../../../main/admin/reducers/adminAppReducers";
 import {mockRole, mockUser} from "../../../../mocks/mockModels";
 import {mockAdminState, mockAdminUsersState} from "../../../../mocks/mockStates";
-import {UsersService} from "../../../../../main/admin/services/UsersService";
-import {UsersTypes} from "../../../../../main/admin/actionTypes/UsersTypes";
-import {BreadcrumbsTypes} from "../../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {MockStore} from "redux-mock-store";
 import {usersActionCreators} from "../../../../../main/admin/actions/usersActionCreators";
 
@@ -43,7 +36,7 @@ describe("AddRoles", () => {
         sandbox.restore();
     });
 
-    it("populates role options", () => {
+    it("populates role options from store state", () => {
 
         const rendered = shallow(<AddRoles username={"testuser"} userRoles={[]}/>, {context: {store}})
             .dive().dive();
@@ -53,15 +46,16 @@ describe("AddRoles", () => {
 
     it("only shows roles the user does not have", () => {
 
-        const rendered = shallow(<AddRoles username={"testuser"} userRoles={["role1"]}/>, {context: {store}})
-            .dive()
-            .dive();
+        const rendered = shallow(<AddRolesComponent username={"testuser"}
+                                                    userRoles={["role1"]}
+                                                    allRoles={["role1", "role2"]}
+                                                    addRoleToUser={null}/>);
 
         expect(rendered.find("option")).to.have.lengthOf(1);
 
     });
 
-    it("adds role", () => {
+    it("dispatches addGlobalRoleToUser when role is added", () => {
 
         const addRoles = shallow(<AddRoles username={"testuser"} userRoles={["role1"]}/>, {context: {store}})
             .dive()
