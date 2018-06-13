@@ -182,7 +182,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const payload = QueryString.parse(decoded.payload);
             expect(payload).to.eql({
                 ":group-id": groupId,
-                ":touchstone-id": touchstoneId,
+                ":touchstone-version-id": touchstoneId,
                 ":scenario-id": scenarioId
             });
         });
@@ -220,7 +220,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             expect(decoded.action).to.equal("demography");
             const payload = QueryString.parse(decoded.payload);
             expect(payload).to.eql({
-                ":touchstone-id": touchstoneId,
+                ":touchstone-version-id": touchstoneId,
                 ":source-code": demographicDataSet.source,
                 ":type-code": demographicDataSet.id
             });
@@ -243,7 +243,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const payload = QueryString.parse(decoded.payload);
             expect(payload).to.eql({
                 ":group-id": groupId,
-                ":touchstone-id": touchstoneId,
+                ":touchstone-version-id": touchstoneId,
                 ":scenario-id": scenarioId,
                 ":set-id": String(estimatesSet.id)
             });
@@ -273,7 +273,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const payload = QueryString.parse(decoded.payload);
             expect(payload).to.eql({
                 ":group-id": groupId,
-                ":touchstone-id": touchstoneId,
+                ":touchstone-version-id": touchstoneId,
                 ":scenario-id": scenarioId,
                 ":set-id": String(estimatesSet.id)
             });
@@ -322,7 +322,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const payload = QueryString.parse(decoded.payload);
             expect(payload).to.eql({
                 ":group-id": groupId,
-                ":touchstone-id": touchstoneId,
+                ":touchstone-version-id": touchstoneId,
                 ":model-run-parameter-set-id": String(sets[0].id)
             });
         });
