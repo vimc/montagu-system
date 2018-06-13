@@ -14,7 +14,7 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 class ResponsibilityControllerTests : MontaguTests()
 {
     @Test
-    fun `returns in preparation touchstones if user has permission to read prepared touchstones`()
+    fun `returns in preparation touchstones & touchstone versions if user has permission to read in-prep touchstones`()
     {
         val groupId = "test-group"
         val repo = mock<ModellingGroupRepository> {
@@ -30,7 +30,7 @@ class ResponsibilityControllerTests : MontaguTests()
     }
 
     @Test
-    fun `does not return in preparation touchstones if user has no permission to read prepared touchstones`()
+    fun `does not return in preparation touchstones & touchstone versions if user lacks permissions`()
     {
         val groupId = "test-group"
         val repo = mock<ModellingGroupRepository> {
@@ -42,7 +42,13 @@ class ResponsibilityControllerTests : MontaguTests()
             on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn false
         }
         val data = ResponsibilityController(context, repo).getResponsibleTouchstones()
-        assertThat(data.count()).isEqualTo(1)
+        // Note that here we are testing both that the touchstone named 'touchstone' only has 1
+        // of its versions returned, and that the 'all-hidden' touchstone isn't returned at all
+        assertThat(data).isEqualTo(listOf(
+                Touchstone("touchstone", "description", "comment", listOf(
+                        TouchstoneVersion("touchstone-1", "touchstone", 1, "open", TouchstoneStatus.OPEN)
+                ))
+        ))
     }
 
     @Test
@@ -113,6 +119,9 @@ class ResponsibilityControllerTests : MontaguTests()
             Touchstone("touchstone", "description", "comment", listOf(
                     TouchstoneVersion("touchstone-1", "touchstone", 1, "open", TouchstoneStatus.OPEN),
                     TouchstoneVersion("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
+            )),
+            Touchstone("all-hidden", "All versions of this touchstone are in prep", "comment", listOf(
+                    TouchstoneVersion("all-hidden-1", "all-hidden", 1, "hidden", TouchstoneStatus.IN_PREPARATION)
             ))
     )
 
