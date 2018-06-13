@@ -20,9 +20,11 @@ mkdir -p $root
 
 a="$root/certificate.pem"
 b="$root/ssl_key.pem"
+c="$root/dhparam.pem"
 
 echo "Waiting for SSL certificate files at:"
 echo "- $a"
+echo "- $b"
 echo "- $b"
 
 while [ ! -e $a ]
@@ -31,6 +33,11 @@ do
 done
 
 while [ ! -e $b ]
+do
+    sleep 2
+done
+
+while [ ! -e $c ]
 do
     sleep 2
 done

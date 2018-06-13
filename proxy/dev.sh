@@ -18,8 +18,11 @@ docker run -d \
 	--name reverse-proxy \
 	reverse-proxy 443 localhost
 
+openssl dhparam -out workspace/dhparam.pem 4096
+
 docker cp workspace/certificate.pem reverse-proxy:/etc/montagu/proxy/
 docker cp workspace/ssl_key.pem reverse-proxy:/etc/montagu/proxy/
+docker cp workspace/dhparam.pem reverse-proxy:/etc/montagu/proxy/
 rm -rf workspace
 
 sleep 2s
