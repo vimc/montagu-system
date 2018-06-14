@@ -11,12 +11,19 @@ Schema: [`Touchstones.schema.json`](../schemas/Touchstones.schema.json)
 
 ### Example
     [
-        {
-            "id": "op-2017-1",
-            "name": "op-2017",
-            "version": 1,
-            "description": "2017 Operational Forecast",
-            "status": "finished"
+        { 
+            "id": "201710gavi",
+            "description": "October 2017 touchstone",
+            "comment": "Touchstone for 201710gavi",
+            "versions": [
+                {
+                    "id": "201710gavi-1",
+                    "name": "201710gavi",
+                    "version": 1,            
+                    "description": "October 2017 touchstone v1",
+                    "status": "open"
+                }
+            ]
         }
     ]
     

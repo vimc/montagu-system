@@ -3,11 +3,13 @@
 	"type": "object",
 	"properties": {
 		"id": { "$ref": "StandardIdentifier.schema.json" },
-		"name": { "$ref": "StandardIdentifier.schema.json" },
-		"version": { "type": "integer" },
 		"description": { "type": "string" },
-		"status": { "$ref": "TouchstoneStatus.schema.json" }
+		"comment": { "type": "string" },
+		"versions": { 
+			"type": "array",
+   			"items": { "$ref": "TouchstoneVersion.schema.json" }
+		}
 	},
 	"additionalProperties": false,
-	"required": [ "id", "name", "version", "description", "status" ]
+	"required": [ "id", "description", "comment" ]
 }

@@ -91,12 +91,40 @@ free text,in-preparation""")
 
 
     @Test
-    fun `can deserialize CSV`()
+    fun `can deserialize CSV with single quote delimiter`()
+    {
+        val csv = """
+            'text','int','dec'
+            'joe',1,6.53
+            'bob',2,2.0"""
+        val rows = DataTableDeserializer.deserialize(csv, MixedTypes::class, MontaguSerializer.instance).toList()
+        assertThat(rows).containsExactlyElementsOf(listOf(
+                MixedTypes("joe", 1, 6.53F),
+                MixedTypes("bob", 2,2.0F)
+        ))
+    }
+
+    @Test
+    fun `can deserialize CSV with double quote delimiter`()
+    {
+        val csv = """
+            "text","int","dec"
+            "joe",1,6.53
+            "bob",2,2.0"""
+        val rows = DataTableDeserializer.deserialize(csv, MixedTypes::class, MontaguSerializer.instance).toList()
+        assertThat(rows).containsExactlyElementsOf(listOf(
+                MixedTypes("joe", 1, 6.53F),
+                MixedTypes("bob", 2,2.0F)
+        ))
+    }
+
+    @Test
+    fun `can deserialize CSV with no quote delimiter`()
     {
         val csv = """
             text,int,dec
-            "joe",1,6.53
-            "bob",2,2.0"""
+            joe,1,6.53
+            bob,2,2.0"""
         val rows = DataTableDeserializer.deserialize(csv, MixedTypes::class, MontaguSerializer.instance).toList()
         assertThat(rows).containsExactlyElementsOf(listOf(
                 MixedTypes("joe", 1, 6.53F),
@@ -190,7 +218,35 @@ free text,in-preparation""")
     }
 
     @Test
-    fun `can deserialize CSV with flexible headers`()
+    fun `can deserialize CSV with single quoted flexible headers`()
+    {
+        val csv = """
+            'a','b','x','y','z'
+            1,"joe",1,2,3
+            2,"bob",4,5,6"""
+        val rows = DataTableDeserializer.deserialize(csv, Flexible::class, MontaguSerializer.instance).toList()
+        assertThat(rows).containsExactlyElementsOf(listOf(
+                Flexible(1, "joe", mapOf("x" to 1, "y" to 2, "z" to 3)),
+                Flexible(2, "bob", mapOf("x" to 4, "y" to 5, "z" to 6))
+        ))
+    }
+
+    @Test
+    fun `can deserialize CSV with double quoted flexible headers`()
+    {
+        val csv = """
+            "a","b","x","y","z"
+            1,"joe",1,2,3
+            2,"bob",4,5,6"""
+        val rows = DataTableDeserializer.deserialize(csv, Flexible::class, MontaguSerializer.instance).toList()
+        assertThat(rows).containsExactlyElementsOf(listOf(
+                Flexible(1, "joe", mapOf("x" to 1, "y" to 2, "z" to 3)),
+                Flexible(2, "bob", mapOf("x" to 4, "y" to 5, "z" to 6))
+        ))
+    }
+
+    @Test
+    fun `can deserialize CSV with no quoted flexible headers`()
     {
         val csv = """
             a,b,x,y,z

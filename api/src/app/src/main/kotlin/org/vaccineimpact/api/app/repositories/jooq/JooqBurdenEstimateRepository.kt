@@ -461,7 +461,7 @@ class JooqBurdenEstimateRepository(
 
     private fun <T> findMissingObjects(touchstoneVersionId: String, scenarioId: String): T
     {
-        touchstoneRepository.touchstones.get(touchstoneVersionId)
+        touchstoneRepository.touchstoneVersions.get(touchstoneVersionId)
         scenarioRepository.checkScenarioDescriptionExists(scenarioId)
         // Note this is where the scenario_description *does* exist, but
         // the group is not responsible for it in this touchstoneVersion

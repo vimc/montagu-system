@@ -2,7 +2,7 @@
 	"id": "ScenarioAndCoverageSets",
 	"type": "object",
 	"properties": {
-		"touchstone_version": { "$ref": "Touchstone.schema.json" },
+		"touchstone_version": { "$ref": "TouchstoneVersion.schema.json" },
 		"scenario": { "$ref": "Scenario.schema.json" },
 		"coverage_sets": { "$ref": "CoverageSets.schema.json" }
 	},

@@ -24,6 +24,9 @@ open class DataTableDeserializer<out T>(
     private val headerCount = headerDefinitions.size
     protected open val extraHeadersAllowed = false
 
+    private fun shouldTrim(char: Char): Boolean
+            = char.isWhitespace() || char == '\''
+
     fun deserialize(stream: Reader): Sequence<T>
     {
         val reader = CSVReader(stream)
@@ -35,7 +38,7 @@ open class DataTableDeserializer<out T>(
             throw ValidationException(listOf(ErrorInfo("csv-empty", "CSV was empty - no rows or headers were found")))
         }
 
-        val actualHeaderNames = headerRow.toList()
+        val actualHeaderNames = headerRow.map({ it.trim(::shouldTrim) }).toList()
         checkHeaders(actualHeaderNames)
         val actualHeaders = getActualHeaderDefinitions(actualHeaderNames)
 
@@ -75,7 +78,7 @@ open class DataTableDeserializer<out T>(
                             row: Int, column: String,
                             problems: MutableList<ErrorInfo>): Any?
     {
-        val trimmed = raw.trim()
+        val trimmed = raw.trim(::shouldTrim)
         checkValueIsPresentIfRequired(trimmed, targetType, row, column, problems)
 
         return try

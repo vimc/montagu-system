@@ -107,7 +107,7 @@ class JooqResponsibilitiesRepository(
 
     override fun getResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityAndTouchstone
     {
-        val touchstone = getTouchstone(touchstoneVersionId)
+        val touchstoneVersion = getTouchstoneVersion(touchstoneVersionId)
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
         if (responsibilitySet != null)
         {
@@ -115,7 +115,7 @@ class JooqResponsibilitiesRepository(
                     responsibilitySet.id,
                     { this.and(Tables.SCENARIO_DESCRIPTION.ID.eq(scenarioId)) }
             ).singleOrNull() ?: throw UnknownObjectError(scenarioId, "responsibility")
-            return ResponsibilityAndTouchstone(touchstone, responsibility)
+            return ResponsibilityAndTouchstone(touchstoneVersion, responsibility)
         }
         else
         {
@@ -126,7 +126,7 @@ class JooqResponsibilitiesRepository(
     override fun getResponsibilitiesForGroupAndTouchstone(groupId: String, touchstoneVersionId: String,
                                                           scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
     {
-        val touchstone = getTouchstone(touchstoneVersionId)
+        val touchstone = getTouchstoneVersion(touchstoneVersionId)
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
         val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneVersionId)
         return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstone.status)
@@ -155,7 +155,7 @@ class JooqResponsibilitiesRepository(
         })
     }
 
-    private fun getTouchstone(touchstoneVersionId: String) = touchstoneRepository.touchstones.get(touchstoneVersionId)
+    private fun getTouchstoneVersion(touchstoneVersionId: String) = touchstoneRepository.touchstoneVersions.get(touchstoneVersionId)
 
     private fun getResponsibilitiesInResponsibilitySet(
             responsibilitySetId: Int,
