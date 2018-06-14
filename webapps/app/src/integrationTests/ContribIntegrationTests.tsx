@@ -18,7 +18,7 @@ import {createContribStore} from "../main/contrib/createStore";
 import { ModellingGroupsService } from "../main/shared/services/ModellingGroupsService";
 import {RunParametersService} from "../main/contrib/services/RunParametersService";
 import {DiseasesService} from "../main/contrib/services/DiseasesService";
-import {TouchstonesService} from "../main/contrib/services/TouchstonesService";
+import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 import {ResponsibilitiesService} from "../main/contrib/services/ResponsibilitiesService";
 import {CoverageService} from "../main/contrib/services/CoverageService";
 import {DemographicService} from "../main/contrib/services/DemographicService";

@@ -1,14 +1,14 @@
 import {expect} from "chai";
 
 import {Sandbox} from "../../Sandbox";
-import {touchstonesActionCreators} from "../../../main/contrib/actions/touchstonesActionCreators";
-import {TouchstonesService} from "../../../main/contrib/services/TouchstonesService";
-import {TouchstoneTypes} from "../../../main/contrib/actionTypes/TouchstonesTypes";
+import {contribTouchstonesActionCreators} from "../../../main/contrib/actions/contribTouchstonesActionCreators";
+import {TouchstonesService} from "../../../main/shared/services/TouchstonesService";
+import {TouchstoneTypes} from "../../../main/shared/actionTypes/TouchstonesTypes";
 import {createMockContribStore} from "../../mocks/mockStore";
 import {mockTouchstone, mockTouchstoneVersion} from "../../mocks/mockModels";
-import {TouchstonesState} from "../../../main/contrib/reducers/touchstonesReducer";
+import {TouchstonesState} from "../../../main/contrib/reducers/contribTouchstonesReducer";
 
-describe("Touchstone actions tests", () => {
+describe("Contrib touchstone actions tests", () => {
     const sandbox = new Sandbox();
 
     const testTouchstone = mockTouchstone();
@@ -22,10 +22,10 @@ describe("Touchstone actions tests", () => {
         sandbox.setStubFunc(TouchstonesService.prototype, "getTouchstonesByGroupId", () => {
             return Promise.resolve([testTouchstone]);
         });
-        store.dispatch(touchstonesActionCreators.getTouchstonesByGroupId('group-1'));
+        store.dispatch(contribTouchstonesActionCreators.getTouchstonesByGroupId('group-1'));
         setTimeout(() => {
             const actions = store.getActions();
-            const expectedPayload = {type: TouchstoneTypes.TOUCHSTONES_FETCHED, data: [testTouchstone]};
+            const expectedPayload = {type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]};
             expect(actions).to.eql([expectedPayload]);
             done();
         });
@@ -37,7 +37,7 @@ describe("Touchstone actions tests", () => {
             touchstones: [mockTouchstone({}, [testTouchstoneVersion])]
         };
         const store = createMockContribStore({touchstones: touchstonesState});
-        store.dispatch(touchstonesActionCreators.setCurrentTouchstoneVersion("touchstone-1"));
+        store.dispatch(contribTouchstonesActionCreators.setCurrentTouchstoneVersion("touchstone-1"));
         setTimeout(() => {
             const actions = store.getActions();
             // console.log(actions);
