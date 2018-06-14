@@ -7,10 +7,10 @@ import "../../../../helper";
 import {
     mockDisease, mockModellingGroup,
     mockResponsibility, mockResponsibilitySet,
-    mockScenario, mockTouchstone
+    mockScenario, mockTouchstoneVersion
 } from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
-import {createMockStore} from "../../../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {
@@ -27,14 +27,14 @@ describe("Upload Burden Estimates Content Component tests", () => {
 
     const testGroup = mockModellingGroup();
     const testDisease = mockDisease();
-    const testTouchstone = mockTouchstone();
+    const testTouchstone = mockTouchstoneVersion();
     const testScenario = mockScenario({disease: testDisease.id, touchstones: [testTouchstone]});
     const testResponsibility = mockResponsibility({scenario: testScenario});
     const testResponsibilitySet = mockResponsibilitySet({responsibilities: [testResponsibility], touchstone: testTouchstone.id});
 
     const testState = {
         groups: {currentUserGroup: testGroup},
-        touchstones: {currentTouchstone: testTouchstone},
+        touchstones: {currentTouchstoneVersion: testTouchstone},
         responsibilities: {currentResponsibility: testResponsibility, responsibilitiesSet: testResponsibilitySet},
         estimates: {token: "test-token"},
     };
@@ -43,7 +43,7 @@ describe("Upload Burden Estimates Content Component tests", () => {
 
     const sandbox = new Sandbox();
     beforeEach(() => {
-        store = createMockStore(testState);
+        store = createMockContribStore(testState);
     });
     afterEach(() => sandbox.restore());
 

@@ -1,21 +1,24 @@
 import * as React from "react";
-import { shallow} from "enzyme";
-import { expect } from "chai";
-import { Store } from "redux";
+import {shallow} from "enzyme";
+import {expect} from "chai";
+import {Store} from "redux";
 
 import "../../../../helper";
 import {
     mockCoverageSet,
-    mockDisease, mockModellingGroup,
+    mockDisease,
+    mockModellingGroup,
     mockResponsibility,
-    mockScenario, mockTouchstone
+    mockScenario,
+    mockTouchstoneVersion
 } from "../../../../mocks/mockModels";
-import { Sandbox } from "../../../../Sandbox";
-import {createMockStore} from "../../../../mocks/mockStore";
+import {Sandbox} from "../../../../Sandbox";
+import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {
-    DownloadCoverageContent, DownloadCoverageContentComponent,
+    DownloadCoverageContent,
+    DownloadCoverageContentComponent,
 } from "../../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
 import {CoverageSetList} from "../../../../../main/contrib/components/Responsibilities/Coverage/CoverageSetList";
 import {FormatControl} from "../../../../../main/contrib/components/Responsibilities/FormatControl";
@@ -28,15 +31,15 @@ describe("Download Coverage Content Component", () => {
 
     const testGroup = mockModellingGroup();
     const testDisease = mockDisease();
-    const testTouchstone = mockTouchstone();
-    const rfpTouchstone = mockTouchstone({id: "rfp-1"});
+    const testTouchstone = mockTouchstoneVersion();
+    const rfpTouchstone = mockTouchstoneVersion({id: "rfp-1"});
     const testScenario = mockScenario({disease: testDisease.id, touchstones: [testTouchstone]});
     const testResponsibility = mockResponsibility({scenario: testScenario});
     const testCoverageSet = mockCoverageSet({touchstone_version: testTouchstone.id});
 
     const testState = {
         groups: {currentUserGroup: testGroup},
-        touchstones: {currentTouchstone: testTouchstone},
+        touchstones: {currentTouchstoneVersion: testTouchstone},
         coverage: {dataSets: [testCoverageSet], selectedFormat: "long", token: "test-token"},
         responsibilities: {currentResponsibility: testResponsibility},
         user: {signedConfidentialityAgreement: false}
@@ -46,7 +49,7 @@ describe("Download Coverage Content Component", () => {
 
     const sandbox = new Sandbox();
     beforeEach(() => {
-        store = createMockStore(testState);
+        store = createMockContribStore(testState);
         sandbox.setStubReduxAction(userActionCreators, 'getConfidentialityAgreement');
 
     });
@@ -88,8 +91,8 @@ describe("Download Coverage Content Component", () => {
     });
 
     it("renders confidentiality agreement confidentiality level if rfp touchstone", () => {
-        const anotherState = {...testState, touchstones: {currentTouchstone: rfpTouchstone}};
-        store = createMockStore(anotherState);
+        const anotherState = {...testState, touchstones: {currentTouchstoneVersion: rfpTouchstone}};
+        store = createMockContribStore(anotherState);
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive()
             .dive().dive();
         expect(rendered.find(ConfidentialityAgreementComponent).length).to.eql(1);

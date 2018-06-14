@@ -16,7 +16,7 @@ export const responsibilitiesActionCreators = {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
 
             const group = getState().groups.currentUserGroup;
-            const touchstone = getState().touchstones.currentTouchstone;
+            const touchstone = getState().touchstones.currentTouchstoneVersion;
 
             (new ResponsibilitiesService(dispatch, getState)).clearCacheForResponsibilities(group.id, touchstone.id);
         }
@@ -26,7 +26,7 @@ export const responsibilitiesActionCreators = {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
 
             const group = getState().groups.currentUserGroup;
-            const touchstone = getState().touchstones.currentTouchstone;
+            const touchstone = getState().touchstones.currentTouchstoneVersion;
 
             const responsibilities: Responsibilities = await (new ResponsibilitiesService(dispatch, getState))
                 .getResponsibilities(group.id, touchstone.id);

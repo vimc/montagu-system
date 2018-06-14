@@ -11,7 +11,7 @@ import {
     SetCurrentGroup, SetCurrentGroupMembers
 } from "../actionTypes/ModellingGroupsTypes";
 import {ContribAppState} from "../../contrib/reducers/contribAppReducers";
-import {isNonEmptyArray} from "../../shared/Helpers";
+import {isNonEmptyArray} from "../../shared/ArrayHelpers";
 
 export const modellingGroupsActionCreators = {
 

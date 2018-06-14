@@ -40,7 +40,7 @@ export const jwtTokenAuth = {
         };
     },
 
-    parseModellingGroups(roles: string) {
+    parseModellingGroups(roles: string): string[] {
         return roles
             .split(",")
             .map((x: string) => parseRole(x))

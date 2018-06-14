@@ -68,7 +68,7 @@ export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityO
         responsibilitySet: state.responsibilities.responsibilitiesSet,
         currentDiseaseId: state.diseases.currentDiseaseId,
         modellingGroup: state.groups.currentUserGroup,
-        touchstoneId: state.touchstones.currentTouchstone.id
+        touchstoneId: state.touchstones.currentTouchstoneVersion.id
     }
 };
 

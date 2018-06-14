@@ -66,7 +66,7 @@ interface ConfidentialityProps {
 
 const mapStateToProps = (state: ContribAppState): Partial<ConfidentialityProps> => {
     return {
-        touchstoneId: state.touchstones.currentTouchstone.id,
+        touchstoneId: state.touchstones.currentTouchstoneVersion.id,
         signed: state.user.signedConfidentialityAgreement
     }
 };

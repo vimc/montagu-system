@@ -2,7 +2,7 @@ import * as React from "react";
 import { compose, branch, renderComponent} from "recompose";
 import { connect } from 'react-redux';
 
-import {ModellingGroup, Responsibility, Scenario, Touchstone} from "../../../../shared/models/Generated";
+import {ModellingGroup, Responsibility, Scenario, TouchstoneVersion} from "../../../../shared/models/Generated";
 import {TemplateLink} from "../Overview/List/TemplateLinks";
 import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
@@ -10,7 +10,7 @@ import {LoadingElement} from "../../../../shared/partials/LoadingElement/Loading
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 
 export interface UploadBurdenEstimatesContentProps {
-    touchstone: Touchstone;
+    touchstone: TouchstoneVersion;
     scenario: Scenario;
     group: ModellingGroup;
     responsibilitySetStatus: string;
@@ -75,7 +75,7 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
 
 export const mapStateToProps = (state: ContribAppState): Partial<UploadBurdenEstimatesContentProps> => {
     const newProps = {
-        touchstone: state.touchstones.currentTouchstone,
+        touchstone: state.touchstones.currentTouchstoneVersion,
         scenario: state.responsibilities.currentResponsibility ? state.responsibilities.currentResponsibility.scenario : null,
         group: state.groups.currentUserGroup,
         responsibilitySetStatus: state.responsibilities.responsibilitiesSet ? state.responsibilities.responsibilitiesSet.status : null,

@@ -1,6 +1,6 @@
 import { ModellingGroupsAction, ModellingGroupTypes } from "../actionTypes/ModellingGroupsTypes";
 import {ModellingGroup, ModellingGroupDetails, User} from "../../shared/models/Generated";
-import {isNonEmptyArray} from "../../shared/Helpers";
+import {isNonEmptyArray} from "../../shared/ArrayHelpers";
 
 export interface ModellingGroupsState {
     groups: ModellingGroup[];

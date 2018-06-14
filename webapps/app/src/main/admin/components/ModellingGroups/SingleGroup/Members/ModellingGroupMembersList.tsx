@@ -5,7 +5,7 @@ import { orderBy } from "lodash";
 import { User } from "../../../../../shared/models/Generated";
 import { ModellingGroupMembersDeletableUser } from "./ModellingGroupMembersDeletableUser";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
-import {isNonEmptyArray} from "../../../../../shared/Helpers";
+import {isNonEmptyArray} from "../../../../../shared/ArrayHelpers";
 
 interface ModellingGroupMembersListProps {
     users: User[];

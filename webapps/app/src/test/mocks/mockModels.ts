@@ -2,7 +2,6 @@ import * as models from "../../main/shared/models/Generated";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
 import {Version} from "../../main/shared/models/reports/Report";
 import {Artefact} from "../../main/shared/models/reports/Artefact";
-import {Report} from "../../main/shared/models/Generated";
 import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageWithHeader";
 
 let counter = 0;
@@ -60,9 +59,25 @@ export function mockExtendedResponsibility(properties?: any, scenarioProperties?
     return new ExtendedResponsibility(values);
 }
 
-export function mockTouchstone(properties?: any): models.Touchstone {
+export function mockTouchstone(properties?: Partial<models.Touchstone>, versions?: models.TouchstoneVersion[]) {
     counter++;
     const template: models.Touchstone = {
+        id: "touchstone" + counter,
+        description: "Description of touchstone",
+        comment: "Comment",
+        versions: []
+    };
+    const touchstone = Object.assign(template, properties);
+    touchstone.versions = versions || [
+        mockTouchstoneVersion({ id: touchstone.id + "-" + 1, name: touchstone.id, version: 1 }),
+        mockTouchstoneVersion({ id: touchstone.id + "-" + 2, name: touchstone.id, version: 2 })
+    ];
+    return touchstone;
+}
+
+export function mockTouchstoneVersion(properties?: any): models.TouchstoneVersion {
+    counter++;
+    const template: models.TouchstoneVersion = {
         id: "touchstone-" + counter,
         name: "touchstone",
         version: 1,
@@ -89,9 +104,9 @@ export function mockResponsibilitySet(properties?: any,
 
 export function mockExtendedResponsibilitySet(properties?: any,
                                               responsibilities?: Array<models.Responsibility>,
-                                              touchstone?: models.Touchstone,
+                                              touchstone?: models.TouchstoneVersion,
                                               modellingGroup?: models.ModellingGroup): ExtendedResponsibilitySet {
-    touchstone = touchstone || mockTouchstone();
+    touchstone = touchstone || mockTouchstoneVersion();
     modellingGroup = modellingGroup || mockModellingGroup();
     properties = Object.assign(properties || {}, {touchstone: touchstone.id});
     const values = mockResponsibilitySet(properties, responsibilities);
@@ -111,9 +126,9 @@ export function mockCoverageSet(properties?: Partial<models.CoverageSet>): model
 }
 
 export function mockScenarioTouchstoneAndCoverageSets(scenarioProperties?: Partial<models.Scenario>,
-                                                      touchstoneProperties?: Partial<models.Touchstone>,
+                                                      touchstoneProperties?: Partial<models.TouchstoneVersion>,
                                                       coverageSets?: models.CoverageSet[]): models.ScenarioTouchstoneAndCoverageSets {
-    const touchstone = mockTouchstone(touchstoneProperties);
+    const touchstone = mockTouchstoneVersion(touchstoneProperties);
     return {
         touchstone_version: touchstone,
         scenario: mockScenario(scenarioProperties),
@@ -168,9 +183,9 @@ export function mockArtefact(properties?: Partial<Artefact>): Artefact {
     return Object.assign(template, properties);
 }
 
-export function mockReport(properties?: Partial<Report>): Report {
+export function mockReport(properties?: Partial<models.Report>): models.Report {
 
-    const template: Report = {
+    const template: models.Report = {
         name: "report",
         display_name: "display name",
         latest_version: "e62871eydhsjkh",

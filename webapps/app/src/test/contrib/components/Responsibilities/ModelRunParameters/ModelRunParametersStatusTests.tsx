@@ -5,10 +5,10 @@ import { Store } from "redux";
 
 import "../../../../helper";
 import {
-    mockDisease, mockModellingGroup, mockModelRunParameterSet, mockTouchstone
+    mockDisease, mockModellingGroup, mockModelRunParameterSet, mockTouchstoneVersion
 } from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
-import {createMockStore} from "../../../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 
@@ -25,12 +25,12 @@ describe("Model Run Parameters Status component tests", () => {
 
     const testGroup = mockModellingGroup();
     const testDisease = mockDisease();
-    const testTouchstone = mockTouchstone();
+    const testTouchstone = mockTouchstoneVersion();
     const testRunParametersSet = mockModelRunParameterSet({disease: testDisease.id})
 
     const testState = {
         groups: {currentUserGroup: testGroup},
-        touchstones: {currentTouchstone: testTouchstone},
+        touchstones: {currentTouchstoneVersion: testTouchstone},
         runParameters: {sets: [testRunParametersSet], tokens:{[testRunParametersSet.id]: 'test-token'}}
     };
 
@@ -38,7 +38,7 @@ describe("Model Run Parameters Status component tests", () => {
 
     const sandbox = new Sandbox();
     beforeEach(() => {
-        store = createMockStore(testState);
+        store = createMockContribStore(testState);
     });
     afterEach(() => sandbox.restore());
 

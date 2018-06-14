@@ -25,7 +25,7 @@ export const responsibilityOverviewPageActionCreators = {
         return async (dispatch: Dispatch<ContribAppState>) => {
             await dispatch(chooseActionPageActionCreators.loadData(props));
             await dispatch(diseasesActionCreators.getAllDiseases());
-            dispatch(touchstonesActionCreators.setCurrentTouchstone(props.touchstoneId));
+            dispatch(touchstonesActionCreators.setCurrentTouchstoneVersion(props.touchstoneId));
             await dispatch(responsibilitiesActionCreators.getResponsibilitySet());
         }
     }

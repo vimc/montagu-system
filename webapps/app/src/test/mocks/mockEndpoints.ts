@@ -2,7 +2,7 @@ import {APIType, FakeEndpoint} from "./mockMultipleEndpoints";
 import {
     CoverageSet,
     DemographicDataset, ModellingGroup, ModellingGroupDetails, ModelRunParameterSet, Report,
-    ScenarioTouchstoneAndCoverageSets, Touchstone,
+    ScenarioTouchstoneAndCoverageSets, TouchstoneVersion,
     User
 } from "../../main/shared/models/Generated";
 import {successResult} from "./mockRemote";
@@ -17,7 +17,7 @@ function makeFakeEndpoint(url: string, data: any, api: APIType): FakeEndpoint {
     }
 }
 
-export function mockTouchstonesEndpoint( touchstones: Touchstone[], groupId?: string): FakeEndpoint {
+export function mockTouchstonesEndpoint(touchstones: TouchstoneVersion[], groupId?: string): FakeEndpoint {
     return makeFakeEndpoint(`/modelling-groups/${groupId}/responsibilities/`, touchstones, APIType.Montagu);
 }
 
