@@ -39,4 +39,5 @@ class DeserializerTests : MontaguTests()
         assertThatThrownBy { deserializer.parseEnum<TouchstoneStatus>("bad-value") }
                 .isInstanceOf(UnknownEnumValue::class.java)
     }
+
 }
