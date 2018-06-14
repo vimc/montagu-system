@@ -1,19 +1,20 @@
-import { expect } from "chai";
+import {expect} from "chai";
 
-import { Sandbox } from "../../Sandbox";
-import { runParametersActionCreators } from "../../../main/contrib/actions/runParametersActionCreators";
-import { RunParametersService } from "../../../main/contrib/services/RunParametersService";
+import {Sandbox} from "../../Sandbox";
+import {runParametersActionCreators} from "../../../main/contrib/actions/runParametersActionCreators";
+import {RunParametersService} from "../../../main/contrib/services/RunParametersService";
 import {
-    RunParametersTypes, RunParametersUploadStatus,
+    RunParametersTypes,
+    RunParametersUploadStatus,
     RunParametersUploadStatusData
 } from "../../../main/contrib/actionTypes/RunParametersTypes";
-import {createMockStore} from "../../mocks/mockStore";
-import {mockModellingGroup, mockModelRunParameterSet, mockTouchstone} from "../../mocks/mockModels";
+import {createMockContribStore, createMockStore} from "../../mocks/mockStore";
+import {mockModellingGroup, mockModelRunParameterSet, mockTouchstoneVersion} from "../../mocks/mockModels";
 
 describe("Run Parameters actions tests", () => {
     const sandbox = new Sandbox();
 
-    const testTouchstone = mockTouchstone();
+    const testTouchstoneVersion = mockTouchstoneVersion();
     const testGroup = mockModellingGroup();
     const testModelRunParametersSet = mockModelRunParameterSet();
 
@@ -22,17 +23,17 @@ describe("Run Parameters actions tests", () => {
     });
 
     it("clears cache for parameters set", (done) => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
-            touchstones: { currentTouchstone: testTouchstone }
+            touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
         });
         sandbox.setStubFunc(RunParametersService.prototype, "clearCacheForGetParameterSets", ()=>{
             return Promise.resolve();
         });
-        store.dispatch(runParametersActionCreators.clearCacheForGetParameterSets(testGroup.id, testTouchstone.id));
+        store.dispatch(runParametersActionCreators.clearCacheForGetParameterSets(testGroup.id, testTouchstoneVersion.id));
         setTimeout(() => {
-            const actions = store.getActions()
-            expect(actions).to.eql([])
+            const actions = store.getActions();
+            expect(actions).to.eql([]);
             done();
         });
     });
@@ -42,7 +43,7 @@ describe("Run Parameters actions tests", () => {
         sandbox.setStubFunc(RunParametersService.prototype, "getParameterSets", ()=>{
             return Promise.resolve([testModelRunParametersSet]);
         });
-        store.dispatch(runParametersActionCreators.getParameterSets(testGroup.id, testTouchstone.id));
+        store.dispatch(runParametersActionCreators.getParameterSets(testGroup.id, testTouchstoneVersion.id));
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet]};
@@ -52,11 +53,11 @@ describe("Run Parameters actions tests", () => {
     });
 
     it("gets one time token", (done) => {
-        const store = createMockStore();
+        const store = createMockContribStore();
         sandbox.setStubFunc(RunParametersService.prototype, "getOneTimeToken", ()=>{
             return Promise.resolve("test-token");
         });
-        store.dispatch(runParametersActionCreators.getOneTimeToken(testGroup.id, testTouchstone.id, testModelRunParametersSet.id));
+        store.dispatch(runParametersActionCreators.getOneTimeToken(testGroup.id, testTouchstoneVersion.id, testModelRunParametersSet.id));
         setTimeout(() => {
             const actions = store.getActions()
             const expectedPayload = [
@@ -68,9 +69,9 @@ describe("Run Parameters actions tests", () => {
     });
 
     it("refresh parameters sets", (done) => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
-            touchstones: { currentTouchstone: testTouchstone }
+            touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
         });
         sandbox.setStubFunc(RunParametersService.prototype, "getParameterSets", ()=>{
             return Promise.resolve([testModelRunParametersSet]);
@@ -87,9 +88,9 @@ describe("Run Parameters actions tests", () => {
     });
 
     it("upload parameters sets successfull", (done) => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
-            touchstones: { currentTouchstone: testTouchstone }
+            touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
         });
         sandbox.setStubFunc(RunParametersService.prototype, "uploadSet", ()=>{
             return Promise.resolve([testModelRunParametersSet]);
@@ -99,7 +100,7 @@ describe("Run Parameters actions tests", () => {
         });
         store.dispatch(runParametersActionCreators.uploadSet({} as FormData));
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = [
                 {
                     type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
@@ -123,9 +124,9 @@ describe("Run Parameters actions tests", () => {
     });
 
     it("upload parameters sets unsuccessfull", (done) => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
-            touchstones: { currentTouchstone: testTouchstone }
+            touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
         });
         sandbox.setStubFunc(RunParametersService.prototype, "uploadSet", ()=>{
             return Promise.resolve({errors: [new Error('test')]});
@@ -135,7 +136,7 @@ describe("Run Parameters actions tests", () => {
         });
         store.dispatch(runParametersActionCreators.uploadSet({} as FormData));
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = [
                 {
                     type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
@@ -159,10 +160,10 @@ describe("Run Parameters actions tests", () => {
 
     it("reset upload status", (done) => {
         const resetData = {status: RunParametersUploadStatus.off, errors: null} as RunParametersUploadStatusData;
-        const store = createMockStore();
+        const store = createMockContribStore();
         store.dispatch(runParametersActionCreators.resetUploadStatus());
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = [
                 { type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS, data: resetData}
             ];

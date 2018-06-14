@@ -3,26 +3,26 @@ import { shallow } from "enzyme";
 import { expect } from "chai";
 
 import "../../../helper";
-import {mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
+import {mockModellingGroup, mockTouchstoneVersion} from "../../../mocks/mockModels";
 import { ResponsibilitiesPageTitle } from "../../../../main/contrib/components/Responsibilities/PageTitle";
 import { InternalLink } from "../../../../main/shared/components/InternalLink";
 import {Sandbox} from "../../../Sandbox";
-import {createMockStore} from "../../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../../mocks/mockStore";
 
-describe("DownloadDataTitleComponent", () => {
+describe("ResponsibilitiesPageTitle", () => {
 
     const testGroup = mockModellingGroup();
-    const testTouchstone = mockTouchstone();
+    const testTouchstone = mockTouchstoneVersion();
 
     const sandbox = new Sandbox();
 
     afterEach(() => sandbox.restore());
 
     it("renders on connect level", () => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             groups: {currentUserGroup: testGroup},
-            touchstones: {currentTouchstone: testTouchstone},
-        })
+            touchstones: {currentTouchstoneVersion: testTouchstone},
+        });
         const rendered = shallow(<ResponsibilitiesPageTitle title={'test-1'}/>, {context: {store}});
         expect(rendered.props().group).to.eql(testGroup);
         expect(rendered.props().touchstone).to.eql(testTouchstone);
@@ -30,10 +30,10 @@ describe("DownloadDataTitleComponent", () => {
     });
 
     it("renders on component level with back link", () => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             groups: {currentUserGroup: testGroup},
-            touchstones: {currentTouchstone: testTouchstone},
-        })
+            touchstones: {currentTouchstoneVersion: testTouchstone},
+        });
         const rendered = shallow(<ResponsibilitiesPageTitle title={"test"}/>, {context: {store}}).dive();
         expect(rendered.find('div.mr-3').text()).to.equal("test");
         expect(rendered.find(InternalLink).props().href).to.equal(`/${testGroup.id}/responsibilities/${testTouchstone.id}/`);
@@ -41,9 +41,9 @@ describe("DownloadDataTitleComponent", () => {
     });
 
     it("renders on component level with no back link", () => {
-        const store = createMockStore({
+        const store = createMockContribStore({
             groups: {currentUserGroup: testGroup},
-            touchstones: {currentTouchstone: null},
+            touchstones: {currentTouchstoneVersion: null},
         })
         const rendered = shallow(<ResponsibilitiesPageTitle title={"test"}/>, {context: {store}}).dive();
         expect(rendered.find('div.mr-3').text()).to.equal("test");

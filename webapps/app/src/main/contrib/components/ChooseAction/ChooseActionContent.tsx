@@ -1,16 +1,16 @@
 import * as React from "react";
-import { compose, branch, renderComponent } from "recompose";
-import { connect } from 'react-redux';
+import {branch, compose, renderComponent} from "recompose";
+import {connect} from 'react-redux';
 
-import { ModellingGroup, Touchstone } from "../../../shared/models/Generated";
-import { TouchstoneList } from "./TouchstoneList";
-import { isNullOrUndefined } from "util";
-import { InternalLink } from "../../../shared/components/InternalLink";
+import {ModellingGroup, TouchstoneVersion} from "../../../shared/models/Generated";
+import {TouchstoneList} from "./TouchstoneList";
+import {InternalLink} from "../../../shared/components/InternalLink";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../reducers/contribAppReducers";
+import {flatMap} from "../../../shared/ArrayHelpers";
 
 export interface ChooseActionContentProps {
-    touchstones: Touchstone[];
+    touchstoneVersions: TouchstoneVersion[];
     group: ModellingGroup
 }
 
@@ -28,17 +28,16 @@ export const ChooseActionContentComponent: React.SFC<ChooseActionContentProps> =
             <InternalLink href="/help/touchstones/">What is a touchstone?</InternalLink>
         </p>
         <TouchstoneList
-            touchstones={ props.touchstones }
+            touchstones={ props.touchstoneVersions }
             group={ props.group }
         />
     </div>;
-}
+};
 
 export const mapStateToProps = (state: ContribAppState): ChooseActionContentProps => {
     return {
-        touchstones: state.touchstones.touchstones,
+        touchstoneVersions: flatMap(state.touchstones.touchstones, x => x.versions),
         group: state.groups.currentUserGroup
-
     }
 };
 

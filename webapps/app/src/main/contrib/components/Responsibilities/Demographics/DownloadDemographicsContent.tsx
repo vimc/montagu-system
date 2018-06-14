@@ -3,7 +3,7 @@ import { Action, Dispatch } from "redux";
 import { compose, branch, renderComponent} from "recompose";
 import { connect } from 'react-redux';
 
-import { DemographicDataset, Touchstone } from "../../../../shared/models/Generated";
+import { DemographicDataset, TouchstoneVersion } from "../../../../shared/models/Generated";
 import { DemographicOptions } from "./DemographicOptions";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTimeButton";
 import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
@@ -16,7 +16,7 @@ export interface DownloadDemographicsContentProps {
     selectedDataSet: DemographicDataset;
     selectedGender: string;
     selectedFormat: string;
-    touchstone: Touchstone;
+    touchstone: TouchstoneVersion;
     token: string;
     refreshToken: () => void;
 }
@@ -79,7 +79,7 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
 
 export const mapStateToProps = (state: ContribAppState): Partial<DownloadDemographicsContentProps> => {
     return {
-        touchstone: state.touchstones.currentTouchstone,
+        touchstone: state.touchstones.currentTouchstoneVersion,
         dataSets: state.demographic.dataSets,
         selectedDataSet: state.demographic.selectedDataSet,
         selectedGender: state.demographic.selectedGender,

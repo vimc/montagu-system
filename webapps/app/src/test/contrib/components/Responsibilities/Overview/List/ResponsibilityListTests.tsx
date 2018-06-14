@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 
 import "../../../../../helper";
-import { mockModellingGroup, mockResponsibility, mockScenario, mockTouchstone } from "../../../../../mocks/mockModels";
+import { mockModellingGroup, mockResponsibility, mockScenario, mockTouchstoneVersion } from "../../../../../mocks/mockModels";
 import { DiseaseFilter } from "../../../../../../main/contrib/components/Responsibilities/Overview/List/DiseaseFilter";
 import { Responsibility } from "../../../../../../main/shared/models/Generated";
 import { ExtendedResponsibilitySet } from "../../../../../../main/contrib/models/ResponsibilitySet";
@@ -15,7 +15,7 @@ import { ResponsibilityScenario } from "../../../../../../main/contrib/component
 
 function makeProps(responsibilities: Array<Responsibility>,
                         currentDiseaseId?: string): ResponsibilityListComponentProps {
-    const touchstone = mockTouchstone();
+    const touchstone = mockTouchstoneVersion();
     const modellingGroup = mockModellingGroup();
     return {
         modellingGroup: modellingGroup,
@@ -23,7 +23,7 @@ function makeProps(responsibilities: Array<Responsibility>,
         responsibilitySet: new ExtendedResponsibilitySet({
             problems: "",
             status: null,
-            touchstone: touchstone.id,
+            touchstone_version: touchstone.id,
             responsibilities
         }, touchstone, modellingGroup)
     };

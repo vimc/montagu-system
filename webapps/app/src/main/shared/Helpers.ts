@@ -1,6 +1,7 @@
 import {jwtDecoder} from "./sources/JwtDecoder";
 import {Result} from "./models/Generated";
 import {settings} from "./Settings";
+import {TestResult} from "tslint/lib/test";
 
 export function doNothing() {
 
@@ -75,7 +76,3 @@ export const helpers = {
        return "?redirectUrl=" + encodeURI(settings.montaguUrl() + redirectPath);
     }
 };
-
-export const isNonEmptyArray = (arrayData: any[]) => {
-    return Array.isArray(arrayData) && arrayData.length;
-}

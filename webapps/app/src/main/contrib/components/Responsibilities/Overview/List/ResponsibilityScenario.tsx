@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from 'react-redux';
 
-import { Disease, ModellingGroup, Responsibility, ResponsibilitySetStatus, Touchstone } from "../../../../../shared/models/Generated";
+import { Disease, ModellingGroup, Responsibility, ResponsibilitySetStatus, TouchstoneVersion } from "../../../../../shared/models/Generated";
 import { ButtonLink } from "../../../../../shared/components/ButtonLink";
 import {CurrentEstimateSetSummary} from "./CurrentEstimateSetSummary";
 import {ContribAppState} from "../../../../reducers/contribAppReducers";
@@ -9,7 +9,7 @@ import {ContribAppState} from "../../../../reducers/contribAppReducers";
 export interface ResponsibilityScenarioPublicProps {
     responsibility: Responsibility;
     modellingGroup: ModellingGroup;
-    touchstone: Touchstone;
+    touchstone: TouchstoneVersion;
     responsibilitySetStatus: ResponsibilitySetStatus;
 }
 

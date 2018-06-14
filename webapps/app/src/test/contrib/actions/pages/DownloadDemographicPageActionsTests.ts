@@ -1,14 +1,14 @@
 import { expect } from "chai";
 
 import { Sandbox } from "../../../Sandbox";
-import {createMockStore} from "../../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
 import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {
-    mockBreadcrumbs, mockDemographicDataset, mockDisease, mockModellingGroup, mockResponsibilitySet,
-    mockTouchstone
+    mockBreadcrumbs, mockDemographicDataset, mockDisease, mockModellingGroup, mockResponsibilitySet, mockTouchstone,
+    mockTouchstoneVersion
 } from "../../../mocks/mockModels";
 import {TouchstonesService} from "../../../../main/contrib/services/TouchstonesService";
 import {TouchstoneTypes} from "../../../../main/contrib/actionTypes/TouchstonesTypes";
@@ -20,16 +20,18 @@ import {ExtendedResponsibilitySet} from "../../../../main/contrib/models/Respons
 import {downloadDemographicsPageActionCreators} from "../../../../main/contrib/actions/pages/downloadDemographicsPageActionCreators";
 import {DemographicService} from "../../../../main/contrib/services/DemographicService";
 import {DemographicTypes} from "../../../../main/contrib/actionTypes/DemographicTypes";
+import {TouchstonesState} from "../../../../main/contrib/reducers/touchstonesReducer";
 
 describe("Download Demographic Page actions tests", () => {
     const sandbox = new Sandbox();
 
     const testGroup = mockModellingGroup();
     const testBreadcrumbs = mockBreadcrumbs();
-    const testTouchstone = mockTouchstone({id: "touchstone-1"});
+    const testTouchstone = mockTouchstone();
+    const testTouchstoneVersion = testTouchstone.versions[0];
     const testDisease = mockDisease();
     const testResponsibilitySet = mockResponsibilitySet();
-    const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstone, testGroup);
+    const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
     const testDemographicDataSet = mockDemographicDataset();
 
     afterEach(() => {
@@ -37,12 +39,15 @@ describe("Download Demographic Page actions tests", () => {
     });
 
     it("on load", (done) => {
-        const initialState = {
+        const touchstonesState: Partial<TouchstonesState> =  {
+            touchstones: [testTouchstone],
+            currentTouchstoneVersion: testTouchstoneVersion
+        };
+        const store = createMockContribStore({
             auth: {modellingGroups: testGroup.id},
             groups: {userGroups: [testGroup], currentUserGroup: testGroup},
-            touchstones: {touchstones: [testTouchstone], currentTouchstone: testTouchstone}
-        };
-        const store = createMockStore(initialState);
+            touchstones: touchstonesState
+        });
 
         sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", ()=>{
             return Promise.resolve([testGroup]);
@@ -64,7 +69,7 @@ describe("Download Demographic Page actions tests", () => {
         });
 
         store.dispatch(downloadDemographicsPageActionCreators
-            .onLoad({groupId: testGroup.id, touchstoneId: testTouchstone.id}));
+            .onLoad({groupId: testGroup.id, touchstoneId: testTouchstoneVersion.id}));
 
         setTimeout(() => {
             const actions = store.getActions();
@@ -74,7 +79,7 @@ describe("Download Demographic Page actions tests", () => {
                 { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup },
                 { type: TouchstoneTypes.TOUCHSTONES_FETCHED, data: [testTouchstone]},
                 { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
-                { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE, data: testTouchstone},
+                { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstoneVersion},
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
                 { type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED, data: [testDemographicDataSet]},
                 { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs },

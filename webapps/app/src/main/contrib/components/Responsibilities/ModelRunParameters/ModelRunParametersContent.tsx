@@ -2,13 +2,13 @@ import * as React from "react";
 import { compose, branch, renderComponent} from "recompose";
 import { connect } from 'react-redux';
 
-import {Touchstone} from "../../../../shared/models/Generated";
+import {TouchstoneVersion} from "../../../../shared/models/Generated";
 import {ModelRunParametersSection} from "./ModelRunParametersSection";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 
 export interface ModelRunParametersContentProps {
-    touchstone: Touchstone;
+    touchstone: TouchstoneVersion;
     diseases: string[];
 }
 
@@ -24,7 +24,7 @@ export class ModelRunParametersContentComponent extends React.Component<ModelRun
 
 export const mapStateToProps = (state: ContribAppState): Partial<ModelRunParametersContentProps> => {
     return {
-        touchstone: state.touchstones.currentTouchstone,
+        touchstone: state.touchstones.currentTouchstoneVersion,
         diseases: state.responsibilities.responsibilitiesSet
             ? [...new Set(state.responsibilities.responsibilitiesSet.responsibilities.map(r => r.scenario.disease))]
             : []

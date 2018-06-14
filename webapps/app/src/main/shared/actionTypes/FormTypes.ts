@@ -1,4 +1,4 @@
-import {Touchstone} from "../../shared/models/Generated";
+import {TouchstoneVersion} from "../../shared/models/Generated";
 
 export enum TouchstoneTypes {
     TOUCHSTONES_FETCHED = "TOUCHSTONES_FETCHED",
@@ -7,12 +7,12 @@ export enum TouchstoneTypes {
 
 export interface TouchstonesFetched {
     type: TouchstoneTypes.TOUCHSTONES_FETCHED;
-    data: Touchstone[];
+    data: TouchstoneVersion[];
 }
 
 export interface SetCurrentTouchstone {
     type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE;
-    data: Touchstone;
+    data: TouchstoneVersion;
 }
 
 export type TouchstonesAction =
