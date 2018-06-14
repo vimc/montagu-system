@@ -13,7 +13,9 @@ export const TouchstoneListComponent: React.SFC<TouchstoneListProps> = (props: T
     return <table>
         <thead>
         <tr>
-            <th>Name</th>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Comment</th>
             <th>Latest version</th>
         </tr>
         </thead>
