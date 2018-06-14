@@ -1,5 +1,5 @@
-import {TouchstonesAction, TouchstoneTypes} from "../actionTypes/TouchstonesTypes";
 import {Touchstone, TouchstoneVersion} from "../../shared/models/Generated";
+import {TouchstonesAction, TouchstoneTypes} from "../../shared/actionTypes/TouchstonesTypes";
 
 export interface TouchstonesState {
     touchstones: Touchstone[];

@@ -4,10 +4,10 @@ import {Touchstone, User} from "../../../../shared/models/Generated";
 
 export class TouchstoneListItem extends React.Component<Touchstone, undefined> {
     render() {
-        const url = `/touchstones/${ this.props.name }/`;
+        const url = `/touchstones/${ this.props.id }/`;
         return <tr>
             <td>
-                <InternalLink href={url}>{this.props.name}</InternalLink>
+                <InternalLink href={url}>{this.props.description}</InternalLink>
             </td>
             <td>{this.props.id}</td>
         </tr>;

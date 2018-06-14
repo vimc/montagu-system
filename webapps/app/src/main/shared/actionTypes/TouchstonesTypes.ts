@@ -18,7 +18,7 @@ export interface TouchstonesFetchedForGroup {
 
 export interface SetCurrentTouchstoneVersion {
     type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION;
-    data: Touchstone;
+    data: TouchstoneVersion;
 }
 
 export type TouchstonesAction =

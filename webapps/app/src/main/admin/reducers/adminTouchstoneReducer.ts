@@ -1,6 +1,5 @@
 import {Touchstone} from "../../shared/models/Generated";
-import {isNonEmptyArray} from "../../shared/Helpers";
-import {TouchstoneTypes, TouchstonesAction} from "../../shared/actionTypes/TouchstonesTypes";
+import {TouchstonesAction, TouchstoneTypes} from "../../shared/actionTypes/TouchstonesTypes";
 
 export interface TouchstoneState {
     touchstones: Touchstone[]
