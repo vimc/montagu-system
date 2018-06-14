@@ -20,6 +20,7 @@ object ModellingGroupRouteConfig : RouteConfig
                     .secure(readPermissions),
             Endpoint("$baseUrl/", controller, "createModellingGroup")
                     .json()
+                    .post()
                     .secure(writePermissions),
             Endpoint("$baseUrl/:group-id/", controller, "getModellingGroup")
                     .json()
