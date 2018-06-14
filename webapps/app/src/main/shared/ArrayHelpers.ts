@@ -1,9 +1,6 @@
 export const isNonEmptyArray = (arrayData: any[]) => {
     return Array.isArray(arrayData) && arrayData.length;
 };
-export const isNullOrEmptyArray = (arrayData: any[]) => {
-    return !Array.isArray(arrayData) || !arrayData.length;
-};
 
 export function flatten<T>(arrayOfArrays: Array<Array<T>>): T[] {
     if (isNonEmptyArray(arrayOfArrays)) {
