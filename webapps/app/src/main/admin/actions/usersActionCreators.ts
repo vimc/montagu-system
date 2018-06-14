@@ -60,9 +60,7 @@ export const usersActionCreators = {
             const result = await (new UsersService(dispatch, getState)).addGlobalRoleToUser(username, role);
 
             if (result === "OK") {
-                dispatch(this.clearUsersListCache());
-                await dispatch(this.getAllUsers());
-                dispatch(this.setCurrentUser(username));
+                await this._refreshUser(dispatch, username);
             }
         }
     },
@@ -73,11 +71,15 @@ export const usersActionCreators = {
                 .removeRoleFromUser(username, role, scopeId, scopePrefix);
 
             if (result === "OK") {
-                dispatch(this.clearUsersListCache());
-                await dispatch(this.getAllUsers());
-                dispatch(this.setCurrentUser(username));
+                await this._refreshUser(dispatch, username);
             }
         }
+    },
+
+    async _refreshUser(dispatch: Dispatch<AdminAppState>, username: string) {
+        dispatch(this.clearUsersListCache());
+        await dispatch(this.getAllUsers());
+        dispatch(this.setCurrentUser(username));
     },
 
     setCurrentUser(username: string) {
