@@ -54,12 +54,12 @@ class TouchstoneControllerTests : MontaguTests()
         val permissiveContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
         }
-        assertThat(TouchstoneController(permissiveContext, repo).getTouchstones()).isEqualTo(listOf(touchstone))
+        assertThat(TouchstoneController(permissiveContext, mock(), repo).getTouchstones()).isEqualTo(listOf(touchstone))
 
         val limitedContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn false
         }
-        assertThat(TouchstoneController(limitedContext, repo).getTouchstones()).isEqualTo(listOf(Touchstone(
+        assertThat(TouchstoneController(limitedContext, mock(), repo).getTouchstones()).isEqualTo(listOf(Touchstone(
                 id = "t",
                 description = "touchstone description",
                 comment = "comment",
