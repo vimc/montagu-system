@@ -105,7 +105,7 @@ class ModellingGroupTests : DatabaseTest()
             writePermissions
         } sendingJSON {
             json {
-                obj("id" to "newgroup",
+                obj("id" to "IC-Garske",
                         "description" to "description")
             }
         } withRequestSchema "ModellingGroup" andCheckObjectCreation "/modelling-groups/newgroup/"

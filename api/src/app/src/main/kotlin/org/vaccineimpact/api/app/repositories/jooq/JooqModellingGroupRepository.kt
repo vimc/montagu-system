@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.*
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
@@ -26,9 +27,17 @@ class JooqModellingGroupRepository(
 {
     override fun createModellingGroup(newGroup: ModellingGroup)
     {
+        val idArray = newGroup.id.split("-")
+
+        if (idArray.count() != 2){
+            throw BadRequest("Modelling group id must be of the form Institution-PI")
+        }
+
         dsl.newRecord(MODELLING_GROUP).apply {
             id = newGroup.id
             description = newGroup.description
+            institution = idArray[0]
+            pi = idArray[1]
         }.insert()
 
     }
