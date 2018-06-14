@@ -52,6 +52,16 @@ open class ModellingGroupController(
         return okayResponse()
     }
 
+    fun createModellingGroup(): String
+    {
+        val newGroup = context.postData<ModellingGroup>()
+
+        modellingGroupRepository.createModellingGroup(newGroup)
+
+        return objectCreation(context, "/modelling-group/${newGroup.id}/")
+    }
+
+
     private fun managingScopes(context: ActionContext) = context.permissions
             .filter { it.name == "modelling-groups.manage-members" }
             .map { it.scope }

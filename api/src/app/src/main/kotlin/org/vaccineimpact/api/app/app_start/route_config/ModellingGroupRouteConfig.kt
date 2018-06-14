@@ -11,17 +11,19 @@ object ModellingGroupRouteConfig : RouteConfig
     private val baseUrl = "/modelling-groups"
     private val controller = ModellingGroupController::class
 
-    private val permissions = setOf("*/modelling-groups.read")
+    private val readPermissions = setOf("*/modelling-groups.read")
+    private val writePermissions = setOf("*/modelling-groups.write")
 
     override val endpoints = listOf(
             Endpoint("$baseUrl/", controller, "getModellingGroups")
                     .json()
-                    .secure(permissions),
-
+                    .secure(readPermissions),
+            Endpoint("$baseUrl/", controller, "createModellingGroup")
+                    .json()
+                    .secure(writePermissions),
             Endpoint("$baseUrl/:group-id/", controller, "getModellingGroup")
                     .json()
-                    .secure(permissions + setOf("*/models.read")),
-
+                    .secure(readPermissions + setOf("*/models.read")),
             Endpoint("$baseUrl/:group-id/actions/associate-member/", controller, "modifyMembership")
                     .post()
                     .json()

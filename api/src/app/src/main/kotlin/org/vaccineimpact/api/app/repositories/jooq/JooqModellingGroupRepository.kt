@@ -24,6 +24,14 @@ class JooqModellingGroupRepository(
         private val touchstoneRepository: TouchstoneRepository
 ) : JooqRepository(dsl), ModellingGroupRepository
 {
+    override fun createModellingGroup(newGroup: ModellingGroup)
+    {
+        dsl.newRecord(MODELLING_GROUP).apply {
+            id = newGroup.id
+            description = newGroup.description
+        }.insert()
+
+    }
 
     override fun getModellingGroups(): Iterable<ModellingGroup>
     {
