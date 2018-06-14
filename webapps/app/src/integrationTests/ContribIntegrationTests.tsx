@@ -32,7 +32,7 @@ const FormData = require('form-data');
 const jwt_decode = require('jwt-decode');
 
 const groupId = "test-group"; // This group must match the one the logged in user belongs to
-const touchstoneId = "test-1";
+const touchstoneVersionId = "test-1";
 const scenarioId = "yf-1";
 const modelId = "model-1";
 const modelVersion = "v1";
@@ -60,7 +60,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             form.append('disease', 'yf');
 
             const uploadResult: Result = await (new RunParametersService(this.store.dispatch, this.store.getState))
-                .uploadSet(groupId, touchstoneId, form);
+                .uploadSet(groupId, touchstoneVersionId, form);
 
             expect(uploadResult.errors[0].message).to.eq("You must supply a \'file\' parameter in the multipart body")
         });
@@ -114,12 +114,17 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const fetchedTouchstonesResult: Touchstone[] = await (new TouchstonesService(this.store.dispatch, this.store.getState))
                 .getTouchstonesByGroupId(groupId);
 
-            const touchstone: TouchstoneVersion = {
-                id: touchstoneId,
-                name: "test",
-                version: 1,
-                description: "Testing version 1",
-                status: "open"
+            const touchstone: Touchstone = {
+                id: "test",
+                description: "Testing",
+                comment: "comment",
+                versions: [{
+                    id: touchstoneVersionId,
+                    name: "test",
+                    version: 1,
+                    description: "Testing version 1",
+                    status: "open"
+                }]
             };
             expect(fetchedTouchstonesResult).to.eql([touchstone]);
         });
@@ -130,7 +135,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
 
             const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-                .getResponsibilities(groupId, touchstoneId);
+                .getResponsibilities(groupId, touchstoneVersionId);
 
             expect(responsibilities).to.eql(expectedResponsibilitiesResponse());
         });
@@ -139,17 +144,17 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const coverageSetId: number = await addCoverageSets(this.db);
 
             const coverageSets: ScenarioTouchstoneAndCoverageSets = await (new CoverageService(this.store.dispatch, this.store.getState))
-                .getDataSets(groupId, touchstoneId, scenarioId);
+                .getDataSets(groupId, touchstoneVersionId, scenarioId);
 
             const expectedCoverageSets: ScenarioTouchstoneAndCoverageSets = {
                 scenario: {
                     id: scenarioId,
                     description: "Yellow Fever scenario",
                     disease: "yf",
-                    touchstones: [touchstoneId]
+                    touchstones: [touchstoneVersionId]
                 },
                 touchstone_version: {
-                    id: touchstoneId,
+                    id: touchstoneVersionId,
                     name: "test",
                     version: 1,
                     description: "Testing version 1",
@@ -159,7 +164,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     {
                         id: coverageSetId,
                         name: "Test set",
-                        touchstone_version: touchstoneId,
+                        touchstone_version: touchstoneVersionId,
                         activity_type: "none",
                         vaccine: "yf",
                         gavi_support: "no vaccine"
@@ -174,7 +179,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             await addCoverageSets(this.db);
 
             const token: string = await (new CoverageService(this.store.dispatch, this.store.getState))
-                .getOneTimeToken(groupId, touchstoneId, scenarioId, 'long');
+                .getOneTimeToken(groupId, touchstoneVersionId, scenarioId, 'long');
 
             const decoded = jwt_decode(token);
 
@@ -182,7 +187,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const payload = QueryString.parse(decoded.payload);
             expect(payload).to.eql({
                 ":group-id": groupId,
-                ":touchstone-id": touchstoneId,
+                ":touchstone-version-id": touchstoneVersionId,
                 ":scenario-id": scenarioId
             });
         });
@@ -191,7 +196,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             await addDemographicDataSets(this.db);
 
             const demographicDataSets: DemographicDataset[] = await (new DemographicService(this.store.dispatch, this.store.getState))
-                .getDataSetsByTouchstoneId(touchstoneId);
+                .getDataSetsByTouchstoneId(touchstoneVersionId);
 
             const expectedDataSets: DemographicDataset[] = [
                 {
@@ -208,19 +213,19 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             await addDemographicDataSets(this.db);
 
             const demographicDataSets: DemographicDataset[] = await (new DemographicService(this.store.dispatch, this.store.getState))
-                .getDataSetsByTouchstoneId(touchstoneId);
+                .getDataSetsByTouchstoneId(touchstoneVersionId);
 
             const demographicDataSet = demographicDataSets[0];
 
             const token: string = await (new DemographicService(this.store.dispatch, this.store.getState))
-                .getOneTimeToken(touchstoneId, demographicDataSet.source, demographicDataSet.id,'long', 'female');
+                .getOneTimeToken(touchstoneVersionId, demographicDataSet.source, demographicDataSet.id,'long', 'female');
 
             const decoded = jwt_decode(token);
 
             expect(decoded.action).to.equal("demography");
             const payload = QueryString.parse(decoded.payload);
             expect(payload).to.eql({
-                ":touchstone-id": touchstoneId,
+                ":touchstone-version-id": touchstoneVersionId,
                 ":source-code": demographicDataSet.source,
                 ":type-code": demographicDataSet.id
             });
@@ -231,19 +236,19 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             await returnBurdenEstimateSetPromise(this.db);
 
             const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-                .getResponsibilities(groupId, touchstoneId);
+                .getResponsibilities(groupId, touchstoneVersionId);
 
             const estimatesSet = responsibilities.responsibilities[0].current_estimate_set;
 
             const token: string = await (new EstimatesService(this.store.dispatch, this.store.getState))
-                .getOneTimeToken(groupId, touchstoneId, scenarioId, estimatesSet.id);
+                .getOneTimeToken(groupId, touchstoneVersionId, scenarioId, estimatesSet.id);
 
             const decoded = jwt_decode(token);
             expect(decoded.action).to.equal("burdens-populate");
             const payload = QueryString.parse(decoded.payload);
             expect(payload).to.eql({
                 ":group-id": groupId,
-                ":touchstone-id": touchstoneId,
+                ":touchstone-version-id": touchstoneVersionId,
                 ":scenario-id": scenarioId,
                 ":set-id": String(estimatesSet.id)
             });
@@ -254,7 +259,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             await returnBurdenEstimateSetPromise(this.db);
 
             const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-                .getResponsibilities(groupId, touchstoneId);
+                .getResponsibilities(groupId, touchstoneVersionId);
 
             const estimatesSet = responsibilities.responsibilities[0].current_estimate_set;
 
@@ -262,7 +267,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const queryString = helpers.buildRedirectUrl(redirectPath);
 
             const token: string = await (new EstimatesService(this.store.dispatch, this.store.getState))
-                .getOneTimeToken(groupId, touchstoneId, scenarioId, estimatesSet.id, queryString);
+                .getOneTimeToken(groupId, touchstoneVersionId, scenarioId, estimatesSet.id, queryString);
 
             const decoded = jwt_decode(token);
 
@@ -273,7 +278,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const payload = QueryString.parse(decoded.payload);
             expect(payload).to.eql({
                 ":group-id": groupId,
-                ":touchstone-id": touchstoneId,
+                ":touchstone-version-id": touchstoneVersionId,
                 ":scenario-id": scenarioId,
                 ":set-id": String(estimatesSet.id)
             });
@@ -293,7 +298,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             await addModelRunParameterSets(this.db);
 
             const runParametersSets: ModelRunParameterSet[] = await (new RunParametersService(this.store.dispatch, this.store.getState))
-                .getParameterSets(groupId, touchstoneId);
+                .getParameterSets(groupId, touchstoneVersionId);
 
             const expectedSet = [
                 {
@@ -312,17 +317,17 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             await addModelRunParameterSets(this.db);
 
             const sets: ModelRunParameterSet[] = await (new RunParametersService(this.store.dispatch, this.store.getState))
-                .getParameterSets(groupId, touchstoneId);
+                .getParameterSets(groupId, touchstoneVersionId);
 
             const token: string = await (new RunParametersService(this.store.dispatch, this.store.getState))
-                .getOneTimeToken(groupId, touchstoneId, sets[0].id);
+                .getOneTimeToken(groupId, touchstoneVersionId, sets[0].id);
 
             const decoded = jwt_decode(token);
             expect(decoded.action).to.equal("model-run-parameters");
             const payload = QueryString.parse(decoded.payload);
             expect(payload).to.eql({
                 ":group-id": groupId,
-                ":touchstone-id": touchstoneId,
+                ":touchstone-version-id": touchstoneVersionId,
                 ":model-run-parameter-set-id": String(sets[0].id)
             });
         });
@@ -339,15 +344,15 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             } as EstimatesCreateBurdenData;
 
             const responsibilitiesInitial: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-                .getResponsibilities(groupId, touchstoneId);
+                .getResponsibilities(groupId, touchstoneVersionId);
 
             expect(responsibilitiesInitial.responsibilities[0].current_estimate_set).to.equal(null);
 
             await (new EstimatesService(this.store.dispatch, this.store.getState))
-                .createBurden(groupId, touchstoneId, scenarioId, data);
+                .createBurden(groupId, touchstoneVersionId, scenarioId, data);
 
             const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-                .setOptions({noCache: true}).getResponsibilities(groupId, touchstoneId);
+                .setOptions({noCache: true}).getResponsibilities(groupId, touchstoneVersionId);
 
             const estimateSet = responsibilities.responsibilities[0].current_estimate_set;
             expect(estimateSet.type).to.eql(data.type);
@@ -360,9 +365,9 @@ new ContributionPortalIntegrationTests();
 function addTouchstone(db: Client): Promise<QueryResult> {
     return db.query(`
         INSERT INTO touchstone_name (id,     description, comment) 
-        VALUES ('test', 'Testing',   '');
+        VALUES ('test', 'Testing',   'comment');
         INSERT INTO touchstone (id,       touchstone_name, version, description,         status, comment) 
-        VALUES ('${touchstoneId}', 'test',          1,       'Testing version 1', 'open',      '');
+        VALUES ('${touchstoneVersionId}', 'test',          1,       'Testing version 1', 'open',      'comment for v1');
     `);
 }
 
@@ -390,11 +395,11 @@ function addResponsibilities(db: Client): Promise<ResponsibilityIds> {
                 INSERT INTO scenario_description (id, description, disease)
                 VALUES ('${scenarioId}', 'Yellow Fever scenario', 'yf');
                 INSERT INTO scenario (touchstone, scenario_description)
-                VALUES ('${touchstoneId}', '${scenarioId}')
+                VALUES ('${touchstoneVersionId}', '${scenarioId}')
                 RETURNING id INTO scenario_id;
         
                 INSERT INTO responsibility_set (modelling_group, touchstone, status)
-                VALUES ('${groupId}', '${touchstoneId}', 'incomplete')
+                VALUES ('${groupId}', '${touchstoneVersionId}', 'incomplete')
                 RETURNING id INTO set_id;
                 
                 INSERT INTO responsibility (responsibility_set, scenario, is_open)
@@ -440,7 +445,7 @@ function addCoverageSets(db: Client): Promise<number> {
                 INSERT INTO vaccine            (id, name) VALUES ('yf', 'Yellow Fever vaccine');
             
                 INSERT INTO coverage_set (      name,        touchstone, vaccine, gavi_support_level, activity_type)
-                                  VALUES ('Test set', '${touchstoneId}',    'yf',             'none',        'none')
+                                  VALUES ('Test set', '${touchstoneVersionId}',    'yf',             'none',        'none')
                                   RETURNING id INTO coverage_set_id;
                                   
                 SELECT id FROM scenario INTO scenario_id;
@@ -485,10 +490,10 @@ function addDemographicDataSets(db: Client): Promise<QueryResult> {
                 RETURNING id into dataset_id;
                 
                 INSERT INTO touchstone_demographic_dataset (touchstone, demographic_dataset)
-                VALUES ('${touchstoneId}', dataset_id);
+                VALUES ('${touchstoneVersionId}', dataset_id);
                 
                 INSERT INTO touchstone_country (touchstone, country, disease)
-                VALUES ('${touchstoneId}', 'ATL', 'yf');
+                VALUES ('${touchstoneVersionId}', 'ATL', 'yf');
                 
                 INSERT INTO demographic_statistic 
                 (demographic_source, country, year, age_from, age_to, demographic_statistic_type, demographic_variant,    gender, value)
@@ -528,7 +533,7 @@ function addModelRunParameterSets(db: Client): Promise<QueryResult> {
 function expectedResponsibilitiesResponse(): Responsibilities {
     return {
         status: "incomplete",
-        touchstone_version: touchstoneId,
+        touchstone_version: touchstoneVersionId,
         problems: "",
         responsibilities: [
             {
@@ -539,7 +544,7 @@ function expectedResponsibilitiesResponse(): Responsibilities {
                     id: scenarioId,
                     description: "Yellow Fever scenario",
                     disease: "yf",
-                    touchstones: [touchstoneId]
+                    touchstones: [touchstoneVersionId]
                 }
             }
         ]
