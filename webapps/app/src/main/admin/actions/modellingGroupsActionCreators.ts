@@ -8,7 +8,7 @@ import {
     GroupsFetched,
     ModellingGroupTypes,
     SetGroupDetails,
-    SetCurrentGroup, SetCurrentGroupMembers
+    SetCurrentGroup, SetCurrentGroupMembers, AddModellingGroup
 } from "../actionTypes/ModellingGroupsTypes";
 import {ContribAppState} from "../../contrib/reducers/contribAppReducers";
 import {isNonEmptyArray} from "../../shared/ArrayHelpers";
@@ -96,5 +96,20 @@ export const modellingGroupsActionCreators = {
             } as SetCurrentGroupMembers);
         }
     },
+
+    createModellingGroup(name: string, description: string): AddModellingGroup {
+
+        const newGroup: ModellingGroup = {
+            id: name,
+            description: description
+        };
+
+        // TODO actually create group
+
+        return {
+            type: ModellingGroupTypes.ADD_MODELLING_GROUP,
+            data: newGroup
+        }
+    }
 
 };

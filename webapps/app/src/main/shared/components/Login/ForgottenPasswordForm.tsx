@@ -7,7 +7,7 @@ import { Dispatch } from "redux";
 import { ValidationError } from "./ValidationError";
 import { validations } from "../../modules/reduxForm";
 import { authActionCreators } from "../../actions/authActionCreators";
-import {InputFieldProps} from "../../types";
+import {InputFieldProps} from "../ReduxForm/types";
 
 export interface ForgotPasswordFormProps {
     handleSubmit: (F: Function) => any;

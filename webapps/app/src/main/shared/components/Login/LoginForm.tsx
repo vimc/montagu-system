@@ -9,7 +9,7 @@ import { ValidationError } from "./ValidationError";
 import { validations } from "../../modules/reduxForm";
 import { authActionCreators } from "../../actions/authActionCreators";
 import { GlobalState } from "../../reducers/GlobalState";
-import {InputFieldProps} from "../../types";
+import {InputFieldProps} from "../ReduxForm/types";
 
 export interface LoginFormProps {
     handleSubmit: (F: Function) => any;

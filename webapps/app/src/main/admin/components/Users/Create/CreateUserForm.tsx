@@ -12,22 +12,16 @@ import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {usersActionCreators} from "../../../actions/usersActionCreators";
 import {FormEvent} from "react";
 import {ErrorInfo} from "../../../../shared/models/Generated";
-
-export interface CreateUserFormProps {
-    // https://redux-form.com/7.3.0/docs/api/props.md/#-code-handlesubmit-eventorsubmit-function-code-
-    // this function is added by redux form. it takes a function with the form values as arguments and
-    // returns a function that can be used as an 'onSubmit' handler
-    handleSubmit: (submitFunction: (values: CreateUserFormFields) => void)
-        => (event: FormEvent<HTMLFormElement>) => void,
-    submit: (values: CreateUserFormFields) => void,
-    errors: ErrorInfo[],
-    changeFieldValue: (field: string, value: string) => void
-}
+import {ReduxFormProps} from "../../../../shared/components/ReduxForm/types";
 
 export interface CreateUserFormFields {
     name: string;
     email: string;
     username: string;
+}
+
+export interface CreateUserFormProps extends ReduxFormProps<CreateUserFormFields>{
+    changeFieldValue: (field: string, value: string) => void
 }
 
 function processName(name: string) {
