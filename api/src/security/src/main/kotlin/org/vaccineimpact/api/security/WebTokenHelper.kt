@@ -21,7 +21,7 @@ open class WebTokenHelper(keyPair: KeyPair,
     open val defaultLifespan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
     val issuer = Config["token.issuer"]
     val signatureConfiguration = RSASignatureConfiguration(keyPair)
-    val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
+    val generator: TokenGenerator = CompressedJwtGenerator<CommonProfile>(signatureConfiguration)
     private val random = SecureRandom()
 
     open fun generateToken(user: InternalUser, lifeSpan: Duration = defaultLifespan): String

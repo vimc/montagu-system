@@ -3,6 +3,7 @@ package org.vaccineimpact.api.security
 import com.nimbusds.jwt.JWT
 import org.pac4j.core.credentials.TokenCredentials
 import org.pac4j.core.exception.CredentialsException
+import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator
 
 open class MontaguTokenAuthenticator(
@@ -10,6 +11,11 @@ open class MontaguTokenAuthenticator(
         private val expectedType: TokenType
 ) : JwtAuthenticator(tokenHelper.signatureConfiguration)
 {
+    override fun validateToken(token: String?): CommonProfile?
+    {
+        return super.validateToken(inflate(token))
+    }
+
     override fun createJwtProfile(credentials: TokenCredentials, jwt: JWT)
     {
         super.createJwtProfile(credentials, jwt)
