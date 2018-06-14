@@ -52,7 +52,7 @@ export const demographicActionCreators = {
             const demographicState = getState().demographic;
 
             const dataSet = demographicState.selectedDataSet;
-            const touchstone = getState().touchstones.currentTouchstone;
+            const touchstone = getState().touchstones.currentTouchstoneVersion;
             const format = demographicState.selectedFormat;
 
             const gender = dataSet.gender_is_applicable ? demographicState.selectedGender : 'both';

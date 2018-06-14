@@ -7,7 +7,7 @@ import { ModellingGroup } from "../../../../shared/models/Generated";
 import { ModellingGroupListItem } from "./ModellingGroupListItem";
 
 import {AdminAppState} from "../../../reducers/adminAppReducers";
-import {isNonEmptyArray} from "../../../../shared/Helpers";
+import {isNonEmptyArray} from "../../../../shared/ArrayHelpers";
 
 interface ModellingGroupsProps {
     groups: ModellingGroup[]

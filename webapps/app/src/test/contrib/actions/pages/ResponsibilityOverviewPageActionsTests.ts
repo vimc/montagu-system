@@ -1,13 +1,16 @@
-import { expect } from "chai";
+import {expect} from "chai";
 
-import { Sandbox } from "../../../Sandbox";
-import {createMockStore} from "../../../mocks/mockStore";
+import {Sandbox} from "../../../Sandbox";
+import {createMockContribStore} from "../../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
 import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {
-    mockBreadcrumbs, mockDisease, mockModellingGroup, mockResponsibilitySet,
+    mockBreadcrumbs,
+    mockDisease,
+    mockModellingGroup,
+    mockResponsibilitySet,
     mockTouchstone
 } from "../../../mocks/mockModels";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
@@ -18,67 +21,64 @@ import {ResponsibilitiesService} from "../../../../main/contrib/services/Respons
 import {DiseasesTypes} from "../../../../main/contrib/actionTypes/DiseasesTypes";
 import {ResponsibilitiesTypes} from "../../../../main/contrib/actionTypes/ResponsibilitiesTypes";
 import {ExtendedResponsibilitySet} from "../../../../main/contrib/models/ResponsibilitySet";
-import {UserService} from "../../../../main/contrib/services/UserService";
-import {UserActionType} from "../../../../main/contrib/actionTypes/UserActionTypes";
 
 describe("Responsibility Overview Page actions tests", () => {
     const sandbox = new Sandbox();
 
     const testGroup = mockModellingGroup();
     const testBreadcrumbs = mockBreadcrumbs();
-    const testTouchstone = mockTouchstone({id: "touchstone-1"});
+    const testTouchstone = mockTouchstone();
+    const testTouchstoneVersion = testTouchstone.versions[0];
     const testDisease = mockDisease();
     const testResponsibilitySet = mockResponsibilitySet();
-    const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstone, testGroup);
+    const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
 
     afterEach(() => {
         sandbox.restore();
     });
 
     it("on load", (done) => {
-        const initialState = {
+        const store = createMockContribStore({
             auth: {modellingGroups: testGroup.id},
             groups: {userGroups: [testGroup], currentUserGroup: testGroup},
-            touchstones: {touchstones: [testTouchstone], currentTouchstone: testTouchstone}
-        };
-        const store = createMockStore(initialState);
+            touchstones: {touchstones: [testTouchstone], currentTouchstoneVersion: testTouchstoneVersion}
+        });
 
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", ()=>{
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", () => {
             return Promise.resolve([testGroup]);
         });
-        sandbox.setStubFunc(TouchstonesService.prototype, "getTouchstonesByGroupId", ()=>{
+        sandbox.setStubFunc(TouchstonesService.prototype, "getTouchstonesByGroupId", () => {
             return Promise.resolve([testTouchstone]);
         });
-        sandbox.setStubFunc(DiseasesService.prototype, "getAllDiseases", ()=>{
+        sandbox.setStubFunc(DiseasesService.prototype, "getAllDiseases", () => {
             return Promise.resolve([testDisease]);
         });
-        sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", ()=>{
+        sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", () => {
             return Promise.resolve(testResponsibilitySet);
         });
-        sandbox.setStubFunc(breadcrumbsModule, "initialize", ()=>{
+        sandbox.setStubFunc(breadcrumbsModule, "initialize", () => {
             return testBreadcrumbs;
         });
 
         store.dispatch(responsibilityOverviewPageActionCreators
-            .onLoad({groupId: testGroup.id, touchstoneId: testTouchstone.id}));
+            .onLoad({groupId: testGroup.id, touchstoneId: testTouchstoneVersion.id}));
 
         setTimeout(() => {
             const actions = store.getActions();
 
             const expectedPayload = [
-                { type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup] },
-                { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup },
-                { type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]},
-                { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
-                { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE, data: testTouchstone},
-                { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
-                { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs },
+                {type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup]},
+                {type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup},
+                {type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]},
+                {type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
+                {type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstoneVersion},
+                {type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
+                {type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs},
             ];
             expect(actions).to.eql(expectedPayload);
             done();
         });
     });
-
 
 
 });

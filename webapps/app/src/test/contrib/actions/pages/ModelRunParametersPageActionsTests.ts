@@ -1,13 +1,17 @@
-import { expect } from "chai";
+import {expect} from "chai";
 
-import { Sandbox } from "../../../Sandbox";
-import {createMockStore} from "../../../mocks/mockStore";
+import {Sandbox} from "../../../Sandbox";
+import {createMockContribStore} from "../../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
 import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {
-    mockBreadcrumbs, mockDisease, mockModellingGroup, mockModelRunParameterSet, mockResponsibilitySet,
+    mockBreadcrumbs,
+    mockDisease,
+    mockModellingGroup,
+    mockModelRunParameterSet,
+    mockResponsibilitySet,
     mockTouchstone
 } from "../../../mocks/mockModels";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
@@ -19,18 +23,19 @@ import {ResponsibilitiesTypes} from "../../../../main/contrib/actionTypes/Respon
 import {ExtendedResponsibilitySet} from "../../../../main/contrib/models/ResponsibilitySet";
 import {modelRunParametersPageActionCreators} from "../../../../main/contrib/actions/pages/modelRunParametersPageActionCreators";
 import {RunParametersService} from "../../../../main/contrib/services/RunParametersService";
-import {runParametersActionCreators} from "../../../../main/contrib/actions/runParametersActionCreators";
 import {RunParametersTypes} from "../../../../main/contrib/actionTypes/RunParametersTypes";
+import {TouchstonesState} from "../../../../main/contrib/reducers/touchstonesReducer";
 
 describe("Model Run Parameters Page actions tests", () => {
     const sandbox = new Sandbox();
 
     const testGroup = mockModellingGroup();
     const testBreadcrumbs = mockBreadcrumbs();
-    const testTouchstone = mockTouchstone({id: "touchstone-1"});
+    const testTouchstone = mockTouchstone();
+    const testTouchstoneVersion = testTouchstone.versions[0];
     const testDisease = mockDisease();
     const testResponsibilitySet = mockResponsibilitySet();
-    const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstone, testGroup);
+    const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
     const testModelRunParametersSet = mockModelRunParameterSet();
 
     afterEach(() => {
@@ -38,47 +43,50 @@ describe("Model Run Parameters Page actions tests", () => {
     });
 
     it("on load", (done) => {
-        const initialState = {
+        const touchstonesState: Partial<TouchstonesState> = {
+            touchstones: [testTouchstone],
+            currentTouchstoneVersion: testTouchstoneVersion
+        };
+        const store = createMockContribStore({
             auth: {modellingGroups: testGroup.id},
             groups: {userGroups: [testGroup], currentUserGroup: testGroup},
-            touchstones: {touchstones: [testTouchstone], currentTouchstone: testTouchstone}
-        };
-        const store = createMockStore(initialState);
+            touchstones: touchstonesState
+        });
 
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", ()=>{
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", () => {
             return Promise.resolve([testGroup]);
         });
-        sandbox.setStubFunc(TouchstonesService.prototype, "getTouchstonesByGroupId", ()=>{
+        sandbox.setStubFunc(TouchstonesService.prototype, "getTouchstonesByGroupId", () => {
             return Promise.resolve([testTouchstone]);
         });
-        sandbox.setStubFunc(DiseasesService.prototype, "getAllDiseases", ()=>{
+        sandbox.setStubFunc(DiseasesService.prototype, "getAllDiseases", () => {
             return Promise.resolve([testDisease]);
         });
-        sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", ()=>{
+        sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", () => {
             return Promise.resolve(testResponsibilitySet);
         });
-        sandbox.setStubFunc(RunParametersService.prototype, "getParameterSets", ()=>{
+        sandbox.setStubFunc(RunParametersService.prototype, "getParameterSets", () => {
             return Promise.resolve([testModelRunParametersSet]);
         });
-        sandbox.setStubFunc(breadcrumbsModule, "initialize", ()=>{
+        sandbox.setStubFunc(breadcrumbsModule, "initialize", () => {
             return testBreadcrumbs;
         });
 
         store.dispatch(modelRunParametersPageActionCreators
-            .onLoad({groupId: testGroup.id, touchstoneId: testTouchstone.id}));
+            .onLoad({groupId: testGroup.id, touchstoneId: testTouchstoneVersion.id}));
 
         setTimeout(() => {
             const actions = store.getActions();
 
             const expectedPayload = [
-                { type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup] },
-                { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup },
-                { type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]},
-                { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
-                { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE, data: testTouchstone},
-                { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
-                { type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet]},
-                { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs },
+                {type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup]},
+                {type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup},
+                {type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]},
+                {type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
+                {type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstoneVersion},
+                {type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
+                {type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet]},
+                {type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs},
             ];
             expect(actions).to.eql(expectedPayload);
             done();

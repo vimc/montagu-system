@@ -5,10 +5,10 @@ import { Store } from "redux";
 
 import "../../../../helper";
 import {
-    mockDisease, mockResponsibility, mockResponsibilitySet, mockScenario, mockTouchstone
+    mockDisease, mockResponsibility, mockResponsibilitySet, mockScenario, mockTouchstoneVersion
 } from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
-import {createMockStore} from "../../../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {
@@ -21,7 +21,7 @@ describe("Model Run Parameters Content component tests", () => {
 
     const testDisease = mockDisease();
     const testDisease2 = mockDisease();
-    const testTouchstone = mockTouchstone();
+    const testTouchstone = mockTouchstoneVersion();
     const testScenario = mockScenario({disease: testDisease.id, touchstones: [testTouchstone]});
     const testScenario2 = mockScenario({disease: testDisease2.id, touchstones: [testTouchstone]});
     const testResponsibility = mockResponsibility({scenario: testScenario});
@@ -29,7 +29,7 @@ describe("Model Run Parameters Content component tests", () => {
     const testResponsibilitySet = mockResponsibilitySet({responsibilities: [testResponsibility, testResponsibility2], touchstone: testTouchstone.id});
 
     const testState = {
-        touchstones: {currentTouchstone: testTouchstone},
+        touchstones: {currentTouchstoneVersion: testTouchstone},
         responsibilities: {responsibilitiesSet: testResponsibilitySet},
     };
 
@@ -37,7 +37,7 @@ describe("Model Run Parameters Content component tests", () => {
 
     const sandbox = new Sandbox();
     beforeEach(() => {
-        store = createMockStore(testState);
+        store = createMockContribStore(testState);
     });
     afterEach(() => sandbox.restore());
 

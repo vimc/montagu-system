@@ -3,7 +3,7 @@ import { Dispatch } from "redux";
 import { compose, branch, renderComponent} from "recompose";
 import { connect } from 'react-redux';
 
-import { CoverageSet, Scenario, Touchstone } from "../../../../shared/models/Generated";
+import { CoverageSet, Scenario, TouchstoneVersion } from "../../../../shared/models/Generated";
 import { CoverageSetList } from "./CoverageSetList";
 import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTimeButton";
 import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
@@ -15,7 +15,7 @@ import {coverageActionCreators} from "../../../actions/coverageActionCreators";
 import {withConfidentialityAgreement} from "../Overview/ConfidentialityAgreement";
 
 export interface DownloadCoverageContentProps {
-    touchstone: Touchstone;
+    touchstone: TouchstoneVersion;
     scenario: Scenario;
     coverageSets: CoverageSet[];
     token: string;
@@ -124,7 +124,7 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
 
 export const mapStateToProps = (state: ContribAppState): Partial<DownloadCoverageContentProps> => {
     return {
-        touchstone: state.touchstones.currentTouchstone,
+        touchstone: state.touchstones.currentTouchstoneVersion,
         coverageSets: state.coverage.dataSets,
         selectedFormat: state.coverage.selectedFormat,
         scenario: state.responsibilities.currentResponsibility ? state.responsibilities.currentResponsibility.scenario : null,

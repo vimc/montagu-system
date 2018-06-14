@@ -4,10 +4,10 @@ import { expect } from "chai";
 import { Store } from "redux";
 
 import "../../../../helper";
-import {mockExtendedResponsibilitySet, mockModellingGroup, mockTouchstone} from "../../../../mocks/mockModels";
-import { mockContribState } from "../../../../mocks/mockStates";
+import {mockExtendedResponsibilitySet, mockModellingGroup, mockTouchstoneVersion} from "../../../../mocks/mockModels";
+import {mockContribState, RecursivePartial} from "../../../../mocks/mockStates";
 import { Sandbox } from "../../../../Sandbox";
-import {createMockStore} from "../../../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {
@@ -25,14 +25,14 @@ import {userActionCreators} from "../../../../../main/contrib/actions/userAction
 
 describe("Responsibility Overview Content Component", () => {
 
-    const testTouchstone = mockTouchstone();
-    const testTouchstone2 = mockTouchstone({id: "rfp-1"});
+    const testTouchstone = mockTouchstoneVersion();
+    const testTouchstone2 = mockTouchstoneVersion({id: "rfp-1"});
     const testCurrentGroup = mockModellingGroup();
     const testResponsibilitiesSet = mockExtendedResponsibilitySet();
     const testDiseaseId = "d-1";
 
-    const state = {
-        touchstones: {currentTouchstone: testTouchstone},
+    const state: RecursivePartial<ContribAppState> = {
+        touchstones: {currentTouchstoneVersion: testTouchstone},
         groups: {currentUserGroup: testCurrentGroup},
         diseases: {currentDiseaseId: testDiseaseId},
         responsibilities: {responsibilitiesSet: testResponsibilitiesSet},
@@ -43,7 +43,7 @@ describe("Responsibility Overview Content Component", () => {
 
     const sandbox = new Sandbox();
     beforeEach(() => {
-        store = createMockStore(state);
+        store = createMockContribStore(state);
         sandbox.setStubReduxAction(userActionCreators, 'getConfidentialityAgreement');
 
     });
@@ -79,8 +79,8 @@ describe("Responsibility Overview Content Component", () => {
     });
 
     it("renders on confidentiality level, not passes", () => {
-        const anotherState = {...state, touchstones: {currentTouchstone: testTouchstone2}};
-        store = createMockStore(anotherState);
+        const anotherState = {...state, touchstones: {currentTouchstoneVersion: testTouchstone2}};
+        store = createMockContribStore(anotherState);
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}})
             .dive().dive().dive().dive().dive().dive();
         expect(rendered.find(ConfidentialityAgreementComponent).length).to.eql(1);
@@ -104,7 +104,7 @@ describe("Responsibility Overview Content Component", () => {
             groups: {currentUserGroup: testCurrentGroup},
             diseases: {currentDiseaseId: testDiseaseId},
             responsibilities: {responsibilitiesSet: testResponsibilitiesSet},
-            touchstones: {currentTouchstone: testTouchstone.id}
+            touchstones: {currentTouchstoneVersion: testTouchstone}
         });
         const props = mapStateToProps(contribStateMock);
         expect(props.modellingGroup).to.eql(testCurrentGroup);

@@ -6,8 +6,8 @@ import {orderBy} from "lodash";
 import {User} from "../../../../shared/models/Generated";
 
 import {AdminAppState} from "../../../reducers/adminAppReducers";
-import {isNonEmptyArray} from "../../../../shared/Helpers";
 import {UserListItem} from "./UserListItem";
+import {isNonEmptyArray} from "../../../../shared/ArrayHelpers";
 
 interface UsersListProps {
     users: User[]

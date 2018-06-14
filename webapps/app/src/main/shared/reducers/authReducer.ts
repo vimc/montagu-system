@@ -5,7 +5,7 @@ export interface AuthState {
     username: string;
     bearerToken: string;
     permissions: string[];
-    modellingGroups?: any;
+    modellingGroups?: string[];
     isAccountActive: boolean;
     isModeller: boolean;
     errorMessage?: string;

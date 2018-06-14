@@ -54,7 +54,7 @@
     "pg": "7.2.0",
     "react-addons-test-utils": "^15.5.1",
     "react-test-renderer": "^15.5.0",
-    "redux-mock-store": "^1.5.1",
+    "redux-mock-store": "1.5.1",
     "sass-loader": "^6.0.6",
     "serve": "^6.5.7",
     "sinon": "^2.1.0",
@@ -120,7 +120,7 @@
     "reactstrap": "6.0.1",
     "recompose": "^0.26.0",
     "redux": "^3.7.2",
-    "redux-form": "^7.2.1",
+    "redux-form": "7.2.1",
     "redux-thunk": "2.2.0",
     "reselect": "^3.0.1",
     "whatwg-fetch": "^2.0.3"

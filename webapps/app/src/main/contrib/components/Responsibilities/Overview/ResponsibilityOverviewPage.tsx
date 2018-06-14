@@ -9,7 +9,7 @@ import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
 import {ChooseActionPageComponent} from "../../ChooseAction/ChooseActionPage";
 import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
-import {Touchstone} from "../../../../shared/models/Generated";
+import {TouchstoneVersion} from "../../../../shared/models/Generated";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {responsibilityOverviewPageActionCreators} from "../../../actions/pages/responsibilityOverviewPageActionCreators";
 
@@ -19,7 +19,7 @@ export interface ResponsibilityOverviewPageLocationProps {
 }
 
 export interface ResponsibilityOverviewPageProps extends PageProperties<ResponsibilityOverviewPageLocationProps> {
-    touchstone: Touchstone;
+    touchstone: TouchstoneVersion;
 }
 
 export class ResponsibilityOverviewPageComponent extends React.Component<ResponsibilityOverviewPageProps> {
@@ -29,8 +29,8 @@ export class ResponsibilityOverviewPageComponent extends React.Component<Respons
 
     static breadcrumb(state: ContribAppState): PageBreadcrumb {
         return {
-            name: state.touchstones.currentTouchstone.description,
-            urlFragment: `responsibilities/${state.touchstones.currentTouchstone.id}/`,
+            name: state.touchstones.currentTouchstoneVersion.description,
+            urlFragment: `responsibilities/${state.touchstones.currentTouchstoneVersion.id}/`,
             parent: ChooseActionPageComponent.breadcrumb(state)
         }
     }
@@ -48,7 +48,7 @@ export class ResponsibilityOverviewPageComponent extends React.Component<Respons
 
 export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityOverviewPageProps> => {
     return {
-        touchstone: state.touchstones.currentTouchstone
+        touchstone: state.touchstones.currentTouchstoneVersion
     }
 };
 

@@ -1,14 +1,14 @@
 import { expect } from "chai";
 
 import { Sandbox } from "../../../Sandbox";
-import {createMockStore} from "../../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
 import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {
-    mockBreadcrumbs, mockBurdenEstimateSet, mockDisease, mockModellingGroup, mockResponsibilitySet,
-    mockTouchstone
+    mockBreadcrumbs, mockBurdenEstimateSet, mockDisease, mockModellingGroup, mockResponsibilitySet, mockTouchstone,
+    mockTouchstoneVersion
 } from "../../../mocks/mockModels";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
 import {TouchstoneTypes} from "../../../../main/shared/actionTypes/TouchstonesTypes";
@@ -21,15 +21,16 @@ import {uploadBurdenEstimatesPageActionCreators} from "../../../../main/contrib/
 import {EstimatesService} from "../../../../main/contrib/services/EstimatesService";
 import {EstimatesTypes} from "../../../../main/contrib/actionTypes/EstimatesTypes";
 
-describe("Responsibility Overview Page actions tests", () => {
+describe("Upload burden estimates page actions tests", () => {
     const sandbox = new Sandbox();
 
     const testGroup = mockModellingGroup();
     const testBreadcrumbs = mockBreadcrumbs();
-    const testTouchstone = mockTouchstone({id: "touchstone-1"});
+    const testTouchstone = mockTouchstone();
+    const testTouchstoneVersion = testTouchstone.versions[0];
     const testDisease = mockDisease();
     const testResponsibilitySet = mockResponsibilitySet();
-    const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstone, testGroup);
+    const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
     const testBurdenEstimateSet = mockBurdenEstimateSet();
     const testResponsibility = testResponsibilitySet.responsibilities[0];
     const testResponsibilityWithEstimate = {...testResponsibility, current_estimate_set: testBurdenEstimateSet}
@@ -40,10 +41,10 @@ describe("Responsibility Overview Page actions tests", () => {
     });
 
     it("on load", (done) => {
-        const initialState = {
+        const store = createMockContribStore({
             auth: {modellingGroups: testGroup.id},
             groups: {userGroups: [testGroup], currentUserGroup: testGroup},
-            touchstones: {touchstones: [testTouchstone], currentTouchstone: testTouchstone},
+            touchstones: {touchstones: [testTouchstone], currentTouchstoneVersion: testTouchstoneVersion},
             responsibilities: {
                 responsibilitiesSet: testResponsibilitySet,
                 currentResponsibility: testResponsibilityWithEstimate
@@ -51,8 +52,7 @@ describe("Responsibility Overview Page actions tests", () => {
             estimates: {
                 redirectPath: '/test/'
             }
-        };
-        const store = createMockStore(initialState);
+        });
 
         sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", ()=>{
             return Promise.resolve([testGroup]);
@@ -74,7 +74,7 @@ describe("Responsibility Overview Page actions tests", () => {
         });
 
         store.dispatch(uploadBurdenEstimatesPageActionCreators
-            .onLoad({groupId: testGroup.id, touchstoneId: testTouchstone.id, scenarioId: testScenario.id}));
+            .onLoad({groupId: testGroup.id, touchstoneId: testTouchstoneVersion.id, scenarioId: testScenario.id}));
 
         setTimeout(() => {
             const actions = store.getActions();
@@ -84,7 +84,7 @@ describe("Responsibility Overview Page actions tests", () => {
                 { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup },
                 { type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]},
                 { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
-                { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE, data: testTouchstone},
+                { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstoneVersion},
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
                 { type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility},
                 { type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_CLEAR},

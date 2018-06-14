@@ -3,13 +3,13 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 
 import "../../../helper";
-import { mockModellingGroup, mockTouchstone } from "../../../mocks/mockModels";
+import { mockModellingGroup, mockTouchstoneVersion } from "../../../mocks/mockModels";
 import { Sandbox } from "../../../Sandbox";
-import { Touchstone } from "../../../../main/shared/models/Generated";
+import { TouchstoneVersion } from "../../../../main/shared/models/Generated";
 import { TouchstoneList, TouchstoneListProps } from "../../../../main/contrib/components/ChooseAction/TouchstoneList";
 import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
 
-function makeProps(touchstones?: Array<Touchstone>): TouchstoneListProps {
+function makeProps(touchstones?: Array<TouchstoneVersion>): TouchstoneListProps {
     return {
         touchstones: touchstones || [],
         group: mockModellingGroup({ id: "gId" })
@@ -31,8 +31,8 @@ describe('TouchstoneListComponent renders', () => {
 
     it("one button per finished touchstone", () => {
         const touchstones = [
-            mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "finished" }),
-            mockTouchstone({ id: "touchstone-2", description: "Description 2", status: "finished" })
+            mockTouchstoneVersion({ id: "touchstone-1", description: "Description 1", status: "finished" }),
+            mockTouchstoneVersion({ id: "touchstone-2", description: "Description 2", status: "finished" })
         ];
         const props = makeProps(touchstones);
         const rendered = shallow(<TouchstoneList {...props} />);
@@ -56,8 +56,8 @@ describe('TouchstoneListComponent renders', () => {
 
     it("one button per open touchstone", () => {
         const touchstones = [
-            mockTouchstone({ id: "touchstone-1", description: "Description 1", status: "open" }),
-            mockTouchstone({ id: "touchstone-2", description: "Description 2", status: "open" })
+            mockTouchstoneVersion({ id: "touchstone-1", description: "Description 1", status: "open" }),
+            mockTouchstoneVersion({ id: "touchstone-2", description: "Description 2", status: "open" })
         ];
         const props = makeProps(touchstones);
         const rendered = shallow(<TouchstoneList {...props} />);

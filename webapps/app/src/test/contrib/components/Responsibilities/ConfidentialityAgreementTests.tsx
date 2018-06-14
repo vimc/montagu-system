@@ -5,7 +5,7 @@ import {expect} from "chai"
 import {Store} from "redux";
 
 import "../../../helper";
-import {createMockStore} from "../../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../../mocks/mockStore";
 import {
     ConfidentialityAgreementComponent,
     withConfidentialityAgreement
@@ -13,12 +13,12 @@ import {
 import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";
 import {userActionCreators} from "../../../../main/contrib/actions/userActionCreators";
 import {LoadingElement} from "../../../../main/shared/partials/LoadingElement/LoadingElement";
-import {mockTouchstone} from "../../../mocks/mockModels";
+import {mockTouchstoneVersion} from "../../../mocks/mockModels";
 
 describe('Confidentiality Agreement Component tests', () => {
 
-    const testTouchstone = mockTouchstone();
-    const testTouchstoneRfp = mockTouchstone({id: "rfp-1"});
+    const testTouchstone = mockTouchstoneVersion();
+    const testTouchstoneRfp = mockTouchstoneVersion({id: "rfp-1"});
 
     class TestInnerComponent extends React.Component {
         render() {
@@ -27,7 +27,7 @@ describe('Confidentiality Agreement Component tests', () => {
     }
 
     const testState = {
-        touchstones: {currentTouchstone: testTouchstoneRfp},
+        touchstones: {currentTouchstoneVersion: testTouchstoneRfp},
         user: {signedConfidentialityAgreement: false}
     };
 
@@ -37,7 +37,7 @@ describe('Confidentiality Agreement Component tests', () => {
 
     const sandbox = new Sandbox();
     beforeEach(() => {
-        store = createMockStore(testState);
+        store = createMockContribStore(testState);
         getStub = sandbox.setStubReduxAction(userActionCreators, 'getConfidentialityAgreement');
 
         TestComponent = withConfidentialityAgreement(TestInnerComponent);
@@ -68,15 +68,15 @@ describe('Confidentiality Agreement Component tests', () => {
     });
 
     it("renders wrapped component if touchstone is not rfp", () => {
-        const anotherState = {...testState, touchstones: {currentTouchstone: testTouchstone}};
-        store = createMockStore(anotherState);
+        const anotherState = {...testState, touchstones: {currentTouchstoneVersion: testTouchstone}};
+        store = createMockContribStore(anotherState);
         const rendered = shallow(<TestComponent/>, {context: {store}}).dive().dive().dive().dive();
         expect(rendered.find('div').text()).to.equal("Test");
     });
 
     it("renders wrapped component if signed is true", () => {
         const anotherState = {...testState, user: {signedConfidentialityAgreement: true}};
-        store = createMockStore(anotherState);
+        store = createMockContribStore(anotherState);
         const rendered = shallow(<TestComponent/>, {context: {store}}).dive().dive().dive().dive();
         expect(rendered.find('div').text()).to.equal("Test");
     });

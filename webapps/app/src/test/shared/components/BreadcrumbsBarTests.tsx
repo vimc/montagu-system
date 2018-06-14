@@ -46,7 +46,7 @@ describe("Breadcrumb Bar", () => {
     });
 
     it("renders no crumbs", () => {
-        const store = createMockStore(mockContribState({breadcrumbs: []}));
+        const store = createMockStore(mockContribState({breadcrumbs: {breadcrumbs: []}}));
         const rendered = shallow(<BreadcrumbsBar />, {context: {store}}).dive();
         const crumbs = rendered.find('div.montagu-navbar__chunk');
         expect(crumbs.length).to.equal(0);

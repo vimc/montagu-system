@@ -22,7 +22,7 @@ export interface CoverageSet {
     gavi_support: GAVISupportLevel;
     id: number;
     name: string;
-    touchstone: string;
+    touchstone_version: string;
     vaccine: string;
 }
 
@@ -115,7 +115,7 @@ export interface Responsibilities {
     problems: string;
     responsibilities: Responsibility[];
     status: ResponsibilitySetStatus | null;
-    touchstone: string;
+    touchstone_version: string;
 }
 
 export interface ErrorInfo {
@@ -138,7 +138,7 @@ export interface ScenarioAndCoverageSets {
 
 export type TouchstoneStatus = "in-preparation" | "open" | "finished";
 
-export interface Touchstone {
+export interface TouchstoneVersion {
     description: string;
     id: string;
     name: string;
@@ -149,7 +149,14 @@ export interface Touchstone {
 export interface ScenarioTouchstoneAndCoverageSets {
     coverage_sets: CoverageSet[];
     scenario: Scenario;
-    touchstone: Touchstone;
+    touchstone_version: TouchstoneVersion;
+}
+
+export interface Touchstone {
+    comment: string;
+    description: string;
+    id: string;
+    versions: TouchstoneVersion[];
 }
 
 export interface RoleAssignment {

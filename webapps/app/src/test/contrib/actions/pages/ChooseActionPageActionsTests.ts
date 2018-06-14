@@ -6,7 +6,7 @@ import {ModellingGroupsService} from "../../../../main/shared/services/Modelling
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
 import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
-import {mockBreadcrumbs, mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
+import {mockBreadcrumbs, mockModellingGroup, mockTouchstoneVersion} from "../../../mocks/mockModels";
 import {chooseActionPageActionCreators} from "../../../../main/contrib/actions/pages/chooseActionPageActionCreators";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
 import {TouchstoneTypes} from "../../../../main/shared/actionTypes/TouchstonesTypes";
@@ -16,7 +16,7 @@ describe("Choose Action Page actions tests", () => {
 
     const testGroup = mockModellingGroup();
     const testBreadcrumbs = mockBreadcrumbs();
-    const testTouchstone = mockTouchstone({id: "touchstone-1"});
+    const testTouchstone = mockTouchstoneVersion({id: "touchstone-1"});
 
     afterEach(() => {
         sandbox.restore();
