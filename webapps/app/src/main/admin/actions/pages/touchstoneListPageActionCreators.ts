@@ -5,7 +5,6 @@ import {TouchstoneListPageComponent} from "../../components/Touchstones/List/Tou
 import {adminTouchstoneActionCreators} from "../adminTouchstoneActionCreators";
 
 export const touchstoneListPageActionCreators = {
-
     onLoad() {
         return async (dispatch: Dispatch<AdminAppState>) => {
             await dispatch(this.loadData());
