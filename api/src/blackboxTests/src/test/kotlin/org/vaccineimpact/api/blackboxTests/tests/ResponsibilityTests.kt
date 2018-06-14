@@ -215,6 +215,39 @@ class ResponsibilityTests : DatabaseTest()
         )
     }
 
+    @Test
+    fun `can get responsibilities for touchstone`()
+    {
+        validate("/touchstones/$touchstoneVersionId/responsibilities/") against "ResponsibilitySets" given {
+            addResponsibilities(it, touchstoneStatus = "open")
+        } requiringPermissions {
+            PermissionSet("*/touchstones.read", "*/responsibilities.read", "*/scenarios.read")
+        } andCheckArray {
+            val responsibilitySet = it[0] as JsonObject
+            assertThat(responsibilitySet["touchstone_version"]).isEqualTo(touchstoneVersionId)
+            assertThat(responsibilitySet["status"]).isEqualTo("submitted")
+            assertThat(responsibilitySet["problems"]).isNull()
+            assertThat(responsibilitySet["modelling_group_id"]).isEqualTo(groupId)
+
+            @Suppress("UNCHECKED_CAST")
+            val responsibilities = responsibilitySet["responsibilities"] as JsonArray<JsonObject>
+            val responsibility = responsibilities[0]
+            val scenario = responsibility["scenario"]
+            assertThat(scenario).isEqualTo(json {
+                obj(
+                        "id" to scenarioId,
+                        "description" to
+                                "description 1",
+                        "disease" to "disease-1",
+                        "touchstones" to array("touchstone-1")
+                )
+            })
+            assertThat(responsibility["status"]).isEqualTo("invalid")
+            assertThat(responsibility["problems"]).isEqualTo(json { array("problem") })
+            assertThat(responsibility["current_estimate_set"]).isNotNull()
+        }
+    }
+
     private fun addUserGroupAndTouchstone(db: JooqContext, touchstoneStatus: String)
     {
         db.addUserForTesting("model.user")

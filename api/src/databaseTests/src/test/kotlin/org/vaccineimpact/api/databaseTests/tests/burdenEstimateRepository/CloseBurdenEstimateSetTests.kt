@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
 import org.vaccineimpact.api.db.direct.*
 

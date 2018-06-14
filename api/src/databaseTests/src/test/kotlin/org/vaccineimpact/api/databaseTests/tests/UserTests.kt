@@ -6,10 +6,7 @@ import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.models.CreateUser
 import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqUserRepository
+import org.vaccineimpact.api.app.repositories.jooq.*
 import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
@@ -33,8 +30,11 @@ class UserTests : RepositoryTests<UserRepository>()
     val username = "test.user"
     val email = "test@example.com"
     override fun makeRepository(db: JooqContext) = JooqUserRepository(db.dsl)
+
     fun makeGroupRepository(db: JooqContext) = JooqModellingGroupRepository(db.dsl,
-            JooqTouchstoneRepository(db.dsl, JooqScenarioRepository(db.dsl)), JooqScenarioRepository(db.dsl))
+            JooqResponsibilitiesRepository(db.dsl, JooqScenarioRepository(db.dsl),
+                    JooqTouchstoneRepository(db.dsl, JooqScenarioRepository(db.dsl))),
+            JooqTouchstoneRepository(db.dsl, JooqScenarioRepository(db.dsl)))
 
     private fun addTestUser(db: JooqContext)
     {

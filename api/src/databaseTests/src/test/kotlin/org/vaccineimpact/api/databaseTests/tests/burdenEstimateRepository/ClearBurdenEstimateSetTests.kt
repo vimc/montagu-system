@@ -13,7 +13,6 @@ import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
-import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet

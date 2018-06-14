@@ -6,24 +6,26 @@ import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.Responsibilities
 import org.vaccineimpact.api.models.ResponsibilityAndTouchstone
 import org.vaccineimpact.api.models.Touchstone
 
-class ResponsibilityController(
+class GroupResponsibilityController(
         context: ActionContext,
-        private val repo: ModellingGroupRepository
-) : Controller(context)
+        private val modellingGroupRepo: ModellingGroupRepository,
+        private val responsibilitiesRepo: ResponsibilitiesRepository
+        ) : Controller(context)
 {
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, repositories.modellingGroup)
+            : this(context, repositories.modellingGroup, repositories.responsibilities)
 
     fun getResponsibleTouchstones(): List<Touchstone>
     {
         val groupId = groupId(context)
-        return repo.getTouchstonesByGroupId(groupId).filterByPermission(context)
+        return modellingGroupRepo.getTouchstonesByGroupId(groupId).filterByPermission(context)
     }
 
     fun getResponsibilities(): Responsibilities
@@ -32,7 +34,9 @@ class ResponsibilityController(
         val touchstoneVersionId = context.params(":touchstone-version-id")
         val filterParameters = ScenarioFilterParameters.fromContext(context)
 
-        val data = repo.getResponsibilities(groupId, touchstoneVersionId, filterParameters)
+        modellingGroupRepo.getModellingGroup(groupId)
+        val data = responsibilitiesRepo
+                .getResponsibilitiesForGroupAndTouchstone(groupId, touchstoneVersionId, filterParameters)
         context.checkIsAllowedToSeeTouchstone(touchstoneVersionId, data.touchstoneStatus)
         return data.responsibilities
     }
@@ -40,7 +44,8 @@ class ResponsibilityController(
     fun getResponsibility(): ResponsibilityAndTouchstone
     {
         val path = ResponsibilityPath(context)
-        val data = repo.getResponsibility(path.groupId, path.touchstoneVersionId, path.scenarioId)
+        modellingGroupRepo.getModellingGroup(path.groupId)
+        val data = responsibilitiesRepo.getResponsibility(path.groupId, path.touchstoneVersionId, path.scenarioId)
         context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, data.touchstoneVersion.status)
         return data
     }

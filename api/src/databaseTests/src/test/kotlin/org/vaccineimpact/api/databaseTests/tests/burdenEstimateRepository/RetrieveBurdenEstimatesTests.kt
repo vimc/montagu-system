@@ -3,7 +3,6 @@ package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.databaseTests.tests.BurdenEstimateRepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addBurdenEstimateProblem
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet

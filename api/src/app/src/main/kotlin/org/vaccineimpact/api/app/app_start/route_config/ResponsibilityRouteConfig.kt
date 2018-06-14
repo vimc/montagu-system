@@ -4,12 +4,12 @@ import org.vaccineimpact.api.app.app_start.Endpoint
 import org.vaccineimpact.api.app.app_start.EndpointDefinition
 import org.vaccineimpact.api.app.app_start.json
 import org.vaccineimpact.api.app.app_start.secure
-import org.vaccineimpact.api.app.controllers.ResponsibilityController
+import org.vaccineimpact.api.app.controllers.GroupResponsibilityController
 
 object ResponsibilityRouteConfig : RouteConfig
 {
     private val baseUrl = "/modelling-groups/:group-id/responsibilities"
-    private val controller = ResponsibilityController::class
+    private val controller = GroupResponsibilityController::class
 
     private val groupScope = "modelling-group:<group-id>"
     private val permissions = setOf(

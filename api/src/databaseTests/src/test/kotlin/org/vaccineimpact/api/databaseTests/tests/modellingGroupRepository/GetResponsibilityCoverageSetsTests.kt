@@ -36,6 +36,19 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
     }
 
     @Test
+    fun `get coverage sets throws exception if group doesn't exist`()
+    {
+        given {
+            createGroupAndSupportingObjects(it)
+            giveCoverageSetsToResponsibility(it)
+        } check {
+            assertThatThrownBy { it.getCoverageSets("badId", touchstoneVersionId, scenarioId) }
+                    .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
+                    .hasMessageContaining("Unknown modelling-group")
+        }
+    }
+
+    @Test
     fun `can get ordered coverage sets`()
     {
         given {
@@ -57,6 +70,19 @@ class GetResponsibilityCoverageSetsTests : ModellingGroupRepositoryTests()
             assertThatThrownBy { it.getCoverageData(groupId, touchstoneVersionId, scenarioId) }
                     .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
                     .hasMessageContaining("responsibility")
+        }
+    }
+
+    @Test
+    fun `getCoverageData throws exception if group doesn't exist`()
+    {
+        given {
+            createGroupAndSupportingObjects(it)
+            giveCoverageSetsToResponsibility(it)
+        } check {
+            assertThatThrownBy { it.getCoverageData("badId", touchstoneVersionId, scenarioId) }
+                    .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
+                    .hasMessageContaining("Unknown modelling-group")
         }
     }
 
