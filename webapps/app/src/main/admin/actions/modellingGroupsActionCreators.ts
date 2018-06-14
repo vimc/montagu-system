@@ -97,18 +97,26 @@ export const modellingGroupsActionCreators = {
         }
     },
 
-    createModellingGroup(name: string, description: string): AddModellingGroup {
+    createModellingGroup(name: string, description: string) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
 
-        const newGroup: ModellingGroup = {
-            id: name,
-            description: description
-        };
+            const newGroup: ModellingGroup = {
+                id: name,
+                description: description
+            };
 
-        // TODO actually create group
+            const service = new ModellingGroupsService(dispatch, getState);
 
-        return {
-            type: ModellingGroupTypes.ADD_MODELLING_GROUP,
-            data: newGroup
+            const result = await service.createGroup(newGroup);
+            
+            if (result) {
+                service.clearGroupListCache();
+
+                dispatch({
+                    type: ModellingGroupTypes.ADD_MODELLING_GROUP,
+                    data: newGroup
+                } as AddModellingGroup)
+            }
         }
     }
 

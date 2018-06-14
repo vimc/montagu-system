@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { Sandbox } from "../../Sandbox";
 import { modellingGroupsActionCreators } from "../../../main/admin/actions/modellingGroupsActionCreators";
-import {createMockStore} from "../../mocks/mockStore";
+import {createMockAdminStore, createMockStore} from "../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../main/admin/actionTypes/ModellingGroupsTypes";
 import {mockModellingGroup, mockModellingGroupDetails, mockUser} from "../../mocks/mockModels";
@@ -218,9 +218,57 @@ describe("Admin Modelling groups actions tests", () => {
         const store = createMockStore({groups: {currentGroupDetails: testGroupDetails}, users: {users: [testUser]}});
         store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]};
             expect(actions).to.eql([expectedPayload]);
+            done();
+        });
+    });
+
+    it("dispatches ADD_MODELLING_GROUP on group creation", (done) => {
+        const store = createMockAdminStore();
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "createGroup", ()=>{
+            return Promise.resolve("/modelling-groups/new:group/");
+        });
+        sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
+
+        store.dispatch(modellingGroupsActionCreators.createModellingGroup("newid", "new description"));
+        setTimeout(() => {
+            const actions = store.getActions();
+            const expectedPayload = [
+                { type: ModellingGroupTypes.ADD_MODELLING_GROUP, data: {id: "newid", description: "new description"}}
+            ];
+            expect(actions).to.eql(expectedPayload);
+            done();
+        });
+    });
+
+    it("clears group list cache on group creation", (done) => {
+        const store = createMockAdminStore();
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "createGroup", ()=>{
+            return Promise.resolve("/modelling-groups/new:group/");
+        });
+        const clearCacheStub = sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
+
+        store.dispatch(modellingGroupsActionCreators.createModellingGroup("newid", "new description"));
+        setTimeout(() => {
+            expect(clearCacheStub.called).to.be.true;
+            done();
+        });
+    });
+
+    it("dispatches nothing on failed group creation", (done) => {
+        const store = createMockAdminStore();
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "createGroup", ()=>{
+            return Promise.reject("errro");
+        });
+        const clearCacheStub = sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
+
+        store.dispatch(modellingGroupsActionCreators.createModellingGroup("newid", "new description"));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions).to.have.lengthOf(0);
+            expect(clearCacheStub.called).to.be.false;
             done();
         });
     });

@@ -5,7 +5,7 @@ import {IntegrationTestSuite} from "./IntegrationTest";
 import {AdminFetcher} from "../main/admin/sources/AdminFetcher";
 import {expect} from "chai";
 import {Client, QueryResult} from "pg";
-import {User} from "../main/shared/models/Generated";
+import {ModellingGroup, User} from "../main/shared/models/Generated";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
 import {AuthService} from "../main/shared/services/AuthService";
 import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
@@ -115,6 +115,18 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             expect(result).to.match(new RegExp("/v1/users/new.user/$"));
             const allUsers = await usersService.getAllUsers();
             expect(allUsers.map((u: User) => u.username).indexOf("new.user") > -1).to.be.true;
+        });
+
+
+        it("can create a group", async () => {
+
+            const groupService = new ModellingGroupsService(this.store.dispatch, this.store.getState);
+            const result = await groupService
+                .createGroup({id: "test:group", description: "test"});
+
+            expect(result).to.match(new RegExp("/v1/modelling-groups/test:group/$"));
+            const allGroups = await groupService.getAllGroups();
+            expect(allGroups.map((g: ModellingGroup) => g.id).indexOf("test:group") > -1).to.be.true;
         });
     }
 }

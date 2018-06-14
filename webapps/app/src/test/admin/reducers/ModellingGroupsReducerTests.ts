@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import {modellingGroupInitialState, modellingGroupsReducer} from "../../../main/admin/reducers/modellingGroupsReducer";
-import {ModellingGroupTypes} from "../../../main/admin/actionTypes/ModellingGroupsTypes";
+import {AddModellingGroup, ModellingGroupTypes} from "../../../main/admin/actionTypes/ModellingGroupsTypes";
 import {mockModellingGroup, mockModellingGroupDetails, mockUser} from "../../mocks/mockModels";
 
 describe('Admin Modelling Groups reducer tests', () => {
@@ -66,6 +66,17 @@ describe('Admin Modelling Groups reducer tests', () => {
             type: ModellingGroupTypes.GROUP_DETAILS_FETCHED,
             data: null
         })).to.eql(modellingGroupInitialState);
+    });
+
+    it('adds new group', () => {
+        const newGroup =  {id: "newid", description: "description"};
+        const addGroupAction: AddModellingGroup = {
+            type: ModellingGroupTypes.ADD_MODELLING_GROUP,
+            data: newGroup
+        };
+
+        const result = modellingGroupsReducer(undefined, addGroupAction);
+        expect(result.groups).to.have.members([newGroup])
     });
 
 });
