@@ -4,7 +4,7 @@ import {touchstonesInitialState, contribTouchstonesReducer} from "../../../main/
 import { TouchstoneTypes } from "../../../main/shared/actionTypes/TouchstonesTypes";
 import {mockTouchstone, mockTouchstoneVersion} from "../../mocks/mockModels";
 
-describe('Touchstones reducer tests', () => {
+describe('Contrib touchstones reducer tests', () => {
     it('sets fetched touchstones', () => {
         const testTouchstone = mockTouchstone();
         expect(contribTouchstonesReducer(undefined, {

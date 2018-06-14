@@ -5,7 +5,7 @@ import { authReducer, AuthState } from "../../shared/reducers/authReducer";
 import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadcrumbsReducer";
 import {modellingGroupsReducer, ModellingGroupsState} from "./modellingGroupsReducer";
 import {UsersState, usersReducer} from "./usersReducer";
-import {adminTouchstoneReducer, TouchstoneState} from "./adminTouchstoneReducer";
+import {adminTouchstoneReducer, AdminTouchstoneState} from "./adminTouchstoneReducer";
 
 export interface AdminAppState {
     auth: AuthState;
@@ -13,7 +13,7 @@ export interface AdminAppState {
     groups: ModellingGroupsState
     breadcrumbs: BreadcrumbsState;
     users: UsersState;
-    touchstones: TouchstoneState;
+    touchstones: AdminTouchstoneState;
 }
 
 const reducers = combineReducers({

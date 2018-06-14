@@ -24,7 +24,7 @@ import {ExtendedResponsibilitySet} from "../../../../main/contrib/models/Respons
 import {modelRunParametersPageActionCreators} from "../../../../main/contrib/actions/pages/modelRunParametersPageActionCreators";
 import {RunParametersService} from "../../../../main/contrib/services/RunParametersService";
 import {RunParametersTypes} from "../../../../main/contrib/actionTypes/RunParametersTypes";
-import {TouchstonesState} from "../../../../main/contrib/reducers/touchstonesReducer";
+import {TouchstonesState} from "../../../../main/contrib/reducers/contribTouchstonesReducer";
 
 describe("Model Run Parameters Page actions tests", () => {
     const sandbox = new Sandbox();

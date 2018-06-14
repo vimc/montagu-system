@@ -20,7 +20,7 @@ import {ExtendedResponsibilitySet} from "../../../../main/contrib/models/Respons
 import {downloadDemographicsPageActionCreators} from "../../../../main/contrib/actions/pages/downloadDemographicsPageActionCreators";
 import {DemographicService} from "../../../../main/contrib/services/DemographicService";
 import {DemographicTypes} from "../../../../main/contrib/actionTypes/DemographicTypes";
-import {TouchstonesState} from "../../../../main/contrib/reducers/touchstonesReducer";
+import {TouchstonesState} from "../../../../main/contrib/reducers/contribTouchstonesReducer";
 
 describe("Download Demographic Page actions tests", () => {
     const sandbox = new Sandbox();

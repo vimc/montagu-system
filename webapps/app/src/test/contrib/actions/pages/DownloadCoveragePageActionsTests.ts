@@ -25,7 +25,7 @@ import {downloadCoveragePageActionCreators} from "../../../../main/contrib/actio
 import {CoverageService} from "../../../../main/contrib/services/CoverageService";
 import {ScenarioAndCoverageSets} from "../../../../main/shared/models/Generated";
 import {CoverageTypes} from "../../../../main/contrib/actionTypes/CoverageTypes";
-import {TouchstonesState} from "../../../../main/contrib/reducers/touchstonesReducer";
+import {TouchstonesState} from "../../../../main/contrib/reducers/contribTouchstonesReducer";
 
 describe("Download Coverage Page actions tests", () => {
     const sandbox = new Sandbox();
