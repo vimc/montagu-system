@@ -1,7 +1,7 @@
-import { expect } from "chai";
+import {expect} from "chai";
 
-import { Sandbox } from "../../Sandbox";
-import { usersActionCreators } from "../../../main/admin/actions/usersActionCreators";
+import {Sandbox} from "../../Sandbox";
+import {usersActionCreators} from "../../../main/admin/actions/usersActionCreators";
 import {createMockStore} from "../../mocks/mockStore";
 import {UserCacheKeysEnum, UsersService} from "../../../main/admin/services/UsersService";
 import {UsersTypes} from "../../../main/admin/actionTypes/UsersTypes";
@@ -16,20 +16,31 @@ describe("Admin Users actions tests", () => {
         createUserStub: Sinon.SinonStub = null;
 
     beforeEach(() => {
-        sandbox.restore();
         store = createMockStore({});
+    });
+
+    afterEach(() => {
+        sandbox.restore();
     });
 
     const testUser = mockUser();
     const testUser2 = mockUser();
 
-    function setUpSuccessfulStubs(){
+    function setUpSuccessfulStubs() {
 
-        createUserStub = sandbox.setStubFunc(UsersService.prototype, "createUser", ()=>{
+        createUserStub = sandbox.setStubFunc(UsersService.prototype, "createUser", () => {
             return Promise.resolve("OK");
         });
-        sandbox.setStubFunc(UsersService.prototype, "getAllUsers", ()=>{
+        sandbox.setStubFunc(UsersService.prototype, "getAllUsers", () => {
             return Promise.resolve([testUser, testUser2]);
+        });
+
+        sandbox.setStubFunc(UsersService.prototype, "addGlobalRoleToUser", () => {
+            return Promise.resolve("OK");
+        });
+
+        sandbox.setStubFunc(UsersService.prototype, "removeRoleFromUser", () => {
+            return Promise.resolve("OK");
         });
     }
 
@@ -40,21 +51,74 @@ describe("Admin Users actions tests", () => {
         store.dispatch(usersActionCreators.getAllUsers());
         setTimeout(() => {
             const actions = store.getActions();
-            const expectedPayload = { type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]};
+            const expectedPayload = {type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]};
             expect(actions).to.eql([expectedPayload]);
+            done();
+        });
+    });
+
+    it("gets global roles", (done) => {
+
+        sandbox.setStubFunc(UsersService.prototype, "getGlobalRoles", () => {
+            return Promise.resolve(["role1"]);
+        });
+
+        store.dispatch(usersActionCreators.getGlobalRoles());
+        setTimeout(() => {
+            const actions = store.getActions();
+            const expectedPayload = {type: UsersTypes.ALL_GLOBAL_ROLES_FETCHED, data: ["role1"]};
+            expect(actions).to.eql([expectedPayload]);
+            done();
+        });
+    });
+
+    it("clears user list cache and fetches users if role added to user", (done) => {
+
+        const cacheStub = sandbox.setStub(UsersService.prototype, "clearCache");
+        setUpSuccessfulStubs();
+
+        store.dispatch(usersActionCreators.addGlobalRoleToUser("user", "role1"));
+        setTimeout(() => {
+            const actions = store.getActions();
+            const expectedPayload = [{type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
+                {type: UsersTypes.SET_CURRENT_USER, data: "user"}];
+            expect(actions).to.eql(expectedPayload);
+
+            expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
+                .to.be.true;
+
+            done();
+        });
+    });
+
+    it("clears user list cache and fetches users if role removed from user", (done) => {
+
+        const cacheStub = sandbox.setStub(UsersService.prototype, "clearCache");
+        setUpSuccessfulStubs();
+
+        store.dispatch(usersActionCreators.removeRoleFromUser("user", "role1", "any", "any"));
+        setTimeout(() => {
+            const actions = store.getActions();
+            const expectedPayload = [{type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
+                {type: UsersTypes.SET_CURRENT_USER, data: "user"}];
+            expect(actions).to.eql(expectedPayload);
+
+            expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
+                .to.be.true;
+
             done();
         });
     });
 
     it("fetches all users after successful user creation", (done) => {
 
-       setUpSuccessfulStubs();
+        setUpSuccessfulStubs();
 
         store.dispatch(usersActionCreators.createUser("joe bloggs", "joe@email.com", "joe.b"));
         setTimeout(() => {
             expect(createUserStub.calledWith("joe bloggs", "joe@email.com", "joe.b")).to.be.true;
             const actions = store.getActions();
-            const expectedPayload = { type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]};
+            const expectedPayload = {type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]};
             expect(actions).to.deep.include.members([expectedPayload]);
             done();
         });
@@ -62,13 +126,16 @@ describe("Admin Users actions tests", () => {
 
     it("dispatches error if user creation fails", (done) => {
 
-        sandbox.setStubFunc(UsersService.prototype, "createUser", ()=>{
+        sandbox.setStubFunc(UsersService.prototype, "createUser", () => {
             return Promise.resolve(mockResult(null, [{code: "e", message: "error message"}]));
         });
         store.dispatch(usersActionCreators.createUser("joe bloggs", "joe@email.com", "joe.b"));
         setTimeout(() => {
             const actions = store.getActions();
-            const expectedPayload = { type: UsersTypes.SET_CREATE_USER_ERRORS, errors: [{message: "error message", code: "e"}]};
+            const expectedPayload = {
+                type: UsersTypes.SET_CREATE_USER_ERRORS,
+                errors: [{message: "error message", code: "e"}]
+            };
             expect(actions).to.eql([expectedPayload]);
             done();
         });
@@ -113,7 +180,7 @@ describe("Admin Users actions tests", () => {
 
         setTimeout(() => {
             const actions = store.getActions();
-            const expectedPayload = { type: UsersTypes.SET_CURRENT_USER, data: "joe.bloggs"};
+            const expectedPayload = {type: UsersTypes.SET_CURRENT_USER, data: "joe.bloggs"};
             expect(actions).to.eql([expectedPayload]);
             done();
         });
