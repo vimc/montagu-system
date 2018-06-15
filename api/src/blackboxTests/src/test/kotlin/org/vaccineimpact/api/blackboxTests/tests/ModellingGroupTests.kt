@@ -108,7 +108,7 @@ class ModellingGroupTests : DatabaseTest()
                 obj("id" to "IC-Garske",
                         "description" to "description")
             }
-        } withRequestSchema "ModellingGroup" andCheckObjectCreation "/modelling-group/Ic-Garske/"
+        } withRequestSchema "ModellingGroup" andCheckObjectCreation "/modelling-group/IC-Garske/"
     }
 
     @Test
