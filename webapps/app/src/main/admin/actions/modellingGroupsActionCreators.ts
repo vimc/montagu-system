@@ -3,7 +3,7 @@ import {compact} from "lodash";
 
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
 import {AdminAppState} from "../reducers/adminAppReducers";
-import {ModellingGroup, ModellingGroupDetails} from "../../shared/models/Generated";
+import {ModellingGroup, ModellingGroupCreation, ModellingGroupDetails} from "../../shared/models/Generated";
 import {
     GroupsFetched,
     ModellingGroupTypes,
@@ -97,13 +97,8 @@ export const modellingGroupsActionCreators = {
         }
     },
 
-    createModellingGroup(name: string, description: string) {
+    createModellingGroup(newGroup: ModellingGroupCreation) {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
-
-            const newGroup: ModellingGroup = {
-                id: name,
-                description: description
-            };
 
             const service = new ModellingGroupsService(dispatch, getState);
 

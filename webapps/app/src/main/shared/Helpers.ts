@@ -1,7 +1,6 @@
 import {jwtDecoder} from "./sources/JwtDecoder";
 import {Result} from "./models/Generated";
 import {settings} from "./Settings";
-import {TestResult} from "tslint/lib/test";
 
 export function doNothing() {
 

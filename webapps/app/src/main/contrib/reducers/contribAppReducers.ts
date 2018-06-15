@@ -4,7 +4,7 @@ import {routerReducer} from "react-router-redux";
 
 import { authReducer, AuthState } from "../../shared/reducers/authReducer";
 import { modellingGroupsReducer, ModellingGroupsState } from "./modellingGroupsReducer";
-import { touchstonesReducer, TouchstonesState } from "./touchstonesReducer";
+import { contribTouchstonesReducer, TouchstonesState } from "./contribTouchstonesReducer";
 import { diseasesReducer, DiseasesState } from "./diseasesReducer";
 import { responsibilitiesReducer, ResponsibilitiesState } from "./responsibilitiesReducer";
 import { demographicReducer, DemographicState } from "./demographicReducer";
@@ -36,7 +36,7 @@ const reducers = combineReducers({
     groups: modellingGroupsReducer,
     user: userReducer,
     breadcrumbs: breadcrumbsReducer,
-    touchstones: touchstonesReducer,
+    touchstones: contribTouchstonesReducer,
     responsibilities: responsibilitiesReducer,
     diseases: diseasesReducer,
     demographic: demographicReducer,

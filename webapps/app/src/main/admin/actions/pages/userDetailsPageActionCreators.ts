@@ -22,6 +22,7 @@ export const userDetailsPageActionCreators = {
         return async (dispatch: Dispatch<AdminAppState>) => {
             await dispatch(usersListPageActionCreators.loadData());
             dispatch(usersActionCreators.setCurrentUser(params.username));
+            dispatch(usersActionCreators.getGlobalRoles());
         }
     }
 };

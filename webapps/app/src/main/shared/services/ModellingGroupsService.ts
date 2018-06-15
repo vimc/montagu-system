@@ -1,5 +1,5 @@
 import { AbstractLocalService } from "./AbstractLocalService";
-import {AssociateUser, ModellingGroup} from "../models/Generated";
+import {AssociateUser, ModellingGroup, ModellingGroupCreation} from "../models/Generated";
 
 export class ModellingGroupsService extends AbstractLocalService {
 
@@ -13,7 +13,7 @@ export class ModellingGroupsService extends AbstractLocalService {
             .get(`/modelling-groups/${groupId}/`);
     }
 
-    createGroup(modellingGroup: ModellingGroup) {
+    createGroup(modellingGroup: ModellingGroupCreation) {
         return this.post(`/modelling-groups/`, JSON.stringify(modellingGroup));
     }
 

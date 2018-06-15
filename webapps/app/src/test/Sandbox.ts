@@ -5,6 +5,7 @@ import { ReactElement } from "react";
 import { alt } from "../main/shared/alt";
 import fetcher from "../main/shared/sources/Fetcher";
 import {mockFetcher, mockFetcherResponse, resetFetcher} from "./mocks/mockRemote";
+import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
 
 export class Sandbox {
     sinon: sinon.SinonSandbox;
@@ -69,5 +70,13 @@ export class Sandbox {
 
     setStubReduxAction(obj: any, method: string, action?: any): sinon.SinonStub {
         return this.sinon.stub(obj, method).callsFake(action ? action : () => ({type: 'test'}));
+    }
+
+    stubService(obj: any, method: string, result: any = "default_result"): sinon.SinonStub {
+        return this.setStubFunc(obj, method, () => Promise.resolve(result));
+    }
+
+    stubServiceWithFailure(obj: any, method: string): sinon.SinonStub {
+        return this.setStubFunc(obj, method, () => Promise.reject("error"));
     }
 }

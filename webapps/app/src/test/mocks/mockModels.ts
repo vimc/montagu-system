@@ -3,6 +3,7 @@ import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/cont
 import {Version} from "../../main/shared/models/reports/Report";
 import {Artefact} from "../../main/shared/models/reports/Artefact";
 import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageWithHeader";
+import {ModellingGroupCreation} from "../../main/shared/models/Generated";
 
 let counter = 0;
 
@@ -40,6 +41,18 @@ export function mockModellingGroupDetails(properties?: any) {
         description: "Description",
         models: [],
         members: ["user.a"]
+    };
+    return Object.assign(template, properties);
+}
+
+
+export function mockModellingGroupCreation(properties?: Partial<ModellingGroupCreation>) {
+    counter++;
+    const template: models.ModellingGroupCreation = {
+        id: "group-" + counter,
+        description: "Description",
+        institution: "Imperial",
+        pi: "Principal Investigator"
     };
     return Object.assign(template, properties);
 }
