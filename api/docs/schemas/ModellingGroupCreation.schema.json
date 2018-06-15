@@ -1,5 +1,5 @@
 {
-    "id": "ModellingGroup",
+    "id": "ModellingGroupCreation",
     "type": "object",
     "properties": {
         "id": { "$ref": "StandardIdentifier.schema.json" },
