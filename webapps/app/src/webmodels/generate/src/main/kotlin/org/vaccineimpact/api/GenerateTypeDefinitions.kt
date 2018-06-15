@@ -36,6 +36,7 @@ fun main(args: Array<String>)
                         DemographicDataset::class,
                         ModellingGroup::class,
                         ModellingGroupDetails::class,
+                        ModellingGroupCreation::class,
                         ModelRunParameterSet::class,
                         Report::class,
                         Responsibilities::class,

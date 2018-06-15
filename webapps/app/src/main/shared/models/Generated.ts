@@ -57,6 +57,13 @@ export interface ModellingGroupDetails {
     models: ResearchModel[];
 }
 
+export interface ModellingGroupCreation {
+    description: string;
+    id: string;
+    institution: string;
+    pi: string;
+}
+
 export interface ModelRunParameterSet {
     disease: string;
     id: number;
@@ -66,12 +73,12 @@ export interface ModelRunParameterSet {
 }
 
 export interface Report {
+    author: string;
     display_name: string | null;
     latest_version: string;
     name: string;
     published: boolean;
-    author: string | null;
-    requester: string | null;
+    requester: string;
     updated_on: string;
 }
 

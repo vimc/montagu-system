@@ -122,11 +122,11 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
             const groupService = new ModellingGroupsService(this.store.dispatch, this.store.getState);
             const result = await groupService
-                .createGroup({id: "test:group", description: "test"});
+                .createGroup({id: "test-group", description: "test", institution: "imperial", pi: "pi"});
 
-            expect(result).to.match(new RegExp("/v1/modelling-groups/test:group/$"));
+            expect(result).to.match(new RegExp("/v1/modelling-groups/test-group/$"));
             const allGroups = await groupService.getAllGroups();
-            expect(allGroups.map((g: ModellingGroup) => g.id).indexOf("test:group") > -1).to.be.true;
+            expect(allGroups.map((g: ModellingGroup) => g.id).indexOf("test-group") > -1).to.be.true;
         });
     }
 }
