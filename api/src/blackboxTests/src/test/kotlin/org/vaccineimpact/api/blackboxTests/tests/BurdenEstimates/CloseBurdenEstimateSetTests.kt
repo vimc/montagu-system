@@ -6,12 +6,13 @@ import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.EmptySchema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
+import org.vaccineimpact.api.db.direct.addBurdenEstimate
 import spark.route.HttpMethod
 
 class CloseBurdenEstimateSetTests : BurdenEstimateTests()
 {
     private val setId = 1
-    private val closeUrl = "$setUrl$setId/actions/complete/"
+    private val closeUrl = "$setUrl$setId/actions/close/"
 
     @Test
     fun `can close burden estimate set`()
@@ -20,6 +21,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
             EmptySchema
         } given { db ->
             setUpWithBurdenEstimateSet(db, setId = setId)
+            db.addBurdenEstimate(setId, "AFG")
         } requiringPermissions {
             requiredWritePermissions
         } andCheckHasStatus 200..200
