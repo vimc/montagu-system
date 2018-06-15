@@ -124,7 +124,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const result = await groupService
                 .createGroup({id: "test-group", description: "test", institution: "imperial", pi: "pi"});
 
-            expect(result).to.match(new RegExp("/v1/modelling-groups/test-group/$"));
+            expect(result).to.match(new RegExp("/v1/modelling-group/test-group/$"));
             const allGroups = await groupService.getAllGroups();
             expect(allGroups.map((g: ModellingGroup) => g.id).indexOf("test-group") > -1).to.be.true;
         });
