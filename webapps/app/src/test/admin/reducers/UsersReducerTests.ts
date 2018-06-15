@@ -42,4 +42,11 @@ describe('Admin Users reducer tests', () => {
         })).to.eql({...usersInitialState, createUserErrors:  [{code: "e", message: "error"}]});
     });
 
+    it('sets global roles ', () => {
+        expect(usersReducer(undefined, {
+            type: UsersTypes.ALL_GLOBAL_ROLES_FETCHED,
+            data: ["role1", "role2"]
+        })).to.eql({...usersInitialState, globalRoles: ["role1", "role2"]});
+    });
+
 });

@@ -5,11 +5,12 @@ import {IntegrationTestSuite} from "./IntegrationTest";
 import {AdminFetcher} from "../main/admin/sources/AdminFetcher";
 import {expect} from "chai";
 import {Client, QueryResult} from "pg";
-import {ModellingGroup, User} from "../main/shared/models/Generated";
+import {ModellingGroup, RoleAssignment, User} from "../main/shared/models/Generated";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
 import {AuthService} from "../main/shared/services/AuthService";
 import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
 import {UsersService} from "../main/admin/services/UsersService";
+import {mockModellingGroupCreation} from "../test/mocks/mockModels";
 
 
 class AdminIntegrationTests extends IntegrationTestSuite {
@@ -90,6 +91,34 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             expect(groupDetails.members.indexOf("bob") === -1).to.be.true;
         });
 
+        it("can add a global role to a user", async () => {
+            await addUsers(this.db);
+            const result = await (new UsersService(this.store.dispatch, this.store.getState))
+                .addGlobalRoleToUser("bob", "reports-reader");
+            expect(result).to.equal("OK");
+
+            const users = await (new UsersService(this.store.dispatch, this.store.getState))
+                .getAllUsers();
+
+            const user = users.find((u: User) => u.username == "bob");
+            expect(user.roles.map((r: RoleAssignment) => r.name))
+                .to.have.members(['reports-reader', 'member', 'user-manager'])
+        });
+
+        it("can remove role from a user", async () => {
+            await addUsers(this.db);
+            const result = await (new UsersService(this.store.dispatch, this.store.getState))
+                .removeRoleFromUser("bob", "user-manager", null, null);
+            expect(result).to.equal("OK");
+
+            const users = await (new UsersService(this.store.dispatch, this.store.getState))
+                .getAllUsers();
+            const user = users.find((u: User) => u.username == "bob");
+
+            expect(user.roles.map((r: RoleAssignment) => r.name))
+                .to.have.members(['member'])
+        });
+
         it("can fetch users", async () => {
             await addUsers(this.db);
             const users: User[] = await (new UsersService(this.store.dispatch, this.store.getState)).getAllUsers();
@@ -104,6 +133,13 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                 ],
                 last_logged_in: "2017-01-01T08:36:23Z"
             });
+        });
+
+        it("can fetch global roles", async () => {
+            const roles: string[] = await (new UsersService(this.store.dispatch, this.store.getState))
+                .getGlobalRoles();
+
+            expect(roles).to.have.length(9)
         });
 
         it("can create a user", async () => {
@@ -122,7 +158,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
             const groupService = new ModellingGroupsService(this.store.dispatch, this.store.getState);
             const result = await groupService
-                .createGroup({id: "test-group", description: "test", institution: "imperial", pi: "pi"});
+                .createGroup(mockModellingGroupCreation({id: "test-group"}));
 
             expect(result).to.match(new RegExp("/v1/modelling-group/test-group/$"));
             const allGroups = await groupService.getAllGroups();
