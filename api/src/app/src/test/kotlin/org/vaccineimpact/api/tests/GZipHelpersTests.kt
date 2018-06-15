@@ -8,14 +8,14 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class GZipHelpersTests : MontaguTests()
 {
-    val testString = """COMPRESSION:
+    private val testString = """COMPRESSION:
         1 a : the act, process, or result of compressing
           b : the state of being compressed
-        2 : the process of compressing the fuel mixture in a cylinder
-            of an internal combustion engine (as in an automobile)
-        3 : the compressed remains of a fossil plant
-        4 : conversion (as of data, a data file, or a communications signal)
-            in order to reduce the space occupied or bandwidth required"""
+        2   : the process of compressing the fuel mixture in a cylinder
+              of an internal combustion engine (as in an automobile)
+        3   : the compressed remains of a fossil plant
+        4   : conversion (as of data, a data file, or a communications signal)
+              in order to reduce the space occupied or bandwidth required"""
 
     @Test
     fun `can deflate and re-inflate text`()
