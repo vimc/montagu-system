@@ -80,9 +80,12 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
             }
             else
             {
-                println("Unable to connect. I will wait and then retry $attemptsRemaining more times")
                 attemptsRemaining--
-                Thread.sleep(2000)
+                if (attemptsRemaining > 0)
+                {
+                    println("Unable to connect. I will wait and then retry $attemptsRemaining more times")
+                    Thread.sleep(2000)
+                }
             }
         }
         return false
