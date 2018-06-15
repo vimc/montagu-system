@@ -16,7 +16,10 @@ fun deflate(uncompressed: String): String
         }
         byteStream.toByteArray()
     }
-    return Base64.getUrlEncoder().encodeToString(bytes)
+    return Base64
+            .getUrlEncoder()
+            .withoutPadding()
+            .encodeToString(bytes)
 }
 
 @JvmName("inflateNullable")
@@ -38,9 +41,17 @@ fun inflate(compressed: String): String
     {
         return ""
     }
-    val bytes = Base64.getUrlDecoder().decode(compressed)
 
-    return if (isCompressed(bytes))
+    val bytes = try
+    {
+        Base64.getUrlDecoder().decode(compressed)
+    }
+    catch (e: IllegalArgumentException)
+    {
+        null
+    }
+
+    return if (bytes != null && isCompressed(bytes))
     {
         val inputStream = GZIPInputStream(ByteArrayInputStream(bytes))
         InputStreamReader(inputStream, "UTF-8")
