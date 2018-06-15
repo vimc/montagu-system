@@ -25,7 +25,7 @@ c="$root/dhparam.pem"
 echo "Waiting for SSL certificate files at:"
 echo "- $a"
 echo "- $b"
-echo "- $b"
+echo "- $c"
 
 while [ ! -e $a ]
 do
