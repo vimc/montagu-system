@@ -58,11 +58,13 @@ Creates a new modelling group.
 
 Required permissions: `*/modelling-groups.write`.
 
-Schema: [`ModellingGroup.schema.json`](../schemas/ModellingGroup.schema.json)
+Schema: [`ModellingGroupCreation.schema.json`](../schemas/ModellingGroupCreation.schema.json)
 
 ### Example
     {
         "id": "IC-NewName",
-        "description": "new group at Imperial College"
+        "description": "new group at Imperial College",
+        "institution": "Imperial College",
+        "pi": "Dr New Name"
     }
 

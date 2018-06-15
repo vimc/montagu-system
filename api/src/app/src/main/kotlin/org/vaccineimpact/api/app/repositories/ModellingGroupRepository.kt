@@ -13,7 +13,7 @@ interface ModellingGroupRepository : Repository
 
     fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
 
-    fun createModellingGroup(newGroup: ModellingGroup)
+    fun createModellingGroup(newGroup: ModellingGroupCreation)
 
     fun getCoverageSets(groupId: String, touchstoneVersionId: String, scenarioId: String): ScenarioTouchstoneAndCoverageSets
     fun getCoverageData(groupId: String, touchstoneVersionId: String, scenarioId: String): SplitData<ScenarioTouchstoneAndCoverageSets, LongCoverageRow>

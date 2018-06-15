@@ -25,19 +25,13 @@ class JooqModellingGroupRepository(
         private val touchstoneRepository: TouchstoneRepository
 ) : JooqRepository(dsl), ModellingGroupRepository
 {
-    override fun createModellingGroup(newGroup: ModellingGroup)
+    override fun createModellingGroup(newGroup: ModellingGroupCreation)
     {
-        val idArray = newGroup.id.split("-")
-
-        if (idArray.count() != 2){
-            throw BadRequest("Modelling group id must be of the form Institution-PI")
-        }
-
         dsl.newRecord(MODELLING_GROUP).apply {
-            id = newGroup.id
-            description = newGroup.description
-            institution = idArray[0]
-            pi = idArray[1]
+            this.id = newGroup.id
+            this.description = newGroup.description
+            this.institution = newGroup.institution
+            this.pi = newGroup.description
         }.insert()
 
     }

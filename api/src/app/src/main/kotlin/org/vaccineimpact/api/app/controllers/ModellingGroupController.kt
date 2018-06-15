@@ -7,10 +7,7 @@ import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
-import org.vaccineimpact.api.models.AssociateUser
-import org.vaccineimpact.api.models.ModellingGroup
-import org.vaccineimpact.api.models.ModellingGroupDetails
-import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 
 
@@ -54,7 +51,7 @@ open class ModellingGroupController(
 
     fun createModellingGroup(): String
     {
-        val newGroup = context.postData<ModellingGroup>()
+        val newGroup = context.postData<ModellingGroupCreation>()
 
         modellingGroupRepository.createModellingGroup(newGroup)
 
