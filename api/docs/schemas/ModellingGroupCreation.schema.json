@@ -1,0 +1,12 @@
+{
+    "id": "ModellingGroupCreation",
+    "type": "object",
+    "properties": {
+        "id": { "$ref": "StandardIdentifier.schema.json" },
+        "description": { "type": "string" },
+        "pi": { "type": "string"},
+        "institution": {"type": "string"}
+    },
+    "additionalProperties": false,
+    "required": [ "id", "description" ]
+}

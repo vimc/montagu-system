@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.*
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
@@ -24,6 +25,16 @@ class JooqModellingGroupRepository(
         private val touchstoneRepository: TouchstoneRepository
 ) : JooqRepository(dsl), ModellingGroupRepository
 {
+    override fun createModellingGroup(newGroup: ModellingGroupCreation)
+    {
+        dsl.newRecord(MODELLING_GROUP).apply {
+            this.id = newGroup.id
+            this.description = newGroup.description
+            this.institution = newGroup.institution
+            this.pi = newGroup.description
+        }.insert()
+
+    }
 
     override fun getModellingGroups(): Iterable<ModellingGroup>
     {
