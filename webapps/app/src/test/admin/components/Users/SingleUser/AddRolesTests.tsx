@@ -1,105 +1,67 @@
 import * as React from "react";
-import { expect } from "chai";
-import { checkAsync } from "../../../../testHelpers";
-import { AddRoles } from "../../../../../main/admin/components/Users/SingleUser/AddRoles";
-import { Sandbox } from "../../../../Sandbox";
-import fetcher from "../../../../../main/shared/sources/Fetcher";
-import { mockResponse } from "../../../../mocks/mockRemote";
-import { expectOneAction } from "../../../../actionHelpers";
-import { shallow } from "enzyme";
+import {expect} from "chai";
+import * as Sinon from "sinon";
+import {AddRoles, AddRolesComponent} from "../../../../../main/admin/components/Users/SingleUser/AddRoles";
+import {Sandbox} from "../../../../Sandbox";
+import {shallow} from "enzyme";
+import {createMockStore} from "../../../../mocks/mockStore";
+import {AdminAppState} from "../../../../../main/admin/reducers/adminAppReducers";
+import {mockRole, mockUser} from "../../../../mocks/mockModels";
+import {mockAdminState, mockAdminUsersState} from "../../../../mocks/mockStates";
+import {MockStore} from "redux-mock-store";
+import {usersActionCreators} from "../../../../../main/admin/actions/usersActionCreators";
 
 describe("AddRoles", () => {
 
-    let sandbox: Sandbox;
+    const sandbox: Sandbox = new Sandbox();
+
+    const mockRoles = [mockRole({name: "role1"}), mockRole()];
+
+    const mockUsersState = mockAdminUsersState({
+        globalRoles: mockRoles,
+        currentUser: mockUser({username: "fake.name", name: "Fake Name"})
+    });
+    const mockAdminAppState = mockAdminState({users: mockUsersState});
+
+    let store: MockStore<AdminAppState>, addRoleStub: Sinon.SinonStub;
 
     beforeEach(() => {
-        sandbox = new Sandbox()
+        addRoleStub = sandbox.setStubFunc(usersActionCreators, "addGlobalRoleToUser",
+            () => async () => Promise.resolve({}));
+
+        store = createMockStore(mockAdminAppState);
     });
 
     afterEach(() => {
         sandbox.restore();
     });
 
-    it("populates role options", (done: DoneCallback) => {
+    it("populates role options from store state", () => {
 
-        const fetch = sandbox.sinon.stub(fetcher.fetcher, "fetch")
-            .returns(mockResponse({ status: "success", data: ["role1", "role2"], errors: [] }));
+        const rendered = shallow(<AddRoles username={"testuser"} userRoles={[]}/>, {context: {store}})
+            .dive().dive();
 
-        const roles = shallow(<AddRoles username={"testuser"} userRoles={[]}/>);
-        const instance = roles.instance();
-        const setState = sandbox.sinon.stub(instance, 'setState');
-        instance.componentWillMount();
-
-        checkAsync(done, afterWait => {
-            expect(fetch.called).to.equal(true);
-
-            afterWait(done, () => {
-                expect(setState
-                    .withArgs({allRoles: ["role1", "role2"]}).called).to.equal(true);
-            })
-
-        })
+        expect(rendered.find("option")).to.have.lengthOf(2)
     });
 
-    it("only shows roles the user does not have", (done: DoneCallback) => {
+    it("only shows roles the user does not have", () => {
 
-        const roles = shallow(<AddRoles username={"testuser"} userRoles={["role1"]}/>);
-        const instance = roles.instance();
-        instance.setState({allRoles: ["role1", "role2"]});
+        const rendered = shallow(<AddRolesComponent username={"testuser"}
+                                                    userRoles={["role1"]}
+                                                    allRoles={["role1", "role2"]}
+                                                    addRoleToUser={null}/>);
 
-        const setState = sandbox.sinon.stub(instance, 'setState');
-        instance.componentWillReceiveProps({username:"testuser", userRoles:["role1"]}, null);
+        expect(rendered.find("option")).to.have.lengthOf(1);
 
-        checkAsync(done, afterWait => {
-            afterWait(done, () => {
-                expect(setState
-                    .withArgs({availableRoles: ["role2"], selectedRole: "role2"})
-                    .called).to.equal(true);
-            })
-        })
     });
 
-    it("notifies on error", (done: DoneCallback) => {
+    it("dispatches addGlobalRoleToUser when role is added", () => {
 
-        const fakeError = { code: "e1", message: "some error" };
-        const fetch = sandbox.sinon.stub(fetcher.fetcher, "fetch")
-            .returns(mockResponse({ status: "failure", data: null, errors: [fakeError] }));
+        const addRoles = shallow(<AddRoles username={"testuser"} userRoles={["role1"]}/>, {context: {store}})
+            .dive()
+            .dive();
 
-        const dispatchSpy = sandbox.dispatchSpy();
-
-        sandbox.mount(<AddRoles username={"testuser"} userRoles={["role1"]}/>);
-
-        checkAsync(done, afterWait => {
-            afterWait(done, () => {
-                expect(fetch.called).to.equal(true);
-                expectOneAction(dispatchSpy, {
-                    action: "NotificationActions.notify",
-                    payload: { type: "error", message: fakeError.message }
-                });
-            })
-        })
-    });
-
-    it("adds role", (done: DoneCallback) => {
-
-        const sandbox = new Sandbox();
-        const fetch = sandbox.sinon.stub(fetcher.fetcher, "fetch")
-            .withArgs("/users/roles/all/")
-            .returns(mockResponse({ status: "success", data: ["role1", "role2"], errors: [] }));
-
-        fetch
-            .withArgs("/users/testuser/actions/associate-role/",
-                {
-                    method: "post",
-                    body: JSON.stringify({ name: "rolename", action: "add", scope_prefix: null, scope_id: null })
-                }
-            )
-            .returns(mockResponse({ status: "success", data: "OK", errors: [] }));
-
-        const dispatchSpy = sandbox.dispatchSpy();
-
-        const addRoles = sandbox.mount(<AddRoles username={"testuser"} userRoles={["role1"]}/>);
-        addRoles.setState({ selectedRole: "rolename", availableRoles: ["rolename"] });
+        addRoles.setState({selectedRole: "rolename", availableRoles: ["rolename"]});
 
         const onClick = addRoles.find("button").prop("onClick");
         onClick.call(onClick, {
@@ -107,15 +69,7 @@ describe("AddRoles", () => {
             }
         });
 
-        checkAsync(done, afterWait => {
-            afterWait(done, () => {
-                expect(fetch.called).to.equal(true);
-                expectOneAction(dispatchSpy, {
-                    action: "UserActions.addRole",
-                    payload: { name: "rolename", scope_prefix: null, scope_id: null }
-                });
-                sandbox.restore()
-            })
-        })
+        expect(addRoleStub.calledWith("testuser", "rolename")).to.be.true;
+
     })
 });

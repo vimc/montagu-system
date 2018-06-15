@@ -11,10 +11,10 @@ import { AdminNoRouteFoundPage } from "./AdminNoRouteFoundPage";
 import { ModellingGroupsListPage } from "./ModellingGroups/List/ModellingGroupsListPage";
 import { ModellingGroupDetailsPage } from "./ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
 import { ModellingGroupMembersPage } from "./ModellingGroups/SingleGroup/Members/ModellingGroupMembersPage";
-import {ViewUserDetailsPage} from "./Users/SingleUser/ViewUserDetailsPage";
 import { AdminForgottenPasswordPage } from "./AdminForgottenPasswordPage";
 import { ResetPasswordPage } from "./Users/Account/ResetPasswordPage";
 import {UsersListPage} from "./Users/List/UsersListPage";
+import {UserDetailsPage} from "./Users/SingleUser/UserDetailsPage";
 import {TouchstoneListPage} from "./Touchstones/List/TouchstoneListPage";
 
 interface AdminRouterProps {
@@ -31,7 +31,7 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
         <Route exact path="/modelling-groups/:groupId/admin/" component={ModellingGroupMembersPage}/>
         <Route exact path="/touchstones/" component={TouchstoneListPage}/>
         <Route exact path="/users/" component={UsersListPage}/>
-        <Route exact path="/users/:username" component={ViewUserDetailsPage}/>
+        <Route exact path="/users/:username" component={UserDetailsPage}/>
         <Route exact path="/set-password/" component={ResetPasswordPage} />
         <Route component={AdminNoRouteFoundPage}/>
     </Switch>;

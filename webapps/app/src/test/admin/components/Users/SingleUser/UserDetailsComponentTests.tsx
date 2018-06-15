@@ -1,74 +1,52 @@
 import * as React from "react";
 import {expect} from "chai";
 import {shallow} from "enzyme";
-import { Provider } from "react-redux";
 
 import "../../../../helper";
-import {mockModellingGroup, mockModellingGroupDetails, mockUser} from "../../../../mocks/mockModels";
-import {alt} from "../../../../../main/shared/alt";
-
-import { UserDetailsContentComponent, mapStateToProps } from "../../../../../main/admin/components/Users/SingleUser/UserDetailsContent";
+import {mockUser} from "../../../../mocks/mockModels";
+import {
+    mapStateToProps,
+    UserDetailsContentComponent, UserRoles
+} from "../../../../../main/admin/components/Users/SingleUser/UserDetailsContent";
 import { AddRoles } from "../../../../../main/admin/components/Users/SingleUser/AddRoles";
-import { reduxHelper } from "../../../../reduxHelper";
-import { mockAdminState } from "../../../../mocks/mockStates";
-import {AdminAppState} from "../../../../../main/admin/reducers/adminAppReducers";
+import {mockAdminState, mockAuthState} from "../../../../mocks/mockStates";
 
-describe("UserDetailsComponent", () => {
-    it("can get props from stores", () => {
-        const user = mockUser();
-        alt.bootstrap(JSON.stringify({
-            UserStore: {
-                currentUsername: "testuser",
-                usersLookup: {
-                    "testuser": user,
-                },
-                rolesLookup: {
-                    "testuser": []
-                }
-            }
-        }));
+describe("UserDetailsContent", () => {
 
-        expect(UserDetailsContentComponent.getPropsFromStores()).to.eql({
-            ready: true,
-            user: user,
-            roles: []
-        });
+    it("passes props to UserRole component", () => {
+        const user = mockUser({username: "tets.user"});
+        const rendered = shallow(<UserDetailsContentComponent user={user} isAdmin={true} />);
+        const userRoles = rendered.find(UserRoles);
+        expect(userRoles.prop("user")).to.eq(user);
+        expect(userRoles.prop("isAdmin")).to.eq(true);
     });
 
-    it("can render", () => {
-        const user = mockUser({username: "tets.user"});
-        const store = reduxHelper.createAdminUserStore();
-        shallow(<Provider store={store}><UserDetailsContentComponent ready={true} user={user} roles={[]} isAdmin={true} /></Provider>);
+    it("maps isAdmin property to true if user has '*roles.write' permission", () => {
+        const adminStateMock = mockAdminState({ auth: mockAuthState({permissions: ["*/roles.write"]}) });
+        const props = mapStateToProps(adminStateMock);
+        expect(props.isAdmin).to.eq(true);
     });
 
-    it("show add role widget if logged in user has is admin permission", () => {
-        const user = mockUser({username: "tets.user"});
-        const result = shallow(<UserDetailsContentComponent ready={true} user={user} roles={[]} isAdmin={true} />);
-        expect(result.find(AddRoles).length).to.eq(1)
+    it("maps isAdmin property to false if user does not have '*roles.write' permission", () => {
+        const adminStateMock = mockAdminState();
+        const props = mapStateToProps(adminStateMock);
+        expect(props.isAdmin).to.eq(false);
     });
 
-    it("show add role widget if logged in user has admin permission", () => {
+});
+
+describe("UserDetailRoles", () => {
+
+    it("does not show add role widget if isAdmin is false", () => {
         const user = mockUser({username: "tets.user"});
-        const result = shallow(<UserDetailsContentComponent ready={true} user={user} roles={[]} isAdmin={true} />);
-        expect(result.find(AddRoles).length).to.eq(1)
-    });
-
-    // it("maps isAdmin property true if auth state has roles.write", () => {
-    //     const adminStateMock = mockAdminState({ auth: {permissions: ["*/roles.write"]} })
-    //     const props = mapStateToProps(adminStateMock)
-    //     expect(props.isAdmin).to.eq(true);
-    // });
-
-    // it("maps isAdmin property false if auth state has no roles.write", () => {
-    //     const adminStateMock = mockAdminState();
-    //     console.log(3333, adminStateMock.groups)
-    //     const props = mapStateToProps(adminStateMock);
-    //     // expect(props.isAdmin).to.eq(false);
-    // });
-
-    it("does not show add role widget if logged in user is not admin", () => {
-        const user = mockUser({username: "tets.user"});
-        const result = shallow(<UserDetailsContentComponent ready={true} user={user} roles={[]} isAdmin={false} />);
+        const result = shallow(<UserRoles user={user} isAdmin={false} />);
         expect(result.find(AddRoles).length).to.eq(0)
     });
+
+    it("does show add role widget if isAdmin is true", () => {
+        const user = mockUser({username: "tets.user"});
+        const result = shallow(<UserRoles user={user} isAdmin={false} />);
+        expect(result.find(AddRoles).length).to.eq(0)
+    });
+
 });

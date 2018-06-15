@@ -12,4 +12,4 @@ export const reduxHelper = {
     createStore: (state:any) => {
         return createStore(state => state, state)
     }
-}
+};
