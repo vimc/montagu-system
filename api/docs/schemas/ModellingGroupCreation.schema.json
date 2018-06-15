@@ -1,6 +1,6 @@
 {
-	"id": "ModellingGroup",
-	"type": "object",
+    "id": "ModellingGroup",
+    "type": "object",
     "properties": {
         "id": { "$ref": "StandardIdentifier.schema.json" },
         "description": { "type": "string" },
