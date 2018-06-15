@@ -1,7 +1,7 @@
-import { Location } from "history";
+import {Location} from "history";
 import {match} from 'react-router';
 
-import { emptyOneTimeTokenData, OneTimeToken, OneTimeTokenData } from "../../main/report/models/OneTimeToken";
+import {emptyOneTimeTokenData, OneTimeToken, OneTimeTokenData} from "../../main/report/models/OneTimeToken";
 
 export function mockLocation(params?: Partial<Location>): Location {
     return Object.assign({
@@ -53,4 +53,11 @@ export function mockOneTimeToken(url: string): OneTimeToken {
         raw: "TOKEN",
         data: mockOneTimeTokenData({ url: url })
     };
+}
+
+export function mockAction(): any {
+    return {
+        type: "some_type_key",
+        data: true
+    }
 }
