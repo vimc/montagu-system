@@ -27,19 +27,8 @@ echo "- $a"
 echo "- $b"
 echo "- $c"
 
-while [ ! -e $a ]
-do
-    sleep 2
-done
-
-while [ ! -e $b ]
-do
-    sleep 2
-done
-
-while [ ! -e $c ]
-do
-    sleep 2
+while [ ! -e $a ] || [ ! -e $b ] || [ ! -e $c ]; do
+  sleep 2
 done
 
 echo "Certificate files detected. Running nginx"
