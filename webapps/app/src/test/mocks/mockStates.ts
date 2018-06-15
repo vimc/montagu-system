@@ -24,6 +24,7 @@ import {runParametersInitialState, RunParametersState} from "../../main/contrib/
 import { initialState as UserInitialState, UserState} from "../../main/contrib/reducers/userReducer";
 import {AdminAppState} from "../../main/admin/reducers/adminAppReducers";
 import {ModellingGroupsState as AdminModellingGroupsState} from "../../main/admin/reducers/modellingGroupsReducer";
+import {adminTouchstoneReducer, adminTouchstonesInitialState} from "../../main/admin/reducers/adminTouchstoneReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -56,18 +57,16 @@ export const mockAdminUsersState = (props?: RecursivePartial<AdminUsersState>): 
     return Object.assign({}, adminUsersInitialState, props);
 };
 
-export const mockAdminState = (props?: Partial<AdminAppState>): AdminAppState => {
-    const authMock: AuthState = props && props.auth ? props.auth : mockAuthState();
-    const groupsMock: AdminModellingGroupsState = props && props.groups ? props.groups : AdminModellingGroupsInitialState;
-    const usersMock: AdminUsersState = props && props.users ? props.users : adminUsersInitialState;
-    const breadcrumbsMock: BreadcrumbsState = props && props.breadcrumbs ? props && props.breadcrumbs : initialBreadcrumbsState;
-    return {
-        auth: authMock,
+export const mockAdminState = (props?: RecursivePartial<AdminAppState>): AdminAppState => {
+    const template: AdminAppState = {
+        auth: mockAuthState(),
         form: formReducer,
-        groups: groupsMock,
-        breadcrumbs: breadcrumbsMock,
-        users: usersMock
+        groups: AdminModellingGroupsInitialState,
+        breadcrumbs: initialBreadcrumbsState,
+        users: adminUsersInitialState,
+        touchstones: adminTouchstonesInitialState
     };
+    return Object.assign(template, props);
 };
 
 export const mockContribState = (props?: RecursivePartial<ContribAppState>) :ContribAppState => {

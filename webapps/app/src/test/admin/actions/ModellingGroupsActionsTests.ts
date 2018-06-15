@@ -6,10 +6,12 @@ import {createMockAdminStore, createMockStore} from "../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../main/admin/actionTypes/ModellingGroupsTypes";
 import {
-    mockModellingGroup, mockModellingGroupCreation, mockModellingGroupDetails,
+    mockModellingGroup,
+    mockModellingGroupCreation,
+    mockModellingGroupDetails,
     mockUser
 } from "../../mocks/mockModels";
-import {ModellingGroupCreation} from "../../../main/shared/models/Generated";
+import {verifyActionThatCallsService} from "../../ActionCreatorTestHelpers";
 
 describe("Admin Modelling groups actions tests", () => {
     const sandbox = new Sandbox();
@@ -230,30 +232,23 @@ describe("Admin Modelling groups actions tests", () => {
     });
 
     it("dispatches ADD_MODELLING_GROUP on group creation", (done) => {
-        const store = createMockAdminStore();
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "createGroup", () => {
-            return Promise.resolve("/modelling-groups/new:group/");
-        });
 
         const newGroup = mockModellingGroupCreation();
-        sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
 
-        store.dispatch(modellingGroupsActionCreators.createModellingGroup(newGroup));
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = [
-                {type: ModellingGroupTypes.ADD_MODELLING_GROUP, data: newGroup}
-            ];
-            expect(actions).to.eql(expectedPayload);
-            done();
-        });
+        verifyActionThatCallsService(done, {
+            mockServices: () => {
+                sandbox.stubService(ModellingGroupsService.prototype, "createGroup");
+                sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
+            },
+            callActionCreator: () => modellingGroupsActionCreators.createModellingGroup(newGroup),
+            expectTheseActions: [{type: ModellingGroupTypes.ADD_MODELLING_GROUP, data: newGroup}]
+        })
     });
 
     it("clears group list cache on group creation", (done) => {
         const store = createMockAdminStore();
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "createGroup", () => {
-            return Promise.resolve("/modelling-groups/new:group/");
-        });
+
+        sandbox.stubService(ModellingGroupsService.prototype, "createGroup");
         const clearCacheStub = sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
 
         store.dispatch(modellingGroupsActionCreators.createModellingGroup(mockModellingGroupCreation()));
@@ -264,19 +259,15 @@ describe("Admin Modelling groups actions tests", () => {
     });
 
     it("dispatches nothing on failed group creation", (done) => {
-        const store = createMockAdminStore();
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "createGroup", () => {
-            return Promise.reject("errro");
-        });
-        const clearCacheStub = sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
 
-        store.dispatch(modellingGroupsActionCreators.createModellingGroup(mockModellingGroupCreation()));
-        setTimeout(() => {
-            const actions = store.getActions();
-            expect(actions).to.have.lengthOf(0);
-            expect(clearCacheStub.called).to.be.false;
-            done();
-        });
+        verifyActionThatCallsService(done, {
+            mockServices: () => {
+                sandbox.stubServiceWithFailure(ModellingGroupsService.prototype, "createGroup");
+                sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
+            },
+            callActionCreator: () => modellingGroupsActionCreators.createModellingGroup(mockModellingGroupCreation()),
+            expectTheseActions: []
+        })
     });
 
 });
