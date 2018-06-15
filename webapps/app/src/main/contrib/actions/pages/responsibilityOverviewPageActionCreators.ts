@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
-import {touchstonesActionCreators} from "../touchstonesActionCreators";
+import {contribTouchstonesActionCreators} from "../contribTouchstonesActionCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {
     ResponsibilityOverviewPageComponent,
@@ -25,7 +25,7 @@ export const responsibilityOverviewPageActionCreators = {
         return async (dispatch: Dispatch<ContribAppState>) => {
             await dispatch(chooseActionPageActionCreators.loadData(props));
             await dispatch(diseasesActionCreators.getAllDiseases());
-            dispatch(touchstonesActionCreators.setCurrentTouchstoneVersion(props.touchstoneId));
+            dispatch(contribTouchstonesActionCreators.setCurrentTouchstoneVersion(props.touchstoneId));
             await dispatch(responsibilitiesActionCreators.getResponsibilitySet());
         }
     }
