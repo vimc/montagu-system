@@ -42,7 +42,7 @@ class CreateModellingGroupTests : ModellingGroupRepositoryTests()
         }
         withRepo {
             assertThatThrownBy { it.createModellingGroup(newGroup) }
-                    .isInstanceOf(PSQLException::class.java)
+                    .hasMessageContaining("already exists")
         }
 
     }
