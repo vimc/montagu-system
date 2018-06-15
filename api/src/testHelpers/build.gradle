@@ -1,9 +1,27 @@
+apply plugin: 'application'
+mainClassName = "org.vaccineimpact.api.test_helpers.AppKt"
+
 dependencies {
     compile "junit:junit:4.12"
     compile "org.jooq:jooq:3.10.5"
     compile "org.jooq:jooq-meta:3.10.5"
+    compile "com.offbytwo:docopt:0.6.0.20150202"
 
     compile project(':databaseInterface')
     compile project(':models')
     compile project(':security')
+}
+
+task createTemplateFromDatabase(type: JavaExec) {
+    dependsOn 'copyTestConfig'
+    main = "org.vaccineimpact.api.test_helpers.AppKt"
+    classpath = sourceSets.main.runtimeClasspath
+    args "createTemplateFromDatabase"
+}
+
+task restoreDatabaseFromTemplate(type: JavaExec) {
+    dependsOn 'copyTestConfig'
+    main = "org.vaccineimpact.api.test_helpers.AppKt"
+    classpath = sourceSets.main.runtimeClasspath
+    args "restoreDatabaseFromTemplate"
 }

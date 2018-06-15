@@ -21,12 +21,20 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
 
     fun createTemplateFromDatabase()
     {
+        println("Planning to create template ${config.templateName} from ${config.name}")
         checkDatabaseExists(config.name)
-        config.factory("postgres").use {
-            it.dsl.query("ALTER DATABASE ${config.name} RENAME TO ${config.templateName}").execute()
+        if (databaseExists(config.templateName, maxAttempts = 1))
+        {
+            println("Template database already exists")
         }
-        println("Created template database by renaming ${config.name} to ${config.templateName}")
-        checkDatabaseExists(config.templateName)
+        else
+        {
+            config.factory("postgres").use {
+                it.dsl.query("ALTER DATABASE ${config.name} RENAME TO ${config.templateName}").execute()
+            }
+            println("Created template database by renaming ${config.name} to ${config.templateName}")
+            checkDatabaseExists(config.templateName)
+        }
     }
 
     fun restoreDatabaseFromTemplate()
@@ -60,10 +68,10 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
         }
     }
 
-    private fun databaseExists(dbName: String): Boolean
+    private fun databaseExists(dbName: String, maxAttempts: Int = 10): Boolean
     {
         println("Checking that database '$dbName' exists...")
-        var attemptsRemaining = 10
+        var attemptsRemaining = maxAttempts
         while (attemptsRemaining > 0)
         {
             if (check(dbName))
