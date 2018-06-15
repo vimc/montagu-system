@@ -10,20 +10,7 @@ import org.vaccineimpact.api.models.*
 
 class GetResponsibilityTests : ResponsibilitiesRepositoryTests()
 {
-    @org.junit.Test
-    fun `getResponsibility throws error for unknown modelling group`()
-    {
-        given {
-            it.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
-            it.addScenarioDescription("scenario-1", "description", "disease", addDisease = true)
-        } check { repo ->
-            assertThatThrownBy { repo.getResponsibility("group-1", "touchstone-1", "scenario-1") }
-                    .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
-                    .hasMessageContaining("modelling-group")
-        }
-    }
-
-    @org.junit.Test
+    @Test
     fun `getResponsibility checks that touchstone exists`()
     {
         given {
@@ -32,7 +19,7 @@ class GetResponsibilityTests : ResponsibilitiesRepositoryTests()
         } check { repo ->
             assertThatThrownBy { repo.getResponsibility("group-1", "touchstone-1", "scenario-1") }
                     .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
-                    .hasMessageContaining("touchstoneVersion")
+                    .hasMessageContaining("touchstone-version")
         }
     }
 
