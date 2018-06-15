@@ -14,10 +14,9 @@ import org.vaccineimpact.api.security.inflate
 class JWTHeaderClient(helper: WebTokenHelper)
     : HeaderClient("Authorization", "Bearer ", MontaguTokenAuthenticator(helper, TokenType.BEARER))
 {
-    override fun clientInit(context: WebContext?)
+    init
     {
-        super.clientInit(context)
-        defaultCredentialsExtractor(CompressedHeaderExtractor(headerName, prefixHeader, name))
+        credentialsExtractor = CompressedHeaderExtractor(headerName, prefixHeader, name)
     }
 
     class Wrapper(helper: WebTokenHelper) : MontaguSecurityClientWrapper
@@ -33,9 +32,13 @@ class JWTHeaderClient(helper: WebTokenHelper)
 class CompressedHeaderExtractor(headerName: String, prefixHeader: String, name: String)
     : HeaderExtractor(headerName, prefixHeader, name)
 {
-    override fun extract(context: WebContext?): TokenCredentials
+    override fun extract(context: WebContext?): TokenCredentials?
     {
         val wrapped = super.extract(context)
-        return TokenCredentials(inflate(wrapped.token), wrapped.clientName)
+        return if (wrapped != null)
+        {
+            TokenCredentials(inflate(wrapped.token), wrapped.clientName)
+        }
+        else null
     }
 }

@@ -16,34 +16,41 @@ fun deflate(uncompressed: String): String
         }
         byteStream.toByteArray()
     }
-    return Base64.getEncoder().encodeToString(bytes)
+    return Base64.getUrlEncoder().encodeToString(bytes)
 }
 
+@JvmName("inflateNullable")
 fun inflate(compressed: String?): String?
 {
-    if (compressed == null)
+    return if (compressed == null)
     {
-        return null
+        null
     }
     else
     {
-        if (compressed.isEmpty()) {
-            return ""
-        }
-        val bytes = Base64.getDecoder().decode(compressed)
+        inflate(compressed)
+    }
+}
 
-        return if (isCompressed(bytes))
-        {
-            val inputStream = GZIPInputStream(ByteArrayInputStream(bytes))
-            InputStreamReader(inputStream, "UTF-8")
-                    .buffered()
-                    .readLines()
-                    .joinToString("\n")
-        }
-        else
-        {
-            compressed
-        }
+fun inflate(compressed: String): String
+{
+    if (compressed.isEmpty())
+    {
+        return ""
+    }
+    val bytes = Base64.getUrlDecoder().decode(compressed)
+
+    return if (isCompressed(bytes))
+    {
+        val inputStream = GZIPInputStream(ByteArrayInputStream(bytes))
+        InputStreamReader(inputStream, "UTF-8")
+                .buffered()
+                .readLines()
+                .joinToString("\n")
+    }
+    else
+    {
+        compressed
     }
 }
 

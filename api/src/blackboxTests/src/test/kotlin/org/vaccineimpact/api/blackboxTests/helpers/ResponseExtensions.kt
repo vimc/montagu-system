@@ -3,11 +3,12 @@ package org.vaccineimpact.api.blackboxTests.helpers
 import com.auth0.jwt.JWT
 import khttp.responses.Response
 import org.assertj.core.api.Assertions
+import org.vaccineimpact.api.security.inflate
 
 /**
  * When we request an endpoint via a onetime link, we can also request that the API
  * then redirects the client to a different URL. If it does so, it returns the result
- * of the endpoint not in the response body, but as a quey parameter in the redirect.
+ * of the endpoint not in the response body, but as a query parameter in the redirect.
 
  * For example, if the onetime token was requested with a redirect of 'http://localhost'
  * then the client will be redirected to 'http://localhost?result=eY5435tedsgfdfg...'.
@@ -19,7 +20,7 @@ import org.assertj.core.api.Assertions
 fun Response.getResultFromRedirect(checkRedirectTarget: String? = null): String
 {
     val encoded = this.getEncodedResultFromRedirect(checkRedirectTarget)
-    val claims = JWT.decode(encoded)
+    val claims = JWT.decode(inflate(encoded))
     return claims.getClaim("result").asString()
 }
 
