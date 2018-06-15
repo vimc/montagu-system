@@ -4,11 +4,7 @@ import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
-import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
-import org.vaccineimpact.api.blackboxTests.helpers.toJsonObject
 import org.vaccineimpact.api.blackboxTests.helpers.validate
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addDisease
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addModel
@@ -18,7 +14,6 @@ import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.test_helpers.DatabaseTest
-import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
 
 class ModellingGroupTests : DatabaseTest()
@@ -106,26 +101,10 @@ class ModellingGroupTests : DatabaseTest()
         } sendingJSON {
             json {
                 obj("id" to "IC-Garske",
-                        "description" to "description")
+                        "description" to "description",
+                        "institution" to "Imperial",
+                        "pi" to "Tini garske")
             }
-        } withRequestSchema "ModellingGroup" andCheckObjectCreation "/modelling-group/IC-Garske/"
-    }
-
-    @Test
-    fun `cannot create duplicate group`()
-    {
-        JooqContext().use {
-            it.addGroup("IC-Garske")
-        }
-        TestUserHelper.setupTestUser()
-        val response = RequestHelper().post("/modelling-groups/", writePermissions, json {
-            obj(
-                    "id" to "IC-Garske",
-                    "description" to "whatever"
-            )
-        })
-        assertThat(response.statusCode).isEqualTo(400)
-        JSONValidator().validateError(response.text, "duplicate-key:id")
-
+        } withRequestSchema "ModellingGroupCreation" andCheckObjectCreation "/modelling-group/IC-Garske/"
     }
 }
