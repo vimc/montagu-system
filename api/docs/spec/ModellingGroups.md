@@ -62,7 +62,7 @@ Schema: [`ModellingGroup.schema.json`](../schemas/ModellingGroup.schema.json)
 
 ### Example
     {
-        "id": "IC:NewName",
+        "id": "IC-NewName",
         "description": "new group at Imperial College"
     }
 
