@@ -11,25 +11,45 @@ import {
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {modellingGroupsActionCreators} from "../../../actions/modellingGroupsActionCreators";
 import {ReduxFormProps} from "../../../../shared/components/ReduxForm/types";
-
-export interface CreateModellingGroupFormFields {
-    name: string;
-    description: string;
-}
+import {ModellingGroupCreation} from "../../../../shared/models/Generated";
 
 export class CreateModellingGroupFormComponent
-    extends React.Component<ReduxFormProps<CreateModellingGroupFormFields>, undefined> {
+    extends React.Component<ReduxFormProps<ModellingGroupCreation>, undefined> {
 
     render() {
         return <form className="form" onSubmit={this.props.handleSubmit(this.props.submit)}>
             <table className="tableForm specialColumn">
                 <tbody>
                 <tr>
-                    <td>Name</td>
+                    <td>Institution</td>
                     <td>
                         <Field
-                            name="name"
-                            label={"name"}
+                            name="institution"
+                            label={"institution"}
+                            component={ReduxFormField}
+                            type="text"
+                            validate={[validations.required]}
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Principal investigator</td>
+                    <td>
+                        <Field
+                            name="pi"
+                            label={"pi"}
+                            component={ReduxFormField}
+                            type="text"
+                            validate={[validations.required]}
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Id</td>
+                    <td>
+                        <Field
+                            name="id"
+                            label={"id"}
                             component={ReduxFormField}
                             type="text"
                             validate={[validations.required]}
@@ -58,18 +78,16 @@ export class CreateModellingGroupFormComponent
 }
 
 
-function mapStateToProps(state: AdminAppState): Partial<ReduxFormProps<CreateModellingGroupFormFields>> {
+function mapStateToProps(state: AdminAppState): Partial<ReduxFormProps<ModellingGroupCreation>> {
     return {
         errors: state.groups.createGroupErrors,
     }
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<any>): Partial<ReduxFormProps<CreateModellingGroupFormFields>> {
+export function mapDispatchToProps(dispatch: Dispatch<any>): Partial<ReduxFormProps<ModellingGroupCreation>> {
     return {
-        submit: (values: CreateModellingGroupFormFields) => dispatch(modellingGroupsActionCreators
-            .createModellingGroup(
-                values.name, values.description
-            ))
+        submit: (newGroup: ModellingGroupCreation) => dispatch(modellingGroupsActionCreators
+            .createModellingGroup(newGroup))
     }
 }
 
