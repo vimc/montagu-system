@@ -8,7 +8,7 @@ import {LoadingElement} from "../../../../shared/partials/LoadingElement/Loading
 import {AddRoles} from "./AddRoles";
 import {UserRole} from "./UserRole";
 
-export const UserRolesComponent: React.SFC<User> = (user: User) => {
+export const UserRoles: React.SFC<User> = (user: User) => {
 
     return <div className="mt-4">
         <h3>Manage roles</h3>
@@ -26,9 +26,6 @@ export const UserRolesComponent: React.SFC<User> = (user: User) => {
                   username={user.username}/>
     </div>;
 };
-
-export const UserRoles = compose(
-    branch((props: User) =>  !props.roles, renderComponent(LoadingElement)))(UserRolesComponent);
 
 export interface UserDetailsProps {
     user: User;

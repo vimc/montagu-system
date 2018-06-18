@@ -6,11 +6,9 @@ import "../../../../helper";
 import {mockUser} from "../../../../mocks/mockModels";
 import {
     mapStateToProps,
-    UserDetailsContentComponent, UserRoles, UserRolesComponent
+    UserDetailsContentComponent, UserRoles
 } from "../../../../../main/admin/components/Users/SingleUser/UserDetailsContent";
 import {mockAdminState, mockAuthState} from "../../../../mocks/mockStates";
-import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
-import {AddRoles} from "../../../../../main/admin/components/Users/SingleUser/AddRoles";
 
 describe("UserDetailsContent", () => {
 
@@ -38,24 +36,6 @@ describe("UserDetailsContent", () => {
         const adminStateMock = mockAdminState();
         const props = mapStateToProps(adminStateMock);
         expect(props.isAdmin).to.eq(false);
-    });
-
-});
-
-describe("UserRolesComponent", () => {
-
-    it("renders loading element if user roles is null", () => {
-
-        const user = mockUser({username: "tets.user", roles: null});
-        const rendered = shallow(<UserRoles {...user} />).dive();
-        expect(rendered.find(LoadingElement)).to.have.lengthOf(1);
-    });
-
-    it("renders roles if user roles is not null", () => {
-
-        const user = mockUser({username: "tets.user", roles: []});
-        const rendered = shallow(<UserRoles {...user} />).dive();
-        expect(rendered.find(AddRoles)).to.have.lengthOf(1);
     });
 
 });
