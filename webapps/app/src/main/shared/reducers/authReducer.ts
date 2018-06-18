@@ -25,6 +25,7 @@ export const initialAuthState: AuthState = {
 export const authReducer = (state = initialAuthState, action: AuthActionsTypes) => {
     switch (action.type) {
         case AuthTypeKeys.AUTHENTICATED:
+            console.log("Uncompressed token (use jwt.io read): " + action.data.bearerToken);
             return { ...action.data };
         case AuthTypeKeys.UNAUTHENTICATED:
             return initialAuthState;

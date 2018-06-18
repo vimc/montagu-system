@@ -19,11 +19,11 @@ export const authActionCreators = {
     logIn(email: string, password: string) {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             try {
-                const response = await (new AuthService(dispatch, getState)).logIn(email, password)
+                const response = await (new AuthService(dispatch, getState)).logIn(email, password);
                 if (response.error) {
                     dispatch(this.authenticationError(response.error));
                 } else {
-                    dispatch(this.tokenReceived(response.access_token));
+                    dispatch(this.receivedCompressedToken(response.access_token));
                 }
             } catch(error) {
                 const errorNotification = this.makeNotificationError('Server error');
@@ -44,7 +44,7 @@ export const authActionCreators = {
                     dispatch(this.logOut())
                 } else {
                     console.log("Found unexpired access token in local storage, so we're already logged in");
-                    dispatch(this.tokenReceived(token));
+                    dispatch(this.receivedToken(token));
                 }
             }
         }
@@ -65,12 +65,20 @@ export const authActionCreators = {
         return makeNotification(`${error}. Please contact ${support} for help.`, "error")
     },
 
-    tokenReceived(token: string) {
+    receivedCompressedToken(token: string) {
+        return (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            const inflated = jwtTokenAuth.inflateToken(token);
+            return dispatch(this.receivedToken(inflated));
+        }
+    },
+
+    receivedToken(token: string) {
         return (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             const user: AuthState = jwtTokenAuth.getDataFromToken(token);
             const error: Notification = this.validateAuthResult(user);
             if (!error) {
-                localStorageHandler.set("accessToken", token);
+                                                       // Save the uncompressed version of the token
+                localStorageHandler.set("accessToken", user.bearerToken);
                 dispatch({
                     type: AuthTypeKeys.AUTHENTICATED,
                     data: user,

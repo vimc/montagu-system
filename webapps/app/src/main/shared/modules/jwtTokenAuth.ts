@@ -1,5 +1,6 @@
 import {parseRole, Role} from "../models/Roles";
 import {AuthState} from "../reducers/authReducer";
+import * as pako from "pako";
 
 const jwt_decode = require('jwt-decode');
 
@@ -31,6 +32,12 @@ export const jwtTokenAuth = {
         }
     },
 
+    inflateToken(token: string): string {
+        // https://stackoverflow.com/a/44528376/777939
+        const decoded = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
+        return pako.inflate(decoded, {to: 'string'});
+    },
+
     emptyTokenData(): AuthTokenData {
         return {
             permissions: "",
@@ -48,9 +55,9 @@ export const jwtTokenAuth = {
             .map((x: Role) => x.scope.id);
     },
 
-    getDataFromToken(token: string) :AuthState {
-        const decoded: AuthTokenData = this.decodeToken(token);
-        const permissions = decoded.permissions.split(",").filter(x => x.length > 0);
+    getDataFromToken(token: string): AuthState {
+        const decoded = this.decodeToken(token);
+        const permissions = decoded.permissions.split(",").filter((x: string) => x.length > 0);
         const modellingGroups = this.parseModellingGroups(decoded.roles);
         return {
             loggedIn: true,
