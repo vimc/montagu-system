@@ -8,7 +8,7 @@ import {LoadingElement} from "../../../../shared/partials/LoadingElement/Loading
 import {AddRoles} from "./AddRoles";
 import {UserRole} from "./UserRole";
 
-interface UserRolesProps{
+interface UserRolesProps {
     user: User
     canWriteRoles: boolean;
 }
@@ -29,8 +29,9 @@ export const UserRoles: React.SFC<UserRolesProps> = (props: UserRolesProps) => {
                 />
             )}
         </form>
+        {props.canWriteRoles &&
         <AddRoles userRoles={user.roles.filter(r => r.scope_prefix == null).map(r => r.name)}
-                  username={user.username}/>
+                  username={user.username}/>}
     </div>;
 };
 

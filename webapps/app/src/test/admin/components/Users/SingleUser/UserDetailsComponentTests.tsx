@@ -6,9 +6,11 @@ import "../../../../helper";
 import {mockUser} from "../../../../mocks/mockModels";
 import {
     mapStateToProps,
-    UserDetailsContentComponent, UserRoles
+    UserDetailsContentComponent,
+    UserRoles
 } from "../../../../../main/admin/components/Users/SingleUser/UserDetailsContent";
 import {mockAdminState, mockAuthState} from "../../../../mocks/mockStates";
+import {AddRoles} from "../../../../../main/admin/components/Users/SingleUser/AddRoles";
 
 describe("UserDetailsContent", () => {
 
@@ -28,7 +30,7 @@ describe("UserDetailsContent", () => {
     });
 
     it("maps canReadRoles property to true if user has '*roles.read' permission", () => {
-        const adminStateMock = mockAdminState({ auth: mockAuthState({permissions: ["*/roles.read"]}) });
+        const adminStateMock = mockAdminState({auth: mockAuthState({permissions: ["*/roles.read"]})});
         const props = mapStateToProps(adminStateMock);
         expect(props.canReadRoles).to.eq(true);
     });
@@ -40,7 +42,7 @@ describe("UserDetailsContent", () => {
     });
 
     it("maps canWriteRoles property to true if user has '*roles.write' permission", () => {
-        const adminStateMock = mockAdminState({ auth: mockAuthState({permissions: ["*/roles.write"]}) });
+        const adminStateMock = mockAdminState({auth: mockAuthState({permissions: ["*/roles.write"]})});
         const props = mapStateToProps(adminStateMock);
         expect(props.canWriteRoles).to.eq(true);
     });
@@ -51,4 +53,18 @@ describe("UserDetailsContent", () => {
         expect(props.canWriteRoles).to.eq(false);
     });
 
+});
+
+describe("UserDetailRoles", () => {
+    it("does not show add role widget if canWriteRoles is false", () => {
+        const user = mockUser();
+        const result = shallow(<UserRoles user={user} canWriteRoles={false}/>);
+        expect(result.find(AddRoles).length).to.eq(0)
+    });
+
+    it("does show add role widget if canWriteRoles is true", () => {
+        const user = mockUser();
+        const result = shallow(<UserRoles user={user} canWriteRoles={true}/>);
+        expect(result.find(AddRoles).length).to.eq(1);
+    });
 });
