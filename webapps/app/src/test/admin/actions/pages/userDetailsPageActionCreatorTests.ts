@@ -48,14 +48,27 @@ describe("User Details Page actions tests", () => {
         expect(parentStub.called).to.be.true;
     });
 
-    it("creates breadcrumbs and sets current user on load", async () => {
+    it("creates breadcrumbs, sets current user and gets global roles on load", async () => {
 
+        store = createMockStore(mockAdminState({auth: {permissions: ["*/roles.read"]}}));
         await store.dispatch(userDetailsPageActionCreators.onLoad({username: "test.user"}));
 
         const actions = store.getActions();
         const expectedPayload = [
             {type: UsersTypes.SET_CURRENT_USER, data: "test.user"},
             {type: UsersTypes.ALL_GLOBAL_ROLES_FETCHED,data: [testRole]},
+            {type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs}
+        ];
+        expect(actions).to.eql(expectedPayload);
+    });
+
+    it("does not get global roles if user does not have permission", async () => {
+
+        await store.dispatch(userDetailsPageActionCreators.onLoad({username: "test.user"}));
+
+        const actions = store.getActions();
+        const expectedPayload = [
+            {type: UsersTypes.SET_CURRENT_USER, data: "test.user"},
             {type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs}
         ];
         expect(actions).to.eql(expectedPayload);

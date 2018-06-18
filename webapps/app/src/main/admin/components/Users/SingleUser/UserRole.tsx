@@ -10,7 +10,6 @@ import {usersActionCreators} from "../../../actions/usersActionCreators";
 
 export interface UserRolePublicProps extends RoleAssignment {
     username: string;
-    showdelete: boolean;
 }
 
 export interface UserRoleProps extends UserRolePublicProps {
@@ -30,11 +29,9 @@ export class UserRoleComponent extends React.Component<UserRoleProps> {
         return <div>
             <div className="form-group">
                 <span className="role-name">{this.props.name}{scope}</span>
-                {this.props.showdelete &&
                 <InternalLink onClick={this.clickHandler.bind(this)} className="text-danger float-right" href="#">
                     Remove role
                 </InternalLink>
-                }
             </div>
             <hr className={"dashed"}/>
         </div>
