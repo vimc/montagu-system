@@ -75,4 +75,8 @@ export class Sandbox {
     stubService(obj: any, method: string, result: any = "default_result"): sinon.SinonStub {
         return this.setStubFunc(obj, method, () => Promise.resolve(result));
     }
+
+    stubServiceWithFailure(obj: any, method: string): sinon.SinonStub {
+        return this.setStubFunc(obj, method, () => Promise.reject("error"));
+    }
 }

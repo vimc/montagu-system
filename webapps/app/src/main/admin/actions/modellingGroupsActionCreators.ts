@@ -3,12 +3,12 @@ import {compact} from "lodash";
 
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
 import {AdminAppState} from "../reducers/adminAppReducers";
-import {ModellingGroup, ModellingGroupDetails} from "../../shared/models/Generated";
+import {ModellingGroup, ModellingGroupCreation, ModellingGroupDetails} from "../../shared/models/Generated";
 import {
     GroupsFetched,
     ModellingGroupTypes,
     SetGroupDetails,
-    SetCurrentGroup, SetCurrentGroupMembers
+    SetCurrentGroup, SetCurrentGroupMembers, AddModellingGroup
 } from "../actionTypes/ModellingGroupsTypes";
 import {ContribAppState} from "../../contrib/reducers/contribAppReducers";
 import {isNonEmptyArray} from "../../shared/ArrayHelpers";
@@ -96,5 +96,23 @@ export const modellingGroupsActionCreators = {
             } as SetCurrentGroupMembers);
         }
     },
+
+    createModellingGroup(newGroup: ModellingGroupCreation) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+
+            const service = new ModellingGroupsService(dispatch, getState);
+
+            const result = await service.createGroup(newGroup);
+            
+            if (result) {
+                service.clearGroupListCache();
+
+                dispatch({
+                    type: ModellingGroupTypes.ADD_MODELLING_GROUP,
+                    data: newGroup
+                } as AddModellingGroup)
+            }
+        }
+    }
 
 };

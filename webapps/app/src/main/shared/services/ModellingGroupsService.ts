@@ -1,5 +1,5 @@
 import { AbstractLocalService } from "./AbstractLocalService";
-import {AssociateUser} from "../models/Generated";
+import {AssociateUser, ModellingGroup, ModellingGroupCreation} from "../models/Generated";
 
 export class ModellingGroupsService extends AbstractLocalService {
 
@@ -11,6 +11,10 @@ export class ModellingGroupsService extends AbstractLocalService {
     getGroupDetails(groupId: string) {
         return this.setOptions({cacheKey: ModellingGroupsCacheKeysEnum.groupsDetails})
             .get(`/modelling-groups/${groupId}/`);
+    }
+
+    createGroup(modellingGroup: ModellingGroupCreation) {
+        return this.post(`/modelling-groups/`, JSON.stringify(modellingGroup));
     }
 
     addMember(groupId: string, username: string) {
@@ -31,6 +35,10 @@ export class ModellingGroupsService extends AbstractLocalService {
 
     clearCacheForGroupDetails(groupId: string) {
         return this.clearCache(ModellingGroupsCacheKeysEnum.groupsDetails, `/modelling-groups/${groupId}/`);
+    }
+
+    clearGroupListCache() {
+        return this.clearCache(ModellingGroupsCacheKeysEnum.groups, `/modelling-groups/`);
     }
 }
 
