@@ -32,6 +32,7 @@ export class ModellingGroupsListPageComponent extends React.Component<PageProper
             <AdminPageHeader/>
             <PageArticle title={ModellingGroupsListPageComponent.title}>
                 <CreateModellingGroupSection />
+                <div className="sectionTitle">All groups</div>
                 <ModellingGroupsListContent />
             </PageArticle>
         </div>;

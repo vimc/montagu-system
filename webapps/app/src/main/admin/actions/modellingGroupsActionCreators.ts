@@ -8,7 +8,7 @@ import {
     GroupsFetched,
     ModellingGroupTypes,
     SetGroupDetails,
-    SetCurrentGroup, SetCurrentGroupMembers, AddModellingGroup
+    SetCurrentGroup, SetCurrentGroupMembers, AddModellingGroup, SetShowCreateGroup
 } from "../actionTypes/ModellingGroupsTypes";
 import {ContribAppState} from "../../contrib/reducers/contribAppReducers";
 import {isNonEmptyArray} from "../../shared/ArrayHelpers";
@@ -112,6 +112,13 @@ export const modellingGroupsActionCreators = {
                     data: newGroup
                 } as AddModellingGroup)
             }
+        }
+    },
+
+    setShowCreateGroup(show: boolean): SetShowCreateGroup {
+        return {
+            type: ModellingGroupTypes.SET_SHOW_CREATE_GROUP,
+            data: show
         }
     }
 
