@@ -19,10 +19,13 @@ export const userDetailsPageActionCreators = {
     },
 
     loadData(params: UserDetailsPageLocationProps) {
-        return async (dispatch: Dispatch<AdminAppState>) => {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             await dispatch(usersListPageActionCreators.loadData());
             dispatch(usersActionCreators.setCurrentUser(params.username));
-            dispatch(usersActionCreators.getGlobalRoles());
+
+            if (getState().auth.permissions.indexOf("*/roles.read") > -1){
+                dispatch(usersActionCreators.getGlobalRoles())
+            }
         }
     }
 };
