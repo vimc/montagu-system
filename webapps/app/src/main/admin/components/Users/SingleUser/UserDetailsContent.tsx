@@ -8,8 +8,14 @@ import {LoadingElement} from "../../../../shared/partials/LoadingElement/Loading
 import {AddRoles} from "./AddRoles";
 import {UserRole} from "./UserRole";
 
-export const UserRoles: React.SFC<User> = (user: User) => {
+interface UserRolesProps{
+    user: User
+    canWriteRoles: boolean;
+}
 
+export const UserRoles: React.SFC<UserRolesProps> = (props: UserRolesProps) => {
+
+    const user = props.user;
     return <div className="mt-4">
         <h3>Manage roles</h3>
         <form className="form">
@@ -19,6 +25,7 @@ export const UserRoles: React.SFC<User> = (user: User) => {
                     key={r.name + r.scope_prefix + r.scope_id}
                     {...r}
                     username={user.username}
+                    showdelete={props.canWriteRoles}
                 />
             )}
         </form>
@@ -29,7 +36,8 @@ export const UserRoles: React.SFC<User> = (user: User) => {
 
 export interface UserDetailsProps {
     user: User;
-    isAdmin: boolean;
+    canReadRoles: boolean;
+    canWriteRoles: boolean;
 }
 
 export const UserDetailsContentComponent: React.SFC<UserDetailsProps> = (props: UserDetailsProps) => {
@@ -50,15 +58,16 @@ export const UserDetailsContentComponent: React.SFC<UserDetailsProps> = (props: 
             </tr>
             </tbody>
         </table>
-        <div>{props.isAdmin &&
-        <UserRoles {...props.user}/>}
+        <div>{props.canReadRoles &&
+        <UserRoles user={props.user} canWriteRoles={props.canWriteRoles}/>}
         </div>
     </div>;
 };
 
-export const mapStateToProps = (state: AdminAppState): Partial<UserDetailsProps> => {
+export const mapStateToProps = (state: AdminAppState): UserDetailsProps => {
     return {
-        isAdmin: state.auth.permissions.indexOf("*/roles.write") > -1,
+        canReadRoles: state.auth.permissions.indexOf("*/roles.read") > -1,
+        canWriteRoles: state.auth.permissions.indexOf("*/roles.write") > -1,
         user: state.users.currentUser,
     }
 };
