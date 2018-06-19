@@ -5,13 +5,21 @@ import {IntegrationTestSuite} from "./IntegrationTest";
 import {AdminFetcher} from "../main/admin/sources/AdminFetcher";
 import {expect} from "chai";
 import {Client, QueryResult} from "pg";
-import {ModellingGroup, RoleAssignment, User} from "../main/shared/models/Generated";
+import {
+    ModellingGroup, Responsibilities, ResponsibilitySet, RoleAssignment,
+    User
+} from "../main/shared/models/Generated";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
 import {AuthService} from "../main/shared/services/AuthService";
 import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
 import {UsersService} from "../main/admin/services/UsersService";
 import {mockModellingGroupCreation} from "../test/mocks/mockModels";
+import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 
+const touchstoneVersionId = "test-1";
+const scenarioId = "yf-1";
+const modelId = "model-1";
+const modelVersion = "v1";
 
 class AdminIntegrationTests extends IntegrationTestSuite {
     description() {
@@ -164,6 +172,16 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const allGroups = await groupService.getAllGroups();
             expect(allGroups.map((g: ModellingGroup) => g.id).indexOf("test-group") > -1).to.be.true;
         });
+
+        it("can get responsibilities for touchstone", async () => {
+
+            await addResponsibilities(this.db);
+            const touchstoneService = new TouchstonesService(this.store.dispatch, this.store.getState);
+            const result = await touchstoneService
+                .getResponsibilitiesForTouchstoneVersion(touchstoneVersionId);
+
+            expect(result).to.have.deep.members(expectedResponsibilitySets)
+        });
     }
 }
 
@@ -210,3 +228,56 @@ function addUsers(db: Client): Promise<QueryResult> {
        END $$;
     `);
 }
+
+function addTouchstone(db: Client): Promise<QueryResult> {
+    return db.query(`
+        INSERT INTO touchstone_name (id,     description, comment) 
+        VALUES ('test', 'Testing',   'comment');
+        INSERT INTO touchstone (id,       touchstone_name, version, description,         status, comment) 
+        VALUES ('${touchstoneVersionId}', 'test',          1,       'Testing version 1', 'open',      'comment for v1');
+    `);
+}
+
+function addResponsibilities(db: Client) {
+    return addTouchstone(db)
+        .then(() => addGroups(db))
+        .then(() => db.query(`
+            DO $$
+                DECLARE scenario_id integer;
+                DECLARE set_id integer;
+            BEGIN
+                INSERT INTO disease (id, name) VALUES ('yf', 'Yellow Fever');
+                INSERT INTO scenario_description (id, description, disease)
+                VALUES ('${scenarioId}', 'Yellow Fever scenario', 'yf');
+                INSERT INTO scenario (touchstone, scenario_description)
+                VALUES ('${touchstoneVersionId}', '${scenarioId}')
+                RETURNING id INTO scenario_id;
+        
+                INSERT INTO responsibility_set (modelling_group, touchstone, status)
+                VALUES ('g1', '${touchstoneVersionId}', 'incomplete')
+                RETURNING id INTO set_id;
+                
+                INSERT INTO responsibility (responsibility_set, scenario, is_open)
+                VALUES (set_id, scenario_id, true);
+            END $$;
+    `))
+}
+
+const expectedResponsibilitySets: ResponsibilitySet[] = [{
+    modelling_group_id: "g1",
+    touchstone_version: touchstoneVersionId,
+    status: "incomplete",
+    responsibilities: [
+        {
+            problems: [],
+            status: "empty",
+            current_estimate_set: null,
+            scenario: {
+                id: scenarioId,
+                description: "Yellow Fever scenario",
+                disease: "yf",
+                touchstones: [touchstoneVersionId]
+            }
+        }
+    ]
+}];
