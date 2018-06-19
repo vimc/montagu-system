@@ -15,15 +15,14 @@ import {ModellingGroupCreation} from "../../../../shared/models/Generated";
 import {ChangeEvent} from "react";
 import {titleCase} from "../../../../shared/Helpers";
 
-function stripBadChar(data: string){
+function stripBadChars(data: string){
     return data.replace(/[^a-z\s]/gi, "");
-//    return data
 }
 
 export function suggestId(pi: string, institution: string): string {
 
-    pi = stripBadChar(pi);
-    institution = stripBadChar(institution);
+    pi = stripBadChars(pi);
+    institution = stripBadChars(institution);
 
     const acronym = institution.split(' ').filter(w => w.length > 0)
         .map(w => w[0]
@@ -120,13 +119,15 @@ export class CreateModellingGroupFormComponent
     }
 }
 
+// This is a redux-form utility that allows you to retrieve the current values of form fields from the store state
+// see usage below in mapStateToProps
 const selector = formValueSelector('createGroup');
 
 function mapStateToProps(state: AdminAppState): Partial<CreateGroupProps> {
     return {
         errors: state.groups.createGroupErrors,
         institution: selector(state, "institution"),
-        pi: selector(state, "pi")
+        pi: selector(state, "pi") //we map these 2 fields to props so we can use them to suggest an id
     }
 }
 
