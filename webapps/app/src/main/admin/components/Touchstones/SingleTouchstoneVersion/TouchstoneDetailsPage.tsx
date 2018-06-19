@@ -1,47 +1,62 @@
 import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import * as React from "react";
-import {MainMenuNew} from "../../MainMenu/MainMenuNew";
 import {AdminPageHeader} from "../../AdminPageHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
-import {TouchstoneList} from "./TouchstoneList";
 import {Dispatch} from "redux";
-import {touchstoneListPageActionCreators} from "../../../actions/pages/touchstoneListPageActionCreators";
 import {compose} from "recompose";
 import {connect} from "react-redux";
-import {UsersListPageComponent} from "../../Users/List/UsersListPage";
+import {TouchstoneListPageComponent} from "../List/TouchstoneListPage";
+import {touchstoneVersionPageActionCreators} from "../../../actions/pages/touchstoneVersionPageActionCreators";
+import {ResponsibilityList} from "./ResponsibilityList";
 
-export class TouchstoneDetailsPageComponent extends React.Component<PageProperties<undefined>> {
-    static title: string = "Touchstones";
+export interface TouchstoneVersionPageLocationProps {
+    touchstoneVersionId: string;
+}
+
+export interface TouchstoneVersionPageProps extends PageProperties<TouchstoneVersionPageLocationProps> {
+    currentTouchstoneVersionId: string;
+}
+
+export class TouchstoneVersionDetailsPageComponent extends React.Component<TouchstoneVersionPageProps> {
 
     componentDidMount() {
-        this.props.onLoad();
+        this.props.onLoad(this.props.match.params)
     }
 
     static breadcrumb(state: AdminAppState): PageBreadcrumb {
         return {
-            name: state.touchstones.currentTouchstone,
-            parent: TouchstoneListPage.breadcrumb(),
-            urlFragment: `${state.touchstones.currentTouchstone}/`
+            name: state.touchstones.currentTouchstoneVersion.id,
+            parent: TouchstoneListPageComponent.breadcrumb(),
+            urlFragment: `${state.touchstones.currentTouchstoneVersion.id}/`
         };
     }
 
     render(): JSX.Element {
         return <div>
-            <AdminPageHeader />
-            <PageArticle title={TouchstoneDetailsPageComponent.title}>
-
+            <AdminPageHeader/>
+            <PageArticle title={this.props.currentTouchstoneVersionId}>
+                <ResponsibilityList/>
             </PageArticle>
         </div>;
     }
 }
 
-function mapDispatchToProps(dispatch: Dispatch<AdminAppState>): Partial<PageProperties<undefined>> {
-    return {
-        onLoad: () => dispatch(touchstonePageActionCreators.onLoad())
-    }
-}
 
-export const TouchstoneListPage = compose(
-    connect(state => state, mapDispatchToProps)
-)(TouchstoneDetailsPageComponent) as React.ComponentClass<PageProperties<undefined>>;
+const mapStateToProps = (state: AdminAppState): Partial<TouchstoneVersionPageProps> => {
+    return {
+        currentTouchstoneVersionId: state.touchstones.currentTouchstoneVersion ?
+            state.touchstones.currentTouchstoneVersion.id : ''
+    }
+};
+
+export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<TouchstoneVersionPageProps> => {
+    return {
+        onLoad: (params: TouchstoneVersionPageLocationProps) =>
+            dispatch(touchstoneVersionPageActionCreators.onLoad(params))
+    }
+};
+
+export const TouchstoneVersionDetailsPage = compose(
+    connect(mapStateToProps, mapDispatchToProps)
+)(TouchstoneVersionDetailsPageComponent);
