@@ -2,9 +2,8 @@ import {Dispatch} from "redux";
 
 import {ContribAppState} from "../reducers/contribAppReducers";
 import {TouchstonesService} from "../../shared/services/TouchstonesService";
-import {SetCurrentTouchstoneVersion, TouchstonesFetchedForGroup, TouchstoneTypes} from "../../shared/actionTypes/TouchstonesTypes";
+import {TouchstonesFetchedForGroup, TouchstoneTypes} from "../../shared/actionTypes/TouchstonesTypes";
 import {Touchstone} from "../../shared/models/Generated";
-import {flatMap} from "../../shared/ArrayHelpers";
 import {touchstonesActionCreators} from "../../shared/actions/touchstoneActionCreators";
 
 export const contribTouchstonesActionCreators = {
