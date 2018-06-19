@@ -241,7 +241,8 @@ describe("Admin Modelling groups actions tests", () => {
                 sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
             },
             callActionCreator: () => modellingGroupsActionCreators.createModellingGroup(newGroup),
-            expectTheseActions: [{type: ModellingGroupTypes.ADD_MODELLING_GROUP, data: newGroup}]
+            expectTheseActions: [{type: ModellingGroupTypes.SET_SHOW_CREATE_GROUP, data: false},
+                {type: ModellingGroupTypes.ADD_MODELLING_GROUP, data: newGroup}]
         })
     });
 

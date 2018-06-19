@@ -101,12 +101,11 @@ export const modellingGroupsActionCreators = {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
 
             const service = new ModellingGroupsService(dispatch, getState);
-
             const result = await service.createGroup(newGroup);
             
             if (result) {
                 service.clearGroupListCache();
-
+                dispatch(this.setShowCreateGroup(false));
                 dispatch({
                     type: ModellingGroupTypes.ADD_MODELLING_GROUP,
                     data: newGroup

@@ -19,16 +19,16 @@ export const CreateModellingGroupSectionComponent = (props: CreateModellingGroup
             <CreateModellingGroupForm/>
         </div>;
     } else {
-        return <button onClick={() => this.props.setShowForm()}>
+        return <button onClick={() => props.setShowForm()}>
             Add new group
         </button>;
     }
-
 };
 
 export const mapStateToProps = (state: AdminAppState): Partial<CreateModellingGroupSectionProps> => {
     return {
-        canCreateModellingGroups: state.auth.permissions.indexOf("*/users.create") > -1
+        canCreateModellingGroups: state.auth.permissions.indexOf("*/users.create") > -1,
+        show: state.groups.showCreateGroupForm
     }
 };
 

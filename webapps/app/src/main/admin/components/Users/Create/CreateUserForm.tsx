@@ -20,10 +20,6 @@ export interface CreateUserFormFields {
     username: string;
 }
 
-export interface CreateUserFormProps extends ReduxFormProps<CreateUserFormFields>{
-    changeFieldValue: (field: string, value: string) => void
-}
-
 function processName(name: string) {
     return name.toLowerCase().replace(/[^a-z]/gi, "");
 }
@@ -37,7 +33,7 @@ export function suggestUsername(name: string): string {
     return username;
 }
 
-export class CreateUserFormComponent extends React.Component<CreateUserFormProps, undefined> {
+export class CreateUserFormComponent extends React.Component<ReduxFormProps<CreateUserFormFields>, undefined> {
     onNameChange(e: any) {
         const {value} = e.target;
         this.props.changeFieldValue('username', suggestUsername(value));
@@ -94,13 +90,13 @@ export class CreateUserFormComponent extends React.Component<CreateUserFormProps
 }
 
 
-function mapStateToProps(state: AdminAppState): Partial<CreateUserFormProps> {
+function mapStateToProps(state: AdminAppState): Partial<ReduxFormProps<CreateUserFormFields>> {
     return {
         errors: state.users.createUserErrors,
     }
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<any>): Partial<CreateUserFormProps> {
+export function mapDispatchToProps(dispatch: Dispatch<any>): Partial<ReduxFormProps<CreateUserFormFields>> {
     return {
         submit: (values: CreateUserFormFields) => dispatch(usersActionCreators.createUser(
             values.name, values.email, values.username

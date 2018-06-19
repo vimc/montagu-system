@@ -14,4 +14,5 @@ export interface ReduxFormProps<TFieldProps> {
         => (event: FormEvent<HTMLFormElement>) => void,
     submit: (values: TFieldProps) => void,
     errors: ErrorInfo[]
+    changeFieldValue: (field: string, value: string) => void
 }
