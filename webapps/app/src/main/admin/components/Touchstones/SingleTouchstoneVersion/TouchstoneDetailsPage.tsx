@@ -9,6 +9,7 @@ import {connect} from "react-redux";
 import {TouchstoneListPageComponent} from "../List/TouchstoneListPage";
 import {touchstoneVersionPageActionCreators} from "../../../actions/pages/touchstoneVersionPageActionCreators";
 import {ResponsibilityList} from "./ResponsibilityList";
+import {ResponsibilitySet} from "../../../../shared/models/Generated";
 
 export interface TouchstoneVersionPageLocationProps {
     touchstoneVersionId: string;
@@ -16,6 +17,7 @@ export interface TouchstoneVersionPageLocationProps {
 
 export interface TouchstoneVersionPageProps extends PageProperties<TouchstoneVersionPageLocationProps> {
     currentTouchstoneVersionId: string;
+    responsibilitySets: ResponsibilitySet[]
 }
 
 export class TouchstoneVersionDetailsPageComponent extends React.Component<TouchstoneVersionPageProps> {
@@ -36,7 +38,10 @@ export class TouchstoneVersionDetailsPageComponent extends React.Component<Touch
         return <div>
             <AdminPageHeader/>
             <PageArticle title={this.props.currentTouchstoneVersionId}>
-                <ResponsibilityList/>
+                {this.props.responsibilitySets.map(s => <div key={s.modelling_group_id}>
+                    <h4>{s.modelling_group_id} (<span>{s.status}</span>)</h4>
+                    <ResponsibilityList responsibilities={s.responsibilities}/>
+                </div>)}
             </PageArticle>
         </div>;
     }
@@ -46,7 +51,9 @@ export class TouchstoneVersionDetailsPageComponent extends React.Component<Touch
 const mapStateToProps = (state: AdminAppState): Partial<TouchstoneVersionPageProps> => {
     return {
         currentTouchstoneVersionId: state.touchstones.currentTouchstoneVersion ?
-            state.touchstones.currentTouchstoneVersion.id : ''
+            state.touchstones.currentTouchstoneVersion.id : '',
+        responsibilitySets: state.touchstones.currentResponsibilitySets
+
     }
 };
 
