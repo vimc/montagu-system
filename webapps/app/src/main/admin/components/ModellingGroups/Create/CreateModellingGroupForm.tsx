@@ -94,19 +94,7 @@ export class CreateModellingGroupFormComponent
                             label={"id"}
                             component={ReduxFormField}
                             type="text"
-                            validate={[validations.required]}
-                        />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Description</td>
-                    <td>
-                        <Field
-                            name="description"
-                            label={"description"}
-                            component={ReduxFormField}
-                            type="text"
-                            validate={[validations.required]}
+                            validate={[validations.required, validations.id]}
                         />
                     </td>
                 </tr>

@@ -100,6 +100,9 @@ export const modellingGroupsActionCreators = {
     createModellingGroup(newGroup: ModellingGroupCreation) {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
 
+            // autogenerate this description field
+            newGroup.description = `${newGroup.institution} (${newGroup.pi})`;
+
             const service = new ModellingGroupsService(dispatch, getState);
             const result = await service.createGroup(newGroup);
             

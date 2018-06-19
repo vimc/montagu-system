@@ -39,10 +39,8 @@ describe("CreateGroupForm", () => {
         expect(fields.at(1).prop("validate")).to.have.members([validations.required]);
 
         expect(fields.at(2).prop("name")).to.eq("id");
-        expect(fields.at(2).prop("validate")).to.have.members([validations.required]);
+        expect(fields.at(2).prop("validate")).to.have.members([validations.required, validations.id]);
 
-        expect(fields.at(3).prop("name")).to.eq("description");
-        expect(fields.at(3).prop("validate")).to.have.members([validations.required]);
     });
 
     it("sets id to suggestion when pi changes", () => {
