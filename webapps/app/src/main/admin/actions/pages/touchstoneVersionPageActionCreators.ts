@@ -1,6 +1,5 @@
 import {Dispatch} from "redux";
 import {AdminAppState} from "../../reducers/adminAppReducers";
-import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {
     TouchstoneVersionDetailsPageComponent,
     TouchstoneVersionPageLocationProps
@@ -8,17 +7,17 @@ import {
 import {touchstoneListPageActionCreators} from "./touchstoneListPageActionCreators";
 import {touchstonesActionCreators} from "../../../shared/actions/touchstoneActionCreators";
 import {adminTouchstoneActionCreators} from "../adminTouchstoneActionCreators";
+import {AbstractPageActionCreators} from "./AbstractPageActionCreators";
 
-export const touchstoneVersionPageActionCreators = {
-    onLoad(params: TouchstoneVersionPageLocationProps) {
-        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
-            await dispatch(this.loadData(params));
-            dispatch(breadcrumbsActionCreators
-                .createBreadcrumbs(TouchstoneVersionDetailsPageComponent.breadcrumb(getState())));
-        }
-    },
+class TouchstoneVersionPageActionCreators
+    extends AbstractPageActionCreators<AdminAppState, TouchstoneVersionPageLocationProps> {
 
-    loadData(params: TouchstoneVersionPageLocationProps) {
+    constructor(){
+        super(TouchstoneVersionDetailsPageComponent.breadcrumb)
+    }
+
+    loadData(params?: TouchstoneVersionPageLocationProps): (dispatch: Dispatch<AdminAppState>,
+                                                            getState: () => AdminAppState) => void {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             await dispatch(touchstoneListPageActionCreators.loadData());
             const touchstones = getState().touchstones.touchstones;
@@ -26,4 +25,7 @@ export const touchstoneVersionPageActionCreators = {
             dispatch(adminTouchstoneActionCreators.getResponsibilitiesForTouchstoneVersion(params.touchstoneVersionId))
         }
     }
-};
+
+}
+
+export const touchstoneVersionPageActionCreators = new TouchstoneVersionPageActionCreators();
