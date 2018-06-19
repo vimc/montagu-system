@@ -136,8 +136,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
                 .getResponsibilities(groupId, touchstoneVersionId);
-
-            console.log(responsibilityIds)
+            
             expect(responsibilities).to.eql(expectedResponsibilitiesResponse());
         });
 
