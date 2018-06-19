@@ -3,7 +3,7 @@ import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/cont
 import {Version} from "../../main/shared/models/reports/Report";
 import {Artefact} from "../../main/shared/models/reports/Artefact";
 import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageWithHeader";
-import {ModellingGroupCreation} from "../../main/shared/models/Generated";
+import {ModellingGroupCreation, TouchstoneVersion} from "../../main/shared/models/Generated";
 
 let counter = 0;
 
@@ -88,7 +88,7 @@ export function mockTouchstone(properties?: Partial<models.Touchstone>, versions
     return touchstone;
 }
 
-export function mockTouchstoneVersion(properties?: any): models.TouchstoneVersion {
+export function mockTouchstoneVersion(properties?: Partial<TouchstoneVersion>): models.TouchstoneVersion {
     counter++;
     const template: models.TouchstoneVersion = {
         id: "touchstone-" + counter,
