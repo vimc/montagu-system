@@ -11,7 +11,7 @@ import {
 } from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/ModellingGroupMembersPage";
 import {mockModellingGroup} from "../../../../../mocks/mockModels";
 import {createMockStore} from "../../../../../mocks/mockStore";
-import {modellingGroupMembersPageActionCreators} from "../../../../../../main/admin/actions/pages/modellingGroupMembersPageActionCreators";
+import {modellingGroupMembersPageActionCreators} from "../../../../../../main/admin/actions/pages/ModellingGroupMembersPageActionCreators";
 import {ModellingGroupMembersContent} from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/ModellingGroupMembersContent";
 
 describe("Modelling Group Members Page Component Tests", () => {

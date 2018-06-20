@@ -7,7 +7,7 @@ import {ModellingGroupTypes} from "../../../../main/admin/actionTypes/ModellingG
 import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {mockBreadcrumbs, mockModellingGroup} from "../../../mocks/mockModels";
-import {modellingGroupsListPageActionCreators} from "../../../../main/admin/actions/pages/modellingGroupsListPageActionCreators";
+import {modellingGroupsListPageActionCreators} from "../../../../main/admin/actions/pages/ModellingGroupsListPageActionCreators";
 
 describe("Modelling Groups List Page actions tests", () => {
     const sandbox = new Sandbox();

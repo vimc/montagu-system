@@ -7,7 +7,7 @@ import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArti
 import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {UsersListPageComponent} from "../List/UsersListPage";
-import {userDetailsPageActionCreators} from "../../../actions/pages/userDetailsPageActionCreators";
+import {userDetailsPageActionCreators} from "../../../actions/pages/UserDetailsPageActionCreators";
 import {UserDetailsContent} from "./UserDetailsContent";
 import {AdminPageHeader} from "../../AdminPageHeader";
 
@@ -20,13 +20,6 @@ export interface UserDetailsPageProps extends PageProperties<UserDetailsPageLoca
 }
 
 export class UserDetailsPageComponent extends React.Component<UserDetailsPageProps> {
-    static breadcrumb(state: AdminAppState): PageBreadcrumb {
-        return {
-            name: state.users.currentUser.username,
-            urlFragment: `${state.users.currentUser.username}/`,
-            parent: UsersListPageComponent.breadcrumb()
-        }
-    }
 
     componentDidMount() {
         this.props.onLoad(this.props.match.params)
