@@ -8,6 +8,7 @@ export interface ModellingGroupsState {
     currentGroupDetails: ModellingGroupDetails;
     currentGroupMembers: User[];
     createGroupErrors: ErrorInfo[];
+    showCreateGroupForm: boolean;
 }
 
 export const modellingGroupInitialState: ModellingGroupsState = {
@@ -15,7 +16,8 @@ export const modellingGroupInitialState: ModellingGroupsState = {
     currentGroup: null,
     currentGroupDetails: null,
     currentGroupMembers: [],
-    createGroupErrors: []
+    createGroupErrors: [],
+    showCreateGroupForm: false
 };
 
 export const modellingGroupsReducer = (state = modellingGroupInitialState, action: ModellingGroupsAction)
@@ -30,8 +32,9 @@ export const modellingGroupsReducer = (state = modellingGroupInitialState, actio
         case ModellingGroupTypes.GROUP_DETAILS_FETCHED:
             return {...state, currentGroupDetails: action.data ? action.data : null };
         case ModellingGroupTypes.ADD_MODELLING_GROUP:
-            state.groups.push(action.data);
-            return state;
+            return {...state, groups: [...state.groups, action.data]};
+        case ModellingGroupTypes.SET_SHOW_CREATE_GROUP:
+            return {...state, showCreateGroupForm: action.data};
         default:
             return state;
     }

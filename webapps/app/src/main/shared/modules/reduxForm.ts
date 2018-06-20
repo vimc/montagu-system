@@ -6,8 +6,10 @@ export const validations = {
         ? ' is invalid'
         : undefined),
     username: (value: string) => (value && !/^[a-z]+(\.[a-z]+)*$/.test(value)
-        ? `${name} must be in the format 'something.something'. It must be lowercase, and only consist of letters and full stops.`
+        ? ` must be in the format 'something.something'. It must be lowercase, and only consist of letters and full stops.`
+        : undefined),
+    id: (value: string) => (value && !/^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(value)
+        ? ` must be in the format 'something-something'.`
         : undefined)
 
-}
-
+};

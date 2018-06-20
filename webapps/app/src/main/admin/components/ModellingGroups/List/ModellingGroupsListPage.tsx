@@ -10,6 +10,7 @@ import {AdminPageHeader} from "../../AdminPageHeader";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {MainMenuNew} from "../../MainMenu/MainMenuNew";
 import {modellingGroupsListPageActionCreators} from "../../../actions/pages/modellingGroupsListPageActionCreators";
+import {CreateModellingGroupSection, CreateModellingGroupSectionComponent} from "../Create/CreateModellingGroupSection";
 
 export class ModellingGroupsListPageComponent extends React.Component<PageProperties<undefined>> {
     static title: string = "Modelling groups";
@@ -30,6 +31,8 @@ export class ModellingGroupsListPageComponent extends React.Component<PageProper
         return <div>
             <AdminPageHeader/>
             <PageArticle title={ModellingGroupsListPageComponent.title}>
+                <CreateModellingGroupSection />
+                <div className="sectionTitle">All groups</div>
                 <ModellingGroupsListContent />
             </PageArticle>
         </div>;

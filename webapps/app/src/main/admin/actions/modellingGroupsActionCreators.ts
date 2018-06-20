@@ -8,7 +8,7 @@ import {
     GroupsFetched,
     ModellingGroupTypes,
     SetGroupDetails,
-    SetCurrentGroup, SetCurrentGroupMembers, AddModellingGroup
+    SetCurrentGroup, SetCurrentGroupMembers, AddModellingGroup, SetShowCreateGroup
 } from "../actionTypes/ModellingGroupsTypes";
 import {ContribAppState} from "../../contrib/reducers/contribAppReducers";
 import {isNonEmptyArray} from "../../shared/ArrayHelpers";
@@ -100,18 +100,27 @@ export const modellingGroupsActionCreators = {
     createModellingGroup(newGroup: ModellingGroupCreation) {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
 
-            const service = new ModellingGroupsService(dispatch, getState);
+            // autogenerate this description field
+            newGroup.description = `${newGroup.institution} (${newGroup.pi})`;
 
+            const service = new ModellingGroupsService(dispatch, getState);
             const result = await service.createGroup(newGroup);
             
             if (result) {
                 service.clearGroupListCache();
-
+                dispatch(this.setShowCreateGroup(false));
                 dispatch({
                     type: ModellingGroupTypes.ADD_MODELLING_GROUP,
                     data: newGroup
                 } as AddModellingGroup)
             }
+        }
+    },
+
+    setShowCreateGroup(show: boolean): SetShowCreateGroup {
+        return {
+            type: ModellingGroupTypes.SET_SHOW_CREATE_GROUP,
+            data: show
         }
     }
 
