@@ -8,7 +8,7 @@ const menuStyles = require("./MainMenu.css");
 
 export class MainMenuNew extends React.Component<PageProperties<undefined>> {
 
-    static title: string = "Modellers' contribution portal";
+    static title: string = "Admin portal";
 
     static breadcrumb() : PageBreadcrumb {
         return {
