@@ -91,4 +91,20 @@ class ModellingGroupTests : DatabaseTest()
         }
     }
 
+    private val writePermissions = PermissionSet(setOf(ReifiedPermission("modelling-groups.write", Scope.Global())))
+
+    @Test
+    fun `can create group`()
+    {
+        validate("/modelling-groups/", HttpMethod.post) requiringPermissions {
+            writePermissions
+        } sendingJSON {
+            json {
+                obj("id" to "IC-Garske",
+                        "description" to "description",
+                        "institution" to "Imperial",
+                        "pi" to "Tini garske")
+            }
+        } withRequestSchema "ModellingGroupCreation" andCheckObjectCreation "/modelling-group/IC-Garske/"
+    }
 }

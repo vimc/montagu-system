@@ -53,3 +53,18 @@ Schema: [`AssociateUser.schema.json`](../schemas/AssociateUser.schema.json)
         "username": "joe"
     }
 
+## POST /modelling-groups/
+Creates a new modelling group.
+
+Required permissions: `*/modelling-groups.write`.
+
+Schema: [`ModellingGroupCreation.schema.json`](../schemas/ModellingGroupCreation.schema.json)
+
+### Example
+    {
+        "id": "IC-NewName",
+        "description": "new group at Imperial College",
+        "institution": "Imperial College",
+        "pi": "Dr New Name"
+    }
+
