@@ -63,10 +63,17 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
 
     fun restoreDatabaseFromTemplate()
     {
-        config.factory("postgres").use {
-            it.dsl.query("ALTER DATABASE ${config.templateName} RENAME TO ${config.name}").execute()
+        if (databaseExists(config.templateName, maxAttempts = 1))
+        {
+            config.factory("postgres").use {
+                it.dsl.query("ALTER DATABASE ${config.templateName} RENAME TO ${config.name}").execute()
+            }
+            checkDatabaseExists(config.name)
         }
-        checkDatabaseExists(config.name)
+        else
+        {
+            println("Template database does not exist; skipping")
+        }
     }
 
     fun createDatabaseFromTemplate()
