@@ -1,19 +1,23 @@
 import {Dispatch} from "redux";
 import {AdminAppState} from "../../reducers/adminAppReducers";
 import {
-    TouchstoneVersionDetailsPageComponent,
     TouchstoneVersionPageLocationProps
 } from "../../components/Touchstones/SingleTouchstoneVersion/TouchstoneDetailsPage";
 import {touchstoneListPageActionCreators} from "./touchstoneListPageActionCreators";
 import {touchstonesActionCreators} from "../../../shared/actions/touchstoneActionCreators";
 import {adminTouchstoneActionCreators} from "../adminTouchstoneActionCreators";
 import {AbstractPageActionCreators} from "./AbstractPageActionCreators";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
 
 class TouchstoneVersionPageActionCreators
     extends AbstractPageActionCreators<AdminAppState, TouchstoneVersionPageLocationProps> {
 
-    constructor(){
-        super(TouchstoneVersionDetailsPageComponent.breadcrumb)
+    createBreadcrumb(state?: AdminAppState): PageBreadcrumb {
+        return {
+            name: state.touchstones.currentTouchstoneVersion.id,
+            parent: touchstoneListPageActionCreators.createBreadcrumb(state),
+            urlFragment: `${state.touchstones.currentTouchstoneVersion.id}/`
+        };
     }
 
     loadData(params?: TouchstoneVersionPageLocationProps): (dispatch: Dispatch<AdminAppState>,

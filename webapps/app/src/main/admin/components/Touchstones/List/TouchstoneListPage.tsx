@@ -17,14 +17,6 @@ export class TouchstoneListPageComponent extends React.Component<PageProperties<
         this.props.onLoad();
     }
 
-    static breadcrumb(): PageBreadcrumb {
-        return {
-            name: TouchstoneListPageComponent.title,
-            parent: MainMenuNew.breadcrumb(),
-            urlFragment: "touchstones/"
-        };
-    }
-
     render(): JSX.Element {
         return <div>
             <AdminPageHeader />

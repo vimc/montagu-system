@@ -4,19 +4,15 @@ import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWith
 
 export abstract class AbstractPageActionCreators<TState, TPageProps> {
 
-    private breadcrumbCreator: (state?: TState) => PageBreadcrumb;
-
-    constructor(breadcrumbCreator: (state?: TState) => PageBreadcrumb) {
-        this.breadcrumbCreator = breadcrumbCreator;
-    }
-
     onLoad(params?: TPageProps) {
         return async (dispatch: Dispatch<TState>, getState: () => TState) => {
             await dispatch(this.loadData(params));
             dispatch(breadcrumbsActionCreators
-                .createBreadcrumbs(this.breadcrumbCreator(getState())));
+                .createBreadcrumbs(this.createBreadcrumb(getState())));
         }
     }
+
+    abstract createBreadcrumb(state?: TState): PageBreadcrumb
 
     abstract loadData(params?: TPageProps): (dispatch: Dispatch<TState>, getState: () => TState) => void;
 }

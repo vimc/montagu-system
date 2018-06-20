@@ -6,6 +6,7 @@ import {adminTouchstoneActionCreators} from "../../../../main/admin/actions/admi
 import {breadcrumbsActionCreators} from "../../../../main/shared/actions/breadcrumbsActionsCreators";
 import {TouchstoneListPageComponent} from "../../../../main/admin/components/Touchstones/List/TouchstoneListPage";
 import {mockAction} from "../../../mocks/mocks";
+import {MainMenuNew} from "../../../../main/admin/components/MainMenu/MainMenuNew";
 
 describe("touchstoneListPageActionCreators", () => {
     const sandbox = new Sandbox();
@@ -19,6 +20,10 @@ describe("touchstoneListPageActionCreators", () => {
         await store.dispatch(touchstoneListPageActionCreators.onLoad());
 
         expect(getAllTouchstones.called).to.be.true;
-        expect(createBreadcrumbs.args[0]).to.eql([TouchstoneListPageComponent.breadcrumb()]);
+        expect(createBreadcrumbs.args[0]).to.eql([{
+            name: TouchstoneListPageComponent.title,
+            parent: MainMenuNew.breadcrumb(),
+            urlFragment: "touchstones/"
+        }]);
     });
 });
