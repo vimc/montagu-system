@@ -1,30 +1,35 @@
 import * as React from "react";
-import { AdminPageWithHeader } from "./AdminPageWithHeader";
-import { NoRouteFound } from "../../shared/components/NoRouteFound";
-import {IPageWithParent} from "../../shared/models/Breadcrumb";
-import {MainMenu} from "./MainMenu/MainMenu";
-import { Page } from "../../shared/components/PageWithHeader/Page";
+import {compose} from "recompose";
 
-export class AdminNoRouteFoundPage extends AdminPageWithHeader<undefined> {
-    name(): string {
-        return NoRouteFound.title();
+import {NoRouteFound} from "../../shared/components/NoRouteFound";
+import {MainMenuNew} from "./MainMenu/MainMenuNew";
+import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
+import {AdminPageHeader} from "./AdminPageHeader";
+
+export class AdminNoRouteFoundPageComponent extends React.Component<PageProperties<undefined>> {
+    componentDidMount() {
+        this.props.createBreadcrumbs(MainMenuNew.breadcrumb());
     }
 
-    urlFragment(): string {
-        return null;
-    }
-
-    url(): string {
-        return null;
-    }
-
-    parent(): IPageWithParent {
-        return new MainMenu();
+    static breadcrumb(): PageBreadcrumb {
+        return {
+            name: NoRouteFound.title(),
+            urlFragment: null,
+            parent: MainMenuNew.breadcrumb()
+        }
     }
 
     render(): JSX.Element {
-        return <Page page={this}>
-            {NoRouteFound.render()}
-        </Page>;
+        return <div>
+            <AdminPageHeader/>
+            <PageArticle title={NoRouteFound.title()}>
+                {NoRouteFound.render()}
+            </PageArticle>
+        </div>;
     }
 }
+
+export const AdminNoRouteFoundPage = compose(BreadcrumbInitializer)(AdminNoRouteFoundPageComponent) as
+    React.ComponentClass<Partial<PageProperties<undefined>>>;

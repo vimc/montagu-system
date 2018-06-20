@@ -5,7 +5,13 @@ export enum ModellingGroupTypes {
     GROUP_DETAILS_FETCHED = "GROUP_DETAILS_FETCHED",
     SET_CURRENT_GROUP = "SET_CURRENT_GROUP",
     SET_CURRENT_GROUP_MEMBERS = "SET_CURRENT_GROUP_MEMBERS",
-    ADD_MODELLING_GROUP = "ADD_MODELLING_GROUP"
+    ADD_MODELLING_GROUP = "ADD_MODELLING_GROUP",
+    SET_SHOW_CREATE_GROUP = "SET_SHOW_CREATE_GROUP"
+}
+
+export interface SetShowCreateGroup {
+    type: ModellingGroupTypes.SET_SHOW_CREATE_GROUP,
+    data: boolean
 }
 
 export interface GroupsFetched {
@@ -23,7 +29,6 @@ export interface SetCurrentGroupMembers {
     data: User[];
 }
 
-
 export interface SetGroupDetails {
     type: ModellingGroupTypes.GROUP_DETAILS_FETCHED;
     data: ModellingGroupDetails;
@@ -40,4 +45,5 @@ export type ModellingGroupsAction =
     | SetGroupDetails
     | SetCurrentGroupMembers
     | AddModellingGroup
+    | SetShowCreateGroup
     ;
