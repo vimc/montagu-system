@@ -29,7 +29,7 @@ export class TouchstoneVersionDetailsPageComponent extends React.Component<Touch
     render(): JSX.Element {
         return <div>
             <AdminPageHeader/>
-            <PageArticle title={this.props.currentTouchstoneVersionId}>
+            <PageArticle title={`Responsibility sets in ${this.props.currentTouchstoneVersionId}`}>
                 {this.props.responsibilitySets.map(s => <div key={s.modelling_group_id}>
                     <h4>{s.modelling_group_id} (<span>{s.status}</span>)</h4>
                     <ResponsibilityList responsibilities={s.responsibilities}/>

@@ -12,7 +12,9 @@ export abstract class AbstractPageActionCreators<TState, TPageProps> {
 
     onLoad(params?: TPageProps) {
         return async (dispatch: Dispatch<TState>, getState: () => TState) => {
-            await dispatch(this.parent.loadData(params));
+            if (this.parent) {
+                await dispatch(this.parent.loadData(params));
+            }
             await dispatch(this.loadData(params));
             dispatch(breadcrumbsActionCreators
                 .createBreadcrumbs(this.createBreadcrumb(getState())));
