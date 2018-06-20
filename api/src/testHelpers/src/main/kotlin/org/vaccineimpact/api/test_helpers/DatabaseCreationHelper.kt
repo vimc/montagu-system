@@ -1,9 +1,11 @@
 package org.vaccineimpact.api.test_helpers
 
+import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.db.AnnexJooqContext
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.UnableToConnectToDatabase
+import java.util.logging.Level
 
 class DatabaseCreationHelper(private val config: DatabaseConfig)
 {
@@ -70,12 +72,13 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
 
     private fun databaseExists(dbName: String, maxAttempts: Int = 10): Boolean
     {
-        println("Checking that database '$dbName' exists...")
+        print("Checking that database '$dbName' exists...")
         var attemptsRemaining = maxAttempts
         while (attemptsRemaining > 0)
         {
             if (check(dbName))
             {
+                println("✔")
                 return true
             }
             else
@@ -93,15 +96,17 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
 
     fun check(dbName: String): Boolean
     {
-        try
-        {
-            config.factory(dbName).close()
-            return true
-        }
-        catch (e: UnableToConnectToDatabase)
-        {
-            error = e
-            return false
+        return temporarilyDisableLogging("org.postgresql") {
+            try
+            {
+                config.factory(dbName).close()
+                true
+            }
+            catch (e: UnableToConnectToDatabase)
+            {
+                error = e
+                false
+            }
         }
     }
 }

@@ -15,5 +15,5 @@ dependencies {
 
 test {
     dependsOn 'copySpec', ':startDatabase', ':testHelpers:createTemplateFromDatabase'
-    finalizedBy ':testHelpers:restoreDatabaseFromTemplate', ':stopDatabase'
+    finalizedBy ':stopDatabase'
 }
