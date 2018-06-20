@@ -25,5 +25,6 @@ export abstract class AbstractPageActionCreators<TState, TPageProps> {
 
     abstract createBreadcrumb(state: TState): PageBreadcrumb
 
+    // Note: this must return an async method
     abstract loadData(params: TPageProps): (dispatch: Dispatch<TState>, getState: () => TState) => void;
 }
