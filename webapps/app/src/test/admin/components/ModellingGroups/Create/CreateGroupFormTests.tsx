@@ -89,6 +89,52 @@ describe("CreateGroupForm", () => {
         expect(newValue).to.eq("I-Bloggs");
     });
 
+    it("doesnt set id to suggestion if pi is null on instiution changes", () => {
+
+        let fieldName = "";
+        let newValue = "";
+
+        const changeFieldMock = (field: string, value: string) => {
+            fieldName = field;
+            newValue = value;
+        };
+
+        const rendered = shallow(<CreateModellingGroupFormComponent pi={null} institution={""} errors={[]}
+                                                                    handleSubmit={() => null} submit={null}
+                                                                    changeFieldValue={changeFieldMock}/>);
+
+        const event = {target: {value: "Imperial"}};
+        const field = rendered.find(Field).at(0);
+
+        field.simulate("change", event);
+
+        expect(fieldName).to.eq("");
+        expect(newValue).to.eq("");
+    });
+
+    it("doesnt set id to suggestion if instititution is null on pi change", () => {
+
+        let fieldName = "";
+        let newValue = "";
+
+        const changeFieldMock = (field: string, value: string) => {
+            fieldName = field;
+            newValue = value;
+        };
+
+        const rendered = shallow(<CreateModellingGroupFormComponent pi={""} institution={null} errors={[]}
+                                                                    handleSubmit={() => null} submit={null}
+                                                                    changeFieldValue={changeFieldMock}/>);
+
+        const event = {target: {value: "Joe Bloggs"}};
+        const field = rendered.find(Field).at(1);
+
+        field.simulate("change", event);
+
+        expect(fieldName).to.eq("");
+        expect(newValue).to.eq("");
+    });
+
     it("calls creates group on form submission", () => {
 
         const stub = sandbox.setStubReduxAction(modellingGroupsActionCreators, "createModellingGroup");
