@@ -23,7 +23,6 @@ class TouchstoneVersionPageActionCreators
     loadData(params?: TouchstoneVersionPageLocationProps): (dispatch: Dispatch<AdminAppState>,
                                                             getState: () => AdminAppState) => void {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
-            await dispatch(touchstoneListPageActionCreators.loadData());
             const touchstones = getState().touchstones.touchstones;
             dispatch(touchstonesActionCreators.setCurrentTouchstoneVersion(params.touchstoneVersionId, touchstones));
             dispatch(adminTouchstoneActionCreators.getResponsibilitiesForTouchstoneVersion(params.touchstoneVersionId))
@@ -32,4 +31,5 @@ class TouchstoneVersionPageActionCreators
 
 }
 
-export const touchstoneVersionPageActionCreators = new TouchstoneVersionPageActionCreators();
+export const touchstoneVersionPageActionCreators
+    = new TouchstoneVersionPageActionCreators(touchstoneListPageActionCreators);

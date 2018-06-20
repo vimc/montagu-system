@@ -7,13 +7,14 @@ import {AbstractPageActionCreators} from "./AbstractPageActionCreators";
 import {unitOfTime} from "moment";
 import {MainMenuNew} from "../../components/MainMenu/MainMenuNew";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {mainMenuPageActionCreators} from "./MainMenuPageActionCreators";
 
 class TouchstoneListPageActionCreators extends AbstractPageActionCreators<AdminAppState, {}>{
 
     createBreadcrumb(state?: AdminAppState): PageBreadcrumb {
         return {
             name: TouchstoneListPageComponent.title,
-            parent: MainMenuNew.breadcrumb(),
+            parent: mainMenuPageActionCreators.createBreadcrumb(),
             urlFragment: "touchstones/"
         };
     }
@@ -26,4 +27,4 @@ class TouchstoneListPageActionCreators extends AbstractPageActionCreators<AdminA
 
 }
 
-export const touchstoneListPageActionCreators = new TouchstoneListPageActionCreators();
+export const touchstoneListPageActionCreators = new TouchstoneListPageActionCreators(mainMenuPageActionCreators);

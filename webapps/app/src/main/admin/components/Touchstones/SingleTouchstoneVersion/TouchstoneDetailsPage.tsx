@@ -26,14 +26,6 @@ export class TouchstoneVersionDetailsPageComponent extends React.Component<Touch
         this.props.onLoad(this.props.match.params)
     }
 
-    static breadcrumb(state: AdminAppState): PageBreadcrumb {
-        return {
-            name: state.touchstones.currentTouchstoneVersion.id,
-            parent: TouchstoneListPageComponent.breadcrumb(),
-            urlFragment: `${state.touchstones.currentTouchstoneVersion.id}/`
-        };
-    }
-
     render(): JSX.Element {
         return <div>
             <AdminPageHeader/>
