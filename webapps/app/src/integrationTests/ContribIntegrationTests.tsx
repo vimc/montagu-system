@@ -8,7 +8,7 @@ import {
     DemographicDataset,
     ModelRunParameterSet, Touchstone,
 } from "../main/shared/models/Generated";
-import { IntegrationTestSuite} from "./IntegrationTest";
+import {inflateAndDecode, IntegrationTestSuite} from "./IntegrationTest";
 import * as enzyme from "enzyme";
 import * as Adapter from "enzyme-adapter-react-15";
 enzyme.configure({ adapter: new Adapter() });
@@ -27,9 +27,9 @@ import {EstimatesService} from "../main/contrib/services/EstimatesService";
 import {EstimatesCreateBurdenData} from "../main/contrib/actionTypes/EstimatesTypes";
 import {UserService} from "../main/contrib/services/UserService";
 import {helpers} from "../main/shared/Helpers";
+import {jwtTokenAuth} from "../main/shared/modules/jwtTokenAuth";
 
 const FormData = require('form-data');
-const jwt_decode = require('jwt-decode');
 
 const groupId = "test-group"; // This group must match the one the logged in user belongs to
 const touchstoneVersionId = "test-1";
@@ -181,7 +181,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const token: string = await (new CoverageService(this.store.dispatch, this.store.getState))
                 .getOneTimeToken(groupId, touchstoneVersionId, scenarioId, 'long');
 
-            const decoded = jwt_decode(token);
+            const decoded = inflateAndDecode(token);
 
             expect(decoded.action).to.equal("coverage");
             const payload = QueryString.parse(decoded.payload);
@@ -220,7 +220,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const token: string = await (new DemographicService(this.store.dispatch, this.store.getState))
                 .getOneTimeToken(touchstoneVersionId, demographicDataSet.source, demographicDataSet.id,'long', 'female');
 
-            const decoded = jwt_decode(token);
+            const decoded = inflateAndDecode(token);
 
             expect(decoded.action).to.equal("demography");
             const payload = QueryString.parse(decoded.payload);
@@ -243,7 +243,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const token: string = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .getOneTimeToken(groupId, touchstoneVersionId, scenarioId, estimatesSet.id);
 
-            const decoded = jwt_decode(token);
+            const decoded = inflateAndDecode(token);
             expect(decoded.action).to.equal("burdens-populate");
             const payload = QueryString.parse(decoded.payload);
             expect(payload).to.eql({
@@ -269,7 +269,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const token: string = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .getOneTimeToken(groupId, touchstoneVersionId, scenarioId, estimatesSet.id, queryString);
 
-            const decoded = jwt_decode(token);
+            const decoded = inflateAndDecode(token);
 
             const query = QueryString.parse(decoded.query);
             expect(query.redirectUrl).to.equal("http://localhost:5000/contribution/test");
@@ -322,7 +322,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const token: string = await (new RunParametersService(this.store.dispatch, this.store.getState))
                 .getOneTimeToken(groupId, touchstoneVersionId, sets[0].id);
 
-            const decoded = jwt_decode(token);
+            const decoded = inflateAndDecode(token);
             expect(decoded.action).to.equal("model-run-parameters");
             const payload = QueryString.parse(decoded.payload);
             expect(payload).to.eql({
