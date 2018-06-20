@@ -1,11 +1,10 @@
 package org.vaccineimpact.api.test_helpers
 
-import org.slf4j.LoggerFactory
+import org.docopt.Docopt
 import org.vaccineimpact.api.db.AnnexJooqContext
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.UnableToConnectToDatabase
-import java.util.logging.Level
 
 class DatabaseCreationHelper(private val config: DatabaseConfig)
 {
@@ -17,6 +16,29 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
         val annex = DatabaseCreationHelper(
                 DatabaseConfig({ AnnexJooqContext(it) }, Config["annex.name"], Config["annex.template_name"])
         )
+
+        const val usage = """Usage:
+            testHelpers createTemplateFromDatabase
+            testHelpers restoreDatabaseFromTemplate
+        """
+
+        // We want to expose the same CLI in two modules, so that we can use the
+        // appropriate config resources for the two scenarios. So we include the
+        // logic of the CLI here, in a reusable place.
+        fun handleEntryPoint(args: Array<String>)
+        {
+            val opts = Docopt(usage).parse(args.toList())
+            if (opts["createTemplateFromDatabase"] as Boolean)
+            {
+                DatabaseCreationHelper.main.createTemplateFromDatabase()
+                DatabaseCreationHelper.annex.createTemplateFromDatabase()
+            }
+            else if (opts["restoreDatabaseFromTemplate"] as Boolean)
+            {
+                DatabaseCreationHelper.main.restoreDatabaseFromTemplate()
+                DatabaseCreationHelper.annex.restoreDatabaseFromTemplate()
+            }
+        }
     }
 
     private var error: Exception? = null

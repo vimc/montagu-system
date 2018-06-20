@@ -1,4 +1,9 @@
+apply plugin: 'application'
+mainClassName = "org.vaccineimpact.api.blackboxTests.AppKt"
+
 dependencies {
+    compile project(":testHelpers")
+
     testCompile "junit:junit:4.12"
     testCompile "org.assertj:assertj-core:3.9.1"
 
@@ -19,8 +24,20 @@ dependencies {
 }
 
 test {
-    dependsOn 'copySpec', ':testHelpers:createTemplateFromDatabase'
-    finalizedBy ':testHelpers:restoreDatabaseFromTemplate'
+    dependsOn 'copySpec', 'createTemplateFromDatabase'
+    finalizedBy 'restoreDatabaseFromTemplate'
 }
 
 copyTestConfig.finalizedBy 'showTestConfig'
+
+task createTemplateFromDatabase(type: JavaExec) {
+    main = "org.vaccineimpact.api.blackboxTests.AppKt"
+    classpath = sourceSets.main.runtimeClasspath
+    args "createTemplateFromDatabase"
+}
+
+task restoreDatabaseFromTemplate(type: JavaExec) {
+    main = "org.vaccineimpact.api.blackboxTests.AppKt"
+    classpath = sourceSets.main.runtimeClasspath
+    args "restoreDatabaseFromTemplate"
+}

@@ -1,4 +1,9 @@
+apply plugin: 'application'
+mainClassName = "org.vaccineimpact.api.databaseTests.AppKt"
+
 dependencies {
+    compile project(":testHelpers")
+
     testCompile "junit:junit:4.12"
     testCompile "org.mockito:mockito-core:2.+"
     testCompile "com.nhaarman:mockito-kotlin:1.5.0"
@@ -14,6 +19,12 @@ dependencies {
 }
 
 test {
-    dependsOn 'copySpec', ':startDatabase', ':testHelpers:createTemplateFromDatabase'
+    dependsOn 'copySpec', ':startDatabase', 'createTemplateFromDatabase'
     finalizedBy ':stopDatabase'
+}
+
+task createTemplateFromDatabase(type: JavaExec) {
+    main = "org.vaccineimpact.api.databaseTests.AppKt"
+    classpath = sourceSets.main.runtimeClasspath
+    args "createTemplateFromDatabase"
 }
