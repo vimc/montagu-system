@@ -116,5 +116,12 @@ describe("CreateGroupForm", () => {
         it("strips out bad characters", () => {
             expect(suggestId("j_1-o=%_e_", "imper=-i_al")).to.equal("I-Joe");
         });
+        it("strips out numbers", () => {
+            expect(suggestId("1jo32e", "imperial3123l")).to.equal("I-Joe");
+        });
+        it("returns null if one input is null", () => {
+            expect(suggestId(null, "imperial")).to.be.null;
+            expect(suggestId("joe", null)).to.be.null;
+        });
     });
 });

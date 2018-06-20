@@ -21,6 +21,9 @@ function stripBadChars(data: string){
 
 export function suggestId(pi: string, institution: string): string {
 
+    if (!pi || !institution)
+        return null;
+
     pi = stripBadChars(pi);
     institution = stripBadChars(institution);
 
