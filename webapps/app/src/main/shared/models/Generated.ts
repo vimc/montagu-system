@@ -125,6 +125,13 @@ export interface Responsibilities {
     touchstone_version: string;
 }
 
+export interface ResponsibilitySet {
+    modelling_group_id: string;
+    touchstone_version: string;
+    status: ResponsibilitySetStatus;
+    responsibilities: Responsibility[];
+}
+
 export interface ErrorInfo {
     code: string;
     message: string;
