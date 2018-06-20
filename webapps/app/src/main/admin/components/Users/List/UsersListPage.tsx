@@ -3,7 +3,7 @@ import {compose} from "recompose";
 import {connect} from 'react-redux';
 import {Dispatch} from "redux";
 
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {usersListPageActionCreators} from "../../../actions/pages/UsersListPageActionCreators";

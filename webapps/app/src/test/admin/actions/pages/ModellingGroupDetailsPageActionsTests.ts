@@ -5,7 +5,6 @@ import {createMockStore} from "../../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../../main/admin/actionTypes/ModellingGroupsTypes";
 import {
-    mockBreadcrumbs,
     mockModellingGroup,
     mockModellingGroupDetails,
     mockUser

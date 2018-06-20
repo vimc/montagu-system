@@ -5,7 +5,7 @@ import {MainMenuNew} from "../../components/MainMenu/MainMenuNew";
 
 export class MainMenuPageActionCreators extends AdminPageActionCreators<{}> {
 
-    parent: null;
+    parent: AdminPageActionCreators<{}> = null;
 
     createBreadcrumb(state?: AdminAppState): PageBreadcrumb {
         return {
