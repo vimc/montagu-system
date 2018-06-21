@@ -9,6 +9,7 @@ export abstract class AbstractPageActionCreators<TState, TPageProps> {
     onLoad(params?: TPageProps) {
         return async (dispatch: Dispatch<TState>, getState: () => TState) => {
             const ancestors = this.getAncestorsFromOldestToYoungest();
+            
             for (let a of ancestors) {
                 await dispatch(a.loadData(params));
             }
