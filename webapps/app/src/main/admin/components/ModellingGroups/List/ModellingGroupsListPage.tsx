@@ -9,22 +9,14 @@ import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArti
 import {AdminPageHeader} from "../../AdminPageHeader";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {MainMenuNew} from "../../MainMenu/MainMenuNew";
-import {modellingGroupsListPageActionCreators} from "../../../actions/pages/modellingGroupsListPageActionCreators";
-import {CreateModellingGroupSection, CreateModellingGroupSectionComponent} from "../Create/CreateModellingGroupSection";
+import {modellingGroupsListPageActionCreators} from "../../../actions/pages/ModellingGroupsListPageActionCreators";
+import {CreateModellingGroupSection} from "../Create/CreateModellingGroupSection";
 
 export class ModellingGroupsListPageComponent extends React.Component<PageProperties<undefined>> {
     static title: string = "Modelling groups";
 
     componentDidMount(){
         this.props.onLoad()
-    }
-
-    static breadcrumb() : PageBreadcrumb {
-        return {
-            name: ModellingGroupsListPageComponent.title,
-            urlFragment: "modelling-groups/",
-            parent: MainMenuNew.breadcrumb()
-        }
     }
 
     render() :JSX.Element {
