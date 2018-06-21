@@ -8,16 +8,22 @@ export abstract class AbstractPageActionCreators<TState, TPageProps> {
 
     onLoad(params?: TPageProps) {
         return async (dispatch: Dispatch<TState>, getState: () => TState) => {
-            if (this.parent) {
-                await dispatch(this.parent.loadData(params));
+            let parent = this.parent;
+            while (parent) {
+                await dispatch(parent.loadData(params));
+                parent = parent.parent;
             }
             await dispatch(this.loadData(params));
 
-            const breadcrumb = this.createBreadcrumb(getState());
-            if (this.parent) {
-                breadcrumb.parent = this.parent.createBreadcrumb(getState());
+            const myBreadcrumb = this.createBreadcrumb(getState());
+            let breadcrumb = myBreadcrumb;
+            parent = this.parent;
+            while (parent) {
+                breadcrumb.parent = parent.createBreadcrumb(getState());
+                breadcrumb = breadcrumb.parent;
+                parent = parent.parent
             }
-            dispatch(breadcrumbsActionCreators.createBreadcrumbs(breadcrumb));
+            dispatch(breadcrumbsActionCreators.createBreadcrumbs(myBreadcrumb));
         }
     }
 
