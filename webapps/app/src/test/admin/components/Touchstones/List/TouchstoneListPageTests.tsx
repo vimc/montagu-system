@@ -4,7 +4,7 @@ import {TouchstoneListPage} from "../../../../../main/admin/components/Touchston
 import * as React from "react";
 import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
 import {TouchstoneList} from "../../../../../main/admin/components/Touchstones/List/TouchstoneList";
-import {touchstoneListPageActionCreators} from "../../../../../main/admin/actions/pages/touchstoneListPageActionCreators";
+import {touchstoneListPageActionCreators} from "../../../../../main/admin/actions/pages/TouchstoneListPageActionCreators";
 import {mockPageProperties, shallowRenderPage} from "../../../../mocks/mockPages";
 
 describe("TouchstoneListPage", () => {

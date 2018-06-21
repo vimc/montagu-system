@@ -10,14 +10,6 @@ export class MainMenuNew extends React.Component<PageProperties<undefined>> {
 
     static title: string = "Admin portal";
 
-    static breadcrumb() : PageBreadcrumb {
-        return {
-            name: MainMenuNew.title,
-            urlFragment: "/",
-            parent: null
-        }
-    }
-
     render() :JSX.Element {
         return <PageArticle title={MainMenuNew.title}>
             <div>
