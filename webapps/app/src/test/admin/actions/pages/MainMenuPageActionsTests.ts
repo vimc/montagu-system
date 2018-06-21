@@ -7,7 +7,7 @@ describe("Admin main menu page actions tests", () => {
 
         const result = mainMenuPageActionCreators.createBreadcrumb();
         expect(result.urlFragment).to.eq("/");
-        expect(result.name).to.eq("Admin portal");
+        expect(result.name).to.eq("Main menu");
 
     });
 
