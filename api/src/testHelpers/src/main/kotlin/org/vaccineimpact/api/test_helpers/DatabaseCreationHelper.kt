@@ -125,7 +125,10 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
 
     fun check(dbName: String): Boolean
     {
-        return temporarilyDisableLogging("org.postgresql") {
+        // We expect the connection to fail if the db doesn't exist, so disable
+        // logging from the postgres library, as it spews out tons of error messages
+        // in that case.
+        return disableLoggingFrom("org.postgresql") {
             try
             {
                 config.factory(dbName).close()
