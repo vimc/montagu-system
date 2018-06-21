@@ -6,7 +6,7 @@ import { compose, branch, renderNothing} from "recompose";
 import "../../../../../helper";
 import { Sandbox } from "../../../../../Sandbox";
 import {
-    mockDisease, mockResponsibility, mockResponsibilitySet,
+    mockDisease, mockResponsibility, mockResponsibilities,
     mockScenario
 } from "../../../../../mocks/mockModels";
 
@@ -24,14 +24,14 @@ describe("Responsibility Overview Disease Filter Component tests", () => {
     const mockNotMatchingState = () => {
         return {
             diseases: {diseases: [mockDisease()]},
-            responsibilities: {responsibilitiesSet: mockResponsibilitySet()}
+            responsibilities: {responsibilitiesSet: mockResponsibilities()}
         };
     }
 
     const mockOneMatchState = () => {
         const testScenario = mockScenario({disease: testDisease.id});
         const testResponsibility = mockResponsibility({scenario: testScenario});
-        const testResponsibilitySet = mockResponsibilitySet({responsibilities: [testResponsibility]})
+        const testResponsibilitySet = mockResponsibilities({responsibilities: [testResponsibility]})
 
         return {
             diseases: {diseases: [testDisease]},
@@ -44,7 +44,7 @@ describe("Responsibility Overview Disease Filter Component tests", () => {
         const testScenario2 = mockScenario({disease: testDisease2.id});
         const testResponsibility = mockResponsibility({scenario: testScenario});
         const testResponsibility2 = mockResponsibility({scenario: testScenario2});
-        const testResponsibilitySet = mockResponsibilitySet({responsibilities: [testResponsibility, testResponsibility2]})
+        const testResponsibilitySet = mockResponsibilities({responsibilities: [testResponsibility, testResponsibility2]})
 
         return {
             diseases: {diseases: [testDisease, testDisease2]},

@@ -1,13 +1,11 @@
 import {Dispatch} from "redux";
 import {AdminAppState} from "../../reducers/adminAppReducers";
-import {
-    TouchstoneVersionPageLocationProps
-} from "../../components/Touchstones/SingleTouchstoneVersion/TouchstoneDetailsPage";
 import {touchstonesActionCreators} from "../../../shared/actions/touchstoneActionCreators";
 import {adminTouchstoneActionCreators} from "../adminTouchstoneActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
 import {touchstoneListPageActionCreators} from "./TouchstoneListPageActionCreators";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
+import {TouchstoneVersionPageLocationProps} from "../../components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
 
 class TouchstoneVersionPageActionCreators
     extends AdminPageActionCreators<TouchstoneVersionPageLocationProps> {
