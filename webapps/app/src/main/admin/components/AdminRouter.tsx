@@ -52,4 +52,4 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
             {routes}
         </div>
     </ConnectedRouter>;
-}
+};

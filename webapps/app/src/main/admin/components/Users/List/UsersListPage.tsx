@@ -3,13 +3,12 @@ import {compose} from "recompose";
 import {connect} from 'react-redux';
 import {Dispatch} from "redux";
 
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
-import {usersListPageActionCreators} from "../../../actions/pages/usersListPageActionCreators";
+import {usersListPageActionCreators} from "../../../actions/pages/UsersListPageActionCreators";
 import {CreateUserSection} from "../Create/CreateUserSection";
 import {UsersList} from "./UsersList";
-import {MainMenuNew} from "../../MainMenu/MainMenuNew";
 import {AdminPageHeader} from "../../AdminPageHeader";
 
 export class UsersListPageComponent extends React.Component<PageProperties<undefined>> {
@@ -17,14 +16,6 @@ export class UsersListPageComponent extends React.Component<PageProperties<undef
 
     componentDidMount() {
         this.props.onLoad()
-    }
-
-    static breadcrumb(): PageBreadcrumb {
-        return {
-            name: UsersListPageComponent.title,
-            urlFragment: "users/",
-            parent: MainMenuNew.breadcrumb()
-        }
     }
 
     render(): JSX.Element {

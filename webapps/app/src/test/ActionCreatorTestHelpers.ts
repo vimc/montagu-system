@@ -23,7 +23,7 @@ export function verifyActionThatCallsService(
     store.dispatch(props.callActionCreator());
     setTimeout(() => {
         const actions = store.getActions();
-        expect(props.expectTheseActions).to.eql(actions);
+        expect(actions).to.eql(props.expectTheseActions);
         done();
     });
 }

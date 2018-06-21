@@ -12,7 +12,7 @@ import {
     mockModellingGroupDetails,
     mockUser
 } from "../../../mocks/mockModels";
-import {modellingGroupMembersPageActionCreators} from "../../../../main/admin/actions/pages/modellingGroupMembersPageActionCreators";
+import {modellingGroupMembersPageActionCreators} from "../../../../main/admin/actions/pages/ModellingGroupMembersPageActionCreators";
 import {UsersService} from "../../../../main/admin/services/UsersService";
 import {UsersTypes} from "../../../../main/admin/actionTypes/UsersTypes";
 

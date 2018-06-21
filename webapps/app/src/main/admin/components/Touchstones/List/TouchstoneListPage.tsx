@@ -1,12 +1,11 @@
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import * as React from "react";
-import {MainMenuNew} from "../../MainMenu/MainMenuNew";
 import {AdminPageHeader} from "../../AdminPageHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {TouchstoneList} from "./TouchstoneList";
 import {Dispatch} from "redux";
-import {touchstoneListPageActionCreators} from "../../../actions/pages/touchstoneListPageActionCreators";
+import {touchstoneListPageActionCreators} from "../../../actions/pages/TouchstoneListPageActionCreators";
 import {compose} from "recompose";
 import {connect} from "react-redux";
 

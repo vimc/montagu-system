@@ -1,30 +1,33 @@
 import * as React from "react";
-import { AdminPageWithHeader } from "./AdminPageWithHeader";
-import { NoRouteFound } from "../../shared/components/NoRouteFound";
-import {IPageWithParent} from "../../shared/models/Breadcrumb";
-import {MainMenu} from "./MainMenu/MainMenu";
-import { Page } from "../../shared/components/PageWithHeader/Page";
+import {compose} from "recompose";
 
-export class AdminNoRouteFoundPage extends AdminPageWithHeader<undefined> {
-    name(): string {
-        return NoRouteFound.title();
-    }
+import {NoRouteFound} from "../../shared/components/NoRouteFound";
+import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
+import {AdminPageHeader} from "./AdminPageHeader";
+import {mainMenuPageActionCreators} from "../actions/pages/MainMenuPageActionCreators";
 
-    urlFragment(): string {
-        return null;
-    }
+export class AdminNoRouteFoundPageComponent extends React.Component<PageProperties<undefined>> {
+    componentDidMount() {
+        const breadcrumb: PageBreadcrumb = {
+            name: NoRouteFound.title(),
+            urlFragment: null,
+            parent: mainMenuPageActionCreators.createBreadcrumb()
+        };
 
-    url(): string {
-        return null;
-    }
-
-    parent(): IPageWithParent {
-        return new MainMenu();
+        this.props.createBreadcrumbs(breadcrumb);
     }
 
     render(): JSX.Element {
-        return <Page page={this}>
-            {NoRouteFound.render()}
-        </Page>;
+        return <div>
+            <AdminPageHeader/>
+            <PageArticle title={NoRouteFound.title()}>
+                {NoRouteFound.render()}
+            </PageArticle>
+        </div>;
     }
 }
+
+export const AdminNoRouteFoundPage = compose(BreadcrumbInitializer)(AdminNoRouteFoundPageComponent) as
+    React.ComponentClass<Partial<PageProperties<undefined>>>;
