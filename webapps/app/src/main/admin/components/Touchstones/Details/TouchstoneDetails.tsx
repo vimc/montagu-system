@@ -31,7 +31,7 @@ export class TouchstoneDetailsComponent extends React.Component<TouchstoneDetail
                 </tbody>
             </table>
 
-            <h4>Versions (latest first)</h4>
+            <h5 className="mt-5">Versions (latest first)</h5>
             <table>
                 <thead>
                 <tr>
