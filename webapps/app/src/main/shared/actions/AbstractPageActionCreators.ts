@@ -8,19 +8,30 @@ export abstract class AbstractPageActionCreators<TState, TPageProps> {
 
     onLoad(params?: TPageProps) {
         return async (dispatch: Dispatch<TState>, getState: () => TState) => {
-
-            const state = getState();
-            const breadcrumb = this.createBreadcrumb(state);
-            if (this.parent) {
-                await dispatch(this.parent.loadData(params));
-                breadcrumb.parent = this.parent.createBreadcrumb(state);
+            const ancestors = this.getAncestorsFromOldestToYoungest();
+            
+            for (let a of ancestors) {
+                await dispatch(a.loadData(params));
             }
 
-            await dispatch(this.loadData(params));
-
-            dispatch(breadcrumbsActionCreators
-                .createBreadcrumbs(breadcrumb));
+            let breadcrumb: PageBreadcrumb = null;
+            for (let a of ancestors) {
+                let parentBreadcrumb = breadcrumb;
+                breadcrumb = a.createBreadcrumb(getState());
+                breadcrumb.parent = parentBreadcrumb;
+            }
+            dispatch(breadcrumbsActionCreators.createBreadcrumbs(breadcrumb));
         }
+    }
+
+    private getAncestorsFromOldestToYoungest(): Array<AbstractPageActionCreators<any, any>> {
+        let ancestors: Array<AbstractPageActionCreators<any, any>> = [];
+        let generation: AbstractPageActionCreators<any, any> = this;
+        while (generation) {
+            ancestors = [generation, ...ancestors];
+            generation = generation.parent;
+        }
+        return ancestors;
     }
 
     abstract createBreadcrumb(state: TState): PageBreadcrumb

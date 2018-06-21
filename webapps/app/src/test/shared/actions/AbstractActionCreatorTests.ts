@@ -8,22 +8,45 @@ import {Sandbox} from "../../Sandbox";
 import {BreadcrumbsReceived, BreadcrumbsTypes} from "../../../main/shared/actionTypes/BreadrumbsTypes";
 import {Breadcrumb} from "../../../main/shared/models/Breadcrumb";
 
+let fakeGlobalState = 0;
 const dummyAction = {type: "test", data: "testdata"};
 const dummyParentAction = {type: "testparent", data: "testdataparent"};
+const dummyGrandparentAction = {type: "testgrandparent", data: "testdatagrandparent"};
 
-class DummyParentPageActionCreators extends AbstractPageActionCreators<any, any> {
-
+class DummyGrandparentPageActionCreators extends AbstractPageActionCreators<any, any> {
     parent: AbstractPageActionCreators<any, any> = null;
 
     createBreadcrumb(state: any): PageBreadcrumb {
         return {
-            name: "parent",
+            name: "grandparent" + fakeGlobalState.toString(),
+            urlFragment: "grandparent/"
+        };
+    }
+
+    loadData(params: any): (dispatch: Dispatch<any>, getState: () => any) => void {
+        return (dispatch: Dispatch<any>) => {
+            dispatch(dummyGrandparentAction);
+            fakeGlobalState += 1;
+        }
+    }
+}
+
+class DummyParentPageActionCreators extends AbstractPageActionCreators<any, any> {
+
+    parent = new DummyGrandparentPageActionCreators();
+
+    createBreadcrumb(state: any): PageBreadcrumb {
+        return {
+            name: "parent" + fakeGlobalState.toString(),
             urlFragment: "parent/"
         };
     }
 
     loadData(params: any): (dispatch: Dispatch<any>, getState: () => any) => void {
-        return (dispatch: Dispatch<any>) => dispatch(dummyParentAction);
+        return (dispatch: Dispatch<any>) => {
+            dispatch(dummyParentAction);
+            fakeGlobalState += 1;
+        }
     }
 
 }
@@ -34,13 +57,16 @@ class DummyPageActionCreators extends AbstractPageActionCreators<any, any> {
 
     createBreadcrumb(state: any): PageBreadcrumb {
         return {
-            name: "child",
+            name: "child" + fakeGlobalState.toString(),
             urlFragment: "child/"
         };
     }
 
     loadData(params: any): (dispatch: Dispatch<any>, getState: () => any) => void {
-        return (dispatch: Dispatch<any>) => dispatch(dummyAction);
+        return (dispatch: Dispatch<any>) => {
+            dispatch(dummyAction);
+            fakeGlobalState += 1;
+        }
     }
 
 }
@@ -60,13 +86,19 @@ describe("Abstract page action creators", () => {
 
         store.dispatch(dummyPage.onLoad());
 
-        const expectedBreadcrumbs: Breadcrumb[] = [{
-            name: "parent",
-            url: "parent/"
-        }, {
-            name: "child",
-            url: "parent/child/"
-        }];
+        const expectedBreadcrumbs: Breadcrumb[] = [
+            {
+                name: "grandparent3",
+                url: "grandparent/"
+            },
+            {
+                name: "parent3",
+                url: "grandparent/parent/"
+            }, {
+                name: "child3",
+                url: "grandparent/parent/child/"
+            }
+        ];
 
         const expectedBreadcrumbAction: BreadcrumbsReceived = {
             type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED,
@@ -76,7 +108,7 @@ describe("Abstract page action creators", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = [
-                dummyParentAction, dummyAction, expectedBreadcrumbAction
+                dummyGrandparentAction, dummyParentAction, dummyAction, expectedBreadcrumbAction
             ];
 
             expect(actions).to.eql(expectedPayload);
