@@ -28,11 +28,11 @@ class GetScenariosTests : TouchstoneRepositoryTests()
         } check {
             checkResult(getScenarios(it), listOf(
                     ScenarioAndCoverageSets(
-                            Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneVersionId)),
+                            Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneVersionId)),
                             emptyList()
                     ),
                     ScenarioAndCoverageSets(
-                            Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneVersionId)),
+                            Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneVersionId)),
                             emptyList()
                     )
             ))
@@ -62,17 +62,17 @@ class GetScenariosTests : TouchstoneRepositoryTests()
         } check {
             checkResult(getScenarios(it), listOf(
                     ScenarioAndCoverageSets(
+                            Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneVersionId)),
+                            listOf(
+                                    CoverageSet(measlesSet, touchstoneVersionId, "Measles, No vacc", "Measles", GAVISupportLevel.NONE, ActivityType.NONE)
+                            )
+                    ),
+                    ScenarioAndCoverageSets(
                             Scenario("yf-1", "Yellow Fever 1", "YF", listOf(touchstoneVersionId)),
                             listOf(
                                     CoverageSet(yfSet1, touchstoneVersionId, "YF, No vacc", "YF", GAVISupportLevel.NONE, ActivityType.NONE),
                                     CoverageSet(yfSet2, touchstoneVersionId, "YF, Routine vacc", "YF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE),
                                     CoverageSet(yfSet3, touchstoneVersionId, "YF, Routine GAVI vacc", "YF", GAVISupportLevel.WITH, ActivityType.ROUTINE)
-                            )
-                    ),
-                    ScenarioAndCoverageSets(
-                            Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneVersionId)),
-                            listOf(
-                                    CoverageSet(measlesSet, touchstoneVersionId, "Measles, No vacc", "Measles", GAVISupportLevel.NONE, ActivityType.NONE)
                             )
                     )
             ))

@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.test_helpers
 
+import org.docopt.Docopt
 import org.vaccineimpact.api.db.AnnexJooqContext
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.JooqContext
@@ -15,26 +16,64 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
         val annex = DatabaseCreationHelper(
                 DatabaseConfig({ AnnexJooqContext(it) }, Config["annex.name"], Config["annex.template_name"])
         )
+
+        const val usage = """Usage:
+            testHelpers createTemplateFromDatabase
+            testHelpers restoreDatabaseFromTemplate
+        """
+
+        // We want to expose the same CLI in two modules, so that we can use the
+        // appropriate config resources for the two scenarios. So we include the
+        // logic of the CLI here, in a reusable place.
+        fun handleEntryPoint(args: Array<String>)
+        {
+            val opts = Docopt(usage).parse(args.toList())
+            if (opts["createTemplateFromDatabase"] as Boolean)
+            {
+                DatabaseCreationHelper.main.createTemplateFromDatabase()
+                DatabaseCreationHelper.annex.createTemplateFromDatabase()
+            }
+            else if (opts["restoreDatabaseFromTemplate"] as Boolean)
+            {
+                DatabaseCreationHelper.main.restoreDatabaseFromTemplate()
+                DatabaseCreationHelper.annex.restoreDatabaseFromTemplate()
+            }
+        }
     }
 
     private var error: Exception? = null
 
     fun createTemplateFromDatabase()
     {
+        println("Planning to create template ${config.templateName} from ${config.name}")
         checkDatabaseExists(config.name)
-        config.factory("postgres").use {
-            it.dsl.query("ALTER DATABASE ${config.name} RENAME TO ${config.templateName}").execute()
+        if (databaseExists(config.templateName, maxAttempts = 1))
+        {
+            println("Template database already exists")
         }
-        println("Created template database by renaming ${config.name} to ${config.templateName}")
-        checkDatabaseExists(config.templateName)
+        else
+        {
+            config.factory("postgres").use {
+                it.dsl.query("ALTER DATABASE ${config.name} RENAME TO ${config.templateName}").execute()
+            }
+            println("Created template database by renaming ${config.name} to ${config.templateName}")
+            checkDatabaseExists(config.templateName)
+        }
     }
 
     fun restoreDatabaseFromTemplate()
     {
-        config.factory("postgres").use {
-            it.dsl.query("ALTER DATABASE ${config.templateName} RENAME TO ${config.name}").execute()
+        if (databaseExists(config.templateName, maxAttempts = 1))
+        {
+            config.factory("postgres").use {
+                it.dsl.query("ALTER DATABASE ${config.templateName} RENAME TO ${config.name}").execute()
+            }
+            checkDatabaseExists(config.name)
         }
-        checkDatabaseExists(config.name)
+        else
+        {
+            println("Template database does not exist; skipping")
+        }
     }
 
     fun createDatabaseFromTemplate()
@@ -60,21 +99,25 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
         }
     }
 
-    private fun databaseExists(dbName: String): Boolean
+    private fun databaseExists(dbName: String, maxAttempts: Int = 10): Boolean
     {
-        println("Checking that database '$dbName' exists...")
-        var attemptsRemaining = 10
+        print("Checking that database '$dbName' exists...")
+        var attemptsRemaining = maxAttempts
         while (attemptsRemaining > 0)
         {
             if (check(dbName))
             {
+                println("✔")
                 return true
             }
             else
             {
-                println("Unable to connect. I will wait and then retry $attemptsRemaining more times")
                 attemptsRemaining--
-                Thread.sleep(2000)
+                if (attemptsRemaining > 0)
+                {
+                    println("Unable to connect. I will wait and then retry $attemptsRemaining more times")
+                    Thread.sleep(2000)
+                }
             }
         }
         return false
@@ -82,15 +125,20 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
 
     fun check(dbName: String): Boolean
     {
-        try
-        {
-            config.factory(dbName).close()
-            return true
-        }
-        catch (e: UnableToConnectToDatabase)
-        {
-            error = e
-            return false
+        // We expect the connection to fail if the db doesn't exist, so disable
+        // logging from the postgres library, as it spews out tons of error messages
+        // in that case.
+        return disableLoggingFrom("org.postgresql") {
+            try
+            {
+                config.factory(dbName).close()
+                true
+            }
+            catch (e: UnableToConnectToDatabase)
+            {
+                error = e
+                false
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.postgresql.util.PSQLException
 import org.vaccineimpact.api.app.errors.DuplicateKeyError
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.models.ModellingGroupCreation
@@ -13,7 +14,11 @@ class CreateModellingGroupTests : ModellingGroupRepositoryTests()
     @Test
     fun `can create new group`()
     {
-        val newGroup = ModellingGroupCreation("HW-NewName", "Hogwarts", "Professor New Name", "some description")
+        val newGroup = ModellingGroupCreation(
+                id = "HW-NewName",
+                description = "some description",
+                institution = "Hogwarts",
+                pi = "Professor New Name")
         withRepo {
             it.createModellingGroup(newGroup)
         }
@@ -36,9 +41,8 @@ class CreateModellingGroupTests : ModellingGroupRepositoryTests()
             it.createModellingGroup(newGroup)
         }
         withRepo {
-            assertThatThrownBy { it.
-                    createModellingGroup(newGroup) }
-                    .isInstanceOf(DuplicateKeyError::class.java)
+            assertThatThrownBy { it.createModellingGroup(newGroup) }
+                    .hasMessageContaining("already exists")
         }
 
     }

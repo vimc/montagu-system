@@ -1,4 +1,9 @@
+apply plugin: 'application'
+mainClassName = "org.vaccineimpact.api.databaseTests.AppKt"
+
 dependencies {
+    compile project(":testHelpers")
+
     testCompile "junit:junit:4.12"
     testCompile "org.mockito:mockito-core:2.+"
     testCompile "com.nhaarman:mockito-kotlin:1.5.0"
@@ -13,8 +18,19 @@ dependencies {
     testCompile project(":testHelpers")
 }
 
-test.dependsOn ':startDatabase'
-test.finalizedBy ':stopDatabase'
-// We run the tests as a suite (see RepositoryTestSuite)
-// This line prevents them being run individually as well
-test.exclude "**/org/vaccineimpact/api/databaseTests/tests/**"
+test {
+    dependsOn 'copySpec', ':startDatabase', 'createTemplateFromDatabase'
+    finalizedBy 'restoreDatabaseFromTemplate', ':stopDatabase'
+}
+
+task createTemplateFromDatabase(type: JavaExec) {
+    main = "org.vaccineimpact.api.databaseTests.AppKt"
+    classpath = sourceSets.main.runtimeClasspath
+    args "createTemplateFromDatabase"
+}
+
+task restoreDatabaseFromTemplate(type: JavaExec) {
+    main = "org.vaccineimpact.api.databaseTests.AppKt"
+    classpath = sourceSets.main.runtimeClasspath
+    args "restoreDatabaseFromTemplate"
+}

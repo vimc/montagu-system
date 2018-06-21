@@ -31,9 +31,8 @@ class JooqModellingGroupRepository(
             this.id = newGroup.id
             this.description = newGroup.description
             this.institution = newGroup.institution
-            this.pi = newGroup.description
+            this.pi = newGroup.pi
         }.insert()
-
     }
 
     override fun getModellingGroups(): Iterable<ModellingGroup>
