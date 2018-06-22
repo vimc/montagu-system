@@ -1,9 +1,9 @@
 import {Dispatch} from "redux";
-import {ResponsibilitySet, Touchstone} from "../../shared/models/Generated";
+import {ErrorInfo, ResponsibilitySet, Touchstone} from "../../shared/models/Generated";
 import {AdminAppState} from "../reducers/adminAppReducers";
 import {TouchstonesService} from "../../shared/services/TouchstonesService";
 import {
-    AllTouchstonesFetched, NewTouchstoneCreated, ResponsibilitiesForTouchstoneVersionFetched,
+    AllTouchstonesFetched, NewTouchstoneCreated, ResponsibilitiesForTouchstoneVersionFetched, SetCreateTouchstoneError,
     TouchstoneTypes
 } from "../../shared/actionTypes/TouchstonesTypes";
 import {TouchstoneCreation} from "../components/Touchstones/Create/CreateTouchstoneForm";
@@ -20,7 +20,7 @@ export const adminTouchstoneActionCreators = {
         }
     },
 
-    getResponsibilitiesForTouchstoneVersion(touchstoneVersion: string){
+    getResponsibilitiesForTouchstoneVersion(touchstoneVersion: string) {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             const responsibilitySets: ResponsibilitySet[] = await (new TouchstonesService(dispatch, getState))
                 .getResponsibilitiesForTouchstoneVersion(touchstoneVersion);
@@ -32,13 +32,27 @@ export const adminTouchstoneActionCreators = {
     },
 
     createTouchstone(newTouchstone: TouchstoneCreation) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            if (getState().touchstones.touchstones.map(t => t.id)
+                    .indexOf(newTouchstone.id) > -1) {
 
-        // TODO actually create touchstone
-        const touchstone: Touchstone = {...newTouchstone, versions: []};
-        return {
-            type: TouchstoneTypes.NEW_TOUCHSTONE_CREATED,
-            data: touchstone
-        } as NewTouchstoneCreated
+                dispatch({
+                    type: TouchstoneTypes.SET_CREATE_TOUCHSTONE_ERROR,
+                    data: [{
+                        code: "error",
+                        message: `Touchstone with id ${newTouchstone.id} already exists. Please choose a unique id.`
+                    }]
+                } as SetCreateTouchstoneError)
+            }
 
+            else {
+                // TODO actually create touchstone
+                const touchstone: Touchstone = {...newTouchstone, versions: []};
+                dispatch({
+                    type: TouchstoneTypes.NEW_TOUCHSTONE_CREATED,
+                    data: touchstone
+                } as NewTouchstoneCreated)
+            }
+        }
     }
 };

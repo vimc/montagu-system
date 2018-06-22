@@ -21,7 +21,7 @@ export class CreateTouchstoneFormComponent
     extends React.Component<ReduxFormProps<TouchstoneCreation>, undefined> {
 
     render() {
-        return <form className="form" onSubmit={this.props.handleSubmit(this.props.submit)}>
+        return <form className="form mb-5" onSubmit={this.props.handleSubmit(this.props.submit)}>
             <table className="tableForm specialColumn">
                 <tbody>
                 <tr>

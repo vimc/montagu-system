@@ -5,12 +5,12 @@ import {Touchstone, User} from "../../../../shared/models/Generated";
 export class TouchstoneListItem extends React.Component<Touchstone, undefined> {
     render() {
         // The API is guaranteed to return versions in descending order
-        const latestVersion = this.props.versions[0];
+        const latestVersion = this.props.versions.length > 0 ? this.props.versions[0].id : "None";
         return <tr>
             <td>{this.props.id}</td>
             <td>{this.props.description}</td>
             <td>{this.props.comment}</td>
-            <td className="latestVersionId">{latestVersion.id}</td>
+            <td className="latestVersionId">{latestVersion}</td>
         </tr>;
     }
 }

@@ -24,6 +24,10 @@ export const adminTouchstoneReducer
             return {...state, currentTouchstoneVersion: action.data};
         case TouchstoneTypes.RESPONSIBILITIES_FOR_TOUCHSTONE_VERSION_FETCHED:
             return {...state, currentResponsibilitySets: action.data};
+        case TouchstoneTypes.NEW_TOUCHSTONE_CREATED:
+            return {...state, touchstones: [...state.touchstones, action.data]};
+        case TouchstoneTypes.SET_CREATE_TOUCHSTONE_ERROR:
+            return {...state, createTouchstoneErrors: action.data};
         default:
             return state;
     }
