@@ -3,9 +3,11 @@ import {ResponsibilitySet, Touchstone} from "../../shared/models/Generated";
 import {AdminAppState} from "../reducers/adminAppReducers";
 import {TouchstonesService} from "../../shared/services/TouchstonesService";
 import {
-    AllTouchstonesFetched, ResponsibilitiesForTouchstoneVersionFetched,
+    AllTouchstonesFetched, NewTouchstoneCreated, ResponsibilitiesForTouchstoneVersionFetched,
     TouchstoneTypes
 } from "../../shared/actionTypes/TouchstonesTypes";
+import {TouchstoneCreation} from "../components/Touchstones/Create/CreateTouchstoneForm";
+import {runInNewContext} from "vm";
 
 export const adminTouchstoneActionCreators = {
     getAllTouchstones() {
@@ -27,5 +29,16 @@ export const adminTouchstoneActionCreators = {
                 data: responsibilitySets
             } as ResponsibilitiesForTouchstoneVersionFetched);
         }
+    },
+
+    createTouchstone(newTouchstone: TouchstoneCreation) {
+
+        // TODO actually create touchstone
+        const touchstone: Touchstone = {...newTouchstone, versions: []};
+        return {
+            type: TouchstoneTypes.NEW_TOUCHSTONE_CREATED,
+            data: touchstone
+        } as NewTouchstoneCreated
+
     }
 };

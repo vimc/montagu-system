@@ -11,6 +11,7 @@ import {
     ShowCreateUser,
     UsersTypes
 } from "../actionTypes/UsersTypes";
+import {CreateUserFormFields} from "../components/Users/Create/CreateUserForm";
 
 export const usersActionCreators = {
 
