@@ -6,7 +6,7 @@ import { Store } from "redux";
 import "../../../../helper";
 import {
     mockDisease, mockModellingGroup,
-    mockResponsibility, mockResponsibilitySet,
+    mockResponsibility, mockResponsibilities,
     mockScenario, mockTouchstoneVersion
 } from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
@@ -30,7 +30,7 @@ describe("Upload Burden Estimates Content Component tests", () => {
     const testTouchstone = mockTouchstoneVersion();
     const testScenario = mockScenario({disease: testDisease.id, touchstones: [testTouchstone]});
     const testResponsibility = mockResponsibility({scenario: testScenario});
-    const testResponsibilitySet = mockResponsibilitySet({responsibilities: [testResponsibility], touchstone: testTouchstone.id});
+    const testResponsibilitySet = mockResponsibilities({responsibilities: [testResponsibility], touchstone: testTouchstone.id});
 
     const testState = {
         groups: {currentUserGroup: testGroup},

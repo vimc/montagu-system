@@ -1,17 +1,14 @@
 import * as React from "react";
-import { compose} from "recompose";
-import { connect } from 'react-redux';
-import { Dispatch } from "redux";
+import {compose} from "recompose";
+import {connect} from 'react-redux';
+import {Dispatch} from "redux";
 
-import { ModellingGroupMembersContent } from "./ModellingGroupMembersContent";
-import {PageBreadcrumb, PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
+import {ModellingGroupMembersContent} from "./ModellingGroupMembersContent";
+import {PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
-import {
-    ModellingGroupDetailsPageComponent,
-} from "../Details/ModellingGroupDetailsPage";
-import { PageArticle } from "../../../../../shared/components/PageWithHeader/PageArticle";
+import {PageArticle} from "../../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminPageHeader} from "../../../AdminPageHeader";
-import {modellingGroupMembersPageActionCreators} from "../../../../actions/pages/modellingGroupMembersPageActionCreators";
+import {modellingGroupMembersPageActionCreators} from "../../../../actions/pages/ModellingGroupMembersPageActionCreators";
 
 export interface ModellingGroupMembersPageLocationProps {
     groupId: string;
@@ -19,7 +16,7 @@ export interface ModellingGroupMembersPageLocationProps {
 
 export interface ModellingGroupMembersPageProps extends PageProperties<ModellingGroupMembersPageLocationProps> {
     groupDescription: string;
-};
+}
 
 export class ModellingGroupMembersPageComponent extends React.Component<ModellingGroupMembersPageProps> {
     static title: string = "Manage group members";
@@ -28,25 +25,17 @@ export class ModellingGroupMembersPageComponent extends React.Component<Modellin
         this.props.onLoad(this.props.match.params)
     }
 
-    static breadcrumb(state: AdminAppState): PageBreadcrumb {
-        return {
-            name: ModellingGroupMembersPageComponent.title,
-            urlFragment: "admin/",
-            parent: ModellingGroupDetailsPageComponent.breadcrumb(state)
-        }
-    }
-
-    render() :JSX.Element {
+    render(): JSX.Element {
         return <div>
             <AdminPageHeader/>
             <PageArticle title={`Manage membership for ${this.props.groupDescription}`}>
-                <ModellingGroupMembersContent />
+                <ModellingGroupMembersContent/>
             </PageArticle>
-        </div>;;
+        </div>;
     }
 }
 
-const mapStateToProps = (state: AdminAppState) :Partial<ModellingGroupMembersPageProps> => {
+const mapStateToProps = (state: AdminAppState): Partial<ModellingGroupMembersPageProps> => {
     return {
         groupDescription: state.groups.currentGroup ? state.groups.currentGroup.description : ''
     }

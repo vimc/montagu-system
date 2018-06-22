@@ -1,15 +1,14 @@
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import * as React from "react";
 import {AdminPageHeader} from "../../AdminPageHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {Dispatch} from "redux";
-import {compose} from "recompose";
 import {connect} from "react-redux";
-import {TouchstoneListPageComponent} from "../List/TouchstoneListPage";
-import {touchstoneVersionPageActionCreators} from "../../../actions/pages/touchstoneVersionPageActionCreators";
+import {touchstoneVersionPageActionCreators} from "../../../actions/pages/TouchstoneVersionPageActionCreators";
 import {ResponsibilityList} from "./ResponsibilityList";
 import {ResponsibilitySet} from "../../../../shared/models/Generated";
+import {compose} from "recompose";
 
 export interface TouchstoneVersionPageLocationProps {
     touchstoneVersionId: string;
@@ -20,7 +19,7 @@ export interface TouchstoneVersionPageProps extends PageProperties<TouchstoneVer
     responsibilitySets: ResponsibilitySet[]
 }
 
-export class TouchstoneVersionDetailsPageComponent extends React.Component<TouchstoneVersionPageProps> {
+export class TouchstoneVersionPageComponent extends React.Component<TouchstoneVersionPageProps> {
 
     componentDidMount() {
         this.props.onLoad(this.props.match.params)
@@ -56,6 +55,6 @@ export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<T
     }
 };
 
-export const TouchstoneVersionDetailsPage = compose(
-    connect(mapStateToProps, mapDispatchToProps)
-)(TouchstoneVersionDetailsPageComponent);
+export const TouchstoneVersionPage =
+    compose<{}, PageProperties<TouchstoneVersionPageLocationProps>>(connect(mapStateToProps, mapDispatchToProps))
+    (TouchstoneVersionPageComponent);

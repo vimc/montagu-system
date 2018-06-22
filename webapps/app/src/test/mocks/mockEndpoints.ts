@@ -6,7 +6,7 @@ import {
     User
 } from "../../main/shared/models/Generated";
 import {successResult} from "./mockRemote";
-import {mockCoverageSet, mockResponsibility, mockResponsibilitySet, mockScenario} from "./mockModels";
+import {mockCoverageSet, mockResponsibility, mockResponsibilities, mockScenario} from "./mockModels";
 import {Version} from "../../main/shared/models/reports/Report";
 
 function makeFakeEndpoint(url: string, data: any, api: APIType): FakeEndpoint {
@@ -27,7 +27,7 @@ export function mockDemographicDatasetsEndpoint(datasets: DemographicDataset[]):
 
 export function mockResponsibilitiesEndpoint(scenarios: string[]): FakeEndpoint {
     const responsibilities = scenarios.map(id => mockResponsibility(null, mockScenario({id: id})));
-    const set = mockResponsibilitySet(null, responsibilities);
+    const set = mockResponsibilities(null, responsibilities);
     return makeFakeEndpoint("/modelling-groups/[^/]+/responsibilities/[^/]+/", set, APIType.Montagu);
 }
 

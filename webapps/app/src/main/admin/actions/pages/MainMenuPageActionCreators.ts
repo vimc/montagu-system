@@ -1,13 +1,13 @@
-import {Dispatch} from "redux";
 import {AdminAppState} from "../../reducers/adminAppReducers";
-import {AbstractPageActionCreators} from "./AbstractPageActionCreators";
-import {unitOfTime} from "moment";
-import {MainMenuNew} from "../../components/MainMenu/MainMenuNew";
+import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {MainMenuNew} from "../../components/MainMenu/MainMenuNew";
 
-class MainMenuPageActionCreators extends AbstractPageActionCreators<AdminAppState, {}>{
+export class MainMenuPageActionCreators extends AdminPageActionCreators<{}> {
 
-    createBreadcrumb(): PageBreadcrumb {
+    parent: AdminPageActionCreators<{}> = null;
+
+    createBreadcrumb(state?: AdminAppState): PageBreadcrumb {
         return {
             name: MainMenuNew.title,
             urlFragment: "/",
@@ -15,10 +15,9 @@ class MainMenuPageActionCreators extends AbstractPageActionCreators<AdminAppStat
         }
     }
 
-    loadData(params?: {}): (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => void {
-        return () => { return }
+    loadData() {
+        return () => {}
     }
-
 }
 
 export const mainMenuPageActionCreators = new MainMenuPageActionCreators();

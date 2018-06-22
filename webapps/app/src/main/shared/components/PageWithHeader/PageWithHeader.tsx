@@ -86,7 +86,7 @@ export abstract class PageWithHeader<TLocationProps>
 export interface PageBreadcrumb {
     name: string;
     urlFragment: string;
-    parent: PageBreadcrumb;
+    parent?: PageBreadcrumb;
 }
 
 export interface PageProperties<T> {

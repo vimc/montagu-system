@@ -9,7 +9,7 @@ import {createMockStore} from "../../../../mocks/mockStore";
 import {shallow} from "enzyme";
 import {UsersList} from "../../../../../main/admin/components/Users/List/UsersList";
 import {CreateUserSection} from "../../../../../main/admin/components/Users/Create/CreateUserSection";
-import {usersListPageActionCreators} from "../../../../../main/admin/actions/pages/usersListPageActionCreators";
+import {usersListPageActionCreators} from "../../../../../main/admin/actions/pages/UsersListPageActionCreators";
 
 describe("UserListPageTests", () => {
     const sandbox = new Sandbox();

@@ -37,6 +37,9 @@ docker exec montagu_api_1 touch /etc/montagu/api/go_signal
 docker exec montagu_reporting_api_1 mkdir -p /etc/montagu/reports_api
 docker exec montagu_reporting_api_1 touch /etc/montagu/reports_api/go_signal
 
+# Wait for the database
+docker exec montagu_db_1 montagu-wait.sh
+
 # Migrate the database
 migrate_image=$registry/montagu-migrate:$MONTAGU_DB_VERSION
 docker pull $migrate_image

@@ -4,32 +4,23 @@ import { connect } from 'react-redux';
 import { Dispatch } from "redux";
 
 import { ModellingGroupDetailsContent } from "./ModellingGroupDetailsContent";
-import {ModellingGroupsListPageComponent} from "../../List/ModellingGroupsListPage";
 import { PageArticle } from "../../../../../shared/components/PageWithHeader/PageArticle";
 import {PageBreadcrumb, PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
 import {AdminPageHeader} from "../../../AdminPageHeader";
-import {modellingGroupDetailsPageActionCreators} from "../../../../actions/pages/modellingGroupDetailsPageActionCreators";
+import {modellingGroupDetailsPageActionCreators} from "../../../../actions/pages/ModellingGroupDetailsPageActionCreators";
 
 export interface ModellingGroupDetailsPageLocationProps {
     groupId: string;
-};
+}
 
 export interface ModellingGroupDetailsPageProps extends PageProperties<ModellingGroupDetailsPageLocationProps> {
     groupDescription: string;
-};
+}
 
 export class ModellingGroupDetailsPageComponent extends React.Component<ModellingGroupDetailsPageProps> {
     componentDidMount() {
         this.props.onLoad(this.props.match.params)
-    }
-
-    static breadcrumb(state: AdminAppState): PageBreadcrumb {
-        return {
-            name: state.groups.currentGroup.id,
-            urlFragment: `${state.groups.currentGroup.id}/`,
-            parent: ModellingGroupsListPageComponent.breadcrumb()
-        }
     }
 
     render() :JSX.Element {

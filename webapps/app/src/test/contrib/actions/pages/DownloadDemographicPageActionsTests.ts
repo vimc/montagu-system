@@ -7,7 +7,7 @@ import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/Modellin
 import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {
-    mockBreadcrumbs, mockDemographicDataset, mockDisease, mockModellingGroup, mockResponsibilitySet, mockTouchstone,
+    mockBreadcrumbs, mockDemographicDataset, mockDisease, mockModellingGroup, mockResponsibilities, mockTouchstone,
     mockTouchstoneVersion
 } from "../../../mocks/mockModels";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
@@ -30,7 +30,7 @@ describe("Download Demographic Page actions tests", () => {
     const testTouchstone = mockTouchstone();
     const testTouchstoneVersion = testTouchstone.versions[0];
     const testDisease = mockDisease();
-    const testResponsibilitySet = mockResponsibilitySet();
+    const testResponsibilitySet = mockResponsibilities();
     const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
     const testDemographicDataSet = mockDemographicDataset();
 

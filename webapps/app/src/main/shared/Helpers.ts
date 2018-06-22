@@ -6,6 +6,16 @@ export function doNothing() {
 
 }
 
+export function titleCase(str: string) {
+    if (!str) {
+        return str;
+    }
+
+    return str.toLowerCase().split(' ').map(function(word) {
+        return (word.charAt(0).toUpperCase() + word.slice(1));
+    }).join(' ');
+}
+
 export function encodeFilename(filename: string) {
     const forwardSlashRegex = new RegExp("/", "g");
     return filename.replace(forwardSlashRegex, ":");

@@ -7,7 +7,7 @@ import { ResponsibilitiesService } from "../../../main/contrib/services/Responsi
 import {EstimatesCreateBurdenData, EstimatesTypes} from "../../../main/contrib/actionTypes/EstimatesTypes";
 import {createMockContribStore, createMockStore} from "../../mocks/mockStore";
 import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPropsHelper";
-import {mockModellingGroup, mockResponsibilitySet, mockTouchstone, mockTouchstoneVersion} from "../../mocks/mockModels";
+import {mockModellingGroup, mockResponsibilities, mockTouchstone, mockTouchstoneVersion} from "../../mocks/mockModels";
 import {ExtendedResponsibilitySet} from "../../../main/contrib/models/ResponsibilitySet";
 import {ResponsibilitiesTypes} from "../../../main/contrib/actionTypes/ResponsibilitiesTypes";
 
@@ -17,7 +17,7 @@ describe("Estimates actions tests", () => {
     const testTouchstone = mockTouchstone();
     const testTouchstoneVersion = testTouchstone.versions[0];
     const testGroup = mockModellingGroup();
-    const testResponsibilitySet = mockResponsibilitySet();
+    const testResponsibilitySet = mockResponsibilities();
     const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
     const testResponsibility = testExtResponsibilitySet.responsibilities[0];
 
