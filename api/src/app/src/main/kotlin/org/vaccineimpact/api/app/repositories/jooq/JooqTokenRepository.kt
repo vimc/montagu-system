@@ -13,7 +13,7 @@ class JooqTokenRepository(dsl: DSLContext) : JooqRepository(dsl), TokenRepositor
     override fun storeToken(uncompressedToken: String)
     {
         dsl.newRecord(ONETIME_TOKEN).apply {
-            this.token = token
+            this.token = uncompressedToken
         }.store()
     }
 

@@ -6,5 +6,5 @@ interface TokenRepository : Repository
      * Removes it from the database before returning **/
     fun validateOneTimeToken(token: String): Boolean
 
-    fun storeToken(token: String): Unit
+    fun storeToken(token: String)
 }
