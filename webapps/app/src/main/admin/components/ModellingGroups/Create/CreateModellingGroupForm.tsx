@@ -14,6 +14,8 @@ import {ReduxFormProps} from "../../../../shared/components/ReduxForm/types";
 import {ModellingGroupCreation} from "../../../../shared/models/Generated";
 import {ChangeEvent} from "react";
 import {titleCase} from "../../../../shared/Helpers";
+import {montaguForm} from "../../../../shared/components/ReduxForm/MontaguForm";
+import {usersActionCreators} from "../../../actions/usersActionCreators";
 
 function stripBadChars(data: string){
     return data.replace(/[^a-z\s]/gi, "");
@@ -116,23 +118,28 @@ const selector = formValueSelector('createGroup');
 
 function mapStateToProps(state: AdminAppState): Partial<CreateGroupProps> {
     return {
-        errors: state.groups.createGroupErrors,
         institution: selector(state, "institution"),
         pi: selector(state, "pi") //we map these 2 fields to props so we can use them to suggest an id
     }
 }
-
-export function mapDispatchToProps(dispatch: Dispatch<any>): Partial<CreateGroupProps> {
-    return {
-        submit: (newGroup: ModellingGroupCreation) => dispatch(modellingGroupsActionCreators
-            .createModellingGroup(newGroup)),
-        changeFieldValue: (field: string, value: string) => {
-            dispatch(change('createGroup', field, value))
-        }
-    }
-}
+//
+// export function mapDispatchToProps(dispatch: Dispatch<any>): Partial<CreateGroupProps> {
+//     return {
+//         submit: (newGroup: ModellingGroupCreation) => dispatch(modellingGroupsActionCreators
+//             .createModellingGroup(newGroup)),
+//         changeFieldValue: (field: string, value: string) => {
+//             dispatch(change('createGroup', field, value))
+//         }
+//     }
+// }
 
 export const CreateModellingGroupForm = compose(
     reduxForm({form: 'createGroup'}),
-    connect(mapStateToProps, mapDispatchToProps),
+    montaguForm<AdminAppState, ModellingGroupCreation>({
+        form: 'createGroup',
+        errors: (state: AdminAppState) => state.users.createUserErrors,
+        submit: (value: ModellingGroupCreation) =>
+            modellingGroupsActionCreators.createModellingGroup(value)
+    }),
+    connect(mapStateToProps),
 )(CreateModellingGroupFormComponent);

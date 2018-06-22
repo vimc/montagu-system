@@ -16,3 +16,5 @@ export interface ReduxFormProps<TFieldProps> {
     errors: ErrorInfo[]
     changeFieldValue: (field: string, value: string) => void
 }
+
+export type ReduxFormUnionProps<TFieldProps> = ReduxFormProps<TFieldProps> | TFieldProps

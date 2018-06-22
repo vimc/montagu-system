@@ -91,7 +91,7 @@ export const CreateUserForm = compose(
     montaguForm<AdminAppState, CreateUserFormFields>({
         form: 'createUser',
         errors: (state: AdminAppState) => state.users.createUserErrors,
-        creator: (values: CreateUserFormFields) =>
+        submit: (values: CreateUserFormFields) =>
             usersActionCreators.createUser(values.name, values.email, values.username)
     })
 )(CreateUserFormComponent);
