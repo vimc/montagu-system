@@ -2,7 +2,6 @@ import {Sandbox} from "../../../../Sandbox";
 import {expect} from "chai";
 import {mockMatch} from "../../../../mocks/mocks";
 import * as React from "react";
-import {UsersListPageComponent} from "../../../../../main/admin/components/Users/List/UsersListPage";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {shallow} from "enzyme";
 import {

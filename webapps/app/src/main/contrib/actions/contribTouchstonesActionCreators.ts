@@ -10,7 +10,8 @@ export const contribTouchstonesActionCreators = {
 
     getTouchstonesByGroupId(groupId: string) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-            const touchstones: Touchstone[] = await (new TouchstonesService(dispatch, getState)).getTouchstonesByGroupId(groupId);
+            const touchstones: Touchstone[] = await (new TouchstonesService(dispatch, getState))
+                .getTouchstonesByGroupId(groupId);
             return dispatch({
                 type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP,
                 data: touchstones

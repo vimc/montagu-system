@@ -11,7 +11,7 @@ import {
     mockCoverageSet,
     mockDisease,
     mockModellingGroup,
-    mockResponsibilitySet,
+    mockResponsibilities,
     mockTouchstone
 } from "../../../mocks/mockModels";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
@@ -35,7 +35,7 @@ describe("Download Coverage Page actions tests", () => {
     const testTouchstone = mockTouchstone();
     const testTouchstoneVersion = testTouchstone.versions[0];
     const testDisease = mockDisease();
-    const testResponsibilitySet = mockResponsibilitySet();
+    const testResponsibilitySet = mockResponsibilities();
     const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
     const testCoverageSet = mockCoverageSet();
     const testResponsibility = testResponsibilitySet.responsibilities[0];
