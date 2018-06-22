@@ -6,11 +6,12 @@ import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWith
 import {touchstoneListPageActionCreators} from "./TouchstoneListPageActionCreators";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {TouchstoneVersionPageLocationProps} from "../../components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
+import {touchstoneDetailsPageActionCreators} from "./touchstoneDetailsPageActionCreators";
 
 class TouchstoneVersionPageActionCreators
     extends AdminPageActionCreators<TouchstoneVersionPageLocationProps> {
 
-    parent = touchstoneListPageActionCreators;
+    parent = touchstoneDetailsPageActionCreators;
 
     createBreadcrumb(state?: AdminAppState): PageBreadcrumb {
         return {
