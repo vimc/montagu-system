@@ -31,7 +31,7 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
         <Route exact path="/modelling-groups/:groupId/" component={ModellingGroupDetailsPage}/>
         <Route exact path="/modelling-groups/:groupId/admin/" component={ModellingGroupMembersPage}/>
         <Route exact path="/touchstones/" component={TouchstoneListPage}/>
-        <Route exact path="/touchstones/:touchstoneVersionId/" component={TouchstoneVersionPage}/>
+        <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/" component={TouchstoneVersionPage}/>
         <Route exact path="/users/" component={UsersListPage}/>
         <Route exact path="/users/:username/" component={UserDetailsPage}/>
         <Route exact path="/set-password/" component={ResetPasswordPage} />

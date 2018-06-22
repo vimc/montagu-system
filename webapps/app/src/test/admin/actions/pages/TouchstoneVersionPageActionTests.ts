@@ -21,7 +21,7 @@ describe("Touchstone version page actions tests", () => {
         const setCurrentStub = sandbox.setStubReduxAction(touchstonesActionCreators, "setCurrentTouchstoneVersion");
         const responsibilitiesStub = sandbox.setStubReduxAction(adminTouchstoneActionCreators, "getResponsibilitiesForTouchstoneVersion");
 
-        store.dispatch(touchstoneVersionPageActionCreators.loadData({touchstoneVersionId: "t1"}));
+        store.dispatch(touchstoneVersionPageActionCreators.loadData({touchstoneVersionId: "t1", touchstoneId: "whatever"}));
         setTimeout(() => {
             expect(setCurrentStub.called).to.be.true;
             expect(responsibilitiesStub.called).to.be.true;

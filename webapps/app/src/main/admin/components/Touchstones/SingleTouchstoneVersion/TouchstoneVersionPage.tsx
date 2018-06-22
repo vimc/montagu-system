@@ -12,6 +12,7 @@ import {compose} from "recompose";
 
 export interface TouchstoneVersionPageLocationProps {
     touchstoneVersionId: string;
+    touchstoneId: string;
 }
 
 export interface TouchstoneVersionPageProps extends PageProperties<TouchstoneVersionPageLocationProps> {
