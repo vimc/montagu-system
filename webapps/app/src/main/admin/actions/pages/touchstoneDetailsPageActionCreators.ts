@@ -13,7 +13,7 @@ export class TouchstoneDetailsPageActionCreators extends AdminPageActionCreators
     createBreadcrumb(state?: AdminAppState): PageBreadcrumb {
         return {
             name: state.touchstones.currentTouchstone.id,
-            urlFragment: `/${state.touchstones.currentTouchstone.id}/`
+            urlFragment: `${state.touchstones.currentTouchstone.id}/`
         };
     }
 

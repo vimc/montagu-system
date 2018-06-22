@@ -19,4 +19,17 @@ describe("adminTouchstoneReducer", () => {
         };
         expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
     });
+
+    it("sets current touchstone", () => {
+        const data = mockTouchstone();
+        const action: TouchstonesAction = {
+            type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
+            data
+        };
+        const expected: AdminTouchstoneState = {
+            ...adminTouchstonesInitialState,
+            currentTouchstone: data
+        };
+        expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
+    });
 });
