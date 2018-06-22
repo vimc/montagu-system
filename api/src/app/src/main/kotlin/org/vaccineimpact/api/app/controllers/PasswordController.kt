@@ -12,6 +12,7 @@ import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
 import org.vaccineimpact.api.emails.getEmailManager
+import org.vaccineimpact.api.models.Compressed
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import java.time.Duration
 
@@ -58,7 +59,7 @@ class PasswordController(
         return okayResponse()
     }
 
-    private fun getSetPasswordToken(username: String): String
+    private fun getSetPasswordToken(username: String): Compressed
     {
         val params = mapOf(":username" to username)
         return oneTimeTokenGenerator.getOneTimeLinkToken(

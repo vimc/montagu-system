@@ -12,11 +12,12 @@ import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.NewUserEmail
 import org.vaccineimpact.api.emails.getEmailManager
+import org.vaccineimpact.api.models.markAsCompressed
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class CreateUserTests : MontaguTests()
 {
-    private val fakeToken = "TOKEN"
+    private val fakeToken = "TOKEN".markAsCompressed()
     private val name = "Full name"
     private val username = "user.name"
     private val email = "email@example.com"
@@ -67,7 +68,9 @@ class CreateUserTests : MontaguTests()
         }
 
         val tokenGenerator = mock<OneTimeTokenGenerator> {
-            on { getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any(), any()) } doReturn fakeToken
+            on {
+                getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any(), any())
+            } doReturn fakeToken
         }
         val sut = UserController(context,
                 userRepo,

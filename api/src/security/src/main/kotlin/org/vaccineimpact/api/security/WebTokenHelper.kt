@@ -1,9 +1,10 @@
 package org.vaccineimpact.api.security
 
 import org.pac4j.core.profile.CommonProfile
-import org.pac4j.jwt.config.signature.AbstractSignatureConfiguration
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration
+import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.models.Compressed
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -17,11 +18,11 @@ import java.util.*
 
 open class WebTokenHelper(
         keyPair: KeyPair,
-        val signatureConfiguration: AbstractSignatureConfiguration = RSASignatureConfiguration(keyPair),
-        val generator: TokenGenerator = CompressedJwtGenerator<CommonProfile>(signatureConfiguration),
         private val serializer: Serializer = MontaguSerializer.instance)
 {
     open val defaultLifespan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
+    val signatureConfiguration = RSASignatureConfiguration(keyPair)
+    val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
     val issuer = Config["token.issuer"]
     private val random = SecureRandom()
 
@@ -103,7 +104,7 @@ open class WebTokenHelper(
         )
     }
 
-    open fun verify(token: String, expectedType: TokenType,
+    open fun verify(token: Compressed, expectedType: TokenType,
                     oneTimeTokenChecker: OneTimeTokenChecker): Map<String, Any>
     {
         val authenticator = when (expectedType)
@@ -111,7 +112,7 @@ open class WebTokenHelper(
             TokenType.ONETIME -> OneTimeTokenAuthenticator(this, oneTimeTokenChecker)
             else -> MontaguTokenAuthenticator(this, expectedType)
         }
-        return authenticator.validateTokenAndGetClaims(token)
+        return authenticator.validateTokenAndGetClaims(token.raw)
     }
 
     private fun getNonce(): String

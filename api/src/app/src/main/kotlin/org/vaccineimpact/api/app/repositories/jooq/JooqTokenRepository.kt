@@ -10,17 +10,17 @@ class JooqTokenRepository(dsl: DSLContext) : JooqRepository(dsl), TokenRepositor
 {
     data class OneTimeToken(override val id: String) : HasKey<String>
 
-    override fun storeToken(token: String)
+    override fun storeToken(uncompressedToken: String)
     {
         dsl.newRecord(ONETIME_TOKEN).apply {
-            this.token = inflate(token)
+            this.token = token
         }.store()
     }
 
-    override fun validateOneTimeToken(token: String): Boolean
+    override fun validateOneTimeToken(uncompressedToken: String): Boolean
     {
         val deletedCount = dsl.deleteFrom(ONETIME_TOKEN)
-                .where(ONETIME_TOKEN.TOKEN.eq(inflate(token)))
+                .where(ONETIME_TOKEN.TOKEN.eq(uncompressedToken))
                 .execute()
         return deletedCount == 1
     }

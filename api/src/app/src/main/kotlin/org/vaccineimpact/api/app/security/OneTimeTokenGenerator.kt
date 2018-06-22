@@ -5,9 +5,11 @@ import org.vaccineimpact.api.app.MontaguRedirectValidator
 import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.repositories.TokenRepository
+import org.vaccineimpact.api.models.Compressed
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.security.deflated
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import java.time.Duration
@@ -25,7 +27,7 @@ open class OneTimeTokenGenerator(
             redirectUrl: String?,
             username: String,
             duration: Duration
-    ): String
+    ): Compressed
     {
         val actionAsString = serializer.serializeEnum(action)
 
@@ -36,14 +38,14 @@ open class OneTimeTokenGenerator(
 
         val token = tokenHelper.generateOldStyleOneTimeActionToken(actionAsString, params, queryString, duration, username)
         tokenRepository.storeToken(token)
-        return token
+        return token.deflated()
     }
 
     open fun getOneTimeLinkToken(
             action: OneTimeAction,
             context: ActionContext,
             duration: Duration = WebTokenHelper.oneTimeLinkLifeSpan
-    ): String
+    ): Compressed
     {
         return getOneTimeLinkToken(action,
                 context.params(),
@@ -53,7 +55,7 @@ open class OneTimeTokenGenerator(
                 duration)
     }
 
-    open fun getNewStyleOneTimeLinkToken(url: String, profile: CommonProfile): String
+    open fun getNewStyleOneTimeLinkToken(url: String, profile: CommonProfile): Compressed
     {
         val attributes = profile.attributes
         val permissions = attributes["permissions"].toString()
@@ -62,6 +64,6 @@ open class OneTimeTokenGenerator(
                 url, profile.id, permissions, roles
         )
         tokenRepository.storeToken(token)
-        return token
+        return token.deflated()
     }
 }

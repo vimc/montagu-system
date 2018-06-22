@@ -15,6 +15,7 @@ import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.security.deflated
 
 class AuthenticationController(context: ActionContext,
                                private val userRepository: UserRepository,
@@ -39,7 +40,7 @@ class AuthenticationController(context: ActionContext,
                 val user = context.userProfile!!.internalUser!!
                 val token = tokenHelper.generateToken(user)
                 userRepository.updateLastLoggedIn(user.username)
-                return SuccessfulAuthentication(token, tokenHelper.defaultLifespan)
+                return SuccessfulAuthentication(token.deflated(), tokenHelper.defaultLifespan)
             }
             is HTMLForm.InvalidForm -> FailedAuthentication(validationResult.problem)
         }
@@ -49,7 +50,8 @@ class AuthenticationController(context: ActionContext,
     {
         val internalUser = userRepository.getUserByUsername(context.username!!)
         val shinyToken = tokenHelper.generateShinyToken(internalUser)
-        setCookie(shinyToken)
+        val compressedToken = shinyToken.deflated()
+        setCookie(compressedToken.raw)
         context.addResponseHeader("Access-Control-Allow-Credentials", "true")
         return okayResponse()
     }

@@ -2,8 +2,9 @@ package org.vaccineimpact.api.tests
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.security.deflate
+import org.vaccineimpact.api.security.deflated
 import org.vaccineimpact.api.security.inflate
+import org.vaccineimpact.api.security.inflated
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class GZipHelpersTests : MontaguTests()
@@ -20,19 +21,19 @@ class GZipHelpersTests : MontaguTests()
     @Test
     fun `can deflate and re-inflate text`()
     {
-        assertThat(inflate(deflate(testString))).isEqualTo(testString)
+        assertThat(testString.deflated().inflated()).isEqualTo(testString)
     }
 
     @Test
     fun `deflated text is shorter`()
     {
-        assertThat(deflate(testString).length).isLessThan(testString.length)
+        assertThat(testString.deflated().raw.length).isLessThan(testString.length)
     }
 
     @Test
     fun `can inflate more than once`()
     {
-        assertThat(inflate(inflate(deflate(testString)))).isEqualTo(testString)
+        assertThat(inflate(inflate(testString.deflated()))).isEqualTo(testString)
     }
 
     @Test
@@ -44,6 +45,6 @@ class GZipHelpersTests : MontaguTests()
     @Test
     fun `can inflate nullable string`()
     {
-        assertThat(inflate(null)).isNull()
+        assertThat(inflate(null as String?)).isNull()
     }
 }

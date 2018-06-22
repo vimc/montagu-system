@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.security
 
+import org.vaccineimpact.api.models.Compressed
+import org.vaccineimpact.api.models.markAsCompressed
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStreamReader
@@ -7,7 +9,10 @@ import java.util.*
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
-fun deflate(uncompressed: String): String
+fun Compressed.inflated() = inflate(this.raw)
+fun String.deflated() = deflate(this)
+
+private fun deflate(uncompressed: String): Compressed
 {
     val bytes = ByteArrayOutputStream().use { byteStream ->
         GZIPOutputStream(byteStream).use {
@@ -20,6 +25,7 @@ fun deflate(uncompressed: String): String
             .getUrlEncoder()
             .withoutPadding()
             .encodeToString(bytes)
+            .markAsCompressed()
 }
 
 @JvmName("inflateNullable")
@@ -64,6 +70,11 @@ fun inflate(compressed: String): String
         compressed
     }
 }
+
+@JvmName("inflateExplicitCompressed")
+fun inflate(compressed: Compressed) = inflate(compressed.raw)
+@JvmName("inflateNullableExplicitCompressed")
+fun inflate(compressed: Compressed?) = inflate(compressed?.raw)
 
 private fun isCompressed(compressed: ByteArray) =
         compressed[0] == (GZIPInputStream.GZIP_MAGIC.toByte())

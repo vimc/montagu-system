@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.emails
 
-class PasswordSetEmail(val token: String, val recipientName: String) : MustacheEmail()
+import org.vaccineimpact.api.models.Compressed
+
+class PasswordSetEmail(val token: Compressed, val recipientName: String) : MustacheEmail()
 {
     override val subject = "Password change"
     override val textTemplate = "password-set.txt"
@@ -8,6 +10,6 @@ class PasswordSetEmail(val token: String, val recipientName: String) : MustacheE
 
     override val values = mapOf(
             "name" to recipientName,
-            "token" to token
+            "token" to token.raw
     )
 }

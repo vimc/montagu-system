@@ -11,9 +11,9 @@ open class MontaguTokenAuthenticator(
         private val expectedType: TokenType
 ) : JwtAuthenticator(tokenHelper.signatureConfiguration)
 {
-    override fun validateToken(token: String?): CommonProfile?
+    override fun validateToken(compressedToken: String?): CommonProfile?
     {
-        return super.validateToken(inflate(token))
+        return super.validateToken(inflate(compressedToken))
     }
 
     override fun createJwtProfile(credentials: TokenCredentials, jwt: JWT)

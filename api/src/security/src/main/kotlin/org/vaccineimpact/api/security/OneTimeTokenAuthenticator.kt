@@ -3,6 +3,7 @@ package org.vaccineimpact.api.security
 import com.nimbusds.jwt.JWT
 import org.pac4j.core.credentials.TokenCredentials
 import org.pac4j.core.exception.CredentialsException
+import org.vaccineimpact.api.models.markAsCompressed
 
 class OneTimeTokenAuthenticator(
         tokenHelper: WebTokenHelper,
@@ -17,7 +18,8 @@ class OneTimeTokenAuthenticator(
 
     private fun checkTokenAgainstRepository(credentials: TokenCredentials)
     {
-        if (!oneTimeTokenChecker.checkToken(credentials.token))
+        val token = credentials.token.markAsCompressed()
+        if (!oneTimeTokenChecker.checkToken(token.inflated()))
         {
             throw CredentialsException("Token has already been used (or never existed)")
         }
