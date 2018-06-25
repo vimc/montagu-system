@@ -9,11 +9,9 @@ import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
-import org.vaccineimpact.api.models.Compressed
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.models.markAsCompressed
 import org.vaccineimpact.api.security.*
 
 class OneTimeLinkController(
@@ -38,7 +36,7 @@ class OneTimeLinkController(
 
     fun onetimeLink(): Any
     {
-        val compressedToken = context.params(":token").markAsCompressed()
+        val compressedToken = context.params(":token")
         val claims = verifyOldStyleToken(compressedToken, tokenRepository)
         val link = OneTimeLink.parseClaims(claims)
         val redirectUrl = link.queryParams["redirectUrl"]
@@ -72,32 +70,32 @@ class OneTimeLinkController(
     {
         val url = context.queryParams("url") ?: throw MissingRequiredParameterError("url")
         val profile = context.userProfile!!
-        return oneTimeTokenGenerator.getNewStyleOneTimeLinkToken(url, profile).raw
+        return oneTimeTokenGenerator.getNewStyleOneTimeLinkToken(url, profile)
     }
 
     fun getTokenForDemographicData(): String
     {
-        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY, context).raw
+        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY, context)
     }
 
     fun getTokenForCoverageData(): String
     {
-        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.COVERAGE, context).raw
+        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.COVERAGE, context)
     }
 
     fun getTokenForModelRunParameters(): String
     {
-        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.MODEl_RUN_PARAMETERS, context).raw
+        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.MODEl_RUN_PARAMETERS, context)
     }
 
     fun getTokenForCreateBurdenEstimateSet(): String
     {
-        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.BURDENS_CREATE, context).raw
+        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.BURDENS_CREATE, context)
     }
 
     fun getTokenForPopulateBurdenEstimateSet(): String
     {
-        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.BURDENS_POPULATE, context).raw
+        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.BURDENS_POPULATE, context)
     }
 
     private fun redirectWithResult(context: ActionContext, result: Result, redirectUrl: String,
@@ -113,18 +111,18 @@ class OneTimeLinkController(
         context.redirect("$redirectUrl?result=$encodedResult")
     }
 
-    private fun verifyOldStyleToken(token: Compressed, repo: TokenRepository): Map<String, Any>
+    private fun verifyOldStyleToken(compressedToken: String, repo: TokenRepository): Map<String, Any>
     {
         // By checking the database first, we ensure the token is
         // removed from the database, even if it fails some later check
-        if (!repo.validateOneTimeToken(token.inflated()))
+        if (!repo.validateOneTimeToken(compressedToken.inflated()))
         {
             throw InvalidOneTimeLinkToken("used", "Token has already been used (or never existed)")
         }
 
         val claims = try
         {
-            tokenHelper.verify(token, TokenType.LEGACY_ONETIME,
+            tokenHelper.verify(compressedToken, TokenType.LEGACY_ONETIME,
                     NoopOneTimeTokenChecker()) // token has already been checked in previous step
         }
         catch (e: Exception)

@@ -18,7 +18,7 @@ class RootTokenGeneratorTests : MontaguTests()
             on { generateToken(any(), any()) } doReturn "TOKEN"
         }
         val generator = RootTokenGenerator(helper = mock)
-        generator.generate(listOf("*/a", "*/b"))
+        generator.generateCompressedToken(listOf("*/a", "*/b"))
         verify(mock).generateToken(
                 user = check {
                     assertThat(it.properties.email).isEqualTo("montagu-help@imperial.ac.uk")

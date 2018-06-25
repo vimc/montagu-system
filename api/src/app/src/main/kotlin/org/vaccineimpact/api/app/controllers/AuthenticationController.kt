@@ -50,8 +50,7 @@ class AuthenticationController(context: ActionContext,
     {
         val internalUser = userRepository.getUserByUsername(context.username!!)
         val shinyToken = tokenHelper.generateShinyToken(internalUser)
-        val compressedToken = shinyToken.deflated()
-        setCookie(compressedToken.raw)
+        setCookie(shinyToken)
         context.addResponseHeader("Access-Control-Allow-Credentials", "true")
         return okayResponse()
     }

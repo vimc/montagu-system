@@ -99,8 +99,7 @@ class AuthenticationControllerTests : MontaguTests()
                 mock(), fakeWebTokenHelper, config)
 
         sut.setShinyCookie()
-        val expectedToken = "token".deflated()
-        verify(fakeContext).addResponseHeader("Set-Cookie", "jwt_token=${expectedToken.raw}; Path=/; Secure; HttpOnly; SameSite=Lax")
+        verify(fakeContext).addResponseHeader("Set-Cookie", "jwt_token=token; Path=/; Secure; HttpOnly; SameSite=Lax")
     }
 
     @Test
@@ -127,8 +126,7 @@ class AuthenticationControllerTests : MontaguTests()
                 mock(), fakeWebTokenHelper, config)
 
         sut.setShinyCookie()
-        val expectedToken = "token".deflated()
-        verify(fakeContext).addResponseHeader("Set-Cookie", "jwt_token=${expectedToken.raw}; Path=/; HttpOnly; SameSite=Lax")
+        verify(fakeContext).addResponseHeader("Set-Cookie", "jwt_token=token; Path=/; HttpOnly; SameSite=Lax")
     }
 
 }

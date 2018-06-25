@@ -18,7 +18,6 @@ import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.models.markAsCompressed
 import org.vaccineimpact.api.security.TokenType
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -233,7 +232,7 @@ class OneTimeLinkControllerTests : MontaguTests()
             on { userProfile } doReturn profile
         }
         val generator = mock<OneTimeTokenGenerator> {
-            on { getNewStyleOneTimeLinkToken(any(), any()) } doReturn "TOKEN".markAsCompressed()
+            on { getNewStyleOneTimeLinkToken(any(), any()) } doReturn "TOKEN"
         }
         val controller = OneTimeLinkController(context, mock(), generator, mock())
         assertThat(controller.getToken()).isEqualTo("TOKEN")
@@ -255,8 +254,8 @@ class OneTimeLinkControllerTests : MontaguTests()
     private fun tokenGenerator() = mock<OneTimeTokenGenerator> {
         on {
             getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any(), any())
-        } doReturn "MY-TOKEN".markAsCompressed()
-        on { getOneTimeLinkToken(any(), any(), any()) } doReturn "MY-TOKEN".markAsCompressed()
+        } doReturn "MY-TOKEN"
+        on { getOneTimeLinkToken(any(), any(), any()) } doReturn "MY-TOKEN"
     }
 
     private val basicClaims = mapOf("sub" to WebTokenHelper.oneTimeActionSubject, "username" to "test.user")

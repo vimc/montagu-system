@@ -27,7 +27,7 @@ class GZipHelpersTests : MontaguTests()
     @Test
     fun `deflated text is shorter`()
     {
-        assertThat(testString.deflated().raw.length).isLessThan(testString.length)
+        assertThat(testString.deflated().length).isLessThan(testString.length)
     }
 
     @Test

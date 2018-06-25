@@ -4,7 +4,6 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
-import org.vaccineimpact.api.models.Compressed
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
@@ -104,7 +103,7 @@ open class WebTokenHelper(
         )
     }
 
-    open fun verify(token: Compressed, expectedType: TokenType,
+    open fun verify(compressedToken: String, expectedType: TokenType,
                     oneTimeTokenChecker: OneTimeTokenChecker): Map<String, Any>
     {
         val authenticator = when (expectedType)
@@ -112,7 +111,7 @@ open class WebTokenHelper(
             TokenType.ONETIME -> OneTimeTokenAuthenticator(this, oneTimeTokenChecker)
             else -> MontaguTokenAuthenticator(this, expectedType)
         }
-        return authenticator.validateTokenAndGetClaims(token.raw)
+        return authenticator.validateTokenAndGetClaims(compressedToken)
     }
 
     private fun getNonce(): String

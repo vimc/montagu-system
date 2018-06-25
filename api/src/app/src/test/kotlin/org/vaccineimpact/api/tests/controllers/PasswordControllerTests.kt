@@ -12,7 +12,6 @@ import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.models.markAsCompressed
 import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
@@ -48,7 +47,7 @@ class PasswordControllerTests : MontaguTests()
                 getOneTimeLinkToken(OneTimeAction.SET_PASSWORD,
                         mapOf(":username" to user.username),
                         null, null, user.username, Duration.ofDays(1))
-            } doReturn "TOKEN".markAsCompressed()
+            } doReturn "TOKEN"
         }
         val sut = PasswordController(context, userRepo, tokenGenerator, emailManager)
 
@@ -56,7 +55,7 @@ class PasswordControllerTests : MontaguTests()
         verify(emailManager).sendEmail(check {
             if (it is PasswordSetEmail)
             {
-                assertThat(it.token).isEqualTo("TOKEN".markAsCompressed())
+                assertThat(it.compressedToken).isEqualTo("TOKEN")
                 assertThat(it.recipientName).isEqualTo("name")
             }
             else

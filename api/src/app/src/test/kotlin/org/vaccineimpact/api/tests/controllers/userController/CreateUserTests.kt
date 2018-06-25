@@ -12,12 +12,11 @@ import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.NewUserEmail
 import org.vaccineimpact.api.emails.getEmailManager
-import org.vaccineimpact.api.models.markAsCompressed
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class CreateUserTests : MontaguTests()
 {
-    private val fakeToken = "TOKEN".markAsCompressed()
+    private val fakeToken = "TOKEN"
     private val name = "Full name"
     private val username = "user.name"
     private val email = "email@example.com"
@@ -41,7 +40,7 @@ class CreateUserTests : MontaguTests()
                     if (it is NewUserEmail)
                     {
                         assertThat(it.user.name).isEqualTo(name)
-                        assertThat(it.token).isEqualTo(fakeToken)
+                        assertThat(it.compressedToken).isEqualTo(fakeToken)
                     }
                     else
                     {

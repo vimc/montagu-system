@@ -5,7 +5,6 @@ import org.vaccineimpact.api.app.MontaguRedirectValidator
 import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.repositories.TokenRepository
-import org.vaccineimpact.api.models.Compressed
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
@@ -27,7 +26,7 @@ open class OneTimeTokenGenerator(
             redirectUrl: String?,
             username: String,
             duration: Duration
-    ): Compressed
+    ): String
     {
         val actionAsString = serializer.serializeEnum(action)
 
@@ -45,7 +44,7 @@ open class OneTimeTokenGenerator(
             action: OneTimeAction,
             context: ActionContext,
             duration: Duration = WebTokenHelper.oneTimeLinkLifeSpan
-    ): Compressed
+    ): String
     {
         return getOneTimeLinkToken(action,
                 context.params(),
@@ -55,7 +54,7 @@ open class OneTimeTokenGenerator(
                 duration)
     }
 
-    open fun getNewStyleOneTimeLinkToken(url: String, profile: CommonProfile): Compressed
+    open fun getNewStyleOneTimeLinkToken(url: String, profile: CommonProfile): String
     {
         val attributes = profile.attributes
         val permissions = attributes["permissions"].toString()
