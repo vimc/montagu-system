@@ -32,7 +32,7 @@ export const adminTouchstoneActionCreators = {
     },
 
     createTouchstone(newTouchstone: TouchstoneCreation) {
-        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+        return (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             if (getState().touchstones.touchstones.map(t => t.id)
                     .indexOf(newTouchstone.id) > -1) {
 

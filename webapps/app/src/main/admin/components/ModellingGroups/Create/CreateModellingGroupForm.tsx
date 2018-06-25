@@ -122,22 +122,12 @@ function mapStateToProps(state: AdminAppState): Partial<CreateGroupProps> {
         pi: selector(state, "pi") //we map these 2 fields to props so we can use them to suggest an id
     }
 }
-//
-// export function mapDispatchToProps(dispatch: Dispatch<any>): Partial<CreateGroupProps> {
-//     return {
-//         submit: (newGroup: ModellingGroupCreation) => dispatch(modellingGroupsActionCreators
-//             .createModellingGroup(newGroup)),
-//         changeFieldValue: (field: string, value: string) => {
-//             dispatch(change('createGroup', field, value))
-//         }
-//     }
-// }
 
 export const CreateModellingGroupForm = compose(
     reduxForm({form: 'createGroup'}),
     montaguForm<AdminAppState, ModellingGroupCreation>({
         form: 'createGroup',
-        errors: (state: AdminAppState) => state.users.createUserErrors,
+        mapErrorsFromState: (state: AdminAppState) => state.users.createUserErrors,
         submit: (value: ModellingGroupCreation) =>
             modellingGroupsActionCreators.createModellingGroup(value)
     }),

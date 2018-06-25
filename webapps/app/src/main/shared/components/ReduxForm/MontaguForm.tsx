@@ -7,7 +7,7 @@ import {ErrorInfo} from "../../models/Generated";
 
 interface FormConfig<TState, TProps> {
     form: string,
-    errors: (state: TState) => ErrorInfo[],
+    mapErrorsFromState: (state: TState) => ErrorInfo[],
     submit: (props: TProps) => any
 }
 
@@ -15,7 +15,7 @@ export function montaguForm<TState, TProps> (config: FormConfig<TState, TProps>)
 
     function mapStateToProps(state: TState): Partial<ReduxFormProps<TProps>> {
         return {
-            errors: config.errors(state)
+            errors: config.mapErrorsFromState(state)
         }
     }
 

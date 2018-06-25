@@ -72,7 +72,7 @@ export const CreateTouchstoneForm = compose(
     reduxForm({form: 'createTouchstone'}),
     montaguForm<AdminAppState, TouchstoneCreation>({
         form: 'createTouchstone',
-        errors: (state: AdminAppState) => state.touchstones.createTouchstoneErrors,
+        mapErrorsFromState: (state: AdminAppState) => state.touchstones.createTouchstoneErrors,
         submit: (values) => adminTouchstoneActionCreators.createTouchstone(values)
     }),
 )(CreateTouchstoneFormComponent);

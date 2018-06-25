@@ -90,7 +90,7 @@ export const CreateUserForm = compose(
     reduxForm({form: 'createUser'}),
     montaguForm<AdminAppState, CreateUserFormFields>({
         form: 'createUser',
-        errors: (state: AdminAppState) => state.users.createUserErrors,
+        mapErrorsFromState: (state: AdminAppState) => state.users.createUserErrors,
         submit: (values: CreateUserFormFields) =>
             usersActionCreators.createUser(values)
     })

@@ -11,6 +11,7 @@ interface Settings {
     admin: AdminSettings;
     contrib: ContribSettings;
     report: ReportSettings;
+    showTouchstoneCreation: boolean
 }
 
 interface AppSpecificSettings {
