@@ -5,7 +5,7 @@ import { Store } from "redux";
 
 import "../../../../helper";
 import {
-    mockDisease, mockResponsibility, mockResponsibilitySet, mockScenario, mockTouchstoneVersion
+    mockDisease, mockResponsibility, mockResponsibilities, mockScenario, mockTouchstoneVersion
 } from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
 import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
@@ -26,7 +26,7 @@ describe("Model Run Parameters Content component tests", () => {
     const testScenario2 = mockScenario({disease: testDisease2.id, touchstones: [testTouchstone]});
     const testResponsibility = mockResponsibility({scenario: testScenario});
     const testResponsibility2 = mockResponsibility({scenario: testScenario2});
-    const testResponsibilitySet = mockResponsibilitySet({responsibilities: [testResponsibility, testResponsibility2], touchstone: testTouchstone.id});
+    const testResponsibilitySet = mockResponsibilities({responsibilities: [testResponsibility, testResponsibility2], touchstone: testTouchstone.id});
 
     const testState = {
         touchstones: {currentTouchstoneVersion: testTouchstone},

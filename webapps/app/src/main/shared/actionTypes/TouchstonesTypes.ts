@@ -7,6 +7,7 @@ export enum TouchstoneTypes {
     SET_CURRENT_TOUCHSTONE_VERSION = "SET_CURRENT_TOUCHSTONE_VERSION",
     NEW_TOUCHSTONE_CREATED = "NEW_TOUCHSTONE_CREATED",
     SET_CREATE_TOUCHSTONE_ERROR = "SET_CREATE_TOUCHSTONE_ERROR"
+    SET_CURRENT_TOUCHSTONE = "SET_CURRENT_TOUCHSTONE",
 }
 
 export interface AllTouchstonesFetched {
@@ -17,6 +18,11 @@ export interface AllTouchstonesFetched {
 export interface TouchstonesFetchedForGroup {
     type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP;
     data: Touchstone[];
+}
+
+export interface SetCurrentTouchstone {
+    type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE;
+    data: Touchstone;
 }
 
 export interface SetCurrentTouchstoneVersion {
@@ -42,6 +48,7 @@ export interface SetCreateTouchstoneError {
 export type TouchstonesAction =
     | AllTouchstonesFetched
     | TouchstonesFetchedForGroup
+    | SetCurrentTouchstone
     | SetCurrentTouchstoneVersion
     | ResponsibilitiesForTouchstoneVersionFetched
     | NewTouchstoneCreated

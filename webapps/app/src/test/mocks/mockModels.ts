@@ -100,8 +100,8 @@ export function mockTouchstoneVersion(properties?: Partial<TouchstoneVersion>): 
     return Object.assign(template, properties);
 }
 
-export function mockResponsibilitySet(properties?: any,
-                                      responsibilities?: Array<models.Responsibility>): models.Responsibilities {
+export function mockResponsibilities(properties?: any,
+                                     responsibilities?: Array<models.Responsibility>): models.Responsibilities {
     if (!responsibilities || responsibilities.length == 0) {
         responsibilities = [mockResponsibility(), mockResponsibility()];
     }
@@ -115,6 +115,21 @@ export function mockResponsibilitySet(properties?: any,
     return Object.assign(template, properties);
 }
 
+export function mockResponsibilitySet(properties?: any,
+                                     responsibilities?: Array<models.Responsibility>): models.Responsibilities {
+    if (!responsibilities || responsibilities.length == 0) {
+        responsibilities = [mockResponsibility(), mockResponsibility()];
+    }
+
+    const template: models.ResponsibilitySet = {
+        responsibilities: responsibilities,
+        status: "incomplete",
+        touchstone_version: "touchstone-1",
+        modelling_group_id: "g1"
+    };
+    return Object.assign(template, properties);
+}
+
 export function mockExtendedResponsibilitySet(properties?: any,
                                               responsibilities?: Array<models.Responsibility>,
                                               touchstone?: models.TouchstoneVersion,
@@ -122,7 +137,7 @@ export function mockExtendedResponsibilitySet(properties?: any,
     touchstone = touchstone || mockTouchstoneVersion();
     modellingGroup = modellingGroup || mockModellingGroup();
     properties = Object.assign(properties || {}, {touchstone: touchstone.id});
-    const values = mockResponsibilitySet(properties, responsibilities);
+    const values = mockResponsibilities(properties, responsibilities);
     return new ExtendedResponsibilitySet(values, touchstone, modellingGroup);
 }
 
