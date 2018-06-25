@@ -11,7 +11,7 @@ import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.security.inflate
 
 // This client receives the token as TokenCredentials and stores the result as JwtProfile
-class JWTParameterClient(helper: WebTokenHelper, oneTimeTokenChecker: OneTimeTokenChecker)
+class CompressedJWTParameterClient(helper: WebTokenHelper, oneTimeTokenChecker: OneTimeTokenChecker)
     : ParameterClient("access_token", OneTimeTokenAuthenticator(helper, oneTimeTokenChecker))
 {
     init
@@ -24,7 +24,7 @@ class JWTParameterClient(helper: WebTokenHelper, oneTimeTokenChecker: OneTimeTok
 
     class Wrapper(helper: WebTokenHelper, oneTimeTokenChecker: OneTimeTokenChecker): MontaguSecurityClientWrapper
     {
-        override val client = JWTParameterClient(helper, oneTimeTokenChecker)
+        override val client = CompressedJWTParameterClient(helper, oneTimeTokenChecker)
         override val authorizationError = ErrorInfo(
                 "onetime-token-invalid",
                 "Onetime token not supplied, or onetime token was invalid"

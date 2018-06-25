@@ -11,7 +11,7 @@ import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.security.inflate
 
 // This client receives the token as TokenCredentials and stores the result as JwtProfile
-class JWTHeaderClient(helper: WebTokenHelper)
+class CompressedJWTHeaderClient(helper: WebTokenHelper)
     : HeaderClient("Authorization", "Bearer ", MontaguTokenAuthenticator(helper, TokenType.BEARER))
 {
     init
@@ -21,7 +21,7 @@ class JWTHeaderClient(helper: WebTokenHelper)
 
     class Wrapper(helper: WebTokenHelper) : MontaguSecurityClientWrapper
     {
-        override val client = JWTHeaderClient(helper)
+        override val client = CompressedJWTHeaderClient(helper)
         override val authorizationError = ErrorInfo(
                 "bearer-token-invalid",
                 "Bearer token not supplied in Authorization header, or bearer token was invalid"
