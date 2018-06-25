@@ -13,6 +13,8 @@ describe("TouchstoneListItem", () => {
         const rendered = shallow(<TouchstoneListItem {...t}/>);
         const cells = rendered.find("td");
 
+        expect(cells.length).to.eq(4);
+
         const descriptionCell = cells.at(1);
         expect(descriptionCell.find(InternalLink).dive().text()).to.eql("desc1");
         expect(descriptionCell.find(InternalLink).prop("href")).to.eql("/touchstones/t1/");

@@ -18,7 +18,7 @@ export class TouchstoneListItem extends React.Component<Touchstone, undefined> {
             <td>{this.props.id}</td>
             <td><InternalLink href={touchstoneUrl}>{this.props.description}</InternalLink></td>
             <td>{this.props.comment}</td>
-            {latestVersionId && <td><InternalLink href={latestVersionUrl}>{latestVersionId}</InternalLink></td>}
+            <td>{latestVersionId && <InternalLink href={latestVersionUrl}>{latestVersionId}</InternalLink>}</td>
         </tr>;
     }
 }
