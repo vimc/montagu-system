@@ -20,7 +20,7 @@ import org.vaccineimpact.api.security.inflate
 fun Response.getResultFromRedirect(checkRedirectTarget: String? = null): String
 {
     val encoded = this.getEncodedResultFromRedirect(checkRedirectTarget)
-    val claims = JWT.decode(inflate(encoded))
+    val claims = JWT.decode(encoded)
     return claims.getClaim("result").asString()
 }
 

@@ -63,7 +63,7 @@ class AuthenticationTests : DatabaseTest()
         assertThat(cookie).contains("SameSite=Lax")
 
         val shinyToken = cookie.substring(cookie.indexOf("=") + 1, cookie.indexOf(";"))
-        val claims = JWT.decode(inflate(shinyToken))
+        val claims = JWT.decode(shinyToken)
         val allowedShiny = claims.getClaim("allowed_shiny")
         assertThat(allowedShiny.asString()).isEqualTo("true")
     }
