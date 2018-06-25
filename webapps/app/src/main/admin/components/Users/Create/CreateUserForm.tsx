@@ -92,6 +92,6 @@ export const CreateUserForm = compose(
         form: 'createUser',
         errors: (state: AdminAppState) => state.users.createUserErrors,
         submit: (values: CreateUserFormFields) =>
-            usersActionCreators.createUser(values.name, values.email, values.username)
+            usersActionCreators.createUser(values)
     })
 )(CreateUserFormComponent);

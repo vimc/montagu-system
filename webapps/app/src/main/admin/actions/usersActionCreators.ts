@@ -25,7 +25,8 @@ export const usersActionCreators = {
         }
     },
 
-    createUser(name: string, email: string, username: string) {
+    createUser(values: CreateUserFormFields) {
+        const {name, email, username} = values;
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             const result = await (new UsersService(dispatch, getState)).createUser(name, email, username);
             if (result && result.errors) {
