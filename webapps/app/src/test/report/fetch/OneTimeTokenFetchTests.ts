@@ -4,17 +4,20 @@ import { ReportingFetcher } from "../../../main/report/sources/ReportingFetcher"
 import { oneTimeTokenStore } from "../../../main/report/stores/OneTimeTokenStore";
 import { decodeOneTimeToken, OneTimeToken } from "../../../main/report/models/OneTimeToken";
 import { mockOneTimeTokenData } from "../../mocks/mocks";
+import {compress, signAndCompress} from "../../shared/helpers/TokenHelpers";
+import {sign} from "jsonwebtoken";
 const jwt = require("jsonwebtoken");
 
 describe("OneTimeTokenStore.fetchToken", () => {
     const url = "/some/url";
     const qualifiedUrl = ReportingFetcher.buildRelativeReportingURL(url);
     const data = mockOneTimeTokenData({ url: qualifiedUrl });
-    const token = jwt.sign(data, "secret");
+    const token = sign(data, "secret");
+    const compressedToken = compress(token);
     const decodedToken = decodeOneTimeToken(token);
 
     new ReportingFetchHelper<string, OneTimeToken>({
-        makePayload: () => token,
+        makePayload: () => compressedToken,
         prepareForFetch: () => {
             alt.bootstrap(JSON.stringify({
                 OneTimeTokenStore: {
