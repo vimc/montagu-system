@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.security.deflated
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import java.time.Duration
@@ -36,7 +37,7 @@ open class OneTimeTokenGenerator(
 
         val token = tokenHelper.generateOldStyleOneTimeActionToken(actionAsString, params, queryString, duration, username)
         tokenRepository.storeToken(token)
-        return token
+        return token.deflated()
     }
 
     open fun getOneTimeLinkToken(
@@ -62,6 +63,6 @@ open class OneTimeTokenGenerator(
                 url, profile.id, permissions, roles
         )
         tokenRepository.storeToken(token)
-        return token
+        return token.deflated()
     }
 }

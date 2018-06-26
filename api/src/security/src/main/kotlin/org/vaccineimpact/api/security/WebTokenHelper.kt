@@ -15,13 +15,14 @@ import java.time.Duration
 import java.time.Instant
 import java.util.*
 
-open class WebTokenHelper(keyPair: KeyPair,
-                          private val serializer: Serializer = MontaguSerializer.instance)
+open class WebTokenHelper(
+        keyPair: KeyPair,
+        private val serializer: Serializer = MontaguSerializer.instance)
 {
     open val defaultLifespan: Duration = Duration.ofSeconds(Config["token.lifespan"].toLong())
-    val issuer = Config["token.issuer"]
     val signatureConfiguration = RSASignatureConfiguration(keyPair)
     val generator = JwtGenerator<CommonProfile>(signatureConfiguration)
+    val issuer = Config["token.issuer"]
     private val random = SecureRandom()
 
     open fun generateToken(user: InternalUser, lifeSpan: Duration = defaultLifespan): String
@@ -102,7 +103,7 @@ open class WebTokenHelper(keyPair: KeyPair,
         )
     }
 
-    open fun verify(token: String, expectedType: TokenType,
+    open fun verify(compressedToken: String, expectedType: TokenType,
                     oneTimeTokenChecker: OneTimeTokenChecker): Map<String, Any>
     {
         val authenticator = when (expectedType)
@@ -110,7 +111,7 @@ open class WebTokenHelper(keyPair: KeyPair,
             TokenType.ONETIME -> OneTimeTokenAuthenticator(this, oneTimeTokenChecker)
             else -> MontaguTokenAuthenticator(this, expectedType)
         }
-        return authenticator.validateTokenAndGetClaims(token)
+        return authenticator.validateTokenAndGetClaims(compressedToken)
     }
 
     private fun getNonce(): String

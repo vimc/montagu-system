@@ -17,7 +17,8 @@ class OneTimeTokenAuthenticator(
 
     private fun checkTokenAgainstRepository(credentials: TokenCredentials)
     {
-        if (!oneTimeTokenChecker.checkToken(credentials.token))
+        val compressedToken = credentials.token
+        if (!oneTimeTokenChecker.checkToken(compressedToken.inflated()))
         {
             throw CredentialsException("Token has already been used (or never existed)")
         }

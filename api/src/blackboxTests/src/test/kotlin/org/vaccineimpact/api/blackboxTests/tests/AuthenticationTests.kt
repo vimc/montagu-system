@@ -20,10 +20,7 @@ import org.vaccineimpact.api.db.direct.addUserForTesting
 import org.vaccineimpact.api.db.direct.addUserWithRoles
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedRole
-import org.vaccineimpact.api.security.UserHelper
-import org.vaccineimpact.api.security.createRole
-import org.vaccineimpact.api.security.ensureUserHasRole
-import org.vaccineimpact.api.security.setRolePermissions
+import org.vaccineimpact.api.security.*
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class AuthenticationTests : DatabaseTest()

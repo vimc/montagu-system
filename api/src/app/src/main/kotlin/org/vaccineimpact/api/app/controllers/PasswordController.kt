@@ -47,8 +47,8 @@ class PasswordController(
         val internalUser = userRepository.getUserByEmail(address)
         if (internalUser != null)
         {
-            val token = getSetPasswordToken(internalUser.username)
-            val email = PasswordSetEmail(token, internalUser.name)
+            val compressedToken = getCompressedSetPasswordToken(internalUser.username)
+            val email = PasswordSetEmail(compressedToken, internalUser.name)
             emailManager.sendEmail(email, internalUser)
         }
         else
@@ -58,7 +58,7 @@ class PasswordController(
         return okayResponse()
     }
 
-    private fun getSetPasswordToken(username: String): String
+    private fun getCompressedSetPasswordToken(username: String): String
     {
         val params = mapOf(":username" to username)
         return oneTimeTokenGenerator.getOneTimeLinkToken(

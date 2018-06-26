@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.tests.security
 
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
@@ -8,6 +9,7 @@ import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.security.inflated
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 // There are other tests for this class in TokenGeneratorTests. Those
@@ -25,12 +27,14 @@ class OneTimeTokenGeneratorTests : MontaguTests()
             on { this.attributes } doReturn attributes
             on { this.id } doReturn "username"
         }
-        val helper = mock<WebTokenHelper>()
+        val helper = mock<WebTokenHelper> {
+            on { generateNewStyleOnetimeActionToken(any(), any(), any(), any()) } doReturn "TOKEN"
+        }
 
         val repo = mock<TokenRepository>()
         val sut = OneTimeTokenGenerator(repo, helper)
         val token = sut.getNewStyleOneTimeLinkToken("/some/url/", profile)
-        verify(repo).storeToken(token)
+        verify(repo).storeToken(token.inflated())
         verify(helper).generateNewStyleOnetimeActionToken("/some/url/", "username", "a,b,c", "x,y,z")
     }
 }

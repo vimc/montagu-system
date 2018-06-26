@@ -5,7 +5,7 @@ import org.vaccineimpact.api.security.BasicUserProperties
 
 class NewUserEmail(
         val user: BasicUserProperties,
-        val token: String
+        val compressedToken: String
 ) : MustacheEmail()
 {
     override val subject = "Welcome to Montagu"
@@ -14,7 +14,7 @@ class NewUserEmail(
     override val htmlTemplate = "new-user.html"
     override val values = mapOf(
             "name" to user.name,
-            "token" to token,
+            "token" to compressedToken,
             "support_address" to Config["contact.support"]
     )
 }

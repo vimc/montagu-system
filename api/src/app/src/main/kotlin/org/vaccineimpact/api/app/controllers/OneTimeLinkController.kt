@@ -8,15 +8,11 @@ import org.vaccineimpact.api.app.errors.InvalidOneTimeLinkToken
 import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TokenRepository
-import org.vaccineimpact.api.app.security.JooqOneTimeTokenChecker
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.security.KeyHelper
-import org.vaccineimpact.api.security.NoopOneTimeTokenChecker
-import org.vaccineimpact.api.security.TokenType
-import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.security.*
 
 class OneTimeLinkController(
         context: ActionContext,
@@ -40,8 +36,8 @@ class OneTimeLinkController(
 
     fun onetimeLink(): Any
     {
-        val token = context.params(":token")
-        val claims = verifyOldStyleToken(token, tokenRepository)
+        val compressedToken = context.params(":token")
+        val claims = verifyOldStyleToken(compressedToken, tokenRepository)
         val link = OneTimeLink.parseClaims(claims)
         val redirectUrl = link.queryParams["redirectUrl"]
 
@@ -115,18 +111,18 @@ class OneTimeLinkController(
         context.redirect("$redirectUrl?result=$encodedResult")
     }
 
-    private fun verifyOldStyleToken(token: String, repo: TokenRepository): Map<String, Any>
+    private fun verifyOldStyleToken(compressedToken: String, repo: TokenRepository): Map<String, Any>
     {
         // By checking the database first, we ensure the token is
         // removed from the database, even if it fails some later check
-        if (!repo.validateOneTimeToken(token))
+        if (!repo.validateOneTimeToken(compressedToken.inflated()))
         {
             throw InvalidOneTimeLinkToken("used", "Token has already been used (or never existed)")
         }
 
         val claims = try
         {
-            tokenHelper.verify(token, TokenType.LEGACY_ONETIME,
+            tokenHelper.verify(compressedToken, TokenType.LEGACY_ONETIME,
                     NoopOneTimeTokenChecker()) // token has already been checked in previous step
         }
         catch (e: Exception)

@@ -55,7 +55,7 @@ class PasswordControllerTests : MontaguTests()
         verify(emailManager).sendEmail(check {
             if (it is PasswordSetEmail)
             {
-                assertThat(it.token).isEqualTo("TOKEN")
+                assertThat(it.compressedToken).isEqualTo("TOKEN")
                 assertThat(it.recipientName).isEqualTo("name")
             }
             else

@@ -1,15 +1,12 @@
 package org.vaccineimpact.api.app.app_start
 
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.security.InternalUser
-import org.vaccineimpact.api.security.KeyHelper
-import org.vaccineimpact.api.security.UserProperties
-import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.security.*
 import java.time.Duration
 
 class RootTokenGenerator(val helper: WebTokenHelper = WebTokenHelper(KeyHelper.loadKeyPair()))
 {
-    fun generate(permissions: List<String>): String
+    fun generateCompressedToken(permissions: List<String>): String
     {
         val parsedPermissions = permissions.map { ReifiedPermission.parse(it) }
         val dummyUserProperties = UserProperties(
@@ -20,6 +17,7 @@ class RootTokenGenerator(val helper: WebTokenHelper = WebTokenHelper(KeyHelper.l
                 null
         )
         val dummyUser = InternalUser(dummyUserProperties, emptyList(), parsedPermissions)
-        return helper.generateToken(dummyUser, Duration.ofDays(365))
+        val token = helper.generateToken(dummyUser, Duration.ofDays(365))
+        return token.deflated()
     }
 }

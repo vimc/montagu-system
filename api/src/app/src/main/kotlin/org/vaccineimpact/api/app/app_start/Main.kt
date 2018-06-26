@@ -22,7 +22,7 @@ fun main(args: Array<String>)
         // Bit of a hack to disable logging messing up our neat output
         System.setProperty(DEFAULT_LOG_LEVEL_KEY, "WARN")
         @Suppress("UNCHECKED_CAST")
-        println(RootTokenGenerator().generate(options["<permission>"] as List<String>))
+        println(RootTokenGenerator().generateCompressedToken(options["<permission>"] as List<String>))
     }
     else
     {

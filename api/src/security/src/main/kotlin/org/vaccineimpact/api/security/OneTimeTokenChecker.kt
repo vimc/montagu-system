@@ -5,10 +5,10 @@ interface OneTimeTokenChecker
     /** Returns true if the token exists and removes it before returning.
      * This ensures tokens can only be used once. No other checks are
      * performed. **/
-    fun checkToken(token: String): Boolean
+    fun checkToken(uncompressedToken: String): Boolean
 }
 
 class NoopOneTimeTokenChecker : OneTimeTokenChecker
 {
-    override fun checkToken(token: String) = true
+    override fun checkToken(uncompressedToken: String) = true
 }

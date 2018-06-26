@@ -252,7 +252,10 @@ class OneTimeLinkControllerTests : MontaguTests()
     }
 
     private fun tokenGenerator() = mock<OneTimeTokenGenerator> {
-        on { getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any(), any()) } doReturn "MY-TOKEN"
+        on {
+            getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any(), any())
+        } doReturn "MY-TOKEN"
+        on { getOneTimeLinkToken(any(), any(), any()) } doReturn "MY-TOKEN"
     }
 
     private val basicClaims = mapOf("sub" to WebTokenHelper.oneTimeActionSubject, "username" to "test.user")

@@ -40,7 +40,7 @@ class CreateUserTests : MontaguTests()
                     if (it is NewUserEmail)
                     {
                         assertThat(it.user.name).isEqualTo(name)
-                        assertThat(it.token).isEqualTo(fakeToken)
+                        assertThat(it.compressedToken).isEqualTo(fakeToken)
                     }
                     else
                     {
@@ -67,7 +67,9 @@ class CreateUserTests : MontaguTests()
         }
 
         val tokenGenerator = mock<OneTimeTokenGenerator> {
-            on { getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any(), any()) } doReturn fakeToken
+            on {
+                getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any(), any())
+            } doReturn fakeToken
         }
         val sut = UserController(context,
                 userRepo,

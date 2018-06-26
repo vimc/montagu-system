@@ -13,6 +13,7 @@ import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.security.deflated
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Duration
 
@@ -104,20 +105,20 @@ class AuthenticationControllerTests : MontaguTests()
     @Test
     fun `cookie is not Secure if allowLocalhost is true`()
     {
-        val fakeContext = mock<ActionContext>(){
+        val fakeContext = mock<ActionContext> {
             on { it.username } doReturn "username"
         }
 
-        val fakeUserRepo = mock<UserRepository>(){
+        val fakeUserRepo = mock<UserRepository> {
             on { it.getUserByUsername("username")} doReturn fakeUser
         }
 
-        val fakeWebTokenHelper = mock<WebTokenHelper> (){
+        val fakeWebTokenHelper = mock<WebTokenHelper> {
             on { it.defaultLifespan } doReturn Duration.ofHours(1)
             on {it.generateShinyToken(fakeUser)} doReturn "token"
         }
 
-        val config = mock<ConfigWrapper>(){
+        val config = mock<ConfigWrapper> {
             on { it.getBool("allow.localhost")} doReturn true
         }
 

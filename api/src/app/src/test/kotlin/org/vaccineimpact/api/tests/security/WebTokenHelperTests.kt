@@ -49,14 +49,14 @@ class WebTokenHelperTests : MontaguTests()
 
     private fun createHelper(serializer: Serializer = mock<Serializer>())
     {
-        sut = WebTokenHelper(KeyHelper.keyPair, serializer)
+        sut = WebTokenHelper(KeyHelper.keyPair, serializer = serializer)
     }
 
     @Test
     fun `can generate bearer token`()
     {
         val token = sut.generateToken(InternalUser(properties, roles, permissions))
-        val claims = sut.verify(token, TokenType.BEARER, mock())
+        val claims = sut.verify(token.deflated(), TokenType.BEARER, mock())
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["token_type"]).isEqualTo("BEARER")
@@ -70,7 +70,7 @@ class WebTokenHelperTests : MontaguTests()
     fun `can generate long-lived bearer token`()
     {
         val token = sut.generateToken(InternalUser(properties, roles, permissions), lifeSpan = Duration.ofDays(365))
-        val claims = sut.verify(token, TokenType.BEARER, mock())
+        val claims = sut.verify(token.deflated(), TokenType.BEARER, mock())
 
         assertThat(claims["exp"] as Date).isAfter(Date.from(Instant.now() + Duration.ofDays(364)))
     }
@@ -79,7 +79,7 @@ class WebTokenHelperTests : MontaguTests()
     fun `can generate shiny token for non report reviewer`()
     {
         val token = sut.generateShinyToken(InternalUser(properties, roles, permissions))
-        val claims = sut.verify(token, TokenType.SHINY, mock())
+        val claims = sut.verify(token.deflated(), TokenType.SHINY, mock())
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["token_type"]).isEqualTo("SHINY")
@@ -95,7 +95,7 @@ class WebTokenHelperTests : MontaguTests()
                 ReifiedPermission("reports.review", Scope.Global())
         )
         val token = sut.generateShinyToken(InternalUser(properties, roles, permissions))
-        val claims = sut.verify(token, TokenType.SHINY, mock())
+        val claims = sut.verify(token.deflated(), TokenType.SHINY, mock())
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["token_type"]).isEqualTo("SHINY")
@@ -112,7 +112,7 @@ class WebTokenHelperTests : MontaguTests()
                 ":a" to "1",
                 ":b" to "2"
         ), queryString, WebTokenHelper.oneTimeLinkLifeSpan, "test.user")
-        val claims = sut.verify(token, TokenType.LEGACY_ONETIME, mock())
+        val claims = sut.verify(token.deflated(), TokenType.LEGACY_ONETIME, mock())
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["token_type"]).isEqualTo("LEGACY_ONETIME")
@@ -131,7 +131,7 @@ class WebTokenHelperTests : MontaguTests()
                 ":a" to "1",
                 ":b" to "2"
         ), null, WebTokenHelper.oneTimeLinkLifeSpan, "test.user")
-        val claims = sut.verify(token, TokenType.LEGACY_ONETIME, mock())
+        val claims = sut.verify(token.deflated(), TokenType.LEGACY_ONETIME, mock())
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["token_type"]).isEqualTo("LEGACY_ONETIME")
@@ -150,7 +150,7 @@ class WebTokenHelperTests : MontaguTests()
         val badToken = sut.generator.generate(claims.plus("iss" to "unexpected.issuer"))
         val verifier = MontaguTokenAuthenticator(sut, TokenType.BEARER)
         assertThat(verifier.validateToken(badToken)).isNull()
-        assertThatThrownBy { sut.verify(badToken, TokenType.BEARER, mock()) }
+        assertThatThrownBy { sut.verify(badToken.deflated(), TokenType.BEARER, mock()) }
     }
 
     @Test
@@ -160,7 +160,7 @@ class WebTokenHelperTests : MontaguTests()
         val badToken = sut.generator.generate(claims.plus("token_type" to "unexpected.type"))
         val verifier = MontaguTokenAuthenticator(sut, TokenType.BEARER)
         assertThat(verifier.validateToken(badToken)).isNull()
-        assertThatThrownBy { sut.verify(badToken, TokenType.BEARER, mock()) }
+        assertThatThrownBy { sut.verify(badToken.deflated(), TokenType.BEARER, mock()) }
     }
 
     @Test
@@ -170,7 +170,7 @@ class WebTokenHelperTests : MontaguTests()
         val badToken = sut.generator.generate(claims.plus("exp" to Date.from(Instant.now())))
         val verifier = MontaguTokenAuthenticator(sut, TokenType.BEARER)
         assertThat(verifier.validateToken(badToken)).isNull()
-        assertThatThrownBy { sut.verify(badToken, TokenType.BEARER, mock()) }
+        assertThatThrownBy { sut.verify(badToken.deflated(), TokenType.BEARER, mock()) }
     }
 
     @Test
@@ -180,7 +180,7 @@ class WebTokenHelperTests : MontaguTests()
         val evilToken = sauron.generateToken(InternalUser(properties, roles, permissions))
         val verifier = MontaguTokenAuthenticator(sut, TokenType.BEARER)
         assertThat(verifier.validateToken(evilToken)).isNull()
-        assertThatThrownBy { sut.verify(evilToken, TokenType.BEARER, mock()) }
+        assertThatThrownBy { sut.verify(evilToken.deflated(), TokenType.BEARER, mock()) }
     }
 
     @Test
@@ -193,7 +193,7 @@ class WebTokenHelperTests : MontaguTests()
         }
 
         val token = sut.generateNewStyleOnetimeActionToken("/some/url/", "username", permissions, roles)
-        val claims = sut.verify(token, TokenType.ONETIME, mockTokenChecker)
+        val claims = sut.verify(token.deflated(), TokenType.ONETIME, mockTokenChecker)
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["token_type"]).isEqualTo("ONETIME")
         assertThat(claims["sub"]).isEqualTo("username")
@@ -211,7 +211,7 @@ class WebTokenHelperTests : MontaguTests()
             on { checkToken(any()) } doReturn false
         }
         val token = sut.generateNewStyleOnetimeActionToken("/some/url/", "username", "", "")
-        assertThatThrownBy { sut.verify(token, TokenType.ONETIME, mockTokenChecker) }
+        assertThatThrownBy { sut.verify(token.deflated(), TokenType.ONETIME, mockTokenChecker) }
     }
 
     @Test
@@ -221,7 +221,7 @@ class WebTokenHelperTests : MontaguTests()
             on { checkToken(any()) } doReturn true
         }
         val token = sut.generateNewStyleOnetimeActionToken("", "username", "", "")
-        assertThatThrownBy { sut.verify(token, TokenType.ONETIME, mockTokenChecker) }
+        assertThatThrownBy { sut.verify(token.deflated(), TokenType.ONETIME, mockTokenChecker) }
     }
 
     @Test
@@ -234,7 +234,7 @@ class WebTokenHelperTests : MontaguTests()
         createHelper(serializer)
         val result = Result(ResultStatus.SUCCESS, "OK", listOf())
         val token = sut.encodeResult(result)
-        val claims = sut.verify(token, TokenType.API_RESPONSE, mock())
+        val claims = sut.verify(token.deflated(), TokenType.API_RESPONSE, mock())
 
         assertThat(claims["token_type"]).isEqualTo("API_RESPONSE")
         assertThat(claims["sub"]).isEqualTo("api_response")
@@ -253,7 +253,7 @@ class WebTokenHelperTests : MontaguTests()
         val result = Result(ResultStatus.FAILURE, null,
                 listOf(ErrorInfo("some-code", "some message")))
         val token = sut.encodeResult(result)
-        val claims = sut.verify(token, TokenType.API_RESPONSE, mock())
+        val claims = sut.verify(token.deflated(), TokenType.API_RESPONSE, mock())
 
         assertThat(claims["token_type"]).isEqualTo("API_RESPONSE")
         assertThat(claims["sub"]).isEqualTo("api_response")
