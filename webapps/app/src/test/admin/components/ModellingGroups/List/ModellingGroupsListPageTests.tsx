@@ -10,7 +10,7 @@ import {
 } from "../../../../../main/admin/components/ModellingGroups/List/ModellingGroupsListPage";
 import {mockMatch} from "../../../../mocks/mocks";
 import {createMockStore} from "../../../../mocks/mockStore";
-import {modellingGroupsListPageActionCreators} from "../../../../../main/admin/actions/pages/modellingGroupsListPageActionCreators";
+import {modellingGroupsListPageActionCreators} from "../../../../../main/admin/actions/pages/ModellingGroupsListPageActionCreators";
 import {ModellingGroupsListContent} from "../../../../../main/admin/components/ModellingGroups/List/ModellingGroupsListContent";
 
 describe("Modelling Groups List Page Component Tests", () => {

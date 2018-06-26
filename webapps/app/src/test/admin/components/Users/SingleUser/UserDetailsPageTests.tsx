@@ -2,15 +2,12 @@ import {Sandbox} from "../../../../Sandbox";
 import {expect} from "chai";
 import {mockMatch} from "../../../../mocks/mocks";
 import * as React from "react";
-import {UsersListPageComponent} from "../../../../../main/admin/components/Users/List/UsersListPage";
-import {CreateUserSection} from "../../../../../main/admin/components/Users/Create/CreateUserSection";
-import {UsersList} from "../../../../../main/admin/components/Users/List/UsersList";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {shallow} from "enzyme";
 import {
-    UserDetailsPage, UserDetailsPageComponent
+    UserDetailsPage
 } from "../../../../../main/admin/components/Users/SingleUser/UserDetailsPage";
-import {userDetailsPageActionCreators} from "../../../../../main/admin/actions/pages/userDetailsPageActionCreators";
+import {userDetailsPageActionCreators} from "../../../../../main/admin/actions/pages/UserDetailsPageActionCreators";
 import {mockAdminState, mockAdminUsersState} from "../../../../mocks/mockStates";
 import {mockUser} from "../../../../mocks/mockModels";
 import {UserDetailsContent} from "../../../../../main/admin/components/Users/SingleUser/UserDetailsContent";
@@ -46,12 +43,4 @@ describe("UserDetailsPage", () => {
         expect(pageArticle.find(UserDetailsContent).length).is.equal(1);
     });
 
-    it("creates breadcrumb", () => {
-
-        const breadcrumb = UserDetailsPageComponent.breadcrumb(mockAdminAppState);
-
-        expect(breadcrumb.name).is.equal("fake.name");
-        expect(breadcrumb.urlFragment).is.equal("fake.name/");
-        expect(breadcrumb.parent).to.deep.eq(UsersListPageComponent.breadcrumb());
-    });
 });
