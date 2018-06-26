@@ -19,6 +19,6 @@ describe("TouchstoneListItem", () => {
 
         const latestVersionCell = cells.at(3);
         expect(latestVersionCell.find(InternalLink).dive().text()).to.eql(v1.id);
-        expect(latestVersionCell.find(InternalLink).prop("href")).to.eql("/touchstones/t1/v1/");
+        expect(latestVersionCell.find(InternalLink).prop("href")).to.eql("/touchstones/t1/v1/responsibilities/");
     });
 });

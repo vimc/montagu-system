@@ -5,7 +5,7 @@ import {InternalLink} from "../../../../shared/components/InternalLink";
 export class TouchstoneVersionItem extends React.Component<TouchstoneVersion, undefined> {
     render() {
         const version = this.props;
-        const url = `/touchstones/${version.name}/${version.id}/`;
+        const url = `/touchstones/${version.name}/${version.id}/responsibilities/`;
         return <tr>
             <td>{version.version}</td>
             <td>{version.id}</td>

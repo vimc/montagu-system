@@ -8,12 +8,12 @@ import * as React from "react";
 import {createMockAdminStore} from "../../../../mocks/mockStore";
 import {mockAdminState} from "../../../../mocks/mockStates";
 import {ResponsibilityList} from "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/ResponsibilityList";
-import {TouchstoneVersionPage} from "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
+import {ResponsibilitiesPage} from "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
 import {mockMatch} from "../../../../mocks/mocks";
 import {Sandbox} from "../../../../Sandbox";
 import {touchstoneVersionPageActionCreators} from "../../../../../main/admin/actions/pages/TouchstoneVersionPageActionCreators";
 
-describe("TouchstoneVersionPage", () => {
+describe("ResponsibilitiesPage", () => {
 
     const mockResponsibilitySets = [mockResponsibilitySet(), mockResponsibilitySet()];
 
@@ -36,8 +36,8 @@ describe("TouchstoneVersionPage", () => {
 
     it("renders responsibility list for each responsibility set", () => {
 
-        const rendered = shallow(<TouchstoneVersionPage location={null} router={null} history={null}
-                                                         match={mockMatch()}/>, {context: {store}})
+        const rendered = shallow(<ResponsibilitiesPage location={null} router={null} history={null}
+                                                       match={mockMatch()}/>, {context: {store}})
             .dive();
         expect(rendered.find(ResponsibilityList)).to.have.lengthOf(2);
 
@@ -45,8 +45,8 @@ describe("TouchstoneVersionPage", () => {
 
     it("renders modelling group name and set status for each set", () => {
 
-        const rendered = shallow(<TouchstoneVersionPage location={null} router={null} history={null}
-                                                        match={mockMatch()}/>, {context: {store}})
+        const rendered = shallow(<ResponsibilitiesPage location={null} router={null} history={null}
+                                                       match={mockMatch()}/>, {context: {store}})
             .dive();
 
         expect(rendered.find("h4").at(0).text()).to.eq("g1 (incomplete)");
