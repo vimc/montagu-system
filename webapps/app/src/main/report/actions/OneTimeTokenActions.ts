@@ -1,6 +1,7 @@
 import { alt } from "../../shared/alt";
 import { FetchActions } from "../../shared/actions/FetchActions";
 import { decodeOneTimeToken, OneTimeToken } from "../models/OneTimeToken";
+import {jwtTokenAuth} from "../../shared/modules/jwtTokenAuth";
 
 interface Actions {
     beginFetchToken(): boolean;
@@ -14,7 +15,7 @@ class OneTimeTokenActions extends FetchActions<string[]> implements Actions {
     }
 
     receiveToken(token: string): OneTimeToken {
-        return decodeOneTimeToken(token);
+        return decodeOneTimeToken(jwtTokenAuth.inflateToken(token));
     }
 
     clearUsedToken(url: string): string {
