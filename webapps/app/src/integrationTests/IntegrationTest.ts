@@ -8,6 +8,8 @@ import fetcher, { Fetcher } from "../main/shared/sources/Fetcher";
 import { alt } from "../main/shared/alt";
 import { localStorageHandler } from "../main/shared/services/localStorageHandler";
 import {singletonVariableCache} from "../main/shared/modules/cache/singletonVariableCache";
+import {jwtTokenAuth} from "../main/shared/modules/jwtTokenAuth";
+const jwt_decode = require('jwt-decode');
 
 const dbName = process.env.PGDATABASE;
 const dbTemplateName = process.env.PGTEMPLATE;
@@ -59,8 +61,8 @@ export abstract class IntegrationTestSuite {
                 let unsubscribe = this.store.subscribe(handleChange);
                 let that = this;
                 function handleChange () {
-                    const token =  that.store.getState().auth.bearerToken;
-                    sandbox.setStubFunc(localStorageHandler, 'get',()=> token);
+                    const token = that.store.getState().auth.bearerToken;
+                    sandbox.setStubFunc(localStorageHandler, 'get', () => token);
                     unsubscribe();
                     done();
                 }
@@ -89,4 +91,8 @@ export function expectSameElements<Any>(actual: Any[], expected: Any[]) {
     const failMessage = `Expected ${JSON.stringify(actual, null, 4)} to have same members as ${JSON.stringify(expected, null, 4)}`
     expect(actual).to.have.members(expected, failMessage);
     expect(expected).to.have.members(actual, failMessage);
+}
+
+export function inflateAndDecode(token: string): any {
+    return jwt_decode(jwtTokenAuth.inflateToken(token));
 }
