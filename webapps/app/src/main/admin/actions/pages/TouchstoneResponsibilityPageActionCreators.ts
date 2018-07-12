@@ -7,15 +7,15 @@ import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {ResponsibilitiesPageLocationProps} from "../../components/Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
 import {touchstoneDetailsPageActionCreators} from "./touchstoneDetailsPageActionCreators";
 
-class TouchstoneVersionPageActionCreators
+class TouchstoneResponsibilitiesPageActionCreators
     extends AdminPageActionCreators<ResponsibilitiesPageLocationProps> {
 
     parent = touchstoneDetailsPageActionCreators;
 
     createBreadcrumb(state?: AdminAppState): PageBreadcrumb {
         return {
-            name: state.touchstones.currentTouchstoneVersion.id,
-            urlFragment: `${state.touchstones.currentTouchstoneVersion.id}/`
+            name: `Responsibility Sets in ${state.touchstones.currentTouchstoneVersion.id}`,
+            urlFragment: `${state.touchstones.currentTouchstoneVersion.id}/responsibilities/`
         };
     }
 
@@ -30,5 +30,5 @@ class TouchstoneVersionPageActionCreators
 
 }
 
-export const touchstoneVersionPageActionCreators
-    = new TouchstoneVersionPageActionCreators();
+export const touchstoneResponsibilitiesPageActionCreators
+    = new TouchstoneResponsibilitiesPageActionCreators();

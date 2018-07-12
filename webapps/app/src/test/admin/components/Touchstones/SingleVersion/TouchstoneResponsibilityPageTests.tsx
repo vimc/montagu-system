@@ -7,11 +7,14 @@ import {expect} from "chai";
 import * as React from "react";
 import {createMockAdminStore} from "../../../../mocks/mockStore";
 import {mockAdminState} from "../../../../mocks/mockStates";
-import {ResponsibilityList} from "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/ResponsibilityList";
-import {ResponsibilitiesPage} from "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
+import {ResponsibilityList} from
+    "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/ResponsibilityList";
+import {ResponsibilitiesPage} from
+    "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
 import {mockMatch} from "../../../../mocks/mocks";
 import {Sandbox} from "../../../../Sandbox";
-import {touchstoneVersionPageActionCreators} from "../../../../../main/admin/actions/pages/TouchstoneVersionPageActionCreators";
+import {touchstoneResponsibilitiesPageActionCreators} from
+    "../../../../../main/admin/actions/pages/TouchstoneResponsibilityPageActionCreators";
 
 describe("ResponsibilitiesPage", () => {
 
@@ -27,7 +30,7 @@ describe("ResponsibilitiesPage", () => {
     const sandbox = new Sandbox();
 
     beforeEach(() => {
-        sandbox.setStubReduxAction(touchstoneVersionPageActionCreators, "onLoad")
+        sandbox.setStubReduxAction(touchstoneResponsibilitiesPageActionCreators, "onLoad")
     });
 
     afterEach(() => {

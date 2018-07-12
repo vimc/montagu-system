@@ -6,7 +6,6 @@ import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {Dispatch} from "redux";
 import {compose} from "recompose";
 import {connect} from "react-redux";
-import {TouchstoneListPageComponent} from "../List/TouchstoneListPage";
 import {touchstoneDetailsPageActionCreators} from "../../../actions/pages/touchstoneDetailsPageActionCreators";
 import {TouchstoneDetails} from "./TouchstoneDetails";
 

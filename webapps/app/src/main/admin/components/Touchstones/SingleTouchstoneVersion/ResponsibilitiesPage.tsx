@@ -6,7 +6,7 @@ import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArti
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
-import {touchstoneVersionPageActionCreators} from "../../../actions/pages/TouchstoneVersionPageActionCreators";
+import {touchstoneResponsibilitiesPageActionCreators} from "../../../actions/pages/TouchstoneResponsibilityPageActionCreators";
 import {ResponsibilityList} from "./ResponsibilityList";
 import {ResponsibilitySet} from "../../../../shared/models/Generated";
 import {compose} from "recompose";
@@ -53,7 +53,7 @@ const mapStateToProps = (state: AdminAppState): Partial<ResponsibilitiesPageProp
 export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<ResponsibilitiesPageProps> => {
     return {
         onLoad: (params: ResponsibilitiesPageLocationProps) =>
-            dispatch(touchstoneVersionPageActionCreators.onLoad(params))
+            dispatch(touchstoneResponsibilitiesPageActionCreators.onLoad(params))
     }
 };
 
