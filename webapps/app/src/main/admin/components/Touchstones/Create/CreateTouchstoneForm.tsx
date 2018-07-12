@@ -2,7 +2,7 @@ import * as React from "react";
 import {Field, reduxForm} from "redux-form";
 import {compose} from "recompose";
 import {validations} from "../../../../shared/modules/reduxForm";
-import {ReduxFormField} from "../../../../shared/components/ReduxForm/ReduxFormField";
+import {ReduxFormInput, ReduxFormTextArea} from "../../../../shared/components/ReduxForm/ReduxFormField";
 import {
     ReduxFormValidationErrors
 } from "../../../../shared/components/ReduxForm/ReduxFormValidationError";
@@ -30,7 +30,7 @@ export class CreateTouchstoneFormComponent
                         <Field
                             name="id"
                             label={"id"}
-                            component={ReduxFormField}
+                            component={ReduxFormInput}
                             type="text"
                             validate={[validations.required, validations.id]}
                         />
@@ -42,8 +42,9 @@ export class CreateTouchstoneFormComponent
                         <Field
                             name="description"
                             label={"description"}
-                            component={ReduxFormField}
-                            type="text"
+                            component={ReduxFormTextArea}
+                            cols={35}
+                            rows={5}
                             validate={[validations.required]}
                         />
                     </td>
@@ -54,8 +55,9 @@ export class CreateTouchstoneFormComponent
                         <Field
                             name="comment"
                             label={"comment"}
-                            component={ReduxFormField}
-                            type="text"
+                            component={ReduxFormTextArea}
+                            cols={35}
+                            rows={5}
                         />
                     </td>
                 </tr>
