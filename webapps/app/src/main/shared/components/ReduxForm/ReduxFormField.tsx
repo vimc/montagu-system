@@ -11,10 +11,10 @@ export const ReduxFormInput = (data: InputFieldProps) => {
 };
 
 export const ReduxFormTextArea = (data: TextAreaFieldProps) => {
-    const {cols, rows, label, meta: {touched, error}} = data;
+    const {cols, rows, input, label, meta: {touched, error}} = data;
     const errorAlert = touched && error ? <div className="error">{label + error}</div> : null;
     return <div>
-        <textarea cols={cols} rows={rows}/>
+        <textarea cols={cols} rows={rows} {...input}/>
         {errorAlert}
     </div>;
 };
