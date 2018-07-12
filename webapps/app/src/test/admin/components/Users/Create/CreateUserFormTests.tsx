@@ -4,7 +4,7 @@ import {mount, shallow} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {
     CreateUserForm,
-    CreateUserFormComponent, mapDispatchToProps, suggestUsername
+    CreateUserFormComponent, suggestUsername
 } from "../../../../../main/admin/components/Users/Create/CreateUserForm";
 
 import {mockAdminState} from "../../../../mocks/mockStates";
@@ -77,17 +77,6 @@ describe("CreateUserForm", () => {
 
         mounted.simulate("submit");
         expect(stub.called).to.be.true;
-    });
-
-    it("passes name, email and username to createUser", () => {
-
-        const dispatchStub = sandbox.sinon.stub();
-        const userActionCreatorStub = sandbox.setStubReduxAction(usersActionCreators, "createUser");
-
-        const props = mapDispatchToProps(dispatchStub);
-        props.submit({name: "Joe Bloggs", email: "joe@email.com", username: "joe.b"});
-
-        expect(userActionCreatorStub.calledWith("Joe Bloggs", "joe@email.com", "joe.b")).to.be.true;
     });
 
     describe("username suggestor", () => {
