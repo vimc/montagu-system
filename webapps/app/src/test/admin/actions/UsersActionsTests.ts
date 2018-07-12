@@ -114,7 +114,7 @@ describe("Admin Users actions tests", () => {
 
         setUpSuccessfulStubs();
 
-        store.dispatch(usersActionCreators.createUser("joe bloggs", "joe@email.com", "joe.b"));
+        store.dispatch(usersActionCreators.createUser({name: "joe bloggs", email: "joe@email.com", username: "joe.b"}));
         setTimeout(() => {
             expect(createUserStub.calledWith("joe bloggs", "joe@email.com", "joe.b")).to.be.true;
             const actions = store.getActions();
@@ -129,7 +129,7 @@ describe("Admin Users actions tests", () => {
         sandbox.setStubFunc(UsersService.prototype, "createUser", () => {
             return Promise.resolve(mockResult(null, [{code: "e", message: "error message"}]));
         });
-        store.dispatch(usersActionCreators.createUser("joe bloggs", "joe@email.com", "joe.b"));
+        store.dispatch(usersActionCreators.createUser({name: "joe bloggs", email: "joe@email.com", username: "joe.b"}));
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = {
@@ -147,7 +147,7 @@ describe("Admin Users actions tests", () => {
 
         setUpSuccessfulStubs();
 
-        await store.dispatch(usersActionCreators.createUser("joe bloggs", "joe@email.com", "joe.b"));
+        await store.dispatch(usersActionCreators.createUser({name: "joe bloggs", email: "joe@email.com", username: "joe.b"}));
 
         expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
             .to.be.true
@@ -159,7 +159,7 @@ describe("Admin Users actions tests", () => {
 
         setUpSuccessfulStubs();
 
-        await store.dispatch(usersActionCreators.createUser("joe bloggs", "joe@email.com", "joe.b"));
+        await store.dispatch(usersActionCreators.createUser({name: "joe bloggs", email: "joe@email.com", username: "joe.b"}));
 
         expect(stub.calledWith(false)).to.be.true
     });

@@ -8,6 +8,7 @@ export const settings: Settings = {
     teamcityServiceMessages: false,
     isApplicantTouchstone: (id: string) => id.indexOf("rfp-") > -1,
     isStochasticTouchstone: (id: string) => id.indexOf("201804rfp") > -1,
+    showTouchstoneCreation: false,
     admin: {
         publicPath: "/admin",
         requiresModellingGroupMembership: false

@@ -32,4 +32,30 @@ describe("adminTouchstoneReducer", () => {
         };
         expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
     });
+
+    it("sets create touchstone errors", () => {
+        const errors = [{code: "e", message: "error"}];
+        const action: TouchstonesAction = {
+            type: TouchstoneTypes.SET_CREATE_TOUCHSTONE_ERROR,
+            data: errors
+        };
+        const expected: AdminTouchstoneState = {
+            ...adminTouchstonesInitialState,
+            createTouchstoneErrors: errors
+        };
+        expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
+    });
+
+    it("adds new touchstone", () => {
+        const touchstone = mockTouchstone();
+        const action: TouchstonesAction = {
+            type: TouchstoneTypes.NEW_TOUCHSTONE_CREATED,
+            data: touchstone
+        };
+        const expected: AdminTouchstoneState = {
+            ...adminTouchstonesInitialState,
+            touchstones: [touchstone]
+        };
+        expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
+    });
 });

@@ -4,15 +4,21 @@ import {Touchstone, User} from "../../../../shared/models/Generated";
 
 export class TouchstoneListItem extends React.Component<Touchstone, undefined> {
     render() {
-        // The API is guaranteed to return versions in descending order
-        const latestVersion = this.props.versions[0];
+
         const touchstoneUrl = `/touchstones/${this.props.id}/`;
-        const latestVersionUrl = `/touchstones/${this.props.id}/${latestVersion.id}/responsibilities/`;
+
+        let latestVersionUrl = "", latestVersionId = "";
+        if (this.props.versions.length > 0) {
+            // The API is guaranteed to return versions in descending order
+            latestVersionId = this.props.versions[0].id;
+            latestVersionUrl = `/touchstones/${this.props.id}/${latestVersionId}/responsibilities/`;
+        }
+
         return <tr>
             <td>{this.props.id}</td>
             <td><InternalLink href={touchstoneUrl}>{this.props.description}</InternalLink></td>
             <td>{this.props.comment}</td>
-            <td><InternalLink href={latestVersionUrl}>{latestVersion.id}</InternalLink></td>
+            <td>{latestVersionId && <InternalLink href={latestVersionUrl}>{latestVersionId}</InternalLink>}</td>
         </tr>;
     }
 }
