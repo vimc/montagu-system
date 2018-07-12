@@ -23,4 +23,16 @@ describe("TouchstoneListItem", () => {
         expect(latestVersionCell.find(InternalLink).dive().text()).to.eql(v1.id);
         expect(latestVersionCell.find(InternalLink).prop("href")).to.eql("/touchstones/t1/v1/");
     });
+
+    it("latest version cell is empty where no versions exist yet", () => {
+
+        const t = mockTouchstone({id: "t1", description: "desc1"}, []);
+        const rendered = shallow(<TouchstoneListItem {...t}/>);
+        const cells = rendered.find("td");
+
+        expect(cells.length).to.eq(4);
+
+        const latestVersionCell = cells.at(3);
+        expect(latestVersionCell.find(InternalLink)).to.have.lengthOf(0);
+    });
 });
