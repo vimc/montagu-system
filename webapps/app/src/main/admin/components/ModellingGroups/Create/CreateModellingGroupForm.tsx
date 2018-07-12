@@ -1,10 +1,9 @@
 import * as React from "react";
-import {change, Field, formValueSelector, reduxForm} from "redux-form";
+import {Field, formValueSelector, reduxForm} from "redux-form";
 import {connect} from "react-redux";
 import {compose} from "recompose";
-import {Dispatch} from "redux";
 import {validations} from "../../../../shared/modules/reduxForm";
-import {ReduxFormField} from "../../../../shared/components/ReduxForm/ReduxFormField";
+import {ReduxFormInput} from "../../../../shared/components/ReduxForm/ReduxFormField";
 import {
     ReduxFormValidationErrors
 } from "../../../../shared/components/ReduxForm/ReduxFormValidationError";
@@ -15,7 +14,6 @@ import {ModellingGroupCreation} from "../../../../shared/models/Generated";
 import {ChangeEvent} from "react";
 import {titleCase} from "../../../../shared/Helpers";
 import {montaguForm} from "../../../../shared/components/ReduxForm/MontaguForm";
-import {usersActionCreators} from "../../../actions/usersActionCreators";
 
 function stripBadChars(data: string){
     return data.replace(/[^a-z\s]/gi, "");
@@ -71,7 +69,7 @@ export class CreateModellingGroupFormComponent
                         <Field
                             name="institution"
                             label={"institution"}
-                            component={ReduxFormField}
+                            component={ReduxFormInput}
                             type="text"
                             validate={[validations.required]}
                             onChange={(e) => this.onInsititutionChange(e)}
@@ -84,7 +82,7 @@ export class CreateModellingGroupFormComponent
                         <Field
                             name="pi"
                             label={"pi"}
-                            component={ReduxFormField}
+                            component={ReduxFormInput}
                             type="text"
                             validate={[validations.required]}
                             onChange={(e) => this.onPIChange(e)}
@@ -97,7 +95,7 @@ export class CreateModellingGroupFormComponent
                         <Field
                             name="id"
                             label={"id"}
-                            component={ReduxFormField}
+                            component={ReduxFormInput}
                             type="text"
                             validate={[validations.required, validations.id]}
                         />

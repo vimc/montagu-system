@@ -2,7 +2,7 @@ import * as React from "react";
 import {Field, reduxForm} from "redux-form";
 import {compose} from "recompose";
 import {validations} from "../../../../shared/modules/reduxForm";
-import {ReduxFormField} from "../../../../shared/components/ReduxForm/ReduxFormField";
+import {ReduxFormInput} from "../../../../shared/components/ReduxForm/ReduxFormField";
 import {
     ReduxFormValidationErrors
 } from "../../../../shared/components/ReduxForm/ReduxFormValidationError";
@@ -46,7 +46,7 @@ export class CreateUserFormComponent extends React.Component<ReduxFormProps<Crea
                         <Field
                             name="name"
                             label={"Full name"}
-                            component={ReduxFormField}
+                            component={ReduxFormInput}
                             type="text"
                             validate={[validations.required]}
                             onChange={(e) => this.onNameChange(e)}
@@ -59,7 +59,7 @@ export class CreateUserFormComponent extends React.Component<ReduxFormProps<Crea
                         <Field
                             name="email"
                             label={"Email address"}
-                            component={ReduxFormField}
+                            component={ReduxFormInput}
                             type="text"
                             validate={[validations.required, validations.email]}
                         />
@@ -71,7 +71,7 @@ export class CreateUserFormComponent extends React.Component<ReduxFormProps<Crea
                         <Field
                             label={"Username"}
                             name="username"
-                            component={ReduxFormField}
+                            component={ReduxFormInput}
                             type="text"
                             validate={[validations.required, validations.username]}
                         />
