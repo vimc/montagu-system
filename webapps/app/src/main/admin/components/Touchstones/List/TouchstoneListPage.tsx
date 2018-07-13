@@ -8,6 +8,8 @@ import {Dispatch} from "redux";
 import {touchstoneListPageActionCreators} from "../../../actions/pages/TouchstoneListPageActionCreators";
 import {compose} from "recompose";
 import {connect} from "react-redux";
+import {CreateTouchstoneForm} from "../Create/CreateTouchstoneForm";
+import {settings} from "../../../../shared/Settings";
 
 export class TouchstoneListPageComponent extends React.Component<PageProperties<undefined>> {
     static title: string = "Touchstones";
@@ -18,8 +20,10 @@ export class TouchstoneListPageComponent extends React.Component<PageProperties<
 
     render(): JSX.Element {
         return <div>
-            <AdminPageHeader />
+            <AdminPageHeader/>
             <PageArticle title={TouchstoneListPageComponent.title}>
+                {settings.showTouchstoneCreation &&
+                <CreateTouchstoneForm/>}
                 <TouchstoneList/>
             </PageArticle>
         </div>;

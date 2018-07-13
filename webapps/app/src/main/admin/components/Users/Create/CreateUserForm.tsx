@@ -1,18 +1,15 @@
 import * as React from "react";
-import {change, Field, reduxForm} from "redux-form";
-import {connect} from "react-redux";
+import {Field, reduxForm} from "redux-form";
 import {compose} from "recompose";
-import {Dispatch} from "redux";
 import {validations} from "../../../../shared/modules/reduxForm";
-import {ReduxFormField} from "../../../../shared/components/ReduxForm/ReduxFormField";
+import {ReduxFormInput} from "../../../../shared/components/ReduxForm/ReduxFormField";
 import {
     ReduxFormValidationErrors
 } from "../../../../shared/components/ReduxForm/ReduxFormValidationError";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {usersActionCreators} from "../../../actions/usersActionCreators";
-import {FormEvent} from "react";
-import {ErrorInfo} from "../../../../shared/models/Generated";
 import {ReduxFormProps} from "../../../../shared/components/ReduxForm/types";
+import {montaguForm} from "../../../../shared/components/ReduxForm/MontaguForm";
 
 export interface CreateUserFormFields {
     name: string;
@@ -49,7 +46,7 @@ export class CreateUserFormComponent extends React.Component<ReduxFormProps<Crea
                         <Field
                             name="name"
                             label={"Full name"}
-                            component={ReduxFormField}
+                            component={ReduxFormInput}
                             type="text"
                             validate={[validations.required]}
                             onChange={(e) => this.onNameChange(e)}
@@ -62,7 +59,7 @@ export class CreateUserFormComponent extends React.Component<ReduxFormProps<Crea
                         <Field
                             name="email"
                             label={"Email address"}
-                            component={ReduxFormField}
+                            component={ReduxFormInput}
                             type="text"
                             validate={[validations.required, validations.email]}
                         />
@@ -74,7 +71,7 @@ export class CreateUserFormComponent extends React.Component<ReduxFormProps<Crea
                         <Field
                             label={"Username"}
                             name="username"
-                            component={ReduxFormField}
+                            component={ReduxFormInput}
                             type="text"
                             validate={[validations.required, validations.username]}
                         />
@@ -89,25 +86,12 @@ export class CreateUserFormComponent extends React.Component<ReduxFormProps<Crea
     }
 }
 
-
-function mapStateToProps(state: AdminAppState): Partial<ReduxFormProps<CreateUserFormFields>> {
-    return {
-        errors: state.users.createUserErrors,
-    }
-}
-
-export function mapDispatchToProps(dispatch: Dispatch<any>): Partial<ReduxFormProps<CreateUserFormFields>> {
-    return {
-        submit: (values: CreateUserFormFields) => dispatch(usersActionCreators.createUser(
-            values.name, values.email, values.username
-        )),
-        changeFieldValue: (field: string, value: string) => {
-            dispatch(change('createUser', field, value))
-        }
-    }
-}
-
 export const CreateUserForm = compose(
     reduxForm({form: 'createUser'}),
-    connect(mapStateToProps, mapDispatchToProps),
+    montaguForm<AdminAppState, CreateUserFormFields>({
+        form: 'createUser',
+        mapErrorsFromState: (state: AdminAppState) => state.users.createUserErrors,
+        submit: (values: CreateUserFormFields) =>
+            usersActionCreators.createUser(values)
+    })
 )(CreateUserFormComponent);

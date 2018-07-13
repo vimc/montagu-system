@@ -1,4 +1,4 @@
-import {ResponsibilitySet, Touchstone, TouchstoneVersion} from "../../shared/models/Generated";
+import {ErrorInfo, ResponsibilitySet, Touchstone, TouchstoneVersion} from "../../shared/models/Generated";
 import {TouchstonesAction, TouchstoneTypes} from "../../shared/actionTypes/TouchstonesTypes";
 
 export interface AdminTouchstoneState {
@@ -6,13 +6,15 @@ export interface AdminTouchstoneState {
     currentTouchstone: Touchstone;
     currentTouchstoneVersion: TouchstoneVersion;
     currentResponsibilitySets: ResponsibilitySet[];
+    createTouchstoneErrors: ErrorInfo[]
 }
 
 export const adminTouchstonesInitialState: AdminTouchstoneState = {
     touchstones: [],
     currentTouchstone: null,
     currentTouchstoneVersion: null,
-    currentResponsibilitySets: []
+    currentResponsibilitySets: [],
+    createTouchstoneErrors: []
 };
 export const adminTouchstoneReducer
     = (state = adminTouchstonesInitialState, action: TouchstonesAction): AdminTouchstoneState => {
@@ -25,6 +27,10 @@ export const adminTouchstoneReducer
             return {...state, currentTouchstoneVersion: action.data};
         case TouchstoneTypes.RESPONSIBILITIES_FOR_TOUCHSTONE_VERSION_FETCHED:
             return {...state, currentResponsibilitySets: action.data};
+        case TouchstoneTypes.NEW_TOUCHSTONE_CREATED:
+            return {...state, touchstones: [...state.touchstones, action.data]};
+        case TouchstoneTypes.SET_CREATE_TOUCHSTONE_ERROR:
+            return {...state, createTouchstoneErrors: action.data};
         default:
             return state;
     }
