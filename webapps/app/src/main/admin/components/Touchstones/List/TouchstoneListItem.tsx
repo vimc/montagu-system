@@ -11,7 +11,7 @@ export class TouchstoneListItem extends React.Component<Touchstone, undefined> {
         if (this.props.versions.length > 0) {
             // The API is guaranteed to return versions in descending order
             latestVersionId = this.props.versions[0].id;
-            latestVersionUrl = `/touchstones/${this.props.id}/${latestVersionId}/`;
+            latestVersionUrl = `/touchstones/${this.props.id}/${latestVersionId}/responsibilities/`;
         }
 
         return <tr>

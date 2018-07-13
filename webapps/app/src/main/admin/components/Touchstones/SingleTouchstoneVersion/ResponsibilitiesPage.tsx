@@ -1,3 +1,4 @@
+
 import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import * as React from "react";
 import {AdminPageHeader} from "../../AdminPageHeader";
@@ -5,22 +6,22 @@ import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArti
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
-import {touchstoneVersionPageActionCreators} from "../../../actions/pages/TouchstoneVersionPageActionCreators";
+import {touchstoneResponsibilitiesPageActionCreators} from "../../../actions/pages/TouchstoneResponsibilityPageActionCreators";
 import {ResponsibilityList} from "./ResponsibilityList";
 import {ResponsibilitySet} from "../../../../shared/models/Generated";
 import {compose} from "recompose";
 
-export interface TouchstoneVersionPageLocationProps {
+export interface ResponsibilitiesPageLocationProps {
     touchstoneVersionId: string;
     touchstoneId: string;
 }
 
-export interface TouchstoneVersionPageProps extends PageProperties<TouchstoneVersionPageLocationProps> {
+export interface ResponsibilitiesPageProps extends PageProperties<ResponsibilitiesPageLocationProps> {
     currentTouchstoneVersionId: string;
     responsibilitySets: ResponsibilitySet[]
 }
 
-export class TouchstoneVersionPageComponent extends React.Component<TouchstoneVersionPageProps> {
+export class ResponsibilitiesPageComponent extends React.Component<ResponsibilitiesPageProps> {
 
     componentDidMount() {
         this.props.onLoad(this.props.match.params)
@@ -40,7 +41,7 @@ export class TouchstoneVersionPageComponent extends React.Component<TouchstoneVe
 }
 
 
-const mapStateToProps = (state: AdminAppState): Partial<TouchstoneVersionPageProps> => {
+const mapStateToProps = (state: AdminAppState): Partial<ResponsibilitiesPageProps> => {
     return {
         currentTouchstoneVersionId: state.touchstones.currentTouchstoneVersion ?
             state.touchstones.currentTouchstoneVersion.id : '',
@@ -49,13 +50,13 @@ const mapStateToProps = (state: AdminAppState): Partial<TouchstoneVersionPagePro
     }
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<TouchstoneVersionPageProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<ResponsibilitiesPageProps> => {
     return {
-        onLoad: (params: TouchstoneVersionPageLocationProps) =>
-            dispatch(touchstoneVersionPageActionCreators.onLoad(params))
+        onLoad: (params: ResponsibilitiesPageLocationProps) =>
+            dispatch(touchstoneResponsibilitiesPageActionCreators.onLoad(params))
     }
 };
 
-export const TouchstoneVersionPage =
-    compose<{}, PageProperties<TouchstoneVersionPageLocationProps>>(connect(mapStateToProps, mapDispatchToProps))
-    (TouchstoneVersionPageComponent);
+export const ResponsibilitiesPage =
+    compose<{}, PageProperties<ResponsibilitiesPageLocationProps>>(connect(mapStateToProps, mapDispatchToProps))
+    (ResponsibilitiesPageComponent);

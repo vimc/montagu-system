@@ -5,10 +5,11 @@ import {createMockAdminStore} from "../../../mocks/mockStore";
 import {mockTouchstone, mockTouchstoneVersion} from "../../../mocks/mockModels";
 import {touchstonesActionCreators} from "../../../../main/shared/actions/touchstoneActionCreators";
 import {adminTouchstoneActionCreators} from "../../../../main/admin/actions/adminTouchstoneActionCreators";
-import {touchstoneVersionPageActionCreators} from "../../../../main/admin/actions/pages/TouchstoneVersionPageActionCreators";
+import {touchstoneResponsibilitiesPageActionCreators} from
+    "../../../../main/admin/actions/pages/TouchstoneResponsibilityPageActionCreators";
 import {mockAdminState} from "../../../mocks/mockStates";
 
-describe("Touchstone version page actions tests", () => {
+describe("Touchstone responsibility page actions tests", () => {
     const sandbox = new Sandbox();
 
     afterEach(() => {
@@ -19,9 +20,11 @@ describe("Touchstone version page actions tests", () => {
         const store = createMockAdminStore({touchstones: {touchstones: [mockTouchstone()]}});
 
         const setCurrentStub = sandbox.setStubReduxAction(touchstonesActionCreators, "setCurrentTouchstoneVersion");
-        const responsibilitiesStub = sandbox.setStubReduxAction(adminTouchstoneActionCreators, "getResponsibilitiesForTouchstoneVersion");
+        const responsibilitiesStub =
+            sandbox.setStubReduxAction(adminTouchstoneActionCreators, "getResponsibilitiesForTouchstoneVersion");
 
-        store.dispatch(touchstoneVersionPageActionCreators.loadData({touchstoneVersionId: "t1", touchstoneId: "whatever"}));
+        store.dispatch(touchstoneResponsibilitiesPageActionCreators
+            .loadData({touchstoneVersionId: "t1", touchstoneId: "whatever"}));
         setTimeout(() => {
             expect(setCurrentStub.called).to.be.true;
             expect(responsibilitiesStub.called).to.be.true;
@@ -36,10 +39,10 @@ describe("Touchstone version page actions tests", () => {
                 currentTouchstoneVersion: mockTouchstoneVersion({id: "t1"})
             }
         });
-        const result = touchstoneVersionPageActionCreators.createBreadcrumb(state);
+        const result = touchstoneResponsibilitiesPageActionCreators.createBreadcrumb(state);
 
-        expect(result.urlFragment).to.eq("t1/");
-        expect(result.name).to.eq("t1");
+        expect(result.urlFragment).to.eq("t1/responsibilities/");
+        expect(result.name).to.eq("Responsibility Sets in t1");
     });
 
 
