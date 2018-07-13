@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { createStore } from "redux";
+import * as pako from "pako";
 
 import { Sandbox } from "../../Sandbox";
 import * as sinon from 'sinon';
@@ -37,7 +38,7 @@ describe('Local service class initialization tests', () => {
         expect(typeof serviceData.options.Authorization).to.equal('undefined')
     });
 
-    it('initializes default service with request engine and token', () => {
+    it('initializes default service with request engine and compressed token', () => {
         const store = createStore(state => state, mockContribState({auth: {bearerToken: "token"}}));
 
         class TestService extends AbstractLocalService {
@@ -56,11 +57,12 @@ describe('Local service class initialization tests', () => {
     });
 
     it('initializes default service with request engine, token and withCredentials option', () => {
+
         const store = createStore(state => state, mockContribState({auth: {bearerToken: "token"}}));
 
         class TestService extends AbstractLocalService {
             test() {
-                this.setOptions({credentials: "include"})
+                this.setOptions({credentials: "include"});
                 return {
                     requestOptions: this.makeRequestOptions('POST'),
                     options: this.options

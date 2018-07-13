@@ -5,12 +5,18 @@ import {jwtTokenAuth} from "../../../main/shared/modules/jwtTokenAuth";
 import {AuthState} from "../../../main/shared/reducers/authReducer";
 import {compress} from "../helpers/TokenHelpers";
 import {sign} from "jsonwebtoken";
+import {Sandbox} from "../../Sandbox";
 
 describe('JwtTokenAuth Module Tests', () => {
 
+    const sandbox = new Sandbox();
     const roles = "*/user,modelling-group:IC-Garske/member,*/user-manager,*/reports-reader,modelling-group:IC-Garske/uploader,modelling-group:IC-Garske/user-manager,modelling-group:test-group/member,modelling-group:test-group/uploader,modelling-group:test-group/user-manager";
     const permissions = "*/can-login,*/countries.read,*/demographics.read,*/estimates.read,*/modelling-groups.read,*/models.read,*/responsibilities.read,*/scenarios.read,*/touchstones.read,*/users.read,modelling-group:IC-Garske/coverage.read,modelling-group:IC-Garske/estimates.read-unfinished,modelling-group:IC-Garske/estimates.write,*/modelling-groups.manage-members,*/modelling-groups.write,*/roles.read,*/roles.write,*/users.create,*/users.edit-all,*/reports.read,modelling-group:IC-Garske/estimates.write,modelling-group:IC-Garske/modelling-groups.manage-members,modelling-group:IC-Garske/roles.write,modelling-group:IC-Garske/users.create,modelling-group:test-group/coverage.read,modelling-group:test-group/estimates.read-unfinished,modelling-group:test-group/estimates.write,modelling-group:test-group/estimates.write,modelling-group:test-group/modelling-groups.manage-members,modelling-group:test-group/roles.write,modelling-group:test-group/users.create";
     const permissionsCannotLogin = "*/countries.read,*/demographics.read,*/estimates.read,*/modelling-groups.read,*/models.read,*/responsibilities.read,*/scenarios.read,*/touchstones.read,*/users.read,modelling-group:IC-Garske/coverage.read,modelling-group:IC-Garske/estimates.read-unfinished,modelling-group:IC-Garske/estimates.write,*/modelling-groups.manage-members,*/modelling-groups.write,*/roles.read,*/roles.write,*/users.create,*/users.edit-all,*/reports.read,modelling-group:IC-Garske/estimates.write,modelling-group:IC-Garske/modelling-groups.manage-members,modelling-group:IC-Garske/roles.write,modelling-group:IC-Garske/users.create,modelling-group:test-group/coverage.read,modelling-group:test-group/estimates.read-unfinished,modelling-group:test-group/estimates.write,modelling-group:test-group/estimates.write,modelling-group:test-group/modelling-groups.manage-members,modelling-group:test-group/roles.write,modelling-group:test-group/users.create";
+
+    beforeEach(() => {
+        sandbox.restore()
+    });
 
     it('checks is expired', () => {
         expect(jwtTokenAuth.isExpired(0)).to.equal(true);
@@ -45,6 +51,24 @@ describe('JwtTokenAuth Module Tests', () => {
         expect(modellingGroups).to.eql(['IC-Garske', 'test-group']);
     });
 
+    it('inflates compressed token and gets data', () => {
+
+        const testData = {
+            sub: "test.user",
+            permissions: "test.permissions",
+            roles: "test.roles",
+            iss: "test.iss",
+            exp: Math.round(Date.now() / 1000) + 1000
+        };
+        const testToken = jwt.sign(testData, "secret");
+        sandbox.setStubFunc(jwtTokenAuth, "inflateToken", () => testToken);
+        const decoded = jwtTokenAuth.decodeToken(testToken);
+        expect(decoded.sub).to.eql(testData.sub);
+        expect(decoded.permissions).to.eql(testData.permissions);
+        expect(decoded.sub).to.eql(testData.sub);
+        expect(decoded.roles).to.eql(testData.roles);
+    });
+
     it('decodes token data and formats it as AuthState, account active, modeller', () => {
         const testData = {
             sub: "test.user",
@@ -52,7 +76,7 @@ describe('JwtTokenAuth Module Tests', () => {
             roles,
             iss: "test.iss",
             exp: Math.round(Date.now() / 1000) + 1000
-        }
+        };
         const testToken = jwt.sign(testData, "secret");
         const authData: AuthState = jwtTokenAuth.getDataFromToken(testToken);
 

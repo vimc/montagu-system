@@ -55,6 +55,11 @@ export const jwtTokenAuth = {
             .map((x: Role) => x.scope.id);
     },
 
+    getDataFromCompressedToken(token: string): AuthState {
+        const inflated = this.inflateToken(token);
+        return this.getDataFromToken(inflated);
+    },
+
     getDataFromToken(token: string): AuthState {
         const decoded = this.decodeToken(token);
         const permissions = decoded.permissions.split(",").filter((x: string) => x.length > 0);

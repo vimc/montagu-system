@@ -95,7 +95,7 @@ describe("AuthActions", () => {
     });
 
     it("dispatches authenticated action if saved token can be loaded and not expired", (done) => {
-        const testToken = jwt.sign(mockUsertokenData, "secret");
+        const testToken = signAndCompress(mockUsertokenData);
         sandbox.setStubFunc(localStorageHandler, "get", () => testToken);
         sandbox.setStub(AuthService.prototype, "setShinyCookie");
         store.dispatch(authActionCreators.loadSavedToken());
@@ -108,10 +108,10 @@ describe("AuthActions", () => {
 
     it("dispatches unauthenticated action if saved token can be loaded and expired", (done) => {
         const mockUserTokenDataExpired = Object.assign(mockUsertokenData, {exp: Math.round(Date.now() / 1000)});
-        const testToken = jwt.sign(mockUserTokenDataExpired, "secret");
+        const testToken = signAndCompress(mockUserTokenDataExpired, "secret");
         sandbox.setStubFunc(localStorageHandler, "get", () => testToken);
         sandbox.setStub(AuthService.prototype, "clearShinyCookie");
-        store.dispatch(authActionCreators.loadSavedToken())
+        store.dispatch(authActionCreators.loadSavedToken());
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);

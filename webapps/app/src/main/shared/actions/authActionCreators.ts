@@ -37,14 +37,15 @@ export const authActionCreators = {
         return (dispatch: Dispatch<any>) => {
             const token = localStorageHandler.get("accessToken");
             if (token) {
-                const decoded: AuthTokenData = jwtTokenAuth.decodeToken(token);
+                const inflated = jwtTokenAuth.inflateToken(token);
+                const decoded: AuthTokenData = jwtTokenAuth.decodeToken(inflated);
                 if (jwtTokenAuth.isExpired(decoded.exp)) {
                     console.log("Token is expired");
                     localStorageHandler.remove("accessToken");
                     dispatch(this.logOut())
                 } else {
                     console.log("Found unexpired access token in local storage, so we're already logged in");
-                    dispatch(this.receivedToken(token));
+                    dispatch(this.receivedCompressedToken(token));
                 }
             }
         }
@@ -67,17 +68,10 @@ export const authActionCreators = {
 
     receivedCompressedToken(token: string) {
         return (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            const inflated = jwtTokenAuth.inflateToken(token);
-            return dispatch(this.receivedToken(inflated));
-        }
-    },
-
-    receivedToken(token: string) {
-        return (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            const user: AuthState = jwtTokenAuth.getDataFromToken(token);
+            const user: AuthState = jwtTokenAuth.getDataFromCompressedToken(token);
             const error: Notification = this.validateAuthResult(user);
             if (!error) {
-                                                       // Save the uncompressed version of the token
+                // Save the compressed version of the token
                 localStorageHandler.set("accessToken", user.bearerToken);
                 dispatch({
                     type: AuthTypeKeys.AUTHENTICATED,
