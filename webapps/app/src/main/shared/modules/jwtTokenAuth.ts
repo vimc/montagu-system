@@ -23,7 +23,7 @@ export const jwtTokenAuth = {
         return false;
     },
 
-    decodeToken(token: string): AuthTokenData {
+        decodeToken(token: string): AuthTokenData {
         try {
             return jwt_decode(token);
         } catch (e) {
@@ -57,11 +57,7 @@ export const jwtTokenAuth = {
 
     getDataFromCompressedToken(token: string): AuthState {
         const inflated = this.inflateToken(token);
-        return this.getDataFromToken(inflated);
-    },
-
-    getDataFromToken(token: string): AuthState {
-        const decoded = this.decodeToken(token);
+        const decoded = this.decodeToken(inflated);
         const permissions = decoded.permissions.split(",").filter((x: string) => x.length > 0);
         const modellingGroups = this.parseModellingGroups(decoded.roles);
         return {
@@ -75,4 +71,4 @@ export const jwtTokenAuth = {
             isReportReviewer: permissions.indexOf("*/reports.review") > -1
         }
     }
-}
+};
