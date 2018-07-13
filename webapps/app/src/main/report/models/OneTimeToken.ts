@@ -1,3 +1,5 @@
+import {jwtTokenAuth} from "../../shared/modules/jwtTokenAuth";
+
 const jwt_decode = require('jwt-decode');
 
 export interface OneTimeToken {
@@ -15,16 +17,17 @@ export interface OneTimeTokenData {
     nonce: string;
 }
 
-export function decodeOneTimeToken(token: string): OneTimeToken {
+export function decodeOneTimeToken(compressedToken: string): OneTimeToken {
     try {
+        const token = jwtTokenAuth.inflateToken(compressedToken);
         return {
-            raw: token,
+            raw: compressedToken,
             data: jwt_decode(token),
         };
     } catch (e) {
-        console.log("Onetime token decoding failed, token is malformed: " + token);
+        console.log("Onetime token decoding failed, token is malformed: " + compressedToken);
         return {
-            raw: token,
+            raw: compressedToken,
             data: emptyOneTimeTokenData()
         };
     }

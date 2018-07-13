@@ -14,7 +14,7 @@ describe("OneTimeTokenStore.fetchToken", () => {
     const data = mockOneTimeTokenData({ url: qualifiedUrl });
     const token = sign(data, "secret");
     const compressedToken = compress(token);
-    const decodedToken = decodeOneTimeToken(token);
+    const decodedToken = decodeOneTimeToken(compressedToken);
 
     new ReportingFetchHelper<string, OneTimeToken>({
         makePayload: () => compressedToken,
@@ -28,7 +28,7 @@ describe("OneTimeTokenStore.fetchToken", () => {
         prepareForCachedFetch: () => {
             const tokens: any = {};
             tokens[qualifiedUrl] = {
-                raw: token,
+                raw: compressedToken,
                 data: data
             };
             alt.bootstrap(JSON.stringify({

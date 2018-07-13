@@ -15,7 +15,7 @@ class OneTimeTokenActions extends FetchActions<string[]> implements Actions {
     }
 
     receiveToken(token: string): OneTimeToken {
-        return decodeOneTimeToken(jwtTokenAuth.inflateToken(token));
+        return decodeOneTimeToken(token);
     }
 
     clearUsedToken(url: string): string {

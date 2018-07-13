@@ -19,12 +19,12 @@ describe("OneTimeTokenStore", () => {
         oneTimeTokenActions.receiveToken(compressedToken);
         const retrieved = oneTimeTokenStore.getToken(oneTimeTokenStore.getState(), url);
         expect(retrieved).to.not.be.null;
-        expect(retrieved.raw).to.eq(uncompressedToken);
+        expect(retrieved.raw).to.eq(compressedToken);
         expect(retrieved.data.url).to.eq(qualifiedUrl);
     });
 
     it("handles beginFetchToken", () => {
-        bootstrapOneTimeTokenStore([ decodeOneTimeToken(uncompressedToken) ], qualifiedUrl);
+        bootstrapOneTimeTokenStore([ decodeOneTimeToken(compressedToken) ], qualifiedUrl);
         let retrieved = oneTimeTokenStore.getToken(oneTimeTokenStore.getState(), url);
         expect(retrieved.data.url).to.eq(qualifiedUrl);
         oneTimeTokenActions.beginFetchToken();
@@ -33,7 +33,7 @@ describe("OneTimeTokenStore", () => {
     });
 
     it("handles clearUsedToken", () => {
-        bootstrapOneTimeTokenStore([ decodeOneTimeToken(uncompressedToken   ) ]);
+        bootstrapOneTimeTokenStore([ decodeOneTimeToken(compressedToken) ]);
         let retrieved = oneTimeTokenStore.getToken(oneTimeTokenStore.getState(), url);
         expect(retrieved.data.url).to.eq(qualifiedUrl);
         oneTimeTokenActions.clearUsedToken(url);
