@@ -3,8 +3,7 @@ import * as jwt from "jsonwebtoken";
 
 import {jwtTokenAuth} from "../../../main/shared/modules/jwtTokenAuth";
 import {AuthState} from "../../../main/shared/reducers/authReducer";
-import {compress} from "../helpers/TokenHelpers";
-import {sign} from "jsonwebtoken";
+import {compress, signAndCompress} from "../helpers/TokenHelpers";
 import {Sandbox} from "../../Sandbox";
 
 describe('JwtTokenAuth Module Tests', () => {
@@ -51,24 +50,6 @@ describe('JwtTokenAuth Module Tests', () => {
         expect(modellingGroups).to.eql(['IC-Garske', 'test-group']);
     });
 
-    it('inflates compressed token and gets data', () => {
-
-        const testData = {
-            sub: "test.user",
-            permissions: "test.permissions",
-            roles: "test.roles",
-            iss: "test.iss",
-            exp: Math.round(Date.now() / 1000) + 1000
-        };
-        const testToken = jwt.sign(testData, "secret");
-        sandbox.setStubFunc(jwtTokenAuth, "inflateToken", () => testToken);
-        const decoded = jwtTokenAuth.decodeToken(testToken);
-        expect(decoded.sub).to.eql(testData.sub);
-        expect(decoded.permissions).to.eql(testData.permissions);
-        expect(decoded.sub).to.eql(testData.sub);
-        expect(decoded.roles).to.eql(testData.roles);
-    });
-
     it('decodes token data and formats it as AuthState, account active, modeller', () => {
         const testData = {
             sub: "test.user",
@@ -77,8 +58,8 @@ describe('JwtTokenAuth Module Tests', () => {
             iss: "test.iss",
             exp: Math.round(Date.now() / 1000) + 1000
         };
-        const testToken = jwt.sign(testData, "secret");
-        const authData: AuthState = jwtTokenAuth.getDataFromToken(testToken);
+        const testToken = signAndCompress(testData, "secret");
+        const authData: AuthState = jwtTokenAuth.getDataFromCompressedToken(testToken);
 
         expect(authData.loggedIn).to.eql(true);
         expect(authData.bearerToken).to.eql(testToken);
@@ -98,8 +79,8 @@ describe('JwtTokenAuth Module Tests', () => {
             iss: "test.iss",
             exp: Math.round(Date.now() / 1000) + 1000
         };
-        const testToken = jwt.sign(testData, "secret");
-        const authData: AuthState = jwtTokenAuth.getDataFromToken(testToken);
+        const testToken = signAndCompress(testData, "secret");
+        const authData: AuthState = jwtTokenAuth.getDataFromCompressedToken(testToken);
 
         expect(authData.isAccountActive).to.eql(false);
         expect(authData.isModeller).to.eql(false);
@@ -114,14 +95,14 @@ describe('JwtTokenAuth Module Tests', () => {
             exp: Math.round(Date.now() / 1000) + 1000
         };
 
-        let testToken = jwt.sign(testData, "secret");
-        let result = jwtTokenAuth.getDataFromToken(testToken);
+        let testToken = signAndCompress(testData, "secret");
+        let result = jwtTokenAuth.getDataFromCompressedToken(testToken);
 
         expect(result.isReportReviewer).to.be.true;
 
         testData.permissions = "*/can-login";
-        testToken = jwt.sign(testData, "secret");
-        result = jwtTokenAuth.getDataFromToken(testToken);
+        testToken = signAndCompress(testData, "secret");
+        result = jwtTokenAuth.getDataFromCompressedToken(testToken);
 
         expect(result.isReportReviewer).to.be.false;
 
