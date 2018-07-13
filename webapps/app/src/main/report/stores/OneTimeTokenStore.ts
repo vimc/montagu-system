@@ -61,7 +61,6 @@ class OneTimeTokenStore extends AbstractStore<OneTimeTokenStoreState, OneTimeTok
     }
 
     handleReceiveToken(token: OneTimeToken){
-        console.log(token)
         this.tokens[token.data.url] = token;
     }
 
