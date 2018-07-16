@@ -14,6 +14,9 @@ import org.vaccineimpact.api.db.tables.ActivityType;
 import org.vaccineimpact.api.db.tables.ApiAccessLog;
 import org.vaccineimpact.api.db.tables.AppUser;
 import org.vaccineimpact.api.db.tables.BurdenEstimate;
+import org.vaccineimpact.api.db.tables.BurdenEstimateCountryExpectation;
+import org.vaccineimpact.api.db.tables.BurdenEstimateExpectation;
+import org.vaccineimpact.api.db.tables.BurdenEstimateOutcomeExpectation;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSet;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetProblem;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus;
@@ -132,6 +135,21 @@ public class Tables {
      * The table <code>public.burden_estimate</code>.
      */
     public static final BurdenEstimate BURDEN_ESTIMATE = org.vaccineimpact.api.db.tables.BurdenEstimate.BURDEN_ESTIMATE;
+
+    /**
+     * The table <code>public.burden_estimate_country_expectation</code>.
+     */
+    public static final BurdenEstimateCountryExpectation BURDEN_ESTIMATE_COUNTRY_EXPECTATION = org.vaccineimpact.api.db.tables.BurdenEstimateCountryExpectation.BURDEN_ESTIMATE_COUNTRY_EXPECTATION;
+
+    /**
+     * This table, in combination with burden_estimate_country_expectation and burden_estimate_outcome_expectation, describes in detail the burden estimates we expect to be uploaded for a particular responsibility. If you imagine plotting expected year and age combinations on x and y axes, then the year_* and age_* columns provide a rectangular area. Within those bounds, the cohort columns optionally give us the ability to describe a triangular area. If a cohort_min_inclusive is defined then only people born in that year and afterwards are included. So if this is set to  2000 then the only ages expected in 2000 are 0. Whereas by 2010, ages 0 - 10 are expected.  Similarly, if cohort_max_inclusive is defined then only people born in that year or before are included.
+     */
+    public static final BurdenEstimateExpectation BURDEN_ESTIMATE_EXPECTATION = org.vaccineimpact.api.db.tables.BurdenEstimateExpectation.BURDEN_ESTIMATE_EXPECTATION;
+
+    /**
+     * The table <code>public.burden_estimate_outcome_expectation</code>.
+     */
+    public static final BurdenEstimateOutcomeExpectation BURDEN_ESTIMATE_OUTCOME_EXPECTATION = org.vaccineimpact.api.db.tables.BurdenEstimateOutcomeExpectation.BURDEN_ESTIMATE_OUTCOME_EXPECTATION;
 
     /**
      * The table <code>public.burden_estimate_set</code>.
