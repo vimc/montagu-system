@@ -22,6 +22,9 @@ import org.vaccineimpact.api.db.tables.ActivityType;
 import org.vaccineimpact.api.db.tables.ApiAccessLog;
 import org.vaccineimpact.api.db.tables.AppUser;
 import org.vaccineimpact.api.db.tables.BurdenEstimate;
+import org.vaccineimpact.api.db.tables.BurdenEstimateCountryExpectation;
+import org.vaccineimpact.api.db.tables.BurdenEstimateExpectation;
+import org.vaccineimpact.api.db.tables.BurdenEstimateOutcomeExpectation;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSet;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetProblem;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus;
@@ -121,7 +124,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -992650695;
+    private static final long serialVersionUID = 805071637;
 
     /**
      * The reference instance of <code>public</code>
@@ -147,6 +150,21 @@ public class Public extends SchemaImpl {
      * The table <code>public.burden_estimate</code>.
      */
     public final BurdenEstimate BURDEN_ESTIMATE = org.vaccineimpact.api.db.tables.BurdenEstimate.BURDEN_ESTIMATE;
+
+    /**
+     * The table <code>public.burden_estimate_country_expectation</code>.
+     */
+    public final BurdenEstimateCountryExpectation BURDEN_ESTIMATE_COUNTRY_EXPECTATION = org.vaccineimpact.api.db.tables.BurdenEstimateCountryExpectation.BURDEN_ESTIMATE_COUNTRY_EXPECTATION;
+
+    /**
+     * This table, in combination with burden_estimate_country_expectation and burden_estimate_outcome_expectation, describes in detail the burden estimates we expect to be uploaded for a particular responsibility. If you imagine plotting expected year and age combinations on x and y axes, then the year_* and age_* columns provide a rectangular area. Within those bounds, the cohort columns optionally give us the ability to describe a triangular area. If a cohort_min_inclusive is defined then only people born in that year and afterwards are included. So if this is set to  2000 then the only ages expected in 2000 are 0. Whereas by 2010, ages 0 - 10 are expected.  Similarly, if cohort_max_inclusive is defined then only people born in that year or before are included.
+     */
+    public final BurdenEstimateExpectation BURDEN_ESTIMATE_EXPECTATION = org.vaccineimpact.api.db.tables.BurdenEstimateExpectation.BURDEN_ESTIMATE_EXPECTATION;
+
+    /**
+     * The table <code>public.burden_estimate_outcome_expectation</code>.
+     */
+    public final BurdenEstimateOutcomeExpectation BURDEN_ESTIMATE_OUTCOME_EXPECTATION = org.vaccineimpact.api.db.tables.BurdenEstimateOutcomeExpectation.BURDEN_ESTIMATE_OUTCOME_EXPECTATION;
 
     /**
      * The table <code>public.burden_estimate_set</code>.
@@ -738,6 +756,7 @@ public class Public extends SchemaImpl {
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
             Sequences.API_ACCESS_LOG_ID_SEQ,
+            Sequences.BURDEN_ESTIMATE_EXPECTATION_ID_SEQ,
             Sequences.BURDEN_ESTIMATE_SET_ID_SEQ,
             Sequences.BURDEN_ESTIMATE_SET_PROBLEM_ID_SEQ,
             Sequences.BURDEN_OUTCOME_ID_SEQ,
@@ -791,6 +810,9 @@ public class Public extends SchemaImpl {
             ApiAccessLog.API_ACCESS_LOG,
             AppUser.APP_USER,
             BurdenEstimate.BURDEN_ESTIMATE,
+            BurdenEstimateCountryExpectation.BURDEN_ESTIMATE_COUNTRY_EXPECTATION,
+            BurdenEstimateExpectation.BURDEN_ESTIMATE_EXPECTATION,
+            BurdenEstimateOutcomeExpectation.BURDEN_ESTIMATE_OUTCOME_EXPECTATION,
             BurdenEstimateSet.BURDEN_ESTIMATE_SET,
             BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM,
             BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS,

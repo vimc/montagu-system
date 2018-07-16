@@ -29,6 +29,11 @@ public class Sequences {
     public static final Sequence<Integer> API_ACCESS_LOG_ID_SEQ = new SequenceImpl<Integer>("api_access_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
 
     /**
+     * The sequence <code>public.burden_estimate_expectation_id_seq</code>
+     */
+    public static final Sequence<Integer> BURDEN_ESTIMATE_EXPECTATION_ID_SEQ = new SequenceImpl<Integer>("burden_estimate_expectation_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
      * The sequence <code>public.burden_estimate_set_id_seq</code>
      */
     public static final Sequence<Integer> BURDEN_ESTIMATE_SET_ID_SEQ = new SequenceImpl<Integer>("burden_estimate_set_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
