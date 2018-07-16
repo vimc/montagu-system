@@ -43,6 +43,9 @@ open class Repositories(val dsl: DSLContext)
     open val scenario: ScenarioRepository by lazy {
         JooqScenarioRepository(dsl)
     }
+    open val expectations: ExpectationsRepository by lazy {
+        JooqExpectationsRepository(dsl)
+    }
     open val responsibilities: ResponsibilitiesRepository by lazy {
         JooqResponsibilitiesRepository(dsl, scenario, touchstone)
     }

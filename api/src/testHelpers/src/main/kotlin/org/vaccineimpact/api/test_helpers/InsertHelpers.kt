@@ -180,13 +180,13 @@ fun JooqContext.addScenarios(touchstone: String, vararg scenarioDescriptions: St
 
 fun JooqContext.addResponsibilitySet(
         modellingGroup: String,
-        touchstone: String,
+        touchstoneVersion: String,
         status: String = "incomplete"
 ): Int
 {
     val record = this.dsl.newRecord(RESPONSIBILITY_SET).apply {
         this.modellingGroup = modellingGroup
-        this.touchstone = touchstone
+        this.touchstone = touchstoneVersion
         this.status = status
     }
     record.store()
@@ -359,11 +359,27 @@ fun JooqContext.addResponsibility(responsibilitySetId: Int, scenarioId: Int,
 }
 
 /** Creates both a responsibility and the scenario it depends on **/
-fun JooqContext.addResponsibility(responsibilitySetId: Int, touchstone: String, scenarioDescription: String,
-                                  open: Boolean = true): Int
+fun JooqContext.addResponsibility(
+        responsibilitySetId: Int,
+        touchstoneVersion: String,
+        scenarioDescription: String,
+        open: Boolean = true
+): Int
 {
-    val scenarioId = this.addScenarioToTouchstone(touchstone, scenarioDescription)
+    val scenarioId = this.addScenarioToTouchstone(touchstoneVersion, scenarioDescription)
     return this.addResponsibility(responsibilitySetId, scenarioId, open = open)
+}
+
+/** Creates a responsibility set, a responsibility and the scenario it depends on **/
+fun JooqContext.addResponsibilityInNewSet(
+        group: String,
+        touchstoneVersion: String,
+        scenarioDescription: String,
+        open: Boolean = true
+): Int
+{
+    val setId = this.addResponsibilitySet(group, touchstoneVersion)
+    return this.addResponsibility(setId, touchstoneVersion, scenarioDescription, open = open)
 }
 
 fun JooqContext.addCoverageSet(
@@ -713,4 +729,43 @@ fun JooqContext.addUserWithRoles(username: String, vararg roles: ReifiedRole)
     {
         this.ensureUserHasRole(username, role)
     }
+}
+
+fun JooqContext.addExpectations(
+        responsibilityId: Int,
+        yearMinInclusive: Short = 2000,
+        yearMaxInclusive: Short = 2100,
+        ageMinInclusive: Short = 0,
+        ageMaxInclusive: Short = 99,
+        cohortMinInclusive: Short? = null,
+        cohortMaxInclusive: Short? = null,
+        countries: List<String> = emptyList(),
+        outcomes: List<String> = emptyList()
+)
+{
+    val id = this.dsl.newRecord(BURDEN_ESTIMATE_EXPECTATION).apply {
+        this.responsibility = responsibilityId
+        this.yearMinInclusive = yearMinInclusive
+        this.yearMaxInclusive = yearMaxInclusive
+        this.ageMinInclusive = ageMinInclusive
+        this.ageMaxInclusive = ageMaxInclusive
+        this.cohortMinInclusive = cohortMinInclusive
+        this.cohortMaxInclusive = cohortMaxInclusive
+    }.store()
+
+    val countryRecords = countries.map { country ->
+        this.dsl.newRecord(BURDEN_ESTIMATE_COUNTRY_EXPECTATION).apply {
+            this.burdenEstimateExpectation = id
+            this.country = country
+        }
+    }
+    this.dsl.batchStore(countryRecords).execute()
+
+    val outcomeRecords = outcomes.map { outcome ->
+        this.dsl.newRecord(BURDEN_ESTIMATE_OUTCOME_EXPECTATION).apply {
+            this.burdenEstimateExpectation = id
+            this.outcome = outcome
+        }
+    }
+    this.dsl.batchStore(outcomeRecords).execute()
 }
