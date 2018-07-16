@@ -37,11 +37,17 @@ export const authActionCreators = {
         return (dispatch: Dispatch<any>) => {
             const token = localStorageHandler.get("accessToken");
             if (token) {
-                const inflated = jwtTokenAuth.inflateToken(token);
+                let inflated = token;
+                try {
+                    inflated = jwtTokenAuth.inflateToken(token);
+                }
+                catch(e){
+                    console.log("Access token has expired or is otherwise invalid: Logging out.");
+                    dispatch(this.logOut())
+                }
                 const decoded: AuthTokenData = jwtTokenAuth.decodeToken(inflated);
                 if (jwtTokenAuth.isExpired(decoded.exp)) {
                     console.log("Token is expired");
-                    localStorageHandler.remove("accessToken");
                     dispatch(this.logOut())
                 } else {
                     console.log("Found unexpired access token in local storage, so we're already logged in");

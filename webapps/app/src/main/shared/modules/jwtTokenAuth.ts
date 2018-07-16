@@ -23,7 +23,7 @@ export const jwtTokenAuth = {
         return false;
     },
 
-        decodeToken(token: string): AuthTokenData {
+    decodeToken(token: string): AuthTokenData {
         try {
             return jwt_decode(token);
         } catch (e) {
