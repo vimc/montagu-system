@@ -118,4 +118,16 @@ describe("AuthActions", () => {
             done();
         });
     });
+
+    it("dispatches unauthenticated action if saved token can't be inflated", (done) => {
+        const testToken = jwt.sign(mockUsertokenData, "secret");
+        sandbox.setStubFunc(localStorageHandler, "get", () => testToken);
+        sandbox.setStub(AuthService.prototype, "clearShinyCookie");
+        store.dispatch(authActionCreators.loadSavedToken());
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
+            done();
+        });
+    });
 });
