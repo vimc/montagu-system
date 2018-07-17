@@ -156,7 +156,7 @@ class ResponsibilityControllerTests : MontaguTests()
     }
 
     @Test
-    fun `can get template`()
+    fun `returns central estimates template by default`()
     {
         val context = mockContextForSpecificResponsibility(true)
 
@@ -165,8 +165,54 @@ class ResponsibilityControllerTests : MontaguTests()
                     listOf(Country("ABC", "CountryA"), Country("DEF", "CountryD")), listOf("Dalys", "Deaths"))
         }
 
-        GroupResponsibilityController(context, mock(), mock(), repo)
+        val result = GroupResponsibilityController(context, mock(), mock(), repo)
                 .getTemplate()
+
+        assertThat(result.data.first() is BurdenEstimate).isTrue()
+    }
+
+    @Test
+    fun `can get stochastic estimate template`()
+    {
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { it.params(":scenario-id") } doReturn "sId"
+            on { hasPermission(any()) } doReturn true
+            on { it.queryParams("type")} doReturn "stochastic"
+        }
+
+        val repo = mock<ExpectationsRepository> {
+            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn Expectations(2000..2030, 1..10, CohortRestriction(null, null),
+                    listOf(Country("ABC", "CountryA"), Country("DEF", "CountryD")), listOf("Dalys", "Deaths"))
+        }
+
+        val result = GroupResponsibilityController(context, mock(), mock(), repo)
+                .getTemplate()
+
+        assertThat(result.data.first() is StochasticBurdenEstimate).isTrue()
+    }
+
+    @Test
+    fun `can get central estimate template`()
+    {
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { it.params(":scenario-id") } doReturn "sId"
+            on { hasPermission(any()) } doReturn true
+            on { it.queryParams("type")} doReturn "central"
+        }
+
+        val repo = mock<ExpectationsRepository> {
+            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn Expectations(2000..2030, 1..10, CohortRestriction(null, null),
+                    listOf(Country("ABC", "CountryA"), Country("DEF", "CountryD")), listOf("Dalys", "Deaths"))
+        }
+
+        val result = GroupResponsibilityController(context, mock(), mock(), repo)
+                .getTemplate()
+
+        assertThat(result.data.first() is BurdenEstimate).isTrue()
     }
 
     private val mockTouchstones = listOf(

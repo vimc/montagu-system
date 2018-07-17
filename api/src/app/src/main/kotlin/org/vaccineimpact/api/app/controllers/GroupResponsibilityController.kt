@@ -55,14 +55,22 @@ class GroupResponsibilityController(
         return data
     }
 
-    fun getTemplate(): StreamSerializable<BurdenEstimate>
+    fun getTemplate(): StreamSerializable<BurdenEstimateRow>
     {
         val path = ResponsibilityPath(context)
+        val type = context.queryParams("type") ?: "central"
         modellingGroupRepo.getModellingGroup(path.groupId)
         val expectations = expectationsRepository.getExpectationsForResponsibility(path.groupId,
                 path.touchstoneVersionId, path.scenarioId)
 
-        return FlexibleDataTable.new(expectations.toSequence(), expectations.outcomes)
+        if (type == "central")
+        {
+            return FlexibleDataTable.new(expectations.toSequence(), expectations.outcomes)
+        }
+        else
+        {
+            return FlexibleDataTable.new(expectations.toStochasticSequence(), expectations.outcomes)
+        }
     }
 
     // We are sure that this will be non-null, as its part of the URL,

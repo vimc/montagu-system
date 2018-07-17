@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.vaccineimpact.api.models.CohortRestriction
 import org.vaccineimpact.api.models.Country
 import org.vaccineimpact.api.models.Expectations
+import org.vaccineimpact.api.models.StochasticBurdenEstimate
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class ExpectationsTests : MontaguTests()
@@ -78,4 +79,21 @@ class ExpectationsTests : MontaguTests()
         assertThat(result.count()).isEqualTo(expectedCohorts * numCountries)
     }
 
+    @Test
+    fun `can generate stochastic sequence`()
+    {
+        val expectedOutcomes = listOf("Dalys", "Deaths")
+
+        val expectations = Expectations(2000..2007, 1..10, CohortRestriction(null,null),
+                listOf(Country("ABC", "CountryA"), Country("DEF", "CountryD")), expectedOutcomes)
+
+        val result = expectations.toStochasticSequence().toList()
+
+        val expectedCohorts = 80
+        val numCountries = 2
+        val numRuns = 200
+
+        assertThat(result.count()).isEqualTo(expectedCohorts * numCountries * numRuns)
+        assertThat(result.all{ it.outcomes.keys.containsAll(expectedOutcomes)}).isTrue()
+    }
 }

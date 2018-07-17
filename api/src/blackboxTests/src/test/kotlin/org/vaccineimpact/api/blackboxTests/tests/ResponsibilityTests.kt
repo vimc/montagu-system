@@ -202,8 +202,9 @@ class ResponsibilityTests : DatabaseTest()
             })
         }
     }
+
     @Test
-    fun `get template has correct headers`()
+    fun `get central template has correct headers`()
     {
         val userHelper = TestUserHelper()
         val requestHelper = RequestHelper()
@@ -228,7 +229,34 @@ class ResponsibilityTests : DatabaseTest()
         expectedHeaders.forEachIndexed { index, h ->
             Assertions.assertThat(h).isEqualTo(headers[index])
         }
+    }
 
+    @Test
+    fun `get stochastic template has correct headers`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            val id = addResponsibilities(it, touchstoneStatus = "open")
+            it.addExpectations(id, outcomes = listOf("deaths", "dalys"))
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/template/?type=stochastic",
+                PermissionSet("*/can-login", "*/scenarios.read", "$groupScope/responsibilities.read"), acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first().toList()
+
+        val expectedHeaders = listOf("disease", "run_id", "year", "age", "country", "country_name",
+                "cohort_size", "deaths", "dalys")
+
+        expectedHeaders.forEachIndexed { index, h ->
+            Assertions.assertThat(h).isEqualTo(headers[index])
+        }
     }
 
     @Test
