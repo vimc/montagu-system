@@ -144,6 +144,17 @@ Schema: [`ResponsibilityAndTouchstone.schema.json`](../schemas/ResponsibilityAnd
         }
     }
 
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/template/
+Returns the burden estimate template for the responsibility of this modelling group in the given touchstone.
+
+Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read`. 
+
+### Query parameters:
+
+#### type
+Optional. The type of template to return, either `central` or `stochastic`. Defaults to `central`.
+Schema: [`BurdenEstimate.csvschema.json`](../schemas/BurdenEstimate.csvschema.json)
+
 
 ## PATCH /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/
 **NOT IMPLEMENTED**
