@@ -40,7 +40,7 @@ export const jwtTokenAuth = {
             return pako.inflate(decoded, {to: 'string'});
         }
         catch(e){
-            console.log(`Token inflation failed: ${token}. Logging out`);
+            console.log(`Token inflation failed: ${token}.`);
             return null;
         }
     },
