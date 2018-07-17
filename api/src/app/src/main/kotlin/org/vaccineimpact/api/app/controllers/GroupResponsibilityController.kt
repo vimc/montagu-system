@@ -10,9 +10,10 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.filterByPermission
-import org.vaccineimpact.api.models.Responsibilities
-import org.vaccineimpact.api.models.ResponsibilityAndTouchstone
-import org.vaccineimpact.api.models.Touchstone
+import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.serialization.FlexibleDataTable
+import org.vaccineimpact.api.serialization.StreamSerializable
 
 class GroupResponsibilityController(
         context: ActionContext,
@@ -54,12 +55,14 @@ class GroupResponsibilityController(
         return data
     }
 
-    fun getTemplate()
+    fun getTemplate(): StreamSerializable<BurdenEstimate>
     {
         val path = ResponsibilityPath(context)
         modellingGroupRepo.getModellingGroup(path.groupId)
         val expectations = expectationsRepository.getExpectationsForResponsibility(path.groupId,
                 path.touchstoneVersionId, path.scenarioId)
+
+        return FlexibleDataTable.new(expectations.toSequence(), expectations.outcomes)
     }
 
     // We are sure that this will be non-null, as its part of the URL,
