@@ -203,7 +203,7 @@ class ResponsibilityTests : DatabaseTest()
         }
     }
     @Test
-    fun `get template`()
+    fun `get template has correct headers`()
     {
         val userHelper = TestUserHelper()
         val requestHelper = RequestHelper()
