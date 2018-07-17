@@ -4,6 +4,8 @@ import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import java.math.BigDecimal
 
+interface BurdenEstimateRow
+
 @FlexibleColumns
 data class BurdenEstimate(
         val disease: String,
@@ -14,7 +16,7 @@ data class BurdenEstimate(
         val cohortSize: Float,
         @FlexibleProperty
         val outcomes: Map<String, Float?>
-)
+): BurdenEstimateRow
 
 @FlexibleColumns
 data class StochasticBurdenEstimate(
@@ -25,8 +27,9 @@ data class StochasticBurdenEstimate(
         val country: String,
         val countryName: String,
         val cohortSize: Float,
+        @FlexibleProperty
         val outcomes: Map<String, Float?>
-)
+): BurdenEstimateRow
 
 data class BurdenEstimateWithRunId(
         val disease: String,
@@ -36,6 +39,7 @@ data class BurdenEstimateWithRunId(
         val country: String,
         val countryName: String,
         val cohortSize: Float,
+        @FlexibleProperty
         val outcomes: Map<String, Float?>
 )
 {

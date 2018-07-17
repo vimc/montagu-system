@@ -13,7 +13,7 @@ class Expectations(
                 && (cohorts.maximumBirthYear == null || this <= cohorts.maximumBirthYear)
     }
 
-    fun toSequence(): Sequence<BurdenEstimate>
+    private fun numRows(): Int
     {
         var numCohorts = 0
 
@@ -26,8 +26,14 @@ class Expectations(
         }
 
         val numCountries = countries.count()
-        var numRows = numCohorts * numCountries
-        val outcomes = outcomes.associateBy({ it }, { 0F })
+        return numCohorts * numCountries
+    }
+
+    private val outcomesMap = outcomes.associateBy({ it }, { 0F })
+
+    fun toSequence(): Sequence<BurdenEstimate>
+    {
+        var numRows = numRows()
 
         return generateSequence {
             (numRows--)
@@ -37,7 +43,26 @@ class Expectations(
             }
             else
             {
-                BurdenEstimate("", 0, 0, "", "", 0F, outcomes)
+                BurdenEstimate("", 0, 0, "", "", 0F, outcomesMap)
+            }
+        }
+    }
+
+    fun toStochasticSequence(): Sequence<StochasticBurdenEstimate>
+    {
+        var numRows = numRows()
+        val numRuns = 200
+        numRows *= numRuns
+
+        return generateSequence {
+            (numRows--)
+            if (numRows < 0)
+            {
+                null // terminate sequence
+            }
+            else
+            {
+                StochasticBurdenEstimate("", "", 0, 0, "", "", 0F, outcomesMap)
             }
         }
     }
