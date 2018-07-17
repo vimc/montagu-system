@@ -4,6 +4,7 @@ import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
@@ -16,11 +17,14 @@ import org.vaccineimpact.api.models.Touchstone
 class GroupResponsibilityController(
         context: ActionContext,
         private val modellingGroupRepo: ModellingGroupRepository,
-        private val responsibilitiesRepo: ResponsibilitiesRepository
-        ) : Controller(context)
+        private val responsibilitiesRepo: ResponsibilitiesRepository,
+        private val expectationsRepository: ExpectationsRepository
+) : Controller(context)
 {
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, repositories.modellingGroup, repositories.responsibilities)
+            : this(context, repositories.modellingGroup,
+            repositories.responsibilities,
+            repositories.expectations)
 
     fun getResponsibleTouchstones(): List<Touchstone>
     {
@@ -48,6 +52,14 @@ class GroupResponsibilityController(
         val data = responsibilitiesRepo.getResponsibility(path.groupId, path.touchstoneVersionId, path.scenarioId)
         context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, data.touchstoneVersion.status)
         return data
+    }
+
+    fun getTemplate()
+    {
+        val path = ResponsibilityPath(context)
+        modellingGroupRepo.getModellingGroup(path.groupId)
+        val expectations = expectationsRepository.getExpectationsForResponsibility(path.groupId,
+                path.touchstoneVersionId, path.scenarioId)
     }
 
     // We are sure that this will be non-null, as its part of the URL,

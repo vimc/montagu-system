@@ -4,27 +4,30 @@ import org.jooq.DSLContext
 import org.jooq.Record2
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
+import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.BurdenEstimateCountryExpectation
 import org.vaccineimpact.api.db.tables.BurdenEstimateExpectation
 import org.vaccineimpact.api.db.tables.BurdenEstimateOutcomeExpectation
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateExpectationRecord
-import org.vaccineimpact.api.models.CohortRestriction
-import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.Expectations
-import org.vaccineimpact.api.models.YearRange
+import org.vaccineimpact.api.models.*
 
-class JooqExpectationsRepository(dsl: DSLContext) : JooqRepository(dsl), ExpectationsRepository
+class JooqExpectationsRepository(dsl: DSLContext,
+                                 private val responsibilitiesRepository: ResponsibilitiesRepository)
+    : JooqRepository(dsl), ExpectationsRepository
 {
-    private object Tables {
+    private object Tables
+    {
         val expectations: BurdenEstimateExpectation = BURDEN_ESTIMATE_EXPECTATION
         val countries: BurdenEstimateCountryExpectation = BURDEN_ESTIMATE_COUNTRY_EXPECTATION
         val outcomes: BurdenEstimateOutcomeExpectation = BURDEN_ESTIMATE_OUTCOME_EXPECTATION
     }
 
-    override fun getExpectationsForResponsibility(responsibilityId: Int): Expectations
+    override fun getExpectationsForResponsibility(groupId: String,
+                                                  touchstoneVersionId: String, scenarioId: String): Expectations
     {
+        val responsibilityId = responsibilitiesRepository.getResponsibilityId(groupId, touchstoneVersionId, scenarioId)
         val basicData = dsl.fetchAny(
                 Tables.expectations,
                 Tables.expectations.RESPONSIBILITY.eq(responsibilityId)

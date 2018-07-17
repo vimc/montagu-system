@@ -43,9 +43,6 @@ open class Repositories(val dsl: DSLContext)
     open val scenario: ScenarioRepository by lazy {
         JooqScenarioRepository(dsl)
     }
-    open val expectations: ExpectationsRepository by lazy {
-        JooqExpectationsRepository(dsl)
-    }
     open val responsibilities: ResponsibilitiesRepository by lazy {
         JooqResponsibilitiesRepository(dsl, scenario, touchstone)
     }
@@ -54,6 +51,9 @@ open class Repositories(val dsl: DSLContext)
     }
     open val burdenEstimates: BurdenEstimateRepository by lazy {
         JooqBurdenEstimateRepository(dsl, scenario, touchstone, modellingGroup)
+    }
+    open val expectations: ExpectationsRepository by lazy {
+        JooqExpectationsRepository(dsl, responsibilities)
     }
 
     open fun <T> inTransaction(work: (Repositories) -> T): T

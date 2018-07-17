@@ -123,6 +123,25 @@ class JooqResponsibilitiesRepository(
         }
     }
 
+    override fun getResponsibilityId(groupId: String, touchstoneVersionId: String, scenarioId: String): Int
+    {
+        val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
+        if (responsibilitySet != null)
+        {
+            val id = dsl.select(Tables.RESPONSIBILITY.ID)
+                    .fromJoinPath(Tables.RESPONSIBILITY, Tables.SCENARIO, Tables.SCENARIO_DESCRIPTION)
+                    .where(Tables.RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibilitySet[Tables.RESPONSIBILITY_SET.ID])
+                    .and(Tables.SCENARIO_DESCRIPTION.ID.eq(scenarioId))
+            ).singleOrNull() ?: throw UnknownObjectError(scenarioId, "responsibility")
+
+            return id.into(Int::class.java)
+        }
+        else
+        {
+            throw UnknownObjectError(scenarioId, "responsibility")
+        }
+    }
+
     override fun getResponsibilitiesForGroupAndTouchstone(groupId: String, touchstoneVersionId: String,
                                                           scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
     {

@@ -12,4 +12,6 @@ interface ResponsibilitiesRepository: Repository {
     fun getResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityAndTouchstone
     fun getResponsibilitiesForGroupAndTouchstone(groupId: String, touchstoneVersionId: String,
                                                  scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
+
+    fun getResponsibilityId(groupId: String, touchstoneVersionId: String, scenarioId: String): Int
 }

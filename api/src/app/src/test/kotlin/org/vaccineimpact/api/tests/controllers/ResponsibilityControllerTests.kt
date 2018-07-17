@@ -27,7 +27,7 @@ class ResponsibilityControllerTests : MontaguTests()
             on { params(":group-id") } doReturn groupId
             on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn true
         }
-        val data = GroupResponsibilityController(context, repo, mock()).getResponsibleTouchstones()
+        val data = GroupResponsibilityController(context, repo, mock(), mock()).getResponsibleTouchstones()
         assertThat(data).isEqualTo(mockTouchstones)
     }
 
@@ -43,7 +43,7 @@ class ResponsibilityControllerTests : MontaguTests()
             on { params(":group-id") } doReturn groupId
             on { hasPermission(ReifiedPermission.parse("*/touchstones.prepare")) } doReturn false
         }
-        val data = GroupResponsibilityController(context, repo, mock()).getResponsibleTouchstones()
+        val data = GroupResponsibilityController(context, repo, mock(), mock()).getResponsibleTouchstones()
         // Note that here we are testing both that the touchstone named 'touchstone' only has 1
         // of its versions returned, and that the 'all-hidden' touchstone isn't returned at all
         assertThat(data).isEqualTo(listOf(
@@ -69,7 +69,7 @@ class ResponsibilityControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        GroupResponsibilityController(context, mock(), repo).getResponsibilities()
+        GroupResponsibilityController(context, mock(), repo, mock()).getResponsibilities()
 
         verify(repo).getResponsibilitiesForGroupAndTouchstone(eq("gId"), eq("tId"), any())
     }
@@ -91,7 +91,7 @@ class ResponsibilityControllerTests : MontaguTests()
         }
 
         Assertions.assertThatThrownBy {
-            GroupResponsibilityController(context, mock(), repo).getResponsibilities()
+            GroupResponsibilityController(context, mock(), repo, mock()).getResponsibilities()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 
@@ -108,7 +108,7 @@ class ResponsibilityControllerTests : MontaguTests()
         }
 
         Assertions.assertThatThrownBy {
-            GroupResponsibilityController(context, repo, mock()).getResponsibilities()
+            GroupResponsibilityController(context, repo, mock(), mock()).getResponsibilities()
         }.hasMessageContaining("Unknown modelling-group")
     }
 
@@ -118,7 +118,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val repo = makeRepoMockingGetResponsibility(TouchstoneStatus.OPEN)
         val context = mockContextForSpecificResponsibility(true)
 
-        GroupResponsibilityController(context, mock(), repo).getResponsibility()
+        GroupResponsibilityController(context, mock(), repo, mock()).getResponsibility()
 
         verify(repo).getResponsibility(eq("gId"), eq("tId"), eq("sId"))
     }
@@ -129,7 +129,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val repo = makeRepoMockingGetResponsibility(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
         Assertions.assertThatThrownBy {
-            GroupResponsibilityController(context, mock(), repo).getResponsibility()
+            GroupResponsibilityController(context, mock(), repo, mock()).getResponsibility()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 
@@ -142,7 +142,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(true)
 
         Assertions.assertThatThrownBy {
-            GroupResponsibilityController(context, repo, mock()).getResponsibility()
+            GroupResponsibilityController(context, repo, mock(), mock()).getResponsibility()
         }.hasMessageContaining("Unknown modelling-group")
 
     }
