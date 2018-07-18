@@ -9,9 +9,27 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class ExpectationsTests : MontaguTests()
 {
+    @Test
+    fun `can generate long sequence`()
+    {
+        val expectedOutcomes = listOf("Dalys", "Deaths")
+
+        val longCountryList = (1..100).map {
+            Country(it.toString(), it.toString())
+        }
+        val expectations = Expectations(2000..2080, 1..80, CohortRestriction(null,null),
+                longCountryList, expectedOutcomes)
+
+        val result = expectations.expectedRows()
+
+        val expectedCohorts = 80 * 80
+        val numCountries = 100
+
+        assertThat(result.count()).isEqualTo(expectedCohorts * numCountries)
+    }
 
     @Test
-    fun `can generate sequence with no cohort restrictions`()
+    fun `can generate rows with no cohort restrictions`()
     {
         val expectedOutcomes = listOf("Dalys", "Deaths")
 
@@ -27,7 +45,7 @@ class ExpectationsTests : MontaguTests()
     }
 
     @Test
-    fun `can generate sequence with min cohort restriction only`()
+    fun `can generate rows with min cohort restriction only`()
     {
         val expectedOutcomes = listOf("Dalys", "Deaths")
         val cohortRestriction = CohortRestriction(1994, null)
@@ -44,7 +62,7 @@ class ExpectationsTests : MontaguTests()
     }
 
     @Test
-    fun `can generate sequence with max cohort restriction only`()
+    fun `can generate rows with max cohort restriction only`()
     {
         val expectedOutcomes = listOf("Dalys", "Deaths")
         val cohortRestriction = CohortRestriction(null, 2001)
@@ -61,7 +79,7 @@ class ExpectationsTests : MontaguTests()
     }
 
     @Test
-    fun `can generate sequence with cohort restrictions`()
+    fun `can generate rows with cohort restrictions`()
     {
         val expectedOutcomes = listOf("Dalys", "Deaths")
         val cohortRestriction = CohortRestriction(1996, 2002)
