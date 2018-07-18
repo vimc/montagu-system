@@ -108,7 +108,6 @@ public class Indexes {
     public static final Index BURDEN_ESTIMATE_UNIQUE = Indexes0.BURDEN_ESTIMATE_UNIQUE;
     public static final Index BURDEN_ESTIMATE_COUNTRY_EXPECTATION_PKEY = Indexes0.BURDEN_ESTIMATE_COUNTRY_EXPECTATION_PKEY;
     public static final Index BURDEN_ESTIMATE_EXPECTATION_PKEY = Indexes0.BURDEN_ESTIMATE_EXPECTATION_PKEY;
-    public static final Index BURDEN_ESTIMATE_EXPECTATION_RESPONSIBILITY_KEY = Indexes0.BURDEN_ESTIMATE_EXPECTATION_RESPONSIBILITY_KEY;
     public static final Index BURDEN_ESTIMATE_OUTCOME_EXPECTATION_PKEY = Indexes0.BURDEN_ESTIMATE_OUTCOME_EXPECTATION_PKEY;
     public static final Index BURDEN_ESTIMATE_SET_PKEY = Indexes0.BURDEN_ESTIMATE_SET_PKEY;
     public static final Index BURDEN_ESTIMATE_SET_PROBLEM_PKEY = Indexes0.BURDEN_ESTIMATE_SET_PROBLEM_PKEY;
@@ -207,7 +206,6 @@ public class Indexes {
         public static Index BURDEN_ESTIMATE_UNIQUE = Internal.createIndex("burden_estimate_unique", BurdenEstimate.BURDEN_ESTIMATE, new OrderField[] { BurdenEstimate.BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET, BurdenEstimate.BURDEN_ESTIMATE.COUNTRY, BurdenEstimate.BURDEN_ESTIMATE.YEAR, BurdenEstimate.BURDEN_ESTIMATE.AGE, BurdenEstimate.BURDEN_ESTIMATE.BURDEN_OUTCOME }, true);
         public static Index BURDEN_ESTIMATE_COUNTRY_EXPECTATION_PKEY = Internal.createIndex("burden_estimate_country_expectation_pkey", BurdenEstimateCountryExpectation.BURDEN_ESTIMATE_COUNTRY_EXPECTATION, new OrderField[] { BurdenEstimateCountryExpectation.BURDEN_ESTIMATE_COUNTRY_EXPECTATION.BURDEN_ESTIMATE_EXPECTATION, BurdenEstimateCountryExpectation.BURDEN_ESTIMATE_COUNTRY_EXPECTATION.COUNTRY }, true);
         public static Index BURDEN_ESTIMATE_EXPECTATION_PKEY = Internal.createIndex("burden_estimate_expectation_pkey", BurdenEstimateExpectation.BURDEN_ESTIMATE_EXPECTATION, new OrderField[] { BurdenEstimateExpectation.BURDEN_ESTIMATE_EXPECTATION.ID }, true);
-        public static Index BURDEN_ESTIMATE_EXPECTATION_RESPONSIBILITY_KEY = Internal.createIndex("burden_estimate_expectation_responsibility_key", BurdenEstimateExpectation.BURDEN_ESTIMATE_EXPECTATION, new OrderField[] { BurdenEstimateExpectation.BURDEN_ESTIMATE_EXPECTATION.RESPONSIBILITY }, true);
         public static Index BURDEN_ESTIMATE_OUTCOME_EXPECTATION_PKEY = Internal.createIndex("burden_estimate_outcome_expectation_pkey", BurdenEstimateOutcomeExpectation.BURDEN_ESTIMATE_OUTCOME_EXPECTATION, new OrderField[] { BurdenEstimateOutcomeExpectation.BURDEN_ESTIMATE_OUTCOME_EXPECTATION.BURDEN_ESTIMATE_EXPECTATION, BurdenEstimateOutcomeExpectation.BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME }, true);
         public static Index BURDEN_ESTIMATE_SET_PKEY = Internal.createIndex("burden_estimate_set_pkey", BurdenEstimateSet.BURDEN_ESTIMATE_SET, new OrderField[] { BurdenEstimateSet.BURDEN_ESTIMATE_SET.ID }, true);
         public static Index BURDEN_ESTIMATE_SET_PROBLEM_PKEY = Internal.createIndex("burden_estimate_set_problem_pkey", BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM, new OrderField[] { BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM.ID }, true);

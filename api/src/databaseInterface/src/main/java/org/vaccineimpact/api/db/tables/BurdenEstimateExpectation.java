@@ -10,7 +10,6 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
-import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
@@ -49,7 +48,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateExpectationRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateExpectation extends TableImpl<BurdenEstimateExpectationRecord> {
 
-    private static final long serialVersionUID = 1229325074;
+    private static final long serialVersionUID = 1126369916;
 
     /**
      * The reference instance of <code>public.burden_estimate_expectation</code>
@@ -68,11 +67,6 @@ public class BurdenEstimateExpectation extends TableImpl<BurdenEstimateExpectati
      * The column <code>public.burden_estimate_expectation.id</code>.
      */
     public final TableField<BurdenEstimateExpectationRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('burden_estimate_expectation_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>public.burden_estimate_expectation.responsibility</code>.
-     */
-    public final TableField<BurdenEstimateExpectationRecord, Integer> RESPONSIBILITY = createField("responsibility", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.burden_estimate_expectation.year_min_inclusive</code>.
@@ -146,7 +140,7 @@ public class BurdenEstimateExpectation extends TableImpl<BurdenEstimateExpectati
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.BURDEN_ESTIMATE_EXPECTATION_PKEY, Indexes.BURDEN_ESTIMATE_EXPECTATION_RESPONSIBILITY_KEY);
+        return Arrays.<Index>asList(Indexes.BURDEN_ESTIMATE_EXPECTATION_PKEY);
     }
 
     /**
@@ -170,15 +164,7 @@ public class BurdenEstimateExpectation extends TableImpl<BurdenEstimateExpectati
      */
     @Override
     public List<UniqueKey<BurdenEstimateExpectationRecord>> getKeys() {
-        return Arrays.<UniqueKey<BurdenEstimateExpectationRecord>>asList(Keys.BURDEN_ESTIMATE_EXPECTATION_PKEY, Keys.BURDEN_ESTIMATE_EXPECTATION_RESPONSIBILITY_KEY);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ForeignKey<BurdenEstimateExpectationRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<BurdenEstimateExpectationRecord, ?>>asList(Keys.BURDEN_ESTIMATE_EXPECTATION__BURDEN_ESTIMATE_EXPECTATION_RESPONSIBILITY_FKEY);
+        return Arrays.<UniqueKey<BurdenEstimateExpectationRecord>>asList(Keys.BURDEN_ESTIMATE_EXPECTATION_PKEY);
     }
 
     /**
