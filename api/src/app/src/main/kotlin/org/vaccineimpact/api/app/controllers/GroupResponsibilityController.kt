@@ -11,9 +11,7 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.filterByPermission
-import org.vaccineimpact.api.models.Responsibilities
-import org.vaccineimpact.api.models.ResponsibilityAndTouchstone
-import org.vaccineimpact.api.models.Touchstone
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.EmptyDataTable
 import org.vaccineimpact.api.serialization.StreamSerializable
 
@@ -58,7 +56,7 @@ class GroupResponsibilityController(
         return data
     }
 
-    fun getTemplate(): StreamSerializable<Any?>
+    fun getTemplate(): StreamSerializable<BurdenEstimateRow>
     {
         val path = ResponsibilityPath(context)
         val type = context.queryParams("type") ?: "central"
@@ -66,19 +64,17 @@ class GroupResponsibilityController(
         val expectations = expectationsLogic.getExpectationsForResponsibility(path.groupId,
                 path.touchstoneVersionId, path.scenarioId)
 
-        val headers = arrayOf("disease", "year", "age", "country", "countryName", "cohortSize") +
-                expectations.outcomes
+        val rowCount = expectations.expectedRows().count()
 
-        val extraHeaders = if (type == "stochastic")
+        return if (type == "central")
         {
-            arrayOf()
+            EmptyDataTable.new<BurdenEstimate>(rowCount, expectations.outcomes)
         }
         else
         {
-            arrayOf("modelRun")
+            EmptyDataTable.new<StochasticBurdenEstimate>(rowCount, expectations.outcomes)
         }
 
-        return EmptyDataTable(extraHeaders + headers, expectations.expectedRows().count())
     }
 
     // We are sure that this will be non-null, as its part of the URL,

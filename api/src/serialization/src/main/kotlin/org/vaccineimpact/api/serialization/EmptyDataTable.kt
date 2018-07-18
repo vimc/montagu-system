@@ -1,31 +1,23 @@
 package org.vaccineimpact.api.serialization
 
-import com.opencsv.CSVWriter
-import org.vaccineimpact.api.models.helpers.ContentTypes
-import java.io.OutputStream
+import kotlin.reflect.KClass
 
-class EmptyDataTable(private val headers: Array<String>, private val numRows: Int) : StreamSerializable<Any?> {
 
-    override val contentType = ContentTypes.csv
-    override val data = arrayOfNulls<Any>(headers.count()).asSequence()
-
-    override fun serialize(stream: OutputStream, serializer: Serializer)
+class EmptyDataTable<T : Any>(numRows: Int,
+                              extraHeaders: Iterable<String>,
+                              type: KClass<T>
+): FlexibleDataTable<T>(@Suppress("UNCHECKED_CAST")(arrayOfNulls<Any>(numRows).asSequence() as Sequence<T>),
+        extraHeaders, type)
+{
+    override fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T?, serializer: Serializer): Array<String?>
     {
-        val serializedHeaders = headers.map { serializer.convertFieldName(it) }.toTypedArray()
-        stream.writer().let { writer ->
-            CSVWriter(writer).let { csv ->
+        return arrayOfNulls(headers.count())
+    }
 
-                csv.writeNext(serializedHeaders, false)
-
-                for (i in 1..numRows)
-                {
-                    val asArray = arrayOfNulls<String>(headers.count())
-                    csv.writeNext(asArray, false)
-                }
-            }
-            // We want to flush this writer, but we don't want to close the underlying stream, as there
-            // be more to write to it
-            writer.flush()
-        }
+    companion object
+    {
+        // Simple helper to get around JVM type erasure
+        inline fun <reified R : Any> new(numRows: Int, flexibleHeaders: Iterable<String>)
+                = EmptyDataTable(numRows, flexibleHeaders,  R::class)
     }
 }
