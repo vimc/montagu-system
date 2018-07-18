@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.models
 
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
+import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import java.math.BigDecimal
 
 @FlexibleColumns
@@ -11,6 +12,7 @@ data class BurdenEstimate(
         val country: String,
         val countryName: String,
         val cohortSize: Float,
+        @FlexibleProperty
         val outcomes: Map<String, Float?>
 )
 
