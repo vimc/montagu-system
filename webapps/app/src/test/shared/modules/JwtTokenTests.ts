@@ -25,10 +25,6 @@ describe('JwtTokenAuth Module Tests', () => {
         expect(jwtTokenAuth.isExpired(Math.round(expired / 1000))).to.equal(false);
     });
 
-    it('fails to decode token, returns default empty token data', () => {
-        expect(jwtTokenAuth.decodeToken('malformed-token')).to.eql(jwtTokenAuth.emptyTokenData());
-    });
-
     it('decodes token data', () => {
         const testData = {
             sub: "test.user",

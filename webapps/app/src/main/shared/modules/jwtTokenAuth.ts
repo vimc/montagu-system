@@ -23,28 +23,26 @@ export const jwtTokenAuth = {
         return false;
     },
 
-        decodeToken(token: string): AuthTokenData {
+    decodeToken(token: string): AuthTokenData {
         try {
             return jwt_decode(token);
-        } catch (e) {
-            console.log("Token decoding failed, token is malformed: " + token);
-            return this.emptyTokenData();
+        }
+        catch(e){
+            console.log(`Token decoding failed. Token is malformed: ${token}`);
+            return null;
         }
     },
 
     inflateToken(token: string): string {
-        // https://stackoverflow.com/a/44528376/777939
-        const decoded = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
-        return pako.inflate(decoded, {to: 'string'});
-    },
-
-    emptyTokenData(): AuthTokenData {
-        return {
-            permissions: "",
-            roles: "",
-            sub: null,
-            exp: null
-        };
+        try {
+            // https://stackoverflow.com/a/44528376/777939
+            const decoded = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
+            return pako.inflate(decoded, {to: 'string'});
+        }
+        catch(e){
+            console.log(`Token inflation failed: ${token}.`);
+            return null;
+        }
     },
 
     parseModellingGroups(roles: string): string[] {

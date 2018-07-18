@@ -1,17 +1,14 @@
-import { Dispatch } from "redux";
+import {Dispatch} from "redux";
 
-import { jwtTokenAuth } from "../modules/jwtTokenAuth";
-import { AuthService } from "../services/AuthService";
-import { makeNotificationException, notificationActions} from "./NotificationActions";
-import { appSettings, settings } from "../Settings";
-import { appName } from 'appName';
-import { AuthTokenData } from "../modules/jwtTokenAuth";
-import { AuthState } from "../reducers/authReducer";
-import { makeNotification, Notification } from "../actions/NotificationActions";
-import { localStorageHandler } from "../services/localStorageHandler";
-import {
-    Authenticated, AuthenticationError, AuthTypeKeys, Unauthenticated
-} from "../actionTypes/AuthTypes";
+import {jwtTokenAuth} from "../modules/jwtTokenAuth";
+import {AuthService} from "../services/AuthService";
+import {makeNotificationException, notificationActions} from "./NotificationActions";
+import {appSettings, settings} from "../Settings";
+import {appName} from 'appName';
+import {AuthState} from "../reducers/authReducer";
+import {makeNotification, Notification} from "../actions/NotificationActions";
+import {localStorageHandler} from "../services/localStorageHandler";
+import {Authenticated, AuthenticationError, AuthTypeKeys, Unauthenticated} from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
 
 export const authActionCreators = {
@@ -25,7 +22,7 @@ export const authActionCreators = {
                 } else {
                     dispatch(this.receivedCompressedToken(response.access_token));
                 }
-            } catch(error) {
+            } catch (error) {
                 const errorNotification = this.makeNotificationError('Server error');
                 notificationActions.notify(errorNotification);
                 throw makeNotificationException(error.message, "error");
@@ -38,29 +35,34 @@ export const authActionCreators = {
             const token = localStorageHandler.get("accessToken");
             if (token) {
                 const inflated = jwtTokenAuth.inflateToken(token);
-                const decoded: AuthTokenData = jwtTokenAuth.decodeToken(inflated);
-                if (jwtTokenAuth.isExpired(decoded.exp)) {
+                const decoded = inflated && jwtTokenAuth.decodeToken(inflated);
+
+                if (!decoded) {
+                    console.log("Invalid token. Logging out");
+                    dispatch(this.logOut());
+                }
+                else if (jwtTokenAuth.isExpired(decoded.exp)) {
                     console.log("Token is expired");
-                    localStorageHandler.remove("accessToken");
                     dispatch(this.logOut())
                 } else {
                     console.log("Found unexpired access token in local storage, so we're already logged in");
                     dispatch(this.receivedCompressedToken(token));
                 }
+
             }
         }
     },
 
-    validateAuthResult(user: any)  {
+    validateAuthResult(user: any) {
         if (!user.isAccountActive) {
             return this.makeNotificationError("Your account has been deactivated");
         }
         if (appSettings.requiresModellingGroupMembership && (!user.modellingGroups || !user.modellingGroups.length)) {
-            return this.makeNotificationError( "Only members of modelling groups can log into the contribution portal");
+            return this.makeNotificationError("Only members of modelling groups can log into the contribution portal");
         }
     },
 
-    makeNotificationError(error: string) :Notification {
+    makeNotificationError(error: string): Notification {
         if (!error) return null;
         const support = settings.supportContact;
         return makeNotification(`${error}. Please contact ${support} for help.`, "error")
