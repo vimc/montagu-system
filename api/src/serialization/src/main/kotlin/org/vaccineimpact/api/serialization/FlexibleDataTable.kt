@@ -5,8 +5,8 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 
-class FlexibleDataTable<T : Any>(data: Sequence<T>,
-                                 private val flexibleHeaders: Iterable<Any>,
+open class FlexibleDataTable<T : Any>(data: Sequence<T>,
+                                 private val flexibleHeaders: Iterable<String>,
                                  type: KClass<T>)
     : DataTable<T>(data, type)
 {
@@ -27,7 +27,7 @@ class FlexibleDataTable<T : Any>(data: Sequence<T>,
                 "type Map<*, *>, where * can be whatever you like.")
     }
 
-    override fun prepareHeadersForCSV(headers: Iterable<DataTableHeader<T>>): Array<String>
+    public override fun prepareHeadersForCSV(headers: Iterable<DataTableHeader<T>>): Array<String>
     {
         return headers.map { it.name }.toTypedArray()
                 .plus(flexibleHeaders.map { it.toString() })
@@ -61,6 +61,6 @@ class FlexibleDataTable<T : Any>(data: Sequence<T>,
     companion object
     {
         // Simple helper to get around JVM type erasure
-        inline fun <reified R : Any> new(data: Sequence<R>, flexibleHeaders: Iterable<Any>) = FlexibleDataTable(data, flexibleHeaders, R::class)
+        inline fun <reified R : Any> new(data: Sequence<R>, flexibleHeaders: Iterable<String>) = FlexibleDataTable(data, flexibleHeaders, R::class)
     }
 }

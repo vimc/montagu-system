@@ -66,10 +66,7 @@ class GroupResponsibilityController(
         val expectations = expectationsLogic.getExpectationsForResponsibility(path.groupId,
                 path.touchstoneVersionId, path.scenarioId)
 
-        val headers = arrayOf("disease", "year", "age", "country", "countryName", "cohortSize") +
-                expectations.outcomes
-
-        return EmptyDataTable(headers, expectations.expectedRows().count())
+        return EmptyDataTable.new<BurdenEstimate>(expectations.expectedRows().count(), expectations.outcomes)
     }
 
     // We are sure that this will be non-null, as its part of the URL,

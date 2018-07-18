@@ -58,7 +58,7 @@ open class DataTable<T : Any>(override val data: Sequence<T>, val type: KClass<T
                 .toTypedArray()
     }
 
-    open protected fun getHeaders(serializer: Serializer): Iterable<DataTableHeader<T>>
+    open fun getHeaders(serializer: Serializer): Iterable<DataTableHeader<T>>
     {
         return constructor.parameters
                 .mapNotNull { it.name }

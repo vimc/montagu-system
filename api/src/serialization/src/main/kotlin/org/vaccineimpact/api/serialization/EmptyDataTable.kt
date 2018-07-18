@@ -3,19 +3,26 @@ package org.vaccineimpact.api.serialization
 import com.opencsv.CSVWriter
 import org.vaccineimpact.api.models.helpers.ContentTypes
 import java.io.OutputStream
+import kotlin.reflect.KClass
 
-class EmptyDataTable(private val headers: Array<String>, private val numRows: Int) : StreamSerializable<Any?> {
+class EmptyDataTable<T : Any>(val numRows: Int,
+                              extraHeaders: Iterable<String>,
+                              type: KClass<T>
+): StreamSerializable<Any?>
+{
+    private val flexibleDataTable: FlexibleDataTable<T> = FlexibleDataTable(listOf<T>().asSequence(), extraHeaders, type)
 
-    override val contentType = ContentTypes.csv
-    override val data = arrayOfNulls<Any>(headers.count()).asSequence()
+    override val contentType: String = ContentTypes.csv
+    override val data: Sequence<Any?> = arrayOfNulls<Any>(numRows).asSequence()
 
     override fun serialize(stream: OutputStream, serializer: Serializer)
     {
-        val serializedHeaders = headers.map { serializer.convertFieldName(it) }.toTypedArray()
+        val headers = flexibleDataTable.getHeaders(serializer)
         stream.writer().let { writer ->
             CSVWriter(writer).let { csv ->
 
-                csv.writeNext(serializedHeaders, false)
+                val headerArray = flexibleDataTable.prepareHeadersForCSV(headers)
+                csv.writeNext(headerArray, false)
 
                 for (i in 1..numRows)
                 {
@@ -27,5 +34,12 @@ class EmptyDataTable(private val headers: Array<String>, private val numRows: In
             // be more to write to it
             writer.flush()
         }
+    }
+
+    companion object
+    {
+        // Simple helper to get around JVM type erasure
+        inline fun <reified R : Any> new(numRows: Int, flexibleHeaders: Iterable<String>)
+                = EmptyDataTable(numRows, flexibleHeaders,  R::class)
     }
 }
