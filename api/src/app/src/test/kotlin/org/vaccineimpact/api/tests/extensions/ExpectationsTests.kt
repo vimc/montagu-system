@@ -17,7 +17,7 @@ class ExpectationsTests : MontaguTests()
         val longCountryList = (1..100).map {
             Country(it.toString(), it.toString())
         }
-        val expectations = Expectations(2000..2080, 1..80, CohortRestriction(null,null),
+        val expectations = Expectations(2001..2080, 1..80, CohortRestriction(null,null),
                 longCountryList, expectedOutcomes)
 
         val result = expectations.expectedRows()

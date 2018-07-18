@@ -6,7 +6,7 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 
 open class FlexibleDataTable<T : Any>(data: Sequence<T>,
-                                 private val flexibleHeaders: Iterable<String>,
+                                 protected val flexibleHeaders: Iterable<Any>,
                                  type: KClass<T>)
     : DataTable<T>(data, type)
 {
@@ -33,8 +33,11 @@ open class FlexibleDataTable<T : Any>(data: Sequence<T>,
                 .plus(flexibleHeaders.map { it.toString() })
     }
 
-    override fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T, serializer: Serializer): Array<String>
+    override fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T?, serializer: Serializer): Array<String?>
     {
+        line?: throw Exception("Null data rows are not allowed. Use the EmptyDataTable class if " +
+                "trying to generate empty rows")
+
         val values = headers.map { it.property.get(line) }
                 .plus(flexibleHeaders.map { getFlexibleValue(it, line) })
 
@@ -61,6 +64,6 @@ open class FlexibleDataTable<T : Any>(data: Sequence<T>,
     companion object
     {
         // Simple helper to get around JVM type erasure
-        inline fun <reified R : Any> new(data: Sequence<R>, flexibleHeaders: Iterable<String>) = FlexibleDataTable(data, flexibleHeaders, R::class)
+        inline fun <reified R : Any> new(data: Sequence<R>, flexibleHeaders: Iterable<Any>) = FlexibleDataTable(data, flexibleHeaders, R::class)
     }
 }

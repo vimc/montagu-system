@@ -8,7 +8,7 @@ import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
 
-class FlexibleDataTableTests : MontaguTests()
+open class FlexibleDataTableTests : MontaguTests()
 {
     data class ABC(val a: String, val b: String, @FlexibleProperty val c: Map<String, String>)
     data class XYZ(val x: String, val y: String, val z: Map<String, String>)
@@ -86,7 +86,7 @@ g,h,i
 x,y,<NA>""")
     }
 
-    private fun serialize(table: FlexibleDataTable<*>) = serializeToStreamAndGetAsString {
+    protected fun serialize(table: FlexibleDataTable<*>) = serializeToStreamAndGetAsString {
         table.serialize(it, MontaguSerializer.instance)
     }.trim()
 }
