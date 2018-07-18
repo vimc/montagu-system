@@ -16,11 +16,7 @@ import org.vaccineimpact.api.models.Expectations
 
 class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
 {
-    override fun makeRepository(db: JooqContext): ExpectationsRepository {
-        val scenarioRepo = JooqScenarioRepository(db.dsl)
-        return JooqExpectationsRepository(db.dsl,
-                JooqResponsibilitiesRepository(db.dsl, scenarioRepo, JooqTouchstoneRepository(db.dsl, scenarioRepo)))
-    }
+    override fun makeRepository(db: JooqContext) = JooqExpectationsRepository(db.dsl)
 
     private val groupId = "group"
     private val scenarioId = "scenario"
@@ -29,7 +25,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     @Test
     fun `can pull basic expectations`()
     {
-        addResponsibilityAnd { db, responsibilityId ->
+        val responsibilityId = addResponsibilityAnd { db, responsibilityId ->
             db.addExpectations(
                     responsibilityId,
                     yearMinInclusive = 2000,
@@ -43,7 +39,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             )
         }
         withRepo { repo ->
-            val result = repo.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId)
+            val result = repo.getExpectationsForResponsibility(responsibilityId)
             assertThat(result.years).isEqualTo(2000..2100)
             assertThat(result.ages).isEqualTo(0..99)
             assertThat(result.cohorts).isEqualTo(CohortRestriction())
@@ -55,7 +51,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     @Test
     fun `can pull cohort expectations`()
     {
-        addResponsibilityAnd { db, responsibilityId ->
+        val responsibilityId = addResponsibilityAnd { db, responsibilityId ->
             db.addExpectations(
                     responsibilityId,
                     cohortMinInclusive = 2005,
@@ -63,7 +59,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             )
         }
         withRepo { repo ->
-            val result = repo.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId)
+            val result = repo.getExpectationsForResponsibility(responsibilityId)
             assertThat(result.cohorts).isEqualTo(CohortRestriction(
                     minimumBirthYear = 2005,
                     maximumBirthYear = 2015
@@ -74,7 +70,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     @Test
     fun `can pull country expectations`()
     {
-        addResponsibilityAnd { db, responsibilityId ->
+        val responsibilityId = addResponsibilityAnd { db, responsibilityId ->
             db.addCountries(listOf("ABC", "DEF", "GHI"))
             db.addExpectations(
                     responsibilityId,
@@ -82,7 +78,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             )
         }
         withRepo { repo ->
-            val result = repo.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId)
+            val result = repo.getExpectationsForResponsibility(responsibilityId)
             assertThat(result.countries).hasSameElementsAs(listOf(
                     Country("ABC", "ABC-Name"),
                     Country("DEF", "DEF-Name")
@@ -93,14 +89,14 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     @Test
     fun `can pull outcome expectations`()
     {
-        addResponsibilityAnd { db, responsibilityId ->
+        val responsibilityId = addResponsibilityAnd { db, responsibilityId ->
             db.addExpectations(
                     responsibilityId,
                     outcomes = listOf("cases", "deaths")
             )
         }
         withRepo { repo ->
-            val result = repo.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId)
+            val result = repo.getExpectationsForResponsibility(responsibilityId)
             assertThat(result.outcomes).hasSameElementsAs(listOf(
                     "cases",
                     "deaths"
