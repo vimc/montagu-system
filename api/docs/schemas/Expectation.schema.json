@@ -1,0 +1,25 @@
+{
+    "id": "Expectation",
+    "type": "object",
+    "properties": {
+        "years": { "$ref": "InclusiveRange.schema.json" },
+        "ages": { "$ref": "InclusiveRange.schema.json" },
+        "cohorts": { "$ref": "CohortRestriction.schema.json" },
+        "countries": { 
+            "type": "array", 
+            "items": { "$ref": "Country.schema.json" } 
+        },
+        "outcomes": {
+            "type": "array",
+            "items": { "type": "string" }
+        }
+    },
+    "additionalProperties": false,
+    "required": [ 
+        "years", 
+        "ages", 
+        "cohorts", 
+        "countries",
+        "outcomes"
+    ]
+}

@@ -51,11 +51,6 @@ Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.js
                     "description": "Menigitis A, No vaccination",
                     "disease": "MenA"
                 },
-                "countries": ["AFG", "AGO"],
-                "years": {
-                    "start": 1900,
-                    "end": 2050
-                },
                 "status": "empty",
                 "problems": [ "No burden estimates have been uploaded" ],
                 "current_estimate_set": null
@@ -66,11 +61,6 @@ Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.js
                     "touchstones": [ "2017-wuenic-1", "2017-op-1" ],
                     "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
                     "disease": "YF"
-                },
-                "countries": ["AFG", "AGO"],
-                "years": {
-                    "start": 1900,
-                    "end": 2050
                 },
                 "status": "invalid",
                 "problems": [
@@ -115,7 +105,7 @@ before they are made `open`, then this returns an error 404.
 
 Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read`. Additionally, to view responsibilities for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
 
-Schema: [`ResponsibilityAndTouchstone.schema.json`](../schemas/ResponsibilityAndTouchstone.schema.json)
+Schema: [`ResponsibilityDetails.schema.json`](../schemas/ResponsibilityDetails.schema.json)
 
 ### Example
     {
@@ -133,17 +123,30 @@ Schema: [`ResponsibilityAndTouchstone.schema.json`](../schemas/ResponsibilityAnd
                 "description": "Menigitis A, No vaccination",
                 "disease": "MenA"
             },
-            "countries": ["AFG", "AGO"],
-            "years": {
-                "start": 1900,
-                "end": 2050
-            },
             "status": "empty",
             "problems": [ "No burden estimates have been uploaded" ],
             "current_estimate_set": null
+        },
+        "expectations": {
+            "years": { 
+                "minimum_inclusive": 1950,
+                "maximum_inclusive": 2100
+            },
+            "ages": { 
+                "minimum_inclusive": 0,
+                "maximum_inclusive": 99
+            },
+            "cohorts": {
+                "minimum_birth_year": 1950,
+                "maximum_birth_year": null
+            },
+            "countries": [
+                { "id": "AFG", "name": "Afghanistan" },
+                { "id": "AGO", "name": "Angola" }
+            ],
+            "outcomes": [ "cohort_size", "cases", "deaths", "dalys" ]
         }
     }
-
 
 ## PATCH /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/
 **NOT IMPLEMENTED**
