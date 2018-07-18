@@ -1,20 +1,19 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
-import org.jooq.Record2
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
-import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.BurdenEstimateCountryExpectation
 import org.vaccineimpact.api.db.tables.BurdenEstimateExpectation
 import org.vaccineimpact.api.db.tables.BurdenEstimateOutcomeExpectation
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateExpectationRecord
-import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.CohortRestriction
+import org.vaccineimpact.api.models.Country
+import org.vaccineimpact.api.models.Expectations
 
-class JooqExpectationsRepository(dsl: DSLContext,
-                                 private val responsibilitiesRepository: ResponsibilitiesRepository)
+class JooqExpectationsRepository(dsl: DSLContext)
     : JooqRepository(dsl), ExpectationsRepository
 {
     private object Tables
@@ -24,10 +23,8 @@ class JooqExpectationsRepository(dsl: DSLContext,
         val outcomes: BurdenEstimateOutcomeExpectation = BURDEN_ESTIMATE_OUTCOME_EXPECTATION
     }
 
-    override fun getExpectationsForResponsibility(groupId: String,
-                                                  touchstoneVersionId: String, scenarioId: String): Expectations
+    override fun getExpectationsForResponsibility(responsibilityId: Int): Expectations
     {
-        val responsibilityId = responsibilitiesRepository.getResponsibilityId(groupId, touchstoneVersionId, scenarioId)
         val basicData = dsl.fetchAny(
                 Tables.expectations,
                 Tables.expectations.RESPONSIBILITY.eq(responsibilityId)
