@@ -30,25 +30,6 @@ class Expectations(
         return listRows
     }
 
-    fun toStochasticSequence(): Sequence<StochasticBurdenEstimate>
-    {
-        var numRows = numRows()
-        val numRuns = 200
-        numRows *= numRuns
-
-        return generateSequence {
-            (numRows--)
-            if (numRows < 0)
-            {
-                null // terminate sequence
-            }
-            else
-            {
-                StochasticBurdenEstimate("", "", 0, 0, "", "", 0F, outcomesMap)
-            }
-        }
-    }
-
 }
 
 data class CohortRestriction(
