@@ -13,7 +13,6 @@ import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import java.io.StringReader
-import java.math.BigDecimal
 
 class ResponsibilityTests : DatabaseTest()
 {
@@ -208,14 +207,14 @@ class ResponsibilityTests : DatabaseTest()
     {
         val userHelper = TestUserHelper()
         val requestHelper = RequestHelper()
-
+        var id = 0
         JooqContext().use {
-            val id = addResponsibilities(it, touchstoneStatus = "open")
-            it.addExpectations(id, outcomes = listOf("deaths", "dalys"))
+            addResponsibilities(it, touchstoneStatus = "open")
+            id = it.addExpectations(id, outcomes = listOf("deaths", "dalys"))
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/template/",
+        val response = requestHelper.get("/modelling-groups/$groupId/expectations/$touchstoneVersionId/$id/",
                 PermissionSet("*/can-login", "*/scenarios.read", "$groupScope/responsibilities.read"), acceptsContentType = "text/csv")
 
         val csv = StringReader(response.text)
@@ -236,14 +235,14 @@ class ResponsibilityTests : DatabaseTest()
     {
         val userHelper = TestUserHelper()
         val requestHelper = RequestHelper()
-
+        var id = 0
         JooqContext().use {
-            val id = addResponsibilities(it, touchstoneStatus = "open")
-            it.addExpectations(id, outcomes = listOf("deaths", "dalys"))
+            addResponsibilities(it, touchstoneStatus = "open")
+            id = it.addExpectations(id, outcomes = listOf("deaths", "dalys"))
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/template/?type=stochastic",
+        val response = requestHelper.get("/modelling-groups/$groupId/expectations/$touchstoneVersionId/$id/?type=stochastic",
                 PermissionSet("*/can-login", "*/scenarios.read", "$groupScope/responsibilities.read"), acceptsContentType = "text/csv")
 
         val csv = StringReader(response.text)
