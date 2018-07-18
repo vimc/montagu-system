@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.serialization
 
 import com.opencsv.CSVWriter
+import com.sun.xml.internal.fastinfoset.util.StringArray
 import org.vaccineimpact.api.models.helpers.ContentTypes
 import java.io.OutputStream
 import kotlin.reflect.KClass
