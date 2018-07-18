@@ -39,7 +39,7 @@ import org.vaccineimpact.api.db.tables.records.ResponsibilityRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Responsibility extends TableImpl<ResponsibilityRecord> {
 
-    private static final long serialVersionUID = 1956843133;
+    private static final long serialVersionUID = -78456193;
 
     /**
      * The reference instance of <code>public.responsibility</code>
@@ -83,6 +83,11 @@ public class Responsibility extends TableImpl<ResponsibilityRecord> {
      * The column <code>public.responsibility.is_open</code>.
      */
     public final TableField<ResponsibilityRecord, Boolean> IS_OPEN = createField("is_open", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.responsibility.expectations</code>.
+     */
+    public final TableField<ResponsibilityRecord, Integer> EXPECTATIONS = createField("expectations", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.responsibility</code> table reference
@@ -158,7 +163,7 @@ public class Responsibility extends TableImpl<ResponsibilityRecord> {
      */
     @Override
     public List<ForeignKey<ResponsibilityRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ResponsibilityRecord, ?>>asList(Keys.RESPONSIBILITY__RESPONSIBILITY_RESPONSIBILITY_SET_FKEY, Keys.RESPONSIBILITY__RESPONSIBILITY_SCENARIO_FKEY, Keys.RESPONSIBILITY__RESPONSIBILITY_CURRENT_BURDEN_ESTIMATE_SET_FKEY, Keys.RESPONSIBILITY__RESPONSIBILITY_CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET_FKEY);
+        return Arrays.<ForeignKey<ResponsibilityRecord, ?>>asList(Keys.RESPONSIBILITY__RESPONSIBILITY_RESPONSIBILITY_SET_FKEY, Keys.RESPONSIBILITY__RESPONSIBILITY_SCENARIO_FKEY, Keys.RESPONSIBILITY__RESPONSIBILITY_CURRENT_BURDEN_ESTIMATE_SET_FKEY, Keys.RESPONSIBILITY__RESPONSIBILITY_CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET_FKEY, Keys.RESPONSIBILITY__RESPONSIBILITY_EXPECTATIONS_FKEY);
     }
 
     /**
