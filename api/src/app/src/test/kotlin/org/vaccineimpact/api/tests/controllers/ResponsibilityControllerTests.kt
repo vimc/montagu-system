@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
-import com.opencsv.CSVReader
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -14,12 +13,10 @@ import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.MontaguSerializer
+import org.vaccineimpact.api.serialization.StreamSerializable
 import org.vaccineimpact.api.test_helpers.MontaguTests
-import java.io.BufferedOutputStream
-import java.io.FileOutputStream
-import java.io.OutputStream
-import java.io.StringReader
-import java.math.BigDecimal
+import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
+
 
 class ResponsibilityControllerTests : MontaguTests()
 {
@@ -161,15 +158,19 @@ class ResponsibilityControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(true)
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn Expectations(2000..2030, 1..10, CohortRestriction(null, null),
-                    listOf(Country("ABC", "CountryA"), Country("DEF", "CountryD")), listOf("Dalys", "Deaths"))
+            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn Expectations(2000..2010, 1..10, CohortRestriction(null, null),
+                    listOf(), listOf("dalys"))
         }
 
         val result = GroupResponsibilityController(context, mock(), mock(), repo)
                 .getTemplate()
 
-        assertThat(result.data.first() is BurdenEstimate).isTrue()
+        assertThat(serialize(result)).isEqualTo("""disease,year,age,country,country_name,cohort_size,dalys""")
     }
+
+    private fun serialize(table: StreamSerializable<*>) = serializeToStreamAndGetAsString {
+        table.serialize(it, MontaguSerializer.instance)
+    }.trim()
 
     @Test
     fun `can get stochastic estimate template`()
@@ -184,13 +185,13 @@ class ResponsibilityControllerTests : MontaguTests()
 
         val repo = mock<ExpectationsLogic> {
             on { getExpectationsForResponsibility(any(), any(), any()) } doReturn Expectations(2000..2030, 1..10, CohortRestriction(null, null),
-                    listOf(Country("ABC", "CountryA"), Country("DEF", "CountryD")), listOf("Dalys", "Deaths"))
+                    listOf(), listOf("dalys"))
         }
 
         val result = GroupResponsibilityController(context, mock(), mock(), repo)
                 .getTemplate()
 
-        assertThat(result.data.first() is StochasticBurdenEstimate).isTrue()
+        assertThat(serialize(result)).isEqualTo("""disease,run_id,year,age,country,country_name,cohort_size,dalys""")
     }
 
     @Test
@@ -206,13 +207,13 @@ class ResponsibilityControllerTests : MontaguTests()
 
         val repo = mock<ExpectationsLogic> {
             on { getExpectationsForResponsibility(any(), any(), any()) } doReturn Expectations(2000..2030, 1..10, CohortRestriction(null, null),
-                    listOf(Country("ABC", "CountryA"), Country("DEF", "CountryD")), listOf("Dalys", "Deaths"))
+                    listOf(), listOf("dalys"))
         }
 
         val result = GroupResponsibilityController(context, mock(), mock(), repo)
                 .getTemplate()
 
-        assertThat(result.data.first() is BurdenEstimate).isTrue()
+        assertThat(serialize(result)).isEqualTo("""disease,year,age,country,country_name,cohort_size,dalys""")
     }
 
     private val mockTouchstones = listOf(
