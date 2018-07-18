@@ -1,18 +1,23 @@
 import * as React from "react";
 import {doNothing} from "../../shared/Helpers";
-import {connectToStores} from "../../shared/alt";
 import fetcher from "../../shared/sources/Fetcher";
 import {OneTimeToken} from "../models/OneTimeToken";
 import {oneTimeTokenStore} from "../stores/OneTimeTokenStore";
 import {oneTimeTokenActions} from "../actions/OneTimeTokenActions";
+import {connect, Dispatch} from "react-redux";
+import {ReportAppState} from "../reducers/reportAppReducers";
 
 interface PublicProps {
     href: string;
     className?: string;
 }
 
-interface Props extends PublicProps {
+interface PropsFromState extends PublicProps {
     token: OneTimeToken;
+}
+
+interface Props extends PropsFromState {
+    fetchNewToken: () => void;
 }
 
 // These props are passed to the children
@@ -20,20 +25,16 @@ export interface OneTimeLinkProps extends PublicProps {
     refreshToken: () => void;
 }
 
-export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTimeLinkProps, undefined>):
-ComponentConstructor<PublicProps, undefined> {
-    return connectToStores(class OneTimeLinkContextWrapper extends React.Component<Props> {
-        static getStores() {
-            return [oneTimeTokenStore]
-        }
+const mapStateToProps = (state: ReportAppState, props: PublicProps): PropsFromState => {
+    return {...props, token: state.onetimeTokens.tokens[props.href]}
+};
 
-        static getPropsFromStores(props: Props): Props {
-            return {
-                href: props.href,
-                token: oneTimeTokenStore.getToken(oneTimeTokenStore.getState(), props.href),
-                className: props.className
-            }
-        }
+const mapDispatchToProps = (dispatch: Dispatch<any>, props: PublicProps): Props => {
+    return {...props, fetchNewToken: dispatch(oneTimeTokenActions)}
+};
+
+export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTimeLinkProps, undefined>) {
+    return connect(mapStateToProps)(class OneTimeLinkContextWrapper extends React.Component<Props> {
 
         constructor() {
             super();
@@ -67,7 +68,7 @@ ComponentConstructor<PublicProps, undefined> {
                 className={this.props.className}
                 href={href}
                 refreshToken={this.refreshToken}
-                children={this.props.children} />;
+                children={this.props.children}/>;
         }
-    });
+    })
 }
