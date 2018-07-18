@@ -13,33 +13,21 @@ class Expectations(
                 && (cohorts.maximumBirthYear == null || this <= cohorts.maximumBirthYear)
     }
 
-    fun toSequence(): Sequence<BurdenEstimate>
+    fun expectedRows(): List<ExpectedRow>
     {
-        var numCohorts = 0
-
+        val listRows = mutableListOf<ExpectedRow>()
         for (age in ages)
         {
-            years
-                    .map { it - age }
-                    .filter { it.withinCohortRange() }
-                    .forEach { numCohorts++ }
-        }
-
-        val numCountries = countries.count()
-        var numRows = numCohorts * numCountries
-        val outcomes = outcomes.associateBy({ it }, { 0F })
-
-        return generateSequence {
-            (numRows--)
-            if (numRows < 0)
+            for (country in countries)
             {
-                null // terminate sequence
-            }
-            else
-            {
-                BurdenEstimate("", 0, 0, "", "", 0F, outcomes)
+                listRows.addAll(years
+                        .map { it - age }
+                        .filter { it.withinCohortRange() }
+                        .map { ExpectedRow(country.id, age, it) })
             }
         }
+
+        return listRows
     }
 
 }
@@ -47,4 +35,10 @@ class Expectations(
 data class CohortRestriction(
         val minimumBirthYear: Short? = null,
         val maximumBirthYear: Short? = null
+)
+
+data class ExpectedRow(
+        val country: String,
+        val age: Int,
+        val year: Int
 )
