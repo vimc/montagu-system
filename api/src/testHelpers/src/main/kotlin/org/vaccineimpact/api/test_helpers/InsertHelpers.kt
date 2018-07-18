@@ -744,7 +744,6 @@ fun JooqContext.addExpectations(
 )
 {
     val id = this.dsl.newRecord(BURDEN_ESTIMATE_EXPECTATION).apply {
-        this.responsibility = responsibilityId
         this.yearMinInclusive = yearMinInclusive
         this.yearMaxInclusive = yearMaxInclusive
         this.ageMinInclusive = ageMinInclusive
@@ -752,6 +751,11 @@ fun JooqContext.addExpectations(
         this.cohortMinInclusive = cohortMinInclusive
         this.cohortMaxInclusive = cohortMaxInclusive
     }.store()
+
+    this.dsl.update(RESPONSIBILITY)
+            .set(RESPONSIBILITY.EXPECTATIONS, id)
+            .where(RESPONSIBILITY.ID.eq(responsibilityId))
+            .execute()
 
     val countryRecords = countries.map { country ->
         this.dsl.newRecord(BURDEN_ESTIMATE_COUNTRY_EXPECTATION).apply {
