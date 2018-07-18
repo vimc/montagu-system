@@ -2,6 +2,7 @@
     "id": "Expectation",
     "type": "object",
     "properties": {
+        "id": { "type": "number" },
         "years": { "$ref": "InclusiveRange.schema.json" },
         "ages": { "$ref": "InclusiveRange.schema.json" },
         "cohorts": { "$ref": "CohortRestriction.schema.json" },
@@ -16,6 +17,7 @@
     },
     "additionalProperties": false,
     "required": [ 
+        "id",
         "years", 
         "ages", 
         "cohorts", 
