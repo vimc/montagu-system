@@ -1,0 +1,16 @@
+{
+    "id": "ExpectationMapping",
+    "type": "object",
+    "properties": {
+        "expectation": { "$ref": "Expectation.schema.json" },
+        "applicable_scenarios": {
+            "type": "array",
+            "items": { "$ref": "StandardIdentifier.schema.json" }
+        }
+    },
+    "additionalProperties": false,
+    "required": [ 
+        "expectation",
+        "applicable_scenarios"
+    ]
+}
