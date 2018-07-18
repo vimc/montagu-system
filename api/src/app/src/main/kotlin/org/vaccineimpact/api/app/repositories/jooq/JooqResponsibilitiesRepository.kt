@@ -12,6 +12,7 @@ import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.responsibilities.*
 
 class JooqResponsibilitiesRepository(
         dsl: DSLContext,

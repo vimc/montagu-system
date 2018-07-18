@@ -7,6 +7,9 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.responsibilities.Responsibility
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
 
 class GetResponsibilitiesTests : ResponsibilitiesRepositoryTests()
 {

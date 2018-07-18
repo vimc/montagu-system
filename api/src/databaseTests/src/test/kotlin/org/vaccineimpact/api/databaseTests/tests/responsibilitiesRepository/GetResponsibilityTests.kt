@@ -6,6 +6,9 @@ import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.responsibilities.Responsibility
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityAndTouchstone
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
 
 class GetResponsibilityTests : ResponsibilitiesRepositoryTests()
 {
@@ -157,7 +160,7 @@ class GetResponsibilityTests : ResponsibilitiesRepositoryTests()
             it.addResponsibility(setId, "touchstone-1", "scenario-1")
         } check { repo ->
             val data = repo.getResponsibility("group-1", "touchstone-1", "scenario-1")
-            assertThat(data).isEqualTo(org.vaccineimpact.api.models.ResponsibilityAndTouchstone(
+            assertThat(data).isEqualTo(ResponsibilityAndTouchstone(
                     TouchstoneVersion("touchstone-1", "touchstone", 1, "description", TouchstoneStatus.OPEN),
                     Responsibility(
                             Scenario("scenario-1", "description", "disease", listOf("touchstone-1")),

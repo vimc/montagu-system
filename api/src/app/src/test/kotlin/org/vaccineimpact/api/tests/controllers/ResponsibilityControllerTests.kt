@@ -11,6 +11,7 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.responsibilities.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class ResponsibilityControllerTests : MontaguTests()
