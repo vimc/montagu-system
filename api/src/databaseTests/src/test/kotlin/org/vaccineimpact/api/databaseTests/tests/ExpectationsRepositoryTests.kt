@@ -4,17 +4,23 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqExpectationsRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqResponsibilitiesRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
+import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.CohortRestriction
 import org.vaccineimpact.api.models.Country
 import org.vaccineimpact.api.models.Expectations
-import org.vaccineimpact.api.models.YearRange
 
 class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
 {
     override fun makeRepository(db: JooqContext) = JooqExpectationsRepository(db.dsl)
+
+    private val groupId = "group"
+    private val scenarioId = "scenario"
+    private val touchstoneVersionId = "touchstone-1"
 
     @Test
     fun `can pull basic expectations`()
@@ -102,9 +108,9 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
 
     private fun addResponsibilityAnd(action: (JooqContext, Int) -> Unit) = withDatabase { db ->
         db.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
-        db.addScenarioDescription("scenario", "desc", "YF", addDisease = true)
-        db.addGroup("group")
-        val responsibilityId = db.addResponsibilityInNewSet("group", "touchstone-1", "scenario")
+        db.addScenarioDescription(scenarioId, "desc", "YF", addDisease = true)
+        db.addGroup(groupId)
+        val responsibilityId = db.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
         action(db, responsibilityId)
         responsibilityId
     }
