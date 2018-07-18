@@ -6,7 +6,7 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 
 open class FlexibleDataTable<T : Any>(data: Sequence<T>,
-                                 protected val flexibleHeaders: Iterable<Any>,
+                                 private val flexibleHeaders: Iterable<Any>,
                                  type: KClass<T>)
     : DataTable<T>(data, type)
 {
@@ -27,7 +27,7 @@ open class FlexibleDataTable<T : Any>(data: Sequence<T>,
                 "type Map<*, *>, where * can be whatever you like.")
     }
 
-    public override fun prepareHeadersForCSV(headers: Iterable<DataTableHeader<T>>): Array<String>
+    override fun prepareHeadersForCSV(headers: Iterable<DataTableHeader<T>>): Array<String>
     {
         return headers.map { it.name }.toTypedArray()
                 .plus(flexibleHeaders.map { it.toString() })
