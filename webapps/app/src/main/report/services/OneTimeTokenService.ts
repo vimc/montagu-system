@@ -1,13 +1,9 @@
-import {AbstractLocalService} from "../../shared/services/AbstractLocalService";
+import {AbstractReportLocalService, buildRelativeReportingURL} from "./AbstractReportLocalService";
 
-export class OneTimeTokenService extends AbstractLocalService {
-
-    static buildRelativeReportingURL(urlFragment: string): string {
-        return "/v1" + urlFragment;
-    }
+export class OneTimeTokenService extends AbstractReportLocalService {
 
     fetchToken(urlToFetchFor: string) {
-        urlToFetchFor = OneTimeTokenService.buildRelativeReportingURL(urlToFetchFor);
+        urlToFetchFor = buildRelativeReportingURL(urlToFetchFor);
         const url = "/onetime_token/?url=" + encodeURI(urlToFetchFor);
         return this.get(url);
     }
