@@ -4,6 +4,8 @@ import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.logic.ExpectationsLogic
+import org.vaccineimpact.api.app.logic.RepositoriesExpectationsLogic
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
@@ -18,13 +20,13 @@ class GroupResponsibilityController(
         context: ActionContext,
         private val modellingGroupRepo: ModellingGroupRepository,
         private val responsibilitiesRepo: ResponsibilitiesRepository,
-        private val expectationsRepository: ExpectationsRepository
+        private val expectationsLogic: ExpectationsLogic
 ) : Controller(context)
 {
     constructor(context: ActionContext, repositories: Repositories)
             : this(context, repositories.modellingGroup,
             repositories.responsibilities,
-            repositories.expectations)
+            RepositoriesExpectationsLogic(repositories.responsibilities, repositories.expectations))
 
     fun getResponsibleTouchstones(): List<Touchstone>
     {
@@ -58,7 +60,7 @@ class GroupResponsibilityController(
     {
         val path = ResponsibilityPath(context)
         modellingGroupRepo.getModellingGroup(path.groupId)
-        val expectations = expectationsRepository.getExpectationsForResponsibility(path.groupId,
+        val expectations = expectationsLogic.getExpectationsForResponsibility(path.groupId,
                 path.touchstoneVersionId, path.scenarioId)
     }
 
