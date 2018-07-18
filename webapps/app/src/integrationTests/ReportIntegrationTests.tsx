@@ -100,7 +100,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         it("fetches one time token", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState))
                 .getReportVersions("minimal");
-            const token = await new OneTimeTokenService(this.store.dispatch, this.store.getState)
+            const token = await (new OneTimeTokenService(this.store.dispatch, this.store.getState))
                 .fetchToken(`/reports/minimal/${versions[0]}/artefacts/`);
             const decoded = inflateAndDecode(token);
             expect(decoded.url).to.equal(`/v1/reports/minimal/${versions[0]}/artefacts/`);
