@@ -15,6 +15,8 @@ import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.CohortRestriction
+import org.vaccineimpact.api.models.Expectations
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class ExpectationsLogicTests : MontaguTests()

@@ -116,7 +116,7 @@ class JooqResponsibilitiesRepository(
                     responsibilitySet.id,
                     { this.and(Tables.SCENARIO_DESCRIPTION.ID.eq(scenarioId)) }
             ).singleOrNull() ?: throw UnknownObjectError(scenarioId, "responsibility")
-            return ResponsibilityAndTouchstone(touchstoneVersion, responsibility)
+            return ResponsibilityAndTouchstone(responsibility, touchstoneVersion)
         }
         else
         {

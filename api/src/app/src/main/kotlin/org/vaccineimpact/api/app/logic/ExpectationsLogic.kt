@@ -5,12 +5,17 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.models.Expectations
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 
 interface ExpectationsLogic
 {
     fun getExpectationsForResponsibility(groupId: String,
                                          touchstoneVersionId: String,
                                          scenarioId: String): Expectations
+
+    fun getResponsibilityWithExpectations(groupId: String,
+                                          touchstoneVersionId: String,
+                                          scenarioId: String): ResponsibilityDetails
 }
 
 class RepositoriesExpectationsLogic(private val responsibilitiesRepository: ResponsibilitiesRepository,
@@ -26,4 +31,10 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepository: Resp
         return expectationsRepository.getExpectationsForResponsibility(responsibilityId)
     }
 
+    override fun getResponsibilityWithExpectations(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityDetails
+    {
+        val data = responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
+        val expectations = getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId)
+        return ResponsibilityDetails(data.responsibility, data.touchstoneVersion, expectations)
+    }
 }

@@ -115,7 +115,7 @@ class ResponsibilityTests : DatabaseTest()
     @Test
     fun `getResponsibility matches schema`()
     {
-        validate("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/") against "ResponsibilityAndTouchstone" given {
+        validate("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/") against "ResponsibilityDetails" given {
             addResponsibilities(it, touchstoneStatus = "open")
         } requiringPermissions {
             PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
