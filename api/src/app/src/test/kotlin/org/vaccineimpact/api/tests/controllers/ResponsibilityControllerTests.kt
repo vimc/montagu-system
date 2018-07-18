@@ -158,7 +158,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(true)
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn Expectations(2000..2010, 1..10, CohortRestriction(null, null),
+            on { getExpectations(any(), any(), any()) } doReturn Expectations(2000..2010, 1..10, CohortRestriction(null, null),
                     listOf(), listOf("dalys"))
         }
 
@@ -184,7 +184,7 @@ class ResponsibilityControllerTests : MontaguTests()
         }
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn Expectations(2000..2030, 1..10, CohortRestriction(null, null),
+            on { getExpectations(any(), any(), any()) } doReturn Expectations(2000..2030, 1..10, CohortRestriction(null, null),
                     listOf(), listOf("dalys"))
         }
 
@@ -206,7 +206,7 @@ class ResponsibilityControllerTests : MontaguTests()
         }
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn Expectations(2000..2030, 1..10, CohortRestriction(null, null),
+            on { getExpectations(any(), any(), any()) } doReturn Expectations(2000..2030, 1..10, CohortRestriction(null, null),
                     listOf(), listOf("dalys"))
         }
 

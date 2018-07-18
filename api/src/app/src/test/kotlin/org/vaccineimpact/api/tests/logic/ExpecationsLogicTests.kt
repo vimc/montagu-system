@@ -11,7 +11,6 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.logic.RepositoriesExpectationsLogic
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
@@ -21,13 +20,7 @@ class ExpectationsLogicTests : MontaguTests()
 {
     private val touchstoneVersionId = "t1"
     private val groupId = "g1"
-    private val scenarioId = "s1"
-    private val responsibilityId = 11
-
-    private val responsibilitiesRepo = mock<ResponsibilitiesRepository> {
-        on { this.getResponsibilityId(groupId, touchstoneVersionId, scenarioId) } doReturn responsibilityId
-    }
-
+    private val expectationId = 2
     private val touchstonesRepo = mock<TouchstoneRepository> {
         on { this.touchstoneVersions } doReturn InMemoryDataSet(listOf(TouchstoneVersion(touchstoneVersionId,
                 "", 1, "", TouchstoneStatus.OPEN)))
@@ -36,7 +29,7 @@ class ExpectationsLogicTests : MontaguTests()
     private val fakeExpectations = Expectations(1..11, 2000..2009, CohortRestriction(), listOf(), listOf())
 
     private val expectationsRepo = mock<ExpectationsRepository> {
-        on { this.getExpectationsForResponsibility(responsibilityId) } doReturn fakeExpectations
+        on { this.getExpectations(expectationId) } doReturn fakeExpectations
     }
 
     private val modellingGroupRepo = mock<ModellingGroupRepository> {
@@ -46,12 +39,11 @@ class ExpectationsLogicTests : MontaguTests()
     @Test
     fun `gets expectations`()
     {
-        val sut = RepositoriesExpectationsLogic(responsibilitiesRepo,
-                expectationsRepo,
+        val sut = RepositoriesExpectationsLogic(expectationsRepo,
                 modellingGroupRepo,
                 touchstonesRepo)
 
-        val result = sut.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId)
+        val result = sut.getExpectations(groupId, touchstoneVersionId, expectationId)
         assertThat(result.ages).isEqualTo(fakeExpectations.ages)
     }
 
@@ -61,12 +53,11 @@ class ExpectationsLogicTests : MontaguTests()
         val modellingGroupRepoWithoutGroup = mock<ModellingGroupRepository> {
             on { getModellingGroup(any()) } doThrow UnknownObjectError(groupId, "group")
         }
-        val sut = RepositoriesExpectationsLogic(responsibilitiesRepo,
-                expectationsRepo,
+        val sut = RepositoriesExpectationsLogic(expectationsRepo,
                 modellingGroupRepoWithoutGroup,
                 touchstonesRepo)
 
-        assertThatThrownBy { sut.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId) }
+        assertThatThrownBy { sut.getExpectations(groupId, touchstoneVersionId, expectationId) }
                 .isInstanceOf(UnknownObjectError::class.java)
                 .hasMessageContaining("group")
     }
@@ -75,14 +66,13 @@ class ExpectationsLogicTests : MontaguTests()
     fun `throws unknown object error if touchstone version does not exist`()
     {
         val touchstonesRepoWithoutTouchstone = mock<TouchstoneRepository> {
-            on { touchstoneVersions } doReturn InMemoryDataSet<TouchstoneVersion, String>(listOf())
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf())
         }
-        val sut = RepositoriesExpectationsLogic(responsibilitiesRepo,
-                expectationsRepo,
+        val sut = RepositoriesExpectationsLogic(expectationsRepo,
                 modellingGroupRepo,
                 touchstonesRepoWithoutTouchstone)
 
-        assertThatThrownBy { sut.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId) }
+        assertThatThrownBy { sut.getExpectations(groupId, touchstoneVersionId, expectationId) }
                 .isInstanceOf(UnknownObjectError::class.java)
                 .hasMessageContaining(touchstoneVersionId)
     }

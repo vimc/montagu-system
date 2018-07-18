@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.controllers.helpers.ExpectationPath
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.logic.ExpectationsLogic
@@ -25,8 +26,8 @@ class GroupResponsibilityController(
     constructor(context: ActionContext, repositories: Repositories)
             : this(context, repositories.modellingGroup,
             repositories.responsibilities,
-            RepositoriesExpectationsLogic(repositories.responsibilities,
-                    repositories.expectations, repositories.modellingGroup, repositories.touchstone))
+            RepositoriesExpectationsLogic(repositories.expectations,
+                    repositories.modellingGroup, repositories.touchstone))
 
     fun getResponsibleTouchstones(): List<Touchstone>
     {
@@ -58,11 +59,10 @@ class GroupResponsibilityController(
 
     fun getTemplate(): StreamSerializable<BurdenEstimateRow>
     {
-        val path = ResponsibilityPath(context)
+        val path = ExpectationPath(context)
         val type = context.queryParams("type") ?: "central"
-        modellingGroupRepo.getModellingGroup(path.groupId)
-        val expectations = expectationsLogic.getExpectationsForResponsibility(path.groupId,
-                path.touchstoneVersionId, path.scenarioId)
+        val expectations = expectationsLogic.getExpectations(path.groupId,
+                path.touchstoneVersionId, path.expectationId)
 
         val rowCount = expectations.expectedRows().count()
 

@@ -23,16 +23,11 @@ class JooqExpectationsRepository(dsl: DSLContext)
         val outcomes: BurdenEstimateOutcomeExpectation = BURDEN_ESTIMATE_OUTCOME_EXPECTATION
     }
 
-    override fun getExpectationsForResponsibility(responsibilityId: Int): Expectations
+    override fun getExpectations(expectationId: Int): Expectations
     {
-        val id = dsl.select(RESPONSIBILITY.EXPECTATIONS)
-                .from(RESPONSIBILITY)
-                .where(RESPONSIBILITY.ID.eq(responsibilityId))
-                .fetchOne()
-                .value1()
-                ?: throw UnknownObjectError(responsibilityId, "burden-estimate-expectation")
+        val basicData = dsl.fetchAny(Tables.expectations,Tables.expectations.ID.eq(expectationId))
+                ?: throw UnknownObjectError(expectationId, "burden-estimate-expectation")
 
-        val basicData = dsl.fetchAny(Tables.expectations,Tables.expectations.ID.eq(id))
         val countries = getCountries(basicData)
         val outcomes = getOutcomes(basicData)
 
