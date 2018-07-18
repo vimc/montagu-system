@@ -178,7 +178,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
             on { it.params(":touchstone-version-id") } doReturn "tId"
-            on { it.params(":scenario-id") } doReturn "sId"
+            on { it.params(":expectation-id") } doReturn "1"
             on { hasPermission(any()) } doReturn true
             on { it.queryParams("type")} doReturn "stochastic"
         }
@@ -200,7 +200,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
             on { it.params(":touchstone-version-id") } doReturn "tId"
-            on { it.params(":scenario-id") } doReturn "sId"
+            on { it.params(":expectation-id") } doReturn "1"
             on { hasPermission(any()) } doReturn true
             on { it.queryParams("type")} doReturn "central"
         }
@@ -232,6 +232,7 @@ class ResponsibilityControllerTests : MontaguTests()
             on { it.params(":group-id") } doReturn "gId"
             on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
+            on { it.params(":expectation-id") } doReturn "1"
             on { hasPermission(any()) } doReturn hasPermissions
         }
         return context
