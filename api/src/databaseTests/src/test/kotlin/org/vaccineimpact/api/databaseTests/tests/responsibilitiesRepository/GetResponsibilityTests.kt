@@ -1,10 +1,9 @@
-package org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository
+package org.vaccineimpact.api.databaseTests.tests.responsibilitiesRepository
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
-import org.vaccineimpact.api.databaseTests.tests.responsibilitiesRepository.ResponsibilitiesRepositoryTests
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
 
@@ -20,6 +19,35 @@ class GetResponsibilityTests : ResponsibilitiesRepositoryTests()
             assertThatThrownBy { repo.getResponsibility("group-1", "touchstone-1", "scenario-1") }
                     .isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
                     .hasMessageContaining("touchstone-version")
+        }
+    }
+
+    @Test
+    fun `getResponsibilityId returns id`()
+    {
+        var responsibilityId = 0
+        given {
+            it.addGroup("group-1", "description")
+            it.addScenarioDescription("scenario-1", "description", "disease", addDisease = true)
+            it.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
+            val setId = it.addResponsibilitySet("group-1", "touchstone-1", "submitted")
+            responsibilityId = it.addResponsibility(setId, "touchstone-1", "scenario-1")
+        } check { repo ->
+            assertThat(repo.getResponsibilityId("group-1", "touchstone-1", "scenario-1")).isEqualTo(responsibilityId)
+        }
+    }
+
+    @Test
+    fun `getResponsibilityId returns Unknown Object Error if responsibility does not exist`()
+    {
+        given {
+            it.addGroup("group-1", "description")
+            it.addScenarioDescription("scenario-1", "description", "disease", addDisease = true)
+            it.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
+        } check { repo ->
+            assertThatThrownBy { repo.getResponsibilityId("group-1", "touchstone-1", "scenario-1") }
+                    .isInstanceOf(UnknownObjectError::class.java)
+                    .hasMessageContaining("scenario")
         }
     }
 
