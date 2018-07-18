@@ -79,34 +79,6 @@ Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.js
                     "status": "complete"
                 }
             }
-        ],
-        "expectations": [
-            {
-                "expectation": {
-                    "id": 123,
-                        "years": { 
-                        "minimum_inclusive": 1950,
-                        "maximum_inclusive": 2100
-                    },
-                    "ages": { 
-                        "minimum_inclusive": 0,
-                        "maximum_inclusive": 99
-                    },
-                    "cohorts": {
-                        "minimum_birth_year": 1950,
-                        "maximum_birth_year": null
-                    },
-                    "countries": [
-                        { "id": "AFG", "name": "Afghanistan" },
-                        { "id": "AGO", "name": "Angola" }
-                    ],
-                    "outcomes": [ "cohort_size", "cases", "deaths", "dalys" ]
-                },
-                "applicable_scenarios": [
-                    "menA-novacc", 
-                    "yf-campaign-reactive-nogavi"
-                ]                
-            }
         ]
     }
 
@@ -119,8 +91,7 @@ Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.js
         "touchstone_version": "2017-op-1",
         "status": "not-applicable",
         "problems": "",
-        "responsibilities": [],
-        "expectations": []
+        "responsibilities": []
     }
 
 Note that even if a modelling group has no responsibilities in a given touchstone,
