@@ -6,6 +6,7 @@ import {authReducer, AuthState} from "../../shared/reducers/authReducer";
 import {reportsReducer, ReportsState} from "./reportsReducer";
 import {usersReducer, UsersState} from "./userReducer";
 import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadcrumbsReducer";
+import {onetimeTokenReducer, OneTimeTokenState} from "./oneTimeTokenReducer";
 
 export interface ReportAppState {
     auth: AuthState;
@@ -13,6 +14,7 @@ export interface ReportAppState {
     reports: ReportsState;
     users: UsersState;
     breadcrumbs: BreadcrumbsState;
+    onetimeTokens: OneTimeTokenState
 }
 
 const reducers = combineReducers({
@@ -21,7 +23,8 @@ const reducers = combineReducers({
     reports: reportsReducer,
     router: routerReducer,
     users: usersReducer,
-    breadcrumbs: breadcrumbsReducer
+    breadcrumbs: breadcrumbsReducer,
+    onetimeTokens: onetimeTokenReducer
 });
 
 export default reducers;

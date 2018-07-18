@@ -18,6 +18,7 @@ import {Report} from "../main/shared/models/Generated";
 import {UserService} from "../main/report/services/UserService";
 import {mockArtefact} from "../test/mocks/mockModels";
 import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
+import {OneTimeTokenService} from "../main/report/services/OneTimeTokenService";
 
 const jwt_decode = require('jwt-decode');
 
@@ -92,6 +93,15 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         it("fetches report one time token", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
             const token = await oneTimeTokenStore.fetchToken(`/reports/minimal/${versions[0]}/artefacts/`);
+            const decoded = inflateAndDecode(token);
+            expect(decoded.url).to.equal(`/v1/reports/minimal/${versions[0]}/artefacts/`);
+        });
+
+        it("fetches one time token", async () => {
+            const versions = await (new ReportsService(this.store.dispatch, this.store.getState))
+                .getReportVersions("minimal");
+            const token = await (new OneTimeTokenService(this.store.dispatch, this.store.getState))
+                .fetchToken(`/reports/minimal/${versions[0]}/artefacts/`);
             const decoded = inflateAndDecode(token);
             expect(decoded.url).to.equal(`/v1/reports/minimal/${versions[0]}/artefacts/`);
         });

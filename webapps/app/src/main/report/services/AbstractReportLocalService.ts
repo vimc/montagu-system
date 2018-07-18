@@ -7,3 +7,7 @@ export abstract class AbstractReportLocalService extends AbstractLocalService {
         this.options.baseURL = settings.reportingApiUrl();
     }
 }
+
+export function buildRelativeReportingURL(urlFragment: string): string {
+    return "/v1" + urlFragment;
+}

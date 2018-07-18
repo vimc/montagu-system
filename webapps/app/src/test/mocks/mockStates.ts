@@ -25,6 +25,7 @@ import { initialState as UserInitialState, UserState} from "../../main/contrib/r
 import {AdminAppState} from "../../main/admin/reducers/adminAppReducers";
 import {ModellingGroupsState as AdminModellingGroupsState} from "../../main/admin/reducers/modellingGroupsReducer";
 import {adminTouchstoneReducer, adminTouchstonesInitialState} from "../../main/admin/reducers/adminTouchstoneReducer";
+import {onetimeTokensInitialState, OneTimeTokenState} from "../../main/report/reducers/oneTimeTokenReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -51,6 +52,10 @@ export const mockReportsState = (props?: RecursivePartial<ReportsState>): Report
 
 export const mockUsersState = (props?: RecursivePartial<UsersState>): UsersState => {
     return Object.assign({}, usersInitialState, props);
+};
+
+export const mockOnetimeTokenState = (props?: RecursivePartial<OneTimeTokenState>): OneTimeTokenState => {
+    return Object.assign({}, onetimeTokensInitialState, props);
 };
 
 export const mockAdminUsersState = (props?: RecursivePartial<AdminUsersState>): AdminUsersState => {
@@ -88,6 +93,8 @@ export const mockContribState = (props?: RecursivePartial<ContribAppState>) :Con
 };
 
 export const mockReportAppState = (props?: any): ReportAppState => {
+    const onetimeTokensMock: OneTimeTokenState = props && props.onetimeTokens
+        ? mockOnetimeTokenState(props.onetimeTokens): mockOnetimeTokenState();
     const authMock: AuthState = props && props.auth ? mockAuthState(props.auth) : mockAuthState();
     const reportsMock: ReportsState = props && props.reports ? mockReportsState(props.reports) : mockReportsState();
     const usersMock: UsersState = props && props.users ? mockUsersState(props.users) : mockUsersState();
@@ -97,6 +104,7 @@ export const mockReportAppState = (props?: any): ReportAppState => {
         form: formReducer,
         reports: reportsMock,
         users: usersMock,
-        breadcrumbs: breadcrumbsMock
+        breadcrumbs: breadcrumbsMock,
+        onetimeTokens: onetimeTokensMock
     };
 };
