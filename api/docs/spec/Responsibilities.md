@@ -144,8 +144,8 @@ Schema: [`ResponsibilityAndTouchstone.schema.json`](../schemas/ResponsibilityAnd
         }
     }
 
-## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/template/
-Returns the burden estimate template for the responsibility of this modelling group in the given touchstone.
+## GET /modelling-groups/{modelling-group-id}/expectations/{touchstone-id}/{expectation-id/
+Returns the burden estimate template for the requested expectations of this modelling group in the given touchstone.
 
 Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read`. 
 
