@@ -8,7 +8,7 @@ import {ReportAppState} from "../../../main/report/reducers/reportAppReducers";
 import {MockStore} from "redux-mock-store";
 import {OnetimeTokenActionType} from "../../../main/report/actionTypes/OnetimeTokenActions";
 
-describe("User action creators", () => {
+describe("Onetime token action creators", () => {
     const sandbox = new Sandbox();
     let store: MockStore<ReportAppState> = null;
 
