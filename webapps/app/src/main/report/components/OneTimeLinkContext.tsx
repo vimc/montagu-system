@@ -1,18 +1,21 @@
 import * as React from "react";
-import {doNothing} from "../../shared/Helpers";
-import {connectToStores} from "../../shared/alt";
-import fetcher from "../../shared/sources/Fetcher";
 import {OneTimeToken} from "../models/OneTimeToken";
-import {oneTimeTokenStore} from "../stores/OneTimeTokenStore";
-import {oneTimeTokenActions} from "../actions/OneTimeTokenActions";
+import {connect, Dispatch} from "react-redux";
+import {ReportAppState} from "../reducers/reportAppReducers";
+import {oneTimeTokenActionCreators} from "../actionCreators/oneTimeTokenActionCreators";
+import {buildReportingURL} from "../services/AbstractReportLocalService";
 
 interface PublicProps {
     href: string;
     className?: string;
 }
 
-interface Props extends PublicProps {
-    token: OneTimeToken;
+interface PropsFromState extends PublicProps {
+    token: string;
+}
+
+interface Props extends PropsFromState {
+    refreshToken: (url: string) => void;
 }
 
 // These props are passed to the children
@@ -20,54 +23,38 @@ export interface OneTimeLinkProps extends PublicProps {
     refreshToken: () => void;
 }
 
-export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTimeLinkProps, undefined>):
-ComponentConstructor<PublicProps, undefined> {
-    return connectToStores(class OneTimeLinkContextWrapper extends React.Component<Props> {
-        static getStores() {
-            return [oneTimeTokenStore]
-        }
+const mapStateToProps = (state: ReportAppState, props: PublicProps): PropsFromState => {
+    return {...props, token: state.onetimeTokens.tokens[props.href]}
+};
 
-        static getPropsFromStores(props: Props): Props {
-            return {
-                href: props.href,
-                token: oneTimeTokenStore.getToken(oneTimeTokenStore.getState(), props.href),
-                className: props.className
-            }
-        }
+const mapDispatchToProps = (dispatch: Dispatch<any>, props: PropsFromState): Props => {
+    return {...props, refreshToken: (url) => setTimeout(() => dispatch(oneTimeTokenActionCreators.fetchToken(url)))}
+};
 
-        constructor() {
-            super();
-            this.refreshToken = this.refreshToken.bind(this);
-        }
+export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTimeLinkProps, undefined>) {
+    return connect(mapStateToProps, mapDispatchToProps)(class OneTimeLinkContextWrapper extends React.Component<Props> {
 
         componentWillReceiveProps(newProps: Props) {
             if (this.props.href != newProps.href) {
-                this.refreshToken();
+                this.props.refreshToken(newProps.href);
             }
         }
 
         componentDidMount() {
-            this.refreshToken();
-        }
-
-        refreshToken(): void {
-            setTimeout(() => {
-                oneTimeTokenActions.clearUsedToken(this.props.href);
-                oneTimeTokenStore.fetchToken(this.props.href).catch(doNothing);
-            });
+            this.props.refreshToken(this.props.href);
         }
 
         render() {
             let href = null;
             if (this.props.token != null) {
-                href = fetcher.fetcher.buildReportingURL(this.props.token.data.url)
-                    + "?access_token=" + this.props.token.raw;
+                href = buildReportingURL(this.props.href)
+                    + "?access_token=" + this.props.token;
             }
             return <WrappedComponent
                 className={this.props.className}
                 href={href}
-                refreshToken={this.refreshToken}
-                children={this.props.children} />;
+                refreshToken={() => this.props.refreshToken(this.props.href)}
+                children={this.props.children}/>;
         }
-    });
+    })
 }

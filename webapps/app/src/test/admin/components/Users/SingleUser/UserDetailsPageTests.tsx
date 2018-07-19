@@ -12,6 +12,7 @@ import {mockAdminState, mockAdminUsersState} from "../../../../mocks/mockStates"
 import {mockUser} from "../../../../mocks/mockModels";
 import {UserDetailsContent} from "../../../../../main/admin/components/Users/SingleUser/UserDetailsContent";
 import {AdminAppState} from "../../../../../main/admin/reducers/adminAppReducers";
+import {MockStore} from "redux-mock-store";
 
 describe("UserDetailsPage", () => {
     const sandbox = new Sandbox();
@@ -19,7 +20,7 @@ describe("UserDetailsPage", () => {
     const mockUsersState = mockAdminUsersState({currentUser: mockUser({username: "fake.name", name: "Fake Name"})});
     const mockAdminAppState = mockAdminState({users: mockUsersState});
 
-    let store: AdminAppState = null;
+    let store: MockStore<AdminAppState> = null;
 
     beforeEach(() => {
         store = createMockStore(mockAdminAppState);

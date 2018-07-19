@@ -13,7 +13,7 @@ import {
     PublishSwitch
 } from "../../../../main/report/components/Sidebar/PublishSwitch";
 import {Sandbox} from "../../../Sandbox";
-import {reportActionCreators} from "../../../../main/report/actions/reportActionCreators";
+import {reportActionCreators} from "../../../../main/report/actionCreators/reportActionCreators";
 import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";
 import {createMockStore} from "../../../mocks/mockStore";
 

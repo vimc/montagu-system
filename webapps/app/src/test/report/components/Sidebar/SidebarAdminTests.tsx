@@ -8,16 +8,15 @@ import {mockUser} from "../../../mocks/mockModels";
 import {mapDispatchToProps, SidebarAdmin} from "../../../../main/report/components/Sidebar/SidebarAdmin";
 import {ReportsState} from "../../../../main/report/reducers/reportsReducer";
 import {createMockStore} from "../../../mocks/mockStore";
-import {userActionCreators} from "../../../../main/report/actions/userActionCreators";
+import {userActionCreators} from "../../../../main/report/actionCreators/userActionCreators";
 import {ReportAppState} from "../../../../main/report/reducers/reportAppReducers";
-import {ReportReadersList} from "../../../../main/report/components/Sidebar/ReportReadersList";
-import {defaultProps} from "recompose";
 import {SidebarAdminProps} from "../../../../main/report/components/Sidebar/SidebarAdminComponent";
+import {MockStore} from "redux-mock-store";
 
 describe("SidebarAdmin", () => {
 
     const sandbox = new Sandbox();
-    let store: ReportAppState, getReadersStub: sinon.SinonStub;
+    let store: MockStore<ReportAppState>, getReadersStub: sinon.SinonStub;
 
     afterEach(() => {
         sandbox.restore();

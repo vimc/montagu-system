@@ -7,7 +7,7 @@ import { mockReport } from "../../../mocks/mockModels";
 import {mapStateToProps, ReportsList} from "../../../../main/report/components/ReportsList/ReportsList";
 import {mockReportAppState} from "../../../mocks/mockStates";
 import {Sandbox} from "../../../Sandbox";
-import {reportActionCreators} from "../../../../main/report/actions/reportActionCreators";
+import {reportActionCreators} from "../../../../main/report/actionCreators/reportActionCreators";
 import {createMockStore} from "../../../mocks/mockStore";
 import { LoadingElement } from "../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {ReportsListTable} from "../../../../main/report/components/ReportsList/ReportListTable";

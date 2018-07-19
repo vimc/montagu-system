@@ -9,6 +9,7 @@ import { InternalLink } from "../../../../../main/shared/components/InternalLink
 import {createMockStore} from "../../../../mocks/mockStore";
 import {AdminAppState} from "../../../../../main/admin/reducers/adminAppReducers";
 import {mockAdminState, mockAdminUsersState} from "../../../../mocks/mockStates";
+import {MockStore} from "redux-mock-store";
 
 describe("UserRole", () => {
 
@@ -17,7 +18,7 @@ describe("UserRole", () => {
 
     const fakeRole = mockRole({name: "rolename"});
 
-    let store: AdminAppState = null;
+    let store: MockStore<AdminAppState> = null;
 
     beforeEach(() => {
         store = createMockStore(mockAdminAppState);

@@ -22,7 +22,7 @@ export class ResourceLinks extends React.Component<ResourceLinksProps, undefined
         }
 
         const links = this.props.resources.map((resource) =>
-            <div>
+            <div key={resource}>
                 <FileDownloadLink href={this.buildUrl(resource)}>{resource}</FileDownloadLink>
             </div>
         );

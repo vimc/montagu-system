@@ -1,7 +1,7 @@
 import { getFromLookup, ILookup } from "../../shared/models/Lookup";
 import { alt } from "../../shared/alt";
 import { AbstractStore } from "../../shared/stores/AbstractStore";
-import { oneTimeTokenActions } from "../actions/OneTimeTokenActions";
+import { oneTimeTokenActions } from "../actionCreators/OneTimeTokenActions";
 import { OneTimeTokenSource } from "../sources/OneTimeTokenSource";
 import { OneTimeToken } from "../models/OneTimeToken";
 import StoreModel = AltJS.StoreModel;
