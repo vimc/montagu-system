@@ -154,8 +154,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(true)
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn Expectations(2000..2030, 1..10, CohortRestriction(null, null),
-                    listOf(Country("ABC", "CountryA"), Country("DEF", "CountryD")), listOf("Dalys", "Deaths"))
+            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn exampleExpectations()
         }
 
         GroupResponsibilityController(context, mock(), mock(), repo)

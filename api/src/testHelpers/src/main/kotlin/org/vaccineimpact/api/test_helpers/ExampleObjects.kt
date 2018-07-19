@@ -5,6 +5,7 @@ import org.vaccineimpact.api.models.responsibilities.Responsibility
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
 
 fun exampleExpectations() = Expectations(
+        id = 1,
         years = 2000..2100,
         ages = 0..99,
         cohorts = CohortRestriction(null, null),

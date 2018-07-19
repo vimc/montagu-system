@@ -41,7 +41,7 @@ class ExpectationsLogicTests : MontaguTests()
                 "", 1, "", TouchstoneStatus.OPEN)))
     }
 
-    private val fakeExpectations = Expectations(1..11, 2000..2009, CohortRestriction(), listOf(), listOf())
+    private val fakeExpectations = Expectations(1, 1..11, 2000..2009, CohortRestriction(), listOf(), listOf())
 
     private val expectationsRepo = mock<ExpectationsRepository> {
         on { this.getExpectationsForResponsibility(responsibilityId) } doReturn fakeExpectations
