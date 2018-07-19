@@ -29,7 +29,7 @@ class ExpectationsLogicTests : MontaguTests()
     private val responsibilityId = 11
     private val responsibility = exampleResponsibility()
     private val touchstoneVersion = exampleTouchstoneVersion()
-    private val responsibilityAndTouchstone = ResponsibilityAndTouchstone(responsibility, touchstoneVersion)
+    private val responsibilityAndTouchstone = ResponsibilityAndTouchstone(responsibilityId, responsibility, touchstoneVersion)
 
     private val responsibilitiesRepo = mock<ResponsibilitiesRepository> {
         on { this.getResponsibilityId(groupId, touchstoneVersionId, scenarioId) } doReturn responsibilityId
@@ -64,7 +64,7 @@ class ExpectationsLogicTests : MontaguTests()
     }
 
     @Test
-    fun `throws unknown object error if group does not exist`()
+    fun `getExpectationsForResponsibility throws unknown object error if group does not exist`()
     {
         val modellingGroupRepoWithoutGroup = mock<ModellingGroupRepository> {
             on { getModellingGroup(any()) } doThrow UnknownObjectError(groupId, "group")
@@ -80,7 +80,7 @@ class ExpectationsLogicTests : MontaguTests()
     }
 
     @Test
-    fun `throws unknown object error if touchstone version does not exist`()
+    fun `getExpectationsForResponsibility throws unknown object error if touchstone version does not exist`()
     {
         val touchstonesRepoWithoutTouchstone = mock<TouchstoneRepository> {
             on { touchstoneVersions } doReturn InMemoryDataSet<TouchstoneVersion, String>(listOf())
