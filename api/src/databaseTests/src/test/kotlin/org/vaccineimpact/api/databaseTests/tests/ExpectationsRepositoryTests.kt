@@ -40,13 +40,11 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
         }
         withRepo { repo ->
             val result = repo.getExpectationsForResponsibility(responsibilityId)
-            assertThat(result).isEqualTo(Expectations(
-                    years = 2000..2100,
-                    ages = 0..99,
-                    cohorts = CohortRestriction(),
-                    countries = emptyList(),
-                    outcomes = emptyList()
-            ))
+            assertThat(result.years).isEqualTo(2000..2100)
+            assertThat(result.ages).isEqualTo(0..99)
+            assertThat(result.cohorts).isEqualTo(CohortRestriction())
+            assertThat(result.countries).isEmpty()
+            assertThat(result.outcomes).isEmpty()
         }
     }
 

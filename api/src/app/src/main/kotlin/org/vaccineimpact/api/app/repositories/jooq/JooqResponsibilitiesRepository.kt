@@ -131,8 +131,9 @@ class JooqResponsibilitiesRepository(
             val id = dsl.select(Tables.RESPONSIBILITY.ID)
                     .fromJoinPath(Tables.RESPONSIBILITY, Tables.SCENARIO, Tables.SCENARIO_DESCRIPTION)
                     .where(Tables.RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibilitySet[Tables.RESPONSIBILITY_SET.ID])
-                    .and(Tables.SCENARIO_DESCRIPTION.ID.eq(scenarioId))
-            ).singleOrNull() ?: throw UnknownObjectError(scenarioId, "responsibility")
+                    .and(Tables.SCENARIO_DESCRIPTION.ID.eq(scenarioId)))
+                    .singleOrNull()
+                    ?: throw UnknownObjectError(scenarioId, "responsibility")
 
             return id.into(Int::class.java)
         }

@@ -1,11 +1,10 @@
-package org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository
+package org.vaccineimpact.api.databaseTests.tests.responsibilitiesRepository
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.databaseTests.tests.responsibilitiesRepository.ResponsibilitiesRepositoryTests
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
 
