@@ -11,11 +11,10 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.filterByPermission
-import org.vaccineimpact.api.models.responsibilities.Responsibilities
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
-import org.vaccineimpact.api.models.responsibilities.ResponsibilityAndTouchstone
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.Touchstone
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitiesWithExpectations
 import org.vaccineimpact.api.serialization.EmptyDataTable
 import org.vaccineimpact.api.serialization.StreamSerializable
 
@@ -38,17 +37,14 @@ class GroupResponsibilityController(
         return modellingGroupRepo.getTouchstonesByGroupId(groupId).filterByPermission(context)
     }
 
-    fun getResponsibilities(): Responsibilities
+    fun getResponsibilities(): ResponsibilitiesWithExpectations
     {
         val groupId = groupId(context)
         val touchstoneVersionId = context.params(":touchstone-version-id")
         val filterParameters = ScenarioFilterParameters.fromContext(context)
-
-        modellingGroupRepo.getModellingGroup(groupId)
-        val data = responsibilitiesRepo
-                .getResponsibilitiesForGroupAndTouchstone(groupId, touchstoneVersionId, filterParameters)
-        context.checkIsAllowedToSeeTouchstone(touchstoneVersionId, data.touchstoneStatus)
-        return data.responsibilities
+        val (responsibilities, touchstoneStatus) = expectationsLogic.getResponsibilitySetWithExpectations(groupId, touchstoneVersionId, filterParameters)
+        context.checkIsAllowedToSeeTouchstone(touchstoneVersionId, touchstoneStatus)
+        return responsibilities
     }
 
     fun getResponsibility(): ResponsibilityDetails

@@ -1,11 +1,14 @@
 package org.vaccineimpact.api.app.logic
 
+import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.models.Expectations
 import org.vaccineimpact.api.models.ModellingGroup
+import org.vaccineimpact.api.models.TouchstoneStatus
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitiesWithExpectations
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 
@@ -20,6 +23,12 @@ interface ExpectationsLogic
                                           scenarioId: String): ResponsibilityDetails
 
     fun getResponsibilitySetsWithExpectations(touchstoneVersionId: String): List<ResponsibilitySetWithExpectations>
+
+    fun getResponsibilitySetWithExpectations(
+            groupId: String,
+            touchstoneVersionId: String,
+            filterParameters: ScenarioFilterParameters
+    ): Pair<ResponsibilitiesWithExpectations, TouchstoneStatus>
 }
 
 class RepositoriesExpectationsLogic(private val responsibilitiesRepo: ResponsibilitiesRepository,
@@ -49,6 +58,22 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepo: Responsibi
             val expectations = expectationsRepo.getExpectationsForResponsibilitySet(it.modellingGroupId, touchstoneVersionId)
             ResponsibilitySetWithExpectations(it, touchstoneVersionId, expectations)
         }
+    }
+
+    override fun getResponsibilitySetWithExpectations(
+            groupId: String,
+            touchstoneVersionId: String,
+            filterParameters: ScenarioFilterParameters
+    ): Pair<ResponsibilitiesWithExpectations, TouchstoneStatus>
+    {
+        val group = checkGroupAndTouchstoneExist(groupId, touchstoneVersionId)
+        val data = responsibilitiesRepo.getResponsibilitiesForGroupAndTouchstone(
+                group.id, touchstoneVersionId, filterParameters)
+        val expectations = expectationsRepo.getExpectationsForResponsibilitySet(group.id, touchstoneVersionId)
+        return Pair(
+                ResponsibilitiesWithExpectations(data.responsibilities, expectations),
+                data.touchstoneStatus
+        )
     }
 
     private fun checkGroupAndTouchstoneExist(groupId: String, touchstoneVersionId: String): ModellingGroup
