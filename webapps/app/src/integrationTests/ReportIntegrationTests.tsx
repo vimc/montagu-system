@@ -4,8 +4,6 @@ import {shallow, ShallowWrapper} from "enzyme";
 import {createMemoryHistory} from 'history';
 
 import {expectSameElements, inflateAndDecode, IntegrationTestSuite} from "./IntegrationTest";
-import {ReportingFetcher} from "../main/report/sources/ReportingFetcher";
-import {oneTimeTokenStore} from "../main/report/stores/OneTimeTokenStore";
 import {Sandbox} from "../test/Sandbox";
 import {ArtefactItem} from "../main/report/components/Artefacts/ArtefactItem";
 import {FileDownloadButton, FileDownloadLink} from "../main/report/components/FileDownloadLink";
@@ -34,15 +32,9 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         return createReportStore(history);
     }
 
-
-    makeFetcher() {
-        return new ReportingFetcher();
-    }
-
     addTestsToMocha() {
 
         const sandbox = new Sandbox();
-        const fetcher = new ReportingFetcher();
 
         afterEach(() => sandbox.restore());
 
@@ -88,13 +80,6 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
             const versionDetails = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails("minimal", versions[0]);
             expect(versionDetails.name).is.equal("minimal");
-        });
-
-        it("fetches report one time token", async () => {
-            const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
-            const token = await oneTimeTokenStore.fetchToken(`/reports/minimal/${versions[0]}/artefacts/`);
-            const decoded = inflateAndDecode(token);
-            expect(decoded.url).to.equal(`/v1/reports/minimal/${versions[0]}/artefacts/`);
         });
 
         it("fetches one time token", async () => {
