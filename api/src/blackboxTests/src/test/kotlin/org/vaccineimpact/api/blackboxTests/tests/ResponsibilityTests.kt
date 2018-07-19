@@ -3,15 +3,17 @@ package org.vaccineimpact.api.blackboxTests.tests
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
+import com.opencsv.CSVReader
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.ExpectedProblem
-import org.vaccineimpact.api.blackboxTests.helpers.PermissionChecker
-import org.vaccineimpact.api.blackboxTests.helpers.validate
+import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
+import java.io.StringReader
+import java.math.BigDecimal
 
 class ResponsibilityTests : DatabaseTest()
 {
@@ -200,6 +202,34 @@ class ResponsibilityTests : DatabaseTest()
             })
         }
     }
+    @Test
+    fun `get template has correct headers`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            val id = addResponsibilities(it, touchstoneStatus = "open")
+            it.addExpectations(id, outcomes = listOf("deaths", "dalys"))
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/template/",
+                PermissionSet("*/can-login", "*/scenarios.read", "$groupScope/responsibilities.read"), acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first().toList()
+
+        val expectedHeaders = listOf("disease", "year", "age", "country", "country_name",
+                "cohort_size", "deaths", "dalys")
+
+        expectedHeaders.forEachIndexed { index, h ->
+            Assertions.assertThat(h).isEqualTo(headers[index])
+        }
+
+    }
 
     @Test
     fun `only touchstone preparer can see in-preparation coverage sets`()
@@ -258,7 +288,7 @@ class ResponsibilityTests : DatabaseTest()
         db.addTouchstoneVersion("touchstone", 1, "version description", touchstoneStatus)
     }
 
-    private fun addResponsibilities(db: JooqContext, touchstoneStatus: String)
+    private fun addResponsibilities(db: JooqContext, touchstoneStatus: String): Int
     {
         addUserGroupAndTouchstone(db, touchstoneStatus)
         val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "submitted")
@@ -269,5 +299,8 @@ class ResponsibilityTests : DatabaseTest()
         val burdenEstimateId = db.addBurdenEstimateSet(responsibilityId, version, "model.user")
         db.updateCurrentEstimate(responsibilityId, burdenEstimateId)
         db.addBurdenEstimateProblem("problem", burdenEstimateId)
+
+        return responsibilityId
     }
+
 }
