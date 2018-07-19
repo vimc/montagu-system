@@ -21,8 +21,6 @@ export abstract class IntegrationTestSuite {
 
     store: any;
 
-    abstract makeFetcher(): Fetcher;
-
     abstract addTestsToMocha(): void;
 
     db: Client;
@@ -52,7 +50,6 @@ export abstract class IntegrationTestSuite {
             beforeEach((done: DoneCallback) => {
                 (global as any).fetch = require('node-fetch');
                 singletonVariableCache.clearAll();
-                fetcher.fetcher = this.makeFetcher();
                 // Note that this will always trigger an authActions.logIn, which will result in all three login
                 // stores recording the user to some extent
 

@@ -1,6 +1,6 @@
 import { ErrorInfo, Result, ResultStatus } from "../../main/shared/models/Generated";
-import fetcher, { FetchOptions } from "../../main/shared/sources/Fetcher";
-import { ReportingFetcher } from "../../main/report/sources/ReportingFetcher";
+import fetcher, {Fetcher, FetchOptions} from "../../main/shared/sources/Fetcher";
+import {AdminFetcher} from "../../main/admin/sources/AdminFetcher";
 
 export function promiseJSON(data: any): Response {
     return {
@@ -57,7 +57,7 @@ export function resetFetcher() {
 }
 
 export function mockFetcher(promise: Promise<Response>, reportingPromise?: Promise<Response>) {
-    fetcher.fetcher = new ReportingFetcher();
+    fetcher.fetcher = new AdminFetcher()
     fetcher.fetcher.fetch = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
         return promise;
     };
@@ -67,7 +67,7 @@ export function mockFetcher(promise: Promise<Response>, reportingPromise?: Promi
 }
 
 export function mockFetcherNonJson(promise: Promise<any>, reportingPromise?: Promise<any>) {
-    fetcher.fetcher = new ReportingFetcher();
+    fetcher.fetcher = new AdminFetcher()
     fetcher.fetcher.fetch = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
         return promise;
     };

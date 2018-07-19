@@ -1,6 +1,5 @@
 import fetcher, {FetchOptions} from "../../main/shared/sources/Fetcher";
 import {mockResponse} from "./mockRemote";
-import {ReportingFetcher} from "../../main/report/sources/ReportingFetcher";
 import {Result} from "../../main/shared/models/Generated";
 
 export enum APIType {
@@ -15,7 +14,6 @@ export interface FakeEndpoint {
 }
 
 export function mockFetcherForMultipleResponses(responses: FakeEndpoint[]) {
-    fetcher.fetcher = new ReportingFetcher();
     fetcher.fetcher.fetch = createFetchHandler(APIType.Montagu, responses);
     fetcher.fetcher.fetchFromReportingApi = createFetchHandler(APIType.Reporting, responses);
 }

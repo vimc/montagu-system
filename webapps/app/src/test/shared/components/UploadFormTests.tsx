@@ -5,10 +5,7 @@ import {Sandbox} from "../../Sandbox";
 import {UploadFileForm} from "../../../main/shared/components/UploadFileForm";
 import {helpers} from "../../../main/shared/Helpers";
 import {Alert} from "reactstrap";
-import {CustomValidationResult} from "../../../main/shared/validation/FileValidationHelpers";
-import {mockFetcher, resetFetcher} from "../../mocks/mockRemote";
-import fetcher from "../../../main/shared/sources/Fetcher";
-import {ReportingFetcher} from "../../../main/report/sources/ReportingFetcher";
+import {resetFetcher} from "../../mocks/mockRemote";
 
 describe('UploadForm', () => {
     let rendered: ShallowWrapper<any, any>;

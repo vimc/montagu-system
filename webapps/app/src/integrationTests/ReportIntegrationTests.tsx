@@ -17,6 +17,7 @@ import {UserService} from "../main/report/services/UserService";
 import {mockArtefact} from "../test/mocks/mockModels";
 import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
 import {OneTimeTokenService} from "../main/report/services/OneTimeTokenService";
+import {AbstractReportLocalService} from "../main/report/services/AbstractReportLocalService";
 
 const jwt_decode = require('jwt-decode');
 
@@ -128,7 +129,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const link = rendered.find(FileDownloadLink).first();
 
             const url = link.prop("href");
-            return fetcher.fetchFromReportingApi(url)
+            return helperService.fetchAnything(url)
         }
 
 
@@ -136,8 +137,16 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const link = rendered.find(FileDownloadButton).first();
 
             const url = link.prop("href");
-            return fetcher.fetchFromReportingApi(url)
+            return helperService.fetchAnything(url)
         }
+
+        class HelperService extends AbstractReportLocalService {
+            fetchAnything(url: string) {
+                return this.doFetch(url)
+            }
+        }
+
+        const helperService = new HelperService(this.store.dispatch, this.store.getState)
 
     }
 }
