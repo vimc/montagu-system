@@ -4,9 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqExpectationsRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqResponsibilitiesRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqScenarioRepository
-import org.vaccineimpact.api.app.repositories.jooq.JooqTouchstoneRepository
 import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
@@ -40,13 +37,11 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
         }
         withRepo { repo ->
             val result = repo.getExpectationsForResponsibility(responsibilityId)
-            assertThat(result).isEqualTo(Expectations(
-                    years = 2000..2100,
-                    ages = 0..99,
-                    cohorts = CohortRestriction(),
-                    countries = emptyList(),
-                    outcomes = emptyList()
-            ))
+            assertThat(result.years).isEqualTo(2000..2100)
+            assertThat(result.ages).isEqualTo(0..99)
+            assertThat(result.cohorts).isEqualTo(CohortRestriction())
+            assertThat(result.countries).isEmpty()
+            assertThat(result.outcomes).isEmpty()
         }
     }
 

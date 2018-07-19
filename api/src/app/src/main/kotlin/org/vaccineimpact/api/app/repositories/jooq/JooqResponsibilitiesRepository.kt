@@ -12,6 +12,7 @@ import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.responsibilities.*
 
 class JooqResponsibilitiesRepository(
         dsl: DSLContext,
@@ -115,7 +116,7 @@ class JooqResponsibilitiesRepository(
                     responsibilitySet.id,
                     { this.and(Tables.SCENARIO_DESCRIPTION.ID.eq(scenarioId)) }
             ).singleOrNull() ?: throw UnknownObjectError(scenarioId, "responsibility")
-            return ResponsibilityAndTouchstone(touchstoneVersion, responsibility)
+            return ResponsibilityAndTouchstone(responsibility, touchstoneVersion)
         }
         else
         {
@@ -131,8 +132,9 @@ class JooqResponsibilitiesRepository(
             val id = dsl.select(Tables.RESPONSIBILITY.ID)
                     .fromJoinPath(Tables.RESPONSIBILITY, Tables.SCENARIO, Tables.SCENARIO_DESCRIPTION)
                     .where(Tables.RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibilitySet[Tables.RESPONSIBILITY_SET.ID])
-                    .and(Tables.SCENARIO_DESCRIPTION.ID.eq(scenarioId))
-            ).singleOrNull() ?: throw UnknownObjectError(scenarioId, "responsibility")
+                    .and(Tables.SCENARIO_DESCRIPTION.ID.eq(scenarioId)))
+                    .singleOrNull()
+                    ?: throw UnknownObjectError(scenarioId, "responsibility")
 
             return id.into(Int::class.java)
         }

@@ -2,7 +2,10 @@ package org.vaccineimpact.api.app.repositories
 
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
-import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.responsibilities.Responsibilities
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitiesAndTouchstoneStatus
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityAndTouchstone
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySet
 
 interface ResponsibilitiesRepository: Repository {
     fun getResponsibilitiesForTouchstone(touchstoneVersionId: String): List<ResponsibilitySet>
