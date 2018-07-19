@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.models
 
 class Expectations(
+        val id: Int,
         val years: IntRange,
         val ages: IntRange,
         val cohorts: CohortRestriction,
