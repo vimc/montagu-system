@@ -15,9 +15,11 @@ import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.models.CohortRestriction
-import org.vaccineimpact.api.models.Expectations
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityAndTouchstone
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.test_helpers.exampleResponsibility
+import org.vaccineimpact.api.test_helpers.exampleTouchstoneVersion
 
 class ExpectationsLogicTests : MontaguTests()
 {
@@ -25,9 +27,13 @@ class ExpectationsLogicTests : MontaguTests()
     private val groupId = "g1"
     private val scenarioId = "s1"
     private val responsibilityId = 11
+    private val responsibility = exampleResponsibility()
+    private val touchstoneVersion = exampleTouchstoneVersion()
+    private val responsibilityAndTouchstone = ResponsibilityAndTouchstone(responsibility, touchstoneVersion)
 
     private val responsibilitiesRepo = mock<ResponsibilitiesRepository> {
         on { this.getResponsibilityId(groupId, touchstoneVersionId, scenarioId) } doReturn responsibilityId
+        on { this.getResponsibility(groupId, touchstoneVersionId, scenarioId) } doReturn responsibilityAndTouchstone
     }
 
     private val touchstonesRepo = mock<TouchstoneRepository> {
@@ -87,5 +93,22 @@ class ExpectationsLogicTests : MontaguTests()
         assertThatThrownBy { sut.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId) }
                 .isInstanceOf(UnknownObjectError::class.java)
                 .hasMessageContaining(touchstoneVersionId)
+    }
+
+    @Test
+    fun `can get responsibility with expectations`()
+    {
+        val sut = RepositoriesExpectationsLogic(
+                responsibilitiesRepo,
+                expectationsRepo,
+                modellingGroupRepo,
+                touchstonesRepo
+        )
+        val result = sut.getResponsibilityWithExpectations(groupId, touchstoneVersionId, scenarioId)
+        assertThat(result).isEqualTo(ResponsibilityDetails(
+                responsibility,
+                touchstoneVersion,
+                fakeExpectations
+        ))
     }
 }
