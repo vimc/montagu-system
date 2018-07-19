@@ -72,11 +72,6 @@ Schema: [`ResponsibilitySets.schema.json`](../schemas/ResponsibilitySets.schema.
                     "description": "Menigitis A, No vaccination",
                     "disease": "MenA"
                 },
-                "countries": ["AFG", "AGO"],
-                "years": {
-                    "start": 1900,
-                    "end": 2050
-                },
                 "status": "empty",
                 "problems": [ "No burden estimates have been uploaded" ],
                 "current_estimate_set": null
@@ -87,11 +82,6 @@ Schema: [`ResponsibilitySets.schema.json`](../schemas/ResponsibilitySets.schema.
                     "touchstones": [ "2017-wuenic-1", "2017-op-1" ],
                     "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
                     "disease": "YF"
-                },
-                "countries": ["AFG", "AGO"],
-                "years": {
-                    "start": 1900,
-                    "end": 2050
                 },
                 "status": "invalid",
                 "problems": [

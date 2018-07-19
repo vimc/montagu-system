@@ -1,0 +1,13 @@
+{
+    "id": "Range",
+    "type": "object",
+    "properties": {
+        "minimum_inclusive": { "type": "number" },
+        "maximum_inclusive": { "type": "number" }
+    },
+    "additionalProperties": false,
+    "required": [ 
+        "minimum_inclusive", 
+        "maximum_inclusive"
+    ]
+}
