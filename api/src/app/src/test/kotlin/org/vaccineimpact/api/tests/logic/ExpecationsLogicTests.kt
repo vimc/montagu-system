@@ -56,29 +56,6 @@ class ExpectationsLogicTests : MontaguTests()
     }
 
     @Test
-    fun `gets expectations`()
-    {
-        val sut = RepositoriesExpectationsLogic(responsibilitiesRepo, expectationsRepo,
-                modellingGroupRepo,
-                touchstonesRepo)
-
-        val result = sut.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId)
-        assertThat(result.ages).isEqualTo(fakeExpectations.ages)
-    }
-
-    @Test
-    fun `getExpectationsForResponsibility throws unknown object error if group does not exist`()
-    {
-        assertChecksThatGroupExists { it.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId) }
-    }
-
-    @Test
-    fun `getExpectationsForResponsibility throws unknown object error if touchstone version does not exist`()
-    {
-        assertChecksThatTouchstoneVersionExists { it.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId) }
-    }
-
-    @Test
     fun `can get responsibility with expectations`()
     {
         val sut = RepositoriesExpectationsLogic(

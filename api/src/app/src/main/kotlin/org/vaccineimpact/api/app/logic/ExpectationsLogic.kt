@@ -10,10 +10,6 @@ import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 
 interface ExpectationsLogic
 {
-    fun getExpectationsForResponsibility(groupId: String,
-                                         touchstoneVersionId: String,
-                                         scenarioId: String): Expectations
-
     fun getExpectationsById(expectationId: Int, groupId: String, touchstoneVersionId: String): Expectations
 
     fun getResponsibilityWithExpectations(groupId: String,
@@ -26,13 +22,6 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepository: Resp
                                     private val modellingGroupRepository: ModellingGroupRepository,
                                     private val touchstoneRepository: TouchstoneRepository) : ExpectationsLogic
 {
-    override fun getExpectationsForResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String): Expectations
-    {
-        checkGroupAndTouchstoneExist(groupId, touchstoneVersionId)
-        val responsibilityId = responsibilitiesRepository.getResponsibilityId(groupId, touchstoneVersionId, scenarioId)
-        return expectationsRepository.getExpectationsForResponsibility(responsibilityId)
-    }
-
     override fun getExpectationsById(expectationId: Int, groupId: String, touchstoneVersionId: String):
             Expectations
     {
