@@ -9,3 +9,8 @@ data class Responsibility(
         val problems: List<String>,
         val currentEstimateSet: BurdenEstimateSet?
 )
+
+data class ResponsibilityWithDatabaseId(
+        val id: Int,
+        val responsibility: Responsibility
+)
