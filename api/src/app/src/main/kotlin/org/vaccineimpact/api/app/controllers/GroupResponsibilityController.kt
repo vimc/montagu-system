@@ -14,7 +14,7 @@ import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.Touchstone
-import org.vaccineimpact.api.models.responsibilities.ResponsibilitiesWithExpectations
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import org.vaccineimpact.api.serialization.EmptyDataTable
 import org.vaccineimpact.api.serialization.StreamSerializable
 
@@ -37,7 +37,7 @@ class GroupResponsibilityController(
         return modellingGroupRepo.getTouchstonesByGroupId(groupId).filterByPermission(context)
     }
 
-    fun getResponsibilities(): ResponsibilitiesWithExpectations
+    fun getResponsibilities(): ResponsibilitySetWithExpectations
     {
         val groupId = groupId(context)
         val touchstoneVersionId = context.params(":touchstone-version-id")

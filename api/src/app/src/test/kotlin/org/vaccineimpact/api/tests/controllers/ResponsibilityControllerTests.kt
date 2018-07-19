@@ -14,7 +14,9 @@ import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.responsibilities.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.test_helpers.exampleExpectationMapping
 import org.vaccineimpact.api.test_helpers.exampleExpectations
+import org.vaccineimpact.api.test_helpers.exampleResponsibilitySetWithExpectations
 
 class ResponsibilityControllerTests : MontaguTests()
 {
@@ -59,12 +61,12 @@ class ResponsibilityControllerTests : MontaguTests()
     @Test
     fun `getResponsibilities gets parameters from URL`()
     {
-        val data = ResponsibilitiesAndTouchstoneStatus(
-                Responsibilities("tId", "", null, emptyList()),
+        val data = Pair(
+                exampleResponsibilitySetWithExpectations("tId", "gId"),
                 TouchstoneStatus.FINISHED
         )
-        val repo = mock<ResponsibilitiesRepository> {
-            on { getResponsibilitiesForGroupAndTouchstone(any(), any(), any()) } doReturn data
+        val logic = mock<ExpectationsLogic> {
+            on { getResponsibilitySetWithExpectations(any(), any(), any()) } doReturn data
         }
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
@@ -72,20 +74,20 @@ class ResponsibilityControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        GroupResponsibilityController(context, mock(), repo, mock()).getResponsibilities()
+        GroupResponsibilityController(context, mock(), mock(), logic).getResponsibilities()
 
-        verify(repo).getResponsibilitiesForGroupAndTouchstone(eq("gId"), eq("tId"), any())
+        verify(logic).getResponsibilitySetWithExpectations(eq("gId"), eq("tId"), any())
     }
 
     @Test
     fun `getResponsibilities returns error if user does not have permission to see in-preparation touchstone`()
     {
-        val data = ResponsibilitiesAndTouchstoneStatus(
-                Responsibilities("tId", "", null, emptyList()),
+        val data = Pair(
+                exampleResponsibilitySetWithExpectations("tId", "gId"),
                 TouchstoneStatus.IN_PREPARATION
         )
-        val repo = mock<ResponsibilitiesRepository> {
-            on { getResponsibilitiesForGroupAndTouchstone(any(), any(), any()) } doReturn data
+        val logic = mock<ExpectationsLogic> {
+            on { getResponsibilitySetWithExpectations(any(), any(), any()) } doReturn data
         }
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
@@ -94,25 +96,8 @@ class ResponsibilityControllerTests : MontaguTests()
         }
 
         Assertions.assertThatThrownBy {
-            GroupResponsibilityController(context, mock(), repo, mock()).getResponsibilities()
+            GroupResponsibilityController(context, mock(), mock(), logic).getResponsibilities()
         }.hasMessageContaining("Unknown touchstone-version")
-    }
-
-    @Test
-    fun `getResponsibilities checks modelling group exists`()
-    {
-        val repo = mock<ModellingGroupRepository> {
-            on { getModellingGroup(any()) } doThrow UnknownObjectError("badId", "ModellingGroup")
-        }
-        val context = mock<ActionContext> {
-            on { it.params(":group-id") } doReturn "badId"
-            on { it.params(":touchstone-version-id") } doReturn "tId"
-            on { hasPermission(any()) } doReturn true
-        }
-
-        Assertions.assertThatThrownBy {
-            GroupResponsibilityController(context, repo, mock(), mock()).getResponsibilities()
-        }.hasMessageContaining("Unknown modelling-group")
     }
 
     @Test

@@ -19,6 +19,7 @@
     "required": [ 
         "touchstone_version", 
         "status", 
+        "modelling_group_id",
         "responsibilities", 
         "expectations" 
     ]

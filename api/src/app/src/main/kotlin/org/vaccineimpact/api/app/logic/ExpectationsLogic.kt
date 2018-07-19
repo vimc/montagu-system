@@ -8,7 +8,6 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.models.Expectations
 import org.vaccineimpact.api.models.ModellingGroup
 import org.vaccineimpact.api.models.TouchstoneStatus
-import org.vaccineimpact.api.models.responsibilities.ResponsibilitiesWithExpectations
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 
@@ -28,7 +27,7 @@ interface ExpectationsLogic
             groupId: String,
             touchstoneVersionId: String,
             filterParameters: ScenarioFilterParameters
-    ): Pair<ResponsibilitiesWithExpectations, TouchstoneStatus>
+    ): Pair<ResponsibilitySetWithExpectations, TouchstoneStatus>
 }
 
 class RepositoriesExpectationsLogic(private val responsibilitiesRepo: ResponsibilitiesRepository,
@@ -56,7 +55,7 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepo: Responsibi
         val responsibilitySets = responsibilitiesRepo.getResponsibilitiesForTouchstone(touchstoneVersionId)
         return responsibilitySets.map {
             val expectations = expectationsRepo.getExpectationsForResponsibilitySet(it.modellingGroupId, touchstoneVersionId)
-            ResponsibilitySetWithExpectations(it, touchstoneVersionId, expectations)
+            ResponsibilitySetWithExpectations(it, expectations)
         }
     }
 
@@ -64,14 +63,14 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepo: Responsibi
             groupId: String,
             touchstoneVersionId: String,
             filterParameters: ScenarioFilterParameters
-    ): Pair<ResponsibilitiesWithExpectations, TouchstoneStatus>
+    ): Pair<ResponsibilitySetWithExpectations, TouchstoneStatus>
     {
         val group = checkGroupAndTouchstoneExist(groupId, touchstoneVersionId)
         val data = responsibilitiesRepo.getResponsibilitiesForGroupAndTouchstone(
                 group.id, touchstoneVersionId, filterParameters)
         val expectations = expectationsRepo.getExpectationsForResponsibilitySet(group.id, touchstoneVersionId)
         return Pair(
-                ResponsibilitiesWithExpectations(data.responsibilities, expectations),
+                ResponsibilitySetWithExpectations(data.responsibilitySet, expectations),
                 data.touchstoneStatus
         )
     }

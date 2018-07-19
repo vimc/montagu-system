@@ -92,7 +92,8 @@ class JooqResponsibilitiesRepository(
 
     override fun getResponsibilities(responsibilitySet: ResponsibilitySetRecord?,
                                      scenarioFilterParameters: ScenarioFilterParameters,
-                                     touchstoneVersionId: String): Responsibilities
+                                     touchstoneVersionId: String,
+                                     modellingGroupId: String): ResponsibilitySet
     {
         if (responsibilitySet != null)
         {
@@ -102,11 +103,11 @@ class JooqResponsibilitiesRepository(
                 it.responsibility
             }
             val status = mapper.mapEnum<ResponsibilitySetStatus>(responsibilitySet.status)
-            return Responsibilities(touchstoneVersionId, "", status, responsibilities)
+            return ResponsibilitySet(touchstoneVersionId, modellingGroupId, status, responsibilities)
         }
         else
         {
-            return Responsibilities(touchstoneVersionId, "", ResponsibilitySetStatus.NOT_APPLICABLE, emptyList())
+            return ResponsibilitySet(touchstoneVersionId, modellingGroupId, ResponsibilitySetStatus.NOT_APPLICABLE, emptyList())
         }
     }
 
@@ -149,12 +150,12 @@ class JooqResponsibilitiesRepository(
     }
 
     override fun getResponsibilitiesForGroupAndTouchstone(groupId: String, touchstoneVersionId: String,
-                                                          scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
+                                                          scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitySetAndTouchstoneStatus
     {
         val touchstone = getTouchstoneVersion(touchstoneVersionId)
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
-        val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneVersionId)
-        return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstone.status)
+        val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneVersionId, groupId)
+        return ResponsibilitySetAndTouchstoneStatus(responsibilities, touchstone.status)
     }
 
     private fun getResponsibilitySet(groupId: String, touchstoneVersionId: String): ResponsibilitySetRecord?
@@ -175,8 +176,9 @@ class JooqResponsibilitiesRepository(
             val responsibilities = getResponsibilitiesInResponsibilitySet(id)
                     .map { it.responsibility }
             ResponsibilitySet(
+                    touchstoneVersionId,
                     it[Tables.MODELLING_GROUP.ID],
-                    mapper.mapEnum(it[Tables.RESPONSIBILITY_SET.STATUS]),
+                    mapper.mapEnum<ResponsibilitySetStatus>(it[Tables.RESPONSIBILITY_SET.STATUS]),
                     responsibilities
             )
         }

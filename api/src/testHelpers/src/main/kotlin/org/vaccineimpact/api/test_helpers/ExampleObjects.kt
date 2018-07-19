@@ -2,6 +2,8 @@ package org.vaccineimpact.api.test_helpers
 
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.Responsibility
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
 
 fun exampleExpectations() = Expectations(
@@ -11,6 +13,11 @@ fun exampleExpectations() = Expectations(
         cohorts = CohortRestriction(null, null),
         countries = emptyList(),
         outcomes = emptyList()
+)
+
+fun exampleExpectationMapping() = ExpectationMapping(
+        exampleExpectations(),
+        listOf("yf-scenario")
 )
 
 fun exampleResponsibility() = Responsibility(
@@ -33,4 +40,12 @@ fun exampleScenario() = Scenario(
         description = "Some example scenario",
         disease = "YF",
         touchstones = listOf("touchstone-1")
+)
+
+fun exampleResponsibilitySetWithExpectations(touchstoneId: String, groupId: String) = ResponsibilitySetWithExpectations(
+        touchstoneId,
+        groupId,
+        ResponsibilitySetStatus.INCOMPLETE,
+        emptyList(),
+        listOf(exampleExpectationMapping())
 )
