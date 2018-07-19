@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
-import com.opencsv.CSVReader
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -9,21 +8,13 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.GroupResponsibilityController
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.logic.ExpectationsLogic
-import org.vaccineimpact.api.app.logic.ExpectationsLogic
-import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.responsibilities.*
-import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.test_helpers.exampleExpectations
-import java.io.BufferedOutputStream
-import java.io.FileOutputStream
-import java.io.OutputStream
-import java.io.StringReader
-import java.math.BigDecimal
 
 class ResponsibilityControllerTests : MontaguTests()
 {
