@@ -35,7 +35,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             )
         }
         withRepo { repo ->
-            val result = repo.getExpectations(expectationId)
+            val result = repo.getExpectationsForResponsibility(expectationId)
             assertThat(result.years).isEqualTo(2000..2100)
             assertThat(result.ages).isEqualTo(0..99)
             assertThat(result.cohorts).isEqualTo(CohortRestriction())
@@ -55,7 +55,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             )
         }
         withRepo { repo ->
-            val result = repo.getExpectations(expectationId)
+            val result = repo.getExpectationsForResponsibility(expectationId)
             assertThat(result.cohorts).isEqualTo(CohortRestriction(
                     minimumBirthYear = 2005,
                     maximumBirthYear = 2015
@@ -74,7 +74,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             )
         }
         withRepo { repo ->
-            val result = repo.getExpectations(expectationId)
+            val result = repo.getExpectationsForResponsibility(expectationId)
             assertThat(result.countries).hasSameElementsAs(listOf(
                     Country("ABC", "ABC-Name"),
                     Country("DEF", "DEF-Name")
@@ -92,7 +92,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             )
         }
         withRepo { repo ->
-            val result = repo.getExpectations(expectationId)
+            val result = repo.getExpectationsForResponsibility(expectationId)
             assertThat(result.outcomes).hasSameElementsAs(listOf(
                     "cases",
                     "deaths"

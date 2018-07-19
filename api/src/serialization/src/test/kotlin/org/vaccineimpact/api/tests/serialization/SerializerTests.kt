@@ -6,6 +6,8 @@ import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.LocalDate
@@ -60,11 +62,14 @@ class   SerializerTests : MontaguTests()
     }
 
     @Test
-    fun `can serialize YearRange`()
+    fun `can serialize IntRange`()
     {
-        val actual = YearRange(1, 6)
+        val actual = 1..6
         val expected = json {
-            obj("start" to 1, "end" to 6)
+            obj(
+                    "minimum_inclusive" to 1,
+                    "maximum_inclusive" to 6
+            )
         }
         checkSerializedForm(expected, actual)
     }

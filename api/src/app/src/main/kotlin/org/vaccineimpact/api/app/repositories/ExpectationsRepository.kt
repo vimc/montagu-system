@@ -4,5 +4,7 @@ import org.vaccineimpact.api.models.Expectations
 
 interface ExpectationsRepository : Repository
 {
-    fun getExpectations(expectationId: Int): Expectations
+    fun getExpectationsForResponsibility(responsibilityId: Int): Expectations
+    fun getExpectationsById(expectationsId: Int): Expectations
+    fun getExpectationIdsForGroupAndTouchstone(groupId: String, touchstoneVersionId: String): List<Int>
 }

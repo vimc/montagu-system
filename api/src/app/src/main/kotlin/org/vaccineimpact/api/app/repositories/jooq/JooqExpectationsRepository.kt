@@ -16,6 +16,7 @@ import org.vaccineimpact.api.models.Expectations
 class JooqExpectationsRepository(dsl: DSLContext)
     : JooqRepository(dsl), ExpectationsRepository
 {
+
     private object Tables
     {
         val expectations: BurdenEstimateExpectation = BURDEN_ESTIMATE_EXPECTATION
@@ -23,15 +24,48 @@ class JooqExpectationsRepository(dsl: DSLContext)
         val outcomes: BurdenEstimateOutcomeExpectation = BURDEN_ESTIMATE_OUTCOME_EXPECTATION
     }
 
-    override fun getExpectations(expectationId: Int): Expectations
+    override fun getExpectationIdsForGroupAndTouchstone(groupId: String, touchstoneVersionId: String): List<Int>
     {
-        val basicData = dsl.fetchAny(Tables.expectations,Tables.expectations.ID.eq(expectationId))
-                ?: throw UnknownObjectError(expectationId, "burden-estimate-expectation")
+        return dsl.select(Tables.expectations.ID)
+                .fromJoinPath(Tables.expectations, RESPONSIBILITY, RESPONSIBILITY_SET, MODELLING_GROUP)
+                .join(TOUCHSTONE)
+                .on(TOUCHSTONE.ID.eq(RESPONSIBILITY_SET.TOUCHSTONE))
+                .fetchInto(Int::class.java)
+    }
+
+    override fun getExpectationsForResponsibility(responsibilityId: Int): Expectations
+    {
+        val id = dsl.select(RESPONSIBILITY.EXPECTATIONS)
+                        .from(RESPONSIBILITY)
+                        .where(RESPONSIBILITY.ID.eq(responsibilityId))
+                        .fetchOne()
+                        .value1()
+                        ?: throw UnknownObjectError(responsibilityId, "burden-estimate-expectation")
+        
+        val basicData = dsl.fetchAny(Tables.expectations,Tables.expectations.ID.eq(id))
+        
+        val countries = getCountries(basicData)
+        val outcomes = getOutcomes(basicData)
+
+        return Expectations(
+                basicData.id,
+                basicData.yearMinInclusive..basicData.yearMaxInclusive,
+                basicData.ageMinInclusive..basicData.ageMaxInclusive,
+                CohortRestriction(basicData.cohortMinInclusive, basicData.cohortMaxInclusive),
+                countries,
+                outcomes
+        )
+    }
+
+    override fun getExpectationsById(expectationsId: Int): Expectations
+    {
+        val basicData = dsl.fetchAny(Tables.expectations,Tables.expectations.ID.eq(expectationsId))
 
         val countries = getCountries(basicData)
         val outcomes = getOutcomes(basicData)
 
         return Expectations(
+                basicData.id,
                 basicData.yearMinInclusive..basicData.yearMaxInclusive,
                 basicData.ageMinInclusive..basicData.ageMaxInclusive,
                 CohortRestriction(basicData.cohortMinInclusive, basicData.cohortMaxInclusive),

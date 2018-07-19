@@ -772,6 +772,5 @@ fun JooqContext.addExpectations(
         }
     }
     this.dsl.batchStore(outcomeRecords).execute()
-
     return id
 }

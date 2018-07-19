@@ -9,8 +9,12 @@
         "responsibilities": {
             "type": "array",
             "items": { "$ref": "Responsibility.schema.json" }
-         }
+        }
     },
     "additionalProperties": false,
-    "required": [ "touchstone_version", "status", "responsibilities" ]
+    "required": [ 
+        "touchstone_version", 
+        "status", 
+        "responsibilities"
+    ]
 }

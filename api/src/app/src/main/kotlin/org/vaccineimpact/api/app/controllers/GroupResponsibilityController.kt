@@ -13,6 +13,8 @@ import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.responsibilities.Responsibilities
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.serialization.EmptyDataTable
 import org.vaccineimpact.api.serialization.StreamSerializable
 
@@ -26,7 +28,7 @@ class GroupResponsibilityController(
     constructor(context: ActionContext, repositories: Repositories)
             : this(context, repositories.modellingGroup,
             repositories.responsibilities,
-            RepositoriesExpectationsLogic(repositories.expectations,
+            RepositoriesExpectationsLogic(repositories.responsibilities, repositories.expectations,
                     repositories.modellingGroup, repositories.touchstone))
 
     fun getResponsibleTouchstones(): List<Touchstone>
@@ -48,11 +50,11 @@ class GroupResponsibilityController(
         return data.responsibilities
     }
 
-    fun getResponsibility(): ResponsibilityAndTouchstone
+    fun getResponsibility(): ResponsibilityDetails
     {
         val path = ResponsibilityPath(context)
         modellingGroupRepo.getModellingGroup(path.groupId)
-        val data = responsibilitiesRepo.getResponsibility(path.groupId, path.touchstoneVersionId, path.scenarioId)
+        val data = expectationsLogic.getResponsibilityWithExpectations(path.groupId, path.touchstoneVersionId, path.scenarioId)
         context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, data.touchstoneVersion.status)
         return data
     }
@@ -61,8 +63,8 @@ class GroupResponsibilityController(
     {
         val path = ExpectationPath(context)
         val type = context.queryParams("type") ?: "central"
-        val expectations = expectationsLogic.getExpectations(path.groupId,
-                path.touchstoneVersionId, path.expectationId)
+        val expectations = expectationsLogic.getExpectationsById(path.expectationId, path.groupId,
+                path.touchstoneVersionId)
 
         val rowCount = expectations.expectedRows().count()
 
