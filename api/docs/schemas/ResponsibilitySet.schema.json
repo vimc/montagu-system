@@ -19,7 +19,6 @@
     "required": [ 
         "touchstone_version", 
         "status", 
-        "responsibilities", 
-        "expectations" 
+        "responsibilities"
     ]
 }
