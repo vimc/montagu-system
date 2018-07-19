@@ -4,7 +4,6 @@ import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
 import com.opencsv.CSVReader
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -12,10 +11,8 @@ import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
-import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import java.io.StringReader
-import java.math.BigDecimal
 
 class ResponsibilityTests : DatabaseTest()
 {
