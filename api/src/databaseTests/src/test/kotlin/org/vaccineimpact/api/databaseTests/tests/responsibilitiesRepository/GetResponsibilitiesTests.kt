@@ -130,7 +130,6 @@ class GetResponsibilitiesTests : ResponsibilitiesRepositoryTests()
             assertThat(sets.count()).isEqualTo(2)
 
             val set = sets[0]
-            assertThat(set.touchstoneVersion).isEqualTo("touchstone-1")
             assertThat(set.status).isEqualTo(ResponsibilitySetStatus.SUBMITTED)
             assertThat(set.responsibilities).hasSameElementsAs(listOf(
                     Responsibility(

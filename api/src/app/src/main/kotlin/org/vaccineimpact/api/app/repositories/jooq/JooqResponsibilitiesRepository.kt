@@ -166,23 +166,26 @@ class JooqResponsibilitiesRepository(
                 .where(Tables.RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId))
                 .fetch()
 
-        return results.map({
+        return results.map {
             val id = it[Tables.RESPONSIBILITY_SET.ID] as Int
-            val responsibilities = getResponsibilitiesInResponsibilitySet(id,
-                    { this })
-
-            ResponsibilitySet(it[Tables.MODELLING_GROUP.ID], touchstoneVersionId,
-                    mapper.mapEnum(it[Tables.RESPONSIBILITY_SET.STATUS]), responsibilities)
-        })
+            val responsibilities = getResponsibilitiesInResponsibilitySet(id)
+            ResponsibilitySet(
+                    it[Tables.MODELLING_GROUP.ID],
+                    mapper.mapEnum(it[Tables.RESPONSIBILITY_SET.STATUS]),
+                    responsibilities
+            )
+        }
     }
 
     private fun getTouchstoneVersion(touchstoneVersionId: String) = touchstoneRepository.touchstoneVersions.get(touchstoneVersionId)
 
     private fun getResponsibilitiesInResponsibilitySet(
             responsibilitySetId: Int,
-            applyWhereFilter: SelectConditionStep<Record2<String, Int>>.() -> SelectConditionStep<Record2<String, Int>>)
+            applyWhereFilter: (SelectConditionStep<Record2<String, Int>>.() -> SelectConditionStep<Record2<String, Int>>)? = null
+    )
             : List<Responsibility>
     {
+        val applyWhereFilterWithDefault = applyWhereFilter ?: { this }
         val records = dsl
                 .select(Tables.SCENARIO_DESCRIPTION.ID, Tables.RESPONSIBILITY.ID)
                 .fromJoinPath(Tables.RESPONSIBILITY_SET, Tables.RESPONSIBILITY, Tables.SCENARIO, Tables.SCENARIO_DESCRIPTION)
@@ -192,7 +195,7 @@ class JooqResponsibilitiesRepository(
                 // multiple diseases, but we want to 'close' some and not others for a touchstoneVersion
                 // it will be obsolete when we refactor responsibility sets to be single disease only
                 .and(Tables.RESPONSIBILITY.IS_OPEN)
-                .applyWhereFilter()
+                .applyWhereFilterWithDefault()
                 .fetch()
                 .intoMap(Tables.SCENARIO_DESCRIPTION.ID)
 

@@ -1,16 +1,20 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
+import org.jooq.Record
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.BurdenEstimateCountryExpectation
 import org.vaccineimpact.api.db.tables.BurdenEstimateExpectation
 import org.vaccineimpact.api.db.tables.BurdenEstimateOutcomeExpectation
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateExpectationRecord
 import org.vaccineimpact.api.models.CohortRestriction
 import org.vaccineimpact.api.models.Country
+import org.vaccineimpact.api.models.ExpectationMapping
 import org.vaccineimpact.api.models.Expectations
 
 class JooqExpectationsRepository(dsl: DSLContext)
@@ -33,14 +37,41 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 ?: throw UnknownObjectError(responsibilityId, "burden-estimate-expectation")
 
         val basicData = dsl.fetchAny(Tables.expectations,Tables.expectations.ID.eq(id))
-        val countries = getCountries(basicData)
-        val outcomes = getOutcomes(basicData)
+        return basicData.withCountriesAndOutcomes()
+    }
 
+    override fun getExpectationsForResponsibilitySet(modellingGroup: String, touchstoneVersion: String): List<ExpectationMapping>
+    {
+        return dsl.select(Tables.expectations.fieldsAsList())
+                .select(SCENARIO.SCENARIO_DESCRIPTION)
+                .fromJoinPath(RESPONSIBILITY_SET, RESPONSIBILITY, Tables.expectations)
+                .joinPath(RESPONSIBILITY, SCENARIO)
+                .where(
+                        RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersion)
+                                .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(modellingGroup))
+                )
+                .groupBy { it[Tables.expectations.ID] }
+                .map { getBasicDataAndApplicableScenariosFromRecords(it.value) }
+                .map { (basicData, scenarios) -> ExpectationMapping(basicData.withCountriesAndOutcomes(), scenarios) }
+    }
+
+    private fun getBasicDataAndApplicableScenariosFromRecords(records: List<Record>): Pair<BurdenEstimateExpectationRecord, List<String>>
+    {
+        val basicData = records.first().into(BurdenEstimateExpectationRecord::class.java)
+        val scenarios = records.map { it[SCENARIO.SCENARIO_DESCRIPTION] }
+        return Pair(basicData, scenarios)
+    }
+
+    private fun BurdenEstimateExpectationRecord.withCountriesAndOutcomes(): Expectations
+    {
+        val record = this
+        val countries = getCountries(record)
+        val outcomes = getOutcomes(record)
         return Expectations(
-                basicData.id,
-                basicData.yearMinInclusive..basicData.yearMaxInclusive,
-                basicData.ageMinInclusive..basicData.ageMaxInclusive,
-                CohortRestriction(basicData.cohortMinInclusive, basicData.cohortMaxInclusive),
+                record.id,
+                record.yearMinInclusive..record.yearMaxInclusive,
+                record.ageMinInclusive..record.ageMaxInclusive,
+                CohortRestriction(record.cohortMinInclusive, record.cohortMaxInclusive),
                 countries,
                 outcomes
         )
