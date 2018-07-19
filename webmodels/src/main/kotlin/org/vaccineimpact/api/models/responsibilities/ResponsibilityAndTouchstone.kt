@@ -3,6 +3,6 @@ package org.vaccineimpact.api.models.responsibilities
 import org.vaccineimpact.api.models.TouchstoneVersion
 
 data class ResponsibilityAndTouchstone(
-        val touchstoneVersion: TouchstoneVersion,
-        val responsibility: Responsibility
+        val responsibility: Responsibility,
+        val touchstoneVersion: TouchstoneVersion
 )
