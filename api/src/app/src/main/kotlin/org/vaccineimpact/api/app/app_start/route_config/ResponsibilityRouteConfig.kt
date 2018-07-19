@@ -1,9 +1,6 @@
 package org.vaccineimpact.api.app.app_start.route_config
 
-import org.vaccineimpact.api.app.app_start.Endpoint
-import org.vaccineimpact.api.app.app_start.EndpointDefinition
-import org.vaccineimpact.api.app.app_start.json
-import org.vaccineimpact.api.app.app_start.secure
+import org.vaccineimpact.api.app.app_start.*
 import org.vaccineimpact.api.app.controllers.GroupResponsibilityController
 
 object ResponsibilityRouteConfig : RouteConfig
@@ -29,6 +26,11 @@ object ResponsibilityRouteConfig : RouteConfig
 
             Endpoint("$baseUrl/:touchstone-version-id/:scenario-id/", controller, "getResponsibility")
                     .json()
+                    .secure(permissions),
+
+            Endpoint("$baseUrl/:touchstone-version-id/:scenario-id/template/", controller, "getTemplate")
+                    .streamed()
+                    .csv()
                     .secure(permissions)
     )
 }
