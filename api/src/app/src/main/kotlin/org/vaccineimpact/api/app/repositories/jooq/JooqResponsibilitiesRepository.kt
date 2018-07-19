@@ -22,7 +22,7 @@ class JooqResponsibilitiesRepository(
 ) : JooqRepository(dsl), ResponsibilitiesRepository
 {
 
-    private fun convertScenarioToResponsibility(scenario: Scenario, responsibilityId: Int): Responsibility
+    private fun convertScenarioToResponsibility(scenario: Scenario, responsibilityId: Int): ResponsibilityWithDatabaseId
     {
         val burdenEstimateSet = getCurrentBurdenEstimate(responsibilityId)
         val problems: MutableList<String> = mutableListOf()
@@ -42,7 +42,10 @@ class JooqResponsibilitiesRepository(
                 ResponsibilityStatus.VALID
             }
         }
-        return Responsibility(scenario, status, problems, burdenEstimateSet)
+        return ResponsibilityWithDatabaseId(
+                responsibilityId,
+                Responsibility(scenario, status, problems, burdenEstimateSet)
+        )
     }
 
     private fun getCurrentBurdenEstimate(responsibilityId: Int): BurdenEstimateSet?
@@ -93,10 +96,11 @@ class JooqResponsibilitiesRepository(
     {
         if (responsibilitySet != null)
         {
-            val responsibilities = getResponsibilitiesInResponsibilitySet(
-                    responsibilitySet.id,
-                    { this.whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters) }
-            )
+            val responsibilities = getResponsibilitiesInResponsibilitySet(responsibilitySet.id) {
+                this.whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters)
+            }.map {
+                it.responsibility
+            }
             val status = mapper.mapEnum<ResponsibilitySetStatus>(responsibilitySet.status)
             return Responsibilities(touchstoneVersionId, "", status, responsibilities)
         }
@@ -116,7 +120,7 @@ class JooqResponsibilitiesRepository(
                     responsibilitySet.id,
                     { this.and(Tables.SCENARIO_DESCRIPTION.ID.eq(scenarioId)) }
             ).singleOrNull() ?: throw UnknownObjectError(scenarioId, "responsibility")
-            return ResponsibilityAndTouchstone(responsibility, touchstoneVersion)
+            return ResponsibilityAndTouchstone(responsibility.id, responsibility.responsibility, touchstoneVersion)
         }
         else
         {
@@ -169,6 +173,7 @@ class JooqResponsibilitiesRepository(
         return results.map {
             val id = it[Tables.RESPONSIBILITY_SET.ID] as Int
             val responsibilities = getResponsibilitiesInResponsibilitySet(id)
+                    .map { it.responsibility }
             ResponsibilitySet(
                     it[Tables.MODELLING_GROUP.ID],
                     mapper.mapEnum(it[Tables.RESPONSIBILITY_SET.STATUS]),
@@ -182,8 +187,7 @@ class JooqResponsibilitiesRepository(
     private fun getResponsibilitiesInResponsibilitySet(
             responsibilitySetId: Int,
             applyWhereFilter: (SelectConditionStep<Record2<String, Int>>.() -> SelectConditionStep<Record2<String, Int>>)? = null
-    )
-            : List<Responsibility>
+    ): List<ResponsibilityWithDatabaseId>
     {
         val applyWhereFilterWithDefault = applyWhereFilter ?: { this }
         val records = dsl
