@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import * as React from "react";
-import {shallow, ShallowWrapper} from "enzyme";
+import {ReactWrapper, shallow, ShallowWrapper} from "enzyme";
 import {createMemoryHistory} from 'history';
 
 import {expectSameElements, inflateAndDecode, IntegrationTestSuite} from "./IntegrationTest";
@@ -17,9 +17,8 @@ import {UserService} from "../main/report/services/UserService";
 import {mockArtefact} from "../test/mocks/mockModels";
 import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
 import {OneTimeTokenService} from "../main/report/services/OneTimeTokenService";
-import {AbstractReportLocalService} from "../main/report/services/AbstractReportLocalService";
-
-const jwt_decode = require('jwt-decode');
+import {buildReportingURL} from "../main/report/services/AbstractReportLocalService";
+import {Provider} from "react-redux";
 
 class ReportIntegrationTests extends IntegrationTestSuite {
     description() {
@@ -95,16 +94,16 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         it("downloads artefact", async () => {
             const artefact = mockArtefact({filenames: ["all.csv", "all.png"], description: "all things"});
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("multi-artefact");
-            const rendered = shallow(<ArtefactItem report={"multi-artefact"} version={versions[0]}
-                                                   artefact={artefact}/>);
+            const rendered = sandbox.mount(<Provider store={this.store}><ArtefactItem report={"multi-artefact"} version={versions[0]}
+                                                                                      artefact={artefact}/></Provider>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
         });
 
         it("downloads resource", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("use_resource");
-            const rendered = shallow(<ResourceLinks report="use_resource" version={versions[0]}
-                                                    resources={["meta/data.csv"]}/>);
+            const rendered = sandbox.mount(<Provider store={this.store}><ResourceLinks report="use_resource" version={versions[0]}
+                                                                                       resources={["meta/data.csv"]}/></Provider>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
         });
@@ -112,7 +111,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         it("downloads data", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
             const versionDetails = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails("minimal", versions[0]);
-            const rendered = shallow(<DataLinks {...versionDetails.hash_data}/>);
+            const rendered = sandbox.mount(<Provider store={this.store}><DataLinks {...versionDetails.hash_data}/></Provider>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
         });
@@ -120,34 +119,32 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         it("downloads zipped report", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
             const versionDetails = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails("minimal", versions[0]);
-            const rendered = shallow(<ReportDownloadsComponent report="minimal" versionDetails={versionDetails} ready={true}/>);
-            const response = await firstDownloadButtonPromise(rendered);
+            const rendered = sandbox.mount(<Provider store={this.store}><ReportDownloadsComponent report="minimal"
+                                                                                                  versionDetails={versionDetails}
+                                                                                                  ready={true}/></Provider>);
+            const response = await lastDownloadPromise(rendered);
             expect(response.status).to.equal(200)
         });
 
-        function firstDownloadPromise(rendered: ShallowWrapper<any, any>) {
-            const link = rendered.find(FileDownloadLink).first();
-
+        async function firstDownloadPromise(rendered: ReactWrapper) {
+            await timeout(100); // wait to make sure onetime token is fetched
+            rendered.update(); // mounted component won't update with new props automatically
+            const link = rendered.find("a").first();
             const url = link.prop("href");
-            return helperService.fetchAnything(url)
+            return fetch(url)
         }
 
-
-        function firstDownloadButtonPromise(rendered: ShallowWrapper<any, any>) {
-            const link = rendered.find(FileDownloadButton).first();
-
+        async function lastDownloadPromise(rendered: ReactWrapper) {
+            await timeout(100); // wait to make sure onetime token is fetched
+            rendered.update(); // mounted component won't update with new props automatically
+            const link = rendered.find("a").last();
             const url = link.prop("href");
-            return helperService.fetchAnything(url)
+            return fetch(url)
         }
 
-        class HelperService extends AbstractReportLocalService {
-            fetchAnything(url: string) {
-                return this.doFetch(url)
-            }
+        async function timeout(ms: number) {
+            return new Promise(resolve => setTimeout(resolve, ms));
         }
-
-        const helperService = new HelperService(this.store.dispatch, this.store.getState)
-
     }
 }
 
