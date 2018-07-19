@@ -83,7 +83,7 @@ class ExpectationsLogicTests : MontaguTests()
     fun `getExpectationsForResponsibility throws unknown object error if touchstone version does not exist`()
     {
         val touchstonesRepoWithoutTouchstone = mock<TouchstoneRepository> {
-            on { touchstoneVersions } doReturn InMemoryDataSet<TouchstoneVersion, String>(listOf())
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf())
         }
         val sut = RepositoriesExpectationsLogic(responsibilitiesRepo,
                 expectationsRepo,
@@ -110,5 +110,39 @@ class ExpectationsLogicTests : MontaguTests()
                 touchstoneVersion,
                 fakeExpectations
         ))
+    }
+
+    @Test
+    fun `getResponsibilityWithExpectations throws unknown object error if touchstone version does not exist`()
+    {
+        val touchstonesRepoWithoutTouchstone = mock<TouchstoneRepository> {
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf())
+        }
+        val sut = RepositoriesExpectationsLogic(
+                responsibilitiesRepo,
+                expectationsRepo,
+                modellingGroupRepo,
+                touchstonesRepoWithoutTouchstone
+        )
+        assertThatThrownBy { sut.getResponsibilityWithExpectations(groupId, touchstoneVersionId, scenarioId) }
+                .isInstanceOf(UnknownObjectError::class.java)
+                .hasMessageContaining(touchstoneVersionId)
+    }
+
+    @Test
+    fun `getResponsibilityWithExpectations throws unknown object error if group does not exist`()
+    {
+        val modellingGroupRepoWithoutGroup = mock<ModellingGroupRepository> {
+            on { getModellingGroup(any()) } doThrow UnknownObjectError(groupId, "group")
+        }
+        val sut = RepositoriesExpectationsLogic(
+                responsibilitiesRepo,
+                expectationsRepo,
+                modellingGroupRepoWithoutGroup,
+                touchstonesRepo
+        )
+        assertThatThrownBy { sut.getResponsibilityWithExpectations(groupId, touchstoneVersionId, scenarioId) }
+                .isInstanceOf(UnknownObjectError::class.java)
+                .hasMessageContaining(groupId)
     }
 }
