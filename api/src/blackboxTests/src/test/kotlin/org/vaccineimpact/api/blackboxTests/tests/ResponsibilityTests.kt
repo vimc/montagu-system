@@ -6,6 +6,7 @@ import com.beust.klaxon.json
 import com.opencsv.CSVReader
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.db.JooqContext
@@ -115,6 +116,7 @@ class ResponsibilityTests : DatabaseTest()
     }
 
     @Test
+    @Ignore
     fun `getResponsibility matches schema`()
     {
         validate("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/") against "ResponsibilityDetails" given {
