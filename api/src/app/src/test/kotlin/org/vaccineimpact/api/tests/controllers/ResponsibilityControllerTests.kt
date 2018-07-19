@@ -158,13 +158,13 @@ class ResponsibilityControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(true)
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn exampleExpectations()
+            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectations()
         }
 
         val result = GroupResponsibilityController(context, mock(), mock(), repo)
                 .getTemplate()
 
-        assertThat(serialize(result)).isEqualTo("""disease,year,age,country,country_name,cohort_size,dalys""")
+        assertThat(serialize(result)).isEqualTo("""disease,year,age,country,country_name,cohort_size""")
     }
 
     private fun serialize(table: StreamSerializable<*>) = serializeToStreamAndGetAsString {
@@ -183,13 +183,13 @@ class ResponsibilityControllerTests : MontaguTests()
         }
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn exampleExpectations()
+            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectations()
         }
 
         val result = GroupResponsibilityController(context, mock(), mock(), repo)
                 .getTemplate()
 
-        assertThat(serialize(result)).isEqualTo("""disease,run_id,year,age,country,country_name,cohort_size,dalys""")
+        assertThat(serialize(result)).isEqualTo("""disease,run_id,year,age,country,country_name,cohort_size""")
     }
 
     @Test
@@ -204,13 +204,13 @@ class ResponsibilityControllerTests : MontaguTests()
         }
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn exampleExpectations()
+            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectations()
         }
 
         val result = GroupResponsibilityController(context, mock(), mock(), repo)
                 .getTemplate()
 
-        assertThat(serialize(result)).isEqualTo("""disease,year,age,country,country_name,cohort_size,dalys""")
+        assertThat(serialize(result)).isEqualTo("""disease,year,age,country,country_name,cohort_size""")
     }
 
     private val mockTouchstones = listOf(

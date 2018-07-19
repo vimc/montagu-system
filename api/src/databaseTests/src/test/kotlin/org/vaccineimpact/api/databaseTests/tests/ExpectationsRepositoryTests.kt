@@ -21,6 +21,108 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     @Test
     fun `can pull basic expectations`()
     {
+        val responsibilityId = addResponsibilityAnd { db, responsibilityId ->
+            db.addExpectations(
+                    responsibilityId,
+                    yearMinInclusive = 2000,
+                    yearMaxInclusive = 2100,
+                    ageMinInclusive = 0,
+                    ageMaxInclusive = 99,
+                    cohortMinInclusive = null,
+                    cohortMaxInclusive = null,
+                    countries = emptyList(),
+                    outcomes = emptyList()
+            )
+            responsibilityId
+        }
+        withRepo { repo ->
+            val result = repo.getExpectationsForResponsibility(responsibilityId)
+            assertThat(result.years).isEqualTo(2000..2100)
+            assertThat(result.ages).isEqualTo(0..99)
+            assertThat(result.cohorts).isEqualTo(CohortRestriction())
+            assertThat(result.countries).isEmpty()
+            assertThat(result.outcomes).isEmpty()
+        }
+    }
+
+    @Test
+    fun `can pull cohort expectations`()
+    {
+        val responsibilityId = addResponsibilityAnd { db, responsibilityId ->
+            db.addExpectations(
+                    responsibilityId,
+                    cohortMinInclusive = 2005,
+                    cohortMaxInclusive = 2015
+            )
+            responsibilityId
+        }
+        withRepo { repo ->
+            val result = repo.getExpectationsForResponsibility(responsibilityId)
+            assertThat(result.cohorts).isEqualTo(CohortRestriction(
+                    minimumBirthYear = 2005,
+                    maximumBirthYear = 2015
+            ))
+        }
+    }
+
+    @Test
+    fun `can pull country expectations`()
+    {
+        val responsibilityId = addResponsibilityAnd { db, responsibilityId ->
+            db.addCountries(listOf("ABC", "DEF", "GHI"))
+            db.addExpectations(
+                    responsibilityId,
+                    countries = listOf("ABC", "DEF")
+            )
+            responsibilityId
+        }
+        withRepo { repo ->
+            val result = repo.getExpectationsForResponsibility(responsibilityId)
+            assertThat(result.countries).hasSameElementsAs(listOf(
+                    Country("ABC", "ABC-Name"),
+                    Country("DEF", "DEF-Name")
+            ))
+        }
+    }
+
+    @Test
+    fun `can pull outcome expectations`()
+    {
+        val responsibilityId = addResponsibilityAnd { db, responsibilityId ->
+            db.addExpectations(
+                    responsibilityId,
+                    outcomes = listOf("cases", "deaths")
+            )
+            responsibilityId
+        }
+        withRepo { repo ->
+            val result = repo.getExpectationsForResponsibility(responsibilityId)
+            assertThat(result.outcomes).hasSameElementsAs(listOf(
+                    "cases",
+                    "deaths"
+            ))
+        }
+    }
+
+    @Test
+    fun `can get expectation ids for group and touchstone`()
+    {
+        val expectationId = addResponsibilityAnd { db, responsibilityId ->
+            db.addExpectations(
+                    responsibilityId
+            )
+        }
+        withRepo { repo ->
+            val result = repo.getExpectationIdsForGroupAndTouchstone(groupId, touchstoneVersionId)
+            assertThat(result).hasSameElementsAs(listOf(
+                   expectationId
+            ))
+        }
+    }
+
+    @Test
+    fun `can get expectation by id`()
+    {
         val expectationId = addResponsibilityAnd { db, responsibilityId ->
             db.addExpectations(
                     responsibilityId,
@@ -35,68 +137,12 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             )
         }
         withRepo { repo ->
-            val result = repo.getExpectationsForResponsibility(expectationId)
+            val result = repo.getExpectationsById(expectationId)
             assertThat(result.years).isEqualTo(2000..2100)
             assertThat(result.ages).isEqualTo(0..99)
             assertThat(result.cohorts).isEqualTo(CohortRestriction())
             assertThat(result.countries).isEmpty()
             assertThat(result.outcomes).isEmpty()
-        }
-    }
-
-    @Test
-    fun `can pull cohort expectations`()
-    {
-        val expectationId = addResponsibilityAnd { db, responsibilityId ->
-            db.addExpectations(
-                    responsibilityId,
-                    cohortMinInclusive = 2005,
-                    cohortMaxInclusive = 2015
-            )
-        }
-        withRepo { repo ->
-            val result = repo.getExpectationsForResponsibility(expectationId)
-            assertThat(result.cohorts).isEqualTo(CohortRestriction(
-                    minimumBirthYear = 2005,
-                    maximumBirthYear = 2015
-            ))
-        }
-    }
-
-    @Test
-    fun `can pull country expectations`()
-    {
-        val expectationId = addResponsibilityAnd { db, responsibilityId ->
-            db.addCountries(listOf("ABC", "DEF", "GHI"))
-            db.addExpectations(
-                    responsibilityId,
-                    countries = listOf("ABC", "DEF")
-            )
-        }
-        withRepo { repo ->
-            val result = repo.getExpectationsForResponsibility(expectationId)
-            assertThat(result.countries).hasSameElementsAs(listOf(
-                    Country("ABC", "ABC-Name"),
-                    Country("DEF", "DEF-Name")
-            ))
-        }
-    }
-
-    @Test
-    fun `can pull outcome expectations`()
-    {
-        val expectationId = addResponsibilityAnd { db, responsibilityId ->
-            db.addExpectations(
-                    responsibilityId,
-                    outcomes = listOf("cases", "deaths")
-            )
-        }
-        withRepo { repo ->
-            val result = repo.getExpectationsForResponsibility(expectationId)
-            assertThat(result.outcomes).hasSameElementsAs(listOf(
-                    "cases",
-                    "deaths"
-            ))
         }
     }
 
