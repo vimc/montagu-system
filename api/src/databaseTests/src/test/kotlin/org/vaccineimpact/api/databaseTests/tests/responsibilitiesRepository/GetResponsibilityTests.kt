@@ -157,8 +157,7 @@ class GetResponsibilityTests : ResponsibilitiesRepositoryTests()
             it.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
             it.addScenarioDescription("scenario-1", "description", "disease", addDisease = true)
             val setId = it.addResponsibilitySet("group-1", "touchstone-1", "incomplete")
-            val responsibilityId = it.addResponsibility(setId, "touchstone-1", "scenario-1")
-            it.addExpectations(responsibilityId)
+            it.addResponsibility(setId, "touchstone-1", "scenario-1")
         } check { repo ->
             val data = repo.getResponsibility("group-1", "touchstone-1", "scenario-1")
             assertThat(data).isEqualTo(ResponsibilityAndTouchstone(
