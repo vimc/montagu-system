@@ -11,9 +11,9 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.filterByPermission
+import org.vaccineimpact.api.models.responsibilities.Responsibilities
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityAndTouchstone
 import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.Responsibilities
-import org.vaccineimpact.api.models.ResponsibilityAndTouchstone
 import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.serialization.EmptyDataTable
 import org.vaccineimpact.api.serialization.StreamSerializable
