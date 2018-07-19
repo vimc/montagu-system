@@ -741,7 +741,7 @@ fun JooqContext.addExpectations(
         cohortMaxInclusive: Short? = null,
         countries: List<String> = emptyList(),
         outcomes: List<String> = emptyList()
-)
+): Int
 {
     val id = this.dsl.newRecord(BURDEN_ESTIMATE_EXPECTATION).apply {
         this.yearMinInclusive = yearMinInclusive
@@ -772,4 +772,5 @@ fun JooqContext.addExpectations(
         }
     }
     this.dsl.batchStore(outcomeRecords).execute()
+    return id
 }

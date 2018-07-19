@@ -37,6 +37,7 @@ class JooqExpectationsRepository(dsl: DSLContext)
         val outcomes = getOutcomes(basicData)
 
         return Expectations(
+                basicData.id,
                 basicData.yearMinInclusive..basicData.yearMaxInclusive,
                 basicData.ageMinInclusive..basicData.ageMaxInclusive,
                 CohortRestriction(basicData.cohortMinInclusive, basicData.cohortMaxInclusive),

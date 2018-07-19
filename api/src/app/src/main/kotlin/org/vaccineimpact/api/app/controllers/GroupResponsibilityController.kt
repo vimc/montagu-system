@@ -12,6 +12,7 @@ import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.responsibilities.Responsibilities
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityAndTouchstone
 import org.vaccineimpact.api.models.BurdenEstimate
 import org.vaccineimpact.api.models.Touchstone
@@ -50,11 +51,11 @@ class GroupResponsibilityController(
         return data.responsibilities
     }
 
-    fun getResponsibility(): ResponsibilityAndTouchstone
+    fun getResponsibility(): ResponsibilityDetails
     {
         val path = ResponsibilityPath(context)
         modellingGroupRepo.getModellingGroup(path.groupId)
-        val data = responsibilitiesRepo.getResponsibility(path.groupId, path.touchstoneVersionId, path.scenarioId)
+        val data = expectationsLogic.getResponsibilityWithExpectations(path.groupId, path.touchstoneVersionId, path.scenarioId)
         context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, data.touchstoneVersion.status)
         return data
     }

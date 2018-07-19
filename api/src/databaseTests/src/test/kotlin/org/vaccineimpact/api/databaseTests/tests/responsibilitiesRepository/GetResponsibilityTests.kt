@@ -116,7 +116,7 @@ class GetResponsibilityTests : ResponsibilitiesRepositoryTests()
         }
     }
 
-    @org.junit.Test
+    @Test
     fun `getResponsibility throws exception when group has empty responsibilities`()
     {
         given {
@@ -131,7 +131,7 @@ class GetResponsibilityTests : ResponsibilitiesRepositoryTests()
         }
     }
 
-    @org.junit.Test
+    @Test
     fun `getResponsibility throws exception when when group is not responsible for given scenario`()
     {
         given {
@@ -149,23 +149,25 @@ class GetResponsibilityTests : ResponsibilitiesRepositoryTests()
         }
     }
 
-    @org.junit.Test
+    @Test
     fun `can get responsibility`()
     {
-        given {
+        val responsibilityId = withDatabase {
             it.addGroup("group-1", "description")
             it.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
             it.addScenarioDescription("scenario-1", "description", "disease", addDisease = true)
             val setId = it.addResponsibilitySet("group-1", "touchstone-1", "incomplete")
             it.addResponsibility(setId, "touchstone-1", "scenario-1")
-        } check { repo ->
+        }
+        withRepo { repo ->
             val data = repo.getResponsibility("group-1", "touchstone-1", "scenario-1")
             assertThat(data).isEqualTo(ResponsibilityAndTouchstone(
-                    TouchstoneVersion("touchstone-1", "touchstone", 1, "description", TouchstoneStatus.OPEN),
+                    responsibilityId,
                     Responsibility(
                             Scenario("scenario-1", "description", "disease", listOf("touchstone-1")),
                             ResponsibilityStatus.EMPTY, emptyList(), null
-                    )
+                    ),
+                    TouchstoneVersion("touchstone-1", "touchstone", 1, "description", TouchstoneStatus.OPEN)
             ))
         }
     }

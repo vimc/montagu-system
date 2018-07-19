@@ -2,9 +2,7 @@ package org.vaccineimpact.api.serialization
 
 import com.github.salomonbrys.kotson.jsonSerializer
 import com.github.salomonbrys.kotson.registerTypeAdapter
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonPrimitive
+import com.google.gson.*
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
@@ -30,6 +28,12 @@ class MontaguSerializer : Serializer
     private val toDateStringSerializer = jsonSerializer<Any> {
         JsonPrimitive(it.src.toString())
     }
+    private val intRangeSerializer = jsonSerializer<IntRange> { range ->
+        JsonObject().apply {
+            addProperty("minimum_inclusive", range.src.start)
+            addProperty("maximum_inclusive", range.src.endInclusive)
+        }
+    }
 
     companion object
     {
@@ -49,6 +53,7 @@ class MontaguSerializer : Serializer
 
                 .registerTypeAdapter<Instant>(toDateStringSerializer)
                 .registerTypeAdapter<LocalDate>(toDateStringSerializer)
+                .registerTypeAdapter(intRangeSerializer)
 
                 .registerEnum<ActivityType>()
                 .registerEnum<BurdenEstimateSetStatus>()

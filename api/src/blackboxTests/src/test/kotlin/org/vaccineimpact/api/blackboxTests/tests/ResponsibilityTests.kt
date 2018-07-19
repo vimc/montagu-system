@@ -6,7 +6,6 @@ import com.beust.klaxon.json
 import com.opencsv.CSVReader
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.db.JooqContext
@@ -14,7 +13,6 @@ import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import java.io.StringReader
-import java.math.BigDecimal
 
 class ResponsibilityTests : DatabaseTest()
 {
@@ -23,6 +21,8 @@ class ResponsibilityTests : DatabaseTest()
     private val groupScope = "modelling-group:$groupId"
     private val scenarioId = "yf-scenario"
     private val modelId = "model-1"
+
+    val responsibilityUrl = "/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/"
 
     @Test
     fun `getResponsibilities matches schema`()
@@ -116,10 +116,9 @@ class ResponsibilityTests : DatabaseTest()
     }
 
     @Test
-    @Ignore
     fun `getResponsibility matches schema`()
     {
-        validate("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/") against "ResponsibilityDetails" given {
+        validate(responsibilityUrl) against "ResponsibilityDetails" given {
             addResponsibilities(it, touchstoneStatus = "open")
         } requiringPermissions {
             PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
@@ -149,6 +148,41 @@ class ResponsibilityTests : DatabaseTest()
             assertThat(responsibility["problems"]).isEqualTo(json { array("problem") })
             assertThat(responsibility["current_estimate_set"]).isNotNull()
         }
+    }
+
+    @Test
+    fun `can get expectations with responsibility`()
+    {
+        val expectationsId: Int = JooqContext().use { db ->
+            val responsibilityId = addResponsibilities(db, touchstoneStatus = "open", includeExpectations = false)
+            db.addCountries(listOf("A", "B"))
+            val id = db.addExpectations(
+                    responsibilityId,
+                    yearMinInclusive = 2000, yearMaxInclusive = 2100,
+                    ageMinInclusive = 0, ageMaxInclusive = 99,
+                    cohortMinInclusive = null, cohortMaxInclusive = 2050,
+                    countries = listOf("A", "B"),
+                    outcomes = listOf("deaths", "dalys")
+            )
+            TestUserHelper().setupTestUser(db)
+            id
+        }
+        val permissions = PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read", "*/can-login")
+        val response = RequestHelper().get(responsibilityUrl, permissions)
+        val data = response.montaguData<JsonObject>()!!
+        assertThat(data["expectations"]).isEqualTo(json {
+            obj(
+                    "id" to expectationsId,
+                    "years" to obj("minimum_inclusive" to 2000, "maximum_inclusive" to 2100),
+                    "ages" to obj("minimum_inclusive" to 0, "maximum_inclusive" to 99),
+                    "cohorts" to obj("minimum_birth_year" to null, "maximum_birth_year" to 2050),
+                    "countries" to array(
+                            obj("id" to "A", "name" to "A-Name"),
+                            obj("id" to "B", "name" to "B-Name")
+                    ),
+                    "outcomes" to array("deaths", "dalys")
+            )
+        })
     }
 
     @Test
@@ -204,6 +238,7 @@ class ResponsibilityTests : DatabaseTest()
             })
         }
     }
+
     @Test
     fun `get template has correct headers`()
     {
@@ -290,7 +325,7 @@ class ResponsibilityTests : DatabaseTest()
         db.addTouchstoneVersion("touchstone", 1, "version description", touchstoneStatus)
     }
 
-    private fun addResponsibilities(db: JooqContext, touchstoneStatus: String): Int
+    private fun addResponsibilities(db: JooqContext, touchstoneStatus: String, includeExpectations: Boolean = true): Int
     {
         addUserGroupAndTouchstone(db, touchstoneStatus)
         val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "submitted")
@@ -301,6 +336,10 @@ class ResponsibilityTests : DatabaseTest()
         val burdenEstimateId = db.addBurdenEstimateSet(responsibilityId, version, "model.user")
         db.updateCurrentEstimate(responsibilityId, burdenEstimateId)
         db.addBurdenEstimateProblem("problem", burdenEstimateId)
+        if (includeExpectations)
+        {
+            db.addExpectations(responsibilityId)
+        }
 
         return responsibilityId
     }
