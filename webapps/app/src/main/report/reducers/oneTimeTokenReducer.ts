@@ -1,9 +1,8 @@
-import {OneTimeToken} from "../models/OneTimeToken";
 import {ILookup} from "../../shared/models/Lookup";
 import {OnetimeTokenAction, OnetimeTokenActionType} from "../actionTypes/OnetimeTokenActions";
 
 export interface OneTimeTokenState {
-    tokens: ILookup<OneTimeToken>;
+    tokens: ILookup<string>;
 }
 
 export const onetimeTokensInitialState: OneTimeTokenState = {

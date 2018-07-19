@@ -1,7 +1,7 @@
 import {expect} from "chai";
 
 import {Sandbox} from "../../Sandbox";
-import {reportActionCreators} from "../../../main/report/actions/reportActionCreators";
+import {reportActionCreators} from "../../../main/report/actionCreators/reportActionCreators";
 import {ReportsService} from "../../../main/report/services/ReportsService";
 import {ReportTypeKeys} from "../../../main/report/actionTypes/ReportsActionsTypes";
 import {createMockStore} from "../../mocks/mockStore";

@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {Sandbox} from "../../Sandbox";
 import {createMockStore} from "../../mocks/mockStore";
 import {UserActionTypes} from "../../../main/report/actionTypes/UsersActionTypes";
-import {userActionCreators} from "../../../main/report/actions/userActionCreators";
+import {userActionCreators} from "../../../main/report/actionCreators/userActionCreators";
 import {UserService} from "../../../main/report/services/UserService";
 import {mockUser} from "../../mocks/mockModels";
 import {checkAsync} from "../../testHelpers";

@@ -1,7 +1,7 @@
 import {ReportingSource} from "./ReportingSource";
 import {OneTimeTokenStoreState} from "../stores/OneTimeTokenStore";
 import SourceModel = AltJS.SourceModel;
-import {oneTimeTokenActions} from "../actions/OneTimeTokenActions";
+import {oneTimeTokenActions} from "../actionCreators/OneTimeTokenActions";
 import {ILookup} from "../../shared/models/Lookup";
 import {OneTimeToken} from "../models/OneTimeToken";
 

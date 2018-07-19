@@ -1,6 +1,6 @@
 import { alt } from "../../../main/shared/alt";
 import { expect } from "chai";
-import { oneTimeTokenActions } from "../../../main/report/actions/OneTimeTokenActions";
+import { oneTimeTokenActions } from "../../../main/report/actionCreators/OneTimeTokenActions";
 import { oneTimeTokenStore } from "../../../main/report/stores/OneTimeTokenStore";
 import { ReportingFetcher } from "../../../main/report/sources/ReportingFetcher";
 import { decodeOneTimeToken } from "../../../main/report/models/OneTimeToken";

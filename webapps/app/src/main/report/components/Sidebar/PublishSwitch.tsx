@@ -4,7 +4,7 @@ import {connect, Dispatch} from "react-redux";
 
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {UncontrolledTooltip} from "reactstrap";
-import {reportActionCreators} from "../../actions/reportActionCreators";
+import {reportActionCreators} from "../../actionCreators/reportActionCreators";
 
 export interface PublicProps {
     name: string;

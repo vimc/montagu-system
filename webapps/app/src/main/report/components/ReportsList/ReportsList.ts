@@ -5,7 +5,7 @@ import { createSelector } from "reselect";
 import withLifecycle, {LifecycleMethods} from '@hocs/with-lifecycle';
 
 import {ReportAppState} from "../../reducers/reportAppReducers";
-import { reportActionCreators } from "../../actions/reportActionCreators";
+import { reportActionCreators } from "../../actionCreators/reportActionCreators";
 import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingElement";
 import {ReportsListTable, ReportsListTableProps} from "./ReportListTable";
 

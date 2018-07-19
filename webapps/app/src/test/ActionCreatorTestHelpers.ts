@@ -1,18 +1,18 @@
 import {createMockStore} from "./mocks/mockStore";
 import {expect} from "chai";
 import {MockStore} from "redux-mock-store";
-
+import {ThunkAction} from "redux-thunk";
 
 export interface VerifyActionThatCallsServiceProperties {
     mockServices: () => void;
-    callActionCreator: () => void;
+    callActionCreator: () => ThunkAction<any, any, any>;
     expectTheseActions: any[];
     store?: MockStore<any>;
 }
 
 export interface VerifyActionThatCallsServiceAndReturnsResultProperties {
     mockServices: () => void;
-    callActionCreator: () => void;
+    callActionCreator: () => ThunkAction<any, any, any>;
     expectTheseActionTypes: any[];
     store?: MockStore<any>;
 }
