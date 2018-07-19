@@ -50,8 +50,10 @@ open class DataTable<T : Any>(override val data: Sequence<T>, val type: KClass<T
         return headers.map { it.name }.toTypedArray()
     }
 
-    open protected fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T, serializer: Serializer): Array<String>
+    open protected fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T?, serializer: Serializer): Array<String?>
     {
+        line?: throw Exception("Null data rows not allowed. Use the EmptyDataTable class if " +
+                "trying to generate empty rows")
         return headers
                 .map { it.property.get(line) }
                 .map { serializer.serializeValueForCSV(it) }

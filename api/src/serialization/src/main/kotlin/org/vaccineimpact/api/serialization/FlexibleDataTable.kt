@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 
-class FlexibleDataTable<T : Any>(data: Sequence<T>,
+open class FlexibleDataTable<T : Any>(data: Sequence<T>,
                                  private val flexibleHeaders: Iterable<Any>,
                                  type: KClass<T>)
     : DataTable<T>(data, type)
@@ -33,8 +33,11 @@ class FlexibleDataTable<T : Any>(data: Sequence<T>,
                 .plus(flexibleHeaders.map { it.toString() })
     }
 
-    override fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T, serializer: Serializer): Array<String>
+    override fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T?, serializer: Serializer): Array<String?>
     {
+        line?: throw Exception("Null data rows are not allowed. Use the EmptyDataTable class if " +
+                "trying to generate empty rows")
+
         val values = headers.map { it.property.get(line) }
                 .plus(flexibleHeaders.map { getFlexibleValue(it, line) })
 
