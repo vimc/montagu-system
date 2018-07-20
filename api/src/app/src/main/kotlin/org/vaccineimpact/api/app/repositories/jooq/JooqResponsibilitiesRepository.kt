@@ -92,7 +92,8 @@ class JooqResponsibilitiesRepository(
 
     override fun getResponsibilities(responsibilitySet: ResponsibilitySetRecord?,
                                      scenarioFilterParameters: ScenarioFilterParameters,
-                                     touchstoneVersionId: String): Responsibilities
+                                     touchstoneVersionId: String,
+                                     modellingGroupId: String): ResponsibilitySet
     {
         if (responsibilitySet != null)
         {
@@ -102,11 +103,11 @@ class JooqResponsibilitiesRepository(
                 it.responsibility
             }
             val status = mapper.mapEnum<ResponsibilitySetStatus>(responsibilitySet.status)
-            return Responsibilities(touchstoneVersionId, "", status, responsibilities)
+            return ResponsibilitySet(touchstoneVersionId, modellingGroupId, status, responsibilities)
         }
         else
         {
-            return Responsibilities(touchstoneVersionId, "", ResponsibilitySetStatus.NOT_APPLICABLE, emptyList())
+            return ResponsibilitySet(touchstoneVersionId, modellingGroupId, ResponsibilitySetStatus.NOT_APPLICABLE, emptyList())
         }
     }
 
@@ -149,12 +150,12 @@ class JooqResponsibilitiesRepository(
     }
 
     override fun getResponsibilitiesForGroupAndTouchstone(groupId: String, touchstoneVersionId: String,
-                                                          scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitiesAndTouchstoneStatus
+                                                          scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitySetAndTouchstoneStatus
     {
         val touchstone = getTouchstoneVersion(touchstoneVersionId)
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
-        val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneVersionId)
-        return ResponsibilitiesAndTouchstoneStatus(responsibilities, touchstone.status)
+        val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneVersionId, groupId)
+        return ResponsibilitySetAndTouchstoneStatus(responsibilities, touchstone.status)
     }
 
     private fun getResponsibilitySet(groupId: String, touchstoneVersionId: String): ResponsibilitySetRecord?
@@ -172,11 +173,14 @@ class JooqResponsibilitiesRepository(
 
         return results.map {
             val id = it[Tables.RESPONSIBILITY_SET.ID] as Int
-            val responsibilities = getResponsibilitiesInResponsibilitySet(id, { this })
+            val responsibilities = getResponsibilitiesInResponsibilitySet(id)
                     .map { it.responsibility }
-
-            ResponsibilitySet(it[Tables.MODELLING_GROUP.ID], touchstoneVersionId,
-                    mapper.mapEnum(it[Tables.RESPONSIBILITY_SET.STATUS]), responsibilities)
+            ResponsibilitySet(
+                    touchstoneVersionId,
+                    it[Tables.MODELLING_GROUP.ID],
+                    mapper.mapEnum<ResponsibilitySetStatus>(it[Tables.RESPONSIBILITY_SET.STATUS]),
+                    responsibilities
+            )
         }
     }
 
@@ -184,9 +188,10 @@ class JooqResponsibilitiesRepository(
 
     private fun getResponsibilitiesInResponsibilitySet(
             responsibilitySetId: Int,
-            applyWhereFilter: SelectConditionStep<Record2<String, Int>>.() -> SelectConditionStep<Record2<String, Int>>)
-            : List<ResponsibilityWithDatabaseId>
+            applyWhereFilter: (SelectConditionStep<Record2<String, Int>>.() -> SelectConditionStep<Record2<String, Int>>)? = null
+    ): List<ResponsibilityWithDatabaseId>
     {
+        val applyWhereFilterWithDefault = applyWhereFilter ?: { this }
         val records = dsl
                 .select(Tables.SCENARIO_DESCRIPTION.ID, Tables.RESPONSIBILITY.ID)
                 .fromJoinPath(Tables.RESPONSIBILITY_SET, Tables.RESPONSIBILITY, Tables.SCENARIO, Tables.SCENARIO_DESCRIPTION)
@@ -196,7 +201,7 @@ class JooqResponsibilitiesRepository(
                 // multiple diseases, but we want to 'close' some and not others for a touchstoneVersion
                 // it will be obsolete when we refactor responsibility sets to be single disease only
                 .and(Tables.RESPONSIBILITY.IS_OPEN)
-                .applyWhereFilter()
+                .applyWhereFilterWithDefault()
                 .fetch()
                 .intoMap(Tables.SCENARIO_DESCRIPTION.ID)
 
