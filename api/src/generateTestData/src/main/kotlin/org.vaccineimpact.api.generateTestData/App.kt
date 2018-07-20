@@ -48,8 +48,11 @@ fun main(args: Array<String>)
         db.addModel("yf-model", "IC-Garske", "YF", "Yellow Fever Model", versions = listOf("v1"))
 
         val setId = db.addResponsibilitySet("IC-Garske", "op-2017-2", "incomplete")
-        db.addResponsibility(setId, yfRoutine)
-        db.addResponsibility(setId, yfCampaign)
+        val responsibilityId = db.addResponsibility(setId, yfRoutine)
+        val secondResponsibilityId = db.addResponsibility(setId, yfCampaign)
+
+        db.addExpectations(responsibilityId, countries = db.fetchCountries(2), outcomes = db.fetchOutcomes(2))
+        db.addExpectations(secondResponsibilityId, countries = db.fetchOutcomes(4), outcomes = db.fetchOutcomes(1))
 
         db.addUserForTesting("test.user")
     }
