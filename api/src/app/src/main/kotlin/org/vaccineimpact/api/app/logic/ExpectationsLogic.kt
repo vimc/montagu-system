@@ -38,13 +38,13 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepo: Responsibi
             Expectations
     {
         val group = checkGroupAndTouchstoneExist(groupId, touchstoneVersionId)
-        val expectationIds = expectationsRepository.getExpectationIdsForGroupAndTouchstone(groupId, touchstoneVersionId)
+        val expectationIds = expectationsRepo.getExpectationIdsForGroupAndTouchstone(group.id, touchstoneVersionId)
 
         if (!expectationIds.contains(expectationId)){
             throw UnknownObjectError(expectationId, "burden-estimate-expectation")
         }
 
-        return expectationsRepository.getExpectationsById(expectationId)
+        return expectationsRepo.getExpectationsById(expectationId)
     }
 
     override fun getResponsibilityWithExpectations(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityDetails
