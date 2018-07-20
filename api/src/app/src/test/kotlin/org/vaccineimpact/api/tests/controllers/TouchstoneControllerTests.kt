@@ -3,10 +3,12 @@ package org.vaccineimpact.api.tests.controllers
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.TouchstoneController
 import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.logic.ExpectationsLogic
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
@@ -14,6 +16,7 @@ import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.test_helpers.exampleResponsibilitySetWithExpectations
 import java.math.BigDecimal
 
 class TouchstoneControllerTests : MontaguTests()
@@ -40,7 +43,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val controller = TouchstoneController(context, mock(), repo, mock())
+        val controller = TouchstoneController(context, repo, mock())
         assertThat(controller.getTouchstones()).hasSameElementsAs(listOf(touchstone))
     }
 
@@ -54,12 +57,12 @@ class TouchstoneControllerTests : MontaguTests()
         val permissiveContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
         }
-        assertThat(TouchstoneController(permissiveContext, mock(), repo, mock()).getTouchstones()).isEqualTo(listOf(touchstone))
+        assertThat(TouchstoneController(permissiveContext, repo, mock()).getTouchstones()).isEqualTo(listOf(touchstone))
 
         val limitedContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn false
         }
-        assertThat(TouchstoneController(limitedContext, mock(), repo, mock()).getTouchstones()).isEqualTo(listOf(Touchstone(
+        assertThat(TouchstoneController(limitedContext, repo, mock()).getTouchstones()).isEqualTo(listOf(Touchstone(
                 id = "t",
                 description = "touchstone description",
                 comment = "comment",
@@ -84,7 +87,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { params(":scenario-id") } doReturn scenario.id
         }
 
-        val data = TouchstoneController(context, mock(), repo, mock()).getScenario()
+        val data = TouchstoneController(context, repo, mock()).getScenario()
 
         verify(repo).getScenario(eq(openTouchstoneVersion.id), eq(scenario.id))
         assertThat(data.touchstoneVersion).isEqualTo(openTouchstoneVersion)
@@ -103,10 +106,47 @@ class TouchstoneControllerTests : MontaguTests()
             on { params(":touchstone-version-id") } doReturn inPrepTouchstoneVersion.id
             on { params(":scenario-id") } doReturn scenario.id
         }
-        TouchstoneController(context, mock(), repo, mock()).getScenario()
+        TouchstoneController(context, repo, mock()).getScenario()
         verify(context).requirePermission(ReifiedPermission("touchstones.prepare", Scope.Global()))
     }
 
+    @Test
+    fun `getResponsibilities returns responsibility sets and expectations`()
+    {
+        val sets = listOf(
+                exampleResponsibilitySetWithExpectations(openTouchstoneVersion.id, "gId"),
+                exampleResponsibilitySetWithExpectations(openTouchstoneVersion.id, "gId")
+        )
+        val repo = mock<TouchstoneRepository> {
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
+        }
+        val logic = mock<ExpectationsLogic> {
+            on { it.getResponsibilitySetsWithExpectations(any()) } doReturn sets
+        }
+        val context = mock<ActionContext> {
+            on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
+        }
+        val result = TouchstoneController(context, repo, logic).getResponsibilities()
+        assertThat(result).isEqualTo(sets)
+    }
+
+    @Test
+    fun `getResponsibilities requires touchstones prepare permission for in-preparation touchstone`()
+    {
+        val repo = mock<TouchstoneRepository> {
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(inPrepTouchstoneVersion))
+        }
+        val logic = mock<ExpectationsLogic> {
+            on { it.getResponsibilitySetsWithExpectations(any()) } doReturn listOf(
+                    exampleResponsibilitySetWithExpectations(inPrepTouchstoneVersion.id, "gId")
+            )
+        }
+        val context = mock<ActionContext> {
+            on { params(":touchstone-version-id") } doReturn inPrepTouchstoneVersion.id
+        }
+        TouchstoneController(context, repo, logic).getResponsibilities()
+        verify(context).requirePermission(ReifiedPermission("touchstones.prepare", Scope.Global()))
+    }
 
     @Test
     fun `getDemographicData fetches from repository`()
@@ -127,7 +167,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { params(":source-code") } doReturn source
         }
 
-        val data = TouchstoneController(context, mock(), repo, mock()).getDemographicDataAndMetadata()
+        val data = TouchstoneController(context, repo, mock()).getDemographicDataAndMetadata()
         assertThat(data.structuredMetadata).isEqualTo(demographicMetadata)
     }
 
@@ -144,7 +184,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { queryParams("format") } doReturn "wide"
         }
 
-        val data = TouchstoneController(context, mock(), repo, mock())
+        val data = TouchstoneController(context, repo, mock())
                 .getDemographicDataAndMetadata()
                 .data.toList()
 
@@ -175,7 +215,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { queryParams("format") } doReturn "long"
         }
 
-        val data = TouchstoneController(context, mock(), repo, mock())
+        val data = TouchstoneController(context, repo, mock())
                 .getDemographicDataAndMetadata().data
 
         Assertions.assertThat(data.first() is LongDemographicRow).isTrue()
@@ -195,7 +235,7 @@ class TouchstoneControllerTests : MontaguTests()
         }
 
         Assertions.assertThatThrownBy {
-            TouchstoneController(context, mock(), repo, mock()).getDemographicDataAndMetadata()
+            TouchstoneController(context, repo, mock()).getDemographicDataAndMetadata()
         }.isInstanceOf(BadRequest::class.java)
     }
 

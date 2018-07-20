@@ -20,14 +20,12 @@ import org.vaccineimpact.api.serialization.StreamSerializable
 
 class TouchstoneController(
         context: ActionContext,
-        private val responsibilitiesRepository: ResponsibilitiesRepository,
         private val touchstoneRepo: TouchstoneRepository,
         private val expectationsLogic: ExpectationsLogic
 ) : Controller(context)
 {
     constructor(context: ActionContext, repositories: Repositories) : this(
             context,
-            repositories.responsibilities,
             repositories.touchstone,
             RepositoriesExpectationsLogic(
                     repositories.responsibilities,
