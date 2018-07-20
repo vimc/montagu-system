@@ -50,9 +50,9 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepository: Resp
     override fun getResponsibilityWithExpectations(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityDetails
     {
         val group = checkGroupAndTouchstoneExist(groupId, touchstoneVersionId)
-        val responsibility = responsibilitiesRepository.getResponsibility(group.id, touchstoneVersionId, scenarioId)
-        val expectations = expectationsRepository.getExpectationsForResponsibility(responsibility.responsibilityId)
-        return ResponsibilityDetails(responsibility.responsibility, responsibility.touchstoneVersion, expectations)
+        val data = responsibilitiesRepository.getResponsibility(group.id, touchstoneVersionId, scenarioId)
+        val expectations = expectationsRepository.getExpectationsForResponsibility(data.responsibilityId)
+        return ResponsibilityDetails(data.responsibility, data.touchstoneVersion, expectations)
     }
 
     override fun getResponsibilitySetsWithExpectations(touchstoneVersionId: String): List<ResponsibilitySetWithExpectations>
