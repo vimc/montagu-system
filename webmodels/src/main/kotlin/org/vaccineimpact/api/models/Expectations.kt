@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.models
 
-class Expectations(
+data class Expectations(
         val id: Int,
         val years: IntRange,
         val ages: IntRange,
