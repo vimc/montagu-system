@@ -5,11 +5,9 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.nextDecimal
-import org.vaccineimpact.api.db.tables.BurdenOutcome
 import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord
 import org.vaccineimpact.api.db.tables.records.ScenarioRecord
-import org.vaccineimpact.api.models.Country
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.ensureUserHasRole
@@ -733,17 +731,9 @@ fun JooqContext.addUserWithRoles(username: String, vararg roles: ReifiedRole)
     }
 }
 
-fun JooqContext.fetchFullCountries(count: Int): List<Country>
-{
-    return dsl.select(COUNTRY.ID, COUNTRY.NAME)
-            .from(COUNTRY)
-            .limit(count)
-            .fetchInto(Country::class.java)
-}
-
 fun JooqContext.fetchOutcomes(count: Int): List<String>
 {
-    return dsl.select(BURDEN_OUTCOME.ID)
+    return dsl.select(BURDEN_OUTCOME.CODE)
             .from(BURDEN_OUTCOME)
             .limit(count)
             .fetchInto(String::class.java)
@@ -762,14 +752,18 @@ fun JooqContext.addExpectations(
         outcomes: List<String> = emptyList()
 ): Int
 {
-    val id = this.dsl.newRecord(BURDEN_ESTIMATE_EXPECTATION).apply {
+    val record = this.dsl.newRecord(BURDEN_ESTIMATE_EXPECTATION).apply {
         this.yearMinInclusive = yearMinInclusive
         this.yearMaxInclusive = yearMaxInclusive
         this.ageMinInclusive = ageMinInclusive
         this.ageMaxInclusive = ageMaxInclusive
         this.cohortMinInclusive = cohortMinInclusive
         this.cohortMaxInclusive = cohortMaxInclusive
-    }.store()
+    }
+
+    record.store()
+
+    val id = record.id
 
     this.dsl.update(RESPONSIBILITY)
             .set(RESPONSIBILITY.EXPECTATIONS, id)

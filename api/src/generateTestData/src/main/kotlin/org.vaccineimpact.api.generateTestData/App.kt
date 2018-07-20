@@ -52,7 +52,7 @@ fun main(args: Array<String>)
         val secondResponsibilityId = db.addResponsibility(setId, yfCampaign)
 
         db.addExpectations(responsibilityId, countries = db.fetchCountries(2), outcomes = db.fetchOutcomes(2))
-        db.addExpectations(secondResponsibilityId, countries = db.fetchOutcomes(4), outcomes = db.fetchOutcomes(1))
+        db.addExpectations(secondResponsibilityId, countries = db.fetchCountries(4), outcomes = db.fetchOutcomes(1))
 
         db.addUserForTesting("test.user")
     }
