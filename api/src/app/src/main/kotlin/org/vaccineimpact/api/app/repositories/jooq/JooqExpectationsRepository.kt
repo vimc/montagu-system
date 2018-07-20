@@ -30,6 +30,8 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 .fromJoinPath(Tables.expectations, RESPONSIBILITY, RESPONSIBILITY_SET, MODELLING_GROUP)
                 .join(TOUCHSTONE)
                 .on(TOUCHSTONE.ID.eq(RESPONSIBILITY_SET.TOUCHSTONE))
+                .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
+                .and(MODELLING_GROUP.ID.eq(groupId))
                 .fetchInto(Int::class.java)
     }
 
