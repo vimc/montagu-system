@@ -63,8 +63,8 @@ class ResponsibilityControllerTests : MontaguTests()
     @Test
     fun `getResponsibilities gets parameters from URL`()
     {
-        val data = ResponsibilitiesAndTouchstoneStatus(
-                Responsibilities("tId", "", null, emptyList()),
+        val data = ResponsibilitySetAndTouchstoneStatus(
+                ResponsibilitySet("tId", "gId", null, emptyList()),
                 TouchstoneStatus.FINISHED
         )
         val repo = mock<ResponsibilitiesRepository> {
@@ -84,8 +84,8 @@ class ResponsibilityControllerTests : MontaguTests()
     @Test
     fun `getResponsibilities returns error if user does not have permission to see in-preparation touchstone`()
     {
-        val data = ResponsibilitiesAndTouchstoneStatus(
-                Responsibilities("tId", "", null, emptyList()),
+        val data = ResponsibilitySetAndTouchstoneStatus(
+                ResponsibilitySet("tId", "gId", null, emptyList()),
                 TouchstoneStatus.IN_PREPARATION
         )
         val repo = mock<ResponsibilitiesRepository> {

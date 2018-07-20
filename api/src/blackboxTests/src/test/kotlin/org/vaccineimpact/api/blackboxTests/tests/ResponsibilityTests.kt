@@ -33,8 +33,8 @@ class ResponsibilityTests : DatabaseTest()
             PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
         } andCheck {
             assertThat(it["touchstone_version"]).isEqualTo(touchstoneVersionId)
+            assertThat(it["modelling_group_id"]).isEqualTo(groupId)
             assertThat(it["status"]).isEqualTo("submitted")
-            assertThat(it["problems"]).isEqualTo("")
 
             @Suppress("UNCHECKED_CAST")
             val responsibilities = it["responsibilities"] as JsonArray<JsonObject>
@@ -66,8 +66,8 @@ class ResponsibilityTests : DatabaseTest()
             assertThat(it).isEqualTo(json {
                 obj(
                         "touchstone_version" to touchstoneVersionId,
+                        "modelling_group_id" to groupId,
                         "status" to "not-applicable",
-                        "problems" to "",
                         "responsibilities" to array()
                 )
             })
@@ -320,7 +320,6 @@ class ResponsibilityTests : DatabaseTest()
             val responsibilitySet = it[0] as JsonObject
             assertThat(responsibilitySet["touchstone_version"]).isEqualTo(touchstoneVersionId)
             assertThat(responsibilitySet["status"]).isEqualTo("submitted")
-            assertThat(responsibilitySet["problems"]).isNull()
             assertThat(responsibilitySet["modelling_group_id"]).isEqualTo(groupId)
 
             @Suppress("UNCHECKED_CAST")
