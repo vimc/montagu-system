@@ -28,7 +28,8 @@ object ResponsibilityRouteConfig : RouteConfig
                     .json()
                     .secure(permissions),
 
-            Endpoint("$baseUrl/:touchstone-version-id/:scenario-id/template/", controller, "getTemplate")
+            Endpoint("/modelling-groups/:group-id/expectations/:touchstone-version-id/:expectation-id/",
+                    controller, "getTemplate")
                     .streamed()
                     .csv()
                     .secure(permissions)
