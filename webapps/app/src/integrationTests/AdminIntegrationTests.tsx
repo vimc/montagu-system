@@ -30,11 +30,6 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         return createAdminStore(createMemoryHistory());
     }
 
-
-    makeFetcher() {
-        return new AdminFetcher();
-    }
-
     addTestsToMocha() {
 
         it("can fetch shiny cookie", async () => {

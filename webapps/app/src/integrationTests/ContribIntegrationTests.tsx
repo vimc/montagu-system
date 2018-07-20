@@ -46,10 +46,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         return createContribStore(createMemoryHistory());
     }
 
-    makeFetcher(): any {
-        return null;
-    }
-
     addTestsToMocha() {
 
         it("can upload model run parameter sets", async () => {
