@@ -731,6 +731,15 @@ fun JooqContext.addUserWithRoles(username: String, vararg roles: ReifiedRole)
     }
 }
 
+fun JooqContext.fetchOutcomes(count: Int): List<String>
+{
+    return dsl.select(BURDEN_OUTCOME.CODE)
+            .from(BURDEN_OUTCOME)
+            .limit(count)
+            .fetchInto(String::class.java)
+}
+
+
 fun JooqContext.addExpectations(
         responsibilityId: Int,
         yearMinInclusive: Short = 2000,
@@ -743,14 +752,18 @@ fun JooqContext.addExpectations(
         outcomes: List<String> = emptyList()
 ): Int
 {
-    val id = this.dsl.newRecord(BURDEN_ESTIMATE_EXPECTATION).apply {
+    val record = this.dsl.newRecord(BURDEN_ESTIMATE_EXPECTATION).apply {
         this.yearMinInclusive = yearMinInclusive
         this.yearMaxInclusive = yearMaxInclusive
         this.ageMinInclusive = ageMinInclusive
         this.ageMaxInclusive = ageMaxInclusive
         this.cohortMinInclusive = cohortMinInclusive
         this.cohortMaxInclusive = cohortMaxInclusive
-    }.store()
+    }
+
+    record.store()
+
+    val id = record.id
 
     this.dsl.update(RESPONSIBILITY)
             .set(RESPONSIBILITY.EXPECTATIONS, id)
