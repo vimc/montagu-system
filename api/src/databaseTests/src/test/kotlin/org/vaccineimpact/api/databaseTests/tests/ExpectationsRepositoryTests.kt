@@ -9,7 +9,6 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.CohortRestriction
 import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.Expectations
 
 class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
 {
@@ -34,6 +33,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
                     countries = emptyList(),
                     outcomes = emptyList()
             )
+            responsibilityId
         }
         withRepo { repo ->
             val result = repo.getExpectationsForResponsibility(responsibilityId)
@@ -54,6 +54,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
                     cohortMinInclusive = 2005,
                     cohortMaxInclusive = 2015
             )
+            responsibilityId
         }
         withRepo { repo ->
             val result = repo.getExpectationsForResponsibility(responsibilityId)
@@ -73,6 +74,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
                     responsibilityId,
                     countries = listOf("ABC", "DEF")
             )
+            responsibilityId
         }
         withRepo { repo ->
             val result = repo.getExpectationsForResponsibility(responsibilityId)
@@ -91,6 +93,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
                     responsibilityId,
                     outcomes = listOf("cases", "deaths")
             )
+            responsibilityId
         }
         withRepo { repo ->
             val result = repo.getExpectationsForResponsibility(responsibilityId)
@@ -101,12 +104,53 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
         }
     }
 
-    private fun addResponsibilityAnd(action: (JooqContext, Int) -> Unit) = withDatabase { db ->
+    @Test
+    fun `can get expectation ids for group and touchstone`()
+    {
+        val expectationId = addResponsibilityAnd { db, responsibilityId ->
+            db.addExpectations(
+                    responsibilityId
+            )
+        }
+        withRepo { repo ->
+            val result = repo.getExpectationIdsForGroupAndTouchstone(groupId, touchstoneVersionId)
+            assertThat(result).hasSameElementsAs(listOf(
+                   expectationId
+            ))
+        }
+    }
+
+    @Test
+    fun `can get expectation by id`()
+    {
+        val expectationId = addResponsibilityAnd { db, responsibilityId ->
+            db.addExpectations(
+                    responsibilityId,
+                    yearMinInclusive = 2000,
+                    yearMaxInclusive = 2100,
+                    ageMinInclusive = 0,
+                    ageMaxInclusive = 99,
+                    cohortMinInclusive = null,
+                    cohortMaxInclusive = null,
+                    countries = emptyList(),
+                    outcomes = emptyList()
+            )
+        }
+        withRepo { repo ->
+            val result = repo.getExpectationsById(expectationId)
+            assertThat(result.years).isEqualTo(2000..2100)
+            assertThat(result.ages).isEqualTo(0..99)
+            assertThat(result.cohorts).isEqualTo(CohortRestriction())
+            assertThat(result.countries).isEmpty()
+            assertThat(result.outcomes).isEmpty()
+        }
+    }
+
+    private fun addResponsibilityAnd(action: (JooqContext, Int) -> Int) = withDatabase { db ->
         db.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
         db.addScenarioDescription(scenarioId, "desc", "YF", addDisease = true)
         db.addGroup(groupId)
         val responsibilityId = db.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
         action(db, responsibilityId)
-        responsibilityId
     }
 }

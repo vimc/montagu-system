@@ -13,8 +13,12 @@ import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.responsibilities.*
+import org.vaccineimpact.api.serialization.MontaguSerializer
+import org.vaccineimpact.api.serialization.StreamSerializable
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.test_helpers.exampleExpectations
+import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
+
 
 class ResponsibilityControllerTests : MontaguTests()
 {
@@ -149,16 +153,64 @@ class ResponsibilityControllerTests : MontaguTests()
     }
 
     @Test
-    fun `can get template`()
+    fun `returns central estimates template by default`()
     {
         val context = mockContextForSpecificResponsibility(true)
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsForResponsibility(any(), any(), any()) } doReturn exampleExpectations()
+            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectations()
         }
 
-        GroupResponsibilityController(context, mock(), mock(), repo)
+        val result = GroupResponsibilityController(context, mock(), mock(), repo)
                 .getTemplate()
+
+        assertThat(serialize(result)).isEqualTo("""disease,year,age,country,country_name,cohort_size""")
+    }
+
+    private fun serialize(table: StreamSerializable<*>) = serializeToStreamAndGetAsString {
+        table.serialize(it, MontaguSerializer.instance)
+    }.trim()
+
+    @Test
+    fun `can get stochastic estimate template`()
+    {
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { it.params(":expectation-id") } doReturn "1"
+            on { hasPermission(any()) } doReturn true
+            on { it.queryParams("type") } doReturn "stochastic"
+        }
+
+        val repo = mock<ExpectationsLogic> {
+            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectations()
+        }
+
+        val result = GroupResponsibilityController(context, mock(), mock(), repo)
+                .getTemplate()
+
+        assertThat(serialize(result)).isEqualTo("""disease,run_id,year,age,country,country_name,cohort_size""")
+    }
+
+    @Test
+    fun `can get central estimate template`()
+    {
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { it.params(":expectation-id") } doReturn "1"
+            on { hasPermission(any()) } doReturn true
+            on { it.queryParams("type") } doReturn "central"
+        }
+
+        val repo = mock<ExpectationsLogic> {
+            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectations()
+        }
+
+        val result = GroupResponsibilityController(context, mock(), mock(), repo)
+                .getTemplate()
+
+        assertThat(serialize(result)).isEqualTo("""disease,year,age,country,country_name,cohort_size""")
     }
 
     private val mockTouchstones = listOf(
@@ -177,6 +229,7 @@ class ResponsibilityControllerTests : MontaguTests()
             on { it.params(":group-id") } doReturn "gId"
             on { it.params(":touchstone-version-id") } doReturn "tId"
             on { it.params(":scenario-id") } doReturn "sId"
+            on { it.params(":expectation-id") } doReturn "1"
             on { hasPermission(any()) } doReturn hasPermissions
         }
         return context

@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.vaccineimpact.api.models.CohortRestriction
 import org.vaccineimpact.api.models.Country
 import org.vaccineimpact.api.models.Expectations
+import org.vaccineimpact.api.models.StochasticBurdenEstimate
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class ExpectationsTests : MontaguTests()
@@ -123,5 +124,4 @@ class ExpectationsTests : MontaguTests()
 
         assertThat(result.count()).isEqualTo(expectedCohorts * numCountries)
     }
-
 }
