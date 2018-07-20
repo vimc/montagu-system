@@ -57,6 +57,7 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepository: Resp
 
     override fun getResponsibilitySetsWithExpectations(touchstoneVersionId: String): List<ResponsibilitySetWithExpectations>
     {
+        checkTouchstoneExists(touchstoneVersionId)
         val responsibilitySets = responsibilitiesRepository.getResponsibilitiesForTouchstone(touchstoneVersionId)
         return responsibilitySets.map {
             val expectations = expectationsRepository.getExpectationsForResponsibilitySet(it.modellingGroupId, touchstoneVersionId)
@@ -82,7 +83,12 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepository: Resp
 
     private fun checkGroupAndTouchstoneExist(groupId: String, touchstoneVersionId: String): ModellingGroup
     {
-        touchstoneRepository.touchstoneVersions.get(touchstoneVersionId) // throws if touchstone version does not exist
+        checkTouchstoneExists(touchstoneVersionId) // throws if touchstone version does not exist
         return modellingGroupRepository.getModellingGroup(groupId) // throws if group does not exist and resolves canonical ID
+    }
+
+    private fun checkTouchstoneExists(touchstoneVersionId: String)
+    {
+        touchstoneRepository.touchstoneVersions.get(touchstoneVersionId)
     }
 }
