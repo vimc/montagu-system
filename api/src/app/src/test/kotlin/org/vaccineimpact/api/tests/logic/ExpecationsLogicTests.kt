@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.logic.ExpectationsLogic
 import org.vaccineimpact.api.app.logic.RepositoriesExpectationsLogic
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
@@ -15,7 +16,7 @@ import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityAndTouchstone
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
-import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetAndTouchstoneStatus
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.test_helpers.exampleResponsibility
@@ -32,15 +33,18 @@ class ExpectationsLogicTests : MontaguTests()
     private val responsibility = exampleResponsibility()
     private val touchstoneVersion = exampleTouchstoneVersion()
     private val responsibilityAndTouchstone = ResponsibilityAndTouchstone(responsibilityId, responsibility, touchstoneVersion)
+    private val responsibilitySet = exampleResponsibilitySet(touchstoneVersionId, groupId)
     private val responsibilitySets = listOf(
-            exampleResponsibilitySet(touchstoneVersionId, groupId),
+            responsibilitySet,
             exampleResponsibilitySet(touchstoneVersionId, otherGroupId)
     )
+    private val responsibilitySetAndTouchstoneStatus = ResponsibilitySetAndTouchstoneStatus(responsibilitySet, TouchstoneStatus.OPEN)
 
     private val responsibilitiesRepo = mock<ResponsibilitiesRepository> {
         on { this.getResponsibilityId(groupId, touchstoneVersionId, scenarioId) } doReturn responsibilityId
         on { this.getResponsibility(groupId, touchstoneVersionId, scenarioId) } doReturn responsibilityAndTouchstone
         on { this.getResponsibilitiesForTouchstone(touchstoneVersionId) } doReturn responsibilitySets
+        on { this.getResponsibilitiesForGroupAndTouchstone(eq(groupId), eq(touchstoneVersionId), any()) } doReturn responsibilitySetAndTouchstoneStatus
     }
 
     private val expectationId = 2
@@ -57,7 +61,7 @@ class ExpectationsLogicTests : MontaguTests()
     private val expectationsRepo = mock<ExpectationsRepository> {
         on { this.getExpectationsForResponsibility(responsibilityId) } doReturn fakeExpectations
         on { this.getExpectationsById(expectationId) } doReturn fakeExpectations
-        on { this.getExpectationIdsForGroupAndTouchstone(groupId, touchstoneVersionId)} doReturn listOf(expectationId)
+        on { this.getExpectationIdsForGroupAndTouchstone(groupId, touchstoneVersionId) } doReturn listOf(expectationId)
         on { this.getExpectationsForResponsibilitySet(any(), any()) } doReturn fakeExpectationsMapping
     }
 
@@ -124,7 +128,7 @@ class ExpectationsLogicTests : MontaguTests()
     fun `getExpectationsById throws unknown object error if expectation does not belong to group & touchstone`()
     {
         val expectationsRepoWithoutExpectations = mock<ExpectationsRepository> {
-            on { it.getExpectationIdsForGroupAndTouchstone(groupId, touchstoneVersionId)} doReturn listOf<Int>()
+            on { it.getExpectationIdsForGroupAndTouchstone(groupId, touchstoneVersionId) } doReturn listOf<Int>()
         }
         val sut = RepositoriesExpectationsLogic(
                 responsibilitiesRepo,
@@ -138,7 +142,7 @@ class ExpectationsLogicTests : MontaguTests()
     }
 
     @Test
-    fun `can get responsibility sets with expectations for touchstone`()
+    fun `can get all responsibility sets with expectations for touchstone`()
     {
         val sut = RepositoriesExpectationsLogic(
                 responsibilitiesRepo,
@@ -156,9 +160,44 @@ class ExpectationsLogicTests : MontaguTests()
     }
 
     @Test
-    fun `getResponsibilitySetsWithExpectations throws unknown object error if touchstone version does not exist`()
+    fun `getResponsibilitySetsWithExpectations throws if touchstone version does not exist`()
     {
         assertChecksThatTouchstoneVersionExists { it.getResponsibilitySetsWithExpectations(touchstoneVersionId) }
+    }
+
+    @Test
+    fun `can get particular responsibility set with expectations for modelling group and touchstone`()
+    {
+        val sut = RepositoriesExpectationsLogic(
+                responsibilitiesRepo,
+                expectationsRepo,
+                modellingGroupRepo,
+                touchstonesRepo
+        )
+        val filterParameters = ScenarioFilterParameters()
+        val result = sut.getResponsibilitySetWithExpectations(groupId, touchstoneVersionId, filterParameters)
+        assertThat(result).isEqualTo(Pair(
+                ResponsibilitySetWithExpectations(responsibilitySets[0], fakeExpectationsMapping),
+                TouchstoneStatus.OPEN
+        ))
+        verify(responsibilitiesRepo)
+                .getResponsibilitiesForGroupAndTouchstone(any(), any(), eq(filterParameters))
+    }
+
+    @Test
+    fun `getResponsibilitySetWithExpectations throws if touchstone version does not exist`()
+    {
+        assertChecksThatTouchstoneVersionExists {
+            it.getResponsibilitySetWithExpectations(groupId, touchstoneVersionId, ScenarioFilterParameters())
+        }
+    }
+
+    @Test
+    fun `getResponsibilitySetWithExpectations throws if group does not exist`()
+    {
+        assertChecksThatGroupExists {
+            it.getResponsibilitySetWithExpectations(groupId, touchstoneVersionId, ScenarioFilterParameters())
+        }
     }
 
     private fun assertChecksThatGroupExists(work: (sut: ExpectationsLogic) -> Any)
