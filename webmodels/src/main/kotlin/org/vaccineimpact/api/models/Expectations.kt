@@ -30,7 +30,6 @@ class Expectations(
 
         return listRows
     }
-
 }
 
 data class CohortRestriction(
