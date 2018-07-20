@@ -20,6 +20,7 @@ import org.vaccineimpact.api.models.Expectations
 class JooqExpectationsRepository(dsl: DSLContext)
     : JooqRepository(dsl), ExpectationsRepository
 {
+
     private object Tables
     {
         val expectations: BurdenEstimateExpectation = BURDEN_ESTIMATE_EXPECTATION
@@ -27,16 +28,30 @@ class JooqExpectationsRepository(dsl: DSLContext)
         val outcomes: BurdenEstimateOutcomeExpectation = BURDEN_ESTIMATE_OUTCOME_EXPECTATION
     }
 
+    override fun getExpectationIdsForGroupAndTouchstone(groupId: String, touchstoneVersionId: String): List<Int>
+    {
+        return dsl.select(Tables.expectations.ID)
+                .fromJoinPath(Tables.expectations, RESPONSIBILITY, RESPONSIBILITY_SET, MODELLING_GROUP)
+                .join(TOUCHSTONE)
+                .on(TOUCHSTONE.ID.eq(RESPONSIBILITY_SET.TOUCHSTONE))
+                .fetchInto(Int::class.java)
+    }
+
     override fun getExpectationsForResponsibility(responsibilityId: Int): Expectations
     {
         val id = dsl.select(RESPONSIBILITY.EXPECTATIONS)
-                .from(RESPONSIBILITY)
-                .where(RESPONSIBILITY.ID.eq(responsibilityId))
-                .fetchOne()
-                .value1()
-                ?: throw UnknownObjectError(responsibilityId, "burden-estimate-expectation")
+                        .from(RESPONSIBILITY)
+                        .where(RESPONSIBILITY.ID.eq(responsibilityId))
+                        .fetchOne()
+                        .value1()
+                        ?: throw UnknownObjectError(responsibilityId, "burden-estimate-expectation")
+        
+        return getExpectationsById(id)
+    }
 
-        val basicData = dsl.fetchAny(Tables.expectations,Tables.expectations.ID.eq(id))
+    override fun getExpectationsById(expectationsId: Int): Expectations
+    {
+        val basicData = dsl.fetchAny(Tables.expectations,Tables.expectations.ID.eq(expectationsId))
         return basicData.withCountriesAndOutcomes()
     }
 

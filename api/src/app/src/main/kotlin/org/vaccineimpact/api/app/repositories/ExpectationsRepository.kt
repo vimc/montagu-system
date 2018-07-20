@@ -7,4 +7,6 @@ interface ExpectationsRepository : Repository
 {
     fun getExpectationsForResponsibility(responsibilityId: Int): Expectations
     fun getExpectationsForResponsibilitySet(modellingGroup: String, touchstoneVersion: String): List<ExpectationMapping>
+    fun getExpectationsById(expectationsId: Int): Expectations
+    fun getExpectationIdsForGroupAndTouchstone(groupId: String, touchstoneVersionId: String): List<Int>
 }

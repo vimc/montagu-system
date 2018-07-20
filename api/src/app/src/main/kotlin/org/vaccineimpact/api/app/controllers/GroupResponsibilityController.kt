@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.controllers.helpers.ExpectationPath
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.logic.ExpectationsLogic
@@ -11,9 +12,8 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.filterByPermission
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import org.vaccineimpact.api.serialization.EmptyDataTable
 import org.vaccineimpact.api.serialization.StreamSerializable
@@ -28,8 +28,8 @@ class GroupResponsibilityController(
     constructor(context: ActionContext, repositories: Repositories)
             : this(context, repositories.modellingGroup,
             repositories.responsibilities,
-            RepositoriesExpectationsLogic(repositories.responsibilities,
-                    repositories.expectations, repositories.modellingGroup, repositories.touchstone))
+            RepositoriesExpectationsLogic(repositories.responsibilities, repositories.expectations,
+                    repositories.modellingGroup, repositories.touchstone))
 
     fun getResponsibleTouchstones(): List<Touchstone>
     {
@@ -56,14 +56,24 @@ class GroupResponsibilityController(
         return data
     }
 
-    fun getTemplate(): StreamSerializable<Any?>
+    fun getTemplate(): StreamSerializable<BurdenEstimateRow>
     {
-        val path = ResponsibilityPath(context)
-        modellingGroupRepo.getModellingGroup(path.groupId)
-        val expectations = expectationsLogic.getExpectationsForResponsibility(path.groupId,
-                path.touchstoneVersionId, path.scenarioId)
+        val path = ExpectationPath(context)
+        val type = context.queryParams("type") ?: "central"
+        val expectations = expectationsLogic.getExpectationsById(path.expectationId, path.groupId,
+                path.touchstoneVersionId)
 
-        return EmptyDataTable.new<BurdenEstimate>(expectations.expectedRows().count(), expectations.outcomes)
+        val rowCount = expectations.expectedRows().count()
+
+        return if (type == "central")
+        {
+            EmptyDataTable.new<BurdenEstimate>(rowCount, expectations.outcomes)
+        }
+        else
+        {
+            EmptyDataTable.new<StochasticBurdenEstimate>(rowCount, expectations.outcomes)
+        }
+
     }
 
     // We are sure that this will be non-null, as its part of the URL,
