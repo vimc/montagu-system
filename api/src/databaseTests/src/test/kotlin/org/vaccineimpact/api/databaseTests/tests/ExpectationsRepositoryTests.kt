@@ -9,6 +9,8 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.CohortRestriction
 import org.vaccineimpact.api.models.Country
+import org.vaccineimpact.api.models.ExpectationMapping
+import org.vaccineimpact.api.test_helpers.exampleExpectations
 
 class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
 {
@@ -16,6 +18,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
 
     private val groupId = "group"
     private val scenarioId = "scenario"
+    private val otherScenarioId = "otherScenario"
     private val touchstoneVersionId = "touchstone-1"
 
     @Test
@@ -143,6 +146,31 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             assertThat(result.cohorts).isEqualTo(CohortRestriction())
             assertThat(result.countries).isEmpty()
             assertThat(result.outcomes).isEmpty()
+        }
+    }
+
+    @Test
+    fun `can get expectations for responsibility set`()
+    {
+        withDatabase { db ->
+            db.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
+            db.addScenarioDescription(scenarioId, "desc", "YF", addDisease = true)
+            db.addScenarioDescription(otherScenarioId, "other desc", "YF")
+            db.addGroup(groupId)
+            val setId = db.addResponsibilitySet(groupId, touchstoneVersionId)
+            val r1 = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
+            val r2 = db.addResponsibility(setId, touchstoneVersionId, otherScenarioId)
+            val expId = db.addExpectations(r1)
+            db.addExistingExpectationsToResponsibility(r2, expId)
+        }
+        withRepo { repo ->
+            val result = repo.getExpectationsForResponsibilitySet(groupId, touchstoneVersionId)
+            assertThat(result).isEqualTo(listOf(
+                    ExpectationMapping(
+                            exampleExpectations(),
+                            listOf(scenarioId, otherScenarioId)
+                    )
+            ))
         }
     }
 
