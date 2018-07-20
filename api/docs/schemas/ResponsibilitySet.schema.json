@@ -9,6 +9,10 @@
         "responsibilities": {
             "type": "array",
             "items": { "$ref": "Responsibility.schema.json" }
+        },
+        "expectations": {
+            "type": "array",
+            "items": { "$ref": "ExpectationMapping.schema.json" }
         }
     },
     "additionalProperties": false,
