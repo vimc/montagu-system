@@ -5,11 +5,10 @@ import { expect } from "chai";
 import "../../../../../helper";
 import { Sandbox } from "../../../../../Sandbox";
 import { mockExtendedResponsibilitySet, mockResponsibility, mockScenario } from "../../../../../mocks/mockModels";
-import {
-    TemplateLink,
-    TemplateLinks
-} from "../../../../../../main/contrib/components/Responsibilities/Overview/List/TemplateLinks";
+
 import {createMockStore} from "../../../../../mocks/mockStore";
+import {TemplateLinks} from "../../../../../../main/contrib/components/Responsibilities/Overview/List/OldStyleTemplates/TemplateLinks";
+import {TemplateLink} from "../../../../../../main/contrib/components/Responsibilities/Overview/List/OldStyleTemplates/TemplateLink";
 
 describe("Responsibility Overview Template Links Components tests", () => {
     const sandbox = new Sandbox();

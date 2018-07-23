@@ -3,7 +3,7 @@ import { compose, branch, renderComponent} from "recompose";
 import { connect } from 'react-redux';
 
 import {ModellingGroup, Responsibility, Scenario, TouchstoneVersion} from "../../../../shared/models/Generated";
-import {TemplateLink} from "../Overview/List/TemplateLinks";
+import {TemplateLink} from "../Overview/List/OldStyleTemplates/TemplateLink";
 import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";

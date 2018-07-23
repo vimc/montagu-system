@@ -17,11 +17,10 @@ import {
     UploadBurdenEstimatesContent,
     UploadBurdenEstimatesContentComponent
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesContent";
-import {
-    TemplateLink,
-} from "../../../../../main/contrib/components/Responsibilities/Overview/List/TemplateLinks";
+
 import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
+import {TemplateLink} from "../../../../../main/contrib/components/Responsibilities/Overview/List/OldStyleTemplates/TemplateLink";
 
 describe("Upload Burden Estimates Content Component tests", () => {
 

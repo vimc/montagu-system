@@ -4,7 +4,7 @@ import { DiseaseFilter } from "./DiseaseFilter";
 import { ResponsibilityScenario } from "./ResponsibilityScenario";
 import { IExtendedResponsibilitySet } from "../../../../models/ResponsibilitySet";
 import { ModellingGroup, Responsibility } from "../../../../../shared/models/Generated";
-import { TemplateLinks } from "./TemplateLinks";
+import {TemplateLinks} from "./OldStyleTemplates/TemplateLinks";
 
 export interface ResponsibilityListComponentProps {
     responsibilitySet: IExtendedResponsibilitySet;
