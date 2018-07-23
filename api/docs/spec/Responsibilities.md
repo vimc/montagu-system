@@ -41,6 +41,7 @@ Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.js
 ### Example
     {
         "touchstone_version": "2017-op-1",
+        "modelling_group_id": "some-group",
         "status": "incomplete",
         "problems": "",
         "responsibilities": [
@@ -117,6 +118,7 @@ Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.js
 ### Example
     {
         "touchstone_version": "2017-op-1",
+        "modelling_group_id": "some-group",
         "status": "not-applicable",
         "problems": "",
         "responsibilities": [],

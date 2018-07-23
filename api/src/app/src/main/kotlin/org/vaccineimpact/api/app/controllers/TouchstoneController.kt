@@ -4,6 +4,8 @@ import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.logic.ExpectationsLogic
+import org.vaccineimpact.api.app.logic.RepositoriesExpectationsLogic
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
@@ -11,18 +13,27 @@ import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySet
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
 
 class TouchstoneController(
         context: ActionContext,
-        private val responsibilitiesRepository: ResponsibilitiesRepository,
-        private val touchstoneRepo: TouchstoneRepository
+        private val touchstoneRepo: TouchstoneRepository,
+        private val expectationsLogic: ExpectationsLogic
 ) : Controller(context)
 {
-    constructor(context: ActionContext, repositories: Repositories)
-            : this(context, repositories.responsibilities, repositories.touchstone)
+    constructor(context: ActionContext, repositories: Repositories) : this(
+            context,
+            repositories.touchstone,
+            RepositoriesExpectationsLogic(
+                    repositories.responsibilities,
+                    repositories.expectations,
+                    repositories.modellingGroup,
+                    repositories.touchstone
+            )
+    )
 
     private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
 
@@ -38,10 +49,10 @@ class TouchstoneController(
         return touchstoneRepo.scenarios(touchstoneVersion.id, filterParameters)
     }
 
-    fun getResponsibilities(): List<ResponsibilitySet>
+    fun getResponsibilities(): List<ResponsibilitySetWithExpectations>
     {
         val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
-        return responsibilitiesRepository.getResponsibilitiesForTouchstone(touchstoneVersion.id)
+        return expectationsLogic.getResponsibilitySetsWithExpectations(touchstoneVersion.id)
     }
 
     fun getDemographicDatasets(): List<DemographicDataset>

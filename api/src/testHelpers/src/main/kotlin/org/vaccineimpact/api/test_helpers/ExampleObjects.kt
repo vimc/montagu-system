@@ -1,8 +1,7 @@
 package org.vaccineimpact.api.test_helpers
 
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.models.responsibilities.Responsibility
-import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
+import org.vaccineimpact.api.models.responsibilities.*
 
 fun exampleExpectations() = Expectations(
         id = 1,
@@ -13,6 +12,11 @@ fun exampleExpectations() = Expectations(
         outcomes = emptyList()
 )
 
+fun exampleExpectationMapping() = ExpectationMapping(
+        exampleExpectations(),
+        listOf("yf-scenario")
+)
+
 fun exampleResponsibility() = Responsibility(
         exampleScenario(),
         ResponsibilityStatus.EMPTY,
@@ -20,12 +24,15 @@ fun exampleResponsibility() = Responsibility(
         null
 )
 
-fun exampleTouchstoneVersion() = TouchstoneVersion(
-        id = "touchstone-1",
+fun exampleTouchstoneVersion(
+        id: String = "touchstone-1",
+        status: TouchstoneStatus = TouchstoneStatus.OPEN
+) = TouchstoneVersion(
+        id = id,
         name = "touchstone",
         version = 1,
         description = "Some example touchstone version",
-        status = TouchstoneStatus.OPEN
+        status = status
 )
 
 fun exampleScenario() = Scenario(
@@ -33,4 +40,19 @@ fun exampleScenario() = Scenario(
         description = "Some example scenario",
         disease = "YF",
         touchstones = listOf("touchstone-1")
+)
+
+fun exampleResponsibilitySet(touchstoneVersionId: String, groupId: String) = ResponsibilitySet(
+        touchstoneVersionId,
+        groupId,
+        ResponsibilitySetStatus.INCOMPLETE,
+        listOf(exampleResponsibility(), exampleResponsibility())
+)
+
+fun exampleResponsibilitySetWithExpectations(touchstoneId: String, groupId: String) = ResponsibilitySetWithExpectations(
+        touchstoneId,
+        groupId,
+        ResponsibilitySetStatus.INCOMPLETE,
+        emptyList(),
+        listOf(exampleExpectationMapping())
 )

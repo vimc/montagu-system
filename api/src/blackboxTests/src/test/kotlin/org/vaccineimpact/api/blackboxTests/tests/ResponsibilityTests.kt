@@ -25,12 +25,13 @@ class ResponsibilityTests : DatabaseTest()
     private val scenarioId = "yf-scenario"
     private val modelId = "model-1"
 
+    val responsibilitiesUrl = "/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/"
     val responsibilityUrl = "/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/"
 
     @Test
     fun `getResponsibilities matches schema`()
     {
-        validate("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/") against "ResponsibilitySet" given {
+        validate(responsibilitiesUrl) against "ResponsibilitySet" given {
             addResponsibilities(it, touchstoneStatus = "open")
         } requiringPermissions {
             PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
@@ -59,9 +60,37 @@ class ResponsibilityTests : DatabaseTest()
     }
 
     @Test
+    fun `getResponsibilities returns expectations`()
+    {
+        val expectationsId = JooqContext().use { db ->
+            TestUserHelper().setupTestUser(db)
+            val responsibilityId = addResponsibilities(db, touchstoneStatus = "open", includeExpectations = false)
+            db.addExpectations(responsibilityId)
+        }
+        val permissions = PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read", "*/can-login")
+        val response = RequestHelper().get(responsibilitiesUrl, permissions)
+        val data = response.montaguData<JsonObject>()!!
+        assertThat(data["expectations"]).isEqualTo(json {
+            array(
+                    obj(
+                            "expectation" to obj(
+                                    "id" to expectationsId,
+                                    "years" to obj("minimum_inclusive" to 2000, "maximum_inclusive" to 2100),
+                                    "ages" to obj("minimum_inclusive" to 0, "maximum_inclusive" to 99),
+                                    "cohorts" to obj("minimum_birth_year" to null, "maximum_birth_year" to null),
+                                    "countries" to array(),
+                                    "outcomes" to array()
+                            ),
+                            "applicable_scenarios" to array("yf-scenario")
+                    )
+            )
+        })
+    }
+
+    @Test
     fun `not-applicable status is returned when there are no responsibilities`()
     {
-        validate("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/") against "ResponsibilitySet" given {
+        validate(responsibilitiesUrl) against "ResponsibilitySet" given {
             addUserGroupAndTouchstone(it, touchstoneStatus = "open")
         } requiringPermissions {
             PermissionSet("$groupScope/responsibilities.read", "*/scenarios.read")
@@ -71,7 +100,8 @@ class ResponsibilityTests : DatabaseTest()
                         "touchstone_version" to touchstoneVersionId,
                         "modelling_group_id" to groupId,
                         "status" to "not-applicable",
-                        "responsibilities" to array()
+                        "responsibilities" to array(),
+                        "expectations" to array()
                 )
             })
         }
@@ -306,6 +336,7 @@ class ResponsibilityTests : DatabaseTest()
             assertThat(responsibilitySet["touchstone_version"]).isEqualTo(touchstoneVersionId)
             assertThat(responsibilitySet["status"]).isEqualTo("submitted")
             assertThat(responsibilitySet["modelling_group_id"]).isEqualTo(groupId)
+            assertThat(responsibilitySet["expectations"]).isNotNull
 
             @Suppress("UNCHECKED_CAST")
             val responsibilities = responsibilitySet["responsibilities"] as JsonArray<JsonObject>
