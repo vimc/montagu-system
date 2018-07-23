@@ -13,6 +13,11 @@ export interface AssociateUser {
     username: string;
 }
 
+export interface CohortRestriction {
+    maximum_birth_year: number | null;
+    minimum_birth_year: number | null;
+}
+
 export type ActivityType = "none" | "routine" | "campaign" | "campaign-reactive";
 
 export type GAVISupportLevel = "no vaccine" | "no gavi" | "total" | "hold2010" | "bestminus";
@@ -26,6 +31,11 @@ export interface CoverageSet {
     vaccine: string;
 }
 
+export interface Country {
+    id: string;
+    name: string;
+}
+
 export interface Disease {
     id: string;
     name: string;
@@ -36,6 +46,11 @@ export interface DemographicDataset {
     id: string;
     name: string;
     source: string;
+}
+
+export interface IntRangeSerialized {
+    maximum_inclusive: number;
+    minimum_inclusive: number;
 }
 
 export interface ModellingGroup {
@@ -119,6 +134,28 @@ export interface Responsibility {
 export type ResponsibilitySetStatus = "not-applicable" | "incomplete" | "submitted" | "approved";
 
 export interface ResponsibilitySet {
+    modelling_group_id: string;
+    responsibilities: Responsibility[];
+    status: ResponsibilitySetStatus | null;
+    touchstone_version: string;
+}
+
+export interface Expectations {
+    ages: IntRangeSerialized;
+    cohorts: CohortRestriction;
+    countries: Country[];
+    id: number;
+    outcomes: string[];
+    years: IntRangeSerialized;
+}
+
+export interface ExpectationMapping {
+    applicable_scenarios: string[];
+    expectation: Expectations;
+}
+
+export interface ResponsibilitySetWithExpectations {
+    expectations: ExpectationMapping[];
     modelling_group_id: string;
     responsibilities: Responsibility[];
     status: ResponsibilitySetStatus | null;
