@@ -21,7 +21,7 @@ function makeProps(responsibilities: Array<Responsibility>,
         modellingGroup: modellingGroup,
         currentDiseaseId: currentDiseaseId,
         responsibilitySet: new ExtendedResponsibilitySet({
-            problems: "",
+            modelling_group_id: modellingGroup.id,
             status: null,
             touchstone_version: touchstone.id,
             responsibilities

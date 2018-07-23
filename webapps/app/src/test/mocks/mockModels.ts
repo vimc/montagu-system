@@ -4,6 +4,7 @@ import {Version} from "../../main/shared/models/reports/Report";
 import {Artefact} from "../../main/shared/models/reports/Artefact";
 import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageWithHeader";
 import {ModellingGroupCreation, TouchstoneVersion} from "../../main/shared/models/Generated";
+import {ResponsibilitySet} from "../../main/shared/models/Generated";
 
 let counter = 0;
 
@@ -101,13 +102,13 @@ export function mockTouchstoneVersion(properties?: Partial<TouchstoneVersion>): 
 }
 
 export function mockResponsibilities(properties?: any,
-                                     responsibilities?: Array<models.Responsibility>): models.Responsibilities {
+                                     responsibilities?: Array<models.Responsibility>): models.ResponsibilitySet {
     if (!responsibilities || responsibilities.length == 0) {
         responsibilities = [mockResponsibility(), mockResponsibility()];
     }
 
-    const template: models.Responsibilities = {
-        problems: "",
+    const template: models.ResponsibilitySet = {
+        modelling_group_id: "group-1",
         responsibilities: responsibilities,
         status: "incomplete",
         touchstone_version: "touchstone-1"
@@ -116,7 +117,7 @@ export function mockResponsibilities(properties?: any,
 }
 
 export function mockResponsibilitySet(properties?: any,
-                                     responsibilities?: Array<models.Responsibility>): models.Responsibilities {
+                                     responsibilities?: Array<models.Responsibility>): models.ResponsibilitySet {
     if (!responsibilities || responsibilities.length == 0) {
         responsibilities = [mockResponsibility(), mockResponsibility()];
     }

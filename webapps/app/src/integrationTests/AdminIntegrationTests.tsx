@@ -2,11 +2,10 @@ import * as React from "react";
 import {createMemoryHistory} from 'history';
 
 import {IntegrationTestSuite} from "./IntegrationTest";
-import {AdminFetcher} from "../main/admin/sources/AdminFetcher";
 import {expect} from "chai";
 import {Client, QueryResult} from "pg";
 import {
-    ModellingGroup, Responsibilities, ResponsibilitySet, RoleAssignment,
+    ModellingGroup, ResponsibilitySet, RoleAssignment,
     User
 } from "../main/shared/models/Generated";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
