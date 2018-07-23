@@ -38,13 +38,12 @@ class ExpectationsLogicTests : MontaguTests()
             responsibilitySet,
             exampleResponsibilitySet(touchstoneVersionId, otherGroupId)
     )
-    private val responsibilitySetAndTouchstoneStatus = ResponsibilitySetAndTouchstoneStatus(responsibilitySet, TouchstoneStatus.OPEN)
 
     private val responsibilitiesRepo = mock<ResponsibilitiesRepository> {
         on { this.getResponsibilityId(groupId, touchstoneVersionId, scenarioId) } doReturn responsibilityId
         on { this.getResponsibility(groupId, touchstoneVersionId, scenarioId) } doReturn responsibilityAndTouchstone
         on { this.getResponsibilitiesForTouchstone(touchstoneVersionId) } doReturn responsibilitySets
-        on { this.getResponsibilitiesForGroupAndTouchstone(eq(groupId), eq(touchstoneVersionId), any()) } doReturn responsibilitySetAndTouchstoneStatus
+        on { this.getResponsibilitiesForGroup(eq(groupId), eq(touchstoneVersionId), any()) } doReturn responsibilitySet
     }
 
     private val expectationId = 2
@@ -176,12 +175,12 @@ class ExpectationsLogicTests : MontaguTests()
         )
         val filterParameters = ScenarioFilterParameters()
         val result = sut.getResponsibilitySetWithExpectations(groupId, touchstoneVersionId, filterParameters)
-        assertThat(result).isEqualTo(Pair(
-                ResponsibilitySetWithExpectations(responsibilitySets[0], fakeExpectationsMapping),
-                TouchstoneStatus.OPEN
-        ))
+        assertThat(result).isEqualTo(ResponsibilitySetWithExpectations(
+                responsibilitySets[0],
+                fakeExpectationsMapping)
+        )
         verify(responsibilitiesRepo)
-                .getResponsibilitiesForGroupAndTouchstone(any(), any(), eq(filterParameters))
+                .getResponsibilitiesForGroup(any(), any(), eq(filterParameters))
     }
 
     @Test

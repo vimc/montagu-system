@@ -8,7 +8,6 @@ import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.models.Expectations
 import org.vaccineimpact.api.models.ModellingGroup
-import org.vaccineimpact.api.models.TouchstoneStatus
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 
@@ -26,7 +25,7 @@ interface ExpectationsLogic
             groupId: String,
             touchstoneVersionId: String,
             filterParameters: ScenarioFilterParameters
-    ): Pair<ResponsibilitySetWithExpectations, TouchstoneStatus>
+    ): ResponsibilitySetWithExpectations
 }
 
 class RepositoriesExpectationsLogic(private val responsibilitiesRepository: ResponsibilitiesRepository,
@@ -69,16 +68,13 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepository: Resp
             groupId: String,
             touchstoneVersionId: String,
             filterParameters: ScenarioFilterParameters
-    ): Pair<ResponsibilitySetWithExpectations, TouchstoneStatus>
+    ): ResponsibilitySetWithExpectations
     {
         val group = checkGroupAndTouchstoneExist(groupId, touchstoneVersionId)
-        val data = responsibilitiesRepository.getResponsibilitiesForGroupAndTouchstone(
+        val responsibilitySet = responsibilitiesRepository.getResponsibilitiesForGroup(
                 group.id, touchstoneVersionId, filterParameters)
         val expectations = expectationsRepository.getExpectationsForResponsibilitySet(group.id, touchstoneVersionId)
-        return Pair(
-                ResponsibilitySetWithExpectations(data.responsibilitySet, expectations),
-                data.touchstoneStatus
-        )
+        return ResponsibilitySetWithExpectations(responsibilitySet, expectations)
     }
 
     private fun checkGroupAndTouchstoneExist(groupId: String, touchstoneVersionId: String): ModellingGroup

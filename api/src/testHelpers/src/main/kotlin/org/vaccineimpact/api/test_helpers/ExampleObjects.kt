@@ -24,12 +24,15 @@ fun exampleResponsibility() = Responsibility(
         null
 )
 
-fun exampleTouchstoneVersion() = TouchstoneVersion(
-        id = "touchstone-1",
+fun exampleTouchstoneVersion(
+        id: String = "touchstone-1",
+        status: TouchstoneStatus = TouchstoneStatus.OPEN
+) = TouchstoneVersion(
+        id = id,
         name = "touchstone",
         version = 1,
         description = "Some example touchstone version",
-        status = TouchstoneStatus.OPEN
+        status = status
 )
 
 fun exampleScenario() = Scenario(

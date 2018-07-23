@@ -9,10 +9,13 @@ import org.vaccineimpact.api.app.logic.ExpectationsLogic
 import org.vaccineimpact.api.app.logic.RepositoriesExpectationsLogic
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.filterByPermission
-import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateRow
+import org.vaccineimpact.api.models.StochasticBurdenEstimate
+import org.vaccineimpact.api.models.Touchstone
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import org.vaccineimpact.api.serialization.EmptyDataTable
@@ -21,15 +24,17 @@ import org.vaccineimpact.api.serialization.StreamSerializable
 class GroupResponsibilityController(
         context: ActionContext,
         private val modellingGroupRepo: ModellingGroupRepository,
-        private val responsibilitiesRepo: ResponsibilitiesRepository,
+        private val touchstoneRepo: TouchstoneRepository,
         private val expectationsLogic: ExpectationsLogic
 ) : Controller(context)
 {
-    constructor(context: ActionContext, repositories: Repositories)
-            : this(context, repositories.modellingGroup,
-            repositories.responsibilities,
+    constructor(context: ActionContext, repositories: Repositories): this(
+            context,
+            repositories.modellingGroup,
+            repositories.touchstone,
             RepositoriesExpectationsLogic(repositories.responsibilities, repositories.expectations,
-                    repositories.modellingGroup, repositories.touchstone))
+                    repositories.modellingGroup, repositories.touchstone)
+    )
 
     fun getResponsibleTouchstones(): List<Touchstone>
     {
@@ -41,10 +46,10 @@ class GroupResponsibilityController(
     {
         val groupId = groupId(context)
         val touchstoneVersionId = context.params(":touchstone-version-id")
+        val touchstone = touchstoneRepo.touchstoneVersions.get(touchstoneVersionId)
+        context.checkIsAllowedToSeeTouchstone(touchstoneVersionId, touchstone.status)
         val filterParameters = ScenarioFilterParameters.fromContext(context)
-        val (responsibilities, touchstoneStatus) = expectationsLogic.getResponsibilitySetWithExpectations(groupId, touchstoneVersionId, filterParameters)
-        context.checkIsAllowedToSeeTouchstone(touchstoneVersionId, touchstoneStatus)
-        return responsibilities
+        return expectationsLogic.getResponsibilitySetWithExpectations(groupId, touchstoneVersionId, filterParameters)
     }
 
     fun getResponsibility(): ResponsibilityDetails

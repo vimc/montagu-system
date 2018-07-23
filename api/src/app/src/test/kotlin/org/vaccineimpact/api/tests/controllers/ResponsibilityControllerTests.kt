@@ -10,16 +10,14 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.logic.ExpectationsLogic
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.responsibilities.*
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.StreamSerializable
-import org.vaccineimpact.api.test_helpers.MontaguTests
-import org.vaccineimpact.api.test_helpers.exampleExpectationMapping
-import org.vaccineimpact.api.test_helpers.exampleExpectations
-import org.vaccineimpact.api.test_helpers.exampleResponsibilitySetWithExpectations
-import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
+import org.vaccineimpact.api.test_helpers.*
 
 
 class ResponsibilityControllerTests : MontaguTests()
@@ -65,12 +63,12 @@ class ResponsibilityControllerTests : MontaguTests()
     @Test
     fun `getResponsibilities gets parameters from URL`()
     {
-        val data = Pair(
-                exampleResponsibilitySetWithExpectations("tId", "gId"),
-                TouchstoneStatus.FINISHED
-        )
+        val data = exampleResponsibilitySetWithExpectations("tId", "gId")
         val logic = mock<ExpectationsLogic> {
             on { getResponsibilitySetWithExpectations(any(), any(), any()) } doReturn data
+        }
+        val touchstoneRepo = mock<TouchstoneRepository> {
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(exampleTouchstoneVersion("tId")))
         }
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
@@ -78,7 +76,7 @@ class ResponsibilityControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        GroupResponsibilityController(context, mock(), mock(), logic).getResponsibilities()
+        GroupResponsibilityController(context, mock(), touchstoneRepo, logic).getResponsibilities()
 
         verify(logic).getResponsibilitySetWithExpectations(eq("gId"), eq("tId"), any())
     }
@@ -86,12 +84,13 @@ class ResponsibilityControllerTests : MontaguTests()
     @Test
     fun `getResponsibilities returns error if user does not have permission to see in-preparation touchstone`()
     {
-        val data = Pair(
-                exampleResponsibilitySetWithExpectations("tId", "gId"),
-                TouchstoneStatus.IN_PREPARATION
-        )
+        val data = exampleResponsibilitySetWithExpectations("tId", "gId")
+        val touchstoneVersion = exampleTouchstoneVersion("tId", status = TouchstoneStatus.IN_PREPARATION)
         val logic = mock<ExpectationsLogic> {
             on { getResponsibilitySetWithExpectations(any(), any(), any()) } doReturn data
+        }
+        val touchstoneRepo = mock<TouchstoneRepository> {
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(touchstoneVersion))
         }
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
@@ -100,7 +99,7 @@ class ResponsibilityControllerTests : MontaguTests()
         }
 
         Assertions.assertThatThrownBy {
-            GroupResponsibilityController(context, mock(), mock(), logic).getResponsibilities()
+            GroupResponsibilityController(context, mock(), touchstoneRepo, logic).getResponsibilities()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 

@@ -149,13 +149,12 @@ class JooqResponsibilitiesRepository(
         }
     }
 
-    override fun getResponsibilitiesForGroupAndTouchstone(groupId: String, touchstoneVersionId: String,
-                                                          scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitySetAndTouchstoneStatus
+    override fun getResponsibilitiesForGroup(groupId: String, touchstoneVersionId: String,
+                                             scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitySet
     {
-        val touchstone = getTouchstoneVersion(touchstoneVersionId)
+        touchstoneRepository.touchstoneVersions.assertExists(touchstoneVersionId)
         val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)
-        val responsibilities = getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneVersionId, groupId)
-        return ResponsibilitySetAndTouchstoneStatus(responsibilities, touchstone.status)
+        return getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneVersionId, groupId)
     }
 
     private fun getResponsibilitySet(groupId: String, touchstoneVersionId: String): ResponsibilitySetRecord?
