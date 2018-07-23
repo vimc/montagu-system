@@ -3,7 +3,6 @@ import {PageBreadcrumb, PageProperties} from "../../../../shared/components/Page
 import * as React from "react";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
-import {ResponsibilitiesPageTitle} from "../PageTitle";
 import {DownloadCoveragePageLocationProps} from "../Coverage/DownloadCoveragePage";
 import {Dispatch} from "redux";
 import {compose} from "recompose";

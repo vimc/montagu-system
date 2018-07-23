@@ -1,13 +1,10 @@
 import * as React from "react";
+import {ExpectationMapping} from "../../../../shared/models/Generated";
 
-interface Props {
-
-}
-
-export class ExpectationsDescription extends React.PureComponent<Props> {
+export class ExpectationsDescription extends React.PureComponent<ExpectationMapping> {
     render(): JSX.Element {
         return <div className="mt-3 mb-5 p-3 border">
-            <div className="h3">Template for menA-no-vacc, menA-without, menA-with</div>
+            <div className="h3">Template for {this.applicableScenarios()}</div>
             <div>
                 You need to do the following:
                 <ul>
@@ -19,5 +16,9 @@ export class ExpectationsDescription extends React.PureComponent<Props> {
                 <button>Download template</button>
             </div>
         </div>
+    }
+
+    applicableScenarios() {
+        return this.props.applicable_scenarios.join(", ");
     }
 }
