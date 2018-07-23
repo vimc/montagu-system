@@ -1,5 +1,10 @@
 import {
-    BurdenEstimateSet, CoverageSet, ModellingGroup, Responsibilities, Responsibility, ResponsibilitySetStatus,
+    BurdenEstimateSet,
+    CoverageSet, ExpectationMapping,
+    ModellingGroup,
+    Responsibility,
+    ResponsibilitySetStatus,
+    ResponsibilitySetWithExpectations,
     ResponsibilityStatus,
     Scenario,
     TouchstoneVersion
@@ -22,25 +27,24 @@ export class ExtendedResponsibility {
 }
 
 export interface IExtendedResponsibilitySet {
-    problems: string;
     responsibilities: ExtendedResponsibility[];
     status: ResponsibilitySetStatus | null;
     touchstone: TouchstoneVersion;
 }
 
 export class ExtendedResponsibilitySet implements IExtendedResponsibilitySet {
-    problems: string;
     responsibilities: ExtendedResponsibility[];
     status: ResponsibilitySetStatus | null;
     touchstone: TouchstoneVersion;
     modellingGroup: ModellingGroup;
+    expectations: ExpectationMapping[];
 
-    constructor(x: Responsibilities, touchstone: TouchstoneVersion, modellingGroup: ModellingGroup) {
-        this.problems = x.problems;
+    constructor(x: ResponsibilitySetWithExpectations, touchstone: TouchstoneVersion, modellingGroup: ModellingGroup) {
         this.responsibilities = x.responsibilities.map(r => new ExtendedResponsibility(r));
         this.status = x.status;
         this.touchstone = touchstone;
         this.modellingGroup = modellingGroup;
+        this.expectations = x.expectations;
     }
 
     getResponsibilityByScenario(scenarioId: string): ExtendedResponsibility {

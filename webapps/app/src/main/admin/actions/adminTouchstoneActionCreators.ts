@@ -1,5 +1,5 @@
 import {Dispatch} from "redux";
-import {ErrorInfo, ResponsibilitySet, Touchstone} from "../../shared/models/Generated";
+import {ResponsibilitySetWithExpectations, Touchstone} from "../../shared/models/Generated";
 import {AdminAppState} from "../reducers/adminAppReducers";
 import {TouchstonesService} from "../../shared/services/TouchstonesService";
 import {
@@ -22,7 +22,7 @@ export const adminTouchstoneActionCreators = {
 
     getResponsibilitiesForTouchstoneVersion(touchstoneVersion: string) {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
-            const responsibilitySets: ResponsibilitySet[] = await (new TouchstonesService(dispatch, getState))
+            const responsibilitySets: ResponsibilitySetWithExpectations[] = await (new TouchstonesService(dispatch, getState))
                 .getResponsibilitiesForTouchstoneVersion(touchstoneVersion);
             dispatch({
                 type: TouchstoneTypes.RESPONSIBILITIES_FOR_TOUCHSTONE_VERSION_FETCHED,

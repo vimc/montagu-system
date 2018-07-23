@@ -4,9 +4,9 @@ import {Client, QueryResult} from "pg";
 import { createMemoryHistory } from 'history';
 
 import {
-    Responsibilities, TouchstoneVersion, Disease, Result, ModellingGroup, ScenarioTouchstoneAndCoverageSets,
+    Disease, Result, ModellingGroup, ScenarioTouchstoneAndCoverageSets,
     DemographicDataset,
-    ModelRunParameterSet, Touchstone,
+    ModelRunParameterSet, Touchstone, ResponsibilitySetWithExpectations,
 } from "../main/shared/models/Generated";
 import {inflateAndDecode, IntegrationTestSuite} from "./IntegrationTest";
 import * as enzyme from "enzyme";
@@ -130,7 +130,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const modelVersionId = await addModel(this.db);
             await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
 
-            const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+            const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
                 .getResponsibilities(groupId, touchstoneVersionId);
             
             expect(responsibilities).to.eql(expectedResponsibilitiesResponse());
@@ -231,7 +231,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             await returnBurdenEstimateSetPromise(this.db);
 
-            const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+            const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
                 .getResponsibilities(groupId, touchstoneVersionId);
 
             const estimatesSet = responsibilities.responsibilities[0].current_estimate_set;
@@ -254,7 +254,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             await returnBurdenEstimateSetPromise(this.db);
 
-            const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+            const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
                 .getResponsibilities(groupId, touchstoneVersionId);
 
             const estimatesSet = responsibilities.responsibilities[0].current_estimate_set;
@@ -339,7 +339,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 }
             } as EstimatesCreateBurdenData;
 
-            const responsibilitiesInitial: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+            const responsibilitiesInitial: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
                 .getResponsibilities(groupId, touchstoneVersionId);
 
             expect(responsibilitiesInitial.responsibilities[0].current_estimate_set).to.equal(null);
@@ -347,7 +347,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .createBurden(groupId, touchstoneVersionId, scenarioId, data);
 
-            const responsibilities: Responsibilities = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+            const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
                 .setOptions({noCache: true}).getResponsibilities(groupId, touchstoneVersionId);
 
             const estimateSet = responsibilities.responsibilities[0].current_estimate_set;
@@ -526,11 +526,11 @@ function addModelRunParameterSets(db: Client): Promise<QueryResult> {
         });
 }
 
-function expectedResponsibilitiesResponse(): Responsibilities {
+function expectedResponsibilitiesResponse(): ResponsibilitySetWithExpectations {
     return {
         status: "incomplete",
         touchstone_version: touchstoneVersionId,
-        problems: "",
+        modelling_group_id: groupId,
         responsibilities: [
             {
                 problems: [],
@@ -543,6 +543,7 @@ function expectedResponsibilitiesResponse(): Responsibilities {
                     touchstones: [touchstoneVersionId]
                 }
             }
-        ]
+        ],
+        expectations: []
     };
 }

@@ -1,4 +1,3 @@
-
 import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import * as React from "react";
 import {AdminPageHeader} from "../../AdminPageHeader";
@@ -8,7 +7,7 @@ import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {touchstoneResponsibilitiesPageActionCreators} from "../../../actions/pages/TouchstoneResponsibilityPageActionCreators";
 import {ResponsibilityList} from "./ResponsibilityList";
-import {ResponsibilitySet} from "../../../../shared/models/Generated";
+import {ResponsibilitySetWithExpectations} from "../../../../shared/models/Generated";
 import {compose} from "recompose";
 
 export interface ResponsibilitiesPageLocationProps {
@@ -18,7 +17,7 @@ export interface ResponsibilitiesPageLocationProps {
 
 export interface ResponsibilitiesPageProps extends PageProperties<ResponsibilitiesPageLocationProps> {
     currentTouchstoneVersionId: string;
-    responsibilitySets: ResponsibilitySet[]
+    responsibilitySets: ResponsibilitySetWithExpectations[]
 }
 
 export class ResponsibilitiesPageComponent extends React.Component<ResponsibilitiesPageProps> {
