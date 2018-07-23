@@ -23,6 +23,7 @@ import { ResponsibilityGuidanceMarshallIslandsPage } from "./Responsibilities/Gu
 import { ResponsibilityGuidanceOver80Page } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceOver80Page";
 import { ResponsibilityGuidanceKosovoPage } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceKosovoPage";
 import { ResponsibilityGuidanceTuvaluPage } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceTuvaluPage";
+import {ExpectationsPage} from "./Responsibilities/Expectations/ExpectationsPage";
 
 interface ContribRouterProps {
     loggedIn: boolean;
@@ -39,6 +40,7 @@ export const ContribRouter : React.StatelessComponent<ContribRouterProps> = (pro
         <Route exact path="/:groupId/responsibilities/:touchstoneId/burdens/:scenarioId" component={UploadBurdenEstimatesPage}/>
         <Route exact path="/:groupId/responsibilities/:touchstoneId/demographics" component={DownloadDemographicsPage}/>
         <Route exact path="/:groupId/responsibilities/:touchstoneId/parameters" component={ModelRunParametersPage}/>
+        <Route exact path="/:groupId/responsibilities/:touchstoneId/templates/" component={ExpectationsPage} />
         <Route exact path="/help/touchstones/" component={TouchstoneHelpPage}/>
         <Route exact path="/help/model-inputs/" component={ResponsibilityGuidanceModelInputsPage}/>
         <Route exact path="/help/model-outputs/" component={ResponsibilityGuidanceModelOutputsPage}/>
