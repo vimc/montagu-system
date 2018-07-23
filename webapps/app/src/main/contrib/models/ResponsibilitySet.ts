@@ -30,6 +30,7 @@ export interface IExtendedResponsibilitySet {
     responsibilities: ExtendedResponsibility[];
     status: ResponsibilitySetStatus | null;
     touchstone: TouchstoneVersion;
+    expectations: ExpectationMapping[];
 }
 
 export class ExtendedResponsibilitySet implements IExtendedResponsibilitySet {
