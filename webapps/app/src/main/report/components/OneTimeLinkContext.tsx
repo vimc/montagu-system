@@ -1,5 +1,4 @@
 import * as React from "react";
-import {OneTimeToken} from "../models/OneTimeToken";
 import {connect, Dispatch} from "react-redux";
 import {ReportAppState} from "../reducers/reportAppReducers";
 import {oneTimeTokenActionCreators} from "../actionCreators/oneTimeTokenActionCreators";
@@ -7,6 +6,7 @@ import {buildReportingURL} from "../services/AbstractReportLocalService";
 
 interface PublicProps {
     href: string;
+    // key: string, // must be unique, used to key onetime tokens in the store state
     className?: string;
 }
 
@@ -47,8 +47,9 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
         render() {
             let href = null;
             if (this.props.token != null) {
-                href = buildReportingURL(this.props.href)
-                    + "?access_token=" + this.props.token;
+                href = appendAccessToken(this.props.href, this.props.token)
+
+                console.log(href);
             }
             return <WrappedComponent
                 className={this.props.className}
@@ -57,4 +58,14 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
                 children={this.props.children}/>;
         }
     })
+}
+
+function appendAccessToken(url: string, token: string) {
+    url = buildReportingURL(url);
+    if (url.indexOf("?") > 0) {
+        return url + "&access_token=" + token;
+    }
+    else{
+        return url + "?access_token=" + token;
+    }
 }

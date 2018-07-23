@@ -14,6 +14,7 @@ export class InlineArtefact extends React.Component<Props, undefined> {
         const {report, version, artefact} = this.props;
         const filename = artefact.filenames[0];
         const extension = filename.split('.').pop();
+        const href = buildArtefactUrl(report, version, filename, false);
 
         if (InlineArtefact.canRenderInIFrame(extension)) {
             return <ArtefactIFrame href={buildArtefactUrl(report, version, filename, false)}/>;

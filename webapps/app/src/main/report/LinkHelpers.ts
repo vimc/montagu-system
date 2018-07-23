@@ -7,3 +7,7 @@ export function buildArtefactUrl(report: string, version: string, filename: stri
     }
     return url;
 }
+
+export function stripQueryStringFromArtefactUrl(url: string): string {
+    return url
+}
