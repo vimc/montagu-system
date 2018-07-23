@@ -26,7 +26,10 @@ describe("Model Run Parameters Content component tests", () => {
     const testScenario2 = mockScenario({disease: testDisease2.id, touchstones: [testTouchstone]});
     const testResponsibility = mockResponsibility({scenario: testScenario});
     const testResponsibility2 = mockResponsibility({scenario: testScenario2});
-    const testResponsibilitySet = mockResponsibilitySetWithExpectations({responsibilities: [testResponsibility, testResponsibility2], touchstone: testTouchstone.id});
+    const testResponsibilitySet = mockResponsibilitySetWithExpectations({
+        responsibilities: [testResponsibility, testResponsibility2],
+        touchstone_version: testTouchstone.id
+    });
 
     const testState = {
         touchstones: {currentTouchstoneVersion: testTouchstone},

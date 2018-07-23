@@ -1,9 +1,9 @@
 import * as models from "../../main/shared/models/Generated";
+import {ExpectationMapping, ModellingGroupCreation, TouchstoneVersion} from "../../main/shared/models/Generated";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
 import {Version} from "../../main/shared/models/reports/Report";
 import {Artefact} from "../../main/shared/models/reports/Artefact";
 import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageWithHeader";
-import {ModellingGroupCreation, TouchstoneVersion} from "../../main/shared/models/Generated";
 
 let counter = 0;
 
@@ -82,8 +82,8 @@ export function mockTouchstone(properties?: Partial<models.Touchstone>, versions
     };
     const touchstone = Object.assign(template, properties);
     touchstone.versions = versions || [
-        mockTouchstoneVersion({ id: touchstone.id + "-" + 1, name: touchstone.id, version: 1 }),
-        mockTouchstoneVersion({ id: touchstone.id + "-" + 2, name: touchstone.id, version: 2 })
+        mockTouchstoneVersion({id: touchstone.id + "-" + 1, name: touchstone.id, version: 1}),
+        mockTouchstoneVersion({id: touchstone.id + "-" + 2, name: touchstone.id, version: 2})
     ];
     return touchstone;
 }
@@ -100,8 +100,42 @@ export function mockTouchstoneVersion(properties?: Partial<TouchstoneVersion>): 
     return Object.assign(template, properties);
 }
 
-export function mockResponsibilitySetWithExpectations(properties?: any,
-                                                      responsibilities?: Array<models.Responsibility>): models.ResponsibilitySetWithExpectations {
+export function mockCountry(properties?: Partial<models.Country>): models.Country {
+    counter++;
+    const template: models.Country = {
+        id: "ABC-" + counter,
+        name: "CountryName-" + counter
+    };
+    return Object.assign(template, properties);
+}
+
+export function mockExpectations(properties?: Partial<models.Expectations>): models.Expectations {
+    counter++;
+    const template: models.Expectations = {
+        id: counter,
+        ages: {minimum_inclusive: 0, maximum_inclusive: 99},
+        years: {minimum_inclusive: 2000, maximum_inclusive: 2100},
+        cohorts: {minimum_birth_year: 2000, maximum_birth_year: 2050},
+        countries: [mockCountry(), mockCountry()],
+        outcomes: ["deaths", "cases"]
+    };
+    return Object.assign(template, properties);
+}
+
+export function mockExpectationMapping(
+    properties?: Partial<models.Expectations>,
+    applicableScenarios?: string[]
+): ExpectationMapping {
+    return {
+        expectation: mockExpectations(properties),
+        applicable_scenarios: applicableScenarios || ["scenario-1", "scenario-2"]
+    };
+}
+
+export function mockResponsibilitySetWithExpectations(
+    properties?: Partial<models.ResponsibilitySetWithExpectations>,
+    responsibilities?: Array<models.Responsibility>
+): models.ResponsibilitySetWithExpectations {
     if (!responsibilities || responsibilities.length == 0) {
         responsibilities = [mockResponsibility(), mockResponsibility()];
     }
@@ -116,14 +150,16 @@ export function mockResponsibilitySetWithExpectations(properties?: any,
     return Object.assign(template, properties);
 }
 
-export function mockExtendedResponsibilitySet(properties?: any,
-                                              responsibilities?: Array<models.Responsibility>,
-                                              touchstone?: models.TouchstoneVersion,
-                                              modellingGroup?: models.ModellingGroup): ExtendedResponsibilitySet {
+export function mockExtendedResponsibilitySet(
+    properties?: Partial<models.ResponsibilitySetWithExpectations>,
+    responsibilities?: Array<models.Responsibility>,
+    touchstone?: models.TouchstoneVersion,
+    modellingGroup?: models.ModellingGroup
+): ExtendedResponsibilitySet {
     touchstone = touchstone || mockTouchstoneVersion();
     modellingGroup = modellingGroup || mockModellingGroup();
     properties = Object.assign(properties || {}, {touchstone: touchstone.id});
-    const values = mockResponsibilitySetWithExpectations(properties, responsibilities);
+    const values = mockResponsibilitySetWithExpectations(properties, responsibilities,);
     return new ExtendedResponsibilitySet(values, touchstone, modellingGroup);
 }
 
@@ -260,5 +296,5 @@ export function mockPageBreadcrumb() {
 }
 
 export function mockBreadcrumbs() {
-    return [ { url: '/', name: 'A' }, { url: '/b/', name: 'B' } ];
+    return [{url: '/', name: 'A'}, {url: '/b/', name: 'B'}];
 }

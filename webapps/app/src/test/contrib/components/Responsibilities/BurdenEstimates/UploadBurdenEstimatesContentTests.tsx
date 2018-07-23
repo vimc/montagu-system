@@ -29,7 +29,10 @@ describe("Upload Burden Estimates Content Component tests", () => {
     const testTouchstone = mockTouchstoneVersion();
     const testScenario = mockScenario({disease: testDisease.id, touchstones: [testTouchstone]});
     const testResponsibility = mockResponsibility({scenario: testScenario});
-    const testResponsibilitySet = mockResponsibilitySetWithExpectations({responsibilities: [testResponsibility], touchstone: testTouchstone.id});
+    const testResponsibilitySet = mockResponsibilitySetWithExpectations({
+        responsibilities: [testResponsibility],
+        touchstone_version: testTouchstone.id
+    });
 
     const testState = {
         groups: {currentUserGroup: testGroup},
