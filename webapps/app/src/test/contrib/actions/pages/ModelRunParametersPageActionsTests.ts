@@ -11,7 +11,7 @@ import {
     mockDisease,
     mockModellingGroup,
     mockModelRunParameterSet,
-    mockResponsibilities,
+    mockResponsibilitySetWithExpectations,
     mockTouchstone
 } from "../../../mocks/mockModels";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
@@ -34,7 +34,7 @@ describe("Model Run Parameters Page actions tests", () => {
     const testTouchstone = mockTouchstone();
     const testTouchstoneVersion = testTouchstone.versions[0];
     const testDisease = mockDisease();
-    const testResponsibilitySet = mockResponsibilities();
+    const testResponsibilitySet = mockResponsibilitySetWithExpectations();
     const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
     const testModelRunParametersSet = mockModelRunParameterSet();
 

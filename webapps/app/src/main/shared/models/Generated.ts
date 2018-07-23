@@ -13,6 +13,11 @@ export interface AssociateUser {
     username: string;
 }
 
+export interface CohortRestriction {
+    maximum_birth_year: number | null;
+    minimum_birth_year: number | null;
+}
+
 export type ActivityType = "none" | "routine" | "campaign" | "campaign-reactive";
 
 export type GAVISupportLevel = "no vaccine" | "no gavi" | "total" | "hold2010" | "bestminus";
@@ -26,6 +31,11 @@ export interface CoverageSet {
     vaccine: string;
 }
 
+export interface Country {
+    id: string;
+    name: string;
+}
+
 export interface Disease {
     id: string;
     name: string;
@@ -36,6 +46,11 @@ export interface DemographicDataset {
     id: string;
     name: string;
     source: string;
+}
+
+export interface NumberRange {
+    maximum_inclusive: number;
+    minimum_inclusive: number;
 }
 
 export interface ModellingGroup {
@@ -82,6 +97,20 @@ export interface Report {
     updated_on: string;
 }
 
+export interface Expectations {
+    ages: NumberRange;
+    cohorts: CohortRestriction;
+    countries: Country[];
+    id: number;
+    outcomes: string[];
+    years: NumberRange;
+}
+
+export interface ExpectationMapping {
+    applicable_scenarios: string[];
+    expectation: Expectations;
+}
+
 export type BurdenEstimateSetStatus = "empty" | "partial" | "complete";
 
 export type BurdenEstimateSetTypeCode = "central-single-run" | "central-averaged" | "central-unknown" | "stochastic";
@@ -118,18 +147,12 @@ export interface Responsibility {
 
 export type ResponsibilitySetStatus = "not-applicable" | "incomplete" | "submitted" | "approved";
 
-export interface Responsibilities {
-    problems: string;
+export interface ResponsibilitySetWithExpectations {
+    expectations: ExpectationMapping[];
+    modelling_group_id: string;
     responsibilities: Responsibility[];
     status: ResponsibilitySetStatus | null;
     touchstone_version: string;
-}
-
-export interface ResponsibilitySet {
-    modelling_group_id: string;
-    touchstone_version: string;
-    status: ResponsibilitySetStatus;
-    responsibilities: Responsibility[];
 }
 
 export interface ErrorInfo {

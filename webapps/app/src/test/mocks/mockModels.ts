@@ -100,32 +100,18 @@ export function mockTouchstoneVersion(properties?: Partial<TouchstoneVersion>): 
     return Object.assign(template, properties);
 }
 
-export function mockResponsibilities(properties?: any,
-                                     responsibilities?: Array<models.Responsibility>): models.Responsibilities {
+export function mockResponsibilitySetWithExpectations(properties?: any,
+                                                      responsibilities?: Array<models.Responsibility>): models.ResponsibilitySetWithExpectations {
     if (!responsibilities || responsibilities.length == 0) {
         responsibilities = [mockResponsibility(), mockResponsibility()];
     }
 
-    const template: models.Responsibilities = {
-        problems: "",
-        responsibilities: responsibilities,
-        status: "incomplete",
-        touchstone_version: "touchstone-1"
-    };
-    return Object.assign(template, properties);
-}
-
-export function mockResponsibilitySet(properties?: any,
-                                     responsibilities?: Array<models.Responsibility>): models.Responsibilities {
-    if (!responsibilities || responsibilities.length == 0) {
-        responsibilities = [mockResponsibility(), mockResponsibility()];
-    }
-
-    const template: models.ResponsibilitySet = {
+    const template: models.ResponsibilitySetWithExpectations = {
         responsibilities: responsibilities,
         status: "incomplete",
         touchstone_version: "touchstone-1",
-        modelling_group_id: "g1"
+        modelling_group_id: "g1",
+        expectations: []
     };
     return Object.assign(template, properties);
 }
@@ -137,7 +123,7 @@ export function mockExtendedResponsibilitySet(properties?: any,
     touchstone = touchstone || mockTouchstoneVersion();
     modellingGroup = modellingGroup || mockModellingGroup();
     properties = Object.assign(properties || {}, {touchstone: touchstone.id});
-    const values = mockResponsibilities(properties, responsibilities);
+    const values = mockResponsibilitySetWithExpectations(properties, responsibilities);
     return new ExtendedResponsibilitySet(values, touchstone, modellingGroup);
 }
 

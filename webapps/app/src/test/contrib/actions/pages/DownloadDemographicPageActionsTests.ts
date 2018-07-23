@@ -1,13 +1,13 @@
 import { expect } from "chai";
 
 import { Sandbox } from "../../../Sandbox";
-import {createMockContribStore, createMockStore} from "../../../mocks/mockStore";
+import {createMockContribStore} from "../../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
 import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {
-    mockBreadcrumbs, mockDemographicDataset, mockDisease, mockModellingGroup, mockResponsibilities, mockTouchstone,
+    mockBreadcrumbs, mockDemographicDataset, mockDisease, mockModellingGroup, mockResponsibilitySetWithExpectations, mockTouchstone,
     mockTouchstoneVersion
 } from "../../../mocks/mockModels";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
@@ -30,7 +30,7 @@ describe("Download Demographic Page actions tests", () => {
     const testTouchstone = mockTouchstone();
     const testTouchstoneVersion = testTouchstone.versions[0];
     const testDisease = mockDisease();
-    const testResponsibilitySet = mockResponsibilities();
+    const testResponsibilitySet = mockResponsibilitySetWithExpectations();
     const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
     const testDemographicDataSet = mockDemographicDataset();
 
