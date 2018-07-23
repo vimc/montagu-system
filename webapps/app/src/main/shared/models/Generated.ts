@@ -118,18 +118,11 @@ export interface Responsibility {
 
 export type ResponsibilitySetStatus = "not-applicable" | "incomplete" | "submitted" | "approved";
 
-export interface Responsibilities {
-    problems: string;
+export interface ResponsibilitySet {
+    modelling_group_id: string;
     responsibilities: Responsibility[];
     status: ResponsibilitySetStatus | null;
     touchstone_version: string;
-}
-
-export interface ResponsibilitySet {
-    modelling_group_id: string;
-    touchstone_version: string;
-    status: ResponsibilitySetStatus;
-    responsibilities: Responsibility[];
 }
 
 export interface ErrorInfo {

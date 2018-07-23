@@ -4,6 +4,7 @@ import me.ntrrgc.tsGenerator.ClassTransformer
 import me.ntrrgc.tsGenerator.TypeScriptGenerator
 import me.ntrrgc.tsGenerator.camelCaseToSnakeCase
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.responsibilities.*
 import org.vaccineimpact.api.models.permissions.*
 import java.io.File
 import java.time.Instant
@@ -39,7 +40,7 @@ fun main(args: Array<String>)
                         ModellingGroupCreation::class,
                         ModelRunParameterSet::class,
                         Report::class,
-                        Responsibilities::class,
+                        ResponsibilitySet::class,
                         Result::class,
                         Scenario::class,
                         ScenarioAndCoverageSets::class,

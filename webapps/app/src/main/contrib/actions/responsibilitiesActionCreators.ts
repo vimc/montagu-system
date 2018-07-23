@@ -8,7 +8,7 @@ import {
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../models/ResponsibilitySet";
 import {estimatesActionCreators} from "./estimatesActionCreators";
 import {ContribAppState} from "../reducers/contribAppReducers";
-import {Responsibilities} from "../../shared/models/Generated";
+import {ResponsibilitySet} from "../../shared/models/Generated";
 
 export const responsibilitiesActionCreators = {
 
@@ -28,7 +28,7 @@ export const responsibilitiesActionCreators = {
             const group = getState().groups.currentUserGroup;
             const touchstone = getState().touchstones.currentTouchstoneVersion;
 
-            const responsibilities: Responsibilities = await (new ResponsibilitiesService(dispatch, getState))
+            const responsibilities: ResponsibilitySet = await (new ResponsibilitiesService(dispatch, getState))
                 .getResponsibilities(group.id, touchstone.id);
 
             const set = new ExtendedResponsibilitySet(responsibilities, touchstone, group);
