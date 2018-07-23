@@ -121,6 +121,40 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     }
 
     @Test
+    fun `getExpectationIdsForGroupAndTouchstone only retrieves expectation ids for given group`()
+    {
+        val badGroupId = "badgroup"
+        addResponsibilityAnd { db, responsibilityId ->
+
+            db.addGroup(badGroupId)
+            db.addExpectations(
+                    responsibilityId
+            )
+        }
+        withRepo { repo ->
+            val result = repo.getExpectationIdsForGroupAndTouchstone(badGroupId, touchstoneVersionId)
+            assertThat(result).isEmpty()
+        }
+    }
+
+    @Test
+    fun `getExpectationIdsForGroupAndTouchstone only retrieves expectation ids for given touchstone`()
+    {
+        val badTouchstoneId = "touchstone-2"
+        addResponsibilityAnd { db, responsibilityId ->
+
+            db.addTouchstoneVersion("touchstone", 2)
+            db.addExpectations(
+                    responsibilityId
+            )
+        }
+        withRepo { repo ->
+            val result = repo.getExpectationIdsForGroupAndTouchstone(groupId, badTouchstoneId)
+            assertThat(result).isEmpty()
+        }
+    }
+
+    @Test
     fun `can get expectation by id`()
     {
         val expectationId = addResponsibilityAnd { db, responsibilityId ->

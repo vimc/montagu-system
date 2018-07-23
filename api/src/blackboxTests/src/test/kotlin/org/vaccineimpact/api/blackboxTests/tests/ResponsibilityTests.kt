@@ -8,8 +8,11 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
+import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import java.io.StringReader
@@ -246,25 +249,16 @@ class ResponsibilityTests : DatabaseTest()
         val requestHelper = RequestHelper()
         var id = 0
         JooqContext().use {
-            addResponsibilities(it, touchstoneStatus = "open")
-            id = it.addExpectations(id, outcomes = listOf("deaths", "dalys"))
+            val responsibilityId = addResponsibilities(it, touchstoneStatus = "open")
+            id = it.addExpectations(responsibilityId, outcomes = listOf("deaths", "dalys"))
             userHelper.setupTestUser(it)
         }
 
         val response = requestHelper.get("/modelling-groups/$groupId/expectations/$touchstoneVersionId/$id/",
                 PermissionSet("*/can-login", "*/scenarios.read", "$groupScope/responsibilities.read"), acceptsContentType = "text/csv")
 
-        val csv = StringReader(response.text)
-                .use { CSVReader(it).readAll() }
-
-        val headers = csv.first().toList()
-
-        val expectedHeaders = listOf("disease", "year", "age", "country", "country_name",
-                "cohort_size", "deaths", "dalys")
-
-        expectedHeaders.forEachIndexed { index, h ->
-            Assertions.assertThat(h).isEqualTo(headers[index])
-        }
+        val schema = CSVSchema("BurdenEstimate")
+        schema.validate(response.text)
     }
 
     @Test
@@ -274,25 +268,16 @@ class ResponsibilityTests : DatabaseTest()
         val requestHelper = RequestHelper()
         var id = 0
         JooqContext().use {
-            addResponsibilities(it, touchstoneStatus = "open")
-            id = it.addExpectations(id, outcomes = listOf("deaths", "dalys"))
+            val responsibilityId = addResponsibilities(it, touchstoneStatus = "open")
+            id = it.addExpectations(responsibilityId, outcomes = listOf("deaths", "dalys"))
             userHelper.setupTestUser(it)
         }
 
         val response = requestHelper.get("/modelling-groups/$groupId/expectations/$touchstoneVersionId/$id/?type=stochastic",
                 PermissionSet("*/can-login", "*/scenarios.read", "$groupScope/responsibilities.read"), acceptsContentType = "text/csv")
 
-        val csv = StringReader(response.text)
-                .use { CSVReader(it).readAll() }
-
-        val headers = csv.first().toList()
-
-        val expectedHeaders = listOf("disease", "run_id", "year", "age", "country", "country_name",
-                "cohort_size", "deaths", "dalys")
-
-        expectedHeaders.forEachIndexed { index, h ->
-            Assertions.assertThat(h).isEqualTo(headers[index])
-        }
+        val schema = CSVSchema("StochasticBurdenEstimate")
+        schema.validate(response.text)
     }
 
     @Test
