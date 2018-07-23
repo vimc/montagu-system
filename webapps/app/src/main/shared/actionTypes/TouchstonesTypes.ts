@@ -1,4 +1,4 @@
-import {ErrorInfo, ResponsibilitySet, Touchstone, TouchstoneVersion} from "../models/Generated";
+import {ErrorInfo, ResponsibilitySetWithExpectations, Touchstone, TouchstoneVersion} from "../models/Generated";
 
 export enum TouchstoneTypes {
     ALL_TOUCHSTONES_FETCHED = "ALL_TOUCHSTONES_FETCHED",
@@ -32,7 +32,7 @@ export interface SetCurrentTouchstoneVersion {
 
 export interface ResponsibilitiesForTouchstoneVersionFetched {
     type: TouchstoneTypes.RESPONSIBILITIES_FOR_TOUCHSTONE_VERSION_FETCHED;
-    data: ResponsibilitySet[];
+    data: ResponsibilitySetWithExpectations[];
 }
 
 export interface NewTouchstoneCreated {

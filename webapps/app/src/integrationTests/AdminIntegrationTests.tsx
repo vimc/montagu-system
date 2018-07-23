@@ -4,10 +4,7 @@ import {createMemoryHistory} from 'history';
 import {IntegrationTestSuite} from "./IntegrationTest";
 import {expect} from "chai";
 import {Client, QueryResult} from "pg";
-import {
-    ModellingGroup, ResponsibilitySet, RoleAssignment,
-    User
-} from "../main/shared/models/Generated";
+import {ModellingGroup, ResponsibilitySetWithExpectations, RoleAssignment, User} from "../main/shared/models/Generated";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
 import {AuthService} from "../main/shared/services/AuthService";
 import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
@@ -257,7 +254,7 @@ function addResponsibilities(db: Client) {
     `))
 }
 
-const expectedResponsibilitySets: ResponsibilitySet[] = [{
+const expectedResponsibilitySets: ResponsibilitySetWithExpectations[] = [{
     modelling_group_id: "g1",
     touchstone_version: touchstoneVersionId,
     status: "incomplete",
@@ -273,5 +270,6 @@ const expectedResponsibilitySets: ResponsibilitySet[] = [{
                 touchstones: [touchstoneVersionId]
             }
         }
-    ]
+    ],
+    expectations: []
 }];

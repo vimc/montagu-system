@@ -7,8 +7,7 @@ import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/Modellin
 import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {
-    mockBreadcrumbs, mockBurdenEstimateSet, mockDisease, mockModellingGroup, mockResponsibilities, mockTouchstone,
-    mockTouchstoneVersion
+    mockBreadcrumbs, mockBurdenEstimateSet, mockDisease, mockModellingGroup, mockResponsibilitySetWithExpectations, mockTouchstone,
 } from "../../../mocks/mockModels";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
 import {TouchstoneTypes} from "../../../../main/shared/actionTypes/TouchstonesTypes";
@@ -29,7 +28,7 @@ describe("Upload burden estimates page actions tests", () => {
     const testTouchstone = mockTouchstone();
     const testTouchstoneVersion = testTouchstone.versions[0];
     const testDisease = mockDisease();
-    const testResponsibilitySet = mockResponsibilities();
+    const testResponsibilitySet = mockResponsibilitySetWithExpectations();
     const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
     const testBurdenEstimateSet = mockBurdenEstimateSet();
     const testResponsibility = testResponsibilitySet.responsibilities[0];

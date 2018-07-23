@@ -40,7 +40,6 @@ fun main(args: Array<String>) {
                         ModellingGroupCreation::class,
                         ModelRunParameterSet::class,
                         Report::class,
-                        ResponsibilitySet::class,
                         ResponsibilitySetWithExpectations::class,
                         Result::class,
                         Scenario::class,

@@ -24,7 +24,8 @@ function makeProps(responsibilities: Array<Responsibility>,
             modelling_group_id: modellingGroup.id,
             status: null,
             touchstone_version: touchstone.id,
-            responsibilities
+            responsibilities,
+            expectations: []
         }, touchstone, modellingGroup)
     };
 }

@@ -1,6 +1,6 @@
 import {
     mockTouchstoneVersion,
-    mockResponsibilitySet
+    mockResponsibilitySetWithExpectations
 } from "../../../../mocks/mockModels";
 import {shallow} from "enzyme";
 import {expect} from "chai";
@@ -18,7 +18,7 @@ import {touchstoneResponsibilitiesPageActionCreators} from
 
 describe("ResponsibilitiesPage", () => {
 
-    const mockResponsibilitySets = [mockResponsibilitySet(), mockResponsibilitySet()];
+    const mockResponsibilitySets = [mockResponsibilitySetWithExpectations(), mockResponsibilitySetWithExpectations()];
 
     let store = createMockAdminStore(mockAdminState({
         touchstones: {
