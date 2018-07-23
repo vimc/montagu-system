@@ -6,7 +6,7 @@
 		"version": { "type": "string" },
 		"endpoints": { 
 			"type": "array",
-			"items": { "type": "string" }
+			"items": { "$ref": "Endpoint.schema.json" }
 		}
 	},
 	"additionalProperties": false,

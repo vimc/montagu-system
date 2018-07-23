@@ -56,6 +56,14 @@ The root of the API returns some simple data, which is mainly there to make it
 clear that you have correctly connected to the API. It also tells you what 
 endpoints are implemented in the version you are currently connected to.
 
+For each endpoint, the full URL is provided, as well as the HTTP method used to
+access the endpoint. Some endpoints may return data in different formats 
+depending on the client's `Accept` header; this is indicated by the 
+`content_type` field.
+
+The API will return an error 404 if you provide a valid URL, but use the wrong
+HTTP method or do not accept any of the possible content types.
+
 Required permissions: User does not need to be logged in to access this endpoint.
 
 Schema: [`Index.schema.json`](../schemas/Index.schema.json)
@@ -63,14 +71,43 @@ Schema: [`Index.schema.json`](../schemas/Index.schema.json)
 ### Example
     {
         "name": "montagu",
-        "version": "1.0.0",
+        "version": "0.0.0",
         "endpoints": [
-            "/v1/authenticate/",
-            "/v1/diseases/",
-            "/v1/diseases/:id/",
-            "/v1/touchstones/",
-            "/v1/modelling-groups/",
-            "/v1/modelling-groups/:group-id/responsibilities/:touchstone-id/"
+            {
+                "full_url": "/v1/",
+                "method": "get",
+                "content_type": "application/json"
+            },
+            {
+                "full_url": "/v1/authenticate/",
+                "method": "post",
+                "content_type": "application/json"
+            },
+            {
+                "full_url": "/v1/diseases/",
+                "method": "get",
+                "content_type": "application/json"
+            },
+            {
+                "full_url": "/v1/diseases/:id/",
+                "method": "get",
+                "content_type": "application/json"
+            },
+            {
+                "full_url": "/v1/modelling-groups/",
+                "method": "get",
+                "content_type": "application/json"
+            },
+            {
+                "full_url": "/v1/modelling-groups/",
+                "method": "post",
+                "content_type": "application/json"
+            },
+            {
+                "full_url": "/v1/modelling-groups/:group-id/",
+                "method": "get",
+                "content_type": "application/json"
+            }
         ]
     }
 

@@ -33,10 +33,10 @@ class MontaguApi
         spk.before("*", ::addTrailingSlashes)
         spk.before("*", AllowedOriginsFilter(Config.getBool("allow.localhost")))
 
-        spk.options("*", { _, res ->
+        spk.options("*") { _, res ->
             res.header("Access-Control-Allow-Headers", "Authorization")
             res.header("Access-Control-Allow-Credentials", "true")
-        })
+        }
 
         RequestLogger.setup(repositoryFactory)
         NotFoundHandler().setup()
