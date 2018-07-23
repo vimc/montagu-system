@@ -26,6 +26,9 @@ Schema: [`Demographics.schema.json`](../schemas/Demographics.schema.json)
 
 Returns the data set with given type. This data is returned in two parts: First the metadata, then the coverage in CSV format.
 
+If the client sends an "Accept" header of "text/csv" then only the CSV data is
+returned.
+
 ### Metadata
 Schema: [`DemographicDataForTouchstone.schema.json`](../schemas/DemographicDataForTouchstone.schema.json)
 

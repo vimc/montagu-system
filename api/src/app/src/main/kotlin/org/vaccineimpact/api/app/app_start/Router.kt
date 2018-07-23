@@ -6,6 +6,7 @@ import org.vaccineimpact.api.app.consumeRemainder
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
+import org.vaccineimpact.api.app.models.PublicEndpointDescription
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.models.AuthenticationResponse
@@ -26,16 +27,15 @@ class Router(val config: RouteConfig,
 
     companion object
     {
-        val urls: MutableList<String> = mutableListOf()
+        val urls: MutableList<PublicEndpointDescription> = mutableListOf()
     }
 
-    fun mapEndpoints(urlBase: String): List<String>
+    fun mapEndpoints(urlBase: String)
     {
         urls.addAll(config.endpoints
                 .sortedBy { it.urlFragment }
                 .map { mapEndpoint(it, urlBase) }
         )
-        return urls
     }
 
     private fun transform(x: Any) = when (x)
@@ -47,7 +47,7 @@ class Router(val config: RouteConfig,
 
     private fun mapEndpoint(
             endpoint: EndpointDefinition,
-            urlBase: String): String
+            urlBase: String): PublicEndpointDescription
     {
         val fullUrl = urlBase + endpoint.urlFragment
         val route = getWrappedRoute(endpoint)::handle
@@ -65,7 +65,11 @@ class Router(val config: RouteConfig,
         }
 
         endpoint.additionalSetup(fullUrl, webTokenHelper, repositoryFactory)
-        return fullUrl
+        return PublicEndpointDescription(
+                fullUrl,
+                endpoint.method,
+                contentType
+        )
     }
 
     fun getWrappedRoute(endpoint: EndpointDefinition): Route
