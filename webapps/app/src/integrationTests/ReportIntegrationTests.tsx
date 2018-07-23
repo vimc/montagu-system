@@ -16,7 +16,7 @@ import {Report} from "../main/shared/models/Generated";
 import {UserService} from "../main/report/services/UserService";
 import {mockArtefact} from "../test/mocks/mockModels";
 import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
-import {OneTimeTokenService} from "../main/report/services/OneTimeTokenService";
+import {OneTimeTokenService} from "../main/shared/services/OneTimeTokenService";
 import {buildReportingURL} from "../main/report/services/AbstractReportLocalService";
 import {Provider} from "react-redux";
 

@@ -17,7 +17,7 @@ export class ArtefactItem extends React.Component<ArtefactProps, undefined> {
 
         const links = a.filenames.map(filename => {
             const url = buildArtefactUrl(this.props.report, this.props.version, filename, false);
-            return <div key={filename}><FileDownloadLink key={filename} href={url}>
+            return <div key={filename}><FileDownloadLink key={filename} href={url} service="reporting">
                 {filename}
             </FileDownloadLink></div>;
         });

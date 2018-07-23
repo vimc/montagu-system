@@ -22,13 +22,17 @@ export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, und
 export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, undefined> {
 
     render() {
-        return <FileDownloadInner className="button" href={this.props.href} refreshToken={this.props.refreshToken}>
+        return <FileDownloadInner
+            className="button"
+            href={this.props.href}
+            refreshToken={this.props.refreshToken}>
             {
                 this.props.children
             }
             <span className="download-icon">
-                    <DownloadIcon fillColor={"#ffffff"}/>
-                </span>
+                &nbsp;
+                <DownloadIcon fillColor={"#ffffff"}/>
+            </span>
         </FileDownloadInner>
     }
 

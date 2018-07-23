@@ -4,7 +4,7 @@ import * as React from "react";
 import {checkAsync} from "../../testHelpers";
 import {OneTimeLinkContext, OneTimeLinkProps} from "../../../main/report/components/OneTimeLinkContext";
 import {Sandbox} from "../../Sandbox";
-import {OneTimeTokenService} from "../../../main/report/services/OneTimeTokenService";
+import {OneTimeTokenService} from "../../../main/shared/services/OneTimeTokenService";
 import {mockOnetimeTokenState, mockReportAppState} from "../../mocks/mockStates";
 import {ILookup} from "../../../main/shared/models/Lookup";
 import {ReportAppState} from "../../../main/report/reducers/reportAppReducers";

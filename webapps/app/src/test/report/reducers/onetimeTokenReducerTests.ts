@@ -1,6 +1,6 @@
 import {mockOnetimeTokenState} from "../../mocks/mockStates";
-import {onetimeTokenReducer} from "../../../main/report/reducers/oneTimeTokenReducer";
-import {OnetimeTokenActionType} from "../../../main/report/actionTypes/OnetimeTokenActions";
+import {onetimeTokenReducer} from "../../../main/shared/reducers/oneTimeTokenReducer";
+import {OnetimeTokenActionType} from "../../../main/shared/actionTypes/OnetimeTokenActions";
 import {expect} from "chai"
 
 describe('OnetimeToken reducer tests', () => {

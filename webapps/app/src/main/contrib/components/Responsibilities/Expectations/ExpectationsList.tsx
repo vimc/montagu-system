@@ -5,23 +5,33 @@ import {connect} from "react-redux";
 import {branch, compose, renderComponent} from "recompose";
 import {IExtendedResponsibilitySet} from "../../../models/ResponsibilitySet";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {ModellingGroup, TouchstoneVersion} from "../../../../shared/models/Generated";
 
 interface Props {
-    responsibilitySet: IExtendedResponsibilitySet
+    responsibilitySet: IExtendedResponsibilitySet;
+    group: ModellingGroup;
+    touchstoneVersion: TouchstoneVersion;
 }
 
 class ExpectationsListComponent extends React.PureComponent<Props> {
     render(): JSX.Element {
-        const {responsibilitySet} = this.props;
+        const {responsibilitySet, group, touchstoneVersion} = this.props;
         const items = responsibilitySet.expectations.map(em =>
-            <ExpectationsDescription key={em.expectation.id} {...em} />
+            <ExpectationsDescription
+                key={em.expectation.id}
+                expectationMapping={em}
+                groupId={group.id}
+                touchstoneVersionId={touchstoneVersion.id}
+            />
         );
         return <span>{items}</span>;
     }
 }
 
 const mapStateToProps = (state: ContribAppState): Props => ({
-    responsibilitySet: state.responsibilities.responsibilitiesSet
+    responsibilitySet: state.responsibilities.responsibilitiesSet,
+    group: state.groups.currentUserGroup,
+    touchstoneVersion: state.touchstones.currentTouchstoneVersion
 });
 
 export const ExpectationsList = compose(

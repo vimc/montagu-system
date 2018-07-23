@@ -25,7 +25,7 @@ import { initialState as UserInitialState, UserState} from "../../main/contrib/r
 import {AdminAppState} from "../../main/admin/reducers/adminAppReducers";
 import {ModellingGroupsState as AdminModellingGroupsState} from "../../main/admin/reducers/modellingGroupsReducer";
 import {adminTouchstoneReducer, adminTouchstonesInitialState} from "../../main/admin/reducers/adminTouchstoneReducer";
-import {onetimeTokensInitialState, OneTimeTokenState} from "../../main/report/reducers/oneTimeTokenReducer";
+import {onetimeTokensInitialState, OneTimeTokenState} from "../../main/shared/reducers/oneTimeTokenReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>

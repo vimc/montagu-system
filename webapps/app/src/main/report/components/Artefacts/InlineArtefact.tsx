@@ -16,7 +16,10 @@ export class InlineArtefact extends React.Component<Props, undefined> {
         const extension = filename.split('.').pop();
 
         if (InlineArtefact.canRenderInIFrame(extension)) {
-            return <ArtefactIFrame href={buildArtefactUrl(report, version, filename, false)}/>;
+            return <ArtefactIFrame
+                href={buildArtefactUrl(report, version, filename, false)}
+                service="reporting"
+            />;
         } else {
             // Do other things here, like rendering CSV as a table, etc.
             return null;

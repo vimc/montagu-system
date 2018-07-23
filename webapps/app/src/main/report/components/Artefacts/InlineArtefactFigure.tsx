@@ -16,7 +16,10 @@ export class InlineArtefactFigure extends React.Component<Props, undefined> {
         const extension = filename.split('.').pop();
 
         if (InlineArtefactFigure.isImage(extension)) {
-            return <ArtefactFigure href={buildArtefactUrl(report, version, filename, false)}/>;
+            return <ArtefactFigure
+                href={buildArtefactUrl(report, version, filename, false)}
+                service="reporting"
+            />;
         } else {
             return null;
         }

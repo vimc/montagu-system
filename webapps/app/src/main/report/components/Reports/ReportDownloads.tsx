@@ -28,7 +28,7 @@ export const ReportDownloadsComponent = (props: ReportDownloadsProps) => {
                            version={props.versionDetails.id}/>
             <ParameterList {...props.versionDetails.parameters} />
             <div className="mb-5 mt-5">
-                <FileDownloadButton href={bundleUrl}>
+                <FileDownloadButton href={bundleUrl} service="reporting">
                     {props.report}-{props.versionDetails.id}.zip
                 </FileDownloadButton>
             </div>
