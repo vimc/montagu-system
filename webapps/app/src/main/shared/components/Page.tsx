@@ -16,11 +16,14 @@ export function Page<TState, TLocationProps>(pageActionCreators: AbstractPageAct
 
     const lifecycleMethods: Partial<LifecycleMethods<PageProperties<TLocationProps>>> = {
         onWillMount(props: PageProperties<TLocationProps>) {
+
+            console.log("-----------------------------------------------------------")
+            console.log(props)
             props.onLoad(props.match.params)
         }
     };
 
-    return compose<PageProperties<TLocationProps>, {}>(
-        connect(() => {}, mapDispatchToProps),
+    return compose<PageProperties<TLocationProps>, Partial<PageProperties<TLocationProps>>>(
+        connect((state: TState, props: TLocationProps) => props, mapDispatchToProps),
         withLifecycle(lifecycleMethods));
 }
