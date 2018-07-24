@@ -11,7 +11,7 @@ interface Props {
     targetKey: string;
 }
 
-class CountriesList extends React.Component<Props, State> {
+export class CountriesList extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);

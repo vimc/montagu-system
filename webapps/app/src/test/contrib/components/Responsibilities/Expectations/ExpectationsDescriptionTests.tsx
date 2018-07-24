@@ -4,7 +4,11 @@ import {expect} from "chai";
 
 import {ExpectationMapping} from "../../../../../main/shared/models/Generated";
 import {mockCountry, mockExpectations} from "../../../../mocks/mockModels";
-import {ExpectationsDescription} from "../../../../../main/contrib/components/Responsibilities/Expectations/ExpectationsDescription";
+import {
+    CountriesList,
+    ExpectationsDescription
+} from "../../../../../main/contrib/components/Responsibilities/Expectations/ExpectationsDescription";
+import {Popover, PopoverBody} from "reactstrap";
 
 describe("ExpectationsDescription", () => {
     it("renders applicable scenarios", () => {
@@ -61,13 +65,31 @@ describe("ExpectationsDescription", () => {
         expect(rendered.find("#outcomes").text()).to.equal("2 outcomes: deaths, cases")
     });
 
-    it("renders countries", () => {
+    it("renders countries list", () => {
+        const countries = [mockCountry({name: "countrya"}), mockCountry({name: "countryb"})]
         const expectation: ExpectationMapping = {
-            expectation: mockExpectations({countries: [mockCountry({name: "countrya"}), mockCountry({name: "countryb"})]}),
+            expectation: mockExpectations({countries: countries}),
             applicable_scenarios: ["a", "b", "c"]
         };
         const rendered = shallow(<ExpectationsDescription {...expectation}/>);
-        expect(rendered.find("#countries").text()).to.equal("2 countries: countrya, countryb")
+        expect(rendered.find(CountriesList).prop("countries")).to.have.members(countries)
     });
 
+});
+
+describe("Countries list popover", () => {
+    it("renders popover with link", () => {
+        const countries = [mockCountry({name: "countrya"}), mockCountry({name: "countryb"})];
+
+        const rendered = shallow(<CountriesList countries={countries} targetKey={"c1"}/>);
+        expect(rendered.find("#c1").text()).to.equal("view list");
+        expect(rendered.find(Popover).prop("target")).to.equal("c1");
+    });
+
+    it("renders country list in popover", () => {
+        const countries = [mockCountry({name: "countrya"}), mockCountry({name: "countryb"})];
+
+        const rendered = shallow(<CountriesList countries={countries} targetKey={"c1"}/>);
+        expect(rendered.find(PopoverBody).childAt(0).text()).to.equal("countrya, countryb");
+    });
 });
