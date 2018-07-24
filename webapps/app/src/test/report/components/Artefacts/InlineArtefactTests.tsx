@@ -24,7 +24,7 @@ describe("InlineArtefact", () => {
         const rendered = shallow(<InlineArtefact report="report" version="version" artefact={artefact}/>);
         const wrappedIFrame = rendered.find(ArtefactIFrame);
         expect(wrappedIFrame).to.have.length(1, "Couldn't find ArtefactIFrame");
-        expect(wrappedIFrame.prop("href")).to.equal("/reports/report/versions/version/artefacts/mock.png/");
+        expect(wrappedIFrame.prop("href")).to.equal("/reports/report/versions/version/artefacts/mock.png/?inline=true");
     });
 });
 
@@ -33,6 +33,6 @@ describe("ArtefactIFrame", () => {
         const rendered = shallow(<ArtefactIFrameInner href="test" refreshToken={null} />);
         const iframe = rendered.find("iframe");
         expect(iframe).to.have.length(1);
-        expect(iframe.prop("src")).to.eql("test&inline=true");
+        expect(iframe.prop("src")).to.eql("test");
     });
 });
