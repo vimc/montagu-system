@@ -47,7 +47,7 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
         render() {
             let href = null;
             if (this.props.token != null) {
-                href = appendAccessToken(this.props.href, this.props.token)
+                href = appendAccessToken(this.props.href, this.props.token);
 
                 console.log(href);
             }

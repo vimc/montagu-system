@@ -19,6 +19,7 @@ import {ReportDownloadsComponent} from "../main/report/components/Reports/Report
 import {OneTimeTokenService} from "../main/report/services/OneTimeTokenService";
 import {buildReportingURL} from "../main/report/services/AbstractReportLocalService";
 import {Provider} from "react-redux";
+import {ArtefactIFrame, InlineArtefact} from "../main/report/components/Artefacts/InlineArtefact";
 
 class ReportIntegrationTests extends IntegrationTestSuite {
     description() {
@@ -91,10 +92,24 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             expect(decoded.url).to.equal(`/v1/reports/minimal/${versions[0]}/artefacts/`);
         });
 
+        it("can render inline artefact with access token", async () => {
+            const artefact = mockArtefact({filenames: ["all.png"], description: "all things"});
+            const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("multi-artefact");
+            const rendered = sandbox.mount(<Provider store={this.store}><InlineArtefact report={"multi-artefact"} version={versions[0]}
+                                                                                    artefact={artefact}/></Provider>)
+
+                const iframe = rendered.find(ArtefactIFrame);
+            console.log(iframe.text());
+                const href = iframe.find("iframe").prop("src");
+            const response = await fetch(href);
+            expect(response.status).to.equal(200)
+        });
+
         it("downloads artefact", async () => {
             const artefact = mockArtefact({filenames: ["all.csv", "all.png"], description: "all things"});
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("multi-artefact");
-            const rendered = sandbox.mount(<Provider store={this.store}><ArtefactItem report={"multi-artefact"} version={versions[0]}
+            const rendered = sandbox.mount(<Provider store={this.store}><ArtefactItem report={"multi-artefact"}
+                                                                                      version={versions[0]}
                                                                                       artefact={artefact}/></Provider>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
@@ -102,7 +117,8 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
         it("downloads resource", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("use_resource");
-            const rendered = sandbox.mount(<Provider store={this.store}><ResourceLinks report="use_resource" version={versions[0]}
+            const rendered = sandbox.mount(<Provider store={this.store}><ResourceLinks report="use_resource"
+                                                                                       version={versions[0]}
                                                                                        resources={["meta/data.csv"]}/></Provider>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
@@ -111,7 +127,8 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         it("downloads data", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
             const versionDetails = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails("minimal", versions[0]);
-            const rendered = sandbox.mount(<Provider store={this.store}><DataLinks {...versionDetails.hash_data}/></Provider>);
+            const rendered = sandbox.mount(<Provider
+                store={this.store}><DataLinks {...versionDetails.hash_data}/></Provider>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
         });
