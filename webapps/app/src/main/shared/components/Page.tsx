@@ -16,9 +16,6 @@ export function Page<TState, TLocationProps>(pageActionCreators: AbstractPageAct
 
     const lifecycleMethods: Partial<LifecycleMethods<PageProperties<TLocationProps>>> = {
         onWillMount(props: PageProperties<TLocationProps>) {
-
-            console.log("-----------------------------------------------------------")
-            console.log(props)
             props.onLoad(props.match.params)
         }
     };
