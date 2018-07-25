@@ -11,11 +11,12 @@ import {ContribLoginPage} from "../../../main/contrib/components/Login/ContribLo
 import {ContribNoRouteFoundPage} from "../../../main/contrib/components/ContribNoRouteFoundPage";
 
 describe("ContribRouter", () => {
-    it("renders ContribLoginPage when user is logged out", () => {
-        const history = createMemoryHistory();
+    it("renders ContribLoginPage without redirect when user is logged out", () => {
+        const history = createMemoryHistory({initialEntries: ['/help/touchstones/']});
         const store = createContribStore(history);
         const rendered = mount(<Provider store={store}><ContribRouter loggedIn={false} history={history}/></Provider>);
         expect(rendered.find(ContribLoginPage)).has.length(1, "Expected ContribLoginPage to be rendered");
+        expect(history.entries[0].pathname).to.equal('/help/touchstones/');
     });
 
     it("does normal routing when logged in", () => {
