@@ -41,16 +41,16 @@ describe("ExpectationsDescription", () => {
             applicable_scenarios: ["a", "b", "c"]
         };
         const rendered = shallow(<ExpectationsDescription {...expectation}/>);
-        expect(rendered.find("#cohorts").text()).to.equal("Cohorts: only people born between 1980 and 1982");
+        expect(rendered.find("#cohorts").text()).to.equal("Not including cohorts born before 1980 or after 1982");
     });
 
-    it("renders no cohorts message if both null", () => {
+    it("renders no cohort message if both null", () => {
         const expectation: ExpectationMapping = {
             expectation: mockExpectations({cohorts: {minimum_birth_year: null, maximum_birth_year: null}}),
             applicable_scenarios: ["a", "b", "c"]
         };
         const rendered = shallow(<ExpectationsDescription {...expectation}/>);
-        expect(rendered.find("#cohorts").text()).to.equal("Cohorts: no cohort restrictions");
+        expect(rendered.find("#cohorts")).to.have.lengthOf(0);
     });
 
     it("renders min cohort message if not null", () => {
@@ -59,7 +59,7 @@ describe("ExpectationsDescription", () => {
             applicable_scenarios: ["a", "b", "c"]
         };
         const rendered = shallow(<ExpectationsDescription {...expectation}/>);
-        expect(rendered.find("#cohorts").text()).to.equal("Cohorts: only people born after 1980");
+        expect(rendered.find("#cohorts").text()).to.equal("Not including cohorts born before 1980");
     });
 
     it("renders max cohort message if not null", () => {
@@ -68,7 +68,7 @@ describe("ExpectationsDescription", () => {
             applicable_scenarios: ["a", "b", "c"]
         };
         const rendered = shallow(<ExpectationsDescription {...expectation}/>);
-        expect(rendered.find("#cohorts").text()).to.equal("Cohorts: only people born before 1982");
+        expect(rendered.find("#cohorts").text()).to.equal("Not including cohorts born after 1982");
     });
 
     it("renders outcomes", () => {
