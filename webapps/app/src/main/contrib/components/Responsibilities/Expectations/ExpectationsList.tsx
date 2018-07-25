@@ -28,7 +28,7 @@ class ExpectationsListComponent extends React.PureComponent<Props> {
     }
 }
 
-const mapStateToProps = (state: ContribAppState): Props => ({
+export const mapStateToProps = (state: ContribAppState): Props => ({
     responsibilitySet: state.responsibilities.responsibilitiesSet,
     group: state.groups.currentUserGroup,
     touchstoneVersion: state.touchstones.currentTouchstoneVersion
