@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Artefact} from "../../../shared/models/reports/Artefact";
-import {OneTimeLinkContext, OneTimeLinkProps} from "../OneTimeLinkContext";
+import {OneTimeLinkContext, OneTimeLinkProps} from "../../../shared/components/OneTimeLinkContext";
 import {buildArtefactUrl} from "../../LinkHelpers";
 
 interface Props {
@@ -16,7 +16,10 @@ export class InlineArtefact extends React.Component<Props, undefined> {
         const extension = filename.split('.').pop();
 
         if (InlineArtefact.canRenderInIFrame(extension)) {
-            return <ArtefactIFrame href={buildArtefactUrl(report, version, filename, false)}/>;
+            return <ArtefactIFrame
+                href={buildArtefactUrl(report, version, filename, false)}
+                service="reporting"
+            />;
         } else {
             // Do other things here, like rendering CSV as a table, etc.
             return null;

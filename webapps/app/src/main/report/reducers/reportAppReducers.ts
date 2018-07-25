@@ -6,7 +6,7 @@ import {authReducer, AuthState} from "../../shared/reducers/authReducer";
 import {reportsReducer, ReportsState} from "./reportsReducer";
 import {usersReducer, UsersState} from "./userReducer";
 import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadcrumbsReducer";
-import {onetimeTokenReducer, OneTimeTokenState} from "./oneTimeTokenReducer";
+import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneTimeTokenReducer";
 
 export interface ReportAppState {
     auth: AuthState;

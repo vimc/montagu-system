@@ -6,7 +6,7 @@ import {createMemoryHistory} from 'history';
 import {expectSameElements, inflateAndDecode, IntegrationTestSuite} from "./IntegrationTest";
 import {Sandbox} from "../test/Sandbox";
 import {ArtefactItem} from "../main/report/components/Artefacts/ArtefactItem";
-import {FileDownloadButton, FileDownloadLink} from "../main/report/components/FileDownloadLink";
+import {FileDownloadButton, FileDownloadLink} from "../main/shared/components/FileDownloadLink";
 import {ResourceLinks} from "../main/report/components/Resources/ResourceLinks";
 import {DataLinks} from "../main/report/components/Data/DataLinks";
 
@@ -16,7 +16,7 @@ import {Report} from "../main/shared/models/Generated";
 import {UserService} from "../main/report/services/UserService";
 import {mockArtefact} from "../test/mocks/mockModels";
 import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
-import {OneTimeTokenService} from "../main/report/services/OneTimeTokenService";
+import {OneTimeTokenService} from "../main/shared/services/OneTimeTokenService";
 import {buildReportingURL} from "../main/report/services/AbstractReportLocalService";
 import {Provider} from "react-redux";
 

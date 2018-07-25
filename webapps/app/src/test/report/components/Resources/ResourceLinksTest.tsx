@@ -2,7 +2,7 @@ import * as React from "react";
 import { mount, shallow } from "enzyme";
 import {expect} from "chai";
 import {ResourceLinks} from "../../../../main/report/components/Resources/ResourceLinks";
-import { FileDownloadLink } from "../../../../main/report/components/FileDownloadLink";
+import { FileDownloadLink } from "../../../../main/shared/components/FileDownloadLink";
 import { Sandbox } from "../../../Sandbox";
 
 describe("ResourceLinks", () => {
