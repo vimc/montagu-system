@@ -53,9 +53,8 @@ export const ContribRouter : React.StatelessComponent<ContribRouterProps> = (pro
     </Switch>;
 
     const notLoggedIn = <Switch>
-        <Route exact path="/" component={ContribLoginPage}/>
         <Route exact path="/forgotten-password/" component={ContribForgottenPasswordPage} />
-        <Redirect to="/"/>
+        <Route component={ContribLoginPage}/>
     </Switch>;
 
     const routes = props.loggedIn ? loggedIn : notLoggedIn;
