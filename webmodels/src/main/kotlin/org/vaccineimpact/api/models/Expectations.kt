@@ -1,5 +1,8 @@
 package org.vaccineimpact.api.models
 
+import org.vaccineimpact.api.models.helpers.FlexibleProperty
+import kotlin.coroutines.experimental.buildSequence
+
 data class Expectations(
         val id: Int,
         val years: IntRange,
@@ -14,22 +17,42 @@ data class Expectations(
                 && (cohorts.maximumBirthYear == null || this <= cohorts.maximumBirthYear)
     }
 
-    fun expectedRows(): List<ExpectedRow>
-    {
-        val listRows = mutableListOf<ExpectedRow>()
+    private val outcomesMap = outcomes.associateBy({ it }, { null })
+
+    fun expectedCentralRows(disease: String): Sequence<ExpectedCentralRow> = buildSequence{
         for (age in ages)
         {
             for (country in countries)
             {
-                listRows.addAll(years
-                        .map { it - age }
-                        .filter { it.withinCohortRange() }
-                        .map { ExpectedRow(country.id, age, it) })
+                yieldAll(years
+                        .filter { (it - age).withinCohortRange() }
+                        .map { mapCentralRow(disease, it, age, country) })
             }
         }
-
-        return listRows
     }
+
+    fun expectedStochasticRows(disease: String): Sequence<ExpectedStochasticRow> = buildSequence {
+        for (age in ages)
+        {
+            for (country in countries)
+            {
+                yieldAll(years
+                        .filter { (it - age).withinCohortRange() }
+                        .map { mapStochasticRow(disease, it, age, country) })
+            }
+        }
+    }
+
+    private fun mapCentralRow(disease: String, year: Int, age: Int, country: Country): ExpectedCentralRow
+    {
+        return ExpectedCentralRow(disease, year, age, country.id, country.name, null, outcomesMap)
+    }
+
+    private fun mapStochasticRow(disease: String, year: Int, age: Int, country: Country): ExpectedStochasticRow
+    {
+        return ExpectedStochasticRow(disease, null, year, age, country.id, country.name, null, outcomesMap)
+    }
+
 }
 
 data class CohortRestriction(
@@ -37,8 +60,27 @@ data class CohortRestriction(
         val maximumBirthYear: Short? = null
 )
 
-data class ExpectedRow(
-        val country: String,
+data class ExpectedCentralRow(
+        val disease: String,
+        val year: Int,
         val age: Int,
-        val year: Int
-)
+        val country: String,
+        val countryName: String,
+        val cohortSize: Float?,
+        @FlexibleProperty
+        val outcomes: Map<String, Float?>
+) : ExpectedRow
+
+data class ExpectedStochasticRow(
+        val disease: String,
+        val runId: Int?,
+        val year: Int,
+        val age: Int,
+        val country: String,
+        val countryName: String,
+        val cohortSize: Float?,
+        @FlexibleProperty
+        val outcomes: Map<String, Float?>
+) : ExpectedRow
+
+interface ExpectedRow
