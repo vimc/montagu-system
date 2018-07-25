@@ -49,7 +49,7 @@ describe("OneTimeLinkContext", () => {
         const Class = OneTimeLinkContext(EmptyComponent);
         const rendered = shallow(<Class href="/banana/"/>, {context: {store}}).dive();
         const child = rendered.find(EmptyComponent);
-        expect(child.prop("href")).to.equal("http://localhost:8081/v1/banana/?access_token=" + token);
+        expect(child.prop("href")).to.equal("http://localhost:8080/v1/banana/?access_token=" + token);
     });
 
     it("triggers fetchToken on mount", (done: DoneCallback) => {
