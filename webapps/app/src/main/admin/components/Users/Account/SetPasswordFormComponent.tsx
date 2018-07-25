@@ -26,13 +26,12 @@ interface InternalProps extends ReduxFormProps<Fields>, SetPasswordFormProps {
 
 export class SetPasswordFormComponent extends React.Component<InternalProps, undefined> {
     render() {
-        const submit = (values: Fields) => {
-            this.props.submit({...values, resetToken: this.props.resetToken});
-        };
+        const resetToken = this.props.resetToken;
+        const submit = (values: Fields) => this.props.submit({...values, resetToken})
         return <form className="form" onSubmit={this.props.handleSubmit(submit)}>
             <div className="fields">
                 <Field
-                    name="password"
+                    name="newPassword"
                     type="password"
                     component={ReduxFormInput}
                     label="New password"
@@ -48,7 +47,7 @@ export class SetPasswordFormComponent extends React.Component<InternalProps, und
 const enhance = compose(
     reduxForm({form: 'setPassword'}),
     montaguForm<AdminAppState, Fields>({
-        form: 'createGroup',
+        form: 'setPassword',
         mapErrorsFromState: (state: AdminAppState) => state.users.setPasswordErrors,
         submit: v => usersActionCreators.setPassword(v.resetToken, v.newPassword)
     })

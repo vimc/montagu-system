@@ -26,7 +26,7 @@ export class SetPasswordPage extends AdminPageWithHeader<PageProperties<undefine
         const token = helpers.queryStringAsObject().token;
 
         let content: JSX.Element = null;
-        if (content == null) {// jwtTokenAuth.isCompressedTokenValid(token)) {
+        if (jwtTokenAuth.isCompressedTokenValid(token)) {
             content = <SetPasswordForm resetToken={token}/>;
         } else {
             content = <RequestResetLinkButton/>;
