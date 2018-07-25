@@ -4,6 +4,9 @@ import {ReportAppState} from "../reducers/reportAppReducers";
 import {oneTimeTokenActionCreators} from "../actionCreators/oneTimeTokenActionCreators";
 import {buildReportingURL} from "../services/AbstractReportLocalService";
 
+const url = require('url'),
+    querystring = require("querystring");
+
 interface PublicProps {
     href: string;
     className?: string;
@@ -57,12 +60,12 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
     })
 }
 
-function appendAccessToken(url: string, token: string) {
-    url = buildReportingURL(url);
-    if (url.indexOf("?") > 0) {
-        return url + "&access_token=" + token;
-    }
-    else{
-        return url + "?access_token=" + token;
-    }
+function appendAccessToken(path: string, token: string) {
+    const parsed = url.parse(buildReportingURL(path), true);
+    parsed.query["access_token"] = token;
+
+    // we need to rebuild `search` now as it gets used by `format` under the hood
+    parsed.search = querystring.stringify(parsed.query);
+    return url.format(parsed)
+
 }

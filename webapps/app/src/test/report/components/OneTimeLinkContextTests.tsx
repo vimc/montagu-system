@@ -26,8 +26,7 @@ describe("OneTimeLinkContext", () => {
     beforeEach(() => {
         store = createMockReportStore(mockReportAppState({onetimeTokens: mockOnetimeTokenState({tokens})}));
         fetchTokenStub = sandbox.sinon.stub(OneTimeTokenService.prototype, "fetchToken")
-            .returns(Promise.resolve("token"));
-
+            .returns(Promise.resolve("token"))
     });
 
     afterEach(() => sandbox.restore());
@@ -50,6 +49,15 @@ describe("OneTimeLinkContext", () => {
         const rendered = shallow(<Class href="/banana/"/>, {context: {store}}).dive();
         const child = rendered.find(EmptyComponent);
         expect(child.prop("href")).to.equal("http://localhost:8081/v1/banana/?access_token=" + token);
+    });
+
+    it("can handle url with query string", () => {
+        const Class = OneTimeLinkContext(EmptyComponent);
+        const url = "/banana/?query=whatevs";
+        tokens[url] = token;
+        const rendered = shallow(<Class href={url} />, {context: {store}}).dive();
+        const child = rendered.find(EmptyComponent);
+        expect(child.prop("href")).to.equal("http://localhost:8081/v1/banana/?query=whatevs&access_token=" + token);
     });
 
     it("triggers fetchToken on mount", (done: DoneCallback) => {
