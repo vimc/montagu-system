@@ -6,7 +6,6 @@ import {buildReportingURL} from "../services/AbstractReportLocalService";
 
 interface PublicProps {
     href: string;
-    // key: string, // must be unique, used to key onetime tokens in the store state
     className?: string;
 }
 
@@ -48,8 +47,6 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
             let href = null;
             if (this.props.token != null) {
                 href = appendAccessToken(this.props.href, this.props.token);
-
-                console.log(href);
             }
             return <WrappedComponent
                 className={this.props.className}

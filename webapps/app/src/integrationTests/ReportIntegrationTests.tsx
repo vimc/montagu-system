@@ -92,19 +92,6 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             expect(decoded.url).to.equal(`/v1/reports/minimal/${versions[0]}/artefacts/`);
         });
 
-        it("can render inline artefact with access token", async () => {
-            const artefact = mockArtefact({filenames: ["all.png"], description: "all things"});
-            const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("multi-artefact");
-            const rendered = sandbox.mount(<Provider store={this.store}><InlineArtefact report={"multi-artefact"} version={versions[0]}
-                                                                                    artefact={artefact}/></Provider>)
-
-                const iframe = rendered.find(ArtefactIFrame);
-            console.log(iframe.text());
-                const href = iframe.find("iframe").prop("src");
-            const response = await fetch(href);
-            expect(response.status).to.equal(200)
-        });
-
         it("downloads artefact", async () => {
             const artefact = mockArtefact({filenames: ["all.csv", "all.png"], description: "all things"});
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("multi-artefact");
