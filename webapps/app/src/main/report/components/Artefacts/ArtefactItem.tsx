@@ -1,5 +1,5 @@
 import * as React from "react";
-import {FileDownloadLink} from "../FileDownloadLink";
+import {FileDownloadLink} from "../../../shared/components/FileDownloadLink";
 import {buildArtefactUrl} from "../../LinkHelpers";
 import {Artefact} from "../../../shared/models/reports/Artefact";
 import {InlineArtefactFigure} from "./InlineArtefactFigure";

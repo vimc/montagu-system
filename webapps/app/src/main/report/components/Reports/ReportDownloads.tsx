@@ -9,7 +9,7 @@ import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {ReportTitle} from "./ReportTitle";
-import {FileDownloadButton, FileDownloadLink} from "../FileDownloadLink";
+import {FileDownloadButton, FileDownloadLink} from "../../../shared/components/FileDownloadLink";
 
 export interface ReportDownloadsProps {
     versionDetails: Version;

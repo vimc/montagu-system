@@ -1,12 +1,11 @@
 import {expect} from "chai";
 import * as React from "react";
-import {ReactWrapper, shallow, ShallowWrapper} from "enzyme";
+import {ReactWrapper} from "enzyme";
 import {createMemoryHistory} from 'history';
 
 import {expectSameElements, inflateAndDecode, IntegrationTestSuite} from "./IntegrationTest";
 import {Sandbox} from "../test/Sandbox";
 import {ArtefactItem} from "../main/report/components/Artefacts/ArtefactItem";
-import {FileDownloadButton, FileDownloadLink} from "../main/report/components/FileDownloadLink";
 import {ResourceLinks} from "../main/report/components/Resources/ResourceLinks";
 import {DataLinks} from "../main/report/components/Data/DataLinks";
 
@@ -17,7 +16,6 @@ import {UserService} from "../main/report/services/UserService";
 import {mockArtefact} from "../test/mocks/mockModels";
 import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
 import {OneTimeTokenService} from "../main/shared/services/OneTimeTokenService";
-import {buildReportingURL} from "../main/report/services/AbstractReportLocalService";
 import {Provider} from "react-redux";
 
 class ReportIntegrationTests extends IntegrationTestSuite {
@@ -86,7 +84,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState))
                 .getReportVersions("minimal");
             const token = await (new OneTimeTokenService(this.store.dispatch, this.store.getState))
-                .fetchToken(`/reports/minimal/${versions[0]}/artefacts/`);
+                .fetchToken(`/reports/minimal/${versions[0]}/artefacts/`, "reporting");
             const decoded = inflateAndDecode(token);
             expect(decoded.url).to.equal(`/v1/reports/minimal/${versions[0]}/artefacts/`);
         });

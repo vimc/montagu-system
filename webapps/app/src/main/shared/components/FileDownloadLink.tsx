@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import * as loaderAnimation from "../../shared/resources/link-loader.gif";
+import * as loaderAnimation from "../resources/link-loader.gif";
 import {OneTimeLinkContext, OneTimeLinkProps} from "./OneTimeLinkContext";
-import {DownloadIcon} from "../../shared/components/DownloadIcon";
+import {DownloadIcon} from "./DownloadIcon";
 
 export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, undefined> {
 

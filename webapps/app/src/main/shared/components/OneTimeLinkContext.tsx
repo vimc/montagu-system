@@ -1,9 +1,9 @@
 import * as React from "react";
 import {connect, Dispatch} from "react-redux";
-import {ReportAppState} from "../reducers/reportAppReducers";
-import {oneTimeTokenActionCreators} from "../../shared/actions/oneTimeTokenActionCreators";
-import {APIService} from "../../shared/models/APIService";
-import {buildURL} from "../../shared/services/AbstractLocalService";
+import {ReportAppState} from "../../report/reducers/reportAppReducers";
+import {oneTimeTokenActionCreators} from "../actions/oneTimeTokenActionCreators";
+import {APIService} from "../models/APIService";
+import {buildURL} from "../services/AbstractLocalService";
 
 interface PublicProps {
     href: string;

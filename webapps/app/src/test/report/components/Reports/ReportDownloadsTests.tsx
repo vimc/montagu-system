@@ -14,7 +14,7 @@ import {
     ReportDownloadsProps
 } from "../../../../main/report/components/Reports/ReportDownloads";
 import {ReportTitle} from "../../../../main/report/components/Reports/ReportTitle";
-import {FileDownloadButton, FileDownloadLink} from "../../../../main/report/components/FileDownloadLink";
+import {FileDownloadButton, FileDownloadLink} from "../../../../main/shared/components/FileDownloadLink";
 import {ReportDownloadSection} from "../../../../main/report/components/Reports/DownloadSection";
 
 describe("ReportDownloads", () => {
