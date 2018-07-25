@@ -1,6 +1,6 @@
 import * as React from "react";
 import {ExpectationMapping} from "../../../../shared/models/Generated";
-import {FileDownloadButton} from "../../../../report/components/FileDownloadLink";
+import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
 
 interface ExpectationsDescriptionProps {
     expectationMapping: ExpectationMapping;
