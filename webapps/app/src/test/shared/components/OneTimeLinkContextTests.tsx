@@ -55,10 +55,11 @@ describe("OneTimeLinkContext", () => {
     it("triggers fetchToken on mount", (done: DoneCallback) => {
 
         const Class: any = OneTimeLinkContext(EmptyComponent);
-        shallow(<Class href="/banana/"/>, {context: {store}}).dive();
+        shallow(<Class href="/banana/" service="reporting" />, {context: {store}}).dive();
 
         checkAsync(done, () => {
             expect(fetchTokenStub.called).to.equal(true, "Expected fetchToken to be called");
+            expect(fetchTokenStub.args[0]).to.eql(["/banana/", "reporting"]);
         });
     });
 
