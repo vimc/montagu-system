@@ -35,22 +35,40 @@ describe("ExpectationsDescription", () => {
         expect(rendered.find("#ages").text()).to.equal("10 ages: 0 - 9");
     });
 
-    it("renders number of cohorts if present", () => {
+    it("renders cohort range if both min and max present", () => {
         const expectation: ExpectationMapping = {
             expectation: mockExpectations({cohorts: {minimum_birth_year: 1980, maximum_birth_year: 1982}}),
             applicable_scenarios: ["a", "b", "c"]
         };
         const rendered = shallow(<ExpectationsDescription {...expectation}/>);
-        expect(rendered.find("#cohorts").text()).to.equal("3 cohorts: 1980 - 1982");
+        expect(rendered.find("#cohorts").text()).to.equal("Cohorts: only people born between 1980 and 1982");
     });
 
-    it("does not render number of cohorts if null", () => {
+    it("renders no cohorts message if both null", () => {
         const expectation: ExpectationMapping = {
             expectation: mockExpectations({cohorts: {minimum_birth_year: null, maximum_birth_year: null}}),
             applicable_scenarios: ["a", "b", "c"]
         };
         const rendered = shallow(<ExpectationsDescription {...expectation}/>);
-        expect(rendered.find("#cohorts")).to.have.lengthOf(0);
+        expect(rendered.find("#cohorts").text()).to.equal("Cohorts: no cohort restrictions");
+    });
+
+    it("renders min cohort message if not null", () => {
+        const expectation: ExpectationMapping = {
+            expectation: mockExpectations({cohorts: {minimum_birth_year: 1980, maximum_birth_year: null}}),
+            applicable_scenarios: ["a", "b", "c"]
+        };
+        const rendered = shallow(<ExpectationsDescription {...expectation}/>);
+        expect(rendered.find("#cohorts").text()).to.equal("Cohorts: only people born after 1980");
+    });
+
+    it("renders max cohort message if not null", () => {
+        const expectation: ExpectationMapping = {
+            expectation: mockExpectations({cohorts: {minimum_birth_year: null, maximum_birth_year: 1982}}),
+            applicable_scenarios: ["a", "b", "c"]
+        };
+        const rendered = shallow(<ExpectationsDescription {...expectation}/>);
+        expect(rendered.find("#cohorts").text()).to.equal("Cohorts: only people born before 1982");
     });
 
     it("renders outcomes", () => {
@@ -59,11 +77,11 @@ describe("ExpectationsDescription", () => {
             applicable_scenarios: ["a", "b", "c"]
         };
         const rendered = shallow(<ExpectationsDescription {...expectation}/>);
-        expect(rendered.find("#outcomes").text()).to.equal("2 outcomes: deaths, cases")
+        expect(rendered.find("#outcomes").find("li")).to.have.lengthOf(2);
     });
 
     it("renders countries list", () => {
-        const countries = [mockCountry({name: "countrya"}), mockCountry({name: "countryb"})]
+        const countries = [mockCountry({name: "countrya"}), mockCountry({name: "countryb"})];
         const expectation: ExpectationMapping = {
             expectation: mockExpectations({countries: countries}),
             applicable_scenarios: ["a", "b", "c"]
