@@ -1,11 +1,11 @@
 import * as React from "react";
-import { mount } from "enzyme";
-import { expect } from "chai";
-import { Provider } from "react-redux";
-import { createMemoryHistory } from 'history';
+import {mount} from "enzyme";
+import {expect} from "chai";
+import {Provider} from "react-redux";
+import {createMemoryHistory} from 'history';
 
 import "../../helper";
-import { ContribRouter } from "../../../main/contrib/components/ContribRouter";
+import {ContribRouter} from "../../../main/contrib/components/ContribRouter";
 import {createContribStore} from "../../../main/contrib/createStore";
 import {ContribLoginPage} from "../../../main/contrib/components/Login/ContribLoginPage";
 import {ContribNoRouteFoundPage} from "../../../main/contrib/components/ContribNoRouteFoundPage";
