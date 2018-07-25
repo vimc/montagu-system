@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Artefact} from "../../../shared/models/reports/Artefact";
 import {OneTimeLinkContext, OneTimeLinkProps} from "../OneTimeLinkContext";
-import {buildArtefactUrl, stripQueryStringFromArtefactUrl} from "../../LinkHelpers";
+import {buildArtefactUrl} from "../../LinkHelpers";
 
 interface Props {
     report: string;
