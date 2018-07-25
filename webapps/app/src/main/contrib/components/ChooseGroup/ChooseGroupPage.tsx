@@ -1,21 +1,14 @@
 import * as React from "react";
-import { compose } from "recompose";
-import { connect } from 'react-redux';
-import { Dispatch } from "redux";
 
 import {ChooseGroupContent} from "./ChooseGroupContent";
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
 import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
-import {chooseGroupPageActionCreators} from "../../actions/pages/chooseGroupPageActionCreators";
-import {ContribAppState} from "../../reducers/contribAppReducers";
+import {chooseGroupPageActionCreators} from "../../actions/pages/chooseGroupPageActionCreators"
+import {ContribPage} from "../../ContribPage";
 
 export class ChooseGroupPageComponent extends React.Component<PageProperties<undefined>> {
 
     static title: string = "Modellers' contribution portal";
-
-    componentDidMount(){
-        this.props.onLoad()
-    }
 
     static breadcrumb() : PageBreadcrumb {
         return {
@@ -41,12 +34,4 @@ export class ChooseGroupPageComponent extends React.Component<PageProperties<und
     }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<PageProperties<undefined>> => {
-    return {
-        onLoad: () => dispatch(chooseGroupPageActionCreators.onLoad())
-    }
-};
-
-export const ChooseGroupPage = compose(
-    connect(state => state, mapDispatchToProps)
-)(ChooseGroupPageComponent) as React.ComponentClass<Partial<PageProperties<undefined>>>;
+export const ChooseGroupPage = ContribPage(chooseGroupPageActionCreators)(ChooseGroupPageComponent);

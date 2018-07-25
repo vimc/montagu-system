@@ -1,49 +1,48 @@
-import { expect } from "chai";
+import {expect} from "chai";
 
-import { Sandbox } from "../../../Sandbox";
-import {createMockStore} from "../../../mocks/mockStore";
+import {Sandbox} from "../../../Sandbox";
+import {createMockContribStore} from "../../../mocks/mockStore";
 import {chooseGroupPageActionCreators} from "../../../../main/contrib/actions/pages/chooseGroupPageActionCreators";
 import {ModellingGroupsService} from "../../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
-import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
-import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
-import {mockBreadcrumbs, mockModellingGroup} from "../../../mocks/mockModels";
+import {mockModellingGroup} from "../../../mocks/mockModels";
+import {verifyActionThatCallsService} from "../../../ActionCreatorTestHelpers";
 
 describe("Choose Group Page actions tests", () => {
     const sandbox = new Sandbox();
 
     const testGroup = mockModellingGroup();
-    const testBreadcrumbs = mockBreadcrumbs();
 
     afterEach(() => {
         sandbox.restore();
     });
 
-    it("on load", (done) => {
+    it("gets all groups on load", (done: DoneCallback) => {
         const initialState = {
             auth: {modellingGroups: testGroup.id}
         };
-        const store = createMockStore(initialState);
-
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", ()=>{
-            return Promise.resolve([testGroup]);
-        });
-        sandbox.setStubFunc(breadcrumbsModule, "initialize", ()=>{
-            return testBreadcrumbs;
-        });
-
-        store.dispatch(chooseGroupPageActionCreators.onLoad())
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = [
-                { type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup] },
-                { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs }
-            ];
-            expect(actions).to.eql(expectedPayload);
-            done();
-        });
+        const store = createMockContribStore(initialState);
+        const fakeData = [mockModellingGroup({id: testGroup.id})];
+        verifyActionThatCallsService(done, {
+            store: store,
+            mockServices: () => {
+                sandbox.stubService(ModellingGroupsService.prototype, "getAllGroups", fakeData)
+            },
+            callActionCreator: () => chooseGroupPageActionCreators.loadData(),
+            expectTheseActions: [{type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: fakeData}]
+        })
     });
 
+    it("creates breadcrumbs", () => {
 
+        const result = chooseGroupPageActionCreators.createBreadcrumb();
+
+        expect(result.urlFragment).to.eq("/");
+        expect(result.name).to.eq("Modellers' contribution portal");
+    });
+
+    it("has no parent", () => {
+        expect(chooseGroupPageActionCreators.parent).to.be.undefined;
+    });
 
 });
