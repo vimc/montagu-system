@@ -1,7 +1,7 @@
 import * as React from "react";
 import { expect } from "chai";
 import {  shallow } from "enzyme";
-import { FileDownloadLink } from "../../../../main/report/components/FileDownloadLink";
+import { FileDownloadLink } from "../../../../main/shared/components/FileDownloadLink";
 import { Sandbox } from "../../../Sandbox";
 import { ArtefactItem } from "../../../../main/report/components/Artefacts/ArtefactItem";
 import {mockArtefact} from "../../../mocks/mockModels";

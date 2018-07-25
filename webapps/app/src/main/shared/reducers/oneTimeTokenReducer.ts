@@ -1,4 +1,4 @@
-import {ILookup} from "../../shared/models/Lookup";
+import {ILookup} from "../models/Lookup";
 import {OnetimeTokenAction, OnetimeTokenActionType} from "../actionTypes/OnetimeTokenActions";
 
 export interface OneTimeTokenState {

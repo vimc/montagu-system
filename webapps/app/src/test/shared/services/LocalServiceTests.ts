@@ -1,13 +1,12 @@
-import { expect } from "chai";
-import { createStore } from "redux";
-import * as pako from "pako";
+import {expect} from "chai";
+import {createStore} from "redux";
 
-import { Sandbox } from "../../Sandbox";
+import {Sandbox} from "../../Sandbox";
 import * as sinon from 'sinon';
-import { AbstractLocalService } from "../../../main/shared/services/AbstractLocalService";
-import { settings } from "../../../main/shared/Settings";
-import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
-import { createMockStore } from "../../mocks/mockStore";
+import {AbstractLocalService} from "../../../main/shared/services/AbstractLocalService";
+import {settings} from "../../../main/shared/Settings";
+import {AuthTypeKeys} from "../../../main/shared/actionTypes/AuthTypes";
+import {createMockStore} from "../../mocks/mockStore";
 import {SingletonVariableCache} from "../../../main/shared/modules/cache/singletonVariableCache";
 import {Dispatch} from "react-redux";
 import {GlobalState} from "../../../main/shared/reducers/GlobalState";
@@ -22,7 +21,7 @@ describe('Local service class initialization tests', () => {
         sandbox.restore();
     });
 
-    it('initializes default service with default option url', () => {
+    it('initializes default service', () => {
         const store = createStore(state => state, mockContribState({auth: {bearerToken: null}}));
         class TestService extends AbstractLocalService {
             test() {
@@ -31,10 +30,8 @@ describe('Local service class initialization tests', () => {
                 };
             }
         }
-        sandbox.setStubFunc(settings, 'apiUrl', () => 'test-url')
         const testService = new TestService(store.dispatch, store.getState);
         const serviceData = testService.test();
-        expect(serviceData.options.baseURL).is.equal('test-url');
         expect(typeof serviceData.options.Authorization).to.equal('undefined')
     });
 
@@ -51,7 +48,6 @@ describe('Local service class initialization tests', () => {
         }
         const testService = new TestService(store.dispatch, store.getState);
         const serviceData = testService.test();
-        expect(serviceData.options.baseURL).is.not.empty;
         expect(serviceData.options.Authorization).is.equal("Bearer token");
         expect(serviceData.requestOptions.headers.Authorization).is.equal("Bearer token");
     });
@@ -71,7 +67,6 @@ describe('Local service class initialization tests', () => {
         }
         const testService = new TestService(store.dispatch, store.getState);
         const serviceData = testService.test();
-        expect(serviceData.options.baseURL).is.not.empty;
         expect(serviceData.options.Authorization).is.equal("Bearer token");
         expect(serviceData.requestOptions.credentials).is.equal("include");
 
@@ -94,7 +89,6 @@ describe('Local service class initialization tests', () => {
 
         const testService = new TestService(store.dispatch, store.getState);
         const serviceData = testService.test();
-        expect(serviceData.options.baseURL).is.not.empty;
         expect(serviceData.options.Authorization).is.equal("Basic " + btoa(`${email}:${password}`));
 
     });
@@ -109,6 +103,8 @@ describe('Local service class requests tests', () => {
     });
 
     it('performs successful query', async () => {
+        sandbox.setStubFunc(settings, 'apiUrl', () => 'api.address');
+        sandbox.setStubFunc(settings, 'reportingApiUrl', () => 'reporting.address');
         const store = createStore(state => state, mockContribState());
         class TestService extends AbstractLocalService {
             test() {
@@ -116,10 +112,28 @@ describe('Local service class requests tests', () => {
             }
         }
         const testService = new TestService(store.dispatch, store.getState);
-        sandbox.setStubFunc(testService, "doFetch", ()=> Promise.resolve());
+        const doFetch = sandbox.setStubFunc(testService, "doFetch", () => Promise.resolve());
         sandbox.setStubFunc(testService, "processResponse", ()=> Promise.resolve("testData"));
         const serviceData = await testService.test();
         expect(serviceData).to.equal("testData");
+        expect(doFetch.args[0][0]).to.eql("api.address/test/");
+    });
+
+    it('performs successful query to reporting API', async () => {
+        sandbox.setStubFunc(settings, 'apiUrl', () => 'api.address');
+        sandbox.setStubFunc(settings, 'reportingApiUrl', () => 'reporting.address');
+        const store = createStore(state => state, mockContribState());
+        class TestService extends AbstractLocalService {
+            test() {
+                return this.get("/test/", "reporting");
+            }
+        }
+        const testService = new TestService(store.dispatch, store.getState);
+        const doFetch = sandbox.setStubFunc(testService, "doFetch", () => Promise.resolve());
+        sandbox.setStubFunc(testService, "processResponse", ()=> Promise.resolve("testData"));
+        const serviceData = await testService.test();
+        expect(serviceData).to.equal("testData");
+        expect(doFetch.args[0][0]).to.eql("reporting.address/test/");
     });
 
     it('performs query and api says token expired', async () => {

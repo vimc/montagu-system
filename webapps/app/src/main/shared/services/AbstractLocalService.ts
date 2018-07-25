@@ -15,6 +15,7 @@ import { AuthTypeKeys } from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
 import {CacheInterface} from "../modules/cache/CacheInterface";
 import {singletonVariableCache} from "../modules/cache/singletonVariableCache";
+import {APIService} from "../models/APIService";
 
 export interface OptionsHeaders {
    Authorization?: string;
@@ -32,7 +33,6 @@ export interface InputOptions {
     Authorization?: string;
     'Content-Type'?: string;
     credentials?: "omit" | "same-origin" | "include";
-    baseURL?: string;
     cacheKey?: string;
     exceptionOnError?: boolean;
     noCache?: boolean;
@@ -72,7 +72,6 @@ export abstract class AbstractLocalService {
 
     protected initOptions() {
         this.options = {};
-        this.options.baseURL = settings.apiUrl();
         this.options.cacheKey = null;
         this.options.exceptionOnError = true;
         this.options.noCache = false;
@@ -94,22 +93,24 @@ export abstract class AbstractLocalService {
         return requestOptions;
     }
 
-    protected makeUrl(uri: string) {
-        return this.options.baseURL + uri;
+    protected makeUrl(uri: string, service: APIService) {
+        return buildURL(uri, service);
     }
 
     protected doFetch(url: string, params? :any) {
         return fetch(url, params)
     }
 
-    public get(url: string){
+    public get(url: string, service?: APIService){
         console.log('get', url);
-        return this.getData(this.makeUrl(url), "GET");
+        service = service || "main";
+        return this.getData(this.makeUrl(url, service), "GET");
     }
 
-    public post(url: string, params?:any){
+    public post(url: string, params?:any, service?: APIService){
         console.log('post', url, params);
-        return this.getData(this.makeUrl(url), "POST", params);
+        service = service || "main";
+        return this.getData(this.makeUrl(url, service), "POST", params);
     }
 
     private getFullyQualifiedCacheKey(cacheKey: string, url: string) : string {
@@ -121,8 +122,9 @@ export abstract class AbstractLocalService {
         this.cacheEngine.clear(path);
     }
 
-    protected clearCache(cacheKey: string, url: string) {
-        const fullyQualifiedUrl = this.makeUrl(url);
+    protected clearCache(cacheKey: string, url: string, service?: APIService) {
+        service = service || "main";
+        const fullyQualifiedUrl = this.makeUrl(url, service);
         const key = this.getFullyQualifiedCacheKey(cacheKey, fullyQualifiedUrl);
 
         this.cacheEngine.clear(key);
@@ -147,8 +149,9 @@ export abstract class AbstractLocalService {
             .catch(this.notifyOnErrors);
     }
 
-    public postNoProcess(url: string, params?:any){
-        return this.doFetch(this.makeUrl(url), this.makeRequestOptions('POST', params))
+    public postNoProcess(url: string, params?:any, service?: APIService){
+        service = service || "main";
+        return this.doFetch(this.makeUrl(url, service), this.makeRequestOptions('POST', params))
             .then((response:any) => {
                 this.initOptions();
                 return response.json()
@@ -223,4 +226,19 @@ export abstract class AbstractLocalService {
         };
     }
 
+}
+
+export function buildRelativeURL(urlFragment: string): string {
+    return "/v1" + urlFragment;
+}
+
+export function buildURL(urlFragment: string, service: APIService): string {
+    if (urlFragment.startsWith("/v1")) {
+        urlFragment = urlFragment.substring("/v1".length);
+    }
+    let baseUrl = settings.apiUrl();
+    if (service == "reporting") {
+        baseUrl = settings.reportingApiUrl();
+    }
+    return baseUrl + urlFragment;
 }

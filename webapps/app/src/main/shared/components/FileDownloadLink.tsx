@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import * as loaderAnimation from "../../shared/resources/link-loader.gif";
+import * as loaderAnimation from "../resources/link-loader.gif";
 import {OneTimeLinkContext, OneTimeLinkProps} from "./OneTimeLinkContext";
-import {DownloadIcon} from "../../shared/components/DownloadIcon";
+import {DownloadIcon} from "./DownloadIcon";
 
 export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, undefined> {
 
@@ -22,13 +22,17 @@ export class FileDownloadLinkInner extends React.Component<OneTimeLinkProps, und
 export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, undefined> {
 
     render() {
-        return <FileDownloadInner className="button" href={this.props.href} refreshToken={this.props.refreshToken}>
+        return <FileDownloadInner
+            className="button"
+            href={this.props.href}
+            refreshToken={this.props.refreshToken}>
             {
                 this.props.children
             }
             <span className="download-icon">
-                    <DownloadIcon fillColor={"#ffffff"}/>
-                </span>
+                &nbsp;
+                <DownloadIcon fillColor={"#ffffff"}/>
+            </span>
         </FileDownloadInner>
     }
 
