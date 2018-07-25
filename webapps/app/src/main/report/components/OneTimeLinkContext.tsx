@@ -1,5 +1,4 @@
 import * as React from "react";
-import {OneTimeToken} from "../models/OneTimeToken";
 import {connect, Dispatch} from "react-redux";
 import {ReportAppState} from "../reducers/reportAppReducers";
 import {oneTimeTokenActionCreators} from "../actionCreators/oneTimeTokenActionCreators";

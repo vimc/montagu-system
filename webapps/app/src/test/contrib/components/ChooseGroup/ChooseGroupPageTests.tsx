@@ -6,8 +6,6 @@ import "../../../helper";
 import { ChooseGroupPage, ChooseGroupPageComponent } from "../../../../main/contrib/components/ChooseGroup/ChooseGroupPage";
 import { Sandbox } from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
-import {chooseGroupPageActionCreators} from "../../../../main/contrib/actions/pages/chooseGroupPageActionCreators";
-import {PageArticle} from "../../../../main/shared/components/PageWithHeader/PageArticle";
 import {ChooseGroupContent} from "../../../../main/contrib/components/ChooseGroup/ChooseGroupContent";
 
 describe("Choose Group Page Component", () => {
@@ -21,13 +19,10 @@ describe("Choose Group Page Component", () => {
         expect(typeof rendered.props().onLoad).is.equal('function');
     });
 
-    it("renders component component level", () => {
-        let store = createMockStore();
-        const onLoadStub = sandbox.setStubReduxAction(chooseGroupPageActionCreators, "onLoad");
-        const rendered = shallow(<ChooseGroupPage/>, {context: {store}}).dive();
+    it("renders title, description and ChooseGroupContent", () => {
+        const rendered = shallow(<ChooseGroupPageComponent history={null} location={null} match={null} router={null}/>);
         const pageArticle = rendered.find('PageArticle');
-        expect(onLoadStub.called).is.equal(true);
-        expect(pageArticle.props().title).is.equal(ChooseGroupPageComponent.title);
+        expect(pageArticle.props().title).is.equal("Modellers' contribution portal");
         expect(pageArticle.find('p').length).is.equal(1);
         expect(pageArticle.find(ChooseGroupContent).length).is.equal(1);
     });
