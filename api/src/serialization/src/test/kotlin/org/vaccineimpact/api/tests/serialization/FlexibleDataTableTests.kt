@@ -87,6 +87,6 @@ x,y,<NA>""")
     }
 
     protected fun serialize(table: FlexibleDataTable<*>) = serializeToStreamAndGetAsString {
-        table.serialize(it, MontaguSerializer.instance)
+        table.serialize(it)
     }.trim()
 }

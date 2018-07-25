@@ -23,7 +23,7 @@ fun streamIfStreamable(data: Any?, context: ActionContext): Any?
     }
 }
 
-fun stream(data: StreamSerializable<*>, context: ActionContext, serializer: Serializer = MontaguSerializer.instance) =
+fun stream(data: StreamSerializable<*>, context: ActionContext) =
         context.streamedResponse(data.contentType) { stream ->
-            data.serialize(stream, serializer)
+            data.serialize(stream)
         }

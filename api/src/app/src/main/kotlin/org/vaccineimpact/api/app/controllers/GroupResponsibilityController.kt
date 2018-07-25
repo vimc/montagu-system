@@ -12,13 +12,11 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.filterByPermission
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateRow
-import org.vaccineimpact.api.models.StochasticBurdenEstimate
-import org.vaccineimpact.api.models.Touchstone
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
-import org.vaccineimpact.api.serialization.EmptyDataTable
+import org.vaccineimpact.api.serialization.NullToEmptyStringSerializer
+import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.StreamSerializable
 
 class GroupResponsibilityController(
@@ -61,22 +59,22 @@ class GroupResponsibilityController(
         return data
     }
 
-    fun getTemplate(): StreamSerializable<BurdenEstimateRow>
+    fun getTemplate(): StreamSerializable<ExpectedRow>
     {
         val path = ExpectationPath(context)
         val type = context.queryParams("type") ?: "central"
         val expectations = expectationsLogic.getExpectationsById(path.expectationId, path.groupId,
                 path.touchstoneVersionId)
 
-        val rowCount = expectations.expectedRows().count()
-
         return if (type == "central")
         {
-            EmptyDataTable.new<BurdenEstimate>(rowCount, expectations.outcomes)
+            FlexibleDataTable.new<ExpectedCentralRow>(expectations.expectedCentralRows("YF"),
+                    expectations.outcomes, NullToEmptyStringSerializer.instance)
         }
         else
         {
-            EmptyDataTable.new<StochasticBurdenEstimate>(rowCount, expectations.outcomes)
+            FlexibleDataTable.new<ExpectedStochasticRow>(expectations.expectedStochasticRows("YF"),
+                    expectations.outcomes, NullToEmptyStringSerializer.instance)
         }
 
     }

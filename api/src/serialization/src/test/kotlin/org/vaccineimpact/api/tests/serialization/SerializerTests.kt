@@ -14,7 +14,7 @@ import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneId
 
-class   SerializerTests : MontaguTests()
+class MontaguSerializerTests : MontaguTests()
 {
     private val serializer = MontaguSerializer.instance
 
@@ -23,11 +23,13 @@ class   SerializerTests : MontaguTests()
     {
         assertThat(serializer.convertFieldName("")).isEqualTo("")
     }
+
     @Test
     fun `convertFieldName handles lowercase field name`()
     {
         assertThat(serializer.convertFieldName("field")).isEqualTo("field")
     }
+
     @Test
     fun `convertFieldName handles camelCase field name`()
     {

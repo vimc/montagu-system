@@ -2,11 +2,11 @@ package org.vaccineimpact.api.tests.extensions
 
 import org.junit.Test
 import org.assertj.core.api.Assertions.assertThat
-import org.vaccineimpact.api.models.CohortRestriction
-import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.Expectations
-import org.vaccineimpact.api.models.StochasticBurdenEstimate
+import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.MontaguSerializer
+import org.vaccineimpact.api.serialization.StreamSerializable
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
 
 class ExpectationsTests : MontaguTests()
 {
@@ -21,12 +21,81 @@ class ExpectationsTests : MontaguTests()
         val expectations = Expectations(1,
                 2001..2080,
                 1..80,
-                CohortRestriction(null,null),
+                CohortRestriction(null, null),
                 longCountryList,
                 expectedOutcomes
         )
 
-        val result = expectations.expectedRows()
+        val result = expectations.expectedCentralRows("YF").toList()
+
+        val expectedCohorts = 80 * 80
+        val numCountries = 100
+
+        assertThat(result.count()).isEqualTo(expectedCohorts * numCountries)
+    }
+
+    @Test
+    fun `generates central row with null cohort size and outcomes`()
+    {
+        val expectedOutcomes = listOf("Dalys", "Deaths")
+
+        val longCountryList = (1..100).map {
+            Country(it.toString(), it.toString())
+        }
+        val expectations = Expectations(1,
+                2001..2080,
+                1..80,
+                CohortRestriction(null, null),
+                longCountryList,
+                expectedOutcomes
+        )
+
+        val result = expectations.expectedCentralRows("YF").toList()
+
+        assertThat(result.all { it.cohortSize == null }).isTrue()
+        assertThat(result.all { it.outcomes.all { it.value == null } }).isTrue()
+    }
+
+    @Test
+    fun `generates stochastic row with null cohort size, outcomes, and run id`()
+    {
+        val expectedOutcomes = listOf("Dalys", "Deaths")
+
+        val longCountryList = (1..100).map {
+            Country(it.toString(), it.toString())
+        }
+        val expectations = Expectations(1,
+                2001..2080,
+                1..80,
+                CohortRestriction(null, null),
+                longCountryList,
+                expectedOutcomes
+        )
+
+        val result = expectations.expectedStochasticRows("YF").toList()
+
+        assertThat(result.all { it.runId == null }).isTrue()
+        assertThat(result.all { it.cohortSize == null }).isTrue()
+        assertThat(result.all { it.outcomes.all { it.value == null } }).isTrue()
+    }
+
+    @Test
+    fun `can generate stochastic rows`()
+    {
+        val expectedOutcomes = listOf("Dalys", "Deaths")
+
+        val longCountryList = (1..100).map {
+            Country(it.toString(), it.toString())
+        }
+        val expectations = Expectations(1,
+                2001..2080,
+                1..80,
+                CohortRestriction(null, null),
+                longCountryList,
+                expectedOutcomes
+        )
+
+        val result = expectations.expectedStochasticRows("YF").toList()
 
         val expectedCohorts = 80 * 80
         val numCountries = 100
@@ -43,12 +112,12 @@ class ExpectationsTests : MontaguTests()
                 1,
                 2000..2007,
                 1..10,
-                CohortRestriction(null,null),
+                CohortRestriction(null, null),
                 listOf(Country("ABC", "CountryA"), Country("DEF", "CountryD")),
                 expectedOutcomes
         )
 
-        val result = expectations.expectedRows()
+        val result = expectations.expectedCentralRows("YF").toList()
 
         val expectedCohorts = 80
         val numCountries = 2
@@ -71,7 +140,7 @@ class ExpectationsTests : MontaguTests()
                 expectedOutcomes
         )
 
-        val result = expectations.expectedRows()
+        val result = expectations.expectedCentralRows("YF").toList()
 
         val expectedCohorts = 70
         val numCountries = 2
@@ -94,7 +163,7 @@ class ExpectationsTests : MontaguTests()
                 expectedOutcomes
         )
 
-        val result = expectations.expectedRows()
+        val result = expectations.expectedCentralRows("YF").toList()
 
         val expectedCohorts = 65
         val numCountries = 2
@@ -117,11 +186,12 @@ class ExpectationsTests : MontaguTests()
                 expectedOutcomes
         )
 
-        val result = expectations.expectedRows()
+        val result = expectations.expectedCentralRows("YF").toList()
 
         val expectedCohorts = 49
         val numCountries = 2
 
         assertThat(result.count()).isEqualTo(expectedCohorts * numCountries)
     }
+
 }
