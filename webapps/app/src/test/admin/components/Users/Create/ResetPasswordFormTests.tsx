@@ -16,7 +16,7 @@ import {
     ResetPasswordFields,
     resetPasswordForm
 } from "../../../../../main/admin/components/Users/Account/ResetPasswordForm";
-import { ResetPasswordFormComponent } from "../../../../../main/admin/components/Users/Account/ResetPasswordFormComponent";
+import { SetPasswordFormComponent } from "../../../../../main/admin/components/Users/Account/SetPasswordFormComponent";
 import { makeNotification, notificationActions } from "../../../../../main/shared/actions/NotificationActions";
 import { accountStore } from "../../../../../main/admin/stores/AccountStore";
 import { accountActions } from "../../../../../main/admin/actions/AccountActions";
@@ -51,7 +51,7 @@ describe("ResetPasswordForm", () => {
             password: "somenewpassword"
         });
 
-        const rendered = shallow(<ResetPasswordFormComponent {...mockFormProperties(form)} />);
+        const rendered = shallow(<SetPasswordFormComponent {...mockFormProperties(form)} />);
         expect(rendered.find({ name: "password" }).prop("value")).to.equal("somenewpassword");
     });
 
@@ -59,7 +59,7 @@ describe("ResetPasswordForm", () => {
         const errors = {
             password: "Blah blah"
         };
-        const rendered = shallow(<ResetPasswordFormComponent {...mockFormProperties(form, errors)} />);
+        const rendered = shallow(<SetPasswordFormComponent {...mockFormProperties(form, errors)} />);
         const validationErrors = rendered.find(ValidationError);
         let hasMessage: boolean = false;
         validationErrors.forEach(x => {

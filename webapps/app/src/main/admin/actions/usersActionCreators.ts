@@ -7,11 +7,13 @@ import {
     AllGlobalRolesFetched,
     AllUsersFetched,
     SetCreateUserError,
-    SetCurrentUser,
+    SetCurrentUser, SetPasswordErrors,
     ShowCreateUser,
     UsersTypes
 } from "../actionTypes/UsersTypes";
 import {CreateUserFormFields} from "../components/Users/Create/CreateUserForm";
+import {makeNotification, notificationActions} from "../../shared/actions/NotificationActions";
+import {settings} from "../../shared/Settings";
 
 export const usersActionCreators = {
 
@@ -102,5 +104,28 @@ export const usersActionCreators = {
             type: UsersTypes.SHOW_CREATE_USER,
             data: value
         } as ShowCreateUser;
+    },
+
+    setPassword(resetToken: string, newPassword: string) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const result = await (new UsersService(dispatch, getState)).setPassword(resetToken, newPassword);
+            if (result && result.errors) {
+                dispatch({
+                    type: UsersTypes.SET_PASSWORD_ERRORS,
+                    errors: result.errors
+                } as SetPasswordErrors);
+            } else if (result) {
+                notificationActions.notify(makeNotification(
+                    "Your password has been set. You are now being redirected to the Montagu homepage...",
+                    "info")
+                );
+                setTimeout(() => window.location.replace(settings.montaguUrl()), 3000);
+            } else {
+                dispatch({
+                    type: UsersTypes.SET_PASSWORD_ERRORS,
+                    errors: [{message: "An error occurred setting your password"}]
+                } as SetPasswordErrors);
+            }
+        }
     },
 };

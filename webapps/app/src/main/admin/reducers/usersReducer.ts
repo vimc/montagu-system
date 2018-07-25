@@ -7,6 +7,7 @@ export interface UsersState {
     globalRoles: string[],
     showCreateUser: boolean,
     createUserErrors: ErrorInfo[],
+    setPasswordErrors: ErrorInfo[],
     currentUser: User
 }
 
@@ -14,6 +15,7 @@ export const usersInitialState: UsersState = {
     users: [],
     showCreateUser: false,
     createUserErrors: [],
+    setPasswordErrors: [],
     globalRoles: [],
     currentUser: null
 };
