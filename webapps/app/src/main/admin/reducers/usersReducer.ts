@@ -7,6 +7,7 @@ export interface UsersState {
     globalRoles: string[],
     showCreateUser: boolean,
     createUserErrors: ErrorInfo[],
+    setPasswordToken: string,
     setPasswordErrors: ErrorInfo[],
     currentUser: User
 }
@@ -16,6 +17,7 @@ export const usersInitialState: UsersState = {
     showCreateUser: false,
     createUserErrors: [],
     setPasswordErrors: [],
+    setPasswordToken: null,
     globalRoles: [],
     currentUser: null
 };
@@ -32,9 +34,11 @@ export const usersReducer = (state = usersInitialState, action: UsersAction): Us
                 showCreateUser: typeof action.data == "boolean" ? action.data : usersInitialState.showCreateUser
             };
         case UsersTypes.SET_CREATE_USER_ERRORS:
-            return {
-                ...state, createUserErrors: action.errors
-            };
+            return {...state, createUserErrors: action.errors};
+        case UsersTypes.CHANGE_SET_PASSWORD_ERRORS:
+            return {...state, setPasswordErrors: action.errors};
+        case UsersTypes.CHANGE_SET_PASSWORD_TOKEN:
+            return {...state, setPasswordToken: action.token};
         case UsersTypes.SET_CURRENT_USER:
             const currentUser = state.users.find(u => u.username == action.data);
             return {

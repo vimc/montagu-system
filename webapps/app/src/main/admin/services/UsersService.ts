@@ -48,7 +48,9 @@ export class UsersService extends AbstractLocalService {
     }
 
     setPassword(resetToken: string, newPassword: string): Promise<Result> {
-        return this.post(`/onetime_link/${resetToken}/`, JSON.stringify({ password: newPassword }));
+        return this
+            .setOptions({exceptionOnError: false})
+            .post(`/onetime_link/${resetToken}/`, JSON.stringify({ password: newPassword }));
     }
 }
 

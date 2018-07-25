@@ -38,8 +38,8 @@ export class SetPasswordFormComponent extends React.Component<InternalProps, und
                     validate={[validations.required, (name: string) => Validation.minLength(name, 8)]}
                 />
             </div>
-            <ReduxFormValidationErrors errors={this.props.errors}/>
             <button type="submit">Update</button>
+            <div><ReduxFormValidationErrors errors={this.props.errors}/></div>
         </form>;
     }
 }

@@ -1,40 +1,61 @@
 import * as React from "react";
-import {AdminPageWithHeader} from "../../AdminPageWithHeader";
 import {InternalLink} from "../../../../shared/components/InternalLink";
-import {IPageWithParent} from "../../../../shared/models/Breadcrumb";
-import {MainMenu} from "../../MainMenu/MainMenu";
-import {Page} from "../../../../shared/components/PageWithHeader/Page";
 import {SetPasswordForm} from "./SetPasswordFormComponent";
 import {jwtTokenAuth} from "../../../../shared/modules/jwtTokenAuth";
 import {helpers} from "../../../../shared/Helpers";
 import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {AdminAppState} from "../../../reducers/adminAppReducers";
+import {compose} from "recompose";
+import {connect, Dispatch} from "react-redux";
+import {AdminPageHeader} from "../../AdminPageHeader";
+import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
+import {setPasswordPageActionCreators} from "../../../actions/pages/SetPasswordPageActionCreators";
 
-export class SetPasswordPage extends AdminPageWithHeader<PageProperties<undefined>> {
-    name(): string {
-        return "Enter a new password";
-    }
+interface Props extends PageProperties<undefined> {
+    token: string;
+    saveTokenToState: (token: string) => void;
+}
 
-    urlFragment(): string {
-        return "set-password/";
-    }
+export class SetPasswordPageComponent extends React.Component<Props> {
+    static title: string = "Enter a new password";
 
-    parent(): IPageWithParent {
-        return new MainMenu();
+    componentDidMount() {
+        const tokenFromUrl = helpers.queryStringAsObject().token;
+        this.props.saveTokenToState(tokenFromUrl);
+        this.props.onLoad()
     }
 
     render(): JSX.Element {
-        const token = helpers.queryStringAsObject().token;
-
         let content: JSX.Element = null;
-        if (jwtTokenAuth.isCompressedTokenValid(token)) {
-            content = <SetPasswordForm resetToken={token}/>;
+        if (jwtTokenAuth.isCompressedTokenValid(this.props.token)) {
+            content = <SetPasswordForm resetToken={this.props.token}/>;
         } else {
             content = <RequestResetLinkButton/>;
         }
 
-        return <Page page={this}>{content}</Page>;
+        return <div>
+            <AdminPageHeader/>
+            <PageArticle title={SetPasswordPageComponent.title}>
+                {content}
+            </PageArticle>
+        </div>;
     }
 }
+
+function mapStateToProps(state: AdminAppState, props: Props): Partial<Props> {
+    return {...props, token: state.users.setPasswordToken};
+}
+
+function mapDispatchToProps(dispatch: Dispatch<AdminAppState>): Partial<Props> {
+    return {
+        onLoad: () => dispatch(setPasswordPageActionCreators.onLoad()),
+        saveTokenToState: (token: string) => dispatch(setPasswordPageActionCreators.saveToken(token))
+    }
+}
+
+export const SetPasswordPage = compose(
+    connect(mapStateToProps, mapDispatchToProps)
+)(SetPasswordPageComponent) as React.ComponentClass<Props>;
 
 class RequestResetLinkButton extends React.Component<undefined> {
     render(): JSX.Element {

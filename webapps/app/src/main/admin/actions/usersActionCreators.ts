@@ -7,13 +7,14 @@ import {
     AllGlobalRolesFetched,
     AllUsersFetched,
     SetCreateUserError,
-    SetCurrentUser, SetPasswordErrors,
+    SetCurrentUser, ChangeSetPasswordErrors,
     ShowCreateUser,
-    UsersTypes
+    UsersTypes, ChangeSetPasswordToken
 } from "../actionTypes/UsersTypes";
 import {CreateUserFormFields} from "../components/Users/Create/CreateUserForm";
 import {makeNotification, notificationActions} from "../../shared/actions/NotificationActions";
 import {settings} from "../../shared/Settings";
+import {helpers} from "../../shared/Helpers";
 
 export const usersActionCreators = {
 
@@ -110,10 +111,14 @@ export const usersActionCreators = {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             const result = await (new UsersService(dispatch, getState)).setPassword(resetToken, newPassword);
             if (result && result.errors) {
+                const codes = result.errors.map(e => e.code);
+                if (codes.indexOf("invalid-token-used") > -1) {
+                    dispatch(usersActionCreators.clearSetPasswordToken());
+                }
                 dispatch({
-                    type: UsersTypes.SET_PASSWORD_ERRORS,
+                    type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS,
                     errors: result.errors
-                } as SetPasswordErrors);
+                } as ChangeSetPasswordErrors);
             } else if (result) {
                 notificationActions.notify(makeNotification(
                     "Your password has been set. You are now being redirected to the Montagu homepage...",
@@ -122,10 +127,20 @@ export const usersActionCreators = {
                 setTimeout(() => window.location.replace(settings.montaguUrl()), 3000);
             } else {
                 dispatch({
-                    type: UsersTypes.SET_PASSWORD_ERRORS,
+                    type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS,
                     errors: [{message: "An error occurred setting your password"}]
-                } as SetPasswordErrors);
+                } as ChangeSetPasswordErrors);
             }
         }
     },
+
+    clearSetPasswordToken() {
+        return (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            helpers.removeQueryString();
+            dispatch({
+                type: UsersTypes.CHANGE_SET_PASSWORD_TOKEN,
+                token: null
+            } as ChangeSetPasswordToken);
+        }
+    }
 };

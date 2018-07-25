@@ -1,6 +1,8 @@
 import {jwtDecoder} from "./sources/JwtDecoder";
 import {Result} from "./models/Generated";
 import {settings} from "./Settings";
+import {History, Location} from "history";
+import Search = History.Search;
 
 export function doNothing() {
 
@@ -62,9 +64,6 @@ export const helpers = {
 
         const queryAsObject = this.queryStringAsObject();
 
-        const removeQueryString = () => {
-            history.replaceState({}, document.title, location.href.split("?")[0]);
-        };
 
         if (!queryAsObject.result) {
             return null
@@ -72,16 +71,19 @@ export const helpers = {
 
         try {
             const decoded = jwtDecoder.jwtDecode(queryAsObject.result);
-            removeQueryString();
+            helpers.removeQueryString();
             return JSON.parse(decoded.result);
         }
         catch (e) {
             // if the query string token is nonsense, just return null
-            removeQueryString();
+            helpers.removeQueryString();
             return null;
         }
     },
     buildRedirectUrl(redirectPath: String) {
        return "?redirectUrl=" + encodeURI(settings.montaguUrl() + redirectPath);
-    }
+    },
+    removeQueryString() {
+        history.replaceState({}, document.title, location.href.split("?")[0]);
+    },
 };
