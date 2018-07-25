@@ -1,46 +1,8 @@
 import * as React from "react";
-import {Country, ExpectationMapping, NumberRange} from "../../../../shared/models/Generated";
-import {Popover, PopoverBody} from "reactstrap";
+import {ExpectationMapping, NumberRange} from "../../../../shared/models/Generated";
+import {CountriesList} from "./CountriesList";
 
-interface State {
-    showCountries: boolean;
-}
-
-interface Props {
-    countries: Country[]
-    targetKey: string;
-}
-
-export class CountriesList extends React.Component<Props, State> {
-
-    constructor(props: Props) {
-        super(props);
-
-        this.toggle = this.toggle.bind(this);
-        this.state = {
-            showCountries: false
-        };
-    }
-
-    toggle() {
-        this.setState({
-            showCountries: !this.state.showCountries
-        });
-    }
-
-    render() {
-        const countriesList = this.props.countries.map(c => c.name).join(", ");
-
-        return <span><a href="#" id={this.props.targetKey}
-                       onClick={this.toggle}>view list</a>
-            <Popover placement="right" isOpen={this.state.showCountries} target={this.props.targetKey}
-                     toggle={this.toggle}>
-                <PopoverBody>{countriesList}</PopoverBody>
-            </Popover></span>
-    }
-}
-
-export class ExpectationsDescription extends React.Component<ExpectationMapping, State> {
+export class ExpectationsDescription extends React.PureComponent<ExpectationMapping> {
 
     render(): JSX.Element {
 
