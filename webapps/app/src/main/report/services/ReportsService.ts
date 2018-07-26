@@ -1,28 +1,28 @@
-import {AbstractReportLocalService} from "./AbstractReportLocalService";
+import {AbstractLocalService} from "../../shared/services/AbstractLocalService";
 
-export class ReportsService extends AbstractReportLocalService {
+export class ReportsService extends AbstractLocalService {
 
     getAllReports() {
         return this.setOptions({cacheKey: ReportsCacheKeysEnum.reports})
-            .get("/reports/");
+            .get("/reports/", "reporting");
     }
 
     getReportVersions(reportId: string) {
         return this.setOptions({cacheKey: ReportsCacheKeysEnum.versions})
-            .get(`/reports/${reportId}/`);
+            .get(`/reports/${reportId}/`, "reporting");
     }
 
     getVersionDetails(reportId: string, versionId: string) {
         return this.setOptions({cacheKey: ReportsCacheKeysEnum.versionDetails})
-            .get(`/reports/${reportId}/versions/${versionId}/`);
+            .get(`/reports/${reportId}/versions/${versionId}/`, "reporting");
     }
 
     publishReport(name: string, version: string) {
-        return this.post(`/reports/${name}/versions/${version}/publish/`);
+        return this.post(`/reports/${name}/versions/${version}/publish/`, "reporting");
     }
 
     unPublishReport(name: string, version: string) {
-        return this.post(`/reports/${name}/versions/${version}/publish/?value=false`);
+        return this.post(`/reports/${name}/versions/${version}/publish/?value=false`, "reporting");
     }
 }
 

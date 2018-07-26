@@ -15,7 +15,7 @@ import {Report} from "../main/shared/models/Generated";
 import {UserService} from "../main/report/services/UserService";
 import {mockArtefact} from "../test/mocks/mockModels";
 import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
-import {OneTimeTokenService} from "../main/report/services/OneTimeTokenService";
+import {OneTimeTokenService} from "../main/shared/services/OneTimeTokenService";
 import {Provider} from "react-redux";
 
 class ReportIntegrationTests extends IntegrationTestSuite {
@@ -84,7 +84,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState))
                 .getReportVersions("minimal");
             const token = await (new OneTimeTokenService(this.store.dispatch, this.store.getState))
-                .fetchToken(`/reports/minimal/${versions[0]}/artefacts/`);
+                .fetchToken(`/reports/minimal/${versions[0]}/artefacts/`, "reporting");
             const decoded = inflateAndDecode(token);
             expect(decoded.url).to.equal(`/v1/reports/minimal/${versions[0]}/artefacts/`);
         });

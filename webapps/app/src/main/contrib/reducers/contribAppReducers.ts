@@ -13,6 +13,7 @@ import { runParametersReducer, RunParametersState } from "./runParametersReducer
 import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadcrumbsReducer";
 import {estimatesReducer, EstimatesState} from "./estimatesReducer";
 import {UserState, userReducer} from "./userReducer";
+import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneTimeTokenReducer";
 
 
 export interface ContribAppState {
@@ -28,6 +29,7 @@ export interface ContribAppState {
     coverage: CoverageState;
     estimates: EstimatesState;
     runParameters: RunParametersState;
+    onetimeTokens: OneTimeTokenState;
 }
 
 const reducers = combineReducers({
@@ -43,7 +45,8 @@ const reducers = combineReducers({
     coverage: coverageReducer,
     estimates: estimatesReducer,
     runParameters: runParametersReducer,
-    router: routerReducer
+    router: routerReducer,
+    onetimeTokens: onetimeTokenReducer
 });
 
 export default reducers;

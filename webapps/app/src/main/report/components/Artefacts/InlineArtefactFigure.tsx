@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Artefact} from "../../../shared/models/reports/Artefact";
-import {OneTimeLinkContext, OneTimeLinkProps} from "../OneTimeLinkContext";
+import {OneTimeLinkContext, OneTimeLinkProps} from "../../../shared/components/OneTimeLinkContext";
 import {buildArtefactUrl} from "../../LinkHelpers";
 
 interface Props {
@@ -16,7 +16,10 @@ export class InlineArtefactFigure extends React.Component<Props, undefined> {
         const extension = filename.split('.').pop();
 
         if (InlineArtefactFigure.isImage(extension)) {
-            return <ArtefactFigure href={buildArtefactUrl(report, version, filename, true)}/>;
+            return <ArtefactFigure
+                href={buildArtefactUrl(report, version, filename, true)}
+                service="reporting"
+            />;
         } else {
             return null;
         }

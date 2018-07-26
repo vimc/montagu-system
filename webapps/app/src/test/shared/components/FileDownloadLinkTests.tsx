@@ -5,7 +5,7 @@ import {
     FileDownloadButtonInner,
     FileDownloadInner, FileDownloadLink,
     FileDownloadLinkInner
-} from "../../../main/report/components/FileDownloadLink";
+} from "../../../main/shared/components/FileDownloadLink";
 import * as React from "react";
 import {alt} from "../../../main/shared/alt";
 import {Sandbox} from "../../Sandbox";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {FileDownloadLink} from "../FileDownloadLink";
+import {FileDownloadLink} from "../../../shared/components/FileDownloadLink";
 import {encodeFilename} from "../../../shared/Helpers";
 import {ReportDownloadSection} from "../Reports/DownloadSection";
 
@@ -23,7 +23,7 @@ export class ResourceLinks extends React.Component<ResourceLinksProps, undefined
 
         const links = this.props.resources.map((resource) =>
             <div key={resource}>
-                <FileDownloadLink href={this.buildUrl(resource)}>{resource}</FileDownloadLink>
+                <FileDownloadLink href={this.buildUrl(resource)} service="reporting">{resource}</FileDownloadLink>
             </div>
         );
 

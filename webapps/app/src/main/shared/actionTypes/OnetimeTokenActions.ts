@@ -1,5 +1,3 @@
-import {OneTimeToken} from "../models/OneTimeToken";
-
 export enum OnetimeTokenActionType {
     TOKEN_FETCHED = "TOKEN_FETCHED"
 }

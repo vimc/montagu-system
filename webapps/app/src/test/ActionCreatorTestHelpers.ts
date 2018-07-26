@@ -40,7 +40,7 @@ export function verifyActionThatCallsServiceAndReturnsResult(
     store.dispatch(props.callActionCreator());
     setTimeout(() => {
         const actions = store.getActions();
-        expect(props.expectTheseActionTypes).to.eql(actions.map((x: any) => x.type));
+        expect(actions.map((x: any) => x.type)).to.eql(props.expectTheseActionTypes);
         props.expectTheseActionTypes.forEach((expectedAction, i) => {
             expect(actions[i]).to.eql({
                 type: expectedAction,

@@ -2,9 +2,9 @@ import {expect} from "chai";
 import * as React from "react";
 
 import {checkAsync} from "../../testHelpers";
-import {OneTimeLinkContext, OneTimeLinkProps} from "../../../main/report/components/OneTimeLinkContext";
+import {OneTimeLinkContext, OneTimeLinkProps} from "../../../main/shared/components/OneTimeLinkContext";
 import {Sandbox} from "../../Sandbox";
-import {OneTimeTokenService} from "../../../main/report/services/OneTimeTokenService";
+import {OneTimeTokenService} from "../../../main/shared/services/OneTimeTokenService";
 import {mockOnetimeTokenState, mockReportAppState} from "../../mocks/mockStates";
 import {ILookup} from "../../../main/shared/models/Lookup";
 import {ReportAppState} from "../../../main/report/reducers/reportAppReducers";
@@ -48,7 +48,7 @@ describe("OneTimeLinkContext", () => {
         const Class = OneTimeLinkContext(EmptyComponent);
         const rendered = shallow(<Class href="/banana/"/>, {context: {store}}).dive();
         const child = rendered.find(EmptyComponent);
-        expect(child.prop("href")).to.equal("http://localhost:8081/v1/banana/?access_token=" + token);
+        expect(child.prop("href")).to.equal("http://localhost:8080/v1/banana/?access_token=" + token);
     });
 
     it("can handle url with query string", () => {
@@ -57,16 +57,17 @@ describe("OneTimeLinkContext", () => {
         tokens[url] = token;
         const rendered = shallow(<Class href={url} />, {context: {store}}).dive();
         const child = rendered.find(EmptyComponent);
-        expect(child.prop("href")).to.equal("http://localhost:8081/v1/banana/?query=whatevs&access_token=" + token);
+        expect(child.prop("href")).to.equal("http://localhost:8080/v1/banana/?query=whatevs&access_token=" + token);
     });
 
     it("triggers fetchToken on mount", (done: DoneCallback) => {
 
         const Class: any = OneTimeLinkContext(EmptyComponent);
-        shallow(<Class href="/banana/"/>, {context: {store}}).dive();
+        shallow(<Class href="/banana/" service="reporting" />, {context: {store}}).dive();
 
         checkAsync(done, () => {
             expect(fetchTokenStub.called).to.equal(true, "Expected fetchToken to be called");
+            expect(fetchTokenStub.args[0]).to.eql(["/banana/", "reporting"]);
         });
     });
 
