@@ -65,9 +65,10 @@ class GroupResponsibilityController(
     {
         val path = ExpectationPath(context)
         val type = context.queryParams("type") ?: "central"
-        val expectations = expectationsLogic.getExpectationsById(path.expectationId, path.groupId,
+        val expectationMapping = expectationsLogic.getExpectationsById(path.expectationId, path.groupId,
                 path.touchstoneVersionId)
 
+        val expectations = expectationMapping.expectation
         val rowCount = expectations.expectedRows().count()
 
         return if (type == "central")

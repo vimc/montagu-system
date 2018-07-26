@@ -14,7 +14,8 @@ fun exampleExpectations() = Expectations(
 
 fun exampleExpectationMapping() = ExpectationMapping(
         exampleExpectations(),
-        listOf("yf-scenario")
+        listOf("yf-scenario"),
+        "YF"
 )
 
 fun exampleResponsibility() = Responsibility(

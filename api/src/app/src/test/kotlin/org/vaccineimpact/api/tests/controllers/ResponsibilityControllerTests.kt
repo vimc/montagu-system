@@ -142,7 +142,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(true)
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectations()
+            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectationMapping()
         }
 
         val result = GroupResponsibilityController(context, mock(), mock(), repo)
@@ -167,7 +167,7 @@ class ResponsibilityControllerTests : MontaguTests()
         }
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectations()
+            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectationMapping()
         }
 
         val result = GroupResponsibilityController(context, mock(), mock(), repo)
@@ -188,7 +188,7 @@ class ResponsibilityControllerTests : MontaguTests()
         }
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectations()
+            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectationMapping()
         }
 
         val result = GroupResponsibilityController(context, mock(), mock(), repo)
