@@ -21,6 +21,14 @@ export const onetimeTokenReducer = (state = onetimeTokensInitialState,
                 ...state, tokens: tokenLookup
             }
         }
+        case OnetimeTokenActionType.TOKEN_INVALIDATED: {
+            const url = action.data;
+            const tokenLookup = {...state.tokens};
+            tokenLookup[url] = null;
+            return {
+                ...state, tokens: tokenLookup
+            }
+        }
         default:
             return state;
     }

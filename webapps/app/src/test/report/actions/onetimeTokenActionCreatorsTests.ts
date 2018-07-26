@@ -23,12 +23,21 @@ describe("Onetime token action creators", () => {
         sandbox.restore()
     });
 
-    it("creates token fetched action", async () => {
+    it("dispatches token fetched action", async () => {
 
         await store.dispatch(oneTimeTokenActionCreators.fetchToken("url", "reporting"));
         const actions = store.getActions();
-        expect(actions[0].type).to.eql(OnetimeTokenActionType.TOKEN_FETCHED);
-        expect(actions[0].data).to.eql({url: "url", token: "TOKEN"});
+        expect(actions[1].type).to.eql(OnetimeTokenActionType.TOKEN_FETCHED);
+        expect(actions[1].data).to.eql({url: "url", token: "TOKEN"});
+
+    });
+
+    it("dispatches token invalidation action before fetching token", async () => {
+
+        await store.dispatch(oneTimeTokenActionCreators.fetchToken("url", "reporting"));
+        const actions = store.getActions();
+        expect(actions[0].type).to.eql(OnetimeTokenActionType.TOKEN_INVALIDATED);
+        expect(actions[0].data).to.eql("url");
 
     });
 });
