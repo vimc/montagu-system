@@ -142,7 +142,7 @@ class ResponsibilityControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(true)
 
         val repo = mock<ExpectationsLogic> {
-            on { getExpectationsById(any(), any(), any()) } doReturn exampleExpectationMapping()
+            on { getExpectationsById(any(), any(), any()) } doReturn fakeExpectationMapping
         }
 
         val result = GroupResponsibilityController(context, mock(), mock(), repo)
@@ -156,6 +156,12 @@ class ResponsibilityControllerTests : MontaguTests()
 
     private val fakeExpectations = Expectations(1, 2000..2001, 1..1, CohortRestriction(),  listOf(Country("a", "countrya")),
             listOf("dalys"))
+
+    private val fakeExpectationMapping = ExpectationMapping(
+            fakeExpectations,
+            listOf("yf-scenario", "yf-scenario-2"),
+            "YF"
+    )
 
     private fun serialize(table: StreamSerializable<*>) = serializeToStreamAndGetAsString {
         table.serialize(it)
