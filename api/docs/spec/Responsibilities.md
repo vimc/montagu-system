@@ -58,10 +58,10 @@ Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.js
             },        
             {
                 "scenario": {
-                    "id": "yf-campaign-reactive-nogavi",
+                    "id": "menA-gavi",
                     "touchstones": [ "2017-wuenic-1", "2017-op-1" ],
-                    "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
-                    "disease": "YF"
+                    "description": "Menigistis A, full GAVI support",
+                    "disease": "MenA"
                 },
                 "status": "invalid",
                 "problems": [
@@ -105,8 +105,9 @@ Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.js
                 },
                 "applicable_scenarios": [
                     "menA-novacc", 
-                    "yf-campaign-reactive-nogavi"
-                ]                
+                    "menA-gavi"
+                ],
+                "disease": "menA"
             }
         ]
     }
