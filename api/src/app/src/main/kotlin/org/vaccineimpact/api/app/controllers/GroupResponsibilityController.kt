@@ -86,7 +86,7 @@ class GroupResponsibilityController(
                 "$type-burden-template",
                 path.touchstoneVersionId,
                 path.groupId,
-                *expectationMapping.applicableScenarios.toTypedArray(),
+                expectationMapping.applicableScenarios.joinToString("+"),
                 "csv"
         )
         return nameParts.joinToString(".")
