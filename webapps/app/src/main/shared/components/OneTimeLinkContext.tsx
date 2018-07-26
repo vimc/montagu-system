@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, props: PropsFromState): Pro
     return {...props, refreshToken: (url, service) => setTimeout(() => dispatch(oneTimeTokenActionCreators.fetchToken(url, service)))}
 };
 
-export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTimeLinkProps, undefined>) {
+export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTimeLinkProps, undefined>): React.ComponentClass<PublicProps> {
     return connect(mapStateToProps, mapDispatchToProps)(class OneTimeLinkContextWrapper extends React.Component<Props> {
 
         componentWillReceiveProps(newProps: Props) {
@@ -65,7 +65,7 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
         getService(): APIService {
             return this.props.service || "main";
         }
-    })
+    });
 }
 
 function appendAccessToken(path: string, token: string) {

@@ -1,10 +1,10 @@
+import {ExpectationMapping} from "../../../../../main/shared/models/Generated";
+import {mockCountry, mockExpectationMapping, mockExpectations} from "../../../../mocks/mockModels";
+import {ExpectationsDescription} from "../../../../../main/contrib/components/Responsibilities/Expectations/ExpectationsDescription";
 import {shallow} from "enzyme";
 import * as React from "react";
 import {expect} from "chai";
-
-import {ExpectationMapping} from "../../../../../main/shared/models/Generated";
-import {mockCountry, mockExpectations} from "../../../../mocks/mockModels";
-import {ExpectationsDescription} from "../../../../../main/contrib/components/Responsibilities/Expectations/ExpectationsDescription";
+import {FileDownloadButton} from "../../../../../main/shared/components/FileDownloadLink";
 import {CountriesList} from "../../../../../main/contrib/components/Responsibilities/Expectations/CountriesList";
 
 describe("ExpectationsDescription", () => {
@@ -13,7 +13,11 @@ describe("ExpectationsDescription", () => {
             expectation: mockExpectations(),
             applicable_scenarios: ["a", "b", "c"]
         };
-        const rendered = shallow(<ExpectationsDescription {...expectation}/>);
+        const rendered = shallow(<ExpectationsDescription
+            expectationMapping={expectation}
+            touchstoneVersionId="tId"
+            groupId="gId"
+        />);
         expect(rendered.find(".h3").text()).to.equal("Template for a, b, c");
     });
 
@@ -22,7 +26,9 @@ describe("ExpectationsDescription", () => {
             expectation: mockExpectations({years: {maximum_inclusive: 2000, minimum_inclusive: 1999}}),
             applicable_scenarios: ["a", "b", "c"]
         };
-        const rendered = shallow(<ExpectationsDescription {...expectation}/>);
+        const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
+                                                          touchstoneVersionId="tId"
+                                                          groupId="gId"/>);
         expect(rendered.find("#years").text()).to.equal("2 years: 1999 - 2000");
     });
 
@@ -31,7 +37,9 @@ describe("ExpectationsDescription", () => {
             expectation: mockExpectations({ages: {maximum_inclusive: 9, minimum_inclusive: 0}}),
             applicable_scenarios: ["a", "b", "c"]
         };
-        const rendered = shallow(<ExpectationsDescription {...expectation}/>);
+        const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
+                                                          touchstoneVersionId="tId"
+                                                          groupId="gId"/>);
         expect(rendered.find("#ages").text()).to.equal("10 ages: 0 - 9");
     });
 
@@ -40,7 +48,9 @@ describe("ExpectationsDescription", () => {
             expectation: mockExpectations({cohorts: {minimum_birth_year: 1980, maximum_birth_year: 1982}}),
             applicable_scenarios: ["a", "b", "c"]
         };
-        const rendered = shallow(<ExpectationsDescription {...expectation}/>);
+        const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
+                                                          touchstoneVersionId="tId"
+                                                          groupId="gId"/>);
         expect(rendered.find("#cohorts").text()).to.equal("Not including cohorts born before 1980 or after 1982");
     });
 
@@ -49,7 +59,9 @@ describe("ExpectationsDescription", () => {
             expectation: mockExpectations({cohorts: {minimum_birth_year: null, maximum_birth_year: null}}),
             applicable_scenarios: ["a", "b", "c"]
         };
-        const rendered = shallow(<ExpectationsDescription {...expectation}/>);
+        const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
+                                                          touchstoneVersionId="tId"
+                                                          groupId="gId"/>);
         expect(rendered.find("#cohorts")).to.have.lengthOf(0);
     });
 
@@ -58,7 +70,9 @@ describe("ExpectationsDescription", () => {
             expectation: mockExpectations({cohorts: {minimum_birth_year: 1980, maximum_birth_year: null}}),
             applicable_scenarios: ["a", "b", "c"]
         };
-        const rendered = shallow(<ExpectationsDescription {...expectation}/>);
+        const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
+                                                          touchstoneVersionId="tId"
+                                                          groupId="gId"/>);
         expect(rendered.find("#cohorts").text()).to.equal("Not including cohorts born before 1980");
     });
 
@@ -67,7 +81,9 @@ describe("ExpectationsDescription", () => {
             expectation: mockExpectations({cohorts: {minimum_birth_year: null, maximum_birth_year: 1982}}),
             applicable_scenarios: ["a", "b", "c"]
         };
-        const rendered = shallow(<ExpectationsDescription {...expectation}/>);
+        const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
+                                                          touchstoneVersionId="tId"
+                                                          groupId="gId"/>);
         expect(rendered.find("#cohorts").text()).to.equal("Not including cohorts born after 1982");
     });
 
@@ -76,7 +92,9 @@ describe("ExpectationsDescription", () => {
             expectation: mockExpectations({outcomes: ["deaths", "cases"]}),
             applicable_scenarios: ["a", "b", "c"]
         };
-        const rendered = shallow(<ExpectationsDescription {...expectation}/>);
+        const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
+                                                          touchstoneVersionId="tId"
+                                                          groupId="gId"/>);
         expect(rendered.find("#outcomes").find("li")).to.have.lengthOf(2);
     });
 
@@ -86,8 +104,21 @@ describe("ExpectationsDescription", () => {
             expectation: mockExpectations({countries: countries}),
             applicable_scenarios: ["a", "b", "c"]
         };
-        const rendered = shallow(<ExpectationsDescription {...expectation}/>);
+        const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
+                                                          touchstoneVersionId="tId"
+                                                          groupId="gId"/>);
         expect(rendered.find(CountriesList).prop("countries")).to.have.members(countries)
     });
 
+
+    it("renders FileDownloadButton", () => {
+        const em = mockExpectationMapping();
+        const rendered = shallow(<ExpectationsDescription
+            expectationMapping={em}
+            touchstoneVersionId="tId"
+            groupId="gId"
+        />);
+        expect(rendered.find(FileDownloadButton).prop("href"))
+            .to.equal(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/`);
+    });
 });
