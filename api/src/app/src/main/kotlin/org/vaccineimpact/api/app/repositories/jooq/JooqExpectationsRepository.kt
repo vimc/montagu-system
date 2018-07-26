@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
 import org.jooq.Record
+import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.db.Tables.*
@@ -16,6 +17,8 @@ import org.vaccineimpact.api.models.CohortRestriction
 import org.vaccineimpact.api.models.Country
 import org.vaccineimpact.api.models.ExpectationMapping
 import org.vaccineimpact.api.models.Expectations
+
+data class ApplicableScenariosAndDisease(val scenarios: List<String>, val disease: String)
 
 class JooqExpectationsRepository(dsl: DSLContext)
     : JooqRepository(dsl), ExpectationsRepository
@@ -39,44 +42,65 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 .fetchInto(Int::class.java)
     }
 
-    override fun getExpectationsForResponsibility(responsibilityId: Int): Expectations
+    override fun getExpectationsForResponsibility(responsibilityId: Int): ExpectationMapping
     {
         val id = dsl.select(RESPONSIBILITY.EXPECTATIONS)
-                        .from(RESPONSIBILITY)
-                        .where(RESPONSIBILITY.ID.eq(responsibilityId))
-                        .fetchOne()
-                        .value1()
-                        ?: throw UnknownObjectError(responsibilityId, "burden-estimate-expectation")
-        
+                .from(RESPONSIBILITY)
+                .where(RESPONSIBILITY.ID.eq(responsibilityId))
+                .fetchOne()
+                .value1()
+                ?: throw UnknownObjectError(responsibilityId, "burden-estimate-expectation")
+
         return getExpectationsById(id)
     }
 
-    override fun getExpectationsById(expectationsId: Int): Expectations
+    override fun getExpectationsById(expectationsId: Int): ExpectationMapping
     {
-        val basicData = dsl.fetchAny(Tables.expectations,Tables.expectations.ID.eq(expectationsId))
-        return basicData.withCountriesAndOutcomes()
+        val basicData = dsl.fetchAny(Tables.expectations, Tables.expectations.ID.eq(expectationsId))
+        val expectations = basicData.withCountriesAndOutcomes()
+        val scenarioRecords = dsl.select(SCENARIO_DESCRIPTION.ID, SCENARIO_DESCRIPTION.DISEASE)
+                .fromJoinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
+                .where(RESPONSIBILITY.EXPECTATIONS.eq(expectationsId))
+                .fetch()
+        val (scenarios, disease) = getMappingInfoFromRecords(scenarioRecords, expectationsId)
+        return ExpectationMapping(expectations, scenarios, disease)
     }
 
     override fun getExpectationsForResponsibilitySet(modellingGroup: String, touchstoneVersion: String): List<ExpectationMapping>
     {
         return dsl.select(Tables.expectations.fieldsAsList())
-                .select(SCENARIO.SCENARIO_DESCRIPTION)
+                .select(SCENARIO_DESCRIPTION.ID, SCENARIO_DESCRIPTION.DISEASE)
                 .fromJoinPath(RESPONSIBILITY_SET, RESPONSIBILITY, Tables.expectations)
-                .joinPath(RESPONSIBILITY, SCENARIO)
+                .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .where(
                         RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersion)
                                 .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(modellingGroup))
                 )
                 .groupBy { it[Tables.expectations.ID] }
-                .map { getBasicDataAndApplicableScenariosFromRecords(it.value) }
-                .map { (basicData, scenarios) -> ExpectationMapping(basicData.withCountriesAndOutcomes(), scenarios) }
+                .map { getBasicDataAndMappingFromRecords(it.value) }
+                .map { (basicData, mapping) ->
+                    ExpectationMapping(
+                            basicData.withCountriesAndOutcomes(),
+                            mapping.scenarios,
+                            mapping.disease
+                    )
+                }
     }
 
-    private fun getBasicDataAndApplicableScenariosFromRecords(records: List<Record>): Pair<BurdenEstimateExpectationRecord, List<String>>
+    private fun getBasicDataAndMappingFromRecords(records: List<Record>): Pair<BurdenEstimateExpectationRecord, ApplicableScenariosAndDisease>
     {
         val basicData = records.first().into(BurdenEstimateExpectationRecord::class.java)
-        val scenarios = records.map { it[SCENARIO.SCENARIO_DESCRIPTION] }
-        return Pair(basicData, scenarios)
+        val mappingInfo = getMappingInfoFromRecords(records, basicData.id)
+        return Pair(basicData, mappingInfo)
+    }
+
+    private fun getMappingInfoFromRecords(records: List<Record>, expectationsId: Int?): ApplicableScenariosAndDisease
+    {
+        val scenarios = records.map { it[SCENARIO_DESCRIPTION.ID] }.distinct().sorted()
+        val diseases = records.map { it[SCENARIO_DESCRIPTION.DISEASE] }.distinct()
+        val disease = diseases.singleOrNull()
+                ?: throw DatabaseContentsError("Expectations $expectationsId is used by responsibilities that do not all share the same disease: ${diseases.joinToString()}")
+        return ApplicableScenariosAndDisease(scenarios, disease)
     }
 
     private fun BurdenEstimateExpectationRecord.withCountriesAndOutcomes(): Expectations

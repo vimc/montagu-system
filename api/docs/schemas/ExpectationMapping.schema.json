@@ -6,11 +6,13 @@
         "applicable_scenarios": {
             "type": "array",
             "items": { "$ref": "StandardIdentifier.schema.json" }
-        }
+        },
+        "disease": { "$ref": "StandardIdentifier.schema.json" }
     },
     "additionalProperties": false,
     "required": [ 
         "expectation",
-        "applicable_scenarios"
+        "applicable_scenarios",
+        "disease"
     ]
 }

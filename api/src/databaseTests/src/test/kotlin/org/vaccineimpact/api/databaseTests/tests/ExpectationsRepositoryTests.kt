@@ -1,7 +1,9 @@
 package org.vaccineimpact.api.databaseTests.tests
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqExpectationsRepository
 import org.vaccineimpact.api.databaseTests.RepositoryTests
@@ -17,6 +19,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     override fun makeRepository(db: JooqContext) = JooqExpectationsRepository(db.dsl)
 
     private val groupId = "group"
+    private val disease = "YF"
     private val scenarioId = "scenario"
     private val otherScenarioId = "otherScenario"
     private val touchstoneVersionId = "touchstone-1"
@@ -24,7 +27,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     @Test
     fun `can pull basic expectations`()
     {
-        val responsibilityId = addResponsibilityAnd { db, responsibilityId ->
+        val responsibilityId = addResponsibilityAnd { db, _, responsibilityId ->
             db.addExpectations(
                     responsibilityId,
                     yearMinInclusive = 2000,
@@ -39,7 +42,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             responsibilityId
         }
         withRepo { repo ->
-            val result = repo.getExpectationsForResponsibility(responsibilityId)
+            val result = repo.getExpectationsForResponsibility(responsibilityId).expectation
             assertThat(result.years).isEqualTo(2000..2100)
             assertThat(result.ages).isEqualTo(0..99)
             assertThat(result.cohorts).isEqualTo(CohortRestriction())
@@ -47,11 +50,10 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             assertThat(result.outcomes).isEmpty()
         }
     }
-
     @Test
     fun `can pull cohort expectations`()
     {
-        val responsibilityId = addResponsibilityAnd { db, responsibilityId ->
+        val responsibilityId = addResponsibilityAnd { db, _, responsibilityId ->
             db.addExpectations(
                     responsibilityId,
                     cohortMinInclusive = 2005,
@@ -60,7 +62,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             responsibilityId
         }
         withRepo { repo ->
-            val result = repo.getExpectationsForResponsibility(responsibilityId)
+            val result = repo.getExpectationsForResponsibility(responsibilityId).expectation
             assertThat(result.cohorts).isEqualTo(CohortRestriction(
                     minimumBirthYear = 2005,
                     maximumBirthYear = 2015
@@ -71,7 +73,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     @Test
     fun `can pull country expectations`()
     {
-        val responsibilityId = addResponsibilityAnd { db, responsibilityId ->
+        val responsibilityId = addResponsibilityAnd { db, _, responsibilityId ->
             db.addCountries(listOf("ABC", "DEF", "GHI"))
             db.addExpectations(
                     responsibilityId,
@@ -80,7 +82,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             responsibilityId
         }
         withRepo { repo ->
-            val result = repo.getExpectationsForResponsibility(responsibilityId)
+            val result = repo.getExpectationsForResponsibility(responsibilityId).expectation
             assertThat(result.countries).hasSameElementsAs(listOf(
                     Country("ABC", "ABC-Name"),
                     Country("DEF", "DEF-Name")
@@ -91,7 +93,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     @Test
     fun `can pull outcome expectations`()
     {
-        val responsibilityId = addResponsibilityAnd { db, responsibilityId ->
+        val responsibilityId = addResponsibilityAnd { db, _, responsibilityId ->
             db.addExpectations(
                     responsibilityId,
                     outcomes = listOf("cases", "deaths")
@@ -99,7 +101,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             responsibilityId
         }
         withRepo { repo ->
-            val result = repo.getExpectationsForResponsibility(responsibilityId)
+            val result = repo.getExpectationsForResponsibility(responsibilityId).expectation
             assertThat(result.outcomes).hasSameElementsAs(listOf(
                     "cases",
                     "deaths"
@@ -108,9 +110,43 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     }
 
     @Test
+    fun `can pull applicable scenarios and disease`()
+    {
+        val expectationsId = addResponsibilityAnd { db, setId, responsibilityId ->
+            val expId = db.addExpectations(responsibilityId)
+            db.addScenarioDescription(otherScenarioId, "desc2", disease)
+            val secondResponsibilityId = db.addResponsibility(setId, touchstoneVersionId, otherScenarioId)
+            db.addExistingExpectationsToResponsibility(secondResponsibilityId, expId)
+            expId
+        }
+        withRepo { repo ->
+            val (expectations, scenarios, disease) = repo.getExpectationsById(expectationsId)
+            assertThat(scenarios).isEqualTo(listOf(otherScenarioId, scenarioId))
+            assertThat(disease).isEqualTo(disease)
+        }
+    }
+
+    @Test
+    fun `throws exception if not all scenarios belong to same disease`()
+    {
+        val expectationsId = addResponsibilityAnd { db, setId, responsibilityId ->
+            val expId = db.addExpectations(responsibilityId)
+            db.addScenarioDescription(otherScenarioId, "desc2", "otherDisease", addDisease = true)
+            val secondResponsibilityId = db.addResponsibility(setId, touchstoneVersionId, otherScenarioId)
+            db.addExistingExpectationsToResponsibility(secondResponsibilityId, expId)
+            expId
+        }
+        withRepo { repo ->
+            assertThatThrownBy { repo.getExpectationsById(expectationsId) }
+                    .isInstanceOf(DatabaseContentsError::class.java)
+        }
+    }
+
+
+    @Test
     fun `can get expectation ids for group and touchstone`()
     {
-        val expectationId = addResponsibilityAnd { db, responsibilityId ->
+        val expectationId = addResponsibilityAnd { db, _, responsibilityId ->
             db.addExpectations(
                     responsibilityId
             )
@@ -118,7 +154,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
         withRepo { repo ->
             val result = repo.getExpectationIdsForGroupAndTouchstone(groupId, touchstoneVersionId)
             assertThat(result).hasSameElementsAs(listOf(
-                   expectationId
+                    expectationId
             ))
         }
     }
@@ -127,7 +163,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     fun `getExpectationIdsForGroupAndTouchstone only retrieves expectation ids for given group`()
     {
         val badGroupId = "badgroup"
-        addResponsibilityAnd { db, responsibilityId ->
+        addResponsibilityAnd { db, _, responsibilityId ->
 
             db.addGroup(badGroupId)
             db.addExpectations(
@@ -144,7 +180,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     fun `getExpectationIdsForGroupAndTouchstone only retrieves expectation ids for given touchstone`()
     {
         val badTouchstoneId = "touchstone-2"
-        addResponsibilityAnd { db, responsibilityId ->
+        addResponsibilityAnd { db, _, responsibilityId ->
 
             db.addTouchstoneVersion("touchstone", 2)
             db.addExpectations(
@@ -160,7 +196,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     @Test
     fun `can get expectation by id`()
     {
-        val expectationId = addResponsibilityAnd { db, responsibilityId ->
+        val expectationId = addResponsibilityAnd { db, _, responsibilityId ->
             db.addExpectations(
                     responsibilityId,
                     yearMinInclusive = 2000,
@@ -174,7 +210,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             )
         }
         withRepo { repo ->
-            val result = repo.getExpectationsById(expectationId)
+            val result = repo.getExpectationsById(expectationId).expectation
             assertThat(result.years).isEqualTo(2000..2100)
             assertThat(result.ages).isEqualTo(0..99)
             assertThat(result.cohorts).isEqualTo(CohortRestriction())
@@ -202,17 +238,19 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             assertThat(result).isEqualTo(listOf(
                     ExpectationMapping(
                             exampleExpectations(),
-                            listOf(scenarioId, otherScenarioId)
+                            listOf(otherScenarioId, scenarioId),
+                            disease
                     )
             ))
         }
     }
 
-    private fun addResponsibilityAnd(action: (JooqContext, Int) -> Int) = withDatabase { db ->
+    private fun addResponsibilityAnd(action: (JooqContext, Int, Int) -> Int) = withDatabase { db ->
         db.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
-        db.addScenarioDescription(scenarioId, "desc", "YF", addDisease = true)
+        db.addScenarioDescription(scenarioId, "desc", disease, addDisease = true)
         db.addGroup(groupId)
-        val responsibilityId = db.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
-        action(db, responsibilityId)
+        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId)
+        val responsibilityId = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
+        action(db, setId, responsibilityId)
     }
 }

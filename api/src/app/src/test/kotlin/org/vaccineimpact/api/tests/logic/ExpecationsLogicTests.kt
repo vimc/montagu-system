@@ -26,6 +26,7 @@ class ExpectationsLogicTests : MontaguTests()
 {
     private val touchstoneVersionId = "t1"
     private val groupId = "g1"
+    private val disease = "YF"
     private val otherGroupId = "g2"
     private val scenarioId = "s1"
     private val responsibilityId = 11
@@ -52,15 +53,13 @@ class ExpectationsLogicTests : MontaguTests()
     }
 
     private val fakeExpectations = Expectations(expectationId, 1..11, 2000..2009, CohortRestriction(), listOf(), listOf())
-    private val fakeExpectationsMapping = listOf(
-            ExpectationMapping(fakeExpectations, listOf(scenarioId))
-    )
+    private val fakeExpectationsMapping = ExpectationMapping(fakeExpectations, listOf(scenarioId), disease)
 
     private val expectationsRepo = mock<ExpectationsRepository> {
-        on { this.getExpectationsForResponsibility(responsibilityId) } doReturn fakeExpectations
-        on { this.getExpectationsById(expectationId) } doReturn fakeExpectations
+        on { this.getExpectationsForResponsibility(responsibilityId) } doReturn fakeExpectationsMapping
+        on { this.getExpectationsById(expectationId) } doReturn fakeExpectationsMapping
         on { this.getExpectationIdsForGroupAndTouchstone(groupId, touchstoneVersionId) } doReturn listOf(expectationId)
-        on { this.getExpectationsForResponsibilitySet(any(), any()) } doReturn fakeExpectationsMapping
+        on { this.getExpectationsForResponsibilitySet(any(), any()) } doReturn listOf(fakeExpectationsMapping)
     }
 
     private val modellingGroupRepo = mock<ModellingGroupRepository> {
@@ -107,7 +106,7 @@ class ExpectationsLogicTests : MontaguTests()
                 touchstonesRepo
         )
         val result = sut.getExpectationsById(expectationId, groupId, touchstoneVersionId)
-        assertThat(result).isEqualTo(fakeExpectations)
+        assertThat(result).isEqualTo(fakeExpectationsMapping)
     }
 
     @Test
@@ -150,8 +149,8 @@ class ExpectationsLogicTests : MontaguTests()
         )
         val result = sut.getResponsibilitySetsWithExpectations(touchstoneVersionId)
         assertThat(result).isEqualTo(listOf(
-                ResponsibilitySetWithExpectations(responsibilitySets[0], fakeExpectationsMapping),
-                ResponsibilitySetWithExpectations(responsibilitySets[1], fakeExpectationsMapping)
+                ResponsibilitySetWithExpectations(responsibilitySets[0], listOf(fakeExpectationsMapping)),
+                ResponsibilitySetWithExpectations(responsibilitySets[1], listOf(fakeExpectationsMapping))
         ))
         verify(expectationsRepo).getExpectationsForResponsibilitySet(groupId, touchstoneVersionId)
         verify(expectationsRepo).getExpectationsForResponsibilitySet(otherGroupId, touchstoneVersionId)
@@ -176,7 +175,7 @@ class ExpectationsLogicTests : MontaguTests()
         val result = sut.getResponsibilitySetWithExpectations(groupId, touchstoneVersionId, filterParameters)
         assertThat(result).isEqualTo(ResponsibilitySetWithExpectations(
                 responsibilitySets[0],
-                fakeExpectationsMapping)
+                listOf(fakeExpectationsMapping))
         )
         verify(responsibilitiesRepo)
                 .getResponsibilitiesForGroup(any(), any(), eq(filterParameters))
