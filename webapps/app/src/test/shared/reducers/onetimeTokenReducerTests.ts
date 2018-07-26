@@ -20,4 +20,17 @@ describe('OnetimeToken reducer tests', () => {
         expect(result.tokens["some/url"]).to.eq(fakeNewToken);
 
     });
+
+    it('removes token from token lookup for url', () => {
+
+        const fakeOldToken = "faketoken";
+        const state = mockOnetimeTokenState({tokens: {"some/url": fakeOldToken}});
+
+        const result = onetimeTokenReducer(state, {
+            type: OnetimeTokenActionType.TOKEN_INVALIDATED, data: "some/url"
+        });
+
+        expect(result.tokens["some/url"]).to.be.null;
+
+    });
 });
