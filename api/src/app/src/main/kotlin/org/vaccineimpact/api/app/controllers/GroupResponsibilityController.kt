@@ -12,10 +12,7 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.filterByPermission
-import org.vaccineimpact.api.models.BurdenEstimate
-import org.vaccineimpact.api.models.BurdenEstimateRow
-import org.vaccineimpact.api.models.StochasticBurdenEstimate
-import org.vaccineimpact.api.models.Touchstone
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import org.vaccineimpact.api.serialization.EmptyDataTable
@@ -68,9 +65,10 @@ class GroupResponsibilityController(
         val expectationMapping = expectationsLogic.getExpectationsById(path.expectationId, path.groupId,
                 path.touchstoneVersionId)
 
+        context.addAttachmentHeader(getTemplateName(type, path, expectationMapping))
+
         val expectations = expectationMapping.expectation
         val rowCount = expectations.expectedRows().count()
-
         return if (type == "central")
         {
             EmptyDataTable.new<BurdenEstimate>(rowCount, expectations.outcomes)
@@ -80,6 +78,18 @@ class GroupResponsibilityController(
             EmptyDataTable.new<StochasticBurdenEstimate>(rowCount, expectations.outcomes)
         }
 
+    }
+
+    private fun getTemplateName(type: String, path: ExpectationPath, expectationMapping: ExpectationMapping): String
+    {
+        val nameParts = listOf(
+                "$type-burden-template",
+                path.touchstoneVersionId,
+                path.groupId,
+                expectationMapping.applicableScenarios.joinToString("+"),
+                "csv"
+        )
+        return nameParts.joinToString(".")
     }
 
     // We are sure that this will be non-null, as its part of the URL,

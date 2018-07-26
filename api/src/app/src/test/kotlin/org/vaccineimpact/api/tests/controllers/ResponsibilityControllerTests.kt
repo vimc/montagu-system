@@ -159,8 +159,8 @@ class ResponsibilityControllerTests : MontaguTests()
     fun `can get stochastic estimate template`()
     {
         val context = mock<ActionContext> {
-            on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { it.params(":group-id") } doReturn "group-id"
+            on { it.params(":touchstone-version-id") } doReturn "touchstone-id"
             on { it.params(":expectation-id") } doReturn "1"
             on { hasPermission(any()) } doReturn true
             on { it.queryParams("type") } doReturn "stochastic"
@@ -174,14 +174,15 @@ class ResponsibilityControllerTests : MontaguTests()
                 .getTemplate()
 
         assertThat(serialize(result)).isEqualTo("""disease,run_id,year,age,country,country_name,cohort_size""")
+        verify(context).addAttachmentHeader("stochastic-burden-template.touchstone-id.group-id.yf-scenario+yf-scenario-2.csv")
     }
 
     @Test
     fun `can get central estimate template`()
     {
         val context = mock<ActionContext> {
-            on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { it.params(":group-id") } doReturn "group-id"
+            on { it.params(":touchstone-version-id") } doReturn "touchstone-id"
             on { it.params(":expectation-id") } doReturn "1"
             on { hasPermission(any()) } doReturn true
             on { it.queryParams("type") } doReturn "central"
@@ -195,6 +196,7 @@ class ResponsibilityControllerTests : MontaguTests()
                 .getTemplate()
 
         assertThat(serialize(result)).isEqualTo("""disease,year,age,country,country_name,cohort_size""")
+        verify(context).addAttachmentHeader("central-burden-template.touchstone-id.group-id.yf-scenario+yf-scenario-2.csv")
     }
 
     private val mockTouchstones = listOf(
