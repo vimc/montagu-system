@@ -1,31 +1,27 @@
 import {AuthState} from "../../main/shared/reducers/authReducer";
 import {reducer as formReducer} from "redux-form";
-import {
-    modellingGroupInitialState as ModellingGroupsInitialState,
-    ModellingGroupsState
-} from "../../main/contrib/reducers/modellingGroupsReducer";
-import {
-    modellingGroupInitialState as AdminModellingGroupsInitialState,
-} from "../../main/admin/reducers/modellingGroupsReducer";
+import {modellingGroupInitialState as ModellingGroupsInitialState} from "../../main/contrib/reducers/modellingGroupsReducer";
+import {modellingGroupInitialState as AdminModellingGroupsInitialState,} from "../../main/admin/reducers/modellingGroupsReducer";
 import {reportsInitialState, ReportsState} from "../../main/report/reducers/reportsReducer";
 import {ReportAppState} from "../../main/report/reducers/reportAppReducers";
 import {usersInitialState, UsersState} from "../../main/report/reducers/userReducer";
-import {usersInitialState as adminUsersInitialState} from "../../main/admin/reducers/usersReducer";
-import {UsersState as AdminUsersState} from "../../main/admin/reducers/usersReducer";
+import {
+    usersInitialState as adminUsersInitialState,
+    UsersState as AdminUsersState
+} from "../../main/admin/reducers/usersReducer";
 import {BreadcrumbsState, initialBreadcrumbsState} from "../../main/shared/reducers/breadcrumbsReducer";
 import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
-import {touchstonesInitialState, TouchstonesState} from "../../main/contrib/reducers/contribTouchstonesReducer";
-import {responsibilitiesInitialState, ResponsibilitiesState} from "../../main/contrib/reducers/responsibilitiesReducer";
-import {diseasesInitialState, DiseasesState} from "../../main/contrib/reducers/diseasesReducer";
-import {demographicInitialState, DemographicState} from "../../main/contrib/reducers/demographicReducer";
-import {coverageInitialState, CoverageState} from "../../main/contrib/reducers/coverageReducer";
-import {estimatesInitialState, EstimatesState} from "../../main/contrib/reducers/estimatesReducer";
-import {runParametersInitialState, RunParametersState} from "../../main/contrib/reducers/runParametersReducer";
-import { initialState as UserInitialState, UserState} from "../../main/contrib/reducers/userReducer";
+import {touchstonesInitialState} from "../../main/contrib/reducers/contribTouchstonesReducer";
+import {responsibilitiesInitialState} from "../../main/contrib/reducers/responsibilitiesReducer";
+import {diseasesInitialState} from "../../main/contrib/reducers/diseasesReducer";
+import {demographicInitialState} from "../../main/contrib/reducers/demographicReducer";
+import {coverageInitialState} from "../../main/contrib/reducers/coverageReducer";
+import {estimatesInitialState} from "../../main/contrib/reducers/estimatesReducer";
+import {runParametersInitialState} from "../../main/contrib/reducers/runParametersReducer";
+import {initialState as UserInitialState} from "../../main/contrib/reducers/userReducer";
 import {AdminAppState} from "../../main/admin/reducers/adminAppReducers";
-import {ModellingGroupsState as AdminModellingGroupsState} from "../../main/admin/reducers/modellingGroupsReducer";
-import {adminTouchstoneReducer, adminTouchstonesInitialState} from "../../main/admin/reducers/adminTouchstoneReducer";
-import {onetimeTokensInitialState, OneTimeTokenState} from "../../main/report/reducers/oneTimeTokenReducer";
+import {adminTouchstonesInitialState} from "../../main/admin/reducers/adminTouchstoneReducer";
+import {onetimeTokensInitialState, OneTimeTokenState} from "../../main/shared/reducers/oneTimeTokenReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -87,7 +83,8 @@ export const mockContribState = (props?: RecursivePartial<ContribAppState>) :Con
         demographic: demographicInitialState,
         coverage: coverageInitialState,
         estimates: estimatesInitialState,
-        runParameters: runParametersInitialState
+        runParameters: runParametersInitialState,
+        onetimeTokens: onetimeTokensInitialState
     };
     return Object.assign(template, props);
 };

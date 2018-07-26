@@ -9,7 +9,7 @@ import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {ReportTitle} from "./ReportTitle";
-import {FileDownloadButton, FileDownloadLink} from "../FileDownloadLink";
+import {FileDownloadButton, FileDownloadLink} from "../../../shared/components/FileDownloadLink";
 
 export interface ReportDownloadsProps {
     versionDetails: Version;
@@ -28,7 +28,7 @@ export const ReportDownloadsComponent = (props: ReportDownloadsProps) => {
                            version={props.versionDetails.id}/>
             <ParameterList {...props.versionDetails.parameters} />
             <div className="mb-5 mt-5">
-                <FileDownloadButton href={bundleUrl}>
+                <FileDownloadButton href={bundleUrl} service="reporting">
                     {props.report}-{props.versionDetails.id}.zip
                 </FileDownloadButton>
             </div>

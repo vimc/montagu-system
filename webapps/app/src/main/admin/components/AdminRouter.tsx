@@ -41,10 +41,9 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
     </Switch>;
 
     const notLoggedIn = <Switch>
-        <Route exact path="/" component={AdminLoginPage}/>
         <Route exact path="/forgotten-password/" component={AdminForgottenPasswordPage} />
         <Route exact path="/set-password/" component={SetPasswordPage} />
-        <Redirect to="/"/>
+        <Route component={AdminLoginPage}/>
     </Switch>;
 
     const routes = props.loggedIn ? loggedIn : notLoggedIn;

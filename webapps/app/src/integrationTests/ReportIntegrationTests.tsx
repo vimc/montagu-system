@@ -1,12 +1,11 @@
 import {expect} from "chai";
 import * as React from "react";
-import {ReactWrapper, shallow, ShallowWrapper} from "enzyme";
+import {ReactWrapper} from "enzyme";
 import {createMemoryHistory} from 'history';
 
 import {expectSameElements, inflateAndDecode, IntegrationTestSuite} from "./IntegrationTest";
 import {Sandbox} from "../test/Sandbox";
 import {ArtefactItem} from "../main/report/components/Artefacts/ArtefactItem";
-import {FileDownloadButton, FileDownloadLink} from "../main/report/components/FileDownloadLink";
 import {ResourceLinks} from "../main/report/components/Resources/ResourceLinks";
 import {DataLinks} from "../main/report/components/Data/DataLinks";
 
@@ -16,8 +15,7 @@ import {Report} from "../main/shared/models/Generated";
 import {UserService} from "../main/report/services/UserService";
 import {mockArtefact} from "../test/mocks/mockModels";
 import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
-import {OneTimeTokenService} from "../main/report/services/OneTimeTokenService";
-import {buildReportingURL} from "../main/report/services/AbstractReportLocalService";
+import {OneTimeTokenService} from "../main/shared/services/OneTimeTokenService";
 import {Provider} from "react-redux";
 
 class ReportIntegrationTests extends IntegrationTestSuite {
@@ -86,7 +84,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState))
                 .getReportVersions("minimal");
             const token = await (new OneTimeTokenService(this.store.dispatch, this.store.getState))
-                .fetchToken(`/reports/minimal/${versions[0]}/artefacts/`);
+                .fetchToken(`/reports/minimal/${versions[0]}/artefacts/`, "reporting");
             const decoded = inflateAndDecode(token);
             expect(decoded.url).to.equal(`/v1/reports/minimal/${versions[0]}/artefacts/`);
         });
@@ -94,7 +92,8 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         it("downloads artefact", async () => {
             const artefact = mockArtefact({filenames: ["all.csv", "all.png"], description: "all things"});
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("multi-artefact");
-            const rendered = sandbox.mount(<Provider store={this.store}><ArtefactItem report={"multi-artefact"} version={versions[0]}
+            const rendered = sandbox.mount(<Provider store={this.store}><ArtefactItem report={"multi-artefact"}
+                                                                                      version={versions[0]}
                                                                                       artefact={artefact}/></Provider>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
@@ -102,7 +101,8 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
         it("downloads resource", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("use_resource");
-            const rendered = sandbox.mount(<Provider store={this.store}><ResourceLinks report="use_resource" version={versions[0]}
+            const rendered = sandbox.mount(<Provider store={this.store}><ResourceLinks report="use_resource"
+                                                                                       version={versions[0]}
                                                                                        resources={["meta/data.csv"]}/></Provider>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
@@ -111,7 +111,8 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         it("downloads data", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
             const versionDetails = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails("minimal", versions[0]);
-            const rendered = sandbox.mount(<Provider store={this.store}><DataLinks {...versionDetails.hash_data}/></Provider>);
+            const rendered = sandbox.mount(<Provider
+                store={this.store}><DataLinks {...versionDetails.hash_data}/></Provider>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
         });

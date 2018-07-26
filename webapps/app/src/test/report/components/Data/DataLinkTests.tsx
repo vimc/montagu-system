@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {shallow} from "enzyme";
 import {DataLinks} from "../../../../main/report/components/Data/DataLinks";
 import {Sandbox} from "../../../Sandbox";
-import {FileDownloadLink} from "../../../../main/report/components/FileDownloadLink";
+import {FileDownloadLink} from "../../../../main/shared/components/FileDownloadLink";
 import {ILookup} from "../../../../main/shared/models/Lookup";
 
 describe("DataLinks", () => {
