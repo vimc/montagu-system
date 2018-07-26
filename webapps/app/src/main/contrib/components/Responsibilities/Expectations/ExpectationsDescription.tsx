@@ -1,12 +1,23 @@
 import * as React from "react";
-import {CohortRestriction, ExpectationMapping, NumberRange} from "../../../../shared/models/Generated";
+import {ExpectationMapping, NumberRange} from "../../../../shared/models/Generated";
 import {CountriesList} from "./CountriesList";
+import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
 
-export class ExpectationsDescription extends React.PureComponent<ExpectationMapping> {
+interface ExpectationsDescriptionProps {
+    expectationMapping: ExpectationMapping;
+    groupId: String;
+    touchstoneVersionId: String;
+}
+
+export class ExpectationsDescription extends React.PureComponent<ExpectationsDescriptionProps> {
 
     render(): JSX.Element {
 
-        const expectation = this.props.expectation;
+        const {expectationMapping, groupId, touchstoneVersionId} = this.props;
+        const expectation = expectationMapping.expectation;
+
+        const templateUrl = `/modelling-groups/${groupId}/expectations/${touchstoneVersionId}/${expectation.id}/`;
+
         const numCountries = expectation.countries.length;
         const numYears = expectation.years.maximum_inclusive - expectation.years.minimum_inclusive + 1;
         const numAges = expectation.ages.maximum_inclusive - expectation.ages.minimum_inclusive + 1;
@@ -14,7 +25,7 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationMapp
         const cohorts = this.cohortsText();
 
         return <div className="mt-3 mb-5 p-3 border">
-            <div className="h3">Template for {this.applicableScenarios()}</div>
+            <div className="h3">Template for {this.applicableScenarios(expectationMapping)}</div>
             <div>
                 Expecting data on:
                 <ul id={"outcomes"}>
@@ -30,17 +41,19 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationMapp
                 </ul>
             </div>
             <div>
-                <button>Download template</button>
+                <FileDownloadButton href={templateUrl}>
+                    Download burden estimate template
+                </FileDownloadButton>
             </div>
         </div>
     }
 
-    applicableScenarios() {
-        return this.props.applicable_scenarios.join(", ");
+    applicableScenarios(expectationMapping: ExpectationMapping) {
+        return expectationMapping.applicable_scenarios.join(", ");
     }
 
     cohortsText(){
-        const cohorts = this.props.expectation.cohorts;
+        const cohorts = this.props.expectationMapping.expectation.cohorts;
         if (cohorts.maximum_birth_year == null){
             if (cohorts.minimum_birth_year == null){
                 return null

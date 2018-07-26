@@ -37,35 +37,38 @@ describe("OneTimeLinkContext", () => {
             return null;
         }
     }
+    const Class = OneTimeLinkContext(EmptyComponent);
 
     it("if store does not contain matching token, href passed to child is null", () => {
-        const Class = OneTimeLinkContext(EmptyComponent);
         const rendered = shallow(<Class href="/orange/"/>, {context: {store}}).dive();
         const child = rendered.find(EmptyComponent);
         expect(child.prop("href")).to.equal(null);
     });
 
     it("can get properties from store with matching token", () => {
-        const Class = OneTimeLinkContext(EmptyComponent);
         const rendered = shallow(<Class href="/banana/"/>, {context: {store}}).dive();
         const child = rendered.find(EmptyComponent);
         expect(child.prop("href")).to.equal("http://localhost:8080/v1/banana/?access_token=" + token);
     });
 
     it("triggers fetchToken on mount", (done: DoneCallback) => {
-
-        const Class: any = OneTimeLinkContext(EmptyComponent);
-        shallow(<Class href="/banana/" service="reporting" />, {context: {store}}).dive();
-
+        shallow(<Class href="/banana/" service="main" />, {context: {store}}).dive();
         checkAsync(done, () => {
             expect(fetchTokenStub.called).to.equal(true, "Expected fetchToken to be called");
-            expect(fetchTokenStub.args[0]).to.eql(["/banana/", "reporting"]);
+            expect(fetchTokenStub.getCall(0).args).to.eql(["/banana/", "main"]);
+        });
+    });
+
+    it("triggers fetchToken for reporting service if service is reporting", (done: DoneCallback) => {
+        shallow(<Class href="/banana/" service="reporting" />, {context: {store}}).dive();
+        checkAsync(done, () => {
+            expect(fetchTokenStub.called).to.equal(true, "Expected fetchToken to be called");
+            expect(fetchTokenStub.getCall(0).args).to.eql(["/banana/", "reporting"]);
         });
     });
 
     it("it does not trigger fetchToken on properties change if href is the same", (done: DoneCallback) => {
         const url = "/bamboo";
-        const Class = OneTimeLinkContext(EmptyComponent);
         const element = shallow(<Class href={url}/>, {context: {store}}).dive();
         element.setProps({href: url});
 
@@ -78,7 +81,6 @@ describe("OneTimeLinkContext", () => {
 
     it("it does trigger fetchToken on properties change if href is different", (done: DoneCallback) => {
         const url = "/bamboo";
-        const Class: any = OneTimeLinkContext(EmptyComponent);
         const element = shallow(<Class href={url}/>, {context: {store}}).dive();
 
         const newUrl = "/juniper";
