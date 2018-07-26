@@ -5,6 +5,9 @@ import {oneTimeTokenActionCreators} from "../actions/oneTimeTokenActionCreators"
 import {APIService} from "../models/APIService";
 import {buildURL} from "../services/AbstractLocalService";
 
+const url = require('url'),
+    querystring = require("querystring");
+
 interface PublicProps {
     href: string;
     className?: string;
@@ -49,7 +52,7 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
             let href = null;
             const service = this.getService();
             if (this.props.token != null) {
-                href = buildURL(this.props.href, service) + "?access_token=" + this.props.token;
+                href = appendAccessToken(buildURL(this.props.href, service), this.props.token);
             }
             return <WrappedComponent
                 className={this.props.className}
@@ -63,4 +66,14 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
             return this.props.service || "main";
         }
     });
+}
+
+function appendAccessToken(path: string, token: string) {
+    const parsed = url.parse(path, true);
+    parsed.query["access_token"] = token;
+
+    // we need to rebuild `search` now as it gets used by `format` under the hood
+    parsed.search = querystring.stringify(parsed.query);
+    return url.format(parsed)
+
 }

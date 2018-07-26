@@ -17,7 +17,7 @@ export class InlineArtefact extends React.Component<Props, undefined> {
 
         if (InlineArtefact.canRenderInIFrame(extension)) {
             return <ArtefactIFrame
-                href={buildArtefactUrl(report, version, filename, false)}
+                href={buildArtefactUrl(report, version, filename, true)}
                 service="reporting"
             />;
         } else {
@@ -40,7 +40,7 @@ export class ArtefactIFrameInner extends React.Component<OneTimeLinkProps, undef
         const {href} = this.props;
         if (href != null) {
             return <iframe
-                src={this.props.href + "&inline=true"}
+                src={this.props.href}
                 width="100%"
                 height="600px"
                 className="border border-dark p-3"

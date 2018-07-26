@@ -20,6 +20,6 @@ describe("InlineArtefactFigure", () => {
         const rendered = shallow(<InlineArtefactFigure report="report" version="version" artefact={artefact}/>);
         const figure = rendered.find(ArtefactFigure);
         expect(figure).to.have.length(1);
-        expect(figure.prop("href")).to.equal("/reports/report/versions/version/artefacts/mock.png/");
+        expect(figure.prop("href")).to.equal("/reports/report/versions/version/artefacts/mock.png/?inline=true");
     });
 });

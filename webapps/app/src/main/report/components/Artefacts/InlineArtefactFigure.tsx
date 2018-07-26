@@ -17,7 +17,7 @@ export class InlineArtefactFigure extends React.Component<Props, undefined> {
 
         if (InlineArtefactFigure.isImage(extension)) {
             return <ArtefactFigure
-                href={buildArtefactUrl(report, version, filename, false)}
+                href={buildArtefactUrl(report, version, filename, true)}
                 service="reporting"
             />;
         } else {
@@ -36,7 +36,7 @@ export class ArtefactFigureInner extends React.Component<OneTimeLinkProps, undef
         const {href} = this.props;
         if (href != null) {
             return <img
-                src={this.props.href + "&inline=true"}
+                src={this.props.href}
                 className="border border-dark p-3 col-12 col-lg-8"
             />;
         } else {
