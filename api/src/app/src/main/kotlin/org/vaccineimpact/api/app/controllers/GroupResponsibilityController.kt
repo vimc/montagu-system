@@ -63,20 +63,35 @@ class GroupResponsibilityController(
     {
         val path = ExpectationPath(context)
         val type = context.queryParams("type") ?: "central"
-        val expectations = expectationsLogic.getExpectationsById(path.expectationId, path.groupId,
+        val expectationMapping = expectationsLogic.getExpectationsById(path.expectationId, path.groupId,
                 path.touchstoneVersionId)
 
+        context.addAttachmentHeader(getTemplateName(type, path, expectationMapping))
+
+        val expectations = expectationMapping.expectation
         return if (type == "central")
         {
-            FlexibleDataTable.new<ExpectedCentralRow>(expectations.expectedCentralRows("YF"),
+            FlexibleDataTable.new(expectations.expectedCentralRows(expectationMapping.disease),
                     expectations.outcomes, NullToEmptyStringSerializer.instance)
         }
         else
         {
-            FlexibleDataTable.new<ExpectedStochasticRow>(expectations.expectedStochasticRows("YF"),
+            FlexibleDataTable.new(expectations.expectedStochasticRows(expectationMapping.disease),
                     expectations.outcomes, NullToEmptyStringSerializer.instance)
         }
 
+    }
+
+    private fun getTemplateName(type: String, path: ExpectationPath, expectationMapping: ExpectationMapping): String
+    {
+        val nameParts = listOf(
+                "$type-burden-template",
+                path.touchstoneVersionId,
+                path.groupId,
+                expectationMapping.applicableScenarios.joinToString("+"),
+                "csv"
+        )
+        return nameParts.joinToString(".")
     }
 
     // We are sure that this will be non-null, as its part of the URL,

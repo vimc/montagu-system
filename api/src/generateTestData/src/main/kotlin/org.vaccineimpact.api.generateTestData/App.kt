@@ -51,7 +51,8 @@ fun main(args: Array<String>)
         val responsibilityId = db.addResponsibility(setId, yfRoutine)
         val secondResponsibilityId = db.addResponsibility(setId, yfCampaign)
 
-        db.addExpectations(responsibilityId, countries = db.fetchCountries(2), outcomes = db.fetchOutcomes(2))
+        db.addExpectations(responsibilityId, countries = db.fetchCountries(2), outcomes = db.fetchOutcomes(2),
+                cohortMinInclusive = 1980, cohortMaxInclusive = null)
         db.addExpectations(secondResponsibilityId, countries = db.fetchCountries(96), outcomes = db.fetchOutcomes(1))
 
         db.addUserForTesting("test.user")

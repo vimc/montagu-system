@@ -81,7 +81,8 @@ class ResponsibilityTests : DatabaseTest()
                                     "countries" to array(),
                                     "outcomes" to array()
                             ),
-                            "applicable_scenarios" to array("yf-scenario")
+                            "applicable_scenarios" to array("yf-scenario"),
+                            "disease" to "disease-1"
                     )
             )
         })

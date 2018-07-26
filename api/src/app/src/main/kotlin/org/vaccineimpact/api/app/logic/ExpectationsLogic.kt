@@ -6,6 +6,7 @@ import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.models.ExpectationMapping
 import org.vaccineimpact.api.models.Expectations
 import org.vaccineimpact.api.models.ModellingGroup
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
@@ -13,7 +14,7 @@ import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpect
 
 interface ExpectationsLogic
 {
-    fun getExpectationsById(expectationId: Int, groupId: String, touchstoneVersionId: String): Expectations
+    fun getExpectationsById(expectationId: Int, groupId: String, touchstoneVersionId: String): ExpectationMapping
 
     fun getResponsibilityWithExpectations(groupId: String,
                                           touchstoneVersionId: String,
@@ -34,7 +35,7 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepository: Resp
                                     private val touchstoneRepository: TouchstoneRepository) : ExpectationsLogic
 {
     override fun getExpectationsById(expectationId: Int, groupId: String, touchstoneVersionId: String):
-            Expectations
+            ExpectationMapping
     {
         val group = checkGroupAndTouchstoneExist(groupId, touchstoneVersionId)
         val expectationIds = expectationsRepository.getExpectationIdsForGroupAndTouchstone(group.id, touchstoneVersionId)
@@ -51,7 +52,7 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepository: Resp
         val group = checkGroupAndTouchstoneExist(groupId, touchstoneVersionId)
         val data = responsibilitiesRepository.getResponsibility(group.id, touchstoneVersionId, scenarioId)
         val expectations = expectationsRepository.getExpectationsForResponsibility(data.responsibilityId)
-        return ResponsibilityDetails(data.responsibility, data.touchstoneVersion, expectations)
+        return ResponsibilityDetails(data.responsibility, data.touchstoneVersion, expectations.expectation)
     }
 
     override fun getResponsibilitySetsWithExpectations(touchstoneVersionId: String): List<ResponsibilitySetWithExpectations>
