@@ -17,7 +17,7 @@ data class Expectations(
                 && (cohorts.maximumBirthYear == null || this <= cohorts.maximumBirthYear)
     }
 
-    private val outcomesMap = outcomes.associateBy({ it }, { null })
+    private fun outcomesMap() = outcomes.associateBy({ it }, { null })
 
     fun expectedCentralRows(disease: String): Sequence<ExpectedCentralRow> = buildSequence{
         for (age in ages)
@@ -45,12 +45,12 @@ data class Expectations(
 
     private fun mapCentralRow(disease: String, year: Int, age: Int, country: Country): ExpectedCentralRow
     {
-        return ExpectedCentralRow(disease, year, age, country.id, country.name, null, outcomesMap)
+        return ExpectedCentralRow(disease, year, age, country.id, country.name, null, outcomesMap())
     }
 
     private fun mapStochasticRow(disease: String, year: Int, age: Int, country: Country): ExpectedStochasticRow
     {
-        return ExpectedStochasticRow(disease, null, year, age, country.id, country.name, null, outcomesMap)
+        return ExpectedStochasticRow(disease, null, year, age, country.id, country.name, null, outcomesMap())
     }
 
 }
