@@ -1,6 +1,5 @@
 import * as React from "react";
 import {InternalLink} from "../../../../shared/components/InternalLink";
-import {SetPasswordForm} from "./SetPasswordFormComponent";
 import {jwtTokenAuth} from "../../../../shared/modules/jwtTokenAuth";
 import {helpers} from "../../../../shared/Helpers";
 import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
@@ -10,6 +9,7 @@ import {connect, Dispatch} from "react-redux";
 import {AdminPageHeader} from "../../AdminPageHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {setPasswordPageActionCreators} from "../../../actions/pages/SetPasswordPageActionCreators";
+import {SetPasswordForm} from "./SetPasswordForm";
 
 interface Props extends PageProperties<undefined> {
     token: string;
