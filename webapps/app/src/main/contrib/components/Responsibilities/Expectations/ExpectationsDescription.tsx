@@ -16,7 +16,8 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
         const {expectationMapping, groupId, touchstoneVersionId} = this.props;
         const expectation = expectationMapping.expectation;
 
-        const templateUrl = `/modelling-groups/${groupId}/expectations/${touchstoneVersionId}/${expectation.id}/`;
+        const centralTemplateUrl = `/modelling-groups/${groupId}/expectations/${touchstoneVersionId}/${expectation.id}/`;
+        const stochasticTemplateUrl = `${centralTemplateUrl}?type=stochastic`;
 
         const numCountries = expectation.countries.length;
         const numYears = expectation.years.maximum_inclusive - expectation.years.minimum_inclusive + 1;
@@ -33,16 +34,21 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
                 </ul>
                 For all combinations of:
                 <ul>
-                    <li id={"countries"}>{numCountries} countries: <CountriesList targetKey={`countries-${expectation.id}`}
-                                                                                  countries={expectation.countries} /></li>
+                    <li id={"countries"}>{numCountries} countries: <CountriesList
+                        targetKey={`countries-${expectation.id}`}
+                        countries={expectation.countries}/></li>
                     <li id={"years"}>{numYears} years: {rangeAsString(expectation.years)}</li>
                     <li id={"ages"}>{numAges} ages: {rangeAsString(expectation.ages)}</li>
                     {cohorts && <li id={"cohorts"}>{cohorts}</li>}
                 </ul>
             </div>
             <div>
-                <FileDownloadButton href={templateUrl}>
-                    Download burden estimate template
+                <FileDownloadButton href={centralTemplateUrl} className={"mr-2"}>
+                    Download central burden estimate template
+                </FileDownloadButton>
+
+                <FileDownloadButton href={stochasticTemplateUrl}>
+                    Download stochastic burden estimate template
                 </FileDownloadButton>
             </div>
         </div>
@@ -52,17 +58,17 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
         return expectationMapping.applicable_scenarios.join(", ");
     }
 
-    cohortsText(){
+    cohortsText() {
         const cohorts = this.props.expectationMapping.expectation.cohorts;
-        if (cohorts.maximum_birth_year == null){
-            if (cohorts.minimum_birth_year == null){
+        if (cohorts.maximum_birth_year == null) {
+            if (cohorts.minimum_birth_year == null) {
                 return null
             }
             else {
                 return `Not including cohorts born before ${cohorts.minimum_birth_year}`
             }
         }
-        else if (cohorts.minimum_birth_year == null){
+        else if (cohorts.minimum_birth_year == null) {
             return `Not including cohorts born after ${cohorts.maximum_birth_year}`
         }
         return `Not including cohorts born before ${cohorts.minimum_birth_year} or after ${cohorts.maximum_birth_year}`

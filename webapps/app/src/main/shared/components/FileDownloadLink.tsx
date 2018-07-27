@@ -23,7 +23,7 @@ export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, u
 
     render() {
         return <FileDownloadInner
-            className="button"
+            className={"button " + this.props.className}
             href={this.props.href}
             refreshToken={this.props.refreshToken}>
             {
@@ -57,7 +57,7 @@ export class FileDownloadInner extends React.Component<OneTimeLinkProps, undefin
             className = this.props.className;
             loader = null;
         } else {
-            className = this.props.className + ' disabledLink';
+            className = this.props.className + ' disabled';
             loader = <img src={loaderAnimation}/>;
         }
 
