@@ -1,12 +1,11 @@
 package org.vaccineimpact.api.tests.extensions
 
-import org.junit.Test
 import org.assertj.core.api.Assertions.assertThat
-import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.serialization.MontaguSerializer
-import org.vaccineimpact.api.serialization.StreamSerializable
+import org.junit.Test
+import org.vaccineimpact.api.models.CohortRestriction
+import org.vaccineimpact.api.models.Country
+import org.vaccineimpact.api.models.Expectations
 import org.vaccineimpact.api.test_helpers.MontaguTests
-import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
 
 class ExpectationsTests : MontaguTests()
 {
@@ -39,18 +38,30 @@ class ExpectationsTests : MontaguTests()
     {
         val expectedOutcomes = listOf("Dalys", "Deaths")
 
-        val longCountryList = (1..100).map {
+        val countryList = (1..1).map {
             Country(it.toString(), it.toString())
         }
         val expectations = Expectations(1,
-                2001..2080,
-                1..80,
+                2000..2001,
+                1..1,
                 CohortRestriction(null, null),
-                longCountryList,
+                countryList,
                 expectedOutcomes
         )
 
         val result = expectations.expectedCentralRows("YF").toList()
+
+        val first = result[0]
+        assertThat(first.age).isEqualTo(1)
+        assertThat(first.country).isEqualTo("1")
+        assertThat(first.year).isEqualTo(2000)
+        assertThat(first.disease).isEqualTo("YF")
+
+        val second = result[1]
+        assertThat(second.age).isEqualTo(1)
+        assertThat(second.country).isEqualTo("1")
+        assertThat(second.year).isEqualTo(2001)
+        assertThat(second.disease).isEqualTo("YF")
 
         assertThat(result.all { it.cohortSize == null }).isTrue()
         assertThat(result.all { it.outcomes.all { it.value == null } }).isTrue()
@@ -61,18 +72,31 @@ class ExpectationsTests : MontaguTests()
     {
         val expectedOutcomes = listOf("Dalys", "Deaths")
 
-        val longCountryList = (1..100).map {
+        val countryList = (1..1).map {
             Country(it.toString(), it.toString())
         }
+
         val expectations = Expectations(1,
-                2001..2080,
-                1..80,
+                2000..2001,
+                1..1,
                 CohortRestriction(null, null),
-                longCountryList,
+                countryList,
                 expectedOutcomes
         )
 
         val result = expectations.expectedStochasticRows("YF").toList()
+
+        val first = result[0]
+        assertThat(first.age).isEqualTo(1)
+        assertThat(first.country).isEqualTo("1")
+        assertThat(first.year).isEqualTo(2000)
+        assertThat(first.disease).isEqualTo("YF")
+
+        val second = result[1]
+        assertThat(second.age).isEqualTo(1)
+        assertThat(second.country).isEqualTo("1")
+        assertThat(second.year).isEqualTo(2001)
+        assertThat(second.disease).isEqualTo("YF")
 
         assertThat(result.all { it.runId == null }).isTrue()
         assertThat(result.all { it.cohortSize == null }).isTrue()
