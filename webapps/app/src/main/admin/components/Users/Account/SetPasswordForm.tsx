@@ -27,7 +27,7 @@ interface InternalProps extends ReduxFormProps<Fields>, SetPasswordFormProps {
 export class SetPasswordFormComponent extends React.Component<InternalProps, undefined> {
     render() {
         const resetToken = this.props.resetToken;
-        const submit = (values: Fields) => this.props.submit({...values, resetToken})
+        const submit = (values: Fields) => this.props.submit({...values, resetToken});
         return <form className="form" onSubmit={this.props.handleSubmit(submit)}>
             <div className="fields">
                 <Field

@@ -9,7 +9,6 @@ import {mockAdminState} from "../../../../mocks/mockStates";
 import {ReduxFormValidationErrors} from "../../../../../main/shared/components/ReduxForm/ReduxFormValidationError";
 import {ErrorInfo} from "../../../../../main/shared/models/Generated";
 import {Provider} from "react-redux";
-import {Field} from "redux-form";
 
 describe("SetPasswordForm", () => {
     const sandbox = new Sandbox();
@@ -21,9 +20,8 @@ describe("SetPasswordForm", () => {
         const rendered = sandbox.mount(<Provider store={store}>
             <SetPasswordForm resetToken="TOKEN" />
         </Provider>);
-        rendered.find("input").simulate("change", {target: {value: "newPassword"}});
         rendered.find("form").simulate("submit");
-        expect(spy.getCall(0).args).to.eql(["TOKEN", "newPassword"]);
+        expect(spy.getCall(0).args).to.eql(["TOKEN", undefined]);
     });
 
     it("renders errors", () => {
