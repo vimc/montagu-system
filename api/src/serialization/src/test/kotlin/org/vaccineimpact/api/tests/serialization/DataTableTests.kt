@@ -9,10 +9,10 @@ import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.models.TouchstoneStatus
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.serialization.NullToEmptyStringSerializer
 import org.vaccineimpact.api.serialization.validation.ValidationException
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.test_helpers.serializeToStreamAndGetAsString
-import java.math.BigDecimal
 
 class DataTableTests : MontaguTests()
 {
@@ -70,13 +70,23 @@ text,123,3.1415""")
     }
 
     @Test
-    fun `null is converted to NA`()
+    fun `null is converted to NA if using default serializer`()
     {
         val table = DataTable.new(sequenceOf(
                 MixedTypes(null, null, null)
         ))
         assertThat(serialize(table)).isEqualTo("""text,int,dec
 <NA>,<NA>,<NA>""")
+    }
+
+    @Test
+    fun `null is converted to empty string if using EmptyDataSerializer`()
+    {
+        val table = DataTable.new(sequenceOf(
+                MixedTypes(null, null, null)
+        ), NullToEmptyStringSerializer.instance)
+        assertThat(serialize(table)).isEqualTo("""text,int,dec
+,,""")
     }
 
     @Test
@@ -334,7 +344,7 @@ free text,in-preparation""")
     }
 
     private fun serialize(table: DataTable<*>) = serializeToStreamAndGetAsString {
-        table.serialize(it, MontaguSerializer.instance)
+        table.serialize(it)
     }.trim()
 
     private fun checkValidationError(code: String, message: String? = null, body: () -> Any?)

@@ -6,9 +6,10 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 
 open class FlexibleDataTable<T : Any>(data: Sequence<T>,
-                                 private val flexibleHeaders: Iterable<Any>,
-                                 type: KClass<T>)
-    : DataTable<T>(data, type)
+                                      private val flexibleHeaders: Iterable<Any>,
+                                      serializer: Serializer = MontaguSerializer.instance,
+                                      type: KClass<T>)
+    : DataTable<T>(data, serializer, type)
 {
 
     private val flexibleParameter: KParameter = constructor.parameters.firstOrNull {
@@ -33,9 +34,9 @@ open class FlexibleDataTable<T : Any>(data: Sequence<T>,
                 .plus(flexibleHeaders.map { it.toString() })
     }
 
-    override fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T?, serializer: Serializer): Array<String?>
+    override fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T?): Array<String?>
     {
-        line?: throw Exception("Null data rows are not allowed. Use the EmptyDataTable class if " +
+        line ?: throw Exception("Null data rows are not allowed. Use the EmptyDataTable class if " +
                 "trying to generate empty rows")
 
         val values = headers.map { it.property.get(line) }
@@ -52,7 +53,7 @@ open class FlexibleDataTable<T : Any>(data: Sequence<T>,
         return map[key]
     }
 
-    override fun getHeaders(serializer: Serializer): Iterable<DataTableHeader<T>>
+    override fun getHeaders(): Iterable<DataTableHeader<T>>
     {
         return constructor.parameters
                 .filter { it != flexibleParameter }
@@ -64,6 +65,7 @@ open class FlexibleDataTable<T : Any>(data: Sequence<T>,
     companion object
     {
         // Simple helper to get around JVM type erasure
-        inline fun <reified R : Any> new(data: Sequence<R>, flexibleHeaders: Iterable<Any>) = FlexibleDataTable(data, flexibleHeaders, R::class)
+        inline fun <reified R : Any> new(data: Sequence<R>, flexibleHeaders: Iterable<Any>,
+                                         serializer: Serializer = MontaguSerializer.instance) = FlexibleDataTable(data, flexibleHeaders, serializer, R::class)
     }
 }

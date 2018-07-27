@@ -21,9 +21,21 @@ interface Serializer
     fun serializeValueForCSV(value: Any?): String
 
     val gson: Gson
+
+    val serializeNullsTo: String
 }
 
-class MontaguSerializer : Serializer
+class NullToEmptyStringSerializer: MontaguSerializer() {
+
+    override val serializeNullsTo = ""
+
+    companion object
+    {
+        val instance = NullToEmptyStringSerializer()
+    }
+}
+
+open class MontaguSerializer : Serializer
 {
     private val toDateStringSerializer = jsonSerializer<Any> {
         JsonPrimitive(it.src.toString())
@@ -38,7 +50,6 @@ class MontaguSerializer : Serializer
     companion object
     {
         val instance: Serializer = MontaguSerializer()
-        const val noValue = "<NA>"
     }
 
     override val gson: Gson
@@ -105,9 +116,11 @@ class MontaguSerializer : Serializer
         return text.toLowerCase().replace('_', '-')
     }
 
+    override val serializeNullsTo = "<NA>"
+
     override fun serializeValueForCSV(value: Any?) = when (value)
     {
-        null -> noValue
+        null -> serializeNullsTo
         is Enum<*> -> serializeEnum(value)
         else -> value.toString()
     }

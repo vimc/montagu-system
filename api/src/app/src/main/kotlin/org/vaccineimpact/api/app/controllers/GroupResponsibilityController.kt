@@ -15,7 +15,8 @@ import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
-import org.vaccineimpact.api.serialization.EmptyDataTable
+import org.vaccineimpact.api.serialization.NullToEmptyStringSerializer
+import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.StreamSerializable
 
 class GroupResponsibilityController(
@@ -58,7 +59,7 @@ class GroupResponsibilityController(
         return data
     }
 
-    fun getTemplate(): StreamSerializable<BurdenEstimateRow>
+    fun getTemplate(): StreamSerializable<ExpectedRow>
     {
         val path = ExpectationPath(context)
         val type = context.queryParams("type") ?: "central"
@@ -68,14 +69,15 @@ class GroupResponsibilityController(
         context.addAttachmentHeader(getTemplateName(type, path, expectationMapping))
 
         val expectations = expectationMapping.expectation
-        val rowCount = expectations.expectedRows().count()
         return if (type == "central")
         {
-            EmptyDataTable.new<BurdenEstimate>(rowCount, expectations.outcomes)
+            FlexibleDataTable.new(expectations.expectedCentralRows(expectationMapping.disease),
+                    expectations.outcomes, NullToEmptyStringSerializer.instance)
         }
         else
         {
-            EmptyDataTable.new<StochasticBurdenEstimate>(rowCount, expectations.outcomes)
+            FlexibleDataTable.new(expectations.expectedStochasticRows(expectationMapping.disease),
+                    expectations.outcomes, NullToEmptyStringSerializer.instance)
         }
 
     }

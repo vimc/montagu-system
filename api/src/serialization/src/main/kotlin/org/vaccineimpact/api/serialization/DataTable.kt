@@ -9,7 +9,10 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
-open class DataTable<T : Any>(override val data: Sequence<T>, val type: KClass<T>) : StreamSerializable<T>
+open class DataTable<T : Any>(override val data: Sequence<T>,
+                              protected val serializer: Serializer = MontaguSerializer.instance,
+                              val type: KClass<T>
+                              ) : StreamSerializable<T>
 {
     class DataTableHeader<T>(name: String, val property: KProperty1<T, *>, serializer: Serializer)
     {
@@ -24,9 +27,9 @@ open class DataTable<T : Any>(override val data: Sequence<T>, val type: KClass<T
 
     protected val properties = type.declaredMemberProperties
 
-    override fun serialize(stream: OutputStream, serializer: Serializer)
+    override fun serialize(stream: OutputStream)
     {
-        val headers = getHeaders(serializer)
+        val headers = getHeaders()
         stream.writer().let { writer ->
             CSVWriter(writer).let { csv ->
 
@@ -35,7 +38,7 @@ open class DataTable<T : Any>(override val data: Sequence<T>, val type: KClass<T
 
                 for (line in data)
                 {
-                    val asArray = allValuesAsArray(headers, line, serializer)
+                    val asArray = allValuesAsArray(headers, line)
                     csv.writeNext(asArray, false)
                 }
             }
@@ -50,7 +53,7 @@ open class DataTable<T : Any>(override val data: Sequence<T>, val type: KClass<T
         return headers.map { it.name }.toTypedArray()
     }
 
-    open protected fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T?, serializer: Serializer): Array<String?>
+    open protected fun allValuesAsArray(headers: Iterable<DataTableHeader<T>>, line: T?): Array<String?>
     {
         line?: throw Exception("Null data rows not allowed. Use the EmptyDataTable class if " +
                 "trying to generate empty rows")
@@ -60,7 +63,7 @@ open class DataTable<T : Any>(override val data: Sequence<T>, val type: KClass<T
                 .toTypedArray()
     }
 
-    open protected fun getHeaders(serializer: Serializer): Iterable<DataTableHeader<T>>
+    open protected fun getHeaders(): Iterable<DataTableHeader<T>>
     {
         return constructor.parameters
                 .mapNotNull { it.name }
@@ -70,6 +73,7 @@ open class DataTable<T : Any>(override val data: Sequence<T>, val type: KClass<T
     companion object
     {
         // Simple helper to get around JVM type erasure
-        inline fun <reified R : Any> new(data: Sequence<R>) = DataTable(data, R::class)
+        inline fun <reified R : Any> new(data: Sequence<R>, serializer: Serializer = MontaguSerializer.instance)
+                = DataTable(data, serializer, R::class)
     }
 }
