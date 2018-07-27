@@ -9,7 +9,6 @@ import {CustomValidationResult} from "../validation/FileValidationHelpers";
 
 export interface UploadFileProps {
     token: string;
-    uploadText: string;
     enableSubmit: boolean;
     successMessage: string;
     validatePath?: (path: string) => CustomValidationResult;
@@ -76,7 +75,7 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
                     <label className="customFileUpload">
                         <input name="file" type="file" onChange={this.handleChange.bind(this)}/>
                         <div className="button mt-2 mb-2">
-                            {this.props.uploadText}
+                            Choose file
                         </div>
                     </label>
 
