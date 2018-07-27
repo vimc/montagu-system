@@ -30,16 +30,15 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
             <div>
                 Expecting data on:
                 <ul id={"outcomes"}>
-                    {expectation.outcomes.map(o => <li>{o}</li>)}
+                    {expectation.outcomes.map(o => <li key={o}>{o}</li>)}
                 </ul>
                 For all combinations of:
                 <ul>
-                    <li id={"countries"}>{numCountries} countries: <CountriesList
-                        targetKey={`countries-${expectation.id}`}
-                        countries={expectation.countries}/></li>
-                    <li id={"years"}>{numYears} years: {rangeAsString(expectation.years)}</li>
-                    <li id={"ages"}>{numAges} ages: {rangeAsString(expectation.ages)}</li>
-                    {cohorts && <li id={"cohorts"}>{cohorts}</li>}
+                    <li key={"c"} id={"countries"}>{numCountries} countries: <CountriesList targetKey={`countries-${expectation.id}`}
+                                                                                  countries={expectation.countries} /></li>
+                    <li key={"y"} id={"years"}>{numYears} years: {rangeAsString(expectation.years)}</li>
+                    <li key={"a"} id={"ages"}>{numAges} ages: {rangeAsString(expectation.ages)}</li>
+                    {cohorts && <li key={"co"} id={"cohorts"}>{cohorts}</li>}
                 </ul>
             </div>
             <div>
