@@ -4,18 +4,20 @@ import {expect} from "chai";
 
 import {ErrorLog, ErrorLogComponent} from "../../../main/shared/components/ErrorLog/ErrorLog";
 import {Sandbox} from "../../Sandbox";
-import {expectOneAction} from "../../actionHelpers";
+import {createMockAdminStore} from "../../mocks/mockStore";
+import {mockAdminState} from "../../mocks/mockStates";
+import {NotificationState} from "../../../main/shared/reducers/notificationReducer";
+import {notificationActionCreators} from "../../../main/shared/actions/notificationActionCreators";
 
 describe("ErrorLog", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
     function clear() {
-
     }
 
     it("is hidden when there are no errors", () => {
-        const rendered = shallow(<ErrorLogComponent errors={[]} clear={clear} />);
+        const rendered = shallow(<ErrorLogComponent errors={[]} clear={clear}/>);
         expect(rendered.text()).to.be.empty;
     });
 
@@ -29,10 +31,11 @@ describe("ErrorLog", () => {
     });
 
     it("clicking clear button emits clear event", () => {
-        const spy = sandbox.dispatchSpy();
-        const errors = ["a", "b"];
-        const rendered = shallow(<ErrorLogComponent errors={errors} clear={clear}/>);
+        const stub = sandbox.setStubReduxAction(notificationActionCreators, "clear");
+        const notificationState: Partial<NotificationState> = {errors: ["a", "b"]};
+        const store = createMockAdminStore(mockAdminState({notifications: notificationState}));
+        const rendered = shallow(<ErrorLog/>, {context: {store}}).dive();
         rendered.find("button").simulate("click");
-        expectOneAction(spy, {action: "NotificationActions.clear", payload: "error"});
+        expect(stub.getCall(0).args).to.eql(["error"]);
     });
 });
