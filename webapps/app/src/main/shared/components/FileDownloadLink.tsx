@@ -23,7 +23,7 @@ export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, u
 
     render() {
         return <FileDownloadInner
-            className={"button " + this.props.className}
+            className={"button" + (this.props.className ? ` ${this.props.className}` : "")}
             href={this.props.href}
             refreshToken={this.props.refreshToken}>
             {

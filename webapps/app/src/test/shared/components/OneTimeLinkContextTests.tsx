@@ -38,25 +38,31 @@ describe("OneTimeLinkContext", () => {
     }
     const Class = OneTimeLinkContext(EmptyComponent);
 
-    it("if store does not contain matching token, href passed to child is null", () => {
+    it("if store does not contain matching token, href passed to child is null", (done: DoneCallback) => {
         const rendered = shallow(<Class href="/orange/"/>, {context: {store}}).dive();
         const child = rendered.find(EmptyComponent);
-        expect(child.prop("href")).to.equal(null);
+        checkAsync(done, () => {
+            expect(child.prop("href")).to.equal(null);
+        });
     });
 
-    it("can get properties from store with matching token", () => {
+    it("can get properties from store with matching token", (done: DoneCallback) => {
         const rendered = shallow(<Class href="/banana/"/>, {context: {store}}).dive();
         const child = rendered.find(EmptyComponent);
-        expect(child.prop("href")).to.equal("http://localhost:8080/v1/banana/?access_token=" + token);
+        checkAsync(done, () => {
+            expect(child.prop("href")).to.equal("http://localhost:8080/v1/banana/?access_token=" + token);
+        });
     });
 
-    it("can handle url with query string", () => {
+    it("can handle url with query string", (done: DoneCallback) => {
         const Class = OneTimeLinkContext(EmptyComponent);
         const url = "/banana/?query=whatevs";
         tokens[url] = token;
         const rendered = shallow(<Class href={url} />, {context: {store}}).dive();
-        const child = rendered.find(EmptyComponent);
-        expect(child.prop("href")).to.equal("http://localhost:8080/v1/banana/?query=whatevs&access_token=" + token);
+        checkAsync(done, () => {
+            const child = rendered.find(EmptyComponent);
+            expect(child.prop("href")).to.equal("http://localhost:8080/v1/banana/?query=whatevs&access_token=" + token);
+        })
     });
 
     it("triggers fetchToken on mount", (done: DoneCallback) => {
