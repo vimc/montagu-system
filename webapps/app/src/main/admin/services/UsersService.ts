@@ -9,7 +9,7 @@ export class UsersService extends AbstractLocalService {
 
     createUser(name :string, email:string, username:string): Promise<Result> {
         return this
-            .setOptions({exceptionOnError: false})
+            .setOptions({notificationOnError: false})
             .post("/users/", JSON.stringify({name, email, username}));
     }
 
@@ -49,7 +49,7 @@ export class UsersService extends AbstractLocalService {
 
     setPassword(resetToken: string, newPassword: string): Promise<Result> {
         return this
-            .setOptions({exceptionOnError: false})
+            .setOptions({notificationOnError: false})
             .post(`/onetime_link/${resetToken}/`, JSON.stringify({ password: newPassword }));
     }
 }

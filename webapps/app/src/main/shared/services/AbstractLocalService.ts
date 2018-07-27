@@ -28,7 +28,7 @@ export interface InputOptions {
     'Content-Type'?: string;
     credentials?: "omit" | "same-origin" | "include";
     cacheKey?: string;
-    exceptionOnError?: boolean;
+    notificationOnError?: boolean;
     noCache?: boolean;
 }
 
@@ -50,7 +50,7 @@ export abstract class AbstractLocalService {
 
         this.processResponse = this.processResponse.bind(this);
         this.notifyOnErrors = this.notifyOnErrors.bind(this);
-        this.handleErrorsWithExceptions = this.handleErrorsWithExceptions.bind(this);
+        this.handleErrorsWithNotifications = this.handleErrorsWithNotifications.bind(this);
     }
 
     protected getTokenFromState(state: GlobalState) {
@@ -67,7 +67,7 @@ export abstract class AbstractLocalService {
     protected initOptions() {
         this.options = {};
         this.options.cacheKey = null;
-        this.options.exceptionOnError = true;
+        this.options.notificationOnError = true;
         this.options.noCache = false;
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
@@ -166,7 +166,7 @@ export abstract class AbstractLocalService {
         notificationActionCreators.notify("Your session has expired. You will need to log in again", "info")(this.dispatch, null);
     }
 
-    handleErrorsWithExceptions (error: ErrorInfo) {
+    handleErrorsWithNotifications (error: ErrorInfo) {
         switch (error.code) {
             case "bearer-token-invalid":
                 return this.expiredTokenAction();
@@ -192,8 +192,8 @@ export abstract class AbstractLocalService {
                 }
                 return result.data as TModel;
             case "failure":
-                return options.exceptionOnError
-                    ? result.errors.forEach(this.handleErrorsWithExceptions)
+                return options.notificationOnError
+                    ? result.errors.forEach(this.handleErrorsWithNotifications)
                     : this.handleErrorsReturn(result) as TModel;
             default:
                 notificationActionCreators.notify(

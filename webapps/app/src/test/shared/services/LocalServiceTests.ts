@@ -12,6 +12,7 @@ import {Dispatch} from "react-redux";
 import {GlobalState} from "../../../main/shared/reducers/GlobalState";
 import {CacheInterface} from "../../../main/shared/modules/cache/CacheInterface";
 import {mockContribState} from "../../mocks/mockStates";
+import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 
 describe('Local service class initialization tests', () => {
 
@@ -155,9 +156,60 @@ describe('Local service class requests tests', () => {
         try {
             await testService.test();
         } catch(e) {
-            const actions = store.getActions()
+            const actions = store.getActions();
             expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
-            expect(e.notification.message).to.eql('Your session has expired. You will need to log in again');
+            expect(actions[1].type).to.eql(NotificationTypeKeys.NOTIFY);
+            expect(actions[1].severity).to.eql("error");
+            expect(actions[1].message).to.contain("You will need to log in again");
+        }
+    });
+
+    it("raises error if API returns errors", async () => {
+        const store = createMockStore();
+        class TestService extends AbstractLocalService {
+            test() {
+                return this.get("/test/");
+            }
+        }
+        const testService = new TestService(store.dispatch, store.getState);
+        sandbox.setStubFunc(testService, "doFetch", ()=> Promise.resolve({
+            json: (): any => {
+                return Promise.resolve({
+                    status: "failure",
+                    errors: [{code: "normal-error", message: "some message"}]
+                })
+            }
+        }));
+        try {
+            await testService.test();
+        } catch(e) {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
+            expect(actions[1].type).to.eql(NotificationTypeKeys.NOTIFY);
+            expect(actions[1].severity).to.eql("error");
+            expect(actions[1].message).to.contain("some message");
+        }
+    });
+
+    it("raises error if API returns badly formatted result", async () => {
+        const store = createMockStore();
+        class TestService extends AbstractLocalService {
+            test() {
+                return this.get("/test/");
+            }
+        }
+        const testService = new TestService(store.dispatch, store.getState);
+        sandbox.setStubFunc(testService, "doFetch", ()=> Promise.resolve({
+            json: (): any => Promise.resolve("just a string")
+        }));
+        try {
+            await testService.test();
+        } catch(e) {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
+            expect(actions[1].type).to.eql(NotificationTypeKeys.NOTIFY);
+            expect(actions[1].severity).to.eql("error");
+            expect(actions[1].message).to.contain("The server response was not correctly formatted");
         }
     });
 });

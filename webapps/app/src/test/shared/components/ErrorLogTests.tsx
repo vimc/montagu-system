@@ -2,7 +2,7 @@ import * as React from "react";
 import {shallow} from "enzyme";
 import {expect} from "chai";
 
-import {ErrorLog, ErrorLogComponent} from "../../../main/shared/components/ErrorLog/ErrorLog";
+import {ErrorLog, ErrorLogComponent, mapStateToProps} from "../../../main/shared/components/ErrorLog/ErrorLog";
 import {Sandbox} from "../../Sandbox";
 import {createMockAdminStore} from "../../mocks/mockStore";
 import {mockAdminState} from "../../mocks/mockStates";
@@ -37,5 +37,11 @@ describe("ErrorLog", () => {
         const rendered = shallow(<ErrorLog/>, {context: {store}}).dive();
         rendered.find("button").simulate("click");
         expect(stub.getCall(0).args).to.eql(["error"]);
+    });
+
+    it("maps state to props", () => {
+        const notificationState: Partial<NotificationState> = {errors: ["a", "b"]};
+        const props = mapStateToProps(mockAdminState({notifications: notificationState}));
+        expect(props).to.eql({errors: ["a", "b"]});
     });
 });

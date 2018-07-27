@@ -33,7 +33,7 @@ export class ErrorLogComponent extends React.Component<ErrorLogProps, undefined>
 }
 
 
-function mapStateToProps(state: CommonState): Partial<ErrorLogProps> {
+export function mapStateToProps(state: CommonState): Partial<ErrorLogProps> {
     return {errors: state.notifications.errors};
 }
 
