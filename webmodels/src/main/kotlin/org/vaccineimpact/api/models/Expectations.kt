@@ -17,31 +17,28 @@ data class Expectations(
                 && (cohorts.maximumBirthYear == null || this <= cohorts.maximumBirthYear)
     }
 
+    data class RowDeterminer(val year: Int, val age: Int, val country: Country)
+
+    fun expectedCentralRows(disease: String) = expectedRows()
+            .map { mapCentralRow(disease, it.year, it.age, it.country) }
+
+    fun expectedStochasticRows(disease: String) = expectedRows()
+            .map { mapStochasticRow(disease, it.year, it.age, it.country) }
+
+    private fun expectedRows(): Sequence<RowDeterminer> = buildSequence {
+        for (age in ages)
+        {
+            for (country in countries)
+            {
+                yieldAll(years
+                        .filter { (it - age).withinCohortRange() }
+                        .map { RowDeterminer(it, age, country) })
+
+            }
+        }
+    }
+
     private fun outcomesMap() = outcomes.associateBy({ it }, { null })
-
-    fun expectedCentralRows(disease: String): Sequence<ExpectedCentralRow> = buildSequence{
-        for (age in ages)
-        {
-            for (country in countries)
-            {
-                yieldAll(years
-                        .filter { (it - age).withinCohortRange() }
-                        .map { mapCentralRow(disease, it, age, country) })
-            }
-        }
-    }
-
-    fun expectedStochasticRows(disease: String): Sequence<ExpectedStochasticRow> = buildSequence {
-        for (age in ages)
-        {
-            for (country in countries)
-            {
-                yieldAll(years
-                        .filter { (it - age).withinCohortRange() }
-                        .map { mapStochasticRow(disease, it, age, country) })
-            }
-        }
-    }
 
     private fun mapCentralRow(disease: String, year: Int, age: Int, country: Country): ExpectedCentralRow
     {
