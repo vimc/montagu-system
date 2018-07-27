@@ -2,14 +2,13 @@ import {Dispatch} from "redux";
 
 import {jwtTokenAuth} from "../modules/jwtTokenAuth";
 import {AuthService} from "../services/AuthService";
-import {makeNotificationException, notificationActions} from "./NotificationActions";
 import {appSettings, settings} from "../Settings";
 import {appName} from 'appName';
 import {AuthState} from "../reducers/authReducer";
-import {makeNotification, Notification} from "../actions/NotificationActions";
 import {localStorageHandler} from "../services/localStorageHandler";
 import {Authenticated, AuthenticationError, AuthTypeKeys, Unauthenticated} from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
+import {notificationActionCreators} from "./notificationActionCreators";
 
 export const authActionCreators = {
 
@@ -23,9 +22,7 @@ export const authActionCreators = {
                     dispatch(this.receivedCompressedToken(response.access_token));
                 }
             } catch (error) {
-                const errorNotification = this.makeNotificationError('Server error');
-                notificationActions.notify(errorNotification);
-                throw makeNotificationException(error.message, "error");
+                dispatch(notificationActionCreators.notify(this.makeErrorMessage("Server error"), "error"));
             }
         }
     },
@@ -53,25 +50,24 @@ export const authActionCreators = {
         }
     },
 
-    validateAuthResult(user: any) {
+    validateAuthResult(user: any): string {
         if (!user.isAccountActive) {
-            return this.makeNotificationError("Your account has been deactivated");
+            return this.makeErrorMessage("Your account has been deactivated");
         }
         if (appSettings.requiresModellingGroupMembership && (!user.modellingGroups || !user.modellingGroups.length)) {
-            return this.makeNotificationError("Only members of modelling groups can log into the contribution portal");
+            return this.makeErrorMessage("Only members of modelling groups can log into the contribution portal");
         }
     },
 
-    makeNotificationError(error: string): Notification {
-        if (!error) return null;
+    makeErrorMessage(error: string): string {
         const support = settings.supportContact;
-        return makeNotification(`${error}. Please contact ${support} for help.`, "error")
+        return `${error}. Please contact ${support} for help.`;
     },
 
     receivedCompressedToken(token: string) {
         return (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             const user: AuthState = jwtTokenAuth.getDataFromCompressedToken(token);
-            const error: Notification = this.validateAuthResult(user);
+            const error: string = this.validateAuthResult(user);
             if (!error) {
                 // Save the compressed version of the token
                 localStorageHandler.set("accessToken", user.bearerToken);
@@ -81,8 +77,8 @@ export const authActionCreators = {
                 } as Authenticated);
                 (new AuthService(dispatch, getState)).setShinyCookie();
             } else {
-                notificationActions.notify(error);
-                dispatch(this.authenticationError(error.message));
+                dispatch(notificationActionCreators.notify(error, "error"));
+                dispatch(this.authenticationError(error));
             }
         }
     },
@@ -110,7 +106,10 @@ export const authActionCreators = {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             const result = await (new AuthService(dispatch, getState)).forgotPassword(email);
             if (result) {
-                return notificationActions.notify(makeNotification("Thank you. If we have an account registered for this email address you will receive a reset password link", "info"));
+                dispatch(notificationActionCreators.notify(
+                    "Thank you. If we have an account registered for this email address you will receive a reset password link",
+                    "info"
+                ));
             }
         }
     }

@@ -1,16 +1,16 @@
-import { combineReducers } from "redux";
-import { reducer as formReducer, FormReducer } from "redux-form";
-import { routerReducer } from 'react-router-redux';
+import {combineReducers} from "redux";
+import {reducer as formReducer} from "redux-form";
+import {routerReducer} from 'react-router-redux';
 
-import {authReducer, AuthState} from "../../shared/reducers/authReducer";
+import {authReducer} from "../../shared/reducers/authReducer";
 import {reportsReducer, ReportsState} from "./reportsReducer";
 import {usersReducer, UsersState} from "./userReducer";
 import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadcrumbsReducer";
 import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneTimeTokenReducer";
+import {CommonState} from "../../shared/reducers/CommonState";
+import {notificationReducer} from "../../shared/reducers/notificationReducer";
 
-export interface ReportAppState {
-    auth: AuthState;
-    form: FormReducer;
+export interface ReportAppState extends CommonState {
     reports: ReportsState;
     users: UsersState;
     breadcrumbs: BreadcrumbsState;
@@ -24,7 +24,8 @@ const reducers = combineReducers({
     router: routerReducer,
     users: usersReducer,
     breadcrumbs: breadcrumbsReducer,
-    onetimeTokens: onetimeTokenReducer
+    onetimeTokens: onetimeTokenReducer,
+    notifications: notificationReducer
 });
 
 export default reducers;

@@ -1,33 +1,48 @@
 import * as React from "react";
-import { CSSTransitionGroup } from "react-transition-group";
-import { notificationActions } from "../../actions/NotificationActions";
+import {CSSTransitionGroup} from "react-transition-group";
+import {CommonState} from "../../reducers/CommonState";
+import {Dispatch} from "redux";
+import {notificationActionCreators} from "../../actions/notificationActionCreators";
+import {connect} from "react-redux";
+import {compose} from "recompose";
 
 interface Props {
-    notifications: string[];
+    infoMessages: string[];
+    clear: () => void;
 }
 
-export class NotificationArea extends React.Component<Props, undefined> {
+class NotificationAreaComponent extends React.Component<Props, undefined> {
     hideMessage(e: React.MouseEvent<HTMLButtonElement>) {
-        notificationActions.clear("info");
+        this.props.clear();
     }
 
     render() {
         let content = null;
-        if (this.props.notifications.length > 0) {
-            const message = this.props.notifications[0];
+        if (this.props.infoMessages.length > 0) {
+            const message = this.props.infoMessages[0];
             content = <div className="notifications">
-                { message }
+                {message}
                 <button className="hideButton"
-                        onClick={ this.hideMessage }>
+                        onClick={this.hideMessage.bind(this)}>
                     X
                 </button>
             </div>;
         }
         return <CSSTransitionGroup
             transitionName="fade"
-            transitionEnterTimeout={ 300 }
-            transitionLeaveTimeout={ 300 }>
-            { content }
+            transitionEnterTimeout={300}
+            transitionLeaveTimeout={300}>
+            {content}
         </CSSTransitionGroup>;
     }
 }
+
+function mapStateToProps(state: CommonState): Partial<Props> {
+    return {infoMessages: state.notifications.infos};
+}
+
+function mapDispatchToProps(dispatch: Dispatch<CommonState>): Partial<Props> {
+    return {clear: () => dispatch(notificationActionCreators.clear("info"))};
+}
+
+export const NotificationArea = connect(mapStateToProps, mapDispatchToProps)(NotificationAreaComponent);

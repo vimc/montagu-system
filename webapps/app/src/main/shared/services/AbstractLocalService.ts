@@ -4,18 +4,12 @@ import {clone} from "lodash";
 import { settings } from "../Settings";
 import { localStorageHandler } from "./localStorageHandler";
 import {ErrorInfo, Result} from "../models/Generated";
-import {
-    makeNotificationException,
-    Notification,
-    NotificationException,
-    notificationActions
-} from "../actions/NotificationActions";
-
 import { AuthTypeKeys } from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
 import {CacheInterface} from "../modules/cache/CacheInterface";
 import {singletonVariableCache} from "../modules/cache/singletonVariableCache";
 import {APIService} from "../models/APIService";
+import {notificationActionCreators} from "../actions/notificationActionCreators";
 
 export interface OptionsHeaders {
    Authorization?: string;
@@ -169,11 +163,7 @@ export abstract class AbstractLocalService {
     expiredTokenAction() {
         console.log("Access token has expired or is otherwise invalid: Logging out.");
         this.dispatch(this.logOut());
-        const notification: Notification = {
-            message: "Your session has expired. You will need to log in again",
-            type: "info"
-        };
-        throw new NotificationException(notification);
+        notificationActionCreators.notify("Your session has expired. You will need to log in again", "info")(this.dispatch, null);
     }
 
     handleErrorsWithExceptions (error: ErrorInfo) {
@@ -181,7 +171,7 @@ export abstract class AbstractLocalService {
             case "bearer-token-invalid":
                 return this.expiredTokenAction();
             default:
-                throw makeNotificationException(error.message, "error");
+                notificationActionCreators.notify(error.message, "error")(this.dispatch, null);
         }
     };
 
@@ -192,7 +182,7 @@ export abstract class AbstractLocalService {
         return result;
     };
 
-    processResult<TModel>(result: Result, response: any): TModel | void {
+    processResult<TModel>(result: Result, response: Response): TModel | void {
         const options = clone(this.options);
         this.initOptions();
         switch (result.status) {
@@ -206,14 +196,16 @@ export abstract class AbstractLocalService {
                     ? result.errors.forEach(this.handleErrorsWithExceptions)
                     : this.handleErrorsReturn(result) as TModel;
             default:
-                throw makeNotificationException("The server response was not correctly formatted: "
-                    + response.toString(), "error");
+                notificationActionCreators.notify(
+                    "The server response was not correctly formatted: " + JSON.stringify(result),
+                    "error"
+                )(this.dispatch, null);
         }
     }
 
     notifyOnErrors(error: any) {
         this.initOptions();
-        notificationActions.notify(error);
+        notificationActionCreators.notify(error.toString(), "error")(this.dispatch, null);
     }
 
     protected logOut() {
