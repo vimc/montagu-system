@@ -22,12 +22,12 @@ interface Serializer
 
     val gson: Gson
 
-    val noValue: String
+    val serializeNullsTo: String
 }
 
 class NullToEmptyStringSerializer(serializer: Serializer = MontaguSerializer.instance): Serializer by serializer {
 
-    override val noValue = ""
+    override val serializeNullsTo = ""
 
     companion object
     {
@@ -54,7 +54,7 @@ class MontaguSerializer : Serializer
 
     override val gson: Gson
 
-    override val noValue = "<NA>"
+    override val serializeNullsTo = "<NA>"
 
     init
     {
@@ -120,7 +120,7 @@ class MontaguSerializer : Serializer
 
     override fun serializeValueForCSV(value: Any?) = when (value)
     {
-        null -> noValue
+        null -> serializeNullsTo
         is Enum<*> -> serializeEnum(value)
         else -> value.toString()
     }
