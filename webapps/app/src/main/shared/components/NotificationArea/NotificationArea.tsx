@@ -4,14 +4,13 @@ import {CommonState} from "../../reducers/CommonState";
 import {Dispatch} from "redux";
 import {notificationActionCreators} from "../../actions/notificationActionCreators";
 import {connect} from "react-redux";
-import {compose} from "recompose";
 
 interface Props {
     infoMessages: string[];
     clear: () => void;
 }
 
-class NotificationAreaComponent extends React.Component<Props, undefined> {
+export class NotificationAreaComponent extends React.Component<Props, undefined> {
     hideMessage(e: React.MouseEvent<HTMLButtonElement>) {
         this.props.clear();
     }
@@ -38,7 +37,7 @@ class NotificationAreaComponent extends React.Component<Props, undefined> {
 }
 
 function mapStateToProps(state: CommonState): Partial<Props> {
-    return {infoMessages: state.notifications.infos};
+    return {infoMessages: state.notifications.infoMessages};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<CommonState>): Partial<Props> {

@@ -5,10 +5,10 @@ import {authActionCreators} from "../../../main/shared/actions/authActionCreator
 import {AuthService} from "../../../main/shared/services/AuthService";
 import {AuthTypeKeys} from "../../../main/shared/actionTypes/AuthTypes";
 import {createMockStore} from "../../mocks/mockStore";
-import {notificationStore} from "../../../main/shared/stores/NotificationStore";
 
 import {localStorageHandler} from "../../../main/shared/services/localStorageHandler";
 import {signAndCompress} from "../helpers/TokenHelpers";
+import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 
 describe("AuthActions", () => {
     const sandbox = new Sandbox();
@@ -72,9 +72,9 @@ describe("AuthActions", () => {
         store.dispatch(authActionCreators.logIn('test', 'test'));
         setTimeout(() => {
             const actions = store.getActions();
-            const state = notificationStore.getState();
-            expect(state.errors[0].search('Your account has been deactivated.')).is.equal(0);
-            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+            expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
+            expect(actions[0].message).to.contain("Your account has been deactivated.");
+            expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
             done();
         });
     });
@@ -87,9 +87,9 @@ describe("AuthActions", () => {
         store.dispatch(authActionCreators.logIn('test', 'test'));
         setTimeout(() => {
             const actions = store.getActions();
-            const state = notificationStore.getState();
-            expect(state.errors[0].search('Only members of modelling groups can log into the contribution portal')).is.equal(0);
-            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+            expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
+            expect(actions[0].message).to.contain("Only members of modelling groups can log into the contribution portal");
+            expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
             done();
         });
     });
