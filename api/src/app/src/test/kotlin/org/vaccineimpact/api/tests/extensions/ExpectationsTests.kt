@@ -34,7 +34,7 @@ class ExpectationsTests : MontaguTests()
     }
 
     @Test
-    fun `generates central row with null cohort size and outcomes`()
+    fun `generates central rows with null cohort size and outcomes`()
     {
         val expectedOutcomes = listOf("Dalys", "Deaths")
 
@@ -43,7 +43,7 @@ class ExpectationsTests : MontaguTests()
         }
         val expectations = Expectations(1,
                 2000..2001,
-                1..1,
+                1..2,
                 CohortRestriction(null, null),
                 countryList,
                 expectedOutcomes
@@ -63,12 +63,24 @@ class ExpectationsTests : MontaguTests()
         assertThat(second.year).isEqualTo(2001)
         assertThat(second.disease).isEqualTo("YF")
 
+        val third = result[2]
+        assertThat(third.age).isEqualTo(2)
+        assertThat(third.country).isEqualTo("1")
+        assertThat(third.year).isEqualTo(2000)
+        assertThat(third.disease).isEqualTo("YF")
+
+        val fourth = result[3]
+        assertThat(fourth.age).isEqualTo(2)
+        assertThat(fourth.country).isEqualTo("1")
+        assertThat(fourth.year).isEqualTo(2001)
+        assertThat(fourth.disease).isEqualTo("YF")
+
         assertThat(result.all { it.cohortSize == null }).isTrue()
         assertThat(result.all { it.outcomes.all { it.value == null } }).isTrue()
     }
 
     @Test
-    fun `generates stochastic row with null cohort size, outcomes, and run id`()
+    fun `generates stochastic rows with null cohort size, outcomes, and run id`()
     {
         val expectedOutcomes = listOf("Dalys", "Deaths")
 
