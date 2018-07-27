@@ -15,6 +15,7 @@ import {CreateUserFormFields} from "../components/Users/Create/CreateUserForm";
 import {makeNotification, notificationActions} from "../../shared/actions/NotificationActions";
 import {settings} from "../../shared/Settings";
 import {helpers} from "../../shared/Helpers";
+import {isNonEmptyArray} from "../../shared/ArrayHelpers";
 
 export const usersActionCreators = {
 
@@ -110,7 +111,7 @@ export const usersActionCreators = {
     setPassword(resetToken: string, newPassword: string) {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             const result = await (new UsersService(dispatch, getState)).setPassword(resetToken, newPassword);
-            if (result && result.errors) {
+            if (result && isNonEmptyArray(result.errors)) {
                 const codes = result.errors.map(e => e.code);
                 if (codes.indexOf("invalid-token-used") > -1) {
                     dispatch(usersActionCreators.clearSetPasswordToken());

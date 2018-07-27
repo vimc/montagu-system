@@ -11,12 +11,12 @@ import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArti
 import {setPasswordPageActionCreators} from "../../../actions/pages/SetPasswordPageActionCreators";
 import {SetPasswordForm} from "./SetPasswordForm";
 
-interface Props extends PageProperties<undefined> {
+export interface SetPasswordPageProps extends PageProperties<undefined> {
     token: string;
     saveTokenToState: (token: string) => void;
 }
 
-export class SetPasswordPageComponent extends React.Component<Props> {
+export class SetPasswordPageComponent extends React.Component<SetPasswordPageProps> {
     static title: string = "Enter a new password";
 
     componentDidMount() {
@@ -42,11 +42,11 @@ export class SetPasswordPageComponent extends React.Component<Props> {
     }
 }
 
-function mapStateToProps(state: AdminAppState, props: Props): Partial<Props> {
+function mapStateToProps(state: AdminAppState, props: SetPasswordPageProps): Partial<SetPasswordPageProps> {
     return {...props, token: state.users.setPasswordToken};
 }
 
-function mapDispatchToProps(dispatch: Dispatch<AdminAppState>): Partial<Props> {
+function mapDispatchToProps(dispatch: Dispatch<AdminAppState>): Partial<SetPasswordPageProps> {
     return {
         onLoad: () => dispatch(setPasswordPageActionCreators.onLoad()),
         saveTokenToState: (token: string) => dispatch(setPasswordPageActionCreators.saveToken(token))
@@ -55,9 +55,9 @@ function mapDispatchToProps(dispatch: Dispatch<AdminAppState>): Partial<Props> {
 
 export const SetPasswordPage = compose(
     connect(mapStateToProps, mapDispatchToProps)
-)(SetPasswordPageComponent) as React.ComponentClass<Props>;
+)(SetPasswordPageComponent) as React.ComponentClass<SetPasswordPageProps>;
 
-class RequestResetLinkButton extends React.Component<undefined> {
+export class RequestResetLinkButton extends React.Component<undefined> {
     render(): JSX.Element {
         return <div className="mt-3">
             <div className="alert alert-warning">This password reset link has expired. Please request a new one</div>
