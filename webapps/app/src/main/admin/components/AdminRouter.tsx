@@ -1,23 +1,22 @@
 import * as React from "react";
-import { Route, Switch, Redirect } from 'react-router-dom';
-import { ConnectedRouter } from 'react-router-redux';
+import {Route, Switch} from 'react-router-dom';
+import {ConnectedRouter} from 'react-router-redux';
 import {History} from "history";
-
 // import {AdminPageHeader} from "./AdminPageHeader";
 // Pages
-import { MainMenu } from "./MainMenu/MainMenu";
-import { AdminLoginPage } from "./AdminLoginPage";
-import { AdminNoRouteFoundPage } from "./AdminNoRouteFoundPage";
-import { ModellingGroupsListPage } from "./ModellingGroups/List/ModellingGroupsListPage";
-import { ModellingGroupDetailsPage } from "./ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
-import { ModellingGroupMembersPage } from "./ModellingGroups/SingleGroup/Members/ModellingGroupMembersPage";
-import { AdminForgottenPasswordPage } from "./AdminForgottenPasswordPage";
-import { SetPasswordPage } from "./Users/Account/SetPasswordPage";
+import {AdminLoginPage} from "./AdminLoginPage";
+import {AdminNoRouteFoundPage} from "./AdminNoRouteFoundPage";
+import {ModellingGroupsListPage} from "./ModellingGroups/List/ModellingGroupsListPage";
+import {ModellingGroupDetailsPage} from "./ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
+import {ModellingGroupMembersPage} from "./ModellingGroups/SingleGroup/Members/ModellingGroupMembersPage";
+import {AdminForgottenPasswordPage} from "./AdminForgottenPasswordPage";
+import {SetPasswordPage} from "./Users/Account/SetPasswordPage";
 import {UsersListPage} from "./Users/List/UsersListPage";
 import {UserDetailsPage} from "./Users/SingleUser/UserDetailsPage";
 import {TouchstoneListPage} from "./Touchstones/List/TouchstoneListPage";
 import {TouchstoneDetailsPage} from "./Touchstones/Details/TouchstoneDetailsPage";
 import {ResponsibilitiesPage} from "./Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
+import {MainMenuNew} from "./MainMenu/MainMenuNew";
 
 interface AdminRouterProps {
     loggedIn: boolean;
@@ -27,7 +26,7 @@ interface AdminRouterProps {
 export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: AdminRouterProps) => {
 
     const loggedIn = <Switch>
-        <Route exact path="/" component={MainMenu}/>
+        <Route exact path="/" component={MainMenuNew}/>
         <Route exact path="/modelling-groups/" component={ModellingGroupsListPage}/>
         <Route exact path="/modelling-groups/:groupId/" component={ModellingGroupDetailsPage}/>
         <Route exact path="/modelling-groups/:groupId/admin/" component={ModellingGroupMembersPage}/>
