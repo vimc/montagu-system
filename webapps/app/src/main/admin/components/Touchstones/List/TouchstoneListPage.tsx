@@ -1,6 +1,5 @@
 import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import * as React from "react";
-import {AdminPageHeader} from "../../AdminPageHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {TouchstoneList} from "./TouchstoneList";
@@ -19,14 +18,11 @@ export class TouchstoneListPageComponent extends React.Component<PageProperties<
     }
 
     render(): JSX.Element {
-        return <div>
-            <AdminPageHeader/>
-            <PageArticle title={TouchstoneListPageComponent.title}>
-                {settings.showTouchstoneCreation &&
-                <CreateTouchstoneForm/>}
-                <TouchstoneList/>
-            </PageArticle>
-        </div>;
+        return <PageArticle title={TouchstoneListPageComponent.title}>
+            {settings.showTouchstoneCreation &&
+            <CreateTouchstoneForm/>}
+            <TouchstoneList/>
+        </PageArticle>;
     }
 }
 

@@ -6,7 +6,6 @@ import {PageProperties} from "../../../../shared/components/PageWithHeader/PageP
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {compose} from "recompose";
 import {connect, Dispatch} from "react-redux";
-import {AdminPageHeader} from "../../AdminPageHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {setPasswordPageActionCreators} from "../../../actions/pages/SetPasswordPageActionCreators";
 import {SetPasswordForm} from "./SetPasswordForm";
@@ -33,12 +32,9 @@ export class SetPasswordPageComponent extends React.Component<SetPasswordPagePro
             content = <RequestResetLinkButton/>;
         }
 
-        return <div>
-            <AdminPageHeader/>
-            <PageArticle title={SetPasswordPageComponent.title}>
-                {content}
-            </PageArticle>
-        </div>;
+        return <PageArticle title={SetPasswordPageComponent.title}>
+            {content}
+        </PageArticle>;
     }
 }
 

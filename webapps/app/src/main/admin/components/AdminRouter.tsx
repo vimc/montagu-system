@@ -2,7 +2,9 @@ import * as React from "react";
 import {Route, Switch} from 'react-router-dom';
 import {ConnectedRouter} from 'react-router-redux';
 import {History} from "history";
-// import {AdminPageHeader} from "./AdminPageHeader";
+import * as logo from "../../shared/components/PageWithHeader/logo.png"
+import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
+
 // Pages
 import {AdminLoginPage} from "./AdminLoginPage";
 import {AdminNoRouteFoundPage} from "./AdminNoRouteFoundPage";
@@ -49,6 +51,7 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
 
     return <ConnectedRouter history={props.history}>
         <div>
+            <PageHeader siteTitle={"Admin portal"} logo={logo} />
             {routes}
         </div>
     </ConnectedRouter>;

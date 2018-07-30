@@ -1,15 +1,13 @@
 import * as React from "react";
-import { compose} from "recompose";
-import { connect } from 'react-redux';
-import { Dispatch } from "redux";
+import {compose} from "recompose";
+import {connect} from 'react-redux';
+import {Dispatch} from "redux";
 
-import { ModellingGroupDetailsContent } from "./ModellingGroupDetailsContent";
-import { PageArticle } from "../../../../../shared/components/PageWithHeader/PageArticle";
+import {ModellingGroupDetailsContent} from "./ModellingGroupDetailsContent";
+import {PageArticle} from "../../../../../shared/components/PageWithHeader/PageArticle";
 import {PageProperties} from "../../../../../shared/components/PageWithHeader/PageProperties";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
-import {AdminPageHeader} from "../../../AdminPageHeader";
 import {modellingGroupDetailsPageActionCreators} from "../../../../actions/pages/ModellingGroupDetailsPageActionCreators";
-import {PageBreadcrumb} from "../../../../../shared/components/PageWithHeader/PageProperties";
 
 export interface ModellingGroupDetailsPageLocationProps {
     groupId: string;
@@ -24,17 +22,14 @@ export class ModellingGroupDetailsPageComponent extends React.Component<Modellin
         this.props.onLoad(this.props.match.params)
     }
 
-    render() :JSX.Element {
-        return <div>
-            <AdminPageHeader/>
-            <PageArticle title={this.props.groupDescription}>
-                <ModellingGroupDetailsContent />
-            </PageArticle>
-        </div>;
+    render(): JSX.Element {
+        return <PageArticle title={this.props.groupDescription}>
+            <ModellingGroupDetailsContent/>
+        </PageArticle>;
     }
 }
 
-const mapStateToProps = (state: AdminAppState) :Partial<ModellingGroupDetailsPageProps> => {
+const mapStateToProps = (state: AdminAppState): Partial<ModellingGroupDetailsPageProps> => {
     return {
         groupDescription: state.groups.currentGroup ? state.groups.currentGroup.description : ''
     }
