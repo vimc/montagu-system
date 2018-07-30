@@ -6,10 +6,12 @@ import {UsersService} from "../services/UsersService";
 import {
     AllGlobalRolesFetched,
     AllUsersFetched,
+    ChangeSetPasswordErrors,
+    ChangeSetPasswordToken,
     SetCreateUserError,
-    SetCurrentUser, ChangeSetPasswordErrors,
+    SetCurrentUser,
     ShowCreateUser,
-    UsersTypes, ChangeSetPasswordToken
+    UsersTypes
 } from "../actionTypes/UsersTypes";
 import {CreateUserFormFields} from "../components/Users/Create/CreateUserForm";
 import {makeNotification, notificationActions} from "../../shared/actions/NotificationActions";
@@ -135,13 +137,11 @@ export const usersActionCreators = {
         }
     },
 
-    clearSetPasswordToken() {
-        return (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
-            helpers.removeQueryString();
-            dispatch({
-                type: UsersTypes.CHANGE_SET_PASSWORD_TOKEN,
-                token: null
-            } as ChangeSetPasswordToken);
-        }
+    clearSetPasswordToken(): ChangeSetPasswordToken {
+        helpers.removeQueryString();
+        return {
+            type: UsersTypes.CHANGE_SET_PASSWORD_TOKEN,
+            token: null
+        };
     }
 };
