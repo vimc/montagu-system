@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Route, Switch, Redirect } from 'react-router-dom';
-import { ConnectedRouter } from 'react-router-redux';
+import {Route, Switch} from 'react-router-dom';
+import {ConnectedRouter} from 'react-router-redux';
 import {History} from "history";
 
 // Pages
@@ -8,8 +8,8 @@ import {ReportsListPage} from "./ReportsList/ReportsListPage";
 import {ReportingNoRouteFoundPage} from "./ReportingNoRouteFoundPage";
 import {ReportingLoginPage} from "./ReportingLoginPage";
 import {ReportPage} from "./Reports/ReportPage";
-import {ReportingForgottenPasswordPage} from "./ReportingForgottenPasswordPage";
 import {ReportingPageHeader} from "./ReportingPageHeader";
+import {ForgottenPasswordPage} from "../../shared/components/ForgottenPasswordPage";
 
 interface ReportRouterProps {
     loggedIn: boolean;
@@ -25,7 +25,7 @@ export const ReportingRouter : React.StatelessComponent<ReportRouterProps> = (pr
     </Switch>;
 
     const notLoggedIn = <Switch>
-        <Route exact path="/forgotten-password/" component={ReportingForgottenPasswordPage} />
+        <Route exact path="/forgotten-password/" component={ForgottenPasswordPage} />
         <Route component={ReportingLoginPage}/>
     </Switch>;
 
@@ -37,4 +37,4 @@ export const ReportingRouter : React.StatelessComponent<ReportRouterProps> = (pr
             {routes}
         </div>
     </ConnectedRouter>;
-}
+};

@@ -1,29 +1,29 @@
 import * as React from "react";
-import { Route, Switch, Redirect } from 'react-router-dom';
-import { ConnectedRouter } from 'react-router-redux';
+import {Route, Switch} from 'react-router-dom';
+import {ConnectedRouter} from 'react-router-redux';
 import {History} from "history";
 
 // Pages
 import {ContribPageHeader} from "./ContribPageHeader";
-import { ChooseGroupPage } from "./ChooseGroup/ChooseGroupPage";
-import { ChooseActionPage } from "./ChooseAction/ChooseActionPage";
-import { ContribLoginPage } from "./Login/ContribLoginPage";
-import { ContribNoRouteFoundPage } from "./ContribNoRouteFoundPage";
-import { ContribForgottenPasswordPage } from "./ContribForgottenPasswordPage";
-import { TouchstoneHelpPage } from "./TouchstoneHelpPage";
-import { ResponsibilityOverviewPage } from "./Responsibilities/Overview/ResponsibilityOverviewPage";
-import { DownloadCoveragePage } from "./Responsibilities/Coverage/DownloadCoveragePage";
-import { UploadBurdenEstimatesPage } from "./Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
-import { DownloadDemographicsPage } from "./Responsibilities/Demographics/DownloadDemographicsPage";
-import { ModelRunParametersPage} from "./Responsibilities/ModelRunParameters/ModelRunParametersPage";
-import { ResponsibilityGuidanceModelInputsPage } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelInputsPage";
-import { ResponsibilityGuidanceModelOutputsPage } from "./Responsibilities/Guidance/ResponsibilityGuidanceModelOutputsPage";
-import { ResponsibilityGuidanceNeonatalMortalityPage } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceNeonatalMortalityPage";
-import { ResponsibilityGuidanceMarshallIslandsPage } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceMarshallIslandsPage";
-import { ResponsibilityGuidanceOver80Page } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceOver80Page";
-import { ResponsibilityGuidanceKosovoPage } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceKosovoPage";
-import { ResponsibilityGuidanceTuvaluPage } from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceTuvaluPage";
+import {ChooseGroupPage} from "./ChooseGroup/ChooseGroupPage";
+import {ChooseActionPage} from "./ChooseAction/ChooseActionPage";
+import {ContribLoginPage} from "./Login/ContribLoginPage";
+import {ContribNoRouteFoundPage} from "./ContribNoRouteFoundPage";
+import {TouchstoneHelpPage} from "./TouchstoneHelpPage";
+import {ResponsibilityOverviewPage} from "./Responsibilities/Overview/ResponsibilityOverviewPage";
+import {DownloadCoveragePage} from "./Responsibilities/Coverage/DownloadCoveragePage";
+import {UploadBurdenEstimatesPage} from "./Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
+import {DownloadDemographicsPage} from "./Responsibilities/Demographics/DownloadDemographicsPage";
+import {ModelRunParametersPage} from "./Responsibilities/ModelRunParameters/ModelRunParametersPage";
+import {ResponsibilityGuidanceModelInputsPage} from "./Responsibilities/Guidance/ResponsibilityGuidanceModelInputsPage";
+import {ResponsibilityGuidanceModelOutputsPage} from "./Responsibilities/Guidance/ResponsibilityGuidanceModelOutputsPage";
+import {ResponsibilityGuidanceNeonatalMortalityPage} from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceNeonatalMortalityPage";
+import {ResponsibilityGuidanceMarshallIslandsPage} from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceMarshallIslandsPage";
+import {ResponsibilityGuidanceOver80Page} from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceOver80Page";
+import {ResponsibilityGuidanceKosovoPage} from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceKosovoPage";
+import {ResponsibilityGuidanceTuvaluPage} from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceTuvaluPage";
 import {ExpectationsPage} from "./Responsibilities/Expectations/ExpectationsPage";
+import {ForgottenPasswordPage} from "../../shared/components/ForgottenPasswordPage";
 
 interface ContribRouterProps {
     loggedIn: boolean;
@@ -53,7 +53,7 @@ export const ContribRouter : React.StatelessComponent<ContribRouterProps> = (pro
     </Switch>;
 
     const notLoggedIn = <Switch>
-        <Route exact path="/forgotten-password/" component={ContribForgottenPasswordPage} />
+        <Route exact path="/forgotten-password/" component={ForgottenPasswordPage} />
         <Route component={ContribLoginPage}/>
     </Switch>;
 
