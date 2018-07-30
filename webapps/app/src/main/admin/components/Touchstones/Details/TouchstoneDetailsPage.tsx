@@ -1,6 +1,5 @@
 import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import * as React from "react";
-import {AdminPageHeader} from "../../AdminPageHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {Dispatch} from "redux";
@@ -8,7 +7,6 @@ import {compose} from "recompose";
 import {connect} from "react-redux";
 import {touchstoneDetailsPageActionCreators} from "../../../actions/pages/touchstoneDetailsPageActionCreators";
 import {TouchstoneDetails} from "./TouchstoneDetails";
-import {PageBreadcrumb} from "../../../../shared/components/PageWithHeader/PageProperties";
 
 export interface TouchstoneDetailsPageLocationProps {
     touchstoneId: string;
@@ -24,12 +22,9 @@ export class TouchstoneDetailsPageComponent extends React.Component<TouchstoneDe
     }
 
     render(): JSX.Element {
-        return <div>
-            <AdminPageHeader />
-            <PageArticle title={this.props.touchstoneName}>
-                <TouchstoneDetails />
-            </PageArticle>
-        </div>;
+        return <PageArticle title={this.props.touchstoneName}>
+            <TouchstoneDetails/>
+        </PageArticle>;
     }
 }
 

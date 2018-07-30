@@ -1,6 +1,5 @@
 import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import * as React from "react";
-import {AdminPageHeader} from "../../AdminPageHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {Dispatch} from "redux";
@@ -27,15 +26,12 @@ export class ResponsibilitiesPageComponent extends React.Component<Responsibilit
     }
 
     render(): JSX.Element {
-        return <div>
-            <AdminPageHeader/>
-            <PageArticle title={`Responsibility sets in ${this.props.currentTouchstoneVersionId}`}>
-                {this.props.responsibilitySets.map(s => <div key={s.modelling_group_id}>
-                    <h4>{s.modelling_group_id} (<span>{s.status}</span>)</h4>
-                    <ResponsibilityList responsibilities={s.responsibilities}/>
-                </div>)}
-            </PageArticle>
-        </div>;
+        return <PageArticle title={`Responsibility sets in ${this.props.currentTouchstoneVersionId}`}>
+            {this.props.responsibilitySets.map(s => <div key={s.modelling_group_id}>
+                <h4>{s.modelling_group_id} (<span>{s.status}</span>)</h4>
+                <ResponsibilityList responsibilities={s.responsibilities}/>
+            </div>)}
+        </PageArticle>;
     }
 }
 
