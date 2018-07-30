@@ -3,7 +3,7 @@ import {ExpectationMapping, ModellingGroupCreation, TouchstoneVersion} from "../
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
 import {Version} from "../../main/shared/models/reports/Report";
 import {Artefact} from "../../main/shared/models/reports/Artefact";
-import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageProperties";
 
 let counter = 0;
 

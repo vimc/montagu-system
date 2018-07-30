@@ -3,7 +3,7 @@ import {usersActionCreators} from "../usersActionCreators";
 import {AdminAppState} from "../../reducers/adminAppReducers";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {mainMenuPageActionCreators, MainMenuPageActionCreators} from "./MainMenuPageActionCreators";
-import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 import {UsersListPageComponent} from "../../components/Users/List/UsersListPage";
 
 export class UsersListPageActionCreators extends AdminPageActionCreators<{}>{

@@ -1,5 +1,5 @@
 import {mockMatch} from "./mocks";
-import {PageProperties} from "../../main/shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../main/shared/components/PageWithHeader/PageProperties";
 import {shallow, ShallowWrapper} from "enzyme";
 import {ReactElement} from "react";
 import {createMockStore} from "./mockStore";

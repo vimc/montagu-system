@@ -5,10 +5,11 @@ import { Dispatch } from "redux";
 
 import { ModellingGroupDetailsContent } from "./ModellingGroupDetailsContent";
 import { PageArticle } from "../../../../../shared/components/PageWithHeader/PageArticle";
-import {PageBreadcrumb, PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../../shared/components/PageWithHeader/PageProperties";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
 import {AdminPageHeader} from "../../../AdminPageHeader";
 import {modellingGroupDetailsPageActionCreators} from "../../../../actions/pages/ModellingGroupDetailsPageActionCreators";
+import {PageBreadcrumb} from "../../../../../shared/components/PageWithHeader/PageProperties";
 
 export interface ModellingGroupDetailsPageLocationProps {
     groupId: string;

@@ -2,9 +2,10 @@ import * as React from "react";
 import { connect } from 'react-redux';
 import { Dispatch } from "redux";
 
-import {PageBreadcrumb, PageProperties} from "../PageWithHeader/PageWithHeader";
+import {PageProperties} from "../PageWithHeader/PageProperties";
 import {breadcrumbsActionCreators} from "../../actions/breadcrumbsActionsCreators";
 import {GlobalState} from "../../reducers/GlobalState";
+import {PageBreadcrumb} from "../PageWithHeader/PageProperties";
 
 export function BreadcrumbInitializer (
     BreadcrumbInitializerWrapped: ComponentConstructor<any, any>) {

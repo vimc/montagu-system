@@ -10,7 +10,7 @@ import {
 import {usersListPageActionCreators} from "./UsersListPageActionCreators";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {AbstractPageActionCreators} from "../../../shared/actions/AbstractPageActionCreators";
-import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 
 export class UserDetailsPageActionCreators extends AdminPageActionCreators<UserDetailsPageLocationProps> {
 

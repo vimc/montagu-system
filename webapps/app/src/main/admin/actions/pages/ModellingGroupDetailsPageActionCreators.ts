@@ -11,7 +11,7 @@ import {
     modellingGroupMembersPageActionCreators,
     ModellingGroupMembersPageActionCreators
 } from "./ModellingGroupMembersPageActionCreators";
-import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 import {modellingGroupsListPageActionCreators} from "./ModellingGroupsListPageActionCreators";
 
 

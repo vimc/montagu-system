@@ -2,7 +2,7 @@ import {Dispatch} from "redux";
 import {AdminAppState} from "../../reducers/adminAppReducers";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {mainMenuPageActionCreators, MainMenuPageActionCreators} from "./MainMenuPageActionCreators";
-import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 import {ChangeSetPasswordToken, UsersTypes} from "../../actionTypes/UsersTypes";
 import {SetPasswordPageComponent} from "../../components/Users/Account/SetPasswordPage";
 

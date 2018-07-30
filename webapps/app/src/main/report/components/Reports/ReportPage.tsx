@@ -6,7 +6,7 @@ import {ReportDetails} from "./ReportDetails";
 import {ReportsListPageComponent} from "../ReportsList/ReportsListPage";
 import {ReportTabEnum, Sidebar, sidebarHashToTab} from "../Sidebar/Sidebar";
 import {ReportDownloads} from "./ReportDownloads";
-import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../shared/components/PageWithHeader/PageProperties";
 import {reportPageActionCreators} from "../../actionCreators/reportPageActionCreators";
 
 export interface ReportPageLocationProps {

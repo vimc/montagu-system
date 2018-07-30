@@ -2,11 +2,12 @@ import * as React from "react";
 import {compose} from "recompose";
 
 import {NoRouteFound} from "../../shared/components/NoRouteFound";
-import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../shared/components/PageWithHeader/PageProperties";
 import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
 import {AdminPageHeader} from "./AdminPageHeader";
 import {mainMenuPageActionCreators} from "../actions/pages/MainMenuPageActionCreators";
+import {PageBreadcrumb} from "../../shared/components/PageWithHeader/PageProperties";
 
 export class AdminNoRouteFoundPageComponent extends React.Component<PageProperties<undefined>> {
     componentDidMount() {

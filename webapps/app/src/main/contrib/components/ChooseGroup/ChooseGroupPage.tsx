@@ -2,9 +2,10 @@ import * as React from "react";
 
 import {ChooseGroupContent} from "./ChooseGroupContent";
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
-import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../shared/components/PageWithHeader/PageProperties";
 import {chooseGroupPageActionCreators} from "../../actions/pages/chooseGroupPageActionCreators"
 import {ContribPage} from "../../ContribPage";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 
 export class ChooseGroupPageComponent extends React.Component<PageProperties<undefined>> {
 

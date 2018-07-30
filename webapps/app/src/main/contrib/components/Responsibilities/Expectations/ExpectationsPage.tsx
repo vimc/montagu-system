@@ -1,5 +1,5 @@
 import {ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import * as React from "react";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
@@ -9,6 +9,7 @@ import {compose} from "recompose";
 import {connect} from "react-redux";
 import {expectationsPageActionCreators} from "../../../actions/pages/expectationsPageActionCreators";
 import {ExpectationsList} from "./ExpectationsList";
+import {PageBreadcrumb} from "../../../../shared/components/PageWithHeader/PageProperties";
 
 export interface ExpectationsPageLocationProps {
     groupId: string;

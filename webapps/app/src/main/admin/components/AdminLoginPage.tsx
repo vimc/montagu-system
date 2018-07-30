@@ -4,7 +4,7 @@ import {compose} from "recompose";
 import {LoginForm} from "../../shared/components/Login/LoginForm";
 import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
 
-import {PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../shared/components/PageWithHeader/PageProperties";
 import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 import {AdminPageHeader} from "./AdminPageHeader";
 

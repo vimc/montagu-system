@@ -3,7 +3,7 @@ import {AdminAppState} from "../../reducers/adminAppReducers";
 import {TouchstoneListPageComponent} from "../../components/Touchstones/List/TouchstoneListPage";
 import {adminTouchstoneActionCreators} from "../adminTouchstoneActionCreators";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
-import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 import {mainMenuPageActionCreators} from "./MainMenuPageActionCreators";
 
 export class TouchstoneListPageActionCreators extends AdminPageActionCreators<{}> {

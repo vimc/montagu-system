@@ -2,7 +2,7 @@ import {Dispatch} from "redux";
 import {AdminAppState} from "../../reducers/adminAppReducers";
 import {touchstonesActionCreators} from "../../../shared/actions/touchstoneActionCreators";
 import {adminTouchstoneActionCreators} from "../adminTouchstoneActionCreators";
-import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {ResponsibilitiesPageLocationProps} from "../../components/Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
 import {touchstoneDetailsPageActionCreators} from "./touchstoneDetailsPageActionCreators";

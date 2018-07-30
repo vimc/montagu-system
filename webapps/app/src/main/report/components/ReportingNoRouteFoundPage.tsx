@@ -3,9 +3,10 @@ import { compose } from "recompose";
 
 import { NoRouteFound } from "../../shared/components/NoRouteFound";
 import { ReportsListPageComponent} from "./ReportsList/ReportsListPage";
-import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../shared/components/PageWithHeader/PageProperties";
 import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
 import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {PageBreadcrumb} from "../../shared/components/PageWithHeader/PageProperties";
 
 export class ReportingNoRouteFoundPageComponent extends React.Component<PageProperties<undefined>> {
     componentDidMount(){

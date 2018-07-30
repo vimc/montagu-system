@@ -13,7 +13,7 @@ import {
     modellingGroupsListPageActionCreators,
     ModellingGroupsListPageActionCreators
 } from "./ModellingGroupsListPageActionCreators";
-import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 
 export class ModellingGroupMembersPageActionCreators extends AdminPageActionCreators<ModellingGroupMembersPageLocationProps> {
 
