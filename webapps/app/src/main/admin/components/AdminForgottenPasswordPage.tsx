@@ -3,7 +3,6 @@ import {ForgottenPasswordForm} from "../../shared/components/Login/ForgottenPass
 import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
 import {AdminPageHeader} from "./AdminPageHeader";
 import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
-import {ContribForgottenPasswordPageComponent} from "../../contrib/components/ContribForgottenPasswordPage";
 import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 import {compose} from "recompose";
 
