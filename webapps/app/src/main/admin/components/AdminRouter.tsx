@@ -16,7 +16,7 @@ import {UserDetailsPage} from "./Users/SingleUser/UserDetailsPage";
 import {TouchstoneListPage} from "./Touchstones/List/TouchstoneListPage";
 import {TouchstoneDetailsPage} from "./Touchstones/Details/TouchstoneDetailsPage";
 import {ResponsibilitiesPage} from "./Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
-import {MainMenuNew} from "./MainMenu/MainMenuNew";
+import {MainMenu} from "./MainMenu/MainMenuNew";
 
 interface AdminRouterProps {
     loggedIn: boolean;
@@ -26,7 +26,7 @@ interface AdminRouterProps {
 export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: AdminRouterProps) => {
 
     const loggedIn = <Switch>
-        <Route exact path="/" component={MainMenuNew}/>
+        <Route exact path="/" component={MainMenu}/>
         <Route exact path="/modelling-groups/" component={ModellingGroupsListPage}/>
         <Route exact path="/modelling-groups/:groupId/" component={ModellingGroupDetailsPage}/>
         <Route exact path="/modelling-groups/:groupId/admin/" component={ModellingGroupMembersPage}/>
