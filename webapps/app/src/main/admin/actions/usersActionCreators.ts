@@ -6,12 +6,18 @@ import {UsersService} from "../services/UsersService";
 import {
     AllGlobalRolesFetched,
     AllUsersFetched,
+    ChangeSetPasswordErrors,
+    ChangeSetPasswordToken,
     SetCreateUserError,
     SetCurrentUser,
     ShowCreateUser,
     UsersTypes
 } from "../actionTypes/UsersTypes";
 import {CreateUserFormFields} from "../components/Users/Create/CreateUserForm";
+import {makeNotification, notificationActions} from "../../shared/actions/NotificationActions";
+import {settings} from "../../shared/Settings";
+import {helpers} from "../../shared/Helpers";
+import {isNonEmptyArray} from "../../shared/ArrayHelpers";
 
 export const usersActionCreators = {
 
@@ -103,4 +109,39 @@ export const usersActionCreators = {
             data: value
         } as ShowCreateUser;
     },
+
+    setPassword(resetToken: string, newPassword: string) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const result = await (new UsersService(dispatch, getState)).setPassword(resetToken, newPassword);
+            if (result && isNonEmptyArray(result.errors)) {
+                const codes = result.errors.map(e => e.code);
+                if (codes.indexOf("invalid-token-used") > -1) {
+                    dispatch(usersActionCreators.clearSetPasswordToken());
+                }
+                dispatch({
+                    type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS,
+                    errors: result.errors
+                } as ChangeSetPasswordErrors);
+            } else if (result) {
+                notificationActions.notify(makeNotification(
+                    "Your password has been set. You are now being redirected to the Montagu homepage...",
+                    "info")
+                );
+                setTimeout(() => window.location.replace(settings.montaguUrl()), 3000);
+            } else {
+                dispatch({
+                    type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS,
+                    errors: [{message: "An error occurred setting your password"}]
+                } as ChangeSetPasswordErrors);
+            }
+        }
+    },
+
+    clearSetPasswordToken(): ChangeSetPasswordToken {
+        helpers.removeQueryString();
+        return {
+            type: UsersTypes.CHANGE_SET_PASSWORD_TOKEN,
+            token: null
+        };
+    }
 };

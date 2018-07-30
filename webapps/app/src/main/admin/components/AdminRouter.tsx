@@ -12,7 +12,7 @@ import { ModellingGroupsListPage } from "./ModellingGroups/List/ModellingGroupsL
 import { ModellingGroupDetailsPage } from "./ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
 import { ModellingGroupMembersPage } from "./ModellingGroups/SingleGroup/Members/ModellingGroupMembersPage";
 import { AdminForgottenPasswordPage } from "./AdminForgottenPasswordPage";
-import { ResetPasswordPage } from "./Users/Account/ResetPasswordPage";
+import { SetPasswordPage } from "./Users/Account/SetPasswordPage";
 import {UsersListPage} from "./Users/List/UsersListPage";
 import {UserDetailsPage} from "./Users/SingleUser/UserDetailsPage";
 import {TouchstoneListPage} from "./Touchstones/List/TouchstoneListPage";
@@ -36,13 +36,13 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/responsibilities/" component={ResponsibilitiesPage}/>
         <Route exact path="/users/" component={UsersListPage}/>
         <Route exact path="/users/:username/" component={UserDetailsPage}/>
-        <Route exact path="/set-password/" component={ResetPasswordPage} />
+        <Route exact path="/set-password/" component={SetPasswordPage} />
         <Route component={AdminNoRouteFoundPage}/>
     </Switch>;
 
     const notLoggedIn = <Switch>
         <Route exact path="/forgotten-password/" component={AdminForgottenPasswordPage} />
-        <Route exact path="/set-password/" component={ResetPasswordPage} />
+        <Route exact path="/set-password/" component={SetPasswordPage} />
         <Route component={AdminLoginPage}/>
     </Switch>;
 

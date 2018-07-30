@@ -5,6 +5,8 @@ export enum UsersTypes {
     ALL_GLOBAL_ROLES_FETCHED = "ALL_GLOBAL_ROLES_FETCHED",
     SHOW_CREATE_USER = "SHOW_CREATE_USER",
     SET_CREATE_USER_ERRORS = "SET_CREATE_USER_ERRORS",
+    CHANGE_SET_PASSWORD_ERRORS = "CHANGE_SET_PASSWORD_ERRORS",
+    CHANGE_SET_PASSWORD_TOKEN = "CHANGE_SET_PASSWORD_TOKEN",
     SET_CURRENT_USER = "SET_CURRENT_USER"
 }
 
@@ -28,6 +30,16 @@ export interface SetCreateUserError {
     errors: ErrorInfo[];
 }
 
+export interface ChangeSetPasswordErrors {
+    type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS;
+    errors: ErrorInfo[];
+}
+
+export interface ChangeSetPasswordToken {
+    type: UsersTypes.CHANGE_SET_PASSWORD_TOKEN;
+    token: string;
+}
+
 export interface SetCurrentUser {
     type: UsersTypes.SET_CURRENT_USER;
     data: string;
@@ -43,5 +55,6 @@ export type UsersAction =
     | AllGlobalRolesFetched
     | ShowCreateUser
     | SetCreateUserError
+    | ChangeSetPasswordErrors
+    | ChangeSetPasswordToken
     | SetCurrentUser
-    | ShowCreateUser

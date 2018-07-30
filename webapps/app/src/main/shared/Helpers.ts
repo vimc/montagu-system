@@ -1,6 +1,8 @@
 import {jwtDecoder} from "./sources/JwtDecoder";
 import {Result} from "./models/Generated";
 import {settings} from "./Settings";
+import * as url from "url";
+import * as querystring from "querystring";
 
 export function doNothing() {
 
@@ -62,9 +64,6 @@ export const helpers = {
 
         const queryAsObject = this.queryStringAsObject();
 
-        const removeQueryString = () => {
-            history.replaceState({}, document.title, location.href.split("?")[0]);
-        };
 
         if (!queryAsObject.result) {
             return null
@@ -72,16 +71,26 @@ export const helpers = {
 
         try {
             const decoded = jwtDecoder.jwtDecode(queryAsObject.result);
-            removeQueryString();
+            helpers.removeQueryString();
             return JSON.parse(decoded.result);
         }
         catch (e) {
             // if the query string token is nonsense, just return null
-            removeQueryString();
+            helpers.removeQueryString();
             return null;
         }
     },
     buildRedirectUrl(redirectPath: String) {
        return "?redirectUrl=" + encodeURI(settings.montaguUrl() + redirectPath);
+    },
+    removeQueryString() {
+        history.replaceState({}, document.title, helpers.urlWithoutQueryString(location.href));
+    },
+    urlWithoutQueryString(uri: string): string {
+        const parsed = url.parse(uri, true);
+        parsed.query = null;
+        // we need to rebuild `search` now as it gets used by `format` under the hood
+        parsed.search = querystring.stringify(parsed.query);
+        return url.format(parsed);
     }
 };

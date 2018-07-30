@@ -68,5 +68,16 @@ export const jwtTokenAuth = {
             modellingGroups,
             isReportReviewer: permissions.indexOf("*/reports.review") > -1
         }
+    },
+
+    isCompressedTokenValid(token: string): boolean {
+        const inflated = jwtTokenAuth.inflateToken(token);
+        if (inflated != null) {
+            const decoded = jwtTokenAuth.decodeToken(inflated);
+            if (decoded != null) {
+                return !jwtTokenAuth.isExpired(decoded.exp);
+            }
+        }
+        return false;
     }
 };

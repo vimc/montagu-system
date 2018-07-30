@@ -1,5 +1,5 @@
-import { AbstractLocalService } from "../../shared/services/AbstractLocalService";
-import {AssociateRole} from "../../shared/models/Generated";
+import {AbstractLocalService} from "../../shared/services/AbstractLocalService";
+import {AssociateRole, Result} from "../../shared/models/Generated";
 
 export class UsersService extends AbstractLocalService {
     getAllUsers() {
@@ -7,7 +7,7 @@ export class UsersService extends AbstractLocalService {
             .get("/users/");
     }
 
-    createUser(name :string, email:string, username:string) {
+    createUser(name :string, email:string, username:string): Promise<Result> {
         return this
             .setOptions({exceptionOnError: false})
             .post("/users/", JSON.stringify({name, email, username}));
@@ -45,6 +45,12 @@ export class UsersService extends AbstractLocalService {
         };
         return this
             .post(`/users/${username}/actions/associate-role/`, JSON.stringify(associateRole));
+    }
+
+    setPassword(resetToken: string, newPassword: string): Promise<Result> {
+        return this
+            .setOptions({exceptionOnError: false})
+            .post(`/onetime_link/${resetToken}/`, JSON.stringify({ password: newPassword }));
     }
 }
 

@@ -44,7 +44,7 @@ export class ForgottenPasswordFormComponent extends React.Component<ForgotPasswo
                     <button
                         type="submit"
                     >
-                        Log in
+                        Request password reset email
                     </button>
                 </form>
             </div>

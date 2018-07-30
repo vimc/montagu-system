@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {encodeFilename, titleCase} from "../../../main/shared/Helpers";
+import {encodeFilename, helpers, titleCase} from "../../../main/shared/Helpers";
 
 describe("Helpers", () => {
     it("formats links to files in subdirectories", () => {
@@ -27,5 +27,15 @@ describe("Helpers", () => {
         it("can handle empty", () => {
             expect(titleCase("")).to.eq("")
         });
+    });
+
+    it("removes query string from URL", () => {
+        const url = "http://example.com/?foo=bar&toast=fork";
+        expect(helpers.urlWithoutQueryString(url)).to.equal("http://example.com/")
+    });
+
+    it("leaves URL without query string unchanged", () => {
+        const url = "http://example.com/page/";
+        expect(helpers.urlWithoutQueryString(url)).to.equal("http://example.com/page/")
     });
 });

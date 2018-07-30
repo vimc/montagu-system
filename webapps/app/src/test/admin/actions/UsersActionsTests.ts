@@ -2,12 +2,14 @@ import {expect} from "chai";
 
 import {Sandbox} from "../../Sandbox";
 import {usersActionCreators} from "../../../main/admin/actions/usersActionCreators";
-import {createMockStore} from "../../mocks/mockStore";
+import {createMockAdminStore, createMockStore} from "../../mocks/mockStore";
 import {UserCacheKeysEnum, UsersService} from "../../../main/admin/services/UsersService";
-import {UsersTypes} from "../../../main/admin/actionTypes/UsersTypes";
+import {ChangeSetPasswordToken, UsersTypes} from "../../../main/admin/actionTypes/UsersTypes";
 import {mockUser} from "../../mocks/mockModels";
-import {mockResult} from "../../mocks/mockRemote";
+import {mockError, mockResult} from "../../mocks/mockRemote";
 import * as Sinon from "sinon"
+import {checkPromise} from "../../testHelpers";
+import {expectOneAction} from "../../actionHelpers";
 
 describe("Admin Users actions tests", () => {
     const sandbox = new Sandbox();
@@ -147,7 +149,11 @@ describe("Admin Users actions tests", () => {
 
         setUpSuccessfulStubs();
 
-        await store.dispatch(usersActionCreators.createUser({name: "joe bloggs", email: "joe@email.com", username: "joe.b"}));
+        await store.dispatch(usersActionCreators.createUser({
+            name: "joe bloggs",
+            email: "joe@email.com",
+            username: "joe.b"
+        }));
 
         expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
             .to.be.true
@@ -159,7 +165,11 @@ describe("Admin Users actions tests", () => {
 
         setUpSuccessfulStubs();
 
-        await store.dispatch(usersActionCreators.createUser({name: "joe bloggs", email: "joe@email.com", username: "joe.b"}));
+        await store.dispatch(usersActionCreators.createUser({
+            name: "joe bloggs",
+            email: "joe@email.com",
+            username: "joe.b"
+        }));
 
         expect(stub.calledWith(false)).to.be.true
     });
@@ -183,6 +193,59 @@ describe("Admin Users actions tests", () => {
             const expectedPayload = {type: UsersTypes.SET_CURRENT_USER, data: "joe.bloggs"};
             expect(actions).to.eql([expectedPayload]);
             done();
+        });
+    });
+
+    it("setPassword issues notification if service returns success", (done: DoneCallback) => {
+        const altSpy = sandbox.dispatchSpy();
+        sandbox.stubService(UsersService.prototype, "setPassword", mockResult(true));
+        const store = createMockAdminStore({});
+
+        const promise = store.dispatch(usersActionCreators.setPassword("TOKEN", "password"));
+        checkPromise(done, promise, () => {
+            expectOneAction(altSpy, {action: "NotificationActions.notify"});
+        });
+    });
+
+    it("setPassword sets errors if service returns errors", (done: DoneCallback) => {
+        const errors = [mockError("code", "message")];
+        sandbox.stubService(UsersService.prototype, "setPassword", mockResult(null, errors));
+        const store = createMockAdminStore({});
+
+        const promise = store.dispatch(usersActionCreators.setPassword("TOKEN", "password"));
+        checkPromise(done, promise, () => {
+            expect(store.getActions()).to.eql([
+                {type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS, errors: errors}
+            ]);
+        });
+    });
+
+    it("setPassword clears token if service returns invalid token error", (done: DoneCallback) => {
+        const errors = [mockError("invalid-token-used", "message")];
+        sandbox.stubService(UsersService.prototype, "setPassword", mockResult(null, errors));
+        const store = createMockAdminStore({});
+
+        const promise = store.dispatch(usersActionCreators.setPassword("TOKEN", "password"));
+        checkPromise(done, promise, () => {
+            expect(store.getActions()).to.eql([
+                {type: UsersTypes.CHANGE_SET_PASSWORD_TOKEN, token: null} as ChangeSetPasswordToken,
+                {type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS, errors: errors}
+            ]);
+        });
+    });
+
+    it("setPassword sets errors if sevice fails", (done: DoneCallback) => {
+        sandbox.stubService(UsersService.prototype, "setPassword", null);
+        const store = createMockAdminStore({});
+
+        const promise = store.dispatch(usersActionCreators.setPassword("TOKEN", "password"));
+        checkPromise(done, promise, () => {
+            expect(store.getActions()).to.eql([
+                {
+                    type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS,
+                    errors: [{message: "An error occurred setting your password"}]
+                }
+            ]);
         });
     });
 

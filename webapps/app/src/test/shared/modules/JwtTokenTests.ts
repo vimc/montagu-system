@@ -110,4 +110,30 @@ describe('JwtTokenAuth Module Tests', () => {
         const compressed = compress(signed);
         expect(jwtTokenAuth.inflateToken(compressed)).to.eql(signed);
     });
+
+    it("isCompressedTokenValid returns false for non-compressed token", () => {
+        const token = {exp: Date.now()};
+        const signed = jwt.sign(token, "secret");
+        expect(jwtTokenAuth.isCompressedTokenValid(signed)).to.be.false;
+    });
+
+    it("isCompressedTokenValid returns false for compressed garbage", () => {
+        const token = "TOKEN";
+        const compressed = compress(token);
+        expect(jwtTokenAuth.isCompressedTokenValid(compressed)).to.be.false;
+    });
+
+    it("isCompressedTokenValid returns false for expired token", () => {
+        const token = {exp: 0};
+        const signed = jwt.sign(token, "secret");
+        const compressed = compress(signed);
+        expect(jwtTokenAuth.isCompressedTokenValid(compressed)).to.be.false;
+    });
+
+    it("isCompressedTokenValid returns true for non-expired token", () => {
+        const token = {exp: Date.now()};
+        const signed = jwt.sign(token, "secret");
+        const compressed = compress(signed);
+        expect(jwtTokenAuth.isCompressedTokenValid(compressed)).to.be.true;
+    });
 });
