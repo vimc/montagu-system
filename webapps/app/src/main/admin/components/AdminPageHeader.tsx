@@ -1,8 +1,7 @@
 import * as React from "react";
-import {PageHeaderNew} from "../../shared/components/PageWithHeader/PageHeaderNew";
-
 import * as logo from "../../shared/components/PageWithHeader/logo.png"
+import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
 
 export const AdminPageHeader: React.SFC<undefined> = () => (
-    <PageHeaderNew siteTitle={"Admin portal"} logo={logo} />
+    <PageHeader siteTitle={"Admin portal"} logo={logo} />
 )
