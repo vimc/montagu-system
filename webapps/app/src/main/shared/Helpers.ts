@@ -1,8 +1,8 @@
 import {jwtDecoder} from "./sources/JwtDecoder";
 import {Result} from "./models/Generated";
 import {settings} from "./Settings";
-import {History, Location} from "history";
-import Search = History.Search;
+import * as url from "url";
+import * as querystring from "querystring";
 
 export function doNothing() {
 
@@ -84,6 +84,13 @@ export const helpers = {
        return "?redirectUrl=" + encodeURI(settings.montaguUrl() + redirectPath);
     },
     removeQueryString() {
-        history.replaceState({}, document.title, location.href.split("?")[0]);
+        history.replaceState({}, document.title, helpers.urlWithoutQueryString(location.href));
     },
+    urlWithoutQueryString(uri: string): string {
+        const parsed = url.parse(uri, true);
+        parsed.query = null;
+        // we need to rebuild `search` now as it gets used by `format` under the hood
+        parsed.search = querystring.stringify(parsed.query);
+        return url.format(parsed);
+    }
 };

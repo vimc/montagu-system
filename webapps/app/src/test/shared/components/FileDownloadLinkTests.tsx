@@ -57,4 +57,11 @@ describe("FileDownloadButton", () => {
         expect(inner.prop('className')).to.equal("button");
     });
 
+    it("passes through classname if exists", () => {
+        const rendered = shallow(<FileDownloadButtonInner href={null} refreshToken={null} className={"test"}/>);
+        const inner = rendered.find(FileDownloadInner);
+        expect(inner).to.have.lengthOf(1);
+        expect(inner.prop('className')).to.equal("button test");
+    });
+
 });
