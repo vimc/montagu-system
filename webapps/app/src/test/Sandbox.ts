@@ -1,11 +1,9 @@
 import * as sinon from 'sinon';
 import {mount, MountRendererProps, ReactWrapper} from "enzyme";
 
-import { ReactElement } from "react";
-import { alt } from "../main/shared/alt";
+import {ReactElement} from "react";
 import fetcher from "../main/shared/sources/Fetcher";
-import {mockFetcher, mockFetcherResponse, resetFetcher} from "./mocks/mockRemote";
-import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
+import {mockFetcherResponse, resetFetcher} from "./mocks/mockRemote";
 
 export class Sandbox {
     sinon: sinon.SinonSandbox;
@@ -31,12 +29,7 @@ export class Sandbox {
             x.unmount();
         });
         this.mounted = [];
-        alt.recycle();
         resetFetcher();
-    }
-
-    dispatchSpy(): sinon.SinonSpy {
-        return this.sinon.spy(alt, "dispatch");
     }
 
     fetcherSpy(): sinon.SinonSpy {

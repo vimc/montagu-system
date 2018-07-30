@@ -1,13 +1,13 @@
-import { Client } from "pg";
-import { expect } from "chai";
-import { Sandbox } from "../test/Sandbox";
+import {Client} from "pg";
+import {expect} from "chai";
+import {Sandbox} from "../test/Sandbox";
 
-import { authActionCreators } from "../main/shared/actions/authActionCreators";
+import {authActionCreators} from "../main/shared/actions/authActionCreators";
 
-import { alt } from "../main/shared/alt";
-import { localStorageHandler } from "../main/shared/services/localStorageHandler";
+import {localStorageHandler} from "../main/shared/services/localStorageHandler";
 import {singletonVariableCache} from "../main/shared/modules/cache/singletonVariableCache";
 import {jwtTokenAuth} from "../main/shared/modules/jwtTokenAuth";
+
 const jwt_decode = require('jwt-decode');
 
 const dbName = process.env.PGDATABASE;
@@ -63,7 +63,6 @@ export abstract class IntegrationTestSuite {
                     done();
                 }
             });
-            afterEach(() => alt.recycle());
 
             this.addTestsToMocha();
         });

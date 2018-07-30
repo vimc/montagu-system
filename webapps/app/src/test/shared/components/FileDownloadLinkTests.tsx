@@ -7,13 +7,10 @@ import {
     FileDownloadLinkInner
 } from "../../../main/shared/components/FileDownloadLink";
 import * as React from "react";
-import {alt} from "../../../main/shared/alt";
 import {Sandbox} from "../../Sandbox";
 
 describe("FileDownloadLinkInner", () => {
     const sandbox = new Sandbox();
-
-    beforeEach(() => alt.recycle());
     afterEach(() => sandbox.restore());
 
     it("renders disabled link when href is null", () => {
