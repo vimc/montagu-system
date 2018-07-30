@@ -14,10 +14,10 @@ import {
     UsersTypes
 } from "../actionTypes/UsersTypes";
 import {CreateUserFormFields} from "../components/Users/Create/CreateUserForm";
-import {makeNotification, notificationActions} from "../../shared/actions/NotificationActions";
 import {settings} from "../../shared/Settings";
 import {helpers} from "../../shared/Helpers";
 import {isNonEmptyArray} from "../../shared/ArrayHelpers";
+import {notificationActionCreators} from "../../shared/actions/notificationActionCreators";
 
 export const usersActionCreators = {
 
@@ -123,10 +123,10 @@ export const usersActionCreators = {
                     errors: result.errors
                 } as ChangeSetPasswordErrors);
             } else if (result) {
-                notificationActions.notify(makeNotification(
+                dispatch(notificationActionCreators.notify(
                     "Your password has been set. You are now being redirected to the Montagu homepage...",
-                    "info")
-                );
+                    "info"
+                ));
                 setTimeout(() => window.location.replace(settings.montaguUrl()), 3000);
             } else {
                 dispatch({

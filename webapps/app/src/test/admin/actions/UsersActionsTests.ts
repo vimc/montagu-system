@@ -9,7 +9,7 @@ import {mockUser} from "../../mocks/mockModels";
 import {mockError, mockResult} from "../../mocks/mockRemote";
 import * as Sinon from "sinon"
 import {checkPromise} from "../../testHelpers";
-import {expectOneAction} from "../../actionHelpers";
+import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 
 describe("Admin Users actions tests", () => {
     const sandbox = new Sandbox();
@@ -197,13 +197,18 @@ describe("Admin Users actions tests", () => {
     });
 
     it("setPassword issues notification if service returns success", (done: DoneCallback) => {
-        const altSpy = sandbox.dispatchSpy();
         sandbox.stubService(UsersService.prototype, "setPassword", mockResult(true));
         const store = createMockAdminStore({});
 
         const promise = store.dispatch(usersActionCreators.setPassword("TOKEN", "password"));
         checkPromise(done, promise, () => {
-            expectOneAction(altSpy, {action: "NotificationActions.notify"});
+            expect(store.getActions()).to.eql([
+                {
+                    type: NotificationTypeKeys.NOTIFY,
+                    "message": "Your password has been set. You are now being redirected to the Montagu homepage...",
+                    "severity": "info"
+                }
+            ])
         });
     });
 

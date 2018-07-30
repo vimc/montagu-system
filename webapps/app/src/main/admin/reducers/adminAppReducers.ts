@@ -1,15 +1,15 @@
-import { combineReducers } from "redux";
-import { reducer as formReducer, FormReducer } from "redux-form";
+import {combineReducers} from "redux";
+import {reducer as formReducer} from "redux-form";
 
-import { authReducer, AuthState } from "../../shared/reducers/authReducer";
+import {authReducer} from "../../shared/reducers/authReducer";
 import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadcrumbsReducer";
 import {modellingGroupsReducer, ModellingGroupsState} from "./modellingGroupsReducer";
-import {UsersState, usersReducer} from "./usersReducer";
+import {usersReducer, UsersState} from "./usersReducer";
 import {adminTouchstoneReducer, AdminTouchstoneState} from "./adminTouchstoneReducer";
+import {CommonState} from "../../shared/reducers/CommonState";
+import {notificationReducer} from "../../shared/reducers/notificationReducer";
 
-export interface AdminAppState {
-    auth: AuthState;
-    form: FormReducer;
+export interface AdminAppState extends CommonState {
     groups: ModellingGroupsState
     breadcrumbs: BreadcrumbsState;
     users: UsersState;
@@ -22,7 +22,8 @@ const reducers = combineReducers({
     groups: modellingGroupsReducer,
     breadcrumbs: breadcrumbsReducer,
     users: usersReducer,
-    touchstones: adminTouchstoneReducer
+    touchstones: adminTouchstoneReducer,
+    notifications: notificationReducer
 });
 
 export default reducers;

@@ -1,14 +1,18 @@
 import * as React from 'react';
-import { notificationActions } from "../../actions/NotificationActions";
 import { MouseEvent } from "react";
+import {Dispatch} from "redux";
+import {connect} from "react-redux";
+import {CommonState} from "../../reducers/CommonState";
+import {notificationActionCreators} from "../../actions/notificationActionCreators";
 
 interface ErrorLogProps {
     errors: string[];
+    clear: () => void;
 }
 
-export class ErrorLog extends React.Component<ErrorLogProps, undefined> {
+export class ErrorLogComponent extends React.Component<ErrorLogProps, undefined> {
     clearErrors(e: MouseEvent<HTMLButtonElement>) {
-        notificationActions.clear("error");
+        this.props.clear();
     }
 
     render() {
@@ -18,7 +22,7 @@ export class ErrorLog extends React.Component<ErrorLogProps, undefined> {
             );
             return <div className="errors">
                 <ul>{items}</ul>
-                <button onClick={ this.clearErrors } className="clearButton">
+                <button onClick={this.clearErrors.bind(this)} className="clearButton">
                     Clear errors
                 </button>
             </div>
@@ -27,3 +31,14 @@ export class ErrorLog extends React.Component<ErrorLogProps, undefined> {
         }
     }
 }
+
+
+export function mapStateToProps(state: CommonState): Partial<ErrorLogProps> {
+    return {errors: state.notifications.errors};
+}
+
+function mapDispatchToProps(dispatch: Dispatch<CommonState>): Partial<ErrorLogProps> {
+    return {clear: () => dispatch(notificationActionCreators.clear("error"))};
+}
+
+export const ErrorLog = connect(mapStateToProps, mapDispatchToProps)(ErrorLogComponent);

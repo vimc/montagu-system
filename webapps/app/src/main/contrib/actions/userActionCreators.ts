@@ -3,10 +3,6 @@ import {Dispatch} from "redux";
 import {GlobalState} from "../../shared/reducers/GlobalState";
 import {UserService} from "../services/UserService";
 import {ConfidentialityRetrieved, ConfidentialitySigned, UserActionType} from "../actionTypes/UserActionTypes";
-import {AdminAppState} from "../../admin/reducers/adminAppReducers";
-import {UsersService} from "../../admin/services/UsersService";
-import {makeNotification, notificationActions} from "../../shared/actions/NotificationActions";
-import {settings} from "../../shared/Settings";
 
 export const userActionCreators = {
 

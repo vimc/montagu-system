@@ -1,24 +1,24 @@
-import { combineReducers } from "redux";
-import { reducer as formReducer, FormReducer } from "redux-form";
+import {combineReducers} from "redux";
+import {reducer as formReducer} from "redux-form";
 import {routerReducer} from "react-router-redux";
 
-import { authReducer, AuthState } from "../../shared/reducers/authReducer";
-import { modellingGroupsReducer, ModellingGroupsState } from "./modellingGroupsReducer";
-import { contribTouchstonesReducer, TouchstonesState } from "./contribTouchstonesReducer";
-import { diseasesReducer, DiseasesState } from "./diseasesReducer";
-import { responsibilitiesReducer, ResponsibilitiesState } from "./responsibilitiesReducer";
-import { demographicReducer, DemographicState } from "./demographicReducer";
-import { coverageReducer, CoverageState } from "./coverageReducer";
-import { runParametersReducer, RunParametersState } from "./runParametersReducer";
+import {authReducer} from "../../shared/reducers/authReducer";
+import {modellingGroupsReducer, ModellingGroupsState} from "./modellingGroupsReducer";
+import {contribTouchstonesReducer, TouchstonesState} from "./contribTouchstonesReducer";
+import {diseasesReducer, DiseasesState} from "./diseasesReducer";
+import {responsibilitiesReducer, ResponsibilitiesState} from "./responsibilitiesReducer";
+import {demographicReducer, DemographicState} from "./demographicReducer";
+import {coverageReducer, CoverageState} from "./coverageReducer";
+import {runParametersReducer, RunParametersState} from "./runParametersReducer";
 import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadcrumbsReducer";
 import {estimatesReducer, EstimatesState} from "./estimatesReducer";
-import {UserState, userReducer} from "./userReducer";
+import {userReducer, UserState} from "./userReducer";
 import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneTimeTokenReducer";
+import {CommonState} from "../../shared/reducers/CommonState";
+import {notificationReducer} from "../../shared/reducers/notificationReducer";
 
 
-export interface ContribAppState {
-    auth: AuthState;
-    form: FormReducer;
+export interface ContribAppState extends CommonState {
     groups: ModellingGroupsState;
     user: UserState;
     breadcrumbs: BreadcrumbsState;
@@ -46,7 +46,8 @@ const reducers = combineReducers({
     estimates: estimatesReducer,
     runParameters: runParametersReducer,
     router: routerReducer,
-    onetimeTokens: onetimeTokenReducer
+    onetimeTokens: onetimeTokenReducer,
+    notifications: notificationReducer
 });
 
 export default reducers;

@@ -19,7 +19,7 @@ export class RunParametersService extends AbstractLocalService {
     }
 
     uploadSet(groupId: string, touchstoneId: string, data: FormData) {
-        return this.setOptions({exceptionOnError: false})
+        return this.setOptions({notificationOnError: false})
             .post(`/modelling-groups/${groupId}/model-run-parameters/${touchstoneId}/`, data);
     }
 }

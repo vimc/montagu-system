@@ -4,18 +4,12 @@ import {clone} from "lodash";
 import { settings } from "../Settings";
 import { localStorageHandler } from "./localStorageHandler";
 import {ErrorInfo, Result} from "../models/Generated";
-import {
-    makeNotificationException,
-    Notification,
-    NotificationException,
-    notificationActions
-} from "../actions/NotificationActions";
-
 import { AuthTypeKeys } from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
 import {CacheInterface} from "../modules/cache/CacheInterface";
 import {singletonVariableCache} from "../modules/cache/singletonVariableCache";
 import {APIService} from "../models/APIService";
+import {notificationActionCreators} from "../actions/notificationActionCreators";
 
 export interface OptionsHeaders {
    Authorization?: string;
@@ -34,7 +28,7 @@ export interface InputOptions {
     'Content-Type'?: string;
     credentials?: "omit" | "same-origin" | "include";
     cacheKey?: string;
-    exceptionOnError?: boolean;
+    notificationOnError?: boolean;
     noCache?: boolean;
 }
 
@@ -56,7 +50,7 @@ export abstract class AbstractLocalService {
 
         this.processResponse = this.processResponse.bind(this);
         this.notifyOnErrors = this.notifyOnErrors.bind(this);
-        this.handleErrorsWithExceptions = this.handleErrorsWithExceptions.bind(this);
+        this.handleErrorsWithNotifications = this.handleErrorsWithNotifications.bind(this);
     }
 
     protected getTokenFromState(state: GlobalState) {
@@ -73,7 +67,7 @@ export abstract class AbstractLocalService {
     protected initOptions() {
         this.options = {};
         this.options.cacheKey = null;
-        this.options.exceptionOnError = true;
+        this.options.notificationOnError = true;
         this.options.noCache = false;
         if (this.bearerToken) {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
@@ -169,19 +163,15 @@ export abstract class AbstractLocalService {
     expiredTokenAction() {
         console.log("Access token has expired or is otherwise invalid: Logging out.");
         this.dispatch(this.logOut());
-        const notification: Notification = {
-            message: "Your session has expired. You will need to log in again",
-            type: "info"
-        };
-        throw new NotificationException(notification);
+        notificationActionCreators.notify("Your session has expired. You will need to log in again", "info")(this.dispatch, null);
     }
 
-    handleErrorsWithExceptions (error: ErrorInfo) {
+    handleErrorsWithNotifications (error: ErrorInfo) {
         switch (error.code) {
             case "bearer-token-invalid":
                 return this.expiredTokenAction();
             default:
-                throw makeNotificationException(error.message, "error");
+                notificationActionCreators.notify(error.message, "error")(this.dispatch, null);
         }
     };
 
@@ -192,7 +182,7 @@ export abstract class AbstractLocalService {
         return result;
     };
 
-    processResult<TModel>(result: Result, response: any): TModel | void {
+    processResult<TModel>(result: Result, response: Response): TModel | void {
         const options = clone(this.options);
         this.initOptions();
         switch (result.status) {
@@ -202,18 +192,20 @@ export abstract class AbstractLocalService {
                 }
                 return result.data as TModel;
             case "failure":
-                return options.exceptionOnError
-                    ? result.errors.forEach(this.handleErrorsWithExceptions)
+                return options.notificationOnError
+                    ? result.errors.forEach(this.handleErrorsWithNotifications)
                     : this.handleErrorsReturn(result) as TModel;
             default:
-                throw makeNotificationException("The server response was not correctly formatted: "
-                    + response.toString(), "error");
+                notificationActionCreators.notify(
+                    "The server response was not correctly formatted: " + JSON.stringify(result),
+                    "error"
+                )(this.dispatch, null);
         }
     }
 
     notifyOnErrors(error: any) {
         this.initOptions();
-        notificationActions.notify(error);
+        notificationActionCreators.notify(error.toString(), "error")(this.dispatch, null);
     }
 
     protected logOut() {

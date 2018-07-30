@@ -22,6 +22,7 @@ import {initialState as UserInitialState} from "../../main/contrib/reducers/user
 import {AdminAppState} from "../../main/admin/reducers/adminAppReducers";
 import {adminTouchstonesInitialState} from "../../main/admin/reducers/adminTouchstoneReducer";
 import {onetimeTokensInitialState, OneTimeTokenState} from "../../main/shared/reducers/oneTimeTokenReducer";
+import {initialNotificationState} from "../../main/shared/reducers/notificationReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -65,7 +66,8 @@ export const mockAdminState = (props?: RecursivePartial<AdminAppState>): AdminAp
         groups: AdminModellingGroupsInitialState,
         breadcrumbs: initialBreadcrumbsState,
         users: adminUsersInitialState,
-        touchstones: adminTouchstonesInitialState
+        touchstones: adminTouchstonesInitialState,
+        notifications: initialNotificationState
     };
     return Object.assign(template, props);
 };
@@ -84,7 +86,8 @@ export const mockContribState = (props?: RecursivePartial<ContribAppState>) :Con
         coverage: coverageInitialState,
         estimates: estimatesInitialState,
         runParameters: runParametersInitialState,
-        onetimeTokens: onetimeTokensInitialState
+        onetimeTokens: onetimeTokensInitialState,
+        notifications: initialNotificationState
     };
     return Object.assign(template, props);
 };
@@ -102,6 +105,7 @@ export const mockReportAppState = (props?: any): ReportAppState => {
         reports: reportsMock,
         users: usersMock,
         breadcrumbs: breadcrumbsMock,
-        onetimeTokens: onetimeTokensMock
+        onetimeTokens: onetimeTokensMock,
+        notifications: initialNotificationState
     };
 };
