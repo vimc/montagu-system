@@ -1,4 +1,5 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const path = require('path');
 const helper = require("./webpack.common");
 
@@ -47,7 +48,8 @@ function makePortalConfig(name, urlPrefix) {
             new CopyWebpackPlugin([
                 { from: 'node_modules/react/dist/react.js', to: 'react.js' },
                 { from: 'node_modules/react-dom/dist/react-dom.js', to: 'react-dom.js' },
-            ])
+            ]),
+            new HardSourceWebpackPlugin()
         ]
     }, helper.commonConfig(name, public_path));
 }
