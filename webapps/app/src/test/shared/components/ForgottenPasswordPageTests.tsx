@@ -1,14 +1,15 @@
 import * as React from "react";
-import { shallow } from "enzyme";
-import { expect } from "chai";
+import {shallow} from "enzyme";
+import {expect} from "chai";
 
 import "../../helper";
-import { Sandbox } from "../../Sandbox";
+import {Sandbox} from "../../Sandbox";
 import {createMockStore} from "../../mocks/mockStore";
 import {PageArticle} from "../../../main/shared/components/PageWithHeader/PageArticle";
 import {breadcrumbsActionCreators} from "../../../main/shared/actions/breadcrumbsActionsCreators";
 import {ForgottenPasswordForm} from "../../../main/shared/components/Login/ForgottenPasswordForm";
 import {ForgottenPasswordPage} from "../../../main/shared/components/ForgottenPasswordPage";
+import {helpers} from "../../../main/shared/Helpers";
 
 describe("ForgottenPasswordPage", () => {
 
@@ -23,12 +24,15 @@ describe("ForgottenPasswordPage", () => {
 
     it("renders component on component level", () => {
         let store = createMockStore();
+        sandbox.setStubFunc(helpers, "queryStringAsObject", () => ({email: "test@example.com"}));
         const createBreadcrumbsStub = sandbox.setStubReduxAction(breadcrumbsActionCreators, "createBreadcrumbs");
         const rendered = shallow(<ForgottenPasswordPage/>, {context: {store}}).dive().dive();
         const pageArticle = rendered.find('PageArticle');
         expect(createBreadcrumbsStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal("Forgotten your password?");
-        expect(pageArticle.find(ForgottenPasswordForm).length).is.equal(1);
+        const form = pageArticle.find(ForgottenPasswordForm);
+        expect(form).to.have.length(1);
+        expect(form.prop("initialValues")).to.eql({email: "test@example.com"});
     });
 });
 

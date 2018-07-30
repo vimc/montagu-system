@@ -62,7 +62,7 @@ export class LoginFormComponent extends React.Component<LoginFormProps, undefine
                 </form>
                 <div style={{"clear": "both"}}>
                     Forgotten your password?&nbsp;
-                    <InternalLink href={forgottenLink}>
+                    <InternalLink className="forgotten-password-link" href={forgottenLink}>
                         Click here
                     </InternalLink>
                 </div>
