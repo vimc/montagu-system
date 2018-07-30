@@ -111,14 +111,25 @@ describe("ExpectationsDescription", () => {
     });
 
 
-    it("renders FileDownloadButton", () => {
+    it("renders FileDownloadButton for central template", () => {
         const em = mockExpectationMapping();
         const rendered = shallow(<ExpectationsDescription
             expectationMapping={em}
             touchstoneVersionId="tId"
             groupId="gId"
         />);
-        expect(rendered.find(FileDownloadButton).prop("href"))
+        expect(rendered.find(FileDownloadButton).at(0).prop("href"))
             .to.equal(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/`);
+    });
+
+    it("renders FileDownloadButton for stochastic template", () => {
+        const em = mockExpectationMapping();
+        const rendered = shallow(<ExpectationsDescription
+            expectationMapping={em}
+            touchstoneVersionId="tId"
+            groupId="gId"
+        />);
+        expect(rendered.find(FileDownloadButton).at(1).prop("href"))
+            .to.equal(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/?type=stochastic`);
     });
 });

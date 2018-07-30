@@ -11,7 +11,7 @@ export class NoRouteFound {
         const supportEmail = `mailto:${settings.supportContact}`;
         return <div>
             We are sorry, but this page does not exist.
-            <div className="gapAbove">
+            <div className="mt-5">
                 Here are some options:
                 <ul>
                     <li>Click back in your browser to return to the previous page</li>

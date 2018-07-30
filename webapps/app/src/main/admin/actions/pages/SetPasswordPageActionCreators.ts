@@ -3,10 +3,10 @@ import {AdminAppState} from "../../reducers/adminAppReducers";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {mainMenuPageActionCreators, MainMenuPageActionCreators} from "./MainMenuPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {ChangeSetPasswordToken, UsersTypes} from "../../actionTypes/UsersTypes";
 import {SetPasswordPageComponent} from "../../components/Users/Account/SetPasswordPage";
-import {ChangeSetPasswordErrors, ChangeSetPasswordToken, UsersTypes} from "../../actionTypes/UsersTypes";
 
-export class SetPasswordPageActionCreators extends AdminPageActionCreators<{}>{
+export class SetPasswordPageActionCreators extends AdminPageActionCreators<{}> {
 
     parent: MainMenuPageActionCreators = mainMenuPageActionCreators;
 
@@ -18,16 +18,15 @@ export class SetPasswordPageActionCreators extends AdminPageActionCreators<{}>{
     }
 
     loadData() {
-        return async (dispatch: Dispatch<AdminAppState>) => {}
+        return async (dispatch: Dispatch<AdminAppState>) => {
+        }
     }
 
-    saveToken(token: string) {
-        return (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
-            return dispatch({
-                type: UsersTypes.CHANGE_SET_PASSWORD_TOKEN,
-                token: token
-            } as ChangeSetPasswordToken);
-        }
+    saveToken(token: string): ChangeSetPasswordToken {
+        return {
+            type: UsersTypes.CHANGE_SET_PASSWORD_TOKEN,
+            token: token
+        };
     }
 }
 
