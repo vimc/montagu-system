@@ -50,8 +50,8 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
     const routes = props.loggedIn ? loggedIn : notLoggedIn;
 
     return <ConnectedRouter history={props.history}>
-        <PageHeader siteTitle={"Admin portal"} logo={logo} />
         <div>
+            <PageHeader siteTitle={"Admin portal"} logo={logo} />
             {routes}
         </div>
     </ConnectedRouter>;
