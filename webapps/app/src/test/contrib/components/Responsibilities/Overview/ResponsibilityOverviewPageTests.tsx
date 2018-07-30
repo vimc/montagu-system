@@ -14,7 +14,6 @@ import {
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {mockTouchstoneVersion} from "../../../../mocks/mockModels";
 import {responsibilityOverviewPageActionCreators} from "../../../../../main/contrib/actions/pages/responsibilityOverviewPageActionCreators";
-import {ResponsibilityOverviewDescription} from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewDescription";
 import {ResponsibilityOverviewContent} from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewContent";
 
 describe("Responsibility Overview Page Component", () => {
@@ -30,11 +29,6 @@ describe("Responsibility Overview Page Component", () => {
     });
     afterEach(() => sandbox.restore());
 
-    it("renders component on connect level", () => {
-        const rendered = shallow(<ResponsibilityOverviewPage/>, {context: {store}});
-        expect(typeof rendered.props().onLoad).is.equal('function');
-    });
-
     it("renders component component level", () => {
         let testMatch = mockMatch<ResponsibilityOverviewPageLocationProps>({
             groupId: "g-1",
@@ -44,7 +38,7 @@ describe("Responsibility Overview Page Component", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityOverviewPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityOverviewPage
             match={testMatch}
-        />, {context: {store}}).dive();
+        />, {context: {store}}).dive().dive().dive();
         const pageArticle = rendered.find('PageArticle');
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal(testResponsibilityOverviewPageTitle);

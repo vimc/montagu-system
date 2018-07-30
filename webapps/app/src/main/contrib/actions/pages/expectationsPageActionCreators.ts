@@ -1,32 +1,29 @@
-import { Dispatch } from "redux";
+import {Dispatch} from "redux";
 
-import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {responsibilityOverviewPageActionCreators} from "./responsibilityOverviewPageActionCreators";
-import {
-    DownloadCoveragePageComponent,
-    DownloadCoveragePageLocationProps
-} from "../../components/Responsibilities/Coverage/DownloadCoveragePage";
-import {responsibilitiesActionCreators} from "../responsibilitiesActionCreators";
-import {coverageActionCreators} from "../coverageActionCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
-import {userActionCreators} from "../userActionCreators";
 import {
     ExpectationsPageComponent,
     ExpectationsPageLocationProps
 } from "../../components/Responsibilities/Expectations/ExpectationsPage";
+import {ContribPageActionCreators} from "./ContribPageActionCreators";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 
-export const expectationsPageActionCreators = {
-    onLoad(props: ExpectationsPageLocationProps) {
-        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-            await dispatch(this.loadData(props));
-            dispatch(breadcrumbsActionCreators.createBreadcrumbs(ExpectationsPageComponent.breadcrumb(getState())));
-        }
-    },
+class ExpectationsPageActionCreators extends ContribPageActionCreators<ExpectationsPageLocationProps> {
 
-    loadData(props: ExpectationsPageLocationProps) {
-        return async (dispatch: Dispatch<ContribAppState>) => {
-            await dispatch(responsibilityOverviewPageActionCreators.loadData(props));
+    parent = responsibilityOverviewPageActionCreators;
+
+    createBreadcrumb(state: ContribAppState): PageBreadcrumb {
+        return {
+            name: ExpectationsPageComponent.title,
+            urlFragment: `templates/`
         }
     }
 
-};
+    loadData(params: ExpectationsPageLocationProps) {
+        return async (dispatch: Dispatch<ContribAppState>) => {
+        }
+    }
+}
+
+export const expectationsPageActionCreators = new ExpectationsPageActionCreators();

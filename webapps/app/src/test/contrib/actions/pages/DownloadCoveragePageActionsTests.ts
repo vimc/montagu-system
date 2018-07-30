@@ -49,7 +49,7 @@ describe("Download Coverage Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("on load", (done) => {
+    it("on load", async () => {
         const touchstonesState: TouchstonesState = {
             touchstones: [testTouchstone],
             currentTouchstoneVersion: testTouchstoneVersion
@@ -87,32 +87,30 @@ describe("Download Coverage Page actions tests", () => {
             return testBreadcrumbs;
         });
 
-        store.dispatch(downloadCoveragePageActionCreators
+        await store.dispatch(downloadCoveragePageActionCreators
             .onLoad({
                 groupId: testGroup.id,
                 touchstoneId: testTouchstoneVersion.id,
                 scenarioId: testScenario.id
             }));
 
-        setTimeout(() => {
-            const actions = store.getActions();
+        const actions = store.getActions();
 
-            const expectedPayload = [
-                {type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup]},
-                {type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup},
-                {type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]},
-                {type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
-                {type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstoneVersion},
-                {type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
-                {type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility},
-                {type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR},
-                {type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED, data: "test-token"},
-                {type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED, data: [testCoverageSet]},
-                {type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs},
-            ];
-            expect(actions).to.eql(expectedPayload);
-            done();
-        });
+        const expectedPayload = [
+            {type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup]},
+            {type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup},
+            {type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]},
+            {type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease]},
+            {type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstoneVersion},
+            {type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
+            {type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility},
+            {type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR},
+            {type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED, data: "test-token"},
+            {type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED, data: [testCoverageSet]},
+            {type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs},
+        ];
+        expect(actions).to.eql(expectedPayload);
+
     });
 
 

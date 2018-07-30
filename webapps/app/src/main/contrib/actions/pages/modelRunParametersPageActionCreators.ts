@@ -1,6 +1,5 @@
-import { Dispatch } from "redux";
+import {Dispatch} from "redux";
 
-import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {responsibilityOverviewPageActionCreators} from "./responsibilityOverviewPageActionCreators";
 import {
@@ -8,19 +7,26 @@ import {
     ModelRunParametersPageLocationProps
 } from "../../components/Responsibilities/ModelRunParameters/ModelRunParametersPage";
 import {runParametersActionCreators} from "../runParametersActionCreators";
+import {ContribPageActionCreators} from "./ContribPageActionCreators";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 
-export const modelRunParametersPageActionCreators = {
-    onLoad(props: ModelRunParametersPageLocationProps) {
-        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-            await dispatch(this.loadData(props));
-            dispatch(breadcrumbsActionCreators.createBreadcrumbs(ModelRunParametersPageComponent.breadcrumb(getState())));
-        }
-    },
+export class ModelRunParametersPageActionCreators extends ContribPageActionCreators<ModelRunParametersPageLocationProps> {
 
-    loadData(props: ModelRunParametersPageLocationProps) {
-        return async (dispatch: Dispatch<ContribAppState>) => {
-            await dispatch(responsibilityOverviewPageActionCreators.loadData(props));
-            await dispatch(runParametersActionCreators.getParameterSets(props.groupId, props.touchstoneId));
+    parent = responsibilityOverviewPageActionCreators;
+
+    createBreadcrumb(state: ContribAppState): PageBreadcrumb {
+        return {
+            name: ModelRunParametersPageComponent.pageName,
+            urlFragment: "parameters/"
         }
     }
-};
+
+    loadData(params: ModelRunParametersPageLocationProps) {
+        return async (dispatch: Dispatch<ContribAppState>) => {
+            await dispatch(runParametersActionCreators.getParameterSets(params.groupId, params.touchstoneId));
+        }
+    }
+
+}
+
+export const modelRunParametersPageActionCreators = new ModelRunParametersPageActionCreators();

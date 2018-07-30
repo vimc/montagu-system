@@ -10,23 +10,26 @@ import {
 import {responsibilitiesActionCreators} from "../responsibilitiesActionCreators";
 import {estimatesActionCreators} from "../estimatesActionCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
+import {ContribPageActionCreators} from "./ContribPageActionCreators";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
+import {ResponsibilityOverviewPageComponent} from "../../components/Responsibilities/Overview/ResponsibilityOverviewPage";
 
-export const uploadBurdenEstimatesPageActionCreators = {
-    onLoad(props: UploadBurdenEstimatesPageLocationProps) {
-        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-            await dispatch(this.loadData(props));
-            dispatch(breadcrumbsActionCreators.createBreadcrumbs(UploadBurdenEstimatesPageComponent.breadcrumb(getState())));
+class UploadBurdenEstimatesPageActionCreators extends ContribPageActionCreators<UploadBurdenEstimatesPageLocationProps>{
+    parent = responsibilityOverviewPageActionCreators;
+
+    createBreadcrumb(state: ContribAppState): PageBreadcrumb {
+        return {
+            name: `Upload burden estimates for ${state.responsibilities.currentResponsibility.scenario.description}`,
+            urlFragment: `burdens/${state.responsibilities.currentResponsibility.scenario.id}`
         }
-    },
+    }
 
-    loadData(props: UploadBurdenEstimatesPageLocationProps) {
+    loadData(params: UploadBurdenEstimatesPageLocationProps){
         return async (dispatch: Dispatch<ContribAppState>) => {
-            await dispatch(responsibilityOverviewPageActionCreators.loadData(props));
-            dispatch(responsibilitiesActionCreators.setCurrentResponsibility(props.scenarioId));
+            dispatch(responsibilitiesActionCreators.setCurrentResponsibility(params.scenarioId));
             await dispatch(estimatesActionCreators.getOneTimeToken());
         }
-    },
+    }
+}
 
-
-
-};
+export const uploadBurdenEstimatesPageActionCreators = new UploadBurdenEstimatesPageActionCreators();

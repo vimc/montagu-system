@@ -14,16 +14,10 @@ import {chooseActionPageActionCreators} from "../../../../main/contrib/actions/p
 import {ChooseActionContent} from "../../../../main/contrib/components/ChooseAction/ChooseActionContent";
 import {mockMatch} from "../../../mocks/mocks";
 
-describe("Choose Action Page Component", () => {
+describe("Choose Action Page", () => {
 
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
-
-    it("renders component on connect level", () => {
-        let store = createMockStore();
-        const rendered = shallow(<ChooseActionPage/>, {context: {store}});
-        expect(typeof rendered.props().onLoad).is.equal('function');
-    });
 
     it("renders component on component level, renders title and sub component", () => {
         let testMatch = mockMatch<ChooseActionPageLocationProps>({groupId: "g-1"});
@@ -31,7 +25,7 @@ describe("Choose Action Page Component", () => {
         const onLoadStub = sandbox.setStubReduxAction(chooseActionPageActionCreators, "onLoad");
         const rendered = shallow(<ChooseActionPage
             match={testMatch}
-        />, {context: {store}}).dive();
+        />, {context: {store}}).dive().dive();
         const pageArticle = rendered.find('PageArticle');
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal("What do you want to do?");
