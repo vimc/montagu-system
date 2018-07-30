@@ -1,14 +1,13 @@
 import * as React from "react";
-import { compose } from "recompose";
-import { connect } from 'react-redux';
-import { Dispatch } from "redux";
+import {compose} from "recompose";
+import {connect} from 'react-redux';
+import {Dispatch} from "redux";
 
-import { ModellingGroupsListContent } from "./ModellingGroupsListContent";
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {ModellingGroupsListContent} from "./ModellingGroupsListContent";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminPageHeader} from "../../AdminPageHeader";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
-import {MainMenuNew} from "../../MainMenu/MainMenuNew";
 import {modellingGroupsListPageActionCreators} from "../../../actions/pages/ModellingGroupsListPageActionCreators";
 import {CreateModellingGroupSection} from "../Create/CreateModellingGroupSection";
 

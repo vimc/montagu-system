@@ -1,28 +1,35 @@
 import * as React from "react";
-import { AdminPageWithHeader } from "./AdminPageWithHeader";
-import { ForgottenPasswordForm } from "../../shared/components/Login/ForgottenPasswordForm";
-import {IPageWithParent} from "../../shared/models/Breadcrumb";
-import {MainMenu} from "./MainMenu/MainMenu";
-import { Page } from "../../shared/components/PageWithHeader/Page";
+import {ForgottenPasswordForm} from "../../shared/components/Login/ForgottenPasswordForm";
+import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {AdminPageHeader} from "./AdminPageHeader";
+import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
+import {ContribForgottenPasswordPageComponent} from "../../contrib/components/ContribForgottenPasswordPage";
+import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {compose} from "recompose";
 
 const pageTitle = "Forgotten your password?";
 
-export class AdminForgottenPasswordPage extends AdminPageWithHeader<undefined> {
-    name(): string {
-        return pageTitle;
+class AdminForgottenPasswordPageComponent extends React.Component<PageProperties<undefined>> {
+    componentDidMount() {
+        this.props.createBreadcrumbs(AdminForgottenPasswordPageComponent.breadcrumb());
     }
 
-    urlFragment(): string {
-        return "forgotten-password/";
-    }
-
-    parent(): IPageWithParent {
-        return new MainMenu();
+    static breadcrumb() : PageBreadcrumb {
+        return {
+            name: pageTitle,
+            urlFragment: "forgotten-password/"
+        }
     }
 
     render(): JSX.Element {
-        return <Page page={this}>
-            <ForgottenPasswordForm />
-        </Page>;
+        return <div>
+            <AdminPageHeader/>
+            <PageArticle title={pageTitle}>
+                <ForgottenPasswordForm/>
+            </PageArticle>
+        </div>;
     }
 }
+
+const connector = compose(BreadcrumbInitializer);
+export const AdminForgottenPasswordPage = connector(AdminForgottenPasswordPageComponent);
