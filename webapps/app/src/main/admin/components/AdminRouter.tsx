@@ -16,7 +16,7 @@ import {UserDetailsPage} from "./Users/SingleUser/UserDetailsPage";
 import {TouchstoneListPage} from "./Touchstones/List/TouchstoneListPage";
 import {TouchstoneDetailsPage} from "./Touchstones/Details/TouchstoneDetailsPage";
 import {ResponsibilitiesPage} from "./Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
-import {MainMenu} from "./MainMenu/MainMenuNew";
+import {MainMenu} from "./MainMenu/MainMenu";
 
 interface AdminRouterProps {
     loggedIn: boolean;
