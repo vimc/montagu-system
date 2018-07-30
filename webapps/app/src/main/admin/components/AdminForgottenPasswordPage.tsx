@@ -1,10 +1,11 @@
 import * as React from "react";
 import {ForgottenPasswordForm} from "../../shared/components/Login/ForgottenPasswordForm";
-import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../shared/components/PageWithHeader/PageProperties";
 import {AdminPageHeader} from "./AdminPageHeader";
 import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
 import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 import {compose} from "recompose";
+import {PageBreadcrumb} from "../../shared/components/PageWithHeader/PageProperties";
 
 const pageTitle = "Forgotten your password?";
 

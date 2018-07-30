@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle";
-import {PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../shared/components/PageWithHeader/PageProperties";
 import {ButtonLink} from "../../../shared/components/ButtonLink";
 import {AdminPageHeader} from "../AdminPageHeader";
 

@@ -1,4 +1,4 @@
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import * as React from "react";
 import {AdminPageHeader} from "../../AdminPageHeader";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
@@ -8,6 +8,7 @@ import {compose} from "recompose";
 import {connect} from "react-redux";
 import {touchstoneDetailsPageActionCreators} from "../../../actions/pages/touchstoneDetailsPageActionCreators";
 import {TouchstoneDetails} from "./TouchstoneDetails";
+import {PageBreadcrumb} from "../../../../shared/components/PageWithHeader/PageProperties";
 
 export interface TouchstoneDetailsPageLocationProps {
     touchstoneId: string;

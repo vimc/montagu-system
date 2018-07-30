@@ -1,6 +1,6 @@
 import {Dispatch} from "redux";
 import {breadcrumbsActionCreators} from "./breadcrumbsActionsCreators";
-import {PageBreadcrumb} from "../components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../components/PageWithHeader/PageProperties";
 
 export abstract class AbstractPageActionCreators<TState, TPageProps> {
 

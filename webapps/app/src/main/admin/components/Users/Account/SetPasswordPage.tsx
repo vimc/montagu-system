@@ -2,7 +2,7 @@ import * as React from "react";
 import {InternalLink} from "../../../../shared/components/InternalLink";
 import {jwtTokenAuth} from "../../../../shared/modules/jwtTokenAuth";
 import {helpers} from "../../../../shared/Helpers";
-import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {compose} from "recompose";
 import {connect, Dispatch} from "react-redux";

@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {Dispatch} from "redux";
 
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
-import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {userDetailsPageActionCreators} from "../../../actions/pages/UserDetailsPageActionCreators";
 import {UserDetailsContent} from "./UserDetailsContent";

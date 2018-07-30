@@ -7,10 +7,11 @@ import {ResponsibilitiesPageTitle} from "../PageTitle";
 import {ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
 import {InternalLink} from "../../../../shared/components/InternalLink";
 import {ModelRunParametersContent} from "./ModelRunParametersContent";
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {modelRunParametersPageActionCreators} from "../../../actions/pages/modelRunParametersPageActionCreators";
+import {PageBreadcrumb} from "../../../../shared/components/PageWithHeader/PageProperties";
 
 const stochasticParams = require('../Overview/stochastic_template_params.csv');
 

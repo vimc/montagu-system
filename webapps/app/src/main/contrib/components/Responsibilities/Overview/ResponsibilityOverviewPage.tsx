@@ -7,11 +7,12 @@ import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArti
 import { ResponsibilityOverviewDescription } from "./ResponsibilityOverviewDescription";
 import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
 import {ChooseActionPageComponent} from "../../ChooseAction/ChooseActionPage";
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {TouchstoneVersion} from "../../../../shared/models/Generated";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {responsibilityOverviewPageActionCreators} from "../../../actions/pages/responsibilityOverviewPageActionCreators";
+import {PageBreadcrumb} from "../../../../shared/components/PageWithHeader/PageProperties";
 
 export interface ResponsibilityOverviewPageLocationProps {
     groupId: string;

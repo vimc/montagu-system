@@ -6,12 +6,13 @@ import { connect } from 'react-redux';
 import {ResponsibilitiesPageTitle} from "../PageTitle";
 import {UploadBurdenEstimatesContent} from "./UploadBurdenEstimatesContent";
 import { ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {uploadBurdenEstimatesPageActionCreators} from "../../../actions/pages/uploadBurdenEstimatesPageActionCreators";
 import {estimatesActionCreators} from "../../../actions/estimatesActionCreators";
 import {appSettings} from "../../../../shared/Settings";
+import {PageBreadcrumb} from "../../../../shared/components/PageWithHeader/PageProperties";
 
 export interface UploadBurdenEstimatesPageLocationProps {
     groupId: string;

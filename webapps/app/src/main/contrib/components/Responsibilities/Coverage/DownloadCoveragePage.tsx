@@ -6,10 +6,11 @@ import { connect } from 'react-redux';
 import {DownloadCoverageContent} from "./DownloadCoverageContent";
 import {ResponsibilitiesPageTitle} from "../PageTitle";
 import {ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {downloadCoveragePageActionCreators} from "../../../actions/pages/downloadCoveragePageActionCreators";
+import {PageBreadcrumb} from "../../../../shared/components/PageWithHeader/PageProperties";
 
 export interface DownloadCoveragePageLocationProps {
     groupId: string;

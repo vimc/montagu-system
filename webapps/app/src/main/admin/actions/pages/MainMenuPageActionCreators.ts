@@ -1,6 +1,6 @@
 import {AdminAppState} from "../../reducers/adminAppReducers";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
-import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 import {MainMenuNew} from "../../components/MainMenu/MainMenuNew";
 
 export class MainMenuPageActionCreators extends AdminPageActionCreators<{}> {

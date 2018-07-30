@@ -4,7 +4,7 @@ import {Dispatch} from "redux";
 import {compose} from "recompose";
 import withLifecycle, {LifecycleMethods} from "@hocs/with-lifecycle";
 import {AbstractPageActionCreators} from "../actions/AbstractPageActionCreators";
-import {PageProperties} from "./PageWithHeader/PageWithHeader";
+import {PageProperties} from "./PageWithHeader/PageProperties";
 
 export function Page<TState, TLocationProps>(pageActionCreators: AbstractPageActionCreators<TState, TLocationProps>) {
 

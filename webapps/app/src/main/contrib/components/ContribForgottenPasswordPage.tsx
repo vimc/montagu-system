@@ -4,8 +4,9 @@ import { compose } from "recompose";
 import {ForgottenPasswordForm} from "../../shared/components/Login/ForgottenPasswordForm";
 import {ChooseGroupPageComponent} from "./ChooseGroup/ChooseGroupPage";
 import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
-import {PageBreadcrumb, PageProperties} from "../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../shared/components/PageWithHeader/PageProperties";
 import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {PageBreadcrumb} from "../../shared/components/PageWithHeader/PageProperties";
 
 const pageTitle = "Forgotten your password?";
 

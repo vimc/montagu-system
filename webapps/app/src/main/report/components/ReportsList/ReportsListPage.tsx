@@ -2,8 +2,9 @@ import * as React from "react";
 import {compose} from "recompose";
 
 import {ReportsList} from "./ReportsList";
-import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../shared/components/PageWithHeader/PageProperties";
 import {BreadcrumbInitializer} from "../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 
 export class ReportsListPageComponent extends React.Component<PageProperties<undefined>> {
     static breadcrumb(): PageBreadcrumb {

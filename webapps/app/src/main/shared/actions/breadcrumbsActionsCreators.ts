@@ -1,5 +1,5 @@
 import {BreadcrumbsReceived, BreadcrumbsTypes} from "../actionTypes/BreadrumbsTypes";
-import {PageBreadcrumb} from "../components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../components/PageWithHeader/PageProperties";
 import {Breadcrumb} from "../models/Breadcrumb";
 import {breadcrumbsModule} from "../modules/breadcrumbs";
 
