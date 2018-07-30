@@ -6,6 +6,7 @@ button, .button {
     @extend .align-top;
     border: 2px outset buttonface;
     border-image: initial;
+    text-decoration: none !important;
 }
 
 button[type=submit], button.submit, .button.submit {
