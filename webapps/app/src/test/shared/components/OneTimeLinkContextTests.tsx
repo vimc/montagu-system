@@ -62,7 +62,7 @@ describe("OneTimeLinkContext", () => {
         checkAsync(done, () => {
             const child = rendered.find(EmptyComponent);
             expect(child.prop("href")).to.equal("http://localhost:8080/v1/banana/?query=whatevs&access_token=" + token);
-        })
+        });
     });
 
     it("triggers fetchToken on mount", (done: DoneCallback) => {
