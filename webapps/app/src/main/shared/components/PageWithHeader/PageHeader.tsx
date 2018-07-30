@@ -12,9 +12,9 @@ interface HeaderProps {
 
 const defaultProps: Partial<HeaderProps> = {
     logo
-}
+};
 
-const PageHeaderNew: React.SFC<HeaderProps> = (props: HeaderProps) => {
+const PageHeader: React.SFC<HeaderProps> = (props: HeaderProps) => {
     return <div>
         <header className="header">
             <a href="/">
@@ -29,8 +29,8 @@ const PageHeaderNew: React.SFC<HeaderProps> = (props: HeaderProps) => {
         </header>
         <BreadcrumbsBar />
     </div>;
-}
+};
 
-PageHeaderNew.defaultProps = defaultProps;
+PageHeader.defaultProps = defaultProps;
 
-export {PageHeaderNew}
+export {PageHeader}

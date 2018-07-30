@@ -1,7 +1,7 @@
 import {AdminAppState} from "../../reducers/adminAppReducers";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
-import {MainMenuNew} from "../../components/MainMenu/MainMenuNew";
+import {MainMenu} from "../../components/MainMenu/MainMenu";
 
 export class MainMenuPageActionCreators extends AdminPageActionCreators<{}> {
 
@@ -9,7 +9,7 @@ export class MainMenuPageActionCreators extends AdminPageActionCreators<{}> {
 
     createBreadcrumb(state?: AdminAppState): PageBreadcrumb {
         return {
-            name: MainMenuNew.title,
+            name: MainMenu.title,
             urlFragment: "/",
             parent: null
         }

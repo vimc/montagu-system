@@ -3,7 +3,7 @@ import {Route, Switch} from 'react-router-dom';
 import {ConnectedRouter} from 'react-router-redux';
 import {History} from "history";
 import * as logo from "../../shared/components/PageWithHeader/logo.png"
-import {PageHeaderNew} from "../../shared/components/PageWithHeader/PageHeaderNew";
+import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
 
 // Pages
 import {AdminLoginPage} from "./AdminLoginPage";
@@ -18,7 +18,7 @@ import {UserDetailsPage} from "./Users/SingleUser/UserDetailsPage";
 import {TouchstoneListPage} from "./Touchstones/List/TouchstoneListPage";
 import {TouchstoneDetailsPage} from "./Touchstones/Details/TouchstoneDetailsPage";
 import {ResponsibilitiesPage} from "./Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
-import {MainMenuNew} from "./MainMenu/MainMenuNew";
+import {MainMenu} from "./MainMenu/MainMenu";
 
 interface AdminRouterProps {
     loggedIn: boolean;
@@ -28,7 +28,7 @@ interface AdminRouterProps {
 export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: AdminRouterProps) => {
 
     const loggedIn = <Switch>
-        <Route exact path="/" component={MainMenuNew}/>
+        <Route exact path="/" component={MainMenu}/>
         <Route exact path="/modelling-groups/" component={ModellingGroupsListPage}/>
         <Route exact path="/modelling-groups/:groupId/" component={ModellingGroupDetailsPage}/>
         <Route exact path="/modelling-groups/:groupId/admin/" component={ModellingGroupMembersPage}/>
@@ -50,7 +50,7 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
     const routes = props.loggedIn ? loggedIn : notLoggedIn;
 
     return <ConnectedRouter history={props.history}>
-        <PageHeaderNew siteTitle={"Admin portal"} logo={logo} />
+        <PageHeader siteTitle={"Admin portal"} logo={logo} />
         <div>
             {routes}
         </div>
