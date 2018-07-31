@@ -30,50 +30,50 @@ describe("Model Run Parameters Page actions tests", () => {
         sandbox.restore();
     });
 
-    // it("loads parameter sets", async () => {
-    //     const touchstonesState: Partial<TouchstonesState> = {
-    //         touchstones: [testTouchstone],
-    //         currentTouchstoneVersion: testTouchstoneVersion
-    //     };
-    //     const store = createMockContribStore(mockContribState({
-    //         auth: {modellingGroups: testGroup.id},
-    //         groups: {userGroups: [testGroup], currentUserGroup: testGroup},
-    //         touchstones: touchstonesState
-    //     }));
-    //
-    //     sandbox.setStubFunc(RunParametersService.prototype, "getParameterSets", () => {
-    //         return Promise.resolve([testModelRunParametersSet]);
-    //     });
-    //
-    //     await store.dispatch(modelRunParametersPageActionCreators
-    //         .loadData({groupId: testGroup.id, touchstoneId: testTouchstoneVersion.id}));
-    //
-    //     const actions = store.getActions();
-    //
-    //     const expectedPayload = [
-    //         {type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet]}
-    //     ];
-    //     expect(actions).to.eql(expectedPayload);
-    //
-    // });
+    it("loads parameter sets", async () => {
+        const touchstonesState: Partial<TouchstonesState> = {
+            touchstones: [testTouchstone],
+            currentTouchstoneVersion: testTouchstoneVersion
+        };
+        const store = createMockContribStore(mockContribState({
+            auth: {modellingGroups: testGroup.id},
+            groups: {userGroups: [testGroup], currentUserGroup: testGroup},
+            touchstones: touchstonesState
+        }));
 
-    // it("creates breadcrumb", async () => {
-    //     const touchstonesState: Partial<TouchstonesState> = {
-    //         touchstones: [testTouchstone],
-    //         currentTouchstoneVersion: testTouchstoneVersion
-    //     };
-    //     const state = mockContribState({
-    //         auth: {modellingGroups: testGroup.id},
-    //         groups: {userGroups: [testGroup], currentUserGroup: testGroup},
-    //         touchstones: touchstonesState
-    //     });
-    //
-    //     const breadcrumb = modelRunParametersPageActionCreators.createBreadcrumb(state);
-    //     expect(breadcrumb).to.eql({name: "Upload parameters", urlFragment: "parameters/"});
-    // });
+        sandbox.setStubFunc(RunParametersService.prototype, "getParameterSets", () => {
+            return Promise.resolve([testModelRunParametersSet]);
+        });
 
-    // it("has responsibilities overview as parent", () => {
-    //     expect(modelRunParametersPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators);
-    // });
+        await store.dispatch(modelRunParametersPageActionCreators
+            .loadData({groupId: testGroup.id, touchstoneId: testTouchstoneVersion.id}));
+
+        const actions = store.getActions();
+
+        const expectedPayload = [
+            {type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet]}
+        ];
+        expect(actions).to.eql(expectedPayload);
+
+    });
+
+    it("creates breadcrumb", async () => {
+        const touchstonesState: Partial<TouchstonesState> = {
+            touchstones: [testTouchstone],
+            currentTouchstoneVersion: testTouchstoneVersion
+        };
+        const state = mockContribState({
+            auth: {modellingGroups: testGroup.id},
+            groups: {userGroups: [testGroup], currentUserGroup: testGroup},
+            touchstones: touchstonesState
+        });
+
+        const breadcrumb = modelRunParametersPageActionCreators.createBreadcrumb(state);
+        expect(breadcrumb).to.eql({name: "Upload parameters", urlFragment: "parameters/"});
+    });
+
+    it("has responsibilities overview as parent", () => {
+        expect(modelRunParametersPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators);
+    });
 
 });
