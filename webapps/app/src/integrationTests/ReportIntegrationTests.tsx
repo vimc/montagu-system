@@ -131,12 +131,11 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             let url = null;
 
             // until onetime token has been fetched url will be null
-            while(url == null){
-                setTimeout(() => {
-                    rendered.update(); // mounted component won't update with new props automatically
-                    const link = rendered.find("a").first();
-                    url = link.prop("href");
-                })
+            while (url == null) {
+                await timeout(50);
+                rendered.update(); // mounted component won't update with new props automatically
+                const link = rendered.find("a").first();
+                url = link.prop("href");
             }
 
             return fetch(url)
@@ -145,12 +144,11 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         async function lastDownloadPromise(rendered: ReactWrapper) {
             let url = null;
             // until onetime token has been fetched url will be null
-            while(url == null){
-                setTimeout(() => {
-                    rendered.update(); // mounted component won't update with new props automatically
-                    const link = rendered.find("a").last();
-                    url = link.prop("href");
-                })
+            while (url == null) {
+                await timeout(50);
+                rendered.update(); // mounted component won't update with new props automatically
+                const link = rendered.find("a").last();
+                url = link.prop("href");
             }
 
             return fetch(url)
