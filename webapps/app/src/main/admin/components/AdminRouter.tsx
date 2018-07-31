@@ -1,23 +1,24 @@
 import * as React from "react";
-import { Route, Switch, Redirect } from 'react-router-dom';
-import { ConnectedRouter } from 'react-router-redux';
+import {Route, Switch} from 'react-router-dom';
+import {ConnectedRouter} from 'react-router-redux';
 import {History} from "history";
+import * as logo from "../../shared/components/PageWithHeader/logo.png"
+import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
 
-// import {AdminPageHeader} from "./AdminPageHeader";
 // Pages
-import { MainMenu } from "./MainMenu/MainMenu";
-import { AdminLoginPage } from "./AdminLoginPage";
-import { AdminNoRouteFoundPage } from "./AdminNoRouteFoundPage";
-import { ModellingGroupsListPage } from "./ModellingGroups/List/ModellingGroupsListPage";
-import { ModellingGroupDetailsPage } from "./ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
-import { ModellingGroupMembersPage } from "./ModellingGroups/SingleGroup/Members/ModellingGroupMembersPage";
-import { AdminForgottenPasswordPage } from "./AdminForgottenPasswordPage";
-import { ResetPasswordPage } from "./Users/Account/ResetPasswordPage";
+import {AdminLoginPage} from "./AdminLoginPage";
+import {AdminNoRouteFoundPage} from "./AdminNoRouteFoundPage";
+import {ModellingGroupsListPage} from "./ModellingGroups/List/ModellingGroupsListPage";
+import {ModellingGroupDetailsPage} from "./ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
+import {ModellingGroupMembersPage} from "./ModellingGroups/SingleGroup/Members/ModellingGroupMembersPage";
+import {SetPasswordPage} from "./Users/Account/SetPasswordPage";
 import {UsersListPage} from "./Users/List/UsersListPage";
 import {UserDetailsPage} from "./Users/SingleUser/UserDetailsPage";
 import {TouchstoneListPage} from "./Touchstones/List/TouchstoneListPage";
 import {TouchstoneDetailsPage} from "./Touchstones/Details/TouchstoneDetailsPage";
 import {ResponsibilitiesPage} from "./Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
+import {MainMenu} from "./MainMenu/MainMenu";
+import {ForgottenPasswordPage} from "../../shared/components/ForgottenPasswordPage";
 
 interface AdminRouterProps {
     loggedIn: boolean;
@@ -36,13 +37,13 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/responsibilities/" component={ResponsibilitiesPage}/>
         <Route exact path="/users/" component={UsersListPage}/>
         <Route exact path="/users/:username/" component={UserDetailsPage}/>
-        <Route exact path="/set-password/" component={ResetPasswordPage} />
+        <Route exact path="/set-password/" component={SetPasswordPage} />
         <Route component={AdminNoRouteFoundPage}/>
     </Switch>;
 
     const notLoggedIn = <Switch>
-        <Route exact path="/forgotten-password/" component={AdminForgottenPasswordPage} />
-        <Route exact path="/set-password/" component={ResetPasswordPage} />
+        <Route exact path="/forgotten-password/" component={ForgottenPasswordPage} />
+        <Route exact path="/set-password/" component={SetPasswordPage} />
         <Route component={AdminLoginPage}/>
     </Switch>;
 
@@ -50,6 +51,7 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
 
     return <ConnectedRouter history={props.history}>
         <div>
+            <PageHeader siteTitle={"Admin portal"} logo={logo} />
             {routes}
         </div>
     </ConnectedRouter>;

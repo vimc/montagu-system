@@ -4,11 +4,10 @@ import {connect} from 'react-redux';
 import {Dispatch} from "redux";
 
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
-import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {userDetailsPageActionCreators} from "../../../actions/pages/UserDetailsPageActionCreators";
 import {UserDetailsContent} from "./UserDetailsContent";
-import {AdminPageHeader} from "../../AdminPageHeader";
 
 export interface UserDetailsPageLocationProps {
     username: string;
@@ -25,12 +24,9 @@ export class UserDetailsPageComponent extends React.Component<UserDetailsPagePro
     }
 
     render(): JSX.Element {
-        return <div>
-            <AdminPageHeader/>
-            <PageArticle title={this.props.currentUser}>
-                <UserDetailsContent/>
-            </PageArticle>
-        </div>;
+        return <PageArticle title={this.props.currentUser}>
+            <UserDetailsContent/>
+        </PageArticle>;
     }
 }
 

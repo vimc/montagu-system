@@ -16,8 +16,7 @@ describe('UploadForm', () => {
 
     it("disables the submit button if enable submit is false", () => {
 
-        rendered = shallow(<UploadFileForm uploadText="upload text"
-                                           successMessage={"success"}
+        rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={false}
                                            token="token"/>);
 
@@ -27,8 +26,7 @@ describe('UploadForm', () => {
 
     it("disables submit button if token is null", () => {
 
-        rendered = shallow(<UploadFileForm uploadText="upload text"
-                                           successMessage={"success"}
+        rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={true}
                                            token={null}/>);
 
@@ -38,8 +36,7 @@ describe('UploadForm', () => {
 
     it("disables submit button if file not selected", () => {
 
-        rendered = shallow(<UploadFileForm uploadText="upload text"
-                                           successMessage={"success"}
+        rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={true}
                                            token="token"/>);
         assertButtonIsDisabled();
@@ -53,7 +50,6 @@ describe('UploadForm', () => {
             };
         };
         rendered = shallow(<UploadFileForm token="token"
-                                           uploadText="upload text"
                                            enableSubmit={true}
                                            successMessage="success"
                                            validatePath={validate}/>);
@@ -64,8 +60,7 @@ describe('UploadForm', () => {
 
     it("enables submit button if enableSubmit is true and token exists", () => {
 
-        rendered = shallow(<UploadFileForm uploadText="upload text"
-                                           successMessage={"success"}
+        rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={true}
                                            token="token"/>);
 
@@ -80,8 +75,7 @@ describe('UploadForm', () => {
 
         sandbox.sinon.stub(helpers, "ingestQueryStringAndReturnResult").returns(null);
 
-        rendered = shallow(<UploadFileForm uploadText="upload text"
-                                           successMessage={"success message"}
+        rendered = shallow(<UploadFileForm successMessage={"success message"}
                                            enableSubmit={true}
                                            token="token"/>);
 
@@ -100,8 +94,7 @@ describe('UploadForm', () => {
             data: null
         });
 
-        rendered = shallow(<UploadFileForm uploadText="upload text"
-                                           successMessage={"success"}
+        rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={true}
                                            token="token"/>);
 
@@ -121,8 +114,7 @@ describe('UploadForm', () => {
             data: "OK"
         });
 
-        rendered = shallow(<UploadFileForm uploadText="upload text"
-                                           successMessage={"success message"}
+        rendered = shallow(<UploadFileForm successMessage={"success message"}
                                            enableSubmit={true}
                                            token="token"/>);
 

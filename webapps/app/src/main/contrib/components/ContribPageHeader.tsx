@@ -1,6 +1,6 @@
 import * as React from "react";
-import {PageHeaderNew} from "../../shared/components/PageWithHeader/PageHeaderNew";
+import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
 
 export const ContribPageHeader: React.SFC<undefined> = () => (
-    <PageHeaderNew siteTitle={"Modellers' contribution portal"} />
+    <PageHeader siteTitle={"Modellers' contribution portal"} />
 )

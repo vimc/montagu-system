@@ -2,9 +2,8 @@ import * as React from "react";
 import {expect} from "chai";
 import "../../helper";
 import {
-    PageBreadcrumb,
     PageProperties,
-} from "../../../main/shared/components/PageWithHeader/PageWithHeader";
+} from "../../../main/shared/components/PageWithHeader/PageProperties";
 import {Sandbox} from "../../Sandbox";
 import {checkAsync} from "../../testHelpers";
 import {Page} from "../../../main/shared/components/Page";
@@ -15,6 +14,7 @@ import {createMockAdminStore} from "../../mocks/mockStore";
 import {mockMatch} from "../../mocks/mocks";
 import {BreadcrumbsTypes} from "../../../main/shared/actionTypes/BreadrumbsTypes";
 import {mockPageBreadcrumb} from "../../mocks/mockModels";
+import {PageBreadcrumb} from "../../../main/shared/components/PageWithHeader/PageProperties";
 
 class DummyPageComponent extends React.Component<PageProperties<undefined>> {
     render(): JSX.Element {

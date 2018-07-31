@@ -4,9 +4,10 @@ import { compose } from "recompose";
 
 import {ChooseGroupPageComponent} from "../../ChooseGroup/ChooseGroupPage";
 import {settings} from "../../../../shared/Settings";
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {BreadcrumbInitializer} from "../../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
+import {PageBreadcrumb} from "../../../../shared/components/PageWithHeader/PageProperties";
 
 const dalysPdf = require("./guidance-201710-DALYs.pdf");
 

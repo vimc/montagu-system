@@ -46,7 +46,6 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
         const uploadForm = this.props.canUpload ?
             <UploadFileForm token={this.props.estimatesToken}
                             enableSubmit={true}
-                            uploadText={"Upload estimates for this scenario"}
                             successMessage={uploadSuccessMessage}
                             validatePath={checkFileExtensionIsCSV}
             />

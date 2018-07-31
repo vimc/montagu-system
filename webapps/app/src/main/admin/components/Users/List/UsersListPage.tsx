@@ -3,13 +3,12 @@ import {compose} from "recompose";
 import {connect} from 'react-redux';
 import {Dispatch} from "redux";
 
-import {PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {usersListPageActionCreators} from "../../../actions/pages/UsersListPageActionCreators";
 import {CreateUserSection} from "../Create/CreateUserSection";
 import {UsersList} from "./UsersList";
-import {AdminPageHeader} from "../../AdminPageHeader";
 
 export class UsersListPageComponent extends React.Component<PageProperties<undefined>> {
     static title: string = "Users";
@@ -19,13 +18,11 @@ export class UsersListPageComponent extends React.Component<PageProperties<undef
     }
 
     render(): JSX.Element {
-        return <div>
-            <AdminPageHeader/>
-            <PageArticle title={UsersListPageComponent.title}>
-                <CreateUserSection/>
-                <div className="sectionTitle">All users</div>
-                <UsersList/>
-            </PageArticle></div>;
+        return <PageArticle title={UsersListPageComponent.title}>
+            <CreateUserSection/>
+            <div className="sectionTitle">All users</div>
+            <UsersList/>
+        </PageArticle>;
     }
 }
 

@@ -26,6 +26,14 @@ describe('Users service tests', () => {
         expect(getStub.getCall(0).args[0])
             .to.equal("/users/");
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'users' });
-    })
+    });
 
-})
+    it("sets password", () => {
+        const usersService = new UsersService(store.dispatch, store.getState);
+        const postStub = sandbox.setStubFunc(usersService, "post", ()=>{
+            return Promise.resolve();
+        });
+        usersService.setPassword("TOKEN", "password");
+        expect(postStub.getCall(0).args).to.eql(["/onetime_link/TOKEN/", `{"password":"password"}`]);
+    });
+});

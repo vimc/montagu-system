@@ -7,13 +7,10 @@ import {
     FileDownloadLinkInner
 } from "../../../main/shared/components/FileDownloadLink";
 import * as React from "react";
-import {alt} from "../../../main/shared/alt";
 import {Sandbox} from "../../Sandbox";
 
 describe("FileDownloadLinkInner", () => {
     const sandbox = new Sandbox();
-
-    beforeEach(() => alt.recycle());
     afterEach(() => sandbox.restore());
 
     it("renders disabled link when href is null", () => {
@@ -55,6 +52,13 @@ describe("FileDownloadButton", () => {
         const inner = rendered.find(FileDownloadInner);
         expect(inner).to.have.lengthOf(1);
         expect(inner.prop('className')).to.equal("button");
+    });
+
+    it("passes through classname if exists", () => {
+        const rendered = shallow(<FileDownloadButtonInner href={null} refreshToken={null} className={"test"}/>);
+        const inner = rendered.find(FileDownloadInner);
+        expect(inner).to.have.lengthOf(1);
+        expect(inner.prop('className')).to.equal("button test");
     });
 
 });

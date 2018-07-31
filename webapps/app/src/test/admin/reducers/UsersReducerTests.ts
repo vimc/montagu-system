@@ -3,6 +3,7 @@ import { expect } from "chai";
 import {usersInitialState, usersReducer} from "../../../main/admin/reducers/usersReducer";
 import {UsersTypes} from "../../../main/admin/actionTypes/UsersTypes";
 import {mockUser} from "../../mocks/mockModels";
+import {mockError} from "../../mocks/mockRemote";
 
 describe('Admin Users reducer tests', () => {
 
@@ -49,4 +50,18 @@ describe('Admin Users reducer tests', () => {
         })).to.eql({...usersInitialState, globalRoles: ["role1", "role2"]});
     });
 
+    it("changes set password errors", () => {
+        const errors = [mockError("a", "A"), mockError("b", "B")];
+        expect(usersReducer(undefined, {
+            type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS,
+            errors: errors
+        })).to.eql({...usersInitialState, setPasswordErrors: errors})
+    });
+
+    it("changes set password token", () => {
+        expect(usersReducer(undefined, {
+            type: UsersTypes.CHANGE_SET_PASSWORD_TOKEN,
+            token: "TOKEN"
+        })).to.eql({...usersInitialState, setPasswordToken: "TOKEN"})
+    });
 });

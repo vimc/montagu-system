@@ -4,7 +4,7 @@ import {modellingGroupsActionCreators} from "../modellingGroupsActionCreators";
 import {AdminAppState} from "../../reducers/adminAppReducers";
 import {ModellingGroupsListPageComponent} from "../../components/ModellingGroups/List/ModellingGroupsListPage";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
-import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 import {AbstractPageActionCreators} from "../../../shared/actions/AbstractPageActionCreators";
 import {mainMenuPageActionCreators} from "./MainMenuPageActionCreators";
 

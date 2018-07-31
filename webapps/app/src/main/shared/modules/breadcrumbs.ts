@@ -1,6 +1,6 @@
 import {Breadcrumb} from "../models/Breadcrumb";
-import {PageBreadcrumb} from "../components/PageWithHeader/PageWithHeader";
 import {clone} from "lodash";
+import {PageBreadcrumb} from "../components/PageWithHeader/PageProperties";
 
 export const breadcrumbsModule = {
 

@@ -2,7 +2,7 @@ import {expect} from "chai";
 import { createMemoryHistory } from 'history';
 
 import {Sandbox} from "../../Sandbox";
-import {PageBreadcrumb} from "../../../main/shared/components/PageWithHeader/PageWithHeader";
+import {PageBreadcrumb} from "../../../main/shared/components/PageWithHeader/PageProperties";
 import {createReportStore} from "../../../main/report/stores/createReportStore";
 import {breadcrumbsActionCreators} from "../../../main/shared/actions/breadcrumbsActionsCreators";
 import {ReportAppState} from "../../../main/report/reducers/reportAppReducers";

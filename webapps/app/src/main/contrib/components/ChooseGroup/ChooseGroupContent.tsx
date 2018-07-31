@@ -19,7 +19,7 @@ export const ChooseGroupContentComponent: React.SFC<ChooseGroupContentProps> = (
                 You are a member of multiple modelling groups.
                 Which one do you want to act as currently?
             </div>
-            <div className="gapAbove">
+            <div className="mt-5">
                 <GroupList groups={props.groups}/>
             </div>
         </div>;

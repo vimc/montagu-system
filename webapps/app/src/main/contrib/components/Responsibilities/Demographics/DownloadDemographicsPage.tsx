@@ -6,10 +6,11 @@ import { connect } from 'react-redux';
 import { ResponsibilitiesPageTitle } from "../PageTitle";
 import { DownloadDemographicsContent } from "./DownloadDemographicsContent";
 import {ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
-import {PageBreadcrumb, PageProperties} from "../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {downloadDemographicsPageActionCreators} from "../../../actions/pages/downloadDemographicsPageActionCreators";
+import {PageBreadcrumb} from "../../../../shared/components/PageWithHeader/PageProperties";
 
 export interface DownloadDemographicsPageLocationProps {
     groupId: string;

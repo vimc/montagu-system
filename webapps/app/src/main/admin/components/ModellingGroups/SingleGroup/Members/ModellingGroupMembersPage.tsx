@@ -4,10 +4,9 @@ import {connect} from 'react-redux';
 import {Dispatch} from "redux";
 
 import {ModellingGroupMembersContent} from "./ModellingGroupMembersContent";
-import {PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../../shared/components/PageWithHeader/PageProperties";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
 import {PageArticle} from "../../../../../shared/components/PageWithHeader/PageArticle";
-import {AdminPageHeader} from "../../../AdminPageHeader";
 import {modellingGroupMembersPageActionCreators} from "../../../../actions/pages/ModellingGroupMembersPageActionCreators";
 
 export interface ModellingGroupMembersPageLocationProps {
@@ -26,12 +25,9 @@ export class ModellingGroupMembersPageComponent extends React.Component<Modellin
     }
 
     render(): JSX.Element {
-        return <div>
-            <AdminPageHeader/>
-            <PageArticle title={`Manage membership for ${this.props.groupDescription}`}>
-                <ModellingGroupMembersContent/>
-            </PageArticle>
-        </div>;
+        return <PageArticle title={`Manage membership for ${this.props.groupDescription}`}>
+            <ModellingGroupMembersContent/>
+        </PageArticle>;
     }
 }
 

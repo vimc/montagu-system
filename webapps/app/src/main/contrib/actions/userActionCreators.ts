@@ -30,5 +30,5 @@ export const userActionCreators = {
             } as ConfidentialityRetrieved)
 
         }
-    }
+    },
 };

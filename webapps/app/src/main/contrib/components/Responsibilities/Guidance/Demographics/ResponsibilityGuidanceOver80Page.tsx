@@ -2,10 +2,11 @@ import * as React from "react";
 import { compose } from "recompose";
 
 import {PageArticle} from "../../../../../shared/components/PageWithHeader/PageArticle";
-import {PageBreadcrumb, PageProperties} from "../../../../../shared/components/PageWithHeader/PageWithHeader";
+import {PageProperties} from "../../../../../shared/components/PageWithHeader/PageProperties";
 import {ChooseGroupPageComponent} from "../../../ChooseGroup/ChooseGroupPage";
 import {BreadcrumbInitializer} from "../../../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 import {PageScrollOnMount} from "../../../../../shared/components/PageWithHeader/PageScrollUpOnMount";
+import {PageBreadcrumb} from "../../../../../shared/components/PageWithHeader/PageProperties";
 
 const iframeSrc = "/contribution/guidance/over80.html";
 

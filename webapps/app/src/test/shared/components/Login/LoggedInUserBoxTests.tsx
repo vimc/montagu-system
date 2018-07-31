@@ -1,19 +1,21 @@
 import * as React from "react";
-import { Sandbox } from "../../../Sandbox";
-import { expect } from "chai";
-import { shallow, mount } from "enzyme";
-import { Provider } from "react-redux";
-import { MemoryRouter as Router } from 'react-router-dom';
+import {Sandbox} from "../../../Sandbox";
+import {expect} from "chai";
+import {mount, shallow} from "enzyme";
+import {Provider} from "react-redux";
+import {MemoryRouter as Router} from 'react-router-dom';
 
-import { initialAuthState } from "../../../../main/shared/reducers/authReducer";
-import { InternalLink } from "../../../../main/shared/components/InternalLink";
-import { LoggedInUserBoxComponent, LoggedInUserBox } from "../../../../main/shared/components/Login/LoggedInUserBox";
+import {AuthState, initialAuthState} from "../../../../main/shared/reducers/authReducer";
+import {InternalLink} from "../../../../main/shared/components/InternalLink";
+import {
+    LoggedInUserBox,
+    LoggedInUserBoxComponent,
+    mapStateToProps
+} from "../../../../main/shared/components/Login/LoggedInUserBox";
 import {mockContribState} from "../../../mocks/mockStates";
-import { mapStateToProps } from "../../../../main/shared/components/Login/LoggedInUserBox";
-import { createMockStore } from "../../../mocks/mockStore";
-import { AuthTypeKeys } from "../../../../main/shared/actionTypes/AuthTypes";
-import { AuthService } from "../../../../main/shared/services/AuthService";
-
+import {createMockStore} from "../../../mocks/mockStore";
+import {AuthTypeKeys} from "../../../../main/shared/actionTypes/AuthTypes";
+import {AuthService} from "../../../../main/shared/services/AuthService";
 
 describe("LoggedInUserBoxComponent", () => {
     const sandbox = new Sandbox();
@@ -24,7 +26,7 @@ describe("LoggedInUserBoxComponent", () => {
         const rendered = shallow(<LoggedInUserBoxComponent
             loggedIn={initialAuthState.loggedIn}
             username={initialAuthState.username}
-            logOut={()=>({})}
+            logOut={() => ({})}
         />);
         expect(rendered.text()).to.be.empty;
     });
@@ -33,27 +35,15 @@ describe("LoggedInUserBoxComponent", () => {
         const rendered = shallow(<LoggedInUserBoxComponent
             loggedIn={true}
             username="test.user"
-            logOut={()=>({})}
+            logOut={() => ({})}
         />);
         expect(rendered.text()).to.contain("Logged in as test.user");
         expect(rendered.find(InternalLink)).to.have.length(1);
     });
 
-    it("clicking log out emits logOut event", () => {
-        const dispatchSpy = sandbox.createSpy();
-        const rendered = shallow(<LoggedInUserBoxComponent
-            loggedIn={true}
-            username="test.user"
-            logOut={dispatchSpy}
-        />);
-        const spy = sandbox.dispatchSpy();
-        rendered.find(InternalLink).simulate("click");
-        expect(dispatchSpy.called).to.equal(true);
-    });
-
     it("maps state to props", () => {
-        const contribStateMock = mockContribState({ auth: {loggedIn: true, username: "test.user"} })
-        const props = mapStateToProps(contribStateMock)
+        const contribStateMock = mockContribState({auth: {loggedIn: true, username: "test.user"}})
+        const props = mapStateToProps(contribStateMock);
         expect(props.username).to.eq("test.user");
         expect(props.loggedIn).to.eq(true);
     });

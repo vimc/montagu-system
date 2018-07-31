@@ -52,6 +52,10 @@ export function mockResult<T>(data: T,
     return { data, errors, status };
 }
 
+export function mockError(code: string, message: string): ErrorInfo {
+    return { code, message };
+}
+
 export function resetFetcher() {
     mockFetcherResponse();
 }
