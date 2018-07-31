@@ -8,6 +8,7 @@ import { ValidationError } from "./ValidationError";
 import { validations } from "../../modules/reduxForm";
 import { authActionCreators } from "../../actions/authActionCreators";
 import {InputFieldProps} from "../ReduxForm/types";
+import {InjectedFormProps} from "redux-form/lib/reduxForm";
 
 export interface ForgotPasswordFormProps {
     handleSubmit: (F: Function) => any;
@@ -19,8 +20,7 @@ export interface ForgotPasswordFormFields{
 }
 
 export class ForgottenPasswordFormComponent extends React.Component<ForgotPasswordFormProps, undefined> {
-    renderField(data: InputFieldProps)
-    {
+    renderField(data: InputFieldProps) {
         const { input, label, type, meta: { touched,  error } } = data;
         return <div>
             <input {...input} placeholder={label} type={type}/>
@@ -61,4 +61,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>): Partial<ForgotPasswordForm
 export const ForgottenPasswordForm = compose(
     reduxForm({ form: 'forgotPassword'}),
     connect(state => state, mapDispatchToProps),
-)(ForgottenPasswordFormComponent);
+)(ForgottenPasswordFormComponent) as React.ComponentClass<Partial<InjectedFormProps<any, any>>>;

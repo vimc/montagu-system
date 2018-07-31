@@ -1,28 +1,28 @@
 import * as React from "react";
-import { expect } from "chai";
-import { shallow, mount } from "enzyme";
-import { createStore, applyMiddleware } from "redux";
-import { Provider } from "react-redux";
-import { reducer as formReducer } from "redux-form";
-import { combineReducers } from "redux";
+import {expect} from "chai";
+import {shallow} from "enzyme";
+import {applyMiddleware, combineReducers, createStore} from "redux";
+import {Provider} from "react-redux";
+import {reducer as formReducer} from "redux-form";
 import thunk from 'redux-thunk';
-import { MemoryRouter as Router } from 'react-router-dom';
+import {MemoryRouter as Router} from 'react-router-dom';
 
 import "../../../helper";
-import { authReducer } from "../../../../main/shared/reducers/authReducer";
-import { Sandbox } from "../../../Sandbox";
-import { LoginFormComponent, LoginForm } from "../../../../main/shared/components/Login/LoginForm";
-import { ValidationError } from "../../../../main/shared/components/Login/ValidationError";
-import { authActionCreators } from "../../../../main/shared/actions/authActionCreators";
+import {authReducer} from "../../../../main/shared/reducers/authReducer";
+import {Sandbox} from "../../../Sandbox";
+import {LoginForm, LoginFormComponent} from "../../../../main/shared/components/Login/LoginForm";
+import {ValidationError} from "../../../../main/shared/components/Login/ValidationError";
+import {authActionCreators} from "../../../../main/shared/actions/authActionCreators";
+import {InternalLink} from "../../../../main/shared/components/InternalLink";
 
 describe("LoginFormComponent unit testing", () => {
     const sandbox = new Sandbox();
-    let formWrapper :any = null;
+    let formWrapper: any = null;
     const submitMock = sandbox.createSpy();
 
     before(() => {
         const spy = sandbox.sinon.spy();
-        formWrapper = shallow(<LoginFormComponent handleSubmit={submitMock} submit={spy}/>)
+        formWrapper = shallow(<LoginFormComponent handleSubmit={submitMock} submit={spy} email=""/>)
     });
 
     afterEach(() => {
@@ -43,16 +43,16 @@ describe("LoginFormComponent unit testing", () => {
 
 describe("LoginForm connected with redux-form", () => {
     const sandbox = new Sandbox();
-    let formWrapper :any = null;
-    let store : any= null;
+    let formWrapper: any = null;
+    let store: any = null;
 
-    before(() => {
+    beforeEach(() => {
         store = createStore(combineReducers({
             form: formReducer,
             auth: authReducer,
         }), applyMiddleware(thunk));
 
-        formWrapper = mount(<Provider store={store}><Router><LoginForm /></Router></Provider>);
+        formWrapper = sandbox.mount(<Provider store={store}><Router><LoginForm/></Router></Provider>);
     });
 
     afterEach(() => {
@@ -102,7 +102,7 @@ describe("LoginForm connected with redux-form", () => {
         formWrapper.find('input[name="email"]').simulate('change', {target: {value: 'abc@abc.com'}});
         formWrapper.find('input[name="password"]').simulate('focus');
         formWrapper.find('input[name="password"]').simulate('change', {target: {value: 'abc'}});
-        const logInActionSpy = sandbox.setStubFunc(authActionCreators, "logIn", ()=>({type: 'test'}));
+        const logInActionSpy = sandbox.setStubFunc(authActionCreators, "logIn", () => ({type: 'test'}));
         // simulate form submit
         formWrapper.find('form.form').simulate('submit');
         expect(logInActionSpy.callCount).to.equal(1);
@@ -110,4 +110,13 @@ describe("LoginForm connected with redux-form", () => {
         expect(logInActionSpy.getCall(0).args[1]).to.equal('abc');
     });
 
+    it("sets link to forgotten password page", () => {
+        const href1 = formWrapper.find(".forgotten-password-link").find(InternalLink).prop("href");
+        expect(href1).to.equal("/forgotten-password/");
+
+        formWrapper.find('input[name="email"]').simulate('change', {target: {value: 'abc@abc.com'}});
+        formWrapper.update();
+        const href2 = formWrapper.find(".forgotten-password-link").find(InternalLink).prop("href");
+        expect(href2).to.equal("/forgotten-password/?email=abc@abc.com");
+    });
 });
