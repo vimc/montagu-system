@@ -88,7 +88,7 @@
     "@types/react-transition-group": "^1.1.0",
     "@types/reactstrap": "^5.0.8",
     "@types/recompose": "^0.24.4",
-    "@types/redux-form": "^7.0.13",
+    "@types/redux-form": "7.4.3",
     "bootstrap": "4.1.1",
     "bootstrap-toggle": "^2.2.2",
     "file-loader": "^1.1.11",
