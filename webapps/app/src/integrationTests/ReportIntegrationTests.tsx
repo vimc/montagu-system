@@ -128,18 +128,29 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         });
 
         async function firstDownloadPromise(rendered: ReactWrapper) {
-            await timeout(100); // wait to make sure onetime token is fetched
-            rendered.update(); // mounted component won't update with new props automatically
-            const link = rendered.find("a").first();
-            const url = link.prop("href");
+            let url = null;
+
+            // until onetime token has been fetched url will be null
+            while (url == null) {
+                await timeout(50);
+                rendered.update(); // mounted component won't update with new props automatically
+                const link = rendered.find("a").first();
+                url = link.prop("href");
+            }
+
             return fetch(url)
         }
 
         async function lastDownloadPromise(rendered: ReactWrapper) {
-            await timeout(100); // wait to make sure onetime token is fetched
-            rendered.update(); // mounted component won't update with new props automatically
-            const link = rendered.find("a").last();
-            const url = link.prop("href");
+            let url = null;
+            // until onetime token has been fetched url will be null
+            while (url == null) {
+                await timeout(50);
+                rendered.update(); // mounted component won't update with new props automatically
+                const link = rendered.find("a").last();
+                url = link.prop("href");
+            }
+
             return fetch(url)
         }
 
