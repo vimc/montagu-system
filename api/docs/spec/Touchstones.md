@@ -105,7 +105,8 @@ Schema: [`ResponsibilitySets.schema.json`](../schemas/ResponsibilitySets.schema.
             {
                 "expectation": {
                     "id": 123,
-                        "years": { 
+                    "description": "some-group:menA:standard",
+                    "years": { 
                         "minimum_inclusive": 1950,
                         "maximum_inclusive": 2100
                     },
