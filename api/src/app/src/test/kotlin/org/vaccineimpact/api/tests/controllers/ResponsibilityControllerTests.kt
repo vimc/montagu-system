@@ -186,7 +186,7 @@ class ResponsibilityControllerTests : MontaguTests()
                 .getTemplate()
 
         assertThat(serialize(result)).isEqualTo("""disease,run_id,year,age,country,country_name,cohort_size""")
-        verify(context).addAttachmentHeader("stochastic-burden-template.touchstone-id.group-id.yf-scenario+yf-scenario-2.csv")
+        verify(context).addAttachmentHeader("stochastic-burden-template.touchstone-id.description.csv")
     }
 
     @Test
@@ -208,7 +208,7 @@ class ResponsibilityControllerTests : MontaguTests()
                 .getTemplate()
 
         assertThat(serialize(result)).isEqualTo("""disease,year,age,country,country_name,cohort_size""")
-        verify(context).addAttachmentHeader("central-burden-template.touchstone-id.group-id.yf-scenario+yf-scenario-2.csv")
+        verify(context).addAttachmentHeader("central-burden-template.touchstone-id.description.csv")
     }
 
     private val mockTouchstones = listOf(
