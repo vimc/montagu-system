@@ -5,6 +5,7 @@ import kotlin.coroutines.experimental.buildSequence
 
 data class Expectations(
         val id: Int,
+        val description: String,
         val years: IntRange,
         val ages: IntRange,
         val cohorts: CohortRestriction,
