@@ -9,13 +9,13 @@ import org.vaccineimpact.api.app.controllers.GroupResponsibilityController
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.logic.ExpectationsLogic
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.models.responsibilities.*
-import org.vaccineimpact.api.serialization.MontaguSerializer
+import org.vaccineimpact.api.models.responsibilities.Responsibility
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
 import org.vaccineimpact.api.serialization.StreamSerializable
 import org.vaccineimpact.api.test_helpers.*
 
@@ -154,7 +154,7 @@ class ResponsibilityControllerTests : MontaguTests()
         """.trimMargin())
     }
 
-    private val fakeExpectations = Expectations(1, 2000..2001, 1..1, CohortRestriction(),  listOf(Country("a", "countrya")),
+    private val fakeExpectations = Expectations(1, "desc", 2000..2001, 1..1, CohortRestriction(), listOf(Country("a", "countrya")),
             listOf("dalys"))
 
     private val fakeExpectationMapping = ExpectationMapping(

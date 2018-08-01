@@ -18,6 +18,7 @@ class ExpectationsTests : MontaguTests()
             Country(it.toString(), it.toString())
         }
         val expectations = Expectations(1,
+                "desc",
                 2001..2080,
                 1..80,
                 CohortRestriction(null, null),
@@ -42,6 +43,7 @@ class ExpectationsTests : MontaguTests()
             Country(it.toString(), it.toString())
         }
         val expectations = Expectations(1,
+                "desc",
                 2000..2001,
                 1..2,
                 CohortRestriction(null, null),
@@ -89,6 +91,7 @@ class ExpectationsTests : MontaguTests()
         }
 
         val expectations = Expectations(1,
+                "desc",
                 2000..2001,
                 1..1,
                 CohortRestriction(null, null),
@@ -124,6 +127,7 @@ class ExpectationsTests : MontaguTests()
             Country(it.toString(), it.toString())
         }
         val expectations = Expectations(1,
+                "desc",
                 2001..2080,
                 1..80,
                 CohortRestriction(null, null),
@@ -146,6 +150,7 @@ class ExpectationsTests : MontaguTests()
 
         val expectations = Expectations(
                 1,
+                "desc",
                 2000..2007,
                 1..10,
                 CohortRestriction(null, null),
@@ -169,6 +174,7 @@ class ExpectationsTests : MontaguTests()
 
         val expectations = Expectations(
                 1,
+                "desc",
                 2000..2007,
                 1..10,
                 cohortRestriction,
@@ -192,6 +198,7 @@ class ExpectationsTests : MontaguTests()
 
         val expectations = Expectations(
                 1,
+                "desc",
                 2000..2007,
                 1..10,
                 cohortRestriction,
@@ -215,6 +222,7 @@ class ExpectationsTests : MontaguTests()
 
         val expectations = Expectations(
                 1,
+                "desc",
                 2000..2007,
                 1..10,
                 cohortRestriction,
