@@ -8,23 +8,50 @@ import {FileDownloadButton} from "../../../../../main/shared/components/FileDown
 import {CountriesList} from "../../../../../main/contrib/components/Responsibilities/Expectations/CountriesList";
 
 describe("ExpectationsDescription", () => {
-    it("renders applicable scenarios", () => {
+
+    it("renders description as title", () => {
+
         const expectation: ExpectationMapping = {
+            disease: "YF",
             expectation: mockExpectations(),
             applicable_scenarios: ["a", "b", "c"]
         };
+
         const rendered = shallow(<ExpectationsDescription
             expectationMapping={expectation}
             touchstoneVersionId="tId"
             groupId="gId"
         />);
-        expect(rendered.find(".h3").text()).to.equal("Template for a, b, c");
+
+        expect(rendered.find(".h3").text()).to.equal("Template: description");
+
+    });
+
+
+    it("renders applicable scenarios", () => {
+
+        const expectation: ExpectationMapping = {
+            disease: "YF",
+            expectation: mockExpectations(),
+            applicable_scenarios: ["a", "b", "c"]
+        };
+
+        const rendered = shallow(<ExpectationsDescription
+            expectationMapping={expectation}
+            touchstoneVersionId="tId"
+            groupId="gId"
+        />);
+
+        expect(rendered.find("#scenarios").find("li")).to.have.lengthOf(3);
+        expect(rendered.find("#scenarios").find("li").at(0).text()).to.eq("a");
+
     });
 
     it("renders number of years", () => {
         const expectation: ExpectationMapping = {
             expectation: mockExpectations({years: {maximum_inclusive: 2000, minimum_inclusive: 1999}}),
-            applicable_scenarios: ["a", "b", "c"]
+            applicable_scenarios: ["a", "b", "c"],
+            disease: "YF"
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
@@ -35,7 +62,8 @@ describe("ExpectationsDescription", () => {
     it("renders number of ages", () => {
         const expectation: ExpectationMapping = {
             expectation: mockExpectations({ages: {maximum_inclusive: 9, minimum_inclusive: 0}}),
-            applicable_scenarios: ["a", "b", "c"]
+            applicable_scenarios: ["a", "b", "c"],
+            disease: "YF"
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
@@ -46,7 +74,8 @@ describe("ExpectationsDescription", () => {
     it("renders cohort range if both min and max present", () => {
         const expectation: ExpectationMapping = {
             expectation: mockExpectations({cohorts: {minimum_birth_year: 1980, maximum_birth_year: 1982}}),
-            applicable_scenarios: ["a", "b", "c"]
+            applicable_scenarios: ["a", "b", "c"],
+            disease: "YF"
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
@@ -57,7 +86,8 @@ describe("ExpectationsDescription", () => {
     it("renders no cohort message if both null", () => {
         const expectation: ExpectationMapping = {
             expectation: mockExpectations({cohorts: {minimum_birth_year: null, maximum_birth_year: null}}),
-            applicable_scenarios: ["a", "b", "c"]
+            applicable_scenarios: ["a", "b", "c"],
+            disease: "YF"
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
@@ -68,7 +98,8 @@ describe("ExpectationsDescription", () => {
     it("renders min cohort message if not null", () => {
         const expectation: ExpectationMapping = {
             expectation: mockExpectations({cohorts: {minimum_birth_year: 1980, maximum_birth_year: null}}),
-            applicable_scenarios: ["a", "b", "c"]
+            applicable_scenarios: ["a", "b", "c"],
+            disease: "YF"
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
@@ -79,7 +110,8 @@ describe("ExpectationsDescription", () => {
     it("renders max cohort message if not null", () => {
         const expectation: ExpectationMapping = {
             expectation: mockExpectations({cohorts: {minimum_birth_year: null, maximum_birth_year: 1982}}),
-            applicable_scenarios: ["a", "b", "c"]
+            applicable_scenarios: ["a", "b", "c"],
+            disease: "YF"
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
@@ -90,7 +122,8 @@ describe("ExpectationsDescription", () => {
     it("renders outcomes", () => {
         const expectation: ExpectationMapping = {
             expectation: mockExpectations({outcomes: ["deaths", "cases"]}),
-            applicable_scenarios: ["a", "b", "c"]
+            applicable_scenarios: ["a", "b", "c"],
+            disease: "YF"
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
@@ -102,7 +135,8 @@ describe("ExpectationsDescription", () => {
         const countries = [mockCountry({name: "countrya"}), mockCountry({name: "countryb"})];
         const expectation: ExpectationMapping = {
             expectation: mockExpectations({countries: countries}),
-            applicable_scenarios: ["a", "b", "c"]
+            applicable_scenarios: ["a", "b", "c"],
+            disease: "YF"
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
