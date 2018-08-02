@@ -87,8 +87,7 @@ class GroupResponsibilityController(
         val nameParts = listOf(
                 "$type-burden-template",
                 path.touchstoneVersionId,
-                path.groupId,
-                expectationMapping.applicableScenarios.joinToString("+"),
+                expectationMapping.expectation.description,
                 "csv"
         )
         return nameParts.joinToString(".")

@@ -30,6 +30,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
         val responsibilityId = addResponsibilityAnd { db, _, responsibilityId ->
             db.addExpectations(
                     responsibilityId,
+                    description = "desc",
                     yearMinInclusive = 2000,
                     yearMaxInclusive = 2100,
                     ageMinInclusive = 0,
@@ -45,6 +46,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             val result = repo.getExpectationsForResponsibility(responsibilityId).expectation
             assertThat(result.years).isEqualTo(2000..2100)
             assertThat(result.ages).isEqualTo(0..99)
+            assertThat(result.description).isEqualTo("desc")
             assertThat(result.cohorts).isEqualTo(CohortRestriction())
             assertThat(result.countries).isEmpty()
             assertThat(result.outcomes).isEmpty()
@@ -199,6 +201,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
         val expectationId = addResponsibilityAnd { db, _, responsibilityId ->
             db.addExpectations(
                     responsibilityId,
+                    description = "desc",
                     yearMinInclusive = 2000,
                     yearMaxInclusive = 2100,
                     ageMinInclusive = 0,
@@ -213,6 +216,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             val result = repo.getExpectationsById(expectationId).expectation
             assertThat(result.years).isEqualTo(2000..2100)
             assertThat(result.ages).isEqualTo(0..99)
+            assertThat(result.description).isEqualTo("desc")
             assertThat(result.cohorts).isEqualTo(CohortRestriction())
             assertThat(result.countries).isEmpty()
             assertThat(result.outcomes).isEmpty()

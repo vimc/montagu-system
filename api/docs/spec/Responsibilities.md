@@ -85,7 +85,8 @@ Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.js
             {
                 "expectation": {
                     "id": 123,
-                        "years": { 
+                    "description": "some-group:menA:standard",
+                    "years": { 
                         "minimum_inclusive": 1950,
                         "maximum_inclusive": 2100
                     },
@@ -161,6 +162,7 @@ Schema: [`ResponsibilityDetails.schema.json`](../schemas/ResponsibilityDetails.s
         },
         "expectations": {
             "id": 123,
+            "description": "some-group:menA:standard",
             "years": { 
                 "minimum_inclusive": 1950,
                 "maximum_inclusive": 2100

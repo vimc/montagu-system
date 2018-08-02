@@ -75,6 +75,7 @@ class ResponsibilityTests : DatabaseTest()
                     obj(
                             "expectation" to obj(
                                     "id" to expectationsId,
+                                    "description" to "description",
                                     "years" to obj("minimum_inclusive" to 2000, "maximum_inclusive" to 2100),
                                     "ages" to obj("minimum_inclusive" to 0, "maximum_inclusive" to 99),
                                     "cohorts" to obj("minimum_birth_year" to null, "maximum_birth_year" to null),
@@ -207,6 +208,7 @@ class ResponsibilityTests : DatabaseTest()
         assertThat(data["expectations"]).isEqualTo(json {
             obj(
                     "id" to expectationsId,
+                    "description" to "description",
                     "years" to obj("minimum_inclusive" to 2000, "maximum_inclusive" to 2100),
                     "ages" to obj("minimum_inclusive" to 0, "maximum_inclusive" to 99),
                     "cohorts" to obj("minimum_birth_year" to null, "maximum_birth_year" to 2050),
