@@ -101,6 +101,7 @@ export interface Expectations {
     ages: NumberRange;
     cohorts: CohortRestriction;
     countries: Country[];
+    description: string;
     id: number;
     outcomes: string[];
     years: NumberRange;
@@ -108,6 +109,7 @@ export interface Expectations {
 
 export interface ExpectationMapping {
     applicable_scenarios: string[];
+    disease: string;
     expectation: Expectations;
 }
 
