@@ -96,7 +96,7 @@ describe("Responsibility Overview Content Component", () => {
         expect(responsibilityList.props().currentDiseaseId).to.eql(testDiseaseId);
         expect(responsibilityList.props().modellingGroup).to.eql(testCurrentGroup);
         expect(responsibilityList.props().responsibilitySet).to.eql(testResponsibilitiesSet);
-        expect(rendered.find(ButtonLink).length).to.equal(2);
+        expect(rendered.find(ButtonLink).length).to.equal(3);
      });
 
     it("maps state to props", () => {
