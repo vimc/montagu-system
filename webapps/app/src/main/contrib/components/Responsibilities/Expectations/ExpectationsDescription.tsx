@@ -27,7 +27,7 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
 
         return <div className="mt-3 mb-5 p-3 border">
             <div className="h3">Template: {expectationMapping.expectation.description}</div>
-            For scenarios
+            For scenarios:
             <ul id="scenarios">
                 {expectationMapping.applicable_scenarios.map((s) => {return <li key={s}>{s}</li>})}
             </ul>
