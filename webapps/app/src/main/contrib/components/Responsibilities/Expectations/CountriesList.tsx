@@ -29,7 +29,7 @@ export class CountriesList extends React.Component<Props, State> {
     }
 
     render() {
-        const countriesList = this.props.countries.map(c => c.name).join(", ");
+        const countriesList = this.props.countries.map(c => c.name).sort().join(", ");
 
         return <span><a href="#" id={this.props.targetKey}
                         onClick={this.toggle}>view list</a>
