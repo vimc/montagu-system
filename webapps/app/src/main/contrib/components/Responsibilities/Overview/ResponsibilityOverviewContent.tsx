@@ -13,6 +13,7 @@ import {LoadingElement} from "../../../../shared/partials/LoadingElement/Loading
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {withConfidentialityAgreement} from "./ConfidentialityAgreement";
 import {ResponsibilityOverviewDescription} from "./ResponsibilityOverviewDescription";
+import {InternalLink} from "../../../../shared/components/InternalLink";
 
 const stochasticParams = require('./stochastic_template_params.csv');
 
@@ -42,6 +43,7 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
     (props: ResponsibilityOverviewContentProps) => {
 
         const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/demographics/`;
+        const templatesUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/templates/`;
 
         return <div>
             <ResponsibilityOverviewDescription
@@ -54,6 +56,9 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
             </div>
             {paramsSection(props)}
             <div className="largeSectionTitle">Scenarios</div>
+            {settings.useNewTemplates &&
+            <ButtonLink href={templatesUrl}>Download burden estimate templates</ButtonLink>
+            }
             <ResponsibilityList
                 modellingGroup={props.modellingGroup}
                 responsibilitySet={props.responsibilitySet}

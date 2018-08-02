@@ -11,7 +11,8 @@ interface Settings {
     admin: AdminSettings;
     contrib: ContribSettings;
     report: ReportSettings;
-    showTouchstoneCreation: boolean
+    showTouchstoneCreation: boolean;
+    useNewTemplates: boolean;
 }
 
 interface AppSpecificSettings {

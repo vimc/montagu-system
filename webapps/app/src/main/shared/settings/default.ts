@@ -9,6 +9,7 @@ export const settings: Settings = {
     isApplicantTouchstone: (id: string) => id.indexOf("rfp-") > -1,
     isStochasticTouchstone: (id: string) => id.indexOf("201804rfp") > -1,
     showTouchstoneCreation: false,
+    useNewTemplates: true,
     admin: {
         publicPath: "/admin",
         requiresModellingGroupMembership: false
