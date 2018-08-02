@@ -23,7 +23,7 @@ describe("ExpectationsDescription", () => {
             groupId="gId"
         />);
 
-        expect(rendered.find(".h3").text()).to.equal("Template: description");
+        expect(rendered.find(".h3").text()).to.equal("description");
 
     });
 

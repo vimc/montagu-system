@@ -26,7 +26,7 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
         const cohorts = this.cohortsText();
 
         return <div className="mt-3 mb-5 p-3 border">
-            <div className="h3">Template: {expectationMapping.expectation.description}</div>
+            <div className="h3">{expectationMapping.expectation.description}</div>
             For scenarios:
             <ul id="scenarios">
                 {expectationMapping.applicable_scenarios.map((s) => {return <li key={s}>{s}</li>})}
