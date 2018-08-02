@@ -1,10 +1,11 @@
 import * as React from "react";
 
-import { DiseaseFilter } from "./DiseaseFilter";
-import { ResponsibilityScenario } from "./ResponsibilityScenario";
-import { IExtendedResponsibilitySet } from "../../../../models/ResponsibilitySet";
-import { ModellingGroup, Responsibility } from "../../../../../shared/models/Generated";
+import {DiseaseFilter} from "./DiseaseFilter";
+import {ResponsibilityScenario} from "./ResponsibilityScenario";
+import {IExtendedResponsibilitySet} from "../../../../models/ResponsibilitySet";
+import {ModellingGroup, Responsibility} from "../../../../../shared/models/Generated";
 import {TemplateLinks} from "./OldStyleTemplates/TemplateLinks";
+import {settings} from "../../../../../shared/Settings";
 
 export interface ResponsibilityListComponentProps {
     responsibilitySet: IExtendedResponsibilitySet;
@@ -32,23 +33,24 @@ export class ResponsibilityList extends React.Component<ResponsibilityListCompon
         if (reps.length) {
             const items = reps.map((item: Responsibility) =>
                 <ResponsibilityScenario
-                    key={ item.scenario.id }
-                    responsibility={ item }
-                    touchstone={ props.responsibilitySet.touchstone }
-                    modellingGroup={ props.modellingGroup }
+                    key={item.scenario.id}
+                    responsibility={item}
+                    touchstone={props.responsibilitySet.touchstone}
+                    modellingGroup={props.modellingGroup}
                     responsibilitySetStatus={props.responsibilitySet.status}
                 />
             );
             return <div>
                 <div className="mb-4">
                     <DiseaseFilter/>
+                    {!settings.useNewTemplates &&
                     <TemplateLinks
-                        responsibilities={props.responsibilitySet.responsibilities }
+                        responsibilities={props.responsibilitySet.responsibilities}
                         groupId={props.modellingGroup.id}
                         touchstoneId={props.responsibilitySet.touchstone.id}
-                    />
+                    />}
                 </div>
-                <ul className="responsibilities">{ items }</ul>
+                <ul className="responsibilities">{items}</ul>
             </div>;
         } else {
             return <div className="message">This modelling group has no responsibilities in this

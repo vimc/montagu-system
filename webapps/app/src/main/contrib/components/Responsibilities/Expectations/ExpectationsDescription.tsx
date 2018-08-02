@@ -26,7 +26,11 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
         const cohorts = this.cohortsText();
 
         return <div className="mt-3 mb-5 p-3 border">
-            <div className="h3">Template for {this.applicableScenarios(expectationMapping)}</div>
+            <div className="h3">Template: {expectationMapping.expectation.description}</div>
+            For scenarios:
+            <ul id="scenarios">
+                {expectationMapping.applicable_scenarios.map((s) => {return <li key={s}>{s}</li>})}
+            </ul>
             <div>
                 Expecting data on:
                 <ul id={"outcomes"}>
@@ -51,10 +55,6 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
                 </FileDownloadButton>
             </div>
         </div>
-    }
-
-    applicableScenarios(expectationMapping: ExpectationMapping) {
-        return expectationMapping.applicable_scenarios.join(", ");
     }
 
     cohortsText() {
