@@ -56,7 +56,7 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
             </div>
             {paramsSection(props)}
             <div className="largeSectionTitle">Scenarios</div>
-            {settings.useNewTemplates &&
+            {settings.showNewTemplates &&
             <ButtonLink href={templatesUrl}>Download burden estimate templates</ButtonLink>
             }
             <ResponsibilityList
