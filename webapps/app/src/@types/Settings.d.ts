@@ -12,7 +12,8 @@ interface Settings {
     contrib: ContribSettings;
     report: ReportSettings;
     showTouchstoneCreation: boolean;
-    useNewTemplates: boolean;
+    showNewTemplates: boolean;
+    showOldTemplates: boolean;
 }
 
 interface AppSpecificSettings {
