@@ -30,7 +30,7 @@ describe("InlineArtefact", () => {
 
 describe("ArtefactIFrame", () => {
     it("renders as expected", () => {
-        const rendered = shallow(<ArtefactIFrameInner href="test" refreshToken={null} enabled={true} />);
+        const rendered = shallow(<ArtefactIFrameInner href="test" tokenConsumed={null} enabled={true} />);
         const iframe = rendered.find("iframe");
         expect(iframe).to.have.length(1);
         expect(iframe.prop("src")).to.eql("test");

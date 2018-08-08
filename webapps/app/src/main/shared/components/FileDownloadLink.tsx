@@ -26,7 +26,7 @@ export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, u
             className={"button" + (this.props.className ? ` ${this.props.className}` : "")}
             href={this.props.href}
             enabled={this.props.enabled}
-            refreshToken={this.props.refreshToken}>
+            tokenConsumed={this.props.tokenConsumed}>
             {this.props.children}
             <span className="download-icon">
                 <DownloadIcon fillColor={"#ffffff"}/>
@@ -39,11 +39,11 @@ export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, u
 export class FileDownloadInner extends React.Component<OneTimeLinkProps, undefined> {
     constructor(props: OneTimeLinkProps) {
         super(props);
-        this.refreshToken = this.refreshToken.bind(this);
+        this.tokenConsumed = this.tokenConsumed.bind(this);
     }
 
-    refreshToken(e: React.MouseEvent<HTMLAnchorElement>) {
-        this.props.refreshToken();
+    tokenConsumed(e: React.MouseEvent<HTMLAnchorElement>) {
+        this.props.tokenConsumed();
     }
 
     render() {
@@ -61,7 +61,7 @@ export class FileDownloadInner extends React.Component<OneTimeLinkProps, undefin
         }
 
         return <a href={href}
-                  onClick={this.refreshToken}
+                  onClick={this.tokenConsumed}
                   className={className}
                   target="_blank"
                   download="" // Filename is provided by server

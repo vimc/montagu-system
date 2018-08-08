@@ -43,7 +43,13 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
                 </p>
             </div>
             <DemographicOptions/>
-            <FileDownloadButton href={url} enabled={canDownload}>Download data set</FileDownloadButton>
+            <FileDownloadButton
+                href={url}
+                enabled={canDownload}
+                delayBeforeReenable={5}
+            >
+                Download data set
+            </FileDownloadButton>
         </div>;
     }
 
