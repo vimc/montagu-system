@@ -3,10 +3,19 @@ package org.vaccineimpact.api.security
 import org.apache.http.client.utils.URLEncodedUtils
 import org.apache.http.message.BasicNameValuePair
 import org.pac4j.core.context.WebContext
+import java.net.MalformedURLException
 import java.net.URI
 
 data class PathAndQuery(val path: String, val queryParams: Map<String, String> = emptyMap())
 {
+    init
+    {
+        if ("?" in path)
+        {
+            throw MalformedURLException("Received this URL with query string instead of just path component: $path")
+        }
+    }
+
     fun withoutParameter(key: String) = PathAndQuery(path, queryParams - key)
 
     override fun toString(): String

@@ -50,8 +50,9 @@ class MontaguAuthorizerTests : MontaguTests()
         val profile = CommonProfile()
         profile.addAttribute("url", "/some/url/?query=whatever")
 
-        val fakeContext = mock<SparkWebContext>() {
-            on(it.path) doReturn "/some/url/?query=whatever"
+        val fakeContext = mock<SparkWebContext> {
+            on(it.path) doReturn "/some/url/"
+            on(it.requestParameters) doReturn mapOf("query" to arrayOf("whatever"))
         }
 
         val result = sut.isAuthorized(fakeContext, listOf(profile))
