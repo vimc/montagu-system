@@ -48,16 +48,14 @@ export class FileDownloadInner extends React.Component<OneTimeLinkProps, undefin
 
     render() {
         const {href, enabled} = this.props;
-        let className: string;
+        let className = this.props.className;
         let loader: JSX.Element = null;
 
-        if (href != null) {
-            className = this.props.className;
-        } else {
-            className = this.props.className + ' disabled';
-            if (enabled) {
-                loader = <img src={loaderAnimation}/>;
-            }
+        if (href == null || !enabled) {
+            className += ' disabled'
+        }
+        if (href == null && enabled) {
+            loader = <img src={loaderAnimation}/>;
         }
 
         return <a href={href}
