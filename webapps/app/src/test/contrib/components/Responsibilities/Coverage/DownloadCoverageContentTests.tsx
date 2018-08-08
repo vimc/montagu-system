@@ -45,7 +45,7 @@ describe("Download Coverage Content Component", () => {
         user: {signedConfidentialityAgreement: false}
     };
 
-    let store : Store<ContribAppState>;
+    let store: Store<ContribAppState>;
 
     const sandbox = new Sandbox();
     beforeEach(() => {
@@ -98,15 +98,14 @@ describe("Download Coverage Content Component", () => {
         expect(rendered.find(ConfidentialityAgreementComponent).length).to.eql(1);
     });
 
-
-    it("renders on component level touchstone and scenario table", (done: DoneCallback) => {
+    it("renders on component level touchstone and scenario table", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
         const firstTable = rendered.find('table.specialColumn').at(0);
-        setTimeout(() => {
-            expect(firstTable.find('tr').at(0).find('div.col').at(1).text(), testTouchstone.description);
-            expect(firstTable.find('tr').at(1).find('div.col').at(1).text(), testScenario.description);
-            done()
-        })
+        console.log("firstTable: " + firstTable.debug());
+        console.log("0th tr: " + firstTable.find('tr').at(0).debug());
+        console.log("0th tr, 1st col: " + firstTable.find('tr').at(0).find('div.col').at(1));
+        expect(firstTable.find('tr').at(0).find('div.col').at(1).text(), testTouchstone.description);
+        expect(firstTable.find('tr').at(1).find('div.col').at(1).text(), testScenario.description);
     });
 
     it("renders on component level coverage set list and format control", () => {
@@ -148,7 +147,7 @@ describe("Download Coverage Content Component", () => {
 
     it("calling onSelectFormat triggers both get token and set format actions", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
-        .dive().dive().dive();
+            .dive().dive().dive();
         const downloadCoverageContentComponentInstance = rendered.instance() as DownloadCoverageContentComponent;
         const onLoadTokenStub = sandbox.setStubReduxAction(coverageActionCreators, "getOneTimeToken");
         const onFormatSelectStub = sandbox.setStubReduxAction(coverageActionCreators, "setFormat");
