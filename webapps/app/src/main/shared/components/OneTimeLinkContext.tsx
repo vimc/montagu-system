@@ -41,7 +41,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, props: PropsFromState): Pro
 export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTimeLinkProps, undefined>): React.ComponentClass<PublicProps> {
     return connect(mapStateToProps, mapDispatchToProps)(class OneTimeLinkContextWrapper extends React.Component<Props> {
         refreshToken() {
-            if (this.props.enabled) {
+            if (this.getEnabled()) {
                 this.props.refreshToken(this.props.href, this.getService());
             }
         }
