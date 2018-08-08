@@ -28,25 +28,5 @@ export const coverageActionCreators = {
             type: CoverageTypes.COVERAGE_SET_FORMAT,
             data: format
         } as Coverage.SetFormat;
-    },
-
-    getOneTimeToken() {
-        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-            dispatch({
-                type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR,
-            } as Coverage.OneTimeTokenClear );
-
-            const ids = mapStateToPropsHelper.getResponsibilityIds(getState());
-
-            const format = getState().coverage.selectedFormat;
-
-            const token: string = await (new CoverageService(dispatch, getState))
-                .getOneTimeToken(ids.groupId, ids.touchstoneId, ids.scenarioId, format);
-
-            return dispatch({
-                type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED,
-                data: token
-            } as Coverage.OneTimeTokenFetched );
-        }
-    },
+    }
 };

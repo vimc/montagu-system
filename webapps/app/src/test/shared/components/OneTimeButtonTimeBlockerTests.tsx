@@ -3,12 +3,12 @@ import { expect } from "chai";
 import { shallow } from "enzyme";
 
 import { OneTimeButton } from "../../../main/shared/components/OneTimeButton/OneTimeButton";
-import { OneTimeButtonTimeBlocker } from "../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
+import { DisableComponentTemporarilyOnClick } from "../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import { TimeBlockerProps } from "../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import { doNothing } from "../../../main/shared/Helpers";
 import { Sandbox } from "../../Sandbox";
 
-const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);
+const ButtonWithTimeout = DisableComponentTemporarilyOnClick(OneTimeButton);
 
 describe("OneTimeButtonTimeBlocker", () => {
     const sandbox = new Sandbox();

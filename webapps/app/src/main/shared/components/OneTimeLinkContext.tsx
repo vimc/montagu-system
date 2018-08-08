@@ -4,14 +4,16 @@ import {ReportAppState} from "../../report/reducers/reportAppReducers";
 import {oneTimeTokenActionCreators} from "../actions/oneTimeTokenActionCreators";
 import {APIService} from "../models/APIService";
 import {buildURL} from "../services/AbstractLocalService";
+import {isNullOrUndefined} from "util";
 
 const url = require('url'),
-    querystring = require("querystring");
+      querystring = require("querystring");
 
 interface PublicProps {
     href: string;
     className?: string;
     service?: APIService;
+    enabled?: boolean;
 }
 
 interface PropsFromState extends PublicProps {
@@ -24,6 +26,7 @@ interface Props extends PropsFromState {
 
 // These props are passed to the children
 export interface OneTimeLinkProps extends PublicProps {
+    enabled: boolean;
     refreshToken: () => void;
 }
 
@@ -37,15 +40,20 @@ const mapDispatchToProps = (dispatch: Dispatch<any>, props: PropsFromState): Pro
 
 export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTimeLinkProps, undefined>): React.ComponentClass<PublicProps> {
     return connect(mapStateToProps, mapDispatchToProps)(class OneTimeLinkContextWrapper extends React.Component<Props> {
+        refreshToken() {
+            if (this.props.enabled) {
+                this.props.refreshToken(this.props.href, this.getService());
+            }
+        }
 
-        componentWillReceiveProps(newProps: Props) {
-            if (this.props.href != newProps.href) {
-                this.props.refreshToken(newProps.href, this.getService());
+        componentDidUpdate(prevProps: Props) {
+            if (this.props.href != prevProps.href || this.props.enabled != prevProps.enabled) {
+                this.refreshToken();
             }
         }
 
         componentDidMount() {
-            this.props.refreshToken(this.props.href, this.getService());
+            this.refreshToken();
         }
 
         render() {
@@ -58,8 +66,17 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
                 className={this.props.className}
                 href={href}
                 service={this.props.service}
+                enabled={this.getEnabled()}
                 refreshToken={() => this.props.refreshToken(this.props.href, service)}
                 children={this.props.children}/>;
+        }
+
+        private getEnabled(): boolean {
+            if (isNullOrUndefined(this.props.enabled)) {
+                return true;
+            } else {
+                return this.props.enabled;
+            }
         }
 
         getService(): APIService {
