@@ -101,7 +101,7 @@ describe("Download Coverage Content Component", () => {
     it("renders on component level touchstone and scenario table", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
         console.log("rendered: " + rendered.debug());
-        console.log("table: " + rendered.find('table.specialColumn'));
+        console.log("table: " + rendered.find('table.specialColumn').debug());
         const firstTable = rendered.find('table.specialColumn').at(0);
         console.log("firstTable: " + firstTable.debug());
         console.log("0th tr: " + firstTable.find('tr').at(0).debug());
