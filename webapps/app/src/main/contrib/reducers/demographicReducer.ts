@@ -6,15 +6,13 @@ export interface DemographicState {
     selectedDataSet: DemographicDataset;
     selectedGender: string;
     selectedFormat: string;
-    token: string;
 }
 
 export const demographicInitialState: DemographicState = {
     dataSets: [],
     selectedDataSet: null,
     selectedGender: Demographic.SelectedGender.both,
-    selectedFormat: Demographic.SelectedFormat.long,
-    token: null
+    selectedFormat: Demographic.SelectedFormat.long
 };
 
 export const demographicReducer = (state = demographicInitialState, action: DemographicAction) => {
@@ -27,10 +25,6 @@ export const demographicReducer = (state = demographicInitialState, action: Demo
             return {...state, selectedGender: action.data ? action.data : Demographic.SelectedGender.both};
         case DemographicTypes.DEMOGRAPHIC_SET_FORMAT:
             return {...state, selectedFormat: action.data ? action.data : Demographic.SelectedFormat.long };
-        case DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_FETCHED:
-            return {...state, token: action.data };
-        case DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR:
-            return {...state, token: null };
         default:
             return state;
     }

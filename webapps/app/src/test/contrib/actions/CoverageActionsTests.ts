@@ -51,30 +51,4 @@ describe("Coverage actions tests", () => {
             done();
         });
     });
-
-    it("get one time token", (done) => {
-        const store = createMockStore({
-            coverage: {
-                selectedFormat: Coverage.SelectedFormat.long
-            }
-        });
-        sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", ()=>{
-            return {groupId: "g1", touchstoneId: "t1", scenarioId: "s1"};
-        });
-        sandbox.setStubFunc(CoverageService.prototype, "getOneTimeToken", ()=>{
-            return Promise.resolve('test-token');
-        });
-
-        store.dispatch(coverageActionCreators.getOneTimeToken())
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = [
-                { type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR},
-                { type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED, data: 'test-token' }
-            ];
-            expect(actions).to.eql(expectedPayload);
-            done();
-        });
-    });
-
 });

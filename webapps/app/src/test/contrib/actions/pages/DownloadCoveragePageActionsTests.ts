@@ -77,9 +77,6 @@ describe("Download Coverage Page actions tests", () => {
         sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", () => {
             return Promise.resolve(testResponsibilitySet);
         });
-        sandbox.setStubFunc(CoverageService.prototype, "getOneTimeToken", () => {
-            return Promise.resolve('test-token');
-        });
         sandbox.setStubFunc(CoverageService.prototype, "getDataSets", () => {
             return Promise.resolve(testScenarioAndCoverageSet);
         });
@@ -105,8 +102,6 @@ describe("Download Coverage Page actions tests", () => {
                 {type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstoneVersion},
                 {type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
                 {type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility},
-                {type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR},
-                {type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED, data: "test-token"},
                 {type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED, data: [testCoverageSet]},
                 {type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs},
             ];

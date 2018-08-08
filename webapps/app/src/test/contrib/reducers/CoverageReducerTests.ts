@@ -13,46 +13,26 @@ describe('Coverage reducer tests', () => {
             type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED,
             data: [testCoverageDataSet]
         })).to.eql({...coverageInitialState, dataSets: [testCoverageDataSet]});
-    })
+    });
 
     it('sets fetched empty data sets', () => {
         expect(coverageReducer(undefined, {
             type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED,
             data: null
         })).to.eql(coverageInitialState);
-    })
+    });
 
     it('sets format', () => {
         expect(coverageReducer(undefined, {
             type: CoverageTypes.COVERAGE_SET_FORMAT,
             data: Coverage.SelectedFormat.wide
         })).to.eql({...coverageInitialState, selectedFormat: 'wide'});
-    })
+    });
 
     it('sets empty format, get default format', () => {
         expect(coverageReducer(undefined, {
             type: CoverageTypes.COVERAGE_SET_FORMAT,
             data: null
         })).to.eql(coverageInitialState);
-    })
-
-    it('sets fetched token', () => {
-        expect(coverageReducer(undefined, {
-            type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED,
-            data: 'test-token'
-        })).to.eql({...coverageInitialState, token: 'test-token'});
-    })
-
-    it('sets empty fetched token', () => {
-        expect(coverageReducer(undefined, {
-            type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_FETCHED,
-            data: null
-        })).to.eql(coverageInitialState);
-    })
-
-    it('clears token', () => {
-        expect(coverageReducer({...coverageInitialState, token: 'some-token'}, {
-            type: CoverageTypes.COVERAGE_ONE_TIME_TOKEN_CLEAR,
-        })).to.eql(coverageInitialState);
-    })
-})
+    });
+});

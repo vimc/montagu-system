@@ -15,29 +15,25 @@ import {
     DownloadDemographicsContentComponent
 } from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsContent";
 import {DemographicOptions} from "../../../../../main/contrib/components/Responsibilities/Demographics/DemographicOptions";
-import {TimeBlockerProps} from "../../../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 
 describe("Download Demographic Content Component", () => {
 
     const testTouchstone = mockTouchstoneVersion();
     const testDemographicSet = mockDemographicDataset();
 
-    const testState = {
-        touchstones: {currentTouchstoneVersion: testTouchstone},
-        demographic: {
-            dataSets: [testDemographicSet],
-            selectedDataSet: testDemographicSet,
-            selectedGender: "both",
-            selectedFormat: "long",
-            token: "test-token"
-        }
-    };
-
     let store : Store<ContribAppState>;
 
     const sandbox = new Sandbox();
     beforeEach(() => {
-        store = createMockContribStore(testState);
+        store = createMockContribStore({
+            touchstones: {currentTouchstoneVersion: testTouchstone},
+            demographic: {
+                dataSets: [testDemographicSet],
+                selectedDataSet: testDemographicSet,
+                selectedGender: "both",
+                selectedFormat: "long"
+            }
+        });
     });
     afterEach(() => sandbox.restore());
 
@@ -48,8 +44,6 @@ describe("Download Demographic Content Component", () => {
         expect(rendered.props().selectedDataSet).to.eql(testDemographicSet);
         expect(rendered.props().selectedGender).to.eql("both");
         expect(rendered.props().selectedFormat).to.eql("long");
-        expect(rendered.props().token).to.eql("test-token");
-        expect(typeof rendered.props().refreshToken).to.eql("function");
     });
 
     it("renders on branch level, passes", () => {
@@ -58,14 +52,13 @@ describe("Download Demographic Content Component", () => {
     });
 
     it("renders on branch level, not passes", () => {
-        store = createMockStore({
-            touchstones: {currentTouchstone: null},
+        store = createMockContribStore({
+            touchstones: {currentTouchstoneVersion: null},
             demographic: {
                 dataSets: [testDemographicSet],
                 selectedDataSet: testDemographicSet,
                 selectedGender: "both",
-                selectedFormat: "long",
-                token: "test-token"
+                selectedFormat: "long"
             }
         });
         const rendered = shallow(<DownloadDemographicsContent/>, {context: {store}}).dive().dive();
@@ -76,18 +69,6 @@ describe("Download Demographic Content Component", () => {
         const rendered = shallow(<DownloadDemographicsContent/>, {context: {store}}).dive().dive();
         expect(rendered.find("div.sectionTitle").text()).to.equal(`Demographic data for ${testTouchstone.description}`);
         expect(rendered.find(DemographicOptions).length).to.equal(1);
-
-    });
-
-    it("renders on component level time blocked button", () => {
-        const rendered = shallow(<DownloadDemographicsContent/>, {context: {store}}).dive().dive();
-        expect(rendered.find('ButtonTimeBlockerWrapper').length).to.equal(1);
-        const buttonTimeBlockedProps = rendered.find('ButtonTimeBlockerWrapper').props() as TimeBlockerProps;
-        expect(buttonTimeBlockedProps.token).to.equal("test-token");
-        expect(typeof buttonTimeBlockedProps.refreshToken).to.equal('function');
-        expect(buttonTimeBlockedProps.disableDuration).to.equal(5000);
-        expect(buttonTimeBlockedProps.enabled).to.equal(true);
-        expect(buttonTimeBlockedProps.children).to.equal("Download data set");
     });
 
 });
