@@ -99,11 +99,14 @@ describe("Download Coverage Content Component", () => {
     });
 
 
-    it("renders on component level touchstone and scenario table", () => {
+    it("renders on component level touchstone and scenario table", (done: DoneCallback) => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
         const firstTable = rendered.find('table.specialColumn').at(0);
-        expect(firstTable.find('tr').at(0).find('div.col').at(1).text(), testTouchstone.description);
-   //     expect(firstTable.find('tr').at(1).find('div.col').at(1).text(), testScenario.description);
+        setTimeout(() => {
+            expect(firstTable.find('tr').at(0).find('div.col').at(1).text(), testTouchstone.description);
+            expect(firstTable.find('tr').at(1).find('div.col').at(1).text(), testScenario.description);
+            done()
+        })
     });
 
     it("renders on component level coverage set list and format control", () => {
