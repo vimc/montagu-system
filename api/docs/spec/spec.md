@@ -125,7 +125,7 @@ For all other endpoints, see these files:
     - [Coverage](Coverage.md)
     - [Burden estimates](BurdenEstimates.md)
     - [Model run parameters](ModelRunParameters.md)
-* [Onetime links](OnetimeLink.md)
+* [OneTime tokens](OneTimeToken.md)
 * [Unimplemented sections of the original spec design](NotImplemented.md)
 
 # Onetime Link

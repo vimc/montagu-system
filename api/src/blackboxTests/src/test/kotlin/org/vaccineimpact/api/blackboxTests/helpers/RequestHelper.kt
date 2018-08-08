@@ -11,6 +11,7 @@ import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import java.io.File
+import java.net.URLEncoder
 
 data class TokenLiteral(val value: String)
 {
@@ -43,7 +44,8 @@ class RequestHelper
 
     fun getOneTimeToken(url: String, token: TokenLiteral? = null): String
     {
-        val response = get("/onetime_token/?url=/v1$url", token)
+        val encodedUrl = URLEncoder.encode("/v1$url", "UTF-8")
+        val response = get("/onetime_token/?url=$encodedUrl", token)
         JSONValidator().validateSuccess(response.text)
         return response.montaguData()!!
     }

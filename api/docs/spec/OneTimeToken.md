@@ -1,25 +1,42 @@
-# Onetime Links
-Onetime links exist because for large file downloads we want the user to 
+# Onetime Tokens
+Onetime tokens exist because for large file downloads we want the user to
 directly rely on the browser's file streaming capabilities, rather than going
 via the single-page webapps.
 
-As the browser is not authenticated against the API, we instead use the 
-webapp to obtain a onetime, randomized link that requires no additional
-authentication. The webapp then provides this URL as an ordinary anchor element
-for the user to click on.
+As the browser is not authenticated against the API, we instead use the webapp
+to obtain a onetime, randomized token that requires no additional
+authentication, and which can be passed back to the API as a query parameter.
+The webapp then provides this URL as an ordinary anchor element for the user to
+click on.
 
-Each link:
+Each token:
 
 * Is for a particular action, and a particular combination of URL parameters
 * Works only once
 * Expires after ten minutes if not used
 
-## Getting a onetime link token
-Given an ordinary endpoint `/some-endpoint/` that provides data download, the 
-API will normally provide an additional endpoint in the form 
-`/some-endpoint/get_onetime_link/`. This secondary endpoint will require the
-same permissions as the first endpoint, but instead of returning the data, it
-instead returns a string. This is a onetime link token.
+## Getting a onetime token
+Let's say you want a onetime token for the URL `/v1/some-url/?param=value`. You
+can get a onetime token by making a GET request to `/v1/onetime_token?url=XXX`,
+where XXX is a URL encoded version of your original URL. Note that you should
+include the URL path, including the `v1`, but not the domain name or port.
+
+The server will return a standard API response, and the `data` part will be a
+string. This string is the onetime token.
+
+When making a request to get a onetime token, you should [authenticate as usual](Authentication.md)
+with a bearer token in the authentication header.
+
+## Using a onetime token
+Once you have the token, you can use it simply by making a request to the
+original URL (GET, POST, or any other action), passing any POST data as normal,
+and just append the onetime token as an additional query parameter
+`access_token`. e.g. `/v1/some-url/?param=value&access_token=ABCDEF...`
+
+This will perform the normal action for this URL, as well as invalidating the
+token. Note that if there are errors in the user input - for example, an unknown
+touchstone ID - these will only be checked at this point, not when the token is
+requested.
 
 ### Anatomy of a onetime link token
 This section is only relevant to the server implementation.
@@ -38,17 +55,7 @@ The token is a signed Json Web Token. It contains these claims:
 
 The server stores the signed token in the database table 'onetime_token'.
 
-## Using a onetime link token
-Once you have a token, you always use it with one of:
-`GET /onetime_link/{token}/`, `POST /onetime_link/{token}/`.
-
-This will verify the token, perform the original action, invalidate the token, 
-and return the data as if the original URL had been invoked. Note that if there
-are errors in the user input - for example, an unknown touchstone ID - these 
-will only be checked at this point, not when the token is requested.
-
 ### Redirection
-
 If making a POST request via a browser, we need to request a redirect back to the web app
 after the action has been performed. To do this, append a query parameter `redirectUrl` 
 to the original request for a token. The API will throw a 400 error if the redirect is not 
