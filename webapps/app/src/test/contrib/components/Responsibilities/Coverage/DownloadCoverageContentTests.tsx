@@ -99,13 +99,19 @@ describe("Download Coverage Content Component", () => {
     });
 
     it("renders on component level touchstone and scenario table", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}})
+            .dive()
+            .dive()
+            .dive()
+            .dive()
+            .dive()
+            .dive();
         console.log("rendered: " + rendered.debug());
         console.log("table: " + rendered.find('table.specialColumn').debug());
         const firstTable = rendered.find('table.specialColumn').at(0);
         console.log("firstTable: " + firstTable.debug());
         console.log("0th tr: " + firstTable.find('tr').at(0).debug());
-        console.log("0th tr, 1st col: " + firstTable.find('tr').at(0).find('div.col').at(1));
+        console.log("0th tr, 1st col: " + firstTable.find('tr').at(0).find('div.col').at(1).debug());
         expect(firstTable.find('tr').at(0).find('div.col').at(1).text(), testTouchstone.description);
         expect(firstTable.find('tr').at(1).find('div.col').at(1).text(), testScenario.description);
     });
