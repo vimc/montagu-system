@@ -2,6 +2,7 @@ dependencies {
     compile 'org.pac4j:spark-pac4j:2.2.0'
     compile 'org.pac4j:pac4j-jwt:2.2.1'
     compile 'commons-codec:commons-codec:1.11'
+    compile 'org.apache.httpcomponents:httpclient:4.5.6'
     compile 'org.abstractj.kalium:kalium:0.7.0'
 
     testCompile "junit:junit:4.12"
