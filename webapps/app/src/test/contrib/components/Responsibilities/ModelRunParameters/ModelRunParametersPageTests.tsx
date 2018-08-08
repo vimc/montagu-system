@@ -48,7 +48,7 @@ describe("Model Run Parameters Page tests", () => {
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.find(ModelRunParametersContent).length).is.equal(1);
         const titleComponent = pageArticle.find(ResponsibilitiesPageTitle);
-        expect(titleComponent.props().title).is.equal(ModelRunParametersPageComponent.pageName);
+        expect(titleComponent.props().title).is.equal("Upload parameters");
     });
 });
 

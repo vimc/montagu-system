@@ -5,7 +5,10 @@ import {InternalLink} from "../../../../shared/components/InternalLink";
 import {ModelRunParametersContent} from "./ModelRunParametersContent";
 import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
-import {modelRunParametersPageActionCreators} from "../../../actions/pages/modelRunParametersPageActionCreators";
+import {
+    modelRunParametersPageActionCreators,
+    modelRunParametersPageName
+} from "../../../actions/pages/modelRunParametersPageActionCreators";
 import {ContribPage} from "../../../ContribPage";
 
 const stochasticParams = require('../Overview/stochastic_template_params.csv');
@@ -16,16 +19,11 @@ export interface ModelRunParametersPageLocationProps {
 }
 
 export class ModelRunParametersPageComponent extends React.Component<PageProperties<ModelRunParametersPageLocationProps>> {
-
-    static pageName: string = "Upload parameters";
-
     static title(): JSX.Element {
-        return <ResponsibilitiesPageTitle
-            title={ModelRunParametersPageComponent.pageName}
-        />
+        return <ResponsibilitiesPageTitle title={modelRunParametersPageName}/>
     }
 
-    render() :JSX.Element {
+    render(): JSX.Element {
         const guidanceOutputsUrl = `/help/model-outputs/#parameters`;
 
         return <PageArticle title={ModelRunParametersPageComponent.title()}>
@@ -39,7 +37,7 @@ export class ModelRunParametersPageComponent extends React.Component<PagePropert
                     <a key={"params"}
                        href={stochasticParams}>Download stochastic parameters template</a>
                 </p>
-                <ModelRunParametersContent />
+                <ModelRunParametersContent/>
             </div>
         </PageArticle>
     }
