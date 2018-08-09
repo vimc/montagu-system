@@ -170,24 +170,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             expect(coverageSets).to.eql(expectedCoverageSets);
         });
 
-
-        it("fetches coverage one time token", async () => {
-            await addCoverageSets(this.db);
-
-            const token: string = await (new CoverageService(this.store.dispatch, this.store.getState))
-                .getOneTimeToken(groupId, touchstoneVersionId, scenarioId, 'long');
-
-            const decoded = inflateAndDecode(token);
-
-            expect(decoded.action).to.equal("coverage");
-            const payload = QueryString.parse(decoded.payload);
-            expect(payload).to.eql({
-                ":group-id": groupId,
-                ":touchstone-version-id": touchstoneVersionId,
-                ":scenario-id": scenarioId
-            });
-        });
-
         it("fetches demographic data sets", async () => {
             await addDemographicDataSets(this.db);
 
@@ -203,28 +185,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 }
             ];
             expect(demographicDataSets).to.eql(expectedDataSets)
-        });
-
-        it("fetches one time demographic token", async () => {
-            await addDemographicDataSets(this.db);
-
-            const demographicDataSets: DemographicDataset[] = await (new DemographicService(this.store.dispatch, this.store.getState))
-                .getDataSetsByTouchstoneId(touchstoneVersionId);
-
-            const demographicDataSet = demographicDataSets[0];
-
-            const token: string = await (new DemographicService(this.store.dispatch, this.store.getState))
-                .getOneTimeToken(touchstoneVersionId, demographicDataSet.source, demographicDataSet.id,'long', 'female');
-
-            const decoded = inflateAndDecode(token);
-
-            expect(decoded.action).to.equal("demography");
-            const payload = QueryString.parse(decoded.payload);
-            expect(payload).to.eql({
-                ":touchstone-version-id": touchstoneVersionId,
-                ":source-code": demographicDataSet.source,
-                ":type-code": demographicDataSet.id
-            });
         });
 
         it("fetches one time estimates token", async () => {

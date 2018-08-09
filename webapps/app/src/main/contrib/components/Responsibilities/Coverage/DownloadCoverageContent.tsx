@@ -1,35 +1,28 @@
 import * as React from "react";
-import { Dispatch } from "redux";
-import { compose, branch, renderComponent} from "recompose";
-import { connect } from 'react-redux';
+import {Dispatch} from "redux";
+import {branch, compose, renderComponent} from "recompose";
+import {connect} from 'react-redux';
 
-import { CoverageSet, Scenario, TouchstoneVersion } from "../../../../shared/models/Generated";
-import { CoverageSetList } from "./CoverageSetList";
-import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTimeButton";
-import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
-import { FormatControl } from "../FormatControl";
+import {CoverageSet, ModellingGroup, Scenario, TouchstoneVersion} from "../../../../shared/models/Generated";
+import {CoverageSetList} from "./CoverageSetList";
+import {FormatControl} from "../FormatControl";
 
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {coverageActionCreators} from "../../../actions/coverageActionCreators";
 import {withConfidentialityAgreement} from "../Overview/ConfidentialityAgreement";
+import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
 
 export interface DownloadCoverageContentProps {
+    group: ModellingGroup;
     touchstone: TouchstoneVersion;
     scenario: Scenario;
     coverageSets: CoverageSet[];
-    token: string;
     selectedFormat: string;
-    loadToken: () => void;
     setFormat: (format: string) => void;
 }
 
-const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);
-
 export class DownloadCoverageContentComponent extends React.Component<DownloadCoverageContentProps> {
-
-    ButtonWithTimeout?: any;
-
     constructor() {
         super();
         this.onSelectFormat = this.onSelectFormat.bind(this);
@@ -37,11 +30,11 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
 
     onSelectFormat(format: string) {
         this.props.setFormat(format);
-        this.props.loadToken()
-        if (this.ButtonWithTimeout) this.ButtonWithTimeout.enable();
     }
 
     render() {
+        const {group, touchstone, scenario, selectedFormat} = this.props;
+        const url = `/modelling-groups/${group.id}/responsibilities/${touchstone.id}/${scenario.id}/coverage/?format=${selectedFormat}`;
         return <div>
             <p>
                 Each scenario is based on vaccination coverage from up to 3 different
@@ -108,15 +101,9 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
                 </div>
             </div>
             <div className="mt-4">
-                <ButtonWithTimeout
-                    token={this.props.token}
-                    refreshToken={() => this.props.loadToken()}
-                    disableDuration={1000}
-                    enabled={true}
-                    onRef={ref => (this.ButtonWithTimeout = ref)}
-                >
+                <FileDownloadButton href={url}>
                     Download combined coverage set data in CSV format
-                </ButtonWithTimeout>
+                </FileDownloadButton>
             </div>
         </div>;
     }
@@ -124,17 +111,16 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
 
 export const mapStateToProps = (state: ContribAppState): Partial<DownloadCoverageContentProps> => {
     return {
+        group: state.groups.currentUserGroup,
         touchstone: state.touchstones.currentTouchstoneVersion,
         coverageSets: state.coverage.dataSets,
         selectedFormat: state.coverage.selectedFormat,
         scenario: state.responsibilities.currentResponsibility ? state.responsibilities.currentResponsibility.scenario : null,
-        token: state.coverage.token
     }
 };
 
 export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<DownloadCoverageContentProps> => {
     return {
-        loadToken: () => dispatch(coverageActionCreators.getOneTimeToken()),
         setFormat: (format: string) => dispatch(coverageActionCreators.setFormat(format))
     }
 };

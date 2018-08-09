@@ -42,34 +42,4 @@ export const demographicActionCreators = {
             data: format
         } as Demographic.SetFormat;
     },
-
-    getOneTimeToken() {
-        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-            dispatch({
-                type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR,
-            } as Demographic.OneTimeTokenClear );
-
-            const demographicState = getState().demographic;
-
-            const dataSet = demographicState.selectedDataSet;
-            const touchstone = getState().touchstones.currentTouchstoneVersion;
-            const format = demographicState.selectedFormat;
-
-            const gender = dataSet.gender_is_applicable ? demographicState.selectedGender : 'both';
-
-            if (!dataSet || !touchstone || !format ) {
-                return dispatch({
-                    type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_CLEAR,
-                } as Demographic.OneTimeTokenClear);
-            }
-
-            const token: string = await (new DemographicService(dispatch, getState))
-                .getOneTimeToken(touchstone.id, dataSet.source, dataSet.id, format, gender);
-
-            return dispatch({
-                type: DemographicTypes.DEMOGRAPHIC_ONE_TIME_TOKEN_FETCHED,
-                data: token
-            } as Demographic.OneTimeTokenFetched );
-        }
-    },
 };

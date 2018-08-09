@@ -22,7 +22,6 @@ import {
 } from "../../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
 import {CoverageSetList} from "../../../../../main/contrib/components/Responsibilities/Coverage/CoverageSetList";
 import {FormatControl} from "../../../../../main/contrib/components/Responsibilities/FormatControl";
-import {TimeBlockerProps} from "../../../../../main/shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
 import {coverageActionCreators} from "../../../../../main/contrib/actions/coverageActionCreators";
 import {ConfidentialityAgreementComponent} from "../../../../../main/contrib/components/Responsibilities/Overview/ConfidentialityAgreement";
 import {userActionCreators} from "../../../../../main/contrib/actions/userActionCreators";
@@ -61,8 +60,6 @@ describe("Download Coverage Content Component", () => {
         expect(rendered.props().coverageSets).to.eql([testCoverageSet]);
         expect(rendered.props().selectedFormat).to.eql("long");
         expect(rendered.props().scenario).to.eql(testScenario);
-        expect(rendered.props().token).to.eql("test-token");
-        expect(typeof rendered.props().loadToken).to.eql("function");
         expect(typeof rendered.props().setFormat).to.eql("function");
     });
 
@@ -75,9 +72,10 @@ describe("Download Coverage Content Component", () => {
 
 
     it("renders on branch level, not passes", () => {
-        store = createMockStore({
-            touchstones: {currentTouchstone: null},
-            coverage: {dataSets: [testCoverageSet], selectedFormat: "long", token: "test-token"},
+        store = createMockContribStore({
+            groups: {currentUserGroup: mockModellingGroup()},
+            touchstones: {currentTouchstoneVersion: null},
+            coverage: {dataSets: [testCoverageSet], selectedFormat: "long"},
             responsibilities: {currentResponsibility: testResponsibility},
         });
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive();
@@ -115,26 +113,6 @@ describe("Download Coverage Content Component", () => {
         expect(rendered.find(FormatControl).props().value).to.eql(testState.coverage.selectedFormat);
     });
 
-    it("renders on component level time blocked button", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive()
-            .dive().dive().dive().dive();
-        expect(rendered.find('ButtonTimeBlockerWrapper').length).to.equal(1);
-        const buttonTimeBlockedProps = rendered.find('ButtonTimeBlockerWrapper').props() as TimeBlockerProps;
-        expect(buttonTimeBlockedProps.token).to.equal("test-token");
-        expect(typeof buttonTimeBlockedProps.refreshToken).to.equal('function');
-        expect(buttonTimeBlockedProps.disableDuration).to.equal(1000);
-        expect(buttonTimeBlockedProps.enabled).to.equal(true);
-        expect(buttonTimeBlockedProps.children).to.equal("Download combined coverage set data in CSV format");
-    });
-
-    it("can trigger mapped load token", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
-        const downloadCoverageContentComponentInstance = rendered.instance() as DownloadCoverageContentComponent;
-        const onLoadTokenStub = sandbox.setStubReduxAction(coverageActionCreators, "getOneTimeToken");
-        downloadCoverageContentComponentInstance.props.loadToken();
-        expect(onLoadTokenStub.called).to.equal(true);
-    });
-
     it("can trigger mapped chose format", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
         const downloadCoverageContentComponentInstance = rendered.instance() as DownloadCoverageContentComponent;
@@ -143,15 +121,12 @@ describe("Download Coverage Content Component", () => {
         expect(onFormatSelectStub.called).to.equal(true);
     });
 
-    it("calling onSelectFormat triggers both get token and set format actions", () => {
+    it("calling onSelectFormat triggers set format", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
             .dive().dive().dive();
         const downloadCoverageContentComponentInstance = rendered.instance() as DownloadCoverageContentComponent;
-        const onLoadTokenStub = sandbox.setStubReduxAction(coverageActionCreators, "getOneTimeToken");
         const onFormatSelectStub = sandbox.setStubReduxAction(coverageActionCreators, "setFormat");
         downloadCoverageContentComponentInstance.onSelectFormat("long");
-        expect(onLoadTokenStub.called).to.equal(true);
         expect(onFormatSelectStub.called).to.equal(true);
     });
-
 });

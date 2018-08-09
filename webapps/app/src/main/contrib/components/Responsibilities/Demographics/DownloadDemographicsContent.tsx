@@ -1,15 +1,12 @@
 import * as React from 'react';
-import { Action, Dispatch } from "redux";
-import { compose, branch, renderComponent} from "recompose";
-import { connect } from 'react-redux';
+import {branch, compose, renderComponent} from "recompose";
+import {connect} from 'react-redux';
 
-import { DemographicDataset, TouchstoneVersion } from "../../../../shared/models/Generated";
-import { DemographicOptions } from "./DemographicOptions";
-import { OneTimeButton } from "../../../../shared/components/OneTimeButton/OneTimeButton";
-import { OneTimeButtonTimeBlocker } from "../../../../shared/components/OneTimeButton/OneTimeButtonTimeBlocker";
+import {DemographicDataset, TouchstoneVersion} from "../../../../shared/models/Generated";
+import {DemographicOptions} from "./DemographicOptions";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
-import {demographicActionCreators} from "../../../actions/demographicActionCreators";
+import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
 
 export interface DownloadDemographicsContentProps {
     dataSets: DemographicDataset[];
@@ -17,29 +14,16 @@ export interface DownloadDemographicsContentProps {
     selectedGender: string;
     selectedFormat: string;
     touchstone: TouchstoneVersion;
-    token: string;
-    refreshToken: () => void;
 }
 
-const ButtonWithTimeout = OneTimeButtonTimeBlocker(OneTimeButton);
-
 export class DownloadDemographicsContentComponent extends React.Component<DownloadDemographicsContentProps> {
-
-    ButtonWithTimeout?: any;
-
-    componentWillReceiveProps(nextProps: DownloadDemographicsContentProps) {
-        if (nextProps.touchstone && nextProps.dataSets) {
-            if (nextProps.selectedDataSet !== this.props.selectedDataSet
-            || nextProps.selectedFormat !== this.props.selectedFormat
-            || nextProps.selectedGender !== this.props.selectedGender)
-            {
-                this.ButtonWithTimeout.enable();
-            }
-        }
-    }
-
     render() {
         const canDownload = DownloadDemographicsContentComponent.canDownload(this.props);
+        const {touchstone, selectedDataSet, selectedFormat, selectedGender} = this.props;
+        let url: string = null;
+        if (canDownload) {
+            url = `/touchstones/${touchstone.id}/demographics/${selectedDataSet.source}/${selectedDataSet.id}/?format=${selectedFormat}&gender=${selectedGender}`;
+        }
 
         return <div className="demographics">
             <div className="sectionTitle">
@@ -59,15 +43,7 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
                 </p>
             </div>
             <DemographicOptions/>
-            <ButtonWithTimeout
-                token={this.props.token}
-                refreshToken={this.props.refreshToken}
-                disableDuration={5000}
-                enabled={canDownload}
-                onRef={ref => (this.ButtonWithTimeout = ref)}
-            >
-                Download data set
-            </ButtonWithTimeout>
+            <FileDownloadButton href={url} enabled={canDownload}>Download data set</FileDownloadButton>
         </div>;
     }
 
@@ -84,17 +60,10 @@ export const mapStateToProps = (state: ContribAppState): Partial<DownloadDemogra
         selectedDataSet: state.demographic.selectedDataSet,
         selectedGender: state.demographic.selectedGender,
         selectedFormat: state.demographic.selectedFormat,
-        token: state.demographic.token
-    }
-};
-
-export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<DownloadDemographicsContentProps> => {
-    return {
-        refreshToken: () => dispatch(demographicActionCreators.getOneTimeToken())
     }
 };
 
 export const DownloadDemographicsContent = compose(
-    connect(mapStateToProps, mapDispatchToProps),
+    connect(mapStateToProps),
     branch((props: DownloadDemographicsContentProps) => !props.touchstone, renderComponent(LoadingElement))
 )(DownloadDemographicsContentComponent) as React.ComponentClass<Partial<DownloadDemographicsContentProps>>;

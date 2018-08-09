@@ -5,10 +5,6 @@ export class CoverageService extends AbstractLocalService {
         return this.setOptions({cacheKey: CoverageCacheKeysEnum.sets})
             .get(`/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/coverage-sets/`);
     }
-
-    getOneTimeToken(groupId: string, touchstoneId: string, scenarioId: string, format: string) {
-        return this.get(`/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/coverage/get_onetime_link/?format=${format}`);
-    }
 }
 
 export enum CoverageCacheKeysEnum {
