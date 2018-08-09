@@ -8,7 +8,6 @@ import {Alert} from "reactstrap";
 import {CustomValidationResult} from "../validation/FileValidationHelpers";
 
 export interface UploadFileProps {
-    token: string;
     enableSubmit: boolean;
     successMessage: string;
     validatePath?: (path: string) => CustomValidationResult;

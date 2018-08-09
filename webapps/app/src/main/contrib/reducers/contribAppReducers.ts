@@ -11,7 +11,6 @@ import {demographicReducer, DemographicState} from "./demographicReducer";
 import {coverageReducer, CoverageState} from "./coverageReducer";
 import {runParametersReducer, RunParametersState} from "./runParametersReducer";
 import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadcrumbsReducer";
-import {estimatesReducer, EstimatesState} from "./estimatesReducer";
 import {userReducer, UserState} from "./userReducer";
 import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneTimeTokenReducer";
 import {CommonState} from "../../shared/reducers/CommonState";
@@ -27,7 +26,6 @@ export interface ContribAppState extends CommonState {
     diseases: DiseasesState;
     demographic: DemographicState;
     coverage: CoverageState;
-    estimates: EstimatesState;
     runParameters: RunParametersState;
     onetimeTokens: OneTimeTokenState;
 }
@@ -43,7 +41,6 @@ const reducers = combineReducers({
     diseases: diseasesReducer,
     demographic: demographicReducer,
     coverage: coverageReducer,
-    estimates: estimatesReducer,
     runParameters: runParametersReducer,
     router: routerReducer,
     onetimeTokens: onetimeTokenReducer,

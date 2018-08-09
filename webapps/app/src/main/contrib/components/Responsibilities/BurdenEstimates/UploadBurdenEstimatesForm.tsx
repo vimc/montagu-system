@@ -10,7 +10,6 @@ interface UploadBurdenEstimatesFormComponentProps {
     touchstoneId: string;
     scenarioId: string;
     groupId: string;
-    estimatesToken: string;
     canUpload: boolean;
     canCreate: boolean;
 }
@@ -44,8 +43,7 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
         const hasError = this.state.errors.length > 0;
 
         const uploadForm = this.props.canUpload ?
-            <UploadFileForm token={this.props.estimatesToken}
-                            enableSubmit={true}
+            <UploadFileForm enableSubmit={true}
                             successMessage={uploadSuccessMessage}
                             validatePath={checkFileExtensionIsCSV}
             />

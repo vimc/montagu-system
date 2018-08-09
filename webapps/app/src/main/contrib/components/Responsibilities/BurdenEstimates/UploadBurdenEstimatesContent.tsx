@@ -14,7 +14,6 @@ export interface UploadBurdenEstimatesContentProps {
     scenario: Scenario;
     group: ModellingGroup;
     responsibilitySetStatus: string;
-    token: string;
     responsibility: Responsibility;
     canCreate: boolean;
     canUpload: boolean;
@@ -64,7 +63,6 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
                     canUpload={this.props.canUpload}
                     canCreate={this.props.canCreate}
                     groupId={this.props.group.id}
-                    estimatesToken={this.props.token}
                     touchstoneId={this.props.touchstone.id}
                     scenarioId={this.props.scenario.id}
                 />
@@ -79,7 +77,6 @@ export const mapStateToProps = (state: ContribAppState): Partial<UploadBurdenEst
         scenario: state.responsibilities.currentResponsibility ? state.responsibilities.currentResponsibility.scenario : null,
         group: state.groups.currentUserGroup,
         responsibilitySetStatus: state.responsibilities.responsibilitiesSet ? state.responsibilities.responsibilitiesSet.status : null,
-        token: state.estimates.token,
         responsibility: state.responsibilities.currentResponsibility,
         canCreate: false,
         canUpload: false
