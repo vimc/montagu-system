@@ -265,7 +265,7 @@ class OneTimeLinkControllerTests : MontaguTests()
     private val claimsWithRedirectUrl =
             mapOf(
                     "sub" to WebTokenHelper.oneTimeActionSubject,
-                    "action" to "burdens-create",
+                    "action" to "coverage",
                     "payload" to ":username=test.user",
                     "query" to "redirectUrl=$redirectUrl",
                     "username" to "test.user"
@@ -274,7 +274,7 @@ class OneTimeLinkControllerTests : MontaguTests()
     private val claimsWithoutRedirectUrl =
             mapOf(
                     "sub" to WebTokenHelper.oneTimeActionSubject,
-                    "action" to "burdens-create",
+                    "action" to "coverage",
                     "payload" to ":username=test.user",
                     "username" to "test.user"
             )
