@@ -65,6 +65,7 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
                     groupId={this.props.group.id}
                     touchstoneId={this.props.touchstone.id}
                     scenarioId={this.props.scenario.id}
+                    estimateSetId={this.props.responsibility.current_estimate_set.id}
                 />
             </div>
         </div>;

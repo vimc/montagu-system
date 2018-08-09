@@ -5,11 +5,13 @@ import {Alert} from "reactstrap";
 import {ErrorInfo, Result} from "../../../../shared/models/Generated";
 import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
 import {checkFileExtensionIsCSV} from "../../../../shared/validation/FileValidationHelpers";
+import {settings} from "../../../../shared/Settings";
 
 interface UploadBurdenEstimatesFormComponentProps {
     touchstoneId: string;
     scenarioId: string;
     groupId: string;
+    estimateSetId: number;
     canUpload: boolean;
     canCreate: boolean;
 }
@@ -38,12 +40,15 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
     }
 
     render() {
-
+        const {groupId, touchstoneId, scenarioId, estimateSetId} = this.props;
+        const redirectUrl = encodeURIComponent(window.location.href);
+        const url = `/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/estimate-sets/${estimateSetId}/multipart/?redirectResultTo=${redirectUrl}`;
         const uploadSuccessMessage = "Success! You have uploaded a new set of burden estimates";
         const hasError = this.state.errors.length > 0;
 
         const uploadForm = this.props.canUpload ?
-            <UploadFileForm enableSubmit={true}
+            <UploadFileForm href={url}
+                            enableSubmit={true}
                             successMessage={uploadSuccessMessage}
                             validatePath={checkFileExtensionIsCSV}
             />
