@@ -50,8 +50,9 @@ class MontaguAuthorizerTests : MontaguTests()
         val profile = CommonProfile()
         profile.addAttribute("url", "/some/url/?query=whatever")
 
-        val fakeContext = mock<SparkWebContext>() {
-            on(it.path) doReturn "/some/url/?query=whatever"
+        val fakeContext = mock<SparkWebContext> {
+            on(it.path) doReturn "/some/url/"
+            on(it.requestParameters) doReturn mapOf("query" to arrayOf("whatever"))
         }
 
         val result = sut.isAuthorized(fakeContext, listOf(profile))
@@ -67,8 +68,9 @@ class MontaguAuthorizerTests : MontaguTests()
         val profile = CommonProfile()
         profile.addAttribute("url", "/some/url/?query=whatever")
 
-        val fakeContext = mock<SparkWebContext>() {
+        val fakeContext = mock<SparkWebContext> {
             on(it.path) doReturn "/some/url/"
+            on(it.requestParameters) doReturn emptyMap()
         }
 
         val result = sut.isAuthorized(fakeContext, listOf(profile))
@@ -84,8 +86,9 @@ class MontaguAuthorizerTests : MontaguTests()
         val profile = CommonProfile()
         profile.addAttribute("url", "/some/url/")
 
-        val fakeContext = mock<SparkWebContext>() {
-            on(it.path) doReturn "/some/url/?query=whatever"
+        val fakeContext = mock<SparkWebContext> {
+            on(it.path) doReturn "/some/url/"
+            on(it.requestParameters) doReturn mapOf("query" to arrayOf("whatever"))
         }
 
         val result = sut.isAuthorized(fakeContext, listOf(profile))
@@ -101,8 +104,9 @@ class MontaguAuthorizerTests : MontaguTests()
         val profile = CommonProfile()
         profile.addAttribute("url", "/some/url/?query=whatever")
 
-        val fakeContext = mock<SparkWebContext>() {
-            on(it.path) doReturn "/some/url/?query=somethingelse"
+        val fakeContext = mock<SparkWebContext> {
+            on(it.path) doReturn "/some/url/"
+            on(it.requestParameters) doReturn mapOf("query" to arrayOf("somethingelse"))
         }
 
         val result = sut.isAuthorized(fakeContext, listOf(profile))

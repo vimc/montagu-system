@@ -6,6 +6,7 @@ import org.pac4j.core.profile.CommonProfile
 import org.pac4j.sparkjava.SparkWebContext
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.context.DirectActionContext
+import org.vaccineimpact.api.security.PathAndQuery
 
 class MontaguAuthorizer(requiredPermissions: Set<PermissionRequirement>)
     : AbstractRequireAllAuthorizer<PermissionRequirement, CommonProfile>()
@@ -19,28 +20,18 @@ class MontaguAuthorizer(requiredPermissions: Set<PermissionRequirement>)
 
     override fun isProfileAuthorized(context: WebContext, profile: CommonProfile): Boolean
     {
-        val claimedUrl = profile.getAttribute("url")
-        var requestedUrl = context.path
-        val queryParameters = context.requestParameters
-                .filter { it.key != "access_token" }
+        val claimedUrl = PathAndQuery.fromStringOrWildcard(profile.getAttribute("url") as String)
+        val requestedUrl = PathAndQuery.fromWebContext(context).withoutParameter("access_token")
 
-        if (queryParameters.any())
+        return if (claimedUrl == null || requestedUrl == claimedUrl)
         {
-            requestedUrl = requestedUrl + "?" + queryParameters
-                    .map { "${it.key}=${context.getRequestParameter(it.key)}" }
-                    .joinToString("&")
-
-        }
-
-        if (claimedUrl == "*" || requestedUrl == claimedUrl)
-        {
-            return super.isProfileAuthorized(context, profile)
+            super.isProfileAuthorized(context, profile)
         }
         else
         {
             logger.warn("This token is issued for $claimedUrl but the current request is for $requestedUrl")
             profile.mismatchedURL = "This token is issued for $claimedUrl but the current request is for $requestedUrl"
-            return false
+            false
         }
 
     }
