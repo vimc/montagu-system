@@ -17,20 +17,17 @@ import {
 import {downloadDemographicsPageActionCreators} from "../../../../../main/contrib/actions/pages/downloadDemographicsPageActionCreators";
 import {DownloadDemographicsContent} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsContent";
 
-describe("Download Demographics Page Component tests", () => {
+describe("Download Demographics Page tests", () => {
 
     const sandbox = new Sandbox();
 
     let store : Store<ContribAppState>;
+
     beforeEach(() => {
         store = createMockStore();
     });
-    afterEach(() => sandbox.restore());
 
-    it("renders component on connect level", () => {
-        const rendered = shallow(<DownloadDemographicsPage/>, {context: {store}});
-        expect(typeof rendered.props().onLoad).is.equal('function');
-    });
+    afterEach(() => sandbox.restore());
 
     it("renders component component level", () => {
         let testMatch = mockMatch<DownloadDemographicsPageLocationProps>({
@@ -40,7 +37,7 @@ describe("Download Demographics Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(downloadDemographicsPageActionCreators, "onLoad");
         const rendered = shallow(<DownloadDemographicsPage
             match={testMatch}
-        />, {context: {store}}).dive();
+        />, {context: {store}}).dive().dive();
         const pageArticle = rendered.find('PageArticle');
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.find(DownloadDemographicsContent).length).is.equal(1);

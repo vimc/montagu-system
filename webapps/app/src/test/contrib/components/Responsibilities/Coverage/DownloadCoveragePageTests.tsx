@@ -41,7 +41,7 @@ describe("Download Coverage Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(downloadCoveragePageActionCreators, "onLoad");
         const rendered = shallow(<DownloadCoveragePage
             match={testMatch}
-        />, {context: {store}}).dive();
+        />, {context: {store}}).dive().dive();
         const pageArticle = rendered.find('PageArticle');
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.find(DownloadCoverageContent).length).is.equal(1);

@@ -1,10 +1,10 @@
 import * as React from "react";
-import { shallow } from "enzyme";
-import { expect } from "chai";
-import { Store } from "redux";
+import {shallow} from "enzyme";
+import {expect} from "chai";
+import {Store} from "redux";
 
 import "../../../../helper";
-import { Sandbox } from "../../../../Sandbox";
+import {Sandbox} from "../../../../Sandbox";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
 import {mockLocation, mockMatch} from "../../../../mocks/mocks";
@@ -17,20 +17,17 @@ import {
 import {uploadBurdenEstimatesPageActionCreators} from "../../../../../main/contrib/actions/pages/uploadBurdenEstimatesPageActionCreators";
 import {UploadBurdenEstimatesContent} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesContent";
 
-describe("Upload Burden Estimates Page Component tests", () => {
+describe("Upload Burden Estimates Page tests", () => {
 
     const sandbox = new Sandbox();
 
-    let store : Store<ContribAppState>;
+    let store: Store<ContribAppState>;
+
     beforeEach(() => {
         store = createMockStore();
     });
-    afterEach(() => sandbox.restore());
 
-    it("renders component on connect level", () => {
-        const rendered = shallow(<UploadBurdenEstimatesPage/>, {context: {store}});
-        expect(typeof rendered.props().onLoad).is.equal('function');
-    });
+    afterEach(() => sandbox.restore());
 
     it("renders component component level", () => {
         const testMatch = mockMatch<UploadBurdenEstimatesPageLocationProps>({
@@ -38,12 +35,12 @@ describe("Upload Burden Estimates Page Component tests", () => {
             touchstoneId: "t-1",
             scenarioId: "s-1"
         });
-        const testLocation = mockLocation({pathname: "/test/"})
+        const testLocation = mockLocation({pathname: "/test/"});
         const onLoadStub = sandbox.setStubReduxAction(uploadBurdenEstimatesPageActionCreators, "onLoad");
         const rendered = shallow(<UploadBurdenEstimatesPage
             match={testMatch}
             location={testLocation}
-        />, {context: {store}}).dive();
+        />, {context: {store}}).dive().dive().dive();
         const pageArticle = rendered.find('PageArticle');
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.find(UploadBurdenEstimatesContent).length).is.equal(1);
