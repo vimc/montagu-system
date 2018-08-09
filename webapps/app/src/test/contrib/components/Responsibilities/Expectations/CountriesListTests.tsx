@@ -20,4 +20,11 @@ describe("Countries list popover", () => {
         const rendered = shallow(<CountriesList countries={countries} targetKey={"c1"}/>);
         expect(rendered.find(PopoverBody).childAt(0).text()).to.equal("countrya, countryb");
     });
+
+    it("countries are alphabetical", () => {
+        const countries = [mockCountry({name: "d"}), mockCountry({name: "b"}), mockCountry({name: "a"})];
+
+        const rendered = shallow(<CountriesList countries={countries} targetKey={"c1"}/>);
+        expect(rendered.find(PopoverBody).childAt(0).text()).to.equal("a, b, d");
+    });
 });

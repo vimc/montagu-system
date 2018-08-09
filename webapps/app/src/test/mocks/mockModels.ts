@@ -113,6 +113,7 @@ export function mockExpectations(properties?: Partial<models.Expectations>): mod
     counter++;
     const template: models.Expectations = {
         id: counter,
+        description: "description",
         ages: {minimum_inclusive: 0, maximum_inclusive: 99},
         years: {minimum_inclusive: 2000, maximum_inclusive: 2100},
         cohorts: {minimum_birth_year: 2000, maximum_birth_year: 2050},
@@ -124,9 +125,11 @@ export function mockExpectations(properties?: Partial<models.Expectations>): mod
 
 export function mockExpectationMapping(
     properties?: Partial<models.Expectations>,
-    applicableScenarios?: string[]
+    applicableScenarios?: string[],
+    disease?: string
 ): ExpectationMapping {
     return {
+        disease: disease || "YF",
         expectation: mockExpectations(properties),
         applicable_scenarios: applicableScenarios || ["scenario-1", "scenario-2"]
     };

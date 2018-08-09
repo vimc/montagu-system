@@ -1,3 +1,4 @@
 export const settings: Partial<Settings> = {
-    showTouchstoneCreation: true
+    showTouchstoneCreation: true,
+    showNewTemplates: true
 };

@@ -22,6 +22,7 @@ import {
 } from "../../../../../main/contrib/components/Responsibilities/Overview/ConfidentialityAgreement";
 import {ResponsibilityOverviewDescription} from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewDescription";
 import {userActionCreators} from "../../../../../main/contrib/actions/userActionCreators";
+import {settings} from "../../../../../main/shared/Settings";
 
 describe("Responsibility Overview Content Component", () => {
 
@@ -96,7 +97,13 @@ describe("Responsibility Overview Content Component", () => {
         expect(responsibilityList.props().currentDiseaseId).to.eql(testDiseaseId);
         expect(responsibilityList.props().modellingGroup).to.eql(testCurrentGroup);
         expect(responsibilityList.props().responsibilitySet).to.eql(testResponsibilitiesSet);
-        expect(rendered.find(ButtonLink).length).to.equal(2);
+
+        if (settings.showNewTemplates) {
+            expect(rendered.find(ButtonLink).length).to.equal(3);
+        }
+        else{
+            expect(rendered.find(ButtonLink).length).to.equal(2);
+        }
      });
 
     it("maps state to props", () => {
