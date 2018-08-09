@@ -46,11 +46,7 @@ describe("Download Coverage Page actions tests", () => {
     it("loadData sets current responsibility and gets coverage data sets ", async () => {
 
         const store = createMockContribStore(state);
-
-        sandbox.stubReduxActionCreator(coverageActionCreators, "getOneTimeToken", {
-            type: "TEST_GET_TOKEN"
-        });
-
+        
         sandbox.stubReduxActionCreator(coverageActionCreators, "getDataSets", {
             type: "TEST_GET_COV_DATA_SETS"
         });
@@ -70,7 +66,6 @@ describe("Download Coverage Page actions tests", () => {
 
         const expectedPayload = [
             {type: "TEST_SET_CURRENT", props: "s1"},
-            {type: "TEST_GET_TOKEN", props: undefined},
             {type: "TEST_GET_COV_DATA_SETS", props: undefined}
         ];
         expect(actions).to.eql(expectedPayload);

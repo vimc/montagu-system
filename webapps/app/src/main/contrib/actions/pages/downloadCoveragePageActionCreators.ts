@@ -21,7 +21,6 @@ class DownloadCoveragePageActionCreators extends ContribPageActionCreators<Downl
     loadData(params: DownloadCoveragePageLocationProps): (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => void {
         return async (dispatch: Dispatch<ContribAppState>) => {
             dispatch(responsibilitiesActionCreators.setCurrentResponsibility(params.scenarioId));
-            await dispatch(coverageActionCreators.getOneTimeToken());
             await dispatch(coverageActionCreators.getDataSets());
         }
     }

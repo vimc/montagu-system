@@ -5,11 +5,6 @@ export class DemographicService extends AbstractLocalService {
         return this.setOptions({cacheKey: DemographicCacheKeysEnum.sets})
             .get(`/touchstones/${touchstoneId}/demographics/`);
     }
-
-    getOneTimeToken(touchstoneId: string, dataSetSource: string, datasetId: string, format: string, gender: string) {
-        return this.get(`/touchstones/${touchstoneId}/demographics/${dataSetSource}/${datasetId}/get_onetime_link/` +
-            `?format=${format}&gender=${gender}`);
-    }
 }
 
 export enum DemographicCacheKeysEnum {

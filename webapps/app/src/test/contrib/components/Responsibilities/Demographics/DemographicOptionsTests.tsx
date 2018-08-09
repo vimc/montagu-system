@@ -8,7 +8,7 @@ import {
     mockDemographicDataset,
 } from "../../../../mocks/mockModels";
 import { Sandbox } from "../../../../Sandbox";
-import {createMockStore} from "../../../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 
@@ -20,12 +20,13 @@ import {GenderControl} from "../../../../../main/contrib/components/Responsibili
 import {RadioButtonGroupProperties} from "react-radio-button-group";
 import {FormatControl} from "../../../../../main/contrib/components/Responsibilities/FormatControl";
 import {demographicActionCreators} from "../../../../../main/contrib/actions/demographicActionCreators";
+import {RecursivePartial} from "../../../../mocks/mockStates";
 
-describe("Demographic Options Component", () => {
+describe("DemographicOptions", () => {
 
     const testDemographicSet = mockDemographicDataset();
 
-    const testState = {
+    const testState: RecursivePartial<ContribAppState> = {
         demographic: {
             dataSets: [testDemographicSet],
             selectedDataSet: testDemographicSet,
@@ -38,7 +39,7 @@ describe("Demographic Options Component", () => {
 
     const sandbox = new Sandbox();
     beforeEach(() => {
-        store = createMockStore(testState);
+        store = createMockContribStore(testState);
     });
     afterEach(() => sandbox.restore());
 
@@ -80,11 +81,9 @@ describe("Demographic Options Component", () => {
         const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
         const dataSetSelect = rendered.find('select.form-control');
         const setDataSetStub = sandbox.setStubReduxAction(demographicActionCreators, "setDataSet");
-        const getOneTimeTokenStub = sandbox.setStubReduxAction(demographicActionCreators, "getOneTimeToken");
         dataSetSelect.simulate('change', { target: {value: testDemographicSet.id} });
         expect(setDataSetStub.called).to.equal(true);
         expect(setDataSetStub.getCall(0).args[0]).to.equal(testDemographicSet.id);
-        expect(getOneTimeTokenStub.called).to.equal(true);
     });
 
     it("renders on component level, renders gender selection component and its props", () => {
@@ -119,13 +118,11 @@ describe("Demographic Options Component", () => {
         const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
         const genderControlRadioGroup = rendered.find(GenderControl).dive();
         const setGenderStub = sandbox.setStubReduxAction(demographicActionCreators, "setGender");
-        const getOneTimeTokenStub = sandbox.setStubReduxAction(demographicActionCreators, "getOneTimeToken");
         const genderControlRadioGroupItems = genderControlRadioGroup.dive();
         const genderControlRadioGroupItems1 = genderControlRadioGroupItems.find('ReactRadioButton').at(0);
         genderControlRadioGroupItems1.simulate('change', { target: {value: "both"} });
         expect(setGenderStub.called).to.equal(true);
         expect(setGenderStub.getCall(0).args[0]).to.equal("both");
-        expect(getOneTimeTokenStub.called).to.equal(true);
     });
 
     it("renders on component level, renders format selection component and its props", () => {
@@ -151,12 +148,10 @@ describe("Demographic Options Component", () => {
         const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
         const formatControlRadioGroup = rendered.find(FormatControl).dive();
         const setFormatStub = sandbox.setStubReduxAction(demographicActionCreators, "setFormat");
-        const getOneTimeTokenStub = sandbox.setStubReduxAction(demographicActionCreators, "getOneTimeToken");
         const formatControlRadioGroupItems = formatControlRadioGroup.dive();
         const formatControlRadioGroupItems1 = formatControlRadioGroupItems.find('ReactRadioButton').at(0);
         formatControlRadioGroupItems1.simulate('change', { target: {value: "long"} });
         expect(setFormatStub.called).to.equal(true);
         expect(setFormatStub.getCall(0).args[0]).to.equal("long");
-        expect(getOneTimeTokenStub.called).to.equal(true);
     });
 });

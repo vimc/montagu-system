@@ -26,7 +26,7 @@ export class DemographicOptionsComponent extends React.Component<DemographicOpti
         const props = this.props;
 
         const statisticTypes = props.dataSets.map(x =>
-            <option key={x.id} value={x.id}>
+            <option key={`${x.source}_${x.id}`} value={x.id}>
                 {x.name}
             </option>
         );
@@ -46,7 +46,7 @@ export class DemographicOptionsComponent extends React.Component<DemographicOpti
                             className="form-control"
                             onChange={this.props.onSelectDataSet}
                             value={selectedId}>
-                            <option value="">- Select -</option>
+                            <option key="__none__" value="">- Select -</option>
                             {statisticTypes}
                         </select>
                     </div>
@@ -93,15 +93,12 @@ export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial
     return {
         onSelectDataSet: (e: React.ChangeEvent<HTMLSelectElement>) => {
             dispatch(demographicActionCreators.setDataSet(e.target.value));
-            dispatch(demographicActionCreators.getOneTimeToken());
         },
         onSelectGender: (gender: string) => {
             dispatch(demographicActionCreators.setGender(gender));
-            dispatch(demographicActionCreators.getOneTimeToken());
         },
         onSelectFormat: (format: string) => {
             dispatch(demographicActionCreators.setFormat(format));
-            dispatch(demographicActionCreators.getOneTimeToken());
         }
     }
 };
