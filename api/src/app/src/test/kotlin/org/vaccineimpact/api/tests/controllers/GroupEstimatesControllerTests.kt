@@ -45,7 +45,7 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
-        assertThat(GroupBurdenEstimatesController(context, repo).getBurdenEstimates())
+        assertThat(GroupBurdenEstimatesController(context, mock(), repo).getBurdenEstimates())
                 .hasSameElementsAs(data.toList())
         verify(repo).getBurdenEstimateSets("group-1", "touchstone-1", "scenario-1")
     }
@@ -68,7 +68,7 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { params(":scenario-id") } doReturn "scenario-1"
             on { postData<CreateBurdenEstimateSet>() } doReturn properties
         }
-        val url = GroupBurdenEstimatesController(mockContext, repo).createBurdenEstimateSet()
+        val url = GroupBurdenEstimatesController(mockContext, mock(), repo).createBurdenEstimateSet()
         val after = Instant.now()
         assertThat(url).endsWith("/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimate-sets/1/")
         verify(touchstoneSet).get("touchstone-1")
@@ -162,7 +162,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         val repo = mockRepository()
         val mockContext = mockActionContext(keepOpen = keepOpen)
         val mockPostData = mockCSVPostData(normalCSVData)
-        GroupBurdenEstimatesController(mockContext, repo, postDataHelper = mockPostData).populateBurdenEstimateSet()
+        GroupBurdenEstimatesController(mockContext, mock(), repo, postDataHelper = mockPostData).populateBurdenEstimateSet()
         verify(repo, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
                 "group-1", "touchstone-1", "scenario-1")
     }
@@ -177,7 +177,7 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
-        GroupBurdenEstimatesController(mockContext, repo).closeBurdenEstimateSet()
+        GroupBurdenEstimatesController(mockContext, mock(), repo).closeBurdenEstimateSet()
         verify(repo).closeBurdenEstimateSet(1, "group-1", "touchstone-1", "scenario-1")
     }
 
@@ -195,7 +195,7 @@ class GroupEstimatesControllerTests : MontaguTests()
                 ))
         )
         val actionContext = mockActionContext()
-        val controller = GroupBurdenEstimatesController(actionContext, mockRepository(), mockCSVPostData(data))
+        val controller = GroupBurdenEstimatesController(actionContext, mock(), mockRepository(), mockCSVPostData(data))
         assertThatThrownBy {
             controller.populateBurdenEstimateSet()
         }.isInstanceOf(InconsistentDataError::class.java)
@@ -244,7 +244,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         val postDataHelper = mock<PostDataHelper> {
             on { csvData<T>(any(), any()) } doReturn actualData
         }
-        GroupBurdenEstimatesController(actionContext, repo, postDataHelper = postDataHelper).populateBurdenEstimateSet()
+        GroupBurdenEstimatesController(actionContext, mock(), repo, postDataHelper = postDataHelper).populateBurdenEstimateSet()
         verify(touchstoneVersionSet).get("touchstone-1")
         verify(repo).populateBurdenEstimateSet(eq(1),
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),

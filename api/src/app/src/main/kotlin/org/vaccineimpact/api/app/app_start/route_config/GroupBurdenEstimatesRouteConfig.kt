@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.app_start.route_config
 
 import org.vaccineimpact.api.app.app_start.Endpoint
+import org.vaccineimpact.api.app.app_start.csv
 import org.vaccineimpact.api.app.app_start.json
 import org.vaccineimpact.api.app.app_start.secure
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
@@ -32,14 +33,12 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
                     .json()
                     .secure(writePermissions),
 
-            Endpoint("$baseUrl/get_onetime_link/",
-                    OneTimeLinkController::class,
-                    "getTokenForCreateBurdenEstimateSet")
+            // Populate sets
+            Endpoint("$baseUrl/:set-id/", controller, "populateBurdenEstimateSet", method = HttpMethod.post)
                     .json()
                     .secure(writePermissions),
 
-            // Populate sets
-            Endpoint("$baseUrl/:set-id/", controller, "populateBurdenEstimateSet", method = HttpMethod.post)
+            Endpoint("$baseUrl/:set-id/multipart/", controller, "populateBurdenEstimateSetFromMultipartStream", method = HttpMethod.post)
                     .json()
                     .secure(writePermissions),
 

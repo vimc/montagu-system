@@ -88,11 +88,6 @@ class OneTimeLinkController(
         return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.MODEl_RUN_PARAMETERS, context)
     }
 
-    fun getTokenForCreateBurdenEstimateSet(): String
-    {
-        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.BURDENS_CREATE, context)
-    }
-
     fun getTokenForPopulateBurdenEstimateSet(): String
     {
         return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.BURDENS_POPULATE, context)
