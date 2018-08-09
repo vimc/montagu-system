@@ -1,33 +1,33 @@
-import { Dispatch } from "redux";
+import {Dispatch} from "redux";
 
-import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {contribTouchstonesActionCreators} from "../contribTouchstonesActionCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
-import {
-    ResponsibilityOverviewPageComponent,
-    ResponsibilityOverviewPageLocationProps,
-} from "../../components/Responsibilities/Overview/ResponsibilityOverviewPage";
+import {ResponsibilityOverviewPageLocationProps} from "../../components/Responsibilities/Overview/ResponsibilityOverviewPage";
 import {responsibilitiesActionCreators} from "../responsibilitiesActionCreators";
 import {diseasesActionCreators} from "../diseasesActionCreators";
 import {chooseActionPageActionCreators} from "./chooseActionPageActionCreators";
-import {userActionCreators} from "../userActionCreators";
+import {ContribPageActionCreators} from "./ContribPageActionCreators";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 
-export const responsibilityOverviewPageActionCreators = {
+class ResponsibilityOverviewPageActionCreators extends ContribPageActionCreators<ResponsibilityOverviewPageLocationProps> {
 
-    onLoad(props: ResponsibilityOverviewPageLocationProps) {
-        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-            await dispatch(this.loadData(props));
-            dispatch(breadcrumbsActionCreators.createBreadcrumbs(ResponsibilityOverviewPageComponent.breadcrumb(getState())));
+    parent: ContribPageActionCreators<any> = chooseActionPageActionCreators;
+
+    createBreadcrumb(state: ContribAppState): PageBreadcrumb {
+        return {
+            name: state.touchstones.currentTouchstoneVersion.description,
+            urlFragment: `responsibilities/${state.touchstones.currentTouchstoneVersion.id}/`
         }
-    },
+    }
 
-    loadData(props: ResponsibilityOverviewPageLocationProps) {
-        return async (dispatch: Dispatch<ContribAppState>) => {
-            await dispatch(chooseActionPageActionCreators.loadData(props));
+    loadData(params: ResponsibilityOverviewPageLocationProps) {
+        return async (dispatch: Dispatch<ContribAppState>, _: () => ContribAppState) => {
             await dispatch(diseasesActionCreators.getAllDiseases());
-            dispatch(contribTouchstonesActionCreators.setCurrentTouchstoneVersion(props.touchstoneId));
+            dispatch(contribTouchstonesActionCreators.setCurrentTouchstoneVersion(params.touchstoneId));
             await dispatch(responsibilitiesActionCreators.getResponsibilitySet());
         }
     }
 
-};
+}
+
+export const responsibilityOverviewPageActionCreators = new ResponsibilityOverviewPageActionCreators();

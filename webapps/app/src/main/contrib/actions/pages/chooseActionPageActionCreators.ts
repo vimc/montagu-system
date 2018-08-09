@@ -1,27 +1,31 @@
 import { Dispatch } from "redux";
 
 import { modellingGroupsActionCreators } from "../modellingGroupsActionCreators";
-import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
-import {ChooseActionPageComponent, ChooseActionPageLocationProps} from "../../components/ChooseAction/ChooseActionPage";
+import {ChooseActionPageLocationProps} from "../../components/ChooseAction/ChooseActionPage";
 import {contribTouchstonesActionCreators} from "../contribTouchstonesActionCreators";
 import {chooseGroupPageActionCreators} from "./chooseGroupPageActionCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
+import {ContribPageActionCreators} from "./ContribPageActionCreators";
 
-export const chooseActionPageActionCreators = {
 
-    onLoad(props: ChooseActionPageLocationProps) {
-        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-            await dispatch(this.loadData(props));
-            dispatch(breadcrumbsActionCreators.createBreadcrumbs(ChooseActionPageComponent.breadcrumb(getState())));
+class ChooseActionPageActionCreators extends ContribPageActionCreators<ChooseActionPageLocationProps> {
+
+    parent = chooseGroupPageActionCreators;
+
+    createBreadcrumb(state: ContribAppState) {
+        return {
+            name: state.groups.currentUserGroup.description,
+            urlFragment: `${state.groups.currentUserGroup.id}/`,
         }
-    },
+    }
 
     loadData(props: ChooseActionPageLocationProps) {
         return async (dispatch: Dispatch<ContribAppState>) => {
-            await dispatch(chooseGroupPageActionCreators.loadData());
             dispatch(modellingGroupsActionCreators.setCurrentGroup(props.groupId));
             await dispatch(contribTouchstonesActionCreators.getTouchstonesByGroupId(props.groupId));
         }
     }
+}
 
-};
+
+export const chooseActionPageActionCreators = new ChooseActionPageActionCreators();

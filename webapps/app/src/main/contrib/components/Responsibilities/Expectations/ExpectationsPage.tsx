@@ -1,49 +1,27 @@
-import {ResponsibilityOverviewPageComponent} from "../Overview/ResponsibilityOverviewPage";
-import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import * as React from "react";
-import {ContribAppState} from "../../../reducers/contribAppReducers";
+
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
-import {DownloadCoveragePageLocationProps} from "../Coverage/DownloadCoveragePage";
-import {Dispatch} from "redux";
-import {compose} from "recompose";
-import {connect} from "react-redux";
 import {expectationsPageActionCreators} from "../../../actions/pages/expectationsPageActionCreators";
 import {ExpectationsList} from "./ExpectationsList";
-import {PageBreadcrumb} from "../../../../shared/components/PageWithHeader/PageProperties";
+import {ContribPage} from "../../../ContribPage";
 
 export interface ExpectationsPageLocationProps {
     groupId: string;
     touchstoneId: string;
 }
 
-const title = "Download burden estimate templates";
 
 export class ExpectationsPageComponent extends React.Component<PageProperties<ExpectationsPageLocationProps>> {
-    componentDidMount() {
-        this.props.onLoad(this.props.match.params)
-    }
 
-    static breadcrumb(state: ContribAppState): PageBreadcrumb {
-        return {
-            name: title,
-            urlFragment: `templates/`,
-            parent: ResponsibilityOverviewPageComponent.breadcrumb(state)
-        }
-    }
+    static title = "Download burden estimate templates";
 
     render(): JSX.Element {
-        return <PageArticle title={title}>
+        return <PageArticle title={ExpectationsPageComponent.title}>
             <ExpectationsList/>
         </PageArticle>;
     }
 }
 
-export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<PageProperties<DownloadCoveragePageLocationProps>> => {
-    return {
-        onLoad: (params: ExpectationsPageLocationProps) => dispatch(expectationsPageActionCreators.onLoad(params))
-    }
-};
 
-export const ExpectationsPage = compose(
-    connect(state => state, mapDispatchToProps),
-)(ExpectationsPageComponent) as React.ComponentClass<Partial<PageProperties<ExpectationsPageLocationProps>>>;
+export const ExpectationsPage = ContribPage(expectationsPageActionCreators)(ExpectationsPageComponent);

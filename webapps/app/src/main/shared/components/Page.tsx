@@ -8,9 +8,11 @@ import {PageProperties} from "./PageWithHeader/PageProperties";
 
 export function Page<TState, TLocationProps>(pageActionCreators: AbstractPageActionCreators<TState, TLocationProps>) {
 
+    const pac = pageActionCreators;
+
     const mapDispatchToProps = (dispatch: Dispatch<TState>): Partial<PageProperties<TLocationProps>> => {
         return {
-            onLoad: (params: TLocationProps) => dispatch(pageActionCreators.onLoad(params))
+            onLoad: (params: TLocationProps) => dispatch(pac.onLoad(params))
         }
     };
 
