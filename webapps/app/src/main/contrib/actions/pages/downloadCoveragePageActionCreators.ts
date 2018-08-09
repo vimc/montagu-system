@@ -1,29 +1,30 @@
 import {Dispatch} from "redux";
 
-import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {responsibilityOverviewPageActionCreators} from "./responsibilityOverviewPageActionCreators";
-import {
-    DownloadCoveragePageComponent,
-    DownloadCoveragePageLocationProps
-} from "../../components/Responsibilities/Coverage/DownloadCoveragePage";
-import {responsibilitiesActionCreators} from "../responsibilitiesActionCreators";
+import {DownloadCoveragePageLocationProps} from "../../components/Responsibilities/Coverage/DownloadCoveragePage";
 import {coverageActionCreators} from "../coverageActionCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
+import {ContribPageActionCreators} from "./ContribPageActionCreators";
+import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
+import {responsibilitiesActionCreators} from "../responsibilitiesActionCreators";
 
-export const downloadCoveragePageActionCreators = {
-    onLoad(props: DownloadCoveragePageLocationProps) {
-        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-            await dispatch(this.loadData(props));
-            dispatch(breadcrumbsActionCreators.createBreadcrumbs(DownloadCoveragePageComponent.breadcrumb(getState())));
+class DownloadCoveragePageActionCreators extends ContribPageActionCreators<DownloadCoveragePageLocationProps> {
+    parent = responsibilityOverviewPageActionCreators;
+
+    createBreadcrumb(state: ContribAppState): PageBreadcrumb {
+        return {
+            name: `Download coverage for ${state.responsibilities.currentResponsibility.scenario.description}`,
+            urlFragment: `coverage/${state.responsibilities.currentResponsibility.scenario.id}/`
         }
-    },
+    }
 
-    loadData(props: DownloadCoveragePageLocationProps) {
+    loadData(params: DownloadCoveragePageLocationProps): (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => void {
         return async (dispatch: Dispatch<ContribAppState>) => {
-            await dispatch(responsibilityOverviewPageActionCreators.loadData(props));
-            dispatch(responsibilitiesActionCreators.setCurrentResponsibility(props.scenarioId));
+            dispatch(responsibilitiesActionCreators.setCurrentResponsibility(params.scenarioId));
             await dispatch(coverageActionCreators.getDataSets());
         }
     }
 
-};
+}
+
+export const downloadCoveragePageActionCreators = new DownloadCoveragePageActionCreators();
