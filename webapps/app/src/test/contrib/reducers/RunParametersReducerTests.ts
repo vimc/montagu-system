@@ -2,17 +2,13 @@ import { expect } from "chai";
 
 import { runParametersReducer, runParametersInitialState } from "../../../main/contrib/reducers/runParametersReducer";
 import {
-    RunParametersTokenData, RunParametersTypes, RunParametersUploadStatus, RunParametersUploadStatusData
+    RunParametersTypes, RunParametersUploadStatus, RunParametersUploadStatusData
 } from "../../../main/contrib/actionTypes/RunParametersTypes";
 import {mockModelRunParameterSet} from "../../mocks/mockModels";
 
 describe('Run Parameters reducer tests', () => {
 
     const testModelRunParametersSet = mockModelRunParameterSet();
-    const testModelRunParametersToken: RunParametersTokenData = {
-        id: 2,
-        token: "test-token"
-    };
     const testModelRunParametersInProgress: RunParametersUploadStatusData = {
         status: RunParametersUploadStatus.in_progress,
         errors: null
@@ -40,13 +36,6 @@ describe('Run Parameters reducer tests', () => {
         })).to.eql(runParametersInitialState);
     });
 
-    it('sets fetched token', () => {
-        expect(runParametersReducer(undefined, {
-            type: RunParametersTypes.RUN_PARAMETERS_TOKEN_FETCHED,
-            data: testModelRunParametersToken
-        })).to.eql({...runParametersInitialState, tokens: {...{[testModelRunParametersToken.id]: testModelRunParametersToken.token}}});
-    });
-
     it('sets upload status in progress', () => {
         expect(runParametersReducer(undefined, {
             type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
@@ -68,4 +57,4 @@ describe('Run Parameters reducer tests', () => {
         })).to.eql({...runParametersInitialState, uploadStatus: {status: "completed", errors: [new Error('test')]}});
     });
 
-})
+});

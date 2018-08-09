@@ -52,22 +52,6 @@ describe("Run Parameters actions tests", () => {
         });
     });
 
-    it("gets one time token", (done) => {
-        const store = createMockContribStore();
-        sandbox.setStubFunc(RunParametersService.prototype, "getOneTimeToken", ()=>{
-            return Promise.resolve("test-token");
-        });
-        store.dispatch(runParametersActionCreators.getOneTimeToken(testGroup.id, testTouchstoneVersion.id, testModelRunParametersSet.id));
-        setTimeout(() => {
-            const actions = store.getActions()
-            const expectedPayload = [
-                { type: RunParametersTypes.RUN_PARAMETERS_TOKEN_FETCHED, data: {id: testModelRunParametersSet.id, token: "test-token"}},
-            ];
-            expect(actions).to.eql(expectedPayload);
-            done();
-        });
-    });
-
     it("refresh parameters sets", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },

@@ -10,7 +10,7 @@ describe('Run Parameters service tests', () => {
     const sandbox = new Sandbox();
 
     const history = createMemoryHistory();
-    const store = createContribStore(history)
+    const store = createContribStore(history);
 
     afterEach(() => {
         sandbox.restore();
@@ -41,18 +41,6 @@ describe('Run Parameters service tests', () => {
 
         expect(getStub.getCall(0).args[0]).to.equal("/modelling-groups/group-3/model-run-parameters/touchstone-3/");
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: "runParameters" });
-    });
-
-    it('fetches one time token', () => {
-        const runParametersService = new RunParametersService(store.dispatch, store.getState as () => ContribAppState);
-
-        const getStub = sandbox.setStubFunc(runParametersService, "get", ()=>{
-            return Promise.resolve();
-        });
-
-        runParametersService.getOneTimeToken("group-3", "touchstone-3", 3);
-
-        expect(getStub.getCall(0).args[0]).to.equal("/modelling-groups/group-3/model-run-parameters/touchstone-3/3/get_onetime_link/");
     });
 
     it('uploads set', () => {
