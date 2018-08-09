@@ -44,7 +44,7 @@ describe("Download Coverage Content Component", () => {
         user: {signedConfidentialityAgreement: false}
     };
 
-    let store : Store<ContribAppState>;
+    let store: Store<ContribAppState>;
 
     const sandbox = new Sandbox();
     beforeEach(() => {
@@ -96,9 +96,9 @@ describe("Download Coverage Content Component", () => {
         expect(rendered.find(ConfidentialityAgreementComponent).length).to.eql(1);
     });
 
-
-    it("renders on component level touuchstone and scenario table", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
+    it("renders on component level touchstone and scenario table", () => {
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}})
+            .dive().dive().dive().dive().dive().dive();
         const firstTable = rendered.find('table.specialColumn').at(0);
         expect(firstTable.find('tr').at(0).find('div.col').at(1).text(), testTouchstone.description);
         expect(firstTable.find('tr').at(1).find('div.col').at(1).text(), testScenario.description);
@@ -123,7 +123,7 @@ describe("Download Coverage Content Component", () => {
 
     it("calling onSelectFormat triggers set format", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
-        .dive().dive().dive();
+            .dive().dive().dive();
         const downloadCoverageContentComponentInstance = rendered.instance() as DownloadCoverageContentComponent;
         const onFormatSelectStub = sandbox.setStubReduxAction(coverageActionCreators, "setFormat");
         downloadCoverageContentComponentInstance.onSelectFormat("long");
