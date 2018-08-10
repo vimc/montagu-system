@@ -65,7 +65,7 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
     renderUploadForm(): JSX.Element {
         if (this.props.canUpload) {
             const {groupId, touchstoneId, scenarioId, estimateSet} = this.props;
-            const redirectUrl = encodeURIComponent(window.location.href);
+            const redirectUrl = encodeURIComponent(helpers.getCurrentLocation());
             const url = `/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/estimate-sets/${estimateSet.id}/?redirectResultTo=${redirectUrl}`;
             return <UploadFileForm href={url}
                                    enableSubmit={true}

@@ -12,13 +12,11 @@ import {
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {helpers} from "../../../../../main/shared/Helpers";
 import {Alert} from "reactstrap"
+import {mockBurdenEstimateSet} from "../../../../mocks/mockModels";
 
 describe("UploadEstimatesForm", () => {
     const sandbox = new Sandbox();
-
-    afterEach(() => {
-        sandbox.restore();
-    });
+    afterEach(() => sandbox.restore());
 
     it("renders create form if canCreate and not canUpload", () => {
 
@@ -26,7 +24,7 @@ describe("UploadEstimatesForm", () => {
             groupId: "group-1",
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1",
-            estimateSetId: 1,
+            estimateSet: null,
             canUpload: false,
             canCreate: true,
         };
@@ -38,12 +36,13 @@ describe("UploadEstimatesForm", () => {
     });
 
     it("renders upload form if canUpload", () => {
-
+        sandbox.setStubFunc(helpers, "getCurrentLocation", () => "/some-url/");
+        const set = mockBurdenEstimateSet({id: 123});
         const props: UploadBurdenEstimatesFormComponentProps = {
             groupId: "group-1",
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1",
-            estimateSetId: 1,
+            estimateSet: set,
             canUpload: true,
             canCreate: true,
         };
@@ -51,7 +50,11 @@ describe("UploadEstimatesForm", () => {
         const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
 
         expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0);
-        expect(rendered.find(UploadFileForm)).to.have.lengthOf(1);
+        const form = rendered.find(UploadFileForm);
+        expect(form).to.have.lengthOf(1);
+        expect(form.prop("href")).to.equal(
+            "/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimate-sets/123/?redirectResultTo=%2Fsome-url%2F"
+        );
     });
 
 
@@ -61,7 +64,7 @@ describe("UploadEstimatesForm", () => {
             groupId: "group-1",
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1",
-            estimateSetId: 1,
+            estimateSet: null,
             canUpload: false,
             canCreate: true,
         };
@@ -81,7 +84,7 @@ describe("UploadEstimatesForm", () => {
             groupId: "group-1",
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1",
-            estimateSetId: 1,
+            estimateSet: null,
             canUpload: false,
             canCreate: false,
         };
@@ -98,7 +101,7 @@ describe("UploadEstimatesForm", () => {
             groupId: "group-1",
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1",
-            estimateSetId: 1,
+            estimateSet: null,
             canUpload: false,
             canCreate: false
         };
@@ -117,7 +120,7 @@ describe("UploadEstimatesForm", () => {
             groupId: "group-1",
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1",
-            estimateSetId: 1,
+            estimateSet: null,
             canUpload: false,
             canCreate: false,
         };
@@ -143,7 +146,7 @@ describe("UploadEstimatesForm", () => {
             groupId: "group-1",
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1",
-            estimateSetId: 1,
+            estimateSet: null,
             canUpload: false,
             canCreate: false,
         };
@@ -167,7 +170,7 @@ describe("UploadEstimatesForm", () => {
             groupId: "group-1",
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1",
-            estimateSetId: 1,
+            estimateSet: null,
             canUpload: false,
             canCreate: false,
         };
@@ -178,5 +181,4 @@ describe("UploadEstimatesForm", () => {
         expect(alert.prop("color")).to.eq("success");
         expect(alert.childAt(0).text()).to.eql("Success! You have uploaded a new set of burden estimates");
     });
-
 });

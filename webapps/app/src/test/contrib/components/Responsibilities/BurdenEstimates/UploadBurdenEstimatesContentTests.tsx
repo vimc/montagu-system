@@ -127,7 +127,7 @@ describe("UploadBurdenEstimatesContent", () => {
         const expected: UploadBurdenEstimatesFormComponentProps = {
             canCreate: true,
             canUpload: false,
-            estimateSetId: testEstimateSet.id,
+            estimateSet: testEstimateSet,
             groupId: testGroup.id,
             scenarioId: testScenario.id,
             touchstoneId: testTouchstone.id
