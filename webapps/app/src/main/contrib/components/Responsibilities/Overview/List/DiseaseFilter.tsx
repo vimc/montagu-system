@@ -24,16 +24,16 @@ export const DiseaseFilterComponent: React.SFC<DiseaseFilterProps> = (props: Dis
             required={false}
         />
     </div>;
- }
+ };
 
 export const mapDiseaseOptions = (diseases: Disease[], responsibilities: Responsibility[]): Option[] => {
     if (!responsibilities) return null;
-    const diseaseIds = [ ...new Set(responsibilities.map(x => x.scenario.disease)) ]
+    const diseaseIds = [ ...new Set(responsibilities.map(x => x.scenario.disease)) ];
     const foundDiseases: Disease[] = diseaseIds.map(id => diseases.find(item => id === item.id))
         .filter(item => item);
     if (!foundDiseases.length) return null;
     return foundDiseases.map(disease => ({ value: disease.id, text: disease.name }));
-}
+};
 
 export const mapStateToProps = (state: ContribAppState): Partial<DiseaseFilterProps> => {
     return {

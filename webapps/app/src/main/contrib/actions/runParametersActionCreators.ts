@@ -46,7 +46,7 @@ export const runParametersActionCreators = {
             const group = getState().groups.currentUserGroup;
             const touchstone = getState().touchstones.currentTouchstoneVersion;
 
-            dispatch(this.clearCacheForGetParameterSets(group.id, touchstone.id))
+            dispatch(this.clearCacheForGetParameterSets(group.id, touchstone.id));
             dispatch(this.getParameterSets(group.id, touchstone.id))
         }
     },
@@ -56,7 +56,7 @@ export const runParametersActionCreators = {
             dispatch({
                 type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
                 data: {status: RunParametersUploadStatus.in_progress, errors: null}
-            })
+            });
 
             const group = getState().groups.currentUserGroup;
             const touchstone = getState().touchstones.currentTouchstoneVersion;
@@ -67,7 +67,7 @@ export const runParametersActionCreators = {
             dispatch({
                 type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
                 data: {status: RunParametersUploadStatus.completed, errors: result && result.errors ? result.errors : null}
-            })
+            });
             if (result && !result.errors) {
                 dispatch(this.refreshParameterSets());
             }

@@ -30,7 +30,7 @@ export const ChooseGroupContentComponent: React.SFC<ChooseGroupContentProps> = (
             <ButtonLink href={url}>Next</ButtonLink>
         </span>;
     }
-}
+};
 
 export const mapStateToProps = (state: ContribAppState): Partial<ChooseGroupContentProps> => {
     return {

@@ -77,7 +77,7 @@ describe("User action creators", () => {
         store.dispatch(userActionCreators.addReportReader("test", "user"));
         setTimeout(() => {
             const actions = store.getActions();
-            const expectedPayload = { type: UserActionTypes.REPORT_READERS_FETCHED, data: [testUser] }
+            const expectedPayload = { type: UserActionTypes.REPORT_READERS_FETCHED, data: [testUser] };
             expect(actions).to.eql([expectedPayload]);
             done();
         });

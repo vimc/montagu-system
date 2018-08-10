@@ -61,7 +61,7 @@ export function resetFetcher() {
 }
 
 export function mockFetcher(promise: Promise<Response>, reportingPromise?: Promise<Response>) {
-    fetcher.fetcher = new AdminFetcher()
+    fetcher.fetcher = new AdminFetcher();
     fetcher.fetcher.fetch = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
         return promise;
     };
@@ -71,7 +71,7 @@ export function mockFetcher(promise: Promise<Response>, reportingPromise?: Promi
 }
 
 export function mockFetcherNonJson(promise: Promise<any>, reportingPromise?: Promise<any>) {
-    fetcher.fetcher = new AdminFetcher()
+    fetcher.fetcher = new AdminFetcher();
     fetcher.fetcher.fetch = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
         return promise;
     };

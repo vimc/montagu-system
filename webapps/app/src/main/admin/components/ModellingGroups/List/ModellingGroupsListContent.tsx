@@ -29,7 +29,7 @@ export const sortAdminModellingGroups = (originalGroups: ModellingGroup[]): Mode
         return [];
     }
     return orderBy(originalGroups, ['description'], ['asc']);
-}
+};
 
 export const mapStateToProps = (state: AdminAppState): ModellingGroupsProps => {
     return {

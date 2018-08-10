@@ -52,4 +52,4 @@ describe("Breadcrumb Bar", () => {
         expect(crumbs.length).to.equal(0);
     });
 
-})
+});

@@ -10,4 +10,4 @@ export function PageScrollOnMount (
             return <PageScrollOnMountWrapped {...this.props}/>;
         }
     }
-};
+}

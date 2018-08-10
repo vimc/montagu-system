@@ -40,4 +40,4 @@ describe('Modelling groups reducer tests', () => {
             data: null
         })).to.eql(modellingGroupInitialState);
     });
-})
+});

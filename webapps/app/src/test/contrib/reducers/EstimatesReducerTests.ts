@@ -37,4 +37,4 @@ describe('Demographic reducer tests', () => {
             type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_CLEAR,
         })).to.eql(estimatesInitialState);
     });
-})
+});

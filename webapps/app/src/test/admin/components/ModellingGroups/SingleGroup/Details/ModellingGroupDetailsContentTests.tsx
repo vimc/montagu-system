@@ -29,7 +29,7 @@ describe("Modelling Group Details Content Component tests", () => {
             const testState = {
                 groups: { currentGroupDetails: testGroupDetails, currentGroupMembers: [testUser, testUser2]},
                 auth: { permissions: ["*/modelling-groups.manage-members"] }
-            }
+            };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupDetailsContent/>, {context: {store}});
             expect(rendered.props().group).to.equal(testGroupDetails);
@@ -42,7 +42,7 @@ describe("Modelling Group Details Content Component tests", () => {
                 groups: { currentGroupDetails: testGroupDetails},
                 users: { users: [testUser, testUser2]},
                 auth: { permissions: ["test"] }
-            }
+            };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupDetailsContent/>, {context: {store}});
             expect(rendered.props().canManageGroupMembers).to.be.false;

@@ -24,7 +24,7 @@ describe('Run Parameters reducer tests', () => {
     const testModelRunParametersCompletedWithErrors: RunParametersUploadStatusData = {
         status: RunParametersUploadStatus.completed,
         errors: [new Error('test')]
-    }
+    };
 
     it('sets fetched model run parameters set', () => {
         expect(runParametersReducer(undefined, {
@@ -68,4 +68,4 @@ describe('Run Parameters reducer tests', () => {
         })).to.eql({...runParametersInitialState, uploadStatus: {status: "completed", errors: [new Error('test')]}});
     });
 
-})
+});

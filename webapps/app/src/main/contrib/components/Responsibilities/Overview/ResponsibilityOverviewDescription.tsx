@@ -157,4 +157,4 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
                 </span>
         </div>;
     }
-}
+};

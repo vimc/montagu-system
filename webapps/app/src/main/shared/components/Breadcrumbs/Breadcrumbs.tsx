@@ -17,7 +17,7 @@ export const makeLink = (crumb: Breadcrumb): JSX.Element => {
     } else {
         return <span>{crumb.name}</span>;
     }
-}
+};
 
 export const BreadcrumbsComponent: React.SFC<Props> = (props: Props) => {
     return (
@@ -30,7 +30,7 @@ export const BreadcrumbsComponent: React.SFC<Props> = (props: Props) => {
             )}
         </div>
     );
-}
+};
 
 export const mapStateToProps = (state: GlobalState): Props => {
     return {

@@ -59,7 +59,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
         let removeSpy: sinon.SinonSpy;
         beforeEach(() => {
             removeSpy = sandbox.createSpy();
-        })
+        });
         afterEach(() => sandbox.restore());
 
         it("renders link to user page", () => {

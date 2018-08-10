@@ -78,9 +78,9 @@ describe("Breadcrumbs actions tests with mock store", () => {
         });
         store.dispatch(breadcrumbsActionCreators.createBreadcrumbs(testPageBreadCrumb));
         setTimeout(() => {
-            const actions = store.getActions()
-            const expectedPayload = { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs }
-            expect(actions).to.eql([expectedPayload])
+            const actions = store.getActions();
+            const expectedPayload = { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs };
+            expect(actions).to.eql([expectedPayload]);
             done();
         });
     });

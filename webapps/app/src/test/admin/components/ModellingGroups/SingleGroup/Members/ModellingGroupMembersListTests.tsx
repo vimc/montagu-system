@@ -28,7 +28,7 @@ describe("Modelling Group Members List component tests", () => {
         it("connect level, there are users and can manage", () => {
             const testState = {
                 auth: { permissions: ["*/modelling-groups.manage-members"]},
-            }
+            };
             const store = createMockStore(testState);
 
             const rendered = shallow(<ModellingGroupMembersList
@@ -43,7 +43,7 @@ describe("Modelling Group Members List component tests", () => {
         it("connect level, there are no users and can not manage", () => {
             const testState = {
                 auth: { permissions: ["*/test"]},
-            }
+            };
             const store = createMockStore(testState);
 
             const rendered = shallow(<ModellingGroupMembersList
@@ -58,7 +58,7 @@ describe("Modelling Group Members List component tests", () => {
         it("connect level, there are users and they are sorted", () => {
             const testState = {
                 auth: {permissions: ["*/modelling-groups.manage-members"]},
-            }
+            };
             const store = createMockStore(testState);
 
             const rendered = shallow(<ModellingGroupMembersList

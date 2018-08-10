@@ -4,4 +4,4 @@ import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
 
 export const ReportingPageHeader: React.SFC<undefined> = () => (
     <PageHeader logo={logo} siteTitle={"Reporting portal"} />
-)
+);

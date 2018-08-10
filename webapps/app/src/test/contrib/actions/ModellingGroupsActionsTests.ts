@@ -23,7 +23,7 @@ describe("Modelling groups actions tests", () => {
         sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", ()=>{
           return Promise.resolve([testGroup1]);
         });
-        store.dispatch(modellingGroupsActionCreators.getUserGroups())
+        store.dispatch(modellingGroupsActionCreators.getUserGroups());
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup1] };
@@ -37,11 +37,11 @@ describe("Modelling groups actions tests", () => {
             groups: {userGroups: [testGroup1]}
         };
         const store = createMockStore(initialState);
-        store.dispatch(modellingGroupsActionCreators.setCurrentGroup("test1"))
+        store.dispatch(modellingGroupsActionCreators.setCurrentGroup("test1"));
         setTimeout(() => {
-            const actions = store.getActions()
-            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup1 }
-            expect(actions).to.eql([expectedPayload])
+            const actions = store.getActions();
+            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup1 };
+            expect(actions).to.eql([expectedPayload]);
             done();
         });
     });
