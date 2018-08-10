@@ -59,41 +59,6 @@ class CreateBurdenEstimateTests : BurdenEstimateTests()
         JSONValidator().validateError(response.text, "invalid-field:model_run_parameter_set:missing")
     }
 
-    @Test
-    fun `can create burden estimate via onetime link`()
-    {
-        validate("$setUrl/get_onetime_link/") against "Token" given { db ->
-            setUp(db)
-        } requiringPermissions {
-            requiredWritePermissions
-        } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
-            val response = requestHelper.post(oneTimeURL, metadataForCreate())
-            createdSetLocation.checkObjectCreation(response)
-
-            val badResponse = requestHelper.get(oneTimeURL)
-            JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
-        }
-    }
-
-    @Test
-    fun `can create burden estimate via onetime link and redirect`()
-    {
-        validate("$setUrl/get_onetime_link/?redirectUrl=http://localhost/") against "Token" given { db ->
-            setUp(db)
-        } requiringPermissions {
-            requiredWritePermissions
-        } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
-
-            val response = requestHelper.post(oneTimeURL, metadataForCreate())
-            val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-            JSONValidator().validateSuccess(resultAsString)
-        }
-    }
-
     private val createdSetLocation = LocationConstraint(
             "/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimate-sets/", unknownId = true
     )
