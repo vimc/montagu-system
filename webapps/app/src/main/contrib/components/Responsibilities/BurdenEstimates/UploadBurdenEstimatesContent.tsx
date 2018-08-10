@@ -1,6 +1,6 @@
 import * as React from "react";
-import { compose, branch, renderComponent} from "recompose";
-import { connect } from 'react-redux';
+import {branch, compose, renderComponent} from "recompose";
+import {connect} from 'react-redux';
 
 import {ModellingGroup, Responsibility, Scenario, TouchstoneVersion} from "../../../../shared/models/Generated";
 import {TemplateLink} from "../Overview/List/OldStyleTemplates/TemplateLink";
@@ -8,6 +8,7 @@ import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSumm
 import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {isNullOrUndefined} from "util";
 
 export interface UploadBurdenEstimatesContentProps {
     touchstone: TouchstoneVersion;
@@ -65,7 +66,7 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
                     groupId={this.props.group.id}
                     touchstoneId={this.props.touchstone.id}
                     scenarioId={this.props.scenario.id}
-                    estimateSetId={this.props.responsibility.current_estimate_set.id}
+                    estimateSet={this.props.responsibility.current_estimate_set}
                 />
             </div>
         </div>;
@@ -88,7 +89,11 @@ export const mapStateToProps = (state: ContribAppState): Partial<UploadBurdenEst
     return newProps;
 };
 
+function notReady(props: UploadBurdenEstimatesContentProps): boolean {
+    return isNullOrUndefined(props.responsibility);
+}
+
 export const UploadBurdenEstimatesContent = compose(
     connect(mapStateToProps, (dispatch, props) => props),
-    branch((props: UploadBurdenEstimatesContentProps) => !props.responsibility, renderComponent(LoadingElement))
+    branch(notReady, renderComponent(LoadingElement))
 )(UploadBurdenEstimatesContentComponent) as React.ComponentClass<Partial<UploadBurdenEstimatesContentProps>>;
