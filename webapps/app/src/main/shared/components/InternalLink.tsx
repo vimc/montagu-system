@@ -22,7 +22,7 @@ const InternalLink : React.StatelessComponent<InternalLinkProps> = (props: Inter
     } else {
         return <a href={props.href} className={props.className} onClick={props.onClick}>{props.children}</a>
     }
-}
+};
 
 InternalLink.contextTypes = {
     router: React.PropTypes.object

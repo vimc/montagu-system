@@ -26,7 +26,7 @@ describe("Model Run Parameters Status component tests", () => {
     const testGroup = mockModellingGroup();
     const testDisease = mockDisease();
     const testTouchstone = mockTouchstoneVersion();
-    const testRunParametersSet = mockModelRunParameterSet({disease: testDisease.id})
+    const testRunParametersSet = mockModelRunParameterSet({disease: testDisease.id});
 
     const testState = {
         groups: {currentUserGroup: testGroup},

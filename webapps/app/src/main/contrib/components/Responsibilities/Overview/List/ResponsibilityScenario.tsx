@@ -57,7 +57,7 @@ const mapStateToProps = (state: ContribAppState, props: ResponsibilityScenarioPr
         ...props,
         diseases: state.diseases.diseases
     }
-}
+};
 
 export const ResponsibilityScenario = connect(mapStateToProps)(ResponsibilityScenarioComponent) as
     React.ComponentClass<ResponsibilityScenarioPublicProps>;

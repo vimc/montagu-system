@@ -31,8 +31,8 @@ describe("Reporting MainMenu", () => {
         setTimeout(() => {
             const state = store.getState() as ReportAppState;
             const breadcrumbs = state.breadcrumbs.breadcrumbs;
-            expect(breadcrumbs[0].name).to.equal("Main menu")
-            expect(breadcrumbs[0].url).to.equal("/")
+            expect(breadcrumbs[0].name).to.equal("Main menu");
+            expect(breadcrumbs[0].url).to.equal("/");
             done();
         });
     });

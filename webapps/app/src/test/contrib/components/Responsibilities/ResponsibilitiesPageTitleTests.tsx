@@ -44,7 +44,7 @@ describe("ResponsibilitiesPageTitle", () => {
         const store = createMockContribStore({
             groups: {currentUserGroup: testGroup},
             touchstones: {currentTouchstoneVersion: null},
-        })
+        });
         const rendered = shallow(<ResponsibilitiesPageTitle title={"test"}/>, {context: {store}}).dive();
         expect(rendered.find('div.mr-3').text()).to.equal("test");
         expect(rendered.find(InternalLink).length).to.equal(0);

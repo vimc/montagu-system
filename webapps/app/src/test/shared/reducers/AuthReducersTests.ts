@@ -21,7 +21,7 @@ describe('Modelling groups reducer tests', () => {
         })).to.eql(
             testAuthData
         )
-    })
+    });
 
     it('reverts state to initial after unauth action', () => {
         expect(authReducer(undefined, {
@@ -29,7 +29,7 @@ describe('Modelling groups reducer tests', () => {
         })).to.eql(
             initialAuthState
         )
-    })
+    });
 
     it('sets errror', () => {
         expect(authReducer(undefined, {
@@ -39,4 +39,4 @@ describe('Modelling groups reducer tests', () => {
             Object.assign({}, initialAuthState, { errorMessage: "Test Error" })
         )
     })
-})
+});

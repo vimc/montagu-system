@@ -34,4 +34,4 @@ describe('Diseases reducer tests', () => {
             data: null
         })).to.eql(diseasesInitialState);
     })
-})
+});

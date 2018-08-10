@@ -11,7 +11,7 @@ describe('Estimates service tests', () => {
     const sandbox = new Sandbox();
 
     const history = createMemoryHistory();
-    const store = createContribStore(history)
+    const store = createContribStore(history);
 
     afterEach(() => {
         sandbox.restore();
@@ -37,7 +37,7 @@ describe('Estimates service tests', () => {
             return Promise.resolve();
         });
 
-        const testEstimatesBurden = mockBurdenEstimateSet()
+        const testEstimatesBurden = mockBurdenEstimateSet();
 
         estimatesService.createBurden("group-1", "touchstone-1", "scenario-1", testEstimatesBurden);
 

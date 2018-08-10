@@ -31,7 +31,7 @@ describe("Modelling Group Members Content component tests", () => {
                 auth: { permissions: ["*/modelling-groups.manage-members"]},
                 groups: { currentGroupDetails: testGroupDetails, currentGroupMembers: [testUser] },
                 users: { users: [testUser, testUser2]},
-            }
+            };
             const store = createMockStore(testState);
 
             const rendered = shallow(<ModellingGroupMembersContent/>, {context: {store}});
@@ -49,7 +49,7 @@ describe("Modelling Group Members Content component tests", () => {
                 groups: { currentGroupDetails: testGroupDetails, currentGroupMembers: [] as any},
                 users: { users: [testUser, testUser2]},
 
-            }
+            };
             const store = createMockStore(testState);
 
             const rendered = shallow(<ModellingGroupMembersContent/>, {context: {store}});

@@ -33,7 +33,7 @@ describe("Admin Modelling groups actions tests", () => {
         });
         store.dispatch(modellingGroupsActionCreators.getAllGroups());
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = {type: ModellingGroupTypes.GROUPS_FETCHED, data: [testGroup, testGroup2]};
             expect(actions).to.eql([expectedPayload]);
             expect(getAllGroupsServiceStub.called).to.be.true;
@@ -48,7 +48,7 @@ describe("Admin Modelling groups actions tests", () => {
         });
         store.dispatch(modellingGroupsActionCreators.getGroupDetails(testGroup.id));
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = {type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails};
             expect(actions).to.eql([expectedPayload]);
             expect(getGroupDetailsServiceStub.called).to.be.true;
@@ -61,7 +61,7 @@ describe("Admin Modelling groups actions tests", () => {
         const store = createMockStore({groups: {groups: [testGroup, testGroup2]}});
         store.dispatch(modellingGroupsActionCreators.setCurrentGroup(testGroup.id));
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP, data: testGroup};
             expect(actions).to.eql([expectedPayload]);
             done();
@@ -72,7 +72,7 @@ describe("Admin Modelling groups actions tests", () => {
         const store = createMockStore({groups: {groups: [testGroup]}});
         store.dispatch(modellingGroupsActionCreators.setCurrentGroup(testGroup2.id));
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP, data: null as any};
             expect(actions).to.eql([expectedPayload]);
             done();
@@ -85,14 +85,14 @@ describe("Admin Modelling groups actions tests", () => {
         const addMemberServiceStub = sandbox.setStubFunc(ModellingGroupsService.prototype, "addMember", () => {
             return Promise.resolve("OK");
         });
-        const clearCacheForGroupDetailsServiceStub = sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearCacheForGroupDetails")
+        const clearCacheForGroupDetailsServiceStub = sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearCacheForGroupDetails");
         const getGroupDetailsServiceStub = sandbox.setStubFunc(ModellingGroupsService.prototype, "getGroupDetails", () => {
             return Promise.resolve(testGroupDetails);
         });
 
         store.dispatch(modellingGroupsActionCreators.addUserToGroup(testGroup.id, testUser.username));
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = [
                 {type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails},
                 {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]}
@@ -117,7 +117,7 @@ describe("Admin Modelling groups actions tests", () => {
 
         store.dispatch(modellingGroupsActionCreators.addUserToGroup(testGroup.id, testUser.username));
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = [] as any;
             expect(actions).to.eql(expectedPayload);
             expect(addMemberServiceStub.called).to.be.true;
@@ -132,14 +132,14 @@ describe("Admin Modelling groups actions tests", () => {
         const removeMemberServiceStub = sandbox.setStubFunc(ModellingGroupsService.prototype, "removeMember", () => {
             return Promise.resolve("OK");
         });
-        const clearCacheForGroupDetailsServiceStub = sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearCacheForGroupDetails")
+        const clearCacheForGroupDetailsServiceStub = sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearCacheForGroupDetails");
         const getGroupDetailsServiceStub = sandbox.setStubFunc(ModellingGroupsService.prototype, "getGroupDetails", () => {
             return Promise.resolve(testGroupDetails);
         });
 
         store.dispatch(modellingGroupsActionCreators.removeUserFromGroup(testGroup.id, testUser.username));
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = [
                 {type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails},
                 {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]}
@@ -164,7 +164,7 @@ describe("Admin Modelling groups actions tests", () => {
 
         store.dispatch(modellingGroupsActionCreators.removeUserFromGroup(testGroup.id, testUser.username));
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             expect(actions).to.eql([]);
             expect(removeMemberServiceStub.called).to.be.true;
             expect(removeMemberServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
@@ -175,11 +175,11 @@ describe("Admin Modelling groups actions tests", () => {
 
     it("clears cache for group details", (done) => {
         const store = createMockStore({groups: {currentGroupDetails: testGroupDetails}, users: {users: [testUser]}});
-        const clearCacheForGroupDetailsServiceStub = sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearCacheForGroupDetails")
+        const clearCacheForGroupDetailsServiceStub = sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearCacheForGroupDetails");
 
         store.dispatch(modellingGroupsActionCreators.clearCacheForGroupDetails(testGroup.id));
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             expect(actions).to.eql([]);
             expect(clearCacheForGroupDetailsServiceStub.called).to.be.true;
             expect(clearCacheForGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
@@ -191,7 +191,7 @@ describe("Admin Modelling groups actions tests", () => {
         const store = createMockStore({groups: {currentGroupDetails: testGroupDetails}, users: {users: []}});
         store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [] as any};
             expect(actions).to.eql([expectedPayload]);
             done();
@@ -202,7 +202,7 @@ describe("Admin Modelling groups actions tests", () => {
         const store = createMockStore({groups: {currentGroupDetails: null}, users: {users: [testUser]}});
         store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [] as any};
             expect(actions).to.eql([expectedPayload]);
             done();
@@ -213,7 +213,7 @@ describe("Admin Modelling groups actions tests", () => {
         const store = createMockStore({groups: {currentGroupDetails: testGroupDetails}, users: {users: [testUser2]}});
         store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [] as any};
             expect(actions).to.eql([expectedPayload]);
             done();
