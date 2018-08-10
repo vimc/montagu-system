@@ -1,33 +1,38 @@
 import * as React from "react";
 import {expect} from "chai"
 import {Client, QueryResult} from "pg";
-import { createMemoryHistory } from 'history';
+import {createMemoryHistory} from 'history';
 
 import {
-    Disease, Result, ModellingGroup, ScenarioTouchstoneAndCoverageSets,
+    CreateBurdenEstimateSet,
     DemographicDataset,
-    ModelRunParameterSet, Touchstone, ResponsibilitySetWithExpectations,
+    Disease,
+    ModellingGroup,
+    ModelRunParameterSet,
+    ResponsibilitySetWithExpectations,
+    Result,
+    ScenarioTouchstoneAndCoverageSets,
+    Touchstone,
 } from "../main/shared/models/Generated";
 import {inflateAndDecode, IntegrationTestSuite} from "./IntegrationTest";
 import * as enzyme from "enzyme";
 import * as Adapter from "enzyme-adapter-react-15";
-enzyme.configure({ adapter: new Adapter() });
 import * as QueryString from "querystring";
 
 import {createContribStore} from "../main/contrib/createStore";
-import { ModellingGroupsService } from "../main/shared/services/ModellingGroupsService";
+import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
 import {RunParametersService} from "../main/contrib/services/RunParametersService";
 import {DiseasesService} from "../main/contrib/services/DiseasesService";
 import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 import {ResponsibilitiesService} from "../main/contrib/services/ResponsibilitiesService";
 import {CoverageService} from "../main/contrib/services/CoverageService";
 import {DemographicService} from "../main/contrib/services/DemographicService";
-import {appSettings, settings} from "../main/shared/Settings";
+import {appSettings} from "../main/shared/Settings";
 import {EstimatesService} from "../main/contrib/services/EstimatesService";
-import {EstimatesCreateBurdenData} from "../main/contrib/actionTypes/EstimatesTypes";
 import {UserService} from "../main/contrib/services/UserService";
 import {helpers} from "../main/shared/Helpers";
-import {jwtTokenAuth} from "../main/shared/modules/jwtTokenAuth";
+
+enzyme.configure({ adapter: new Adapter() });
 
 const FormData = require('form-data');
 
@@ -187,69 +192,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             expect(demographicDataSets).to.eql(expectedDataSets)
         });
 
-        it("fetches one time estimates token", async () => {
-
-            await returnBurdenEstimateSetPromise(this.db);
-
-            const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-                .getResponsibilities(groupId, touchstoneVersionId);
-
-            const estimatesSet = responsibilities.responsibilities[0].current_estimate_set;
-
-            const token: string = await (new EstimatesService(this.store.dispatch, this.store.getState))
-                .getOneTimeToken(groupId, touchstoneVersionId, scenarioId, estimatesSet.id);
-
-            const decoded = inflateAndDecode(token);
-            expect(decoded.action).to.equal("burdens-populate");
-            const payload = QueryString.parse(decoded.payload);
-            expect(payload).to.eql({
-                ":group-id": groupId,
-                ":touchstone-version-id": touchstoneVersionId,
-                ":scenario-id": scenarioId,
-                ":set-id": String(estimatesSet.id)
-            });
-        });
-
-        it("fetches one time estimates token with redirect url", async () => {
-
-            await returnBurdenEstimateSetPromise(this.db);
-
-            const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-                .getResponsibilities(groupId, touchstoneVersionId);
-
-            const estimatesSet = responsibilities.responsibilities[0].current_estimate_set;
-
-            const redirectPath = appSettings.publicPath + '/test';
-            const queryString = helpers.buildRedirectUrl(redirectPath);
-
-            const token: string = await (new EstimatesService(this.store.dispatch, this.store.getState))
-                .getOneTimeToken(groupId, touchstoneVersionId, scenarioId, estimatesSet.id, queryString);
-
-            const decoded = inflateAndDecode(token);
-
-            const query = QueryString.parse(decoded.query);
-            expect(query.redirectUrl).to.equal("http://localhost:5000/contribution/test");
-
-            expect(decoded.action).to.equal("burdens-populate");
-            const payload = QueryString.parse(decoded.payload);
-            expect(payload).to.eql({
-                ":group-id": groupId,
-                ":touchstone-version-id": touchstoneVersionId,
-                ":scenario-id": scenarioId,
-                ":set-id": String(estimatesSet.id)
-            });
-        });
-
-        function returnBurdenEstimateSetPromise(db: Client): Promise<any> {
-            let responsibilityIds: ResponsibilityIds = null;
-            return addResponsibilities(db)
-                .then(responsibilityIdsResult => {responsibilityIds = responsibilityIdsResult; return addModel(db)})
-                .then(modelVersionId => addBurdenEstimateSet(db, responsibilityIds.responsibility, modelVersionId))
-                .then(setId => updateCurrentBurdenEstimateSet(db, responsibilityIds.responsibility, setId));
-        }
-
-
-
         it("fetches model run parameter sets", async () => {
             await addModelRunParameterSets(this.db);
 
@@ -297,7 +239,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     type: "central-averaged",
                     details: "details"
                 }
-            } as EstimatesCreateBurdenData;
+            } as CreateBurdenEstimateSet;
 
             const responsibilitiesInitial: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
                 .getResponsibilities(groupId, touchstoneVersionId);

@@ -7,7 +7,7 @@ import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
 import {checkFileExtensionIsCSV} from "../../../../shared/validation/FileValidationHelpers";
 import {settings} from "../../../../shared/Settings";
 
-interface UploadBurdenEstimatesFormComponentProps {
+export interface UploadBurdenEstimatesFormComponentProps {
     touchstoneId: string;
     scenarioId: string;
     groupId: string;

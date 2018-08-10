@@ -19,7 +19,10 @@ import {
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesContent";
 
 import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
-import {UploadBurdenEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
+import {
+    UploadBurdenEstimatesForm,
+    UploadBurdenEstimatesFormComponentProps
+} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {TemplateLink} from "../../../../../main/contrib/components/Responsibilities/Overview/List/OldStyleTemplates/TemplateLink";
 
 describe("Upload Burden Estimates Content Component tests", () => {
@@ -100,10 +103,14 @@ describe("Upload Burden Estimates Content Component tests", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const uploadBurdenEstimatesForm = rendered.find(UploadBurdenEstimatesForm);
         expect(uploadBurdenEstimatesForm.length).to.equal(1);
-        expect(uploadBurdenEstimatesForm.props().canUpload).to.equal(false);
-        expect(uploadBurdenEstimatesForm.props().canCreate).to.equal(true);
-        expect(uploadBurdenEstimatesForm.props().groupId).to.equal(testGroup.id);
-        expect(uploadBurdenEstimatesForm.props().estimatesToken).to.equal("test-token");
-        expect(uploadBurdenEstimatesForm.props().scenarioId).to.equal(testScenario.id);
+        const expected: UploadBurdenEstimatesFormComponentProps = {
+            canCreate: true,
+            canUpload: false,
+            estimateSetId: 1,
+            groupId: testGroup.id,
+            scenarioId: testScenario.id,
+            touchstoneId: ""
+        };
+        expect(uploadBurdenEstimatesForm.props()).to.eql(expected);
     });
 });

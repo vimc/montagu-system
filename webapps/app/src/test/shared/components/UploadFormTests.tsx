@@ -18,17 +18,17 @@ describe('UploadForm', () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={false}
-                                           token="token"/>);
+                                           href="url"/>);
 
         rendered.setState({"fileSelected": true});
         assertButtonIsDisabled();
     });
 
-    it("disables submit button if token is null", () => {
+    it("disables submit button if href is null", () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={true}
-                                           token={null}/>);
+                                           href={null}/>);
 
         rendered.setState({"fileSelected": true});
         assertButtonIsDisabled();
@@ -38,7 +38,7 @@ describe('UploadForm', () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={true}
-                                           token="token"/>);
+                                           href="url"/>);
         assertButtonIsDisabled();
     });
 
@@ -49,7 +49,7 @@ describe('UploadForm', () => {
                 content: <span>Bad things</span>
             };
         };
-        rendered = shallow(<UploadFileForm token="token"
+        rendered = shallow(<UploadFileForm href="url"
                                            enableSubmit={true}
                                            successMessage="success"
                                            validatePath={validate}/>);
@@ -58,11 +58,11 @@ describe('UploadForm', () => {
         expect(rendered.find(".pathProblems").children().text()).to.contain("Bad things");
     });
 
-    it("enables submit button if enableSubmit is true and token exists", () => {
+    it("enables submit button if enableSubmit is true and URL is set", () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={true}
-                                           token="token"/>);
+                                           href="url"/>);
 
         rendered.setState({"fileSelected": true});
 
@@ -77,7 +77,7 @@ describe('UploadForm', () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success message"}
                                            enableSubmit={true}
-                                           token="token"/>);
+                                           href="url"/>);
 
         const alerts = rendered.find(Alert);
         expect(alerts).to.have.lengthOf(2);
@@ -96,7 +96,7 @@ describe('UploadForm', () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={true}
-                                           token="token"/>);
+                                           href="url"/>);
 
         const alerts = rendered.find(Alert);
         const errorAlert = alerts.first();
@@ -116,7 +116,7 @@ describe('UploadForm', () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success message"}
                                            enableSubmit={true}
-                                           token="token"/>);
+                                           href="url"/>);
 
         const alerts = rendered.find(Alert);
         const errorAlert = alerts.first();

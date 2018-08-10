@@ -7,7 +7,6 @@ import {ResponsibilitiesTypes} from "../../../main/contrib/actionTypes/Responsib
 import {createMockContribStore} from "../../mocks/mockStore";
 import {mockModellingGroup, mockResponsibilitySetWithExpectations, mockTouchstone} from "../../mocks/mockModels";
 import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPropsHelper";
-import {EstimatesTypes} from "../../../main/contrib/actionTypes/EstimatesTypes";
 import {EstimatesService} from "../../../main/contrib/services/EstimatesService";
 import {ExtendedResponsibilitySet} from "../../../main/contrib/models/ResponsibilitySet";
 
@@ -79,9 +78,6 @@ describe("Responsibilities actions tests", () => {
             responsibilities: {
                 currentResponsibility: testResponsibility,
                 responsibilitiesSet: testExtResponsibilitySet
-            },
-            estimates: {
-                redirectPath: '/test/'
             }
         });
         sandbox.setStubFunc(ResponsibilitiesService.prototype, "clearCacheForResponsibilities", ()=>{
@@ -89,9 +85,6 @@ describe("Responsibilities actions tests", () => {
         });
         sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", ()=>{
             return Promise.resolve(testResponsibilitySet);
-        });
-        sandbox.setStubFunc(EstimatesService.prototype, "getOneTimeToken", ()=>{
-            return Promise.resolve('test-token');
         });
         sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", ()=>{
             return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
@@ -102,8 +95,6 @@ describe("Responsibilities actions tests", () => {
             const expectedPayload = [
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
                 { type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility},
-                { type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_CLEAR},
-                { type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_FETCHED, data: 'test-token' }
             ];
             expect(actions).to.eql(expectedPayload);
             done();

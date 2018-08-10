@@ -1,13 +1,18 @@
-import { expect } from "chai";
+import {expect} from "chai";
 
-import { Sandbox } from "../../../Sandbox";
-import {createMockContribStore, createMockStore} from "../../../mocks/mockStore";
+import {Sandbox} from "../../../Sandbox";
+import {createMockContribStore} from "../../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
 import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {
-    mockBreadcrumbs, mockBurdenEstimateSet, mockDisease, mockModellingGroup, mockResponsibilitySetWithExpectations, mockTouchstone,
+    mockBreadcrumbs,
+    mockBurdenEstimateSet,
+    mockDisease,
+    mockModellingGroup,
+    mockResponsibilitySetWithExpectations,
+    mockTouchstone,
 } from "../../../mocks/mockModels";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
 import {TouchstoneTypes} from "../../../../main/shared/actionTypes/TouchstonesTypes";
@@ -18,7 +23,6 @@ import {ResponsibilitiesTypes} from "../../../../main/contrib/actionTypes/Respon
 import {ExtendedResponsibilitySet} from "../../../../main/contrib/models/ResponsibilitySet";
 import {uploadBurdenEstimatesPageActionCreators} from "../../../../main/contrib/actions/pages/uploadBurdenEstimatesPageActionCreators";
 import {EstimatesService} from "../../../../main/contrib/services/EstimatesService";
-import {EstimatesTypes} from "../../../../main/contrib/actionTypes/EstimatesTypes";
 
 describe("Upload burden estimates page actions tests", () => {
     const sandbox = new Sandbox();
@@ -47,9 +51,6 @@ describe("Upload burden estimates page actions tests", () => {
             responsibilities: {
                 responsibilitiesSet: testResponsibilitySet,
                 currentResponsibility: testResponsibilityWithEstimate
-            },
-            estimates: {
-                redirectPath: '/test/'
             }
         });
 
@@ -64,9 +65,6 @@ describe("Upload burden estimates page actions tests", () => {
         });
         sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", ()=>{
             return Promise.resolve(testResponsibilitySet);
-        });
-        sandbox.setStubFunc(EstimatesService.prototype, "getOneTimeToken", ()=>{
-            return Promise.resolve('test-token');
         });
         sandbox.setStubFunc(breadcrumbsModule, "initialize", ()=>{
             return testBreadcrumbs;
@@ -86,8 +84,6 @@ describe("Upload burden estimates page actions tests", () => {
                 { type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstoneVersion},
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
                 { type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility},
-                { type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_CLEAR},
-                { type: EstimatesTypes.ESTIMATES_ONE_TIME_TOKEN_FETCHED, data: "test-token"},
                 { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs },
             ];
             expect(actions).to.eql(expectedPayload);
