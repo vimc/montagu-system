@@ -26,7 +26,7 @@ describe("ForgottenPasswordFormComponent unit testing", () => {
     it("renders form and fields elements and submits on button click", () => {
         const spy = sandbox.sinon.spy();
         const submitMock = sandbox.createSpy();
-        const formWrapper = shallow(<ForgottenPasswordFormComponent handleSubmit={submitMock} submit={spy}/>)
+        const formWrapper = shallow(<ForgottenPasswordFormComponent handleSubmit={submitMock} submit={spy}/>);
         expect(formWrapper.find('Field[name="email"]')).to.have.length(1);
         expect(formWrapper.find('form')).to.have.length(1);
         expect(formWrapper.find('button[type="submit"]')).to.have.length(1);

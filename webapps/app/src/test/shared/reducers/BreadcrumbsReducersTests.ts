@@ -5,7 +5,7 @@ import {BreadcrumbsTypes} from "../../../main/shared/actionTypes/BreadrumbsTypes
 
 describe('Breadcrumb reducer tests', () => {
     it('sets breadcrumb', () => {
-        const breadcrumbs = [{name: "A", url: "a"}]
+        const breadcrumbs = [{name: "A", url: "a"}];
         expect(breadcrumbsReducer(undefined, {
             type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED,
             data: breadcrumbs
@@ -13,4 +13,4 @@ describe('Breadcrumb reducer tests', () => {
             breadcrumbs
         })
     })
-})
+});

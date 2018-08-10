@@ -20,7 +20,7 @@ describe("Modelling Group Members Add component tests", () => {
         const testUser1 = mockUser({username: "a"});
         const testUser2 = mockUser({username: "b"});
 
-        const testState = {users: {users: [testUser1, testUser2]}}
+        const testState = {users: {users: [testUser1, testUser2]}};
 
         const sandbox = new Sandbox();
 
@@ -44,7 +44,7 @@ describe("Modelling Group Members Add component tests", () => {
 
         it("when user clicks Add, emits correct actions", () => {
             const store = createMockStore(testState);
-            const addUserToGroupStub = sandbox.setStubReduxAction(modellingGroupsActionCreators, "addUserToGroup")
+            const addUserToGroupStub = sandbox.setStubReduxAction(modellingGroupsActionCreators, "addUserToGroup");
             const rendered = shallow(
                 <ModellingGroupMembersAdd members={[]} users={[testUser1, testUser2]} groupId={groupId}/>,
                 {context: {store}}

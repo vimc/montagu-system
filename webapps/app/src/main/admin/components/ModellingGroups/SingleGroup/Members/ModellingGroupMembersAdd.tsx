@@ -12,12 +12,12 @@ export interface ModellingGroupMembersAddProps {
     users: User[];
     groupId: string;
     addUserToGroup: (groupId: string, username: string) => void;
-};
+}
 
 export interface ModellingGroupMembersAddState {
     options: User[];
     selectedUser: string;
-};
+}
 
 export class ModellingGroupMembersAddComponent extends React.Component<ModellingGroupMembersAddProps, ModellingGroupMembersAddState> {
 

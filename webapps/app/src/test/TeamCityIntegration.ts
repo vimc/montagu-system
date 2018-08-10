@@ -34,7 +34,7 @@ interface TestErrorInfo {
 }
 
 function handleTeamCityEvent(event: string, testName: string, error: TestErrorInfo) {
-    testName = escape(testName)
+    testName = escape(testName);
     if (settings.teamcityServiceMessages) {
         switch (event) {
             case "before":

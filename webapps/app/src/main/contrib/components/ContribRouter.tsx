@@ -65,6 +65,6 @@ export const ContribRouter : React.StatelessComponent<ContribRouterProps> = (pro
             {routes}
         </div>
     </ConnectedRouter>;
-}
+};
 
 

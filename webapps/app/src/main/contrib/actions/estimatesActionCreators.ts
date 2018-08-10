@@ -10,7 +10,7 @@ export const estimatesActionCreators = {
     createBurden(data: CreateBurdenEstimateSet) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
 
-            const ids = mapStateToPropsHelper.getResponsibilityIds(getState())
+            const ids = mapStateToPropsHelper.getResponsibilityIds(getState());
 
             await (new EstimatesService(dispatch, getState)).createBurden(ids.groupId, ids.touchstoneId, ids.scenarioId, data);
             dispatch(responsibilitiesActionCreators.refreshResponsibilities());

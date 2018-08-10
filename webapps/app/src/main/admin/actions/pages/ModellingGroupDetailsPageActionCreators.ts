@@ -37,4 +37,4 @@ export class ModellingGroupDetailsPageActionCreators extends AdminPageActionCrea
     }
 }
 
-export const modellingGroupDetailsPageActionCreators = new ModellingGroupDetailsPageActionCreators()
+export const modellingGroupDetailsPageActionCreators = new ModellingGroupDetailsPageActionCreators();

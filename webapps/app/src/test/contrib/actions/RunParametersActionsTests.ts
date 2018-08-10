@@ -59,7 +59,7 @@ describe("Run Parameters actions tests", () => {
         });
         store.dispatch(runParametersActionCreators.getOneTimeToken(testGroup.id, testTouchstoneVersion.id, testModelRunParametersSet.id));
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = [
                 { type: RunParametersTypes.RUN_PARAMETERS_TOKEN_FETCHED, data: {id: testModelRunParametersSet.id, token: "test-token"}},
             ];
@@ -78,7 +78,7 @@ describe("Run Parameters actions tests", () => {
         });
         store.dispatch(runParametersActionCreators.refreshParameterSets());
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = [
                 { type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet] }
             ];

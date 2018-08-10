@@ -18,11 +18,11 @@ describe("User actions tests", () => {
         sandbox.setStubFunc(UserService.prototype, "getConfidentiality", ()=>{
             return Promise.resolve(true);
         });
-        store.dispatch(userActionCreators.getConfidentialityAgreement())
+        store.dispatch(userActionCreators.getConfidentialityAgreement());
         setTimeout(() => {
-            const actions = store.getActions()
-            const expectedPayload = { type: UserActionType.CONFIDENTIALITY_RETRIEVED, data: true}
-            expect(actions).to.eql([expectedPayload])
+            const actions = store.getActions();
+            const expectedPayload = { type: UserActionType.CONFIDENTIALITY_RETRIEVED, data: true};
+            expect(actions).to.eql([expectedPayload]);
             done();
         });
     });
@@ -32,11 +32,11 @@ describe("User actions tests", () => {
         sandbox.setStubFunc(UserService.prototype, "signConfidentiality", ()=>{
             return Promise.resolve('OK');
         });
-        store.dispatch(userActionCreators.signConfidentialityAgreement())
+        store.dispatch(userActionCreators.signConfidentialityAgreement());
         setTimeout(() => {
-            const actions = store.getActions()
-            const expectedPayload = { type: UserActionType.CONFIDENTIALITY_SIGNED}
-            expect(actions).to.eql([expectedPayload])
+            const actions = store.getActions();
+            const expectedPayload = { type: UserActionType.CONFIDENTIALITY_SIGNED};
+            expect(actions).to.eql([expectedPayload]);
             done();
         });
     });

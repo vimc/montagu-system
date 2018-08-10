@@ -36,7 +36,7 @@ describe("Upload burden estimates page actions tests", () => {
     const testExtResponsibilitySet = new ExtendedResponsibilitySet(testResponsibilitySet, testTouchstoneVersion, testGroup);
     const testBurdenEstimateSet = mockBurdenEstimateSet();
     const testResponsibility = testResponsibilitySet.responsibilities[0];
-    const testResponsibilityWithEstimate = {...testResponsibility, current_estimate_set: testBurdenEstimateSet}
+    const testResponsibilityWithEstimate = {...testResponsibility, current_estimate_set: testBurdenEstimateSet};
     const testScenario = testResponsibility.scenario;
 
     afterEach(() => {

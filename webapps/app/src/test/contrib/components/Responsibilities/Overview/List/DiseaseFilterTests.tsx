@@ -25,31 +25,31 @@ describe("Responsibility Overview Disease Filter Component tests", () => {
             diseases: {diseases: [mockDisease()]},
             responsibilities: {responsibilitiesSet: mockResponsibilitySetWithExpectations()}
         };
-    }
+    };
 
     const mockOneMatchState = () => {
         const testScenario = mockScenario({disease: testDisease.id});
         const testResponsibility = mockResponsibility({scenario: testScenario});
-        const testResponsibilitySet = mockResponsibilitySetWithExpectations({responsibilities: [testResponsibility]})
+        const testResponsibilitySet = mockResponsibilitySetWithExpectations({responsibilities: [testResponsibility]});
 
         return {
             diseases: {diseases: [testDisease]},
             responsibilities: {responsibilitiesSet: testResponsibilitySet}
         };
-    }
+    };
 
     const mockTwoMatchState = () => {
         const testScenario = mockScenario({disease: testDisease.id});
         const testScenario2 = mockScenario({disease: testDisease2.id});
         const testResponsibility = mockResponsibility({scenario: testScenario});
         const testResponsibility2 = mockResponsibility({scenario: testScenario2});
-        const testResponsibilitySet = mockResponsibilitySetWithExpectations({responsibilities: [testResponsibility, testResponsibility2]})
+        const testResponsibilitySet = mockResponsibilitySetWithExpectations({responsibilities: [testResponsibility, testResponsibility2]});
 
         return {
             diseases: {diseases: [testDisease, testDisease2]},
             responsibilities: {responsibilitiesSet: testResponsibilitySet}
         };
-    }
+    };
 
     afterEach(() => {
         sandbox.restore();
