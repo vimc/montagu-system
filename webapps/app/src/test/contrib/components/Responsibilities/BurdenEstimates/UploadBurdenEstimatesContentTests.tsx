@@ -72,7 +72,7 @@ describe("UploadBurdenEstimatesContent", () => {
             responsibilitySetStatus: testResponsibilitySet.status,
             responsibility: testResponsibility,
             canCreate: true,
-            canUpload: true
+            canUpload: false
         };
         expect(rendered.props()).to.eql(expectedProps)
     });

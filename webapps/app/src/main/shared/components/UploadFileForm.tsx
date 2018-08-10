@@ -97,7 +97,7 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
     }
 }
 
-class OneTimeUploadFileFormInner extends React.Component<OneTimeLinkProps, undefined> {
+export class OneTimeUploadFileFormInner extends React.Component<OneTimeLinkProps, undefined> {
     render(): JSX.Element {
         return <form action={this.props.href} className="form"
                      method="POST" encType="multipart/form-data">

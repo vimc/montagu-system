@@ -89,6 +89,6 @@ export const mapStateToProps = (state: ContribAppState): Partial<UploadBurdenEst
 };
 
 export const UploadBurdenEstimatesContent = compose(
-    connect(mapStateToProps, ),
+    connect(mapStateToProps, (dispatch, props) => props),
     branch((props: UploadBurdenEstimatesContentProps) => !props.responsibility, renderComponent(LoadingElement))
 )(UploadBurdenEstimatesContentComponent) as React.ComponentClass<Partial<UploadBurdenEstimatesContentProps>>;
