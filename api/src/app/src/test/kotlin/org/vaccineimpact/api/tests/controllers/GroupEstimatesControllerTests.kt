@@ -228,6 +228,7 @@ class GroupEstimatesControllerTests : MontaguTests()
     {
         return mock {
             on { username } doReturn "username"
+            on { contentType() } doReturn "text/csv"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-version-id") } doReturn "touchstone-1"

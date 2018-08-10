@@ -38,10 +38,6 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
                     .json()
                     .secure(writePermissions),
 
-            Endpoint("$baseUrl/:set-id/multipart/", controller, "populateBurdenEstimateSetFromMultipartStream", method = HttpMethod.post)
-                    .json()
-                    .secure(writePermissions),
-
             Endpoint("$baseUrl/:set-id/get_onetime_link/",
                     OneTimeLinkController::class,
                     "getTokenForPopulateBurdenEstimateSet")

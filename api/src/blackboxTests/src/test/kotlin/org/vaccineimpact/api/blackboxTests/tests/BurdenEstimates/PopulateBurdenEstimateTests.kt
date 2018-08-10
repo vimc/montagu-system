@@ -46,7 +46,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
             setUpWithBurdenEstimateSet(it)
         }
         val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
-        val response = RequestHelper().postFile("$setUrl$setId/multipart/", csvData, token = token)
+        val response = RequestHelper().postFile("$setUrl$setId/", csvData, token = token)
         JSONValidator().validateSuccess(response.text)
     }
 
@@ -129,6 +129,19 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
 
     @Test
     fun `can populate burden estimate via onetime link`()
+    {
+        val requestHelper = RequestHelper()
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+
+        val oneTimeURL = getPopulateOneTimeURL(setId)
+        val response = requestHelper.post(oneTimeURL, csvData)
+        JSONValidator().validateSuccess(response.text)
+    }
+
+    @Test
+    fun `can populate burden estimate via onetime link multipart file upload`()
     {
         val requestHelper = RequestHelper()
         val setId = JooqContext().use {
@@ -234,7 +247,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
 
     private fun getPopulateOneTimeURL(setId: Int, redirect: Boolean = false): String
     {
-        var url = "$setUrl/$setId/multipart/?"
+        var url = "$setUrl/$setId/?"
         if (redirect)
         {
             url += "&redirectResultTo=http://localhost/"

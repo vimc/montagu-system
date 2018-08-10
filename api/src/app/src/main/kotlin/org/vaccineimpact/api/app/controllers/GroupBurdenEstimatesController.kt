@@ -3,7 +3,9 @@ package org.vaccineimpact.api.app.controllers
 import org.vaccineimpact.api.app.ResultRedirector
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.checkAllValuesAreEqual
-import org.vaccineimpact.api.app.context.*
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.RequestDataSource
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
@@ -48,9 +50,7 @@ open class GroupBurdenEstimatesController(
         return objectCreation(context, url)
     }
 
-    fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestBodySource(context))
-    fun populateBurdenEstimateSetFromMultipartStream() = populateBurdenEstimateSet(MultipartStreamSource("file", context))
-
+    fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestDataSource.fromContentType(context))
     fun populateBurdenEstimateSet(source: RequestDataSource): String
     {
         return ResultRedirector(tokenHelper, repositories).redirectIfRequested(context, "") { repos ->
