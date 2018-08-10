@@ -20,11 +20,11 @@ describe("Diseases actions tests", () => {
         sandbox.setStubFunc(DiseasesService.prototype, "getAllDiseases", ()=>{
           return Promise.resolve([testDisease]);
         });
-        store.dispatch(diseasesActionCreators.getAllDiseases())
+        store.dispatch(diseasesActionCreators.getAllDiseases());
         setTimeout(() => {
-            const actions = store.getActions()
-            const expectedPayload = { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease] }
-            expect(actions).to.eql([expectedPayload])
+            const actions = store.getActions();
+            const expectedPayload = { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease] };
+            expect(actions).to.eql([expectedPayload]);
             done();
         });
     });
@@ -34,11 +34,11 @@ describe("Diseases actions tests", () => {
             diseases: {diseases: [testDisease]}
         };
         const store = createMockStore(initialState);
-        store.dispatch(diseasesActionCreators.setCurrentDiseaseId("disease-1"))
+        store.dispatch(diseasesActionCreators.setCurrentDiseaseId("disease-1"));
         setTimeout(() => {
-            const actions = store.getActions()
-            const expectedPayload = { type: DiseasesTypes.DISEASES_SET_CURRENT_DISEASE_ID, data: testDisease.id }
-            expect(actions).to.eql([expectedPayload])
+            const actions = store.getActions();
+            const expectedPayload = { type: DiseasesTypes.DISEASES_SET_CURRENT_DISEASE_ID, data: testDisease.id };
+            expect(actions).to.eql([expectedPayload]);
             done();
         });
     });

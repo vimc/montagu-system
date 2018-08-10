@@ -34,4 +34,4 @@ export const ModellingGroupDetailsMembers: React.SFC<ModellingGroupDetailsMember
             }
         </div>;
     }
-}
+};

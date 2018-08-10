@@ -32,7 +32,7 @@ describe("Coverage actions tests", () => {
             return Promise.resolve(testScenarioAndCoverageSet);
         });
 
-        store.dispatch(coverageActionCreators.getDataSets())
+        store.dispatch(coverageActionCreators.getDataSets());
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED, data: [testCoverageSet] };

@@ -62,7 +62,7 @@ describe("Run Parameters actions tests", () => {
         });
         store.dispatch(runParametersActionCreators.refreshParameterSets());
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = [
                 { type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet] }
             ];

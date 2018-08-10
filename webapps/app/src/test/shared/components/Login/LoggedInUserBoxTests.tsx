@@ -42,7 +42,7 @@ describe("LoggedInUserBoxComponent", () => {
     });
 
     it("maps state to props", () => {
-        const contribStateMock = mockContribState({auth: {loggedIn: true, username: "test.user"}})
+        const contribStateMock = mockContribState({auth: {loggedIn: true, username: "test.user"}});
         const props = mapStateToProps(contribStateMock);
         expect(props.username).to.eq("test.user");
         expect(props.loggedIn).to.eq(true);

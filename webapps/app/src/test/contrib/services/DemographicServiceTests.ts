@@ -10,7 +10,7 @@ describe('Demographic service tests', () => {
     const sandbox = new Sandbox();
 
     const history = createMemoryHistory();
-    const store = createContribStore(history)
+    const store = createContribStore(history);
 
     afterEach(() => {
         sandbox.restore();

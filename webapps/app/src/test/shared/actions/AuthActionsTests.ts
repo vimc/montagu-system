@@ -56,7 +56,7 @@ describe("AuthActions", () => {
         sandbox.setStubFunc(AuthService.prototype, "logIn", () => {
             return Promise.resolve({error: 'test error'});
         });
-        store.dispatch(authActionCreators.logIn('test', 'test'))
+        store.dispatch(authActionCreators.logIn('test', 'test'));
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);

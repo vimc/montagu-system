@@ -53,8 +53,7 @@ function mapStateToProps(state: AdminAppState): Partial<TouchstoneDetailsProps> 
     return {
         touchstone: state.touchstones.currentTouchstone
     };
-};
-
+}
 const enhance = compose(
     connect(mapStateToProps),
     branch((props: TouchstoneDetailsProps) => !props.touchstone, renderComponent(LoadingElement))

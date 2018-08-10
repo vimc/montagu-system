@@ -13,10 +13,10 @@ interface ButtonLinkProps {
 
 const handlers = {
     onClick: (props: ButtonLinkProps) => (event: React.MouseEvent<HTMLAnchorElement>) => {
-        event.preventDefault()
+        event.preventDefault();
         props.history.push(props.href);
     },
-}
+};
 
 // this component renders button and uses history to navigate
 export const ButtonLinkComponent : React.StatelessComponent<ButtonLinkProps> = (props: ButtonLinkProps) => {
@@ -26,7 +26,7 @@ export const ButtonLinkComponent : React.StatelessComponent<ButtonLinkProps> = (
     >
         {props.children}
     </button>;
-}
+};
 
 const enhance = compose<ButtonLinkProps, Partial<ButtonLinkProps>>(
     withRouter,

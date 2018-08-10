@@ -28,7 +28,7 @@ export class DatePicker extends React.Component<DatePickerProps, DatePickerState
         super();
         this.state = {
             displayMonthDate: new Date()
-        }
+        };
         this.setdisplayMonthDate = this.setdisplayMonthDate.bind(this);
     }
 
@@ -37,7 +37,7 @@ export class DatePicker extends React.Component<DatePickerProps, DatePickerState
         showPicker: false,
         fromMonth: new Date(currentYear - 2, 0),
         toMonth: new Date(currentYear + 2, 0),
-    }
+    };
 
     // Fix for the bug of defocusing, should be fixed in future versions
     updateInputRef(ref: any) {

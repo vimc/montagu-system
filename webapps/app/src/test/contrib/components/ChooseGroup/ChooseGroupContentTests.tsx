@@ -55,14 +55,14 @@ describe("Choose Group Content Component", () => {
 
     it("maps state to props with groups", () => {
         const groups :ModellingGroup[] = testGroups;
-        const contribStateMock = mockContribState({ groups: { userGroups: groups } })
+        const contribStateMock = mockContribState({ groups: { userGroups: groups } });
         const props = mapStateToProps(contribStateMock);
         expect(props.groups).to.eql(testGroups);
     });
 
     it("maps state to props with no groups", () => {
         const groups: ModellingGroup[] = [];
-        const contribStateMock = mockContribState({ groups: { userGroups: groups } })
+        const contribStateMock = mockContribState({ groups: { userGroups: groups } });
         const props = mapStateToProps(contribStateMock);
         expect(props.groups).to.eql(groups);
     });
