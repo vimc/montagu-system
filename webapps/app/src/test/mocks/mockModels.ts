@@ -57,7 +57,7 @@ export function mockModellingGroupCreation(properties?: Partial<ModellingGroupCr
     return Object.assign(template, properties);
 }
 
-export function mockResponsibility(properties?: any, scenario?: models.Scenario): models.Responsibility {
+export function mockResponsibility(properties?: Partial<models.Responsibility>, scenario?: models.Scenario): models.Responsibility {
     const template: models.Responsibility = {
         current_estimate_set: null,
         problems: [],

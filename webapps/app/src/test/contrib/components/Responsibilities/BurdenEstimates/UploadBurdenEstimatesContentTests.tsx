@@ -1,50 +1,61 @@
 import * as React from "react";
-import { shallow} from "enzyme";
-import { expect } from "chai";
-import { Store } from "redux";
+import {shallow} from "enzyme";
+import {expect} from "chai";
+import {Store} from "redux";
 
 import "../../../../helper";
 import {
-    mockDisease, mockModellingGroup,
-    mockResponsibility, mockResponsibilitySetWithExpectations,
-    mockScenario, mockTouchstoneVersion
+    mockBurdenEstimateSet,
+    mockDisease,
+    mockModellingGroup,
+    mockResponsibility,
+    mockResponsibilitySetWithExpectations,
+    mockScenario,
+    mockTouchstoneVersion
 } from "../../../../mocks/mockModels";
-import { Sandbox } from "../../../../Sandbox";
+import {Sandbox} from "../../../../Sandbox";
 import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {
     UploadBurdenEstimatesContent,
-    UploadBurdenEstimatesContentComponent
+    UploadBurdenEstimatesContentComponent, UploadBurdenEstimatesContentProps
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesContent";
 
-import {CurrentEstimateSetSummary} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
+import {
+    CurrentEstimateSetSummary,
+    CurrentEstimateSetSummaryProps
+} from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 import {
     UploadBurdenEstimatesForm,
     UploadBurdenEstimatesFormComponentProps
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {TemplateLink} from "../../../../../main/contrib/components/Responsibilities/Overview/List/OldStyleTemplates/TemplateLink";
+import {RecursivePartial} from "../../../../mocks/mockStates";
 
-describe("Upload Burden Estimates Content Component tests", () => {
+describe("UploadBurdenEstimatesContent", () => {
 
     const testGroup = mockModellingGroup();
     const testDisease = mockDisease();
     const testTouchstone = mockTouchstoneVersion();
     const testScenario = mockScenario({disease: testDisease.id, touchstones: [testTouchstone]});
-    const testResponsibility = mockResponsibility({scenario: testScenario});
+    const testEstimateSet = mockBurdenEstimateSet();
+    const testResponsibility = mockResponsibility({scenario: testScenario, current_estimate_set: testEstimateSet});
     const testResponsibilitySet = mockResponsibilitySetWithExpectations({
         responsibilities: [testResponsibility],
         touchstone_version: testTouchstone.id
     });
 
-    const testState = {
+    const testState: RecursivePartial<ContribAppState> = {
         groups: {currentUserGroup: testGroup},
         touchstones: {currentTouchstoneVersion: testTouchstone},
-        responsibilities: {currentResponsibility: testResponsibility, responsibilitiesSet: testResponsibilitySet},
-        estimates: {token: "test-token"},
+        responsibilities: {
+            currentResponsibility: testResponsibility,
+            responsibilitiesSet: testResponsibilitySet,
+        },
     };
 
-    let store : Store<ContribAppState>;
+    let store: Store<ContribAppState>;
 
     const sandbox = new Sandbox();
     beforeEach(() => {
@@ -54,12 +65,16 @@ describe("Upload Burden Estimates Content Component tests", () => {
 
     it("renders on connect level and receives proper props", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}});
-        expect(rendered.props().touchstone).to.eql(testTouchstone);
-        expect(rendered.props().scenario).to.eql(testScenario);
-        expect(rendered.props().group).to.eql(testGroup);
-        expect(rendered.props().responsibilitySetStatus).to.eql(testResponsibilitySet.status);
-        expect(rendered.props().token).to.eql("test-token");
-        expect(rendered.props().responsibility).to.eql(testResponsibility);
+        const expectedProps: UploadBurdenEstimatesContentProps = {
+            touchstone: testTouchstone,
+            scenario: testScenario,
+            group: testGroup,
+            responsibilitySetStatus: testResponsibilitySet.status,
+            responsibility: testResponsibility,
+            canCreate: true,
+            canUpload: true
+        };
+        expect(rendered.props()).to.eql(expectedProps)
     });
 
     it("renders on branch level, passes", () => {
@@ -68,7 +83,10 @@ describe("Upload Burden Estimates Content Component tests", () => {
     });
 
     it("renders on branch level, not passes", () => {
-        store = createMockStore({...testState, responsibilities: {...testState.responsibilities, currentResponsibility: null}});
+        store = createMockStore({
+            ...testState,
+            responsibilities: {...testState.responsibilities, currentResponsibility: null}
+        });
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         expect(rendered.find(LoadingElement).length).to.eql(1);
     });
@@ -94,9 +112,12 @@ describe("Upload Burden Estimates Content Component tests", () => {
     it("renders on component level, passes right params to CurrentEstimateSetSummary", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const currentEstimateSetSummary = rendered.find(CurrentEstimateSetSummary);
+        const expectedProps: CurrentEstimateSetSummaryProps = {
+            canUpload: true,
+            estimateSet: testEstimateSet
+        };
         expect(currentEstimateSetSummary.length).to.equal(1);
-        expect(currentEstimateSetSummary.props().estimateSet).to.equal(null);
-        expect(currentEstimateSetSummary.props().canUpload).to.equal(true);
+        expect(currentEstimateSetSummary.props()).to.eql(expectedProps);
     });
 
     it("renders on component level, passes right params to UploadBurdenEstimatesForm", () => {
@@ -106,10 +127,10 @@ describe("Upload Burden Estimates Content Component tests", () => {
         const expected: UploadBurdenEstimatesFormComponentProps = {
             canCreate: true,
             canUpload: false,
-            estimateSetId: 1,
+            estimateSetId: testEstimateSet.id,
             groupId: testGroup.id,
             scenarioId: testScenario.id,
-            touchstoneId: ""
+            touchstoneId: testTouchstone.id
         };
         expect(uploadBurdenEstimatesForm.props()).to.eql(expected);
     });

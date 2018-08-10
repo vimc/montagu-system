@@ -54,6 +54,7 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
 
     render() {
         const enableSubmit = this.props.enableSubmit
+            && this.props.href != null
             && this.state.fileSelected
             && this.validatePath().isValid;
 
@@ -112,5 +113,5 @@ class OneTimeUploadFileFormInner extends React.Component<OneTimeLinkProps, undef
     }
 }
 
-const OneTimeUploadFileForm = OneTimeLinkContext(OneTimeUploadFileFormInner);
+export const OneTimeUploadFileForm = OneTimeLinkContext(OneTimeUploadFileFormInner);
 

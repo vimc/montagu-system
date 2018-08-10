@@ -3,12 +3,12 @@ import {BurdenEstimateSet} from "../../../../../shared/models/Generated";
 import {settings} from "../../../../../shared/Settings";
 import {longDate, longTimestamp} from "../../../../../shared/Helpers";
 
-interface Props {
+export interface CurrentEstimateSetSummaryProps {
     estimateSet: BurdenEstimateSet;
     canUpload: boolean;
 }
 
-export class CurrentEstimateSetSummary extends React.Component<Props, undefined> {
+export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSetSummaryProps, undefined> {
     static getMessage(set: BurdenEstimateSet, canUpload: boolean): JSX.Element {
         if (!canUpload) {
             return <ReviewedAndApprovedMessage />;
