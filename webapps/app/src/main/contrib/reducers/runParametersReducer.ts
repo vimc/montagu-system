@@ -18,7 +18,7 @@ export const runParametersInitialState: RunParametersState = {
     sets: [],
     tokens: {},
     uploadStatus: {status: RunParametersUploadStatus.off, errors: null},
-}
+};
 
 export const runParametersReducer = (state = runParametersInitialState, action: RunParametersAction) => {
     switch (action.type) {

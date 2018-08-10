@@ -26,25 +26,25 @@ describe("Modelling Groups List Content Component tests", () => {
         it("renders on connect level", () => {
             const testState = {
                 groups: {groups: [testGroup1]}
-            }
+            };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupsListContent/>, {context: {store}});
             expect(rendered.props().groups).to.eql([testGroup1]);
-        })
+        });
 
         it("renders on connect level, passes null as groups", () => {
             const testState = {
                 groups: {groups: null as any}
-            }
+            };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupsListContent/>, {context: {store}});
             expect(rendered.props().groups).to.eql([]);
-        })
+        });
 
         it("renders on connect level, check if groups are sorted correctly", () => {
             const testState = {
                 groups: {groups: [testGroup1, testGroup2, testGroup3]}
-            }
+            };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupsListContent/>, {context: {store}});
             expect(rendered.props().groups).to.eql([testGroup2, testGroup1, testGroup3]);

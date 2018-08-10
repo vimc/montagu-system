@@ -10,4 +10,4 @@ export const mapStateToPropsHelper = {
             :null;
         return {groupId, touchstoneId, scenarioId, estimateSetId};
     }
-}
+};

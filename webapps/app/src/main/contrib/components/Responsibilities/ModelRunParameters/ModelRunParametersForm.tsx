@@ -33,7 +33,7 @@ export class ModelRunParametersFormComponent extends React.Component<ModelRunPar
             errors: [],
             success: false,
             disabled: false,
-        }
+        };
         this.resetForm = this.resetForm.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);

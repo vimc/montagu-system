@@ -30,7 +30,7 @@ export const ModellingGroupDetailsContentComponent: React.SFC<ModellingGroupDeta
             </tbody>
         </table>
     </div>;
-}
+};
 
 const mapStateToProps = (state: AdminAppState) :Partial<ModellingGroupDetailsContentProps> => {
     return {

@@ -53,7 +53,7 @@ export class CreateBurdenEstimateSetFormComponent extends React.Component<Create
             errors: [],
             disabled: false,
             validated: false
-        }
+        };
         this.onTypeChange = this.onTypeChange.bind(this);
         this.onDetailsChange = this.onDetailsChange.bind(this);
         this.clearFormStatus = this.clearFormStatus.bind(this);

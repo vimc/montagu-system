@@ -20,4 +20,4 @@ export function BreadcrumbInitializer (
         }
     };
     return connect(state => state, mapDispatchToProps)(BreadcrumbInitializerWrapper);
-};
+}

@@ -53,9 +53,9 @@ describe("Estimates actions tests", () => {
         const store = createMockStore();
         store.dispatch(estimatesActionCreators.setRedirectPath("/test/path/"));
         setTimeout(() => {
-            const actions = store.getActions()
-            const expectedPayload = { type: EstimatesTypes.ESTIMATES_SET_REDIRECT_PATH, data: "/test/path/" }
-            expect(actions).to.eql([expectedPayload])
+            const actions = store.getActions();
+            const expectedPayload = { type: EstimatesTypes.ESTIMATES_SET_REDIRECT_PATH, data: "/test/path/" };
+            expect(actions).to.eql([expectedPayload]);
             done();
         });
     });
@@ -97,7 +97,7 @@ describe("Estimates actions tests", () => {
 
         store.dispatch(estimatesActionCreators.createBurden(data));
         setTimeout(() => {
-            const actions = store.getActions()
+            const actions = store.getActions();
             const expectedPayload = [
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
                 { type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility},

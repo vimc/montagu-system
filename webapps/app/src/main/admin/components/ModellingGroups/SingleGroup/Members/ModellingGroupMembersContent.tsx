@@ -21,7 +21,7 @@ export const AddGroupMembersComponent: React.SFC<AddGroupMembersProps> = (props:
             <ModellingGroupMembersAdd members={ [...props.members.map(m=>m.username)] } groupId={props.groupId}/>
         </div>
     : null;
-}
+};
 
 
 export interface ModellingGroupMembersContentProps {

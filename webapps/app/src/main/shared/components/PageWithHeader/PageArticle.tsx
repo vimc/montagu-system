@@ -13,7 +13,7 @@ const PageArticle: React.SFC<PageArticleProps> = (props: PageArticleProps) => {
         }
         <div className="page__content">{ props.children }</div>
     </article>;
-}
+};
 
 PageArticle.defaultProps = {
     hideTitle: false

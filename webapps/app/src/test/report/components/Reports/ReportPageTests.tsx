@@ -27,7 +27,7 @@ describe("ReportPage", () => {
     it("triggers actions on mount", (done: DoneCallback) => {
         let store = createMockStore({});
         let createBreadCrumbSpy = sandbox.setStub(ReportPageComponent, "breadcrumb");
-        const matchMock = mockMatch({report: "report", version: "v1"})
+        const matchMock = mockMatch({report: "report", version: "v1"});
         sandbox.setStubFunc(ReportPageComponent.prototype, "render", () => (<p/>));
         sandbox.setStub(ReportsService.prototype, "getReportVersions");
         sandbox.setStub(ReportsService.prototype, "getVersionDetails");
@@ -48,7 +48,7 @@ describe("ReportPage", () => {
     it("generates breadcrumb on mount", (done: DoneCallback) => {
         const history = createMemoryHistory();
         let store = createReportStore(history);
-        const matchMock = mockMatch({report: "report", version: "v1"})
+        const matchMock = mockMatch({report: "report", version: "v1"});
         sandbox.setStubFunc(ReportPageComponent.prototype, "render", () => (<p/>));
         sandbox.setStub(ReportsService.prototype, "getReportVersions");
         sandbox.setStub(ReportsService.prototype, "getVersionDetails");
@@ -58,10 +58,10 @@ describe("ReportPage", () => {
         setTimeout(() => {
             const state = store.getState() as ReportAppState;
             const breadcrumbs = state.breadcrumbs.breadcrumbs;
-            expect(breadcrumbs[0].name).to.equal("Main menu")
-            expect(breadcrumbs[0].url).to.equal("/")
-            expect(breadcrumbs[1].name).to.equal("report (v1)")
-            expect(breadcrumbs[1].url).to.equal("/report/v1/")
+            expect(breadcrumbs[0].name).to.equal("Main menu");
+            expect(breadcrumbs[0].url).to.equal("/");
+            expect(breadcrumbs[1].name).to.equal("report (v1)");
+            expect(breadcrumbs[1].url).to.equal("/report/v1/");
             done();
         });
     });

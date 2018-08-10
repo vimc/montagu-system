@@ -81,7 +81,7 @@ export abstract class AbstractLocalService {
         const requestOptions : RequestOptions = {
             method,
             headers,
-        }
+        };
         if (this.options.credentials) requestOptions.credentials = this.options.credentials;
         if (body) requestOptions.body = body;
         return requestOptions;

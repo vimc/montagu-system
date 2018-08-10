@@ -66,7 +66,7 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
             />
 
         </div>
-    }
+    };
 
 export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityOverviewContentProps> => {
     return {

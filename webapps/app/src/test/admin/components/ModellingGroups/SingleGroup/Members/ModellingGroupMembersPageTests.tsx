@@ -20,7 +20,7 @@ describe("Modelling Group Members Page Component Tests", () => {
 
     const testState = {
         groups: { currentGroup: testGroup}
-    }
+    };
 
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());

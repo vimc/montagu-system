@@ -76,7 +76,7 @@ export const getLastSetForDisease = (allSets: ModelRunParameterSet[], disease: s
         return sets[0]
     }
     return null;
-}
+};
 
 export const getTokenBySet = (set: ModelRunParameterSet, tokens: TokensMap) : string => {
     if (!set) {
@@ -86,7 +86,7 @@ export const getTokenBySet = (set: ModelRunParameterSet, tokens: TokensMap) : st
         return tokens[set.id];
     }
     return null;
-}
+};
 
 export const mapStateToProps = (state: ContribAppState, props: Partial<ModelRunParametersStatusProps>): Partial<ModelRunParametersStatusProps> => {
 
@@ -95,7 +95,7 @@ export const mapStateToProps = (state: ContribAppState, props: Partial<ModelRunP
         set: state.runParameters.sets && state.runParameters.sets.length ? getLastSetForDisease(state.runParameters.sets, props.disease) : null,
         group: state.groups.currentUserGroup,
         touchstone: state.touchstones.currentTouchstoneVersion,
-    }
+    };
     newProps.token = newProps.set ? getTokenBySet(newProps.set, state.runParameters.tokens) : null;
 
     return newProps;
