@@ -20,9 +20,10 @@ describe("Choose Group Page Component", () => {
     });
 
     it("renders title, description and ChooseGroupContent", () => {
-        const rendered = shallow(<ChooseGroupPageComponent history={null} location={null} match={null} router={null}/>);
+        const rendered = shallow(<ChooseGroupPageComponent history={null} location={null} match={null}
+                                                           router={null} title={"title"}/>);
         const pageArticle = rendered.find('PageArticle');
-        expect(pageArticle.props().title).is.equal("Modellers' contribution portal");
+        expect(pageArticle.props().title).is.equal("title");
         expect(pageArticle.find('p').length).is.equal(1);
         expect(pageArticle.find(ChooseGroupContent).length).is.equal(1);
     });

@@ -16,6 +16,12 @@ export function Page<TState, TLocationProps>(pageActionCreators: AbstractPageAct
         }
     };
 
+    const mapStateToProps = (state: TState): Partial<PageProperties<TLocationProps>> => {
+        return {
+            title: pac.title(state)
+        }
+    };
+
     const lifecycleMethods: Partial<LifecycleMethods<PageProperties<TLocationProps>>> = {
         onWillMount(props: PageProperties<TLocationProps>) {
             props.onLoad(props.match.params)
@@ -23,6 +29,6 @@ export function Page<TState, TLocationProps>(pageActionCreators: AbstractPageAct
     };
 
     return compose<PageProperties<TLocationProps>, Partial<PageProperties<TLocationProps>>>(
-        connect((state: TState, props: TLocationProps) => props, mapDispatchToProps),
+        connect(mapStateToProps, mapDispatchToProps),
         withLifecycle(lifecycleMethods));
 }

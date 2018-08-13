@@ -1,6 +1,5 @@
 import {Dispatch} from "redux";
 import {AdminAppState} from "../../reducers/adminAppReducers";
-import {TouchstoneListPageComponent} from "../../components/Touchstones/List/TouchstoneListPage";
 import {adminTouchstoneActionCreators} from "../adminTouchstoneActionCreators";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
@@ -10,9 +9,13 @@ export class TouchstoneListPageActionCreators extends AdminPageActionCreators<{}
 
     parent = mainMenuPageActionCreators;
 
+    title() {
+        return "Touchstones"
+    }
+
     createBreadcrumb(state?: AdminAppState): PageBreadcrumb {
         return {
-            name: TouchstoneListPageComponent.title,
+            name: this.title(),
             urlFragment: "touchstones/"
         };
     }
