@@ -25,6 +25,18 @@ describe("FileDownloadLinkInner", () => {
         expect(a.prop('href')).to.equal("/grapefruit");
     });
 
+    it("renders loading animation when loading is true", () => {
+        const rendered = shallow(<FileDownloadInner href="/grapefruit" tokenConsumed={null} enabled={true} loading={true} />);
+        const img = rendered.find("img");
+        expect(img).to.have.lengthOf(1)
+    });
+
+    it("does not render loading animation when loading is false", () => {
+        const rendered = shallow(<FileDownloadInner href={null} tokenConsumed={null} enabled={true} loading={false} />);
+        const img = rendered.find("img");
+        expect(img).to.have.lengthOf(0);
+    });
+
     it("clicking link triggers token refresh", () => {
         let called = false;
         const callback = () => called = true;
@@ -55,7 +67,7 @@ describe("FileDownloadButton", () => {
     });
 
     it("passes through classname if exists", () => {
-        const rendered = shallow(<FileDownloadButtonInner href={null} tokenConsumed={null} className={"test"} enabled={true}/>);
+        const rendered = shallow(<FileDownloadButtonInner href={null} tokenConsumed={null} className={"test"} enabled={true} />);
         const inner = rendered.find(FileDownloadInner);
         expect(inner).to.have.lengthOf(1);
         expect(inner.prop('className')).to.equal("button test");

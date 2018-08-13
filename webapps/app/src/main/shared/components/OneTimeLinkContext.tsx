@@ -32,7 +32,7 @@ interface Props extends PublicProps {
 // These props are passed to the children
 export interface OneTimeLinkProps extends PropsSharedWithChildren {
     enabled: boolean;
-    loading: boolean;
+    loading?: boolean;
     tokenConsumed: () => void;
 }
 
