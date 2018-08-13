@@ -32,7 +32,7 @@ describe("Responsibility Overview Page Component", () => {
     it("renders component component level", () => {
         let testMatch = mockMatch<ResponsibilityOverviewPageLocationProps>({
             groupId: "g-1",
-            touchstoneId: testTouchstone.id
+            touchstoneVersionId: testTouchstone.id
         });
         const testResponsibilityOverviewPageTitle = `Responsibilities in ${testTouchstone.description }`;
         const onLoadStub = sandbox.setStubReduxAction(responsibilityOverviewPageActionCreators, "onLoad");
