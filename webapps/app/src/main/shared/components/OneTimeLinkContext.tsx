@@ -38,7 +38,6 @@ export interface OneTimeLinkProps extends PropsSharedWithChildren {
 
 interface ComponentState {
     enabled: boolean;
-    loading: boolean;
 }
 
 const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<Props> => {
@@ -58,7 +57,7 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
 
         constructor(props?: Props) {
             super(props);
-            this.state = {enabled: true, loading: true};
+            this.state = {enabled: true};
         }
 
         componentDidMount() {
