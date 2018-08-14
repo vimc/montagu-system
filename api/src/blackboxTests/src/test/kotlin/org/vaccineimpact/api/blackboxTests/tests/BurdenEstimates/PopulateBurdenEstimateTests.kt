@@ -30,6 +30,36 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         } withPermissions {
             requiredWritePermissions
         } andCheckHasStatus 200..299
+
+        JooqContext().use { db ->
+            val records = db.dsl.select(BURDEN_ESTIMATE.fieldsAsList())
+                    .from(BURDEN_ESTIMATE)
+                    .fetch()
+            assertThat(records).isNotEmpty
+        }
+    }
+
+    @Test
+    fun `can populate central burden estimate via multipart file upload`()
+    {
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
+        val response = RequestHelper().postFile("$setUrl$setId/", csvData, token = token)
+        JSONValidator().validateSuccess(response.text)
+    }
+
+    @Test
+    fun `can populate burden estimate and redirect`()
+    {
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
+        val response = RequestHelper().post("$setUrl$setId/?redirectResultTo=http://localhost", csvData, token)
+        val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
+        JSONValidator().validateSuccess(resultAsString)
     }
 
     @Test
@@ -99,6 +129,19 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
 
     @Test
     fun `can populate burden estimate via onetime link`()
+    {
+        val requestHelper = RequestHelper()
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+
+        val oneTimeURL = getPopulateOneTimeURL(setId)
+        val response = requestHelper.post(oneTimeURL, csvData)
+        JSONValidator().validateSuccess(response.text)
+    }
+
+    @Test
+    fun `can populate burden estimate via onetime link multipart file upload`()
     {
         val requestHelper = RequestHelper()
         val setId = JooqContext().use {
@@ -204,15 +247,14 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
 
     private fun getPopulateOneTimeURL(setId: Int, redirect: Boolean = false): String
     {
-        var url = "$setUrl/$setId/get_onetime_link/"
+        var url = "$setUrl/$setId/?"
         if (redirect)
         {
-            url += "?redirectUrl=http://localhost/"
+            url += "&redirectResultTo=http://localhost/"
         }
         val token = TestUserHelper.getToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
-        val onetimeTokenResult = RequestHelper().get(url, token)
-        val onetimeToken = onetimeTokenResult.montaguData<String>()!!
-        return "/onetime_link/$onetimeToken/"
+        val oneTimeToken = RequestHelper().getOneTimeToken(url, token)
+        return "$url&access_token=$oneTimeToken"
     }
 
 }

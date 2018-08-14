@@ -2,7 +2,6 @@ package org.vaccineimpact.api.app
 
 import org.vaccineimpact.api.app.app_start.stream
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.context.MultipartStreamSource
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.controllers.*
 import org.vaccineimpact.api.app.repositories.Repositories
@@ -36,10 +35,8 @@ open class OnetimeLinkResolver(private val repositories: Repositories,
         return { context ->
             when (action)
             {
-                OneTimeAction.BURDENS_CREATE -> GroupBurdenEstimatesController(context, repos.burdenEstimates)
-                        .createBurdenEstimateSet()
-                OneTimeAction.BURDENS_POPULATE -> GroupBurdenEstimatesController(context, repos.burdenEstimates)
-                        .populateBurdenEstimateSet(MultipartStreamSource("file", context))
+                OneTimeAction.BURDENS_POPULATE -> GroupBurdenEstimatesController(context, repos, repos.burdenEstimates)
+                        .populateBurdenEstimateSet()
                 OneTimeAction.MODEl_RUN_PARAMETERS -> stream(
                         GroupModelRunParametersController(context, repos).getModelRunParameterSet(),
                         context

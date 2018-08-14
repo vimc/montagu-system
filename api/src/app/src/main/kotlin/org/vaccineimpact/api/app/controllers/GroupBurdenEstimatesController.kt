@@ -1,9 +1,9 @@
 package org.vaccineimpact.api.app.controllers
 
+import org.vaccineimpact.api.app.ResultRedirector
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.checkAllValuesAreEqual
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
@@ -14,16 +14,20 @@ import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.app.requests.csvData
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstoneVersion
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.security.KeyHelper
+import org.vaccineimpact.api.security.WebTokenHelper
 import java.time.Instant
 
 open class GroupBurdenEstimatesController(
         context: ActionContext,
+        private val repositories: Repositories,
         private val estimateRepository: BurdenEstimateRepository,
-        private val postDataHelper: PostDataHelper = PostDataHelper()
-) : Controller(context)
+        private val postDataHelper: PostDataHelper = PostDataHelper(),
+        private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair)
+        ) : Controller(context)
 {
     constructor(context: ActionContext, repos: Repositories)
-            : this(context, repos.burdenEstimates)
+            : this(context, repos, repos.burdenEstimates)
 
     fun getBurdenEstimates(): List<BurdenEstimateSet>
     {
@@ -46,34 +50,37 @@ open class GroupBurdenEstimatesController(
         return objectCreation(context, url)
     }
 
-    fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestBodySource(context))
-
+    fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestDataSource.fromContentType(context))
     fun populateBurdenEstimateSet(source: RequestDataSource): String
     {
-        // First check if we're allowed to see this touchstoneVersion
-        val path = getValidResponsibilityPath(context, estimateRepository)
+        return ResultRedirector(tokenHelper, repositories).redirectIfRequested(context, "") { repos ->
+            val estimateRepository = repos.burdenEstimates
 
-        // Next, get the metadata that will enable us to interpret the CSV
-        val setId = context.params(":set-id").toInt()
-        val metadata = estimateRepository.getBurdenEstimateSet(setId)
+            // First check if we're allowed to see this touchstoneVersion
+            val path = getValidResponsibilityPath(context, estimateRepository)
 
-        // Then add the burden estimates
-        val data = getBurdenEstimateDataFromCSV(metadata, source)
-        estimateRepository.populateBurdenEstimateSet(
-                setId,
-                path.groupId, path.touchstoneVersionId, path.scenarioId,
-                data
-        )
+            // Next, get the metadata that will enable us to interpret the CSV
+            val setId = context.params(":set-id").toInt()
+            val metadata = estimateRepository.getBurdenEstimateSet(setId)
 
-        // Then, maybe close the burden estimate set
-        val keepOpen = context.queryParams("keepOpen")?.toBoolean() ?: false
-        if (!keepOpen)
-        {
-            estimateRepository.closeBurdenEstimateSet(setId,
-                    path.groupId, path.touchstoneVersionId, path.scenarioId)
+            // Then add the burden estimates
+            val data = getBurdenEstimateDataFromCSV(metadata, source)
+            estimateRepository.populateBurdenEstimateSet(
+                    setId,
+                    path.groupId, path.touchstoneVersionId, path.scenarioId,
+                    data
+            )
+
+            // Then, maybe close the burden estimate set
+            val keepOpen = context.queryParams("keepOpen")?.toBoolean() ?: false
+            if (!keepOpen)
+            {
+                estimateRepository.closeBurdenEstimateSet(setId,
+                        path.groupId, path.touchstoneVersionId, path.scenarioId)
+            }
+
+            okayResponse()
         }
-
-        return okayResponse()
     }
 
     fun clearBurdenEstimateSet(): String
