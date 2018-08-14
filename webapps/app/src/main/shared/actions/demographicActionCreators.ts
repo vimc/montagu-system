@@ -1,16 +1,17 @@
 import { Dispatch } from "redux";
 
-import {ContribAppState} from "../reducers/contribAppReducers";
-import {DemographicService} from "../services/DemographicService";
+import {ContribAppState} from "../../contrib/reducers/contribAppReducers";
+import {DemographicService} from "../../contrib/services/DemographicService";
+import {DemographicDataset} from "../models/Generated";
+import {AdminAppState} from "../../admin/reducers/adminAppReducers";
 import {Demographic, DemographicTypes} from "../actionTypes/DemographicTypes";
-import {DemographicDataset} from "../../shared/models/Generated";
 
 export const demographicActionCreators = {
 
-    getDataSets(touchstoneId: string) {
-        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
+    getDataSets(touchstoneVersionId: string) {
+        return async (dispatch: Dispatch<ContribAppState | AdminAppState>, getState: () => ContribAppState | AdminAppState) => {
             const dataSets: DemographicDataset[] = await (new DemographicService(dispatch, getState))
-                .getDataSetsByTouchstoneId(touchstoneId);
+                .getDataSetsByTouchstoneVersionId(touchstoneVersionId);
             return dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED,
                 data: dataSets
@@ -19,8 +20,8 @@ export const demographicActionCreators = {
     },
 
     setDataSet(dataSetId: string) {
-        return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-            const dataSets = getState().demographic.dataSets;
+        return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState | AdminAppState) => {
+            const dataSets = getState().demographics.dataSets;
             const dataSet = dataSets.find((set: DemographicDataset) => set.id === dataSetId);
             return dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET,

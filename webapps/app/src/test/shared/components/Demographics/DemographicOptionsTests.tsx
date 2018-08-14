@@ -3,31 +3,27 @@ import { shallow} from "enzyme";
 import { expect } from "chai";
 import { Store } from "redux";
 
-import "../../../../helper";
-import {
-    mockDemographicDataset,
-} from "../../../../mocks/mockModels";
-import { Sandbox } from "../../../../Sandbox";
-import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
-import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
-import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
-
+import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";
+import {mockDemographicDataset} from "../../../mocks/mockModels";
+import {RecursivePartial} from "../../../mocks/mockStates";
 import {
     DemographicOptions,
     DemographicOptionsComponent
-} from "../../../../../main/contrib/components/Responsibilities/Demographics/DemographicOptions";
-import {GenderControl} from "../../../../../main/contrib/components/Responsibilities/Demographics/GenderControl";
+} from "../../../../main/shared/components/Demographics/DemographicOptions";
+import {createMockContribStore} from "../../../mocks/mockStore";
+import {Sandbox} from "../../../Sandbox";
+import {LoadingElement} from "../../../../main/shared/partials/LoadingElement/LoadingElement";
+import {demographicActionCreators} from "../../../../main/shared/actions/demographicActionCreators";
+import {GenderControl} from "../../../../main/shared/components/Demographics/GenderControl";
 import {RadioButtonGroupProperties} from "react-radio-button-group";
-import {FormatControl} from "../../../../../main/contrib/components/Responsibilities/FormatControl";
-import {demographicActionCreators} from "../../../../../main/contrib/actions/demographicActionCreators";
-import {RecursivePartial} from "../../../../mocks/mockStates";
+import {FormatControl} from "../../../../main/contrib/components/Responsibilities/FormatControl";
 
 describe("DemographicOptions", () => {
 
     const testDemographicSet = mockDemographicDataset();
 
     const testState: RecursivePartial<ContribAppState> = {
-        demographic: {
+        demographics: {
             dataSets: [testDemographicSet],
             selectedDataSet: testDemographicSet,
             selectedGender: "both",
@@ -60,7 +56,7 @@ describe("DemographicOptions", () => {
     });
 
     it("renders on branch level, not passes", () => {
-        store = createMockStore({...testState, demographic: {...testState.demographic, dataSets: []}});
+        store = createMockContribStore({...testState, demographics: {...testState.demographics, dataSets: []}});
         const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
         expect(rendered.find(LoadingElement).length).to.eql(1);
     });
@@ -96,7 +92,7 @@ describe("DemographicOptions", () => {
     });
 
     it("renders on component level, renders gender selection disabled, if no set selected", () => {
-        store = createMockStore({...testState, demographic: {...testState.demographic, selectedDataSet: null}});
+        store = createMockContribStore({...testState, demographics: {...testState.demographics, selectedDataSet: null}});
         const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
         const genderControl = rendered.find(GenderControl);
         expect(genderControl.dive().text()).to.equal("Gender is not applicable / no gender options available");
@@ -129,7 +125,7 @@ describe("DemographicOptions", () => {
         const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
         const formatControl = rendered.find(FormatControl);
         expect(formatControl.length).to.equal(1);
-        expect(formatControl.props().value).to.eql(testState.demographic.selectedFormat);
+        expect(formatControl.props().value).to.eql(testState.demographics.selectedFormat);
         expect(typeof formatControl.props().onSelectFormat).to.eql("function");
     });
 

@@ -174,7 +174,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             await addDemographicDataSets(this.db);
 
             const demographicDataSets: DemographicDataset[] = await (new DemographicService(this.store.dispatch, this.store.getState))
-                .getDataSetsByTouchstoneId(touchstoneVersionId);
+                .getDataSetsByTouchstoneVersionId(touchstoneVersionId);
 
             const expectedDataSets: DemographicDataset[] = [
                 {

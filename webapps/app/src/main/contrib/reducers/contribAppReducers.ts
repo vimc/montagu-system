@@ -7,7 +7,6 @@ import {modellingGroupsReducer, ModellingGroupsState} from "./modellingGroupsRed
 import {contribTouchstonesReducer, TouchstonesState} from "./contribTouchstonesReducer";
 import {diseasesReducer, DiseasesState} from "./diseasesReducer";
 import {responsibilitiesReducer, ResponsibilitiesState} from "./responsibilitiesReducer";
-import {demographicReducer, DemographicState} from "./demographicReducer";
 import {coverageReducer, CoverageState} from "./coverageReducer";
 import {runParametersReducer, RunParametersState} from "./runParametersReducer";
 import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadcrumbsReducer";
@@ -16,7 +15,7 @@ import {userReducer, UserState} from "./userReducer";
 import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneTimeTokenReducer";
 import {CommonState} from "../../shared/reducers/CommonState";
 import {notificationReducer} from "../../shared/reducers/notificationReducer";
-
+import {demographicsReducer, DemographicsState} from "../../shared/reducers/demographicsReducer";
 
 export interface ContribAppState extends CommonState {
     groups: ModellingGroupsState;
@@ -25,7 +24,7 @@ export interface ContribAppState extends CommonState {
     touchstones: TouchstonesState;
     responsibilities: ResponsibilitiesState;
     diseases: DiseasesState;
-    demographic: DemographicState;
+    demographics: DemographicsState;
     coverage: CoverageState;
     estimates: EstimatesState;
     runParameters: RunParametersState;
@@ -41,7 +40,7 @@ const reducers = combineReducers({
     touchstones: contribTouchstonesReducer,
     responsibilities: responsibilitiesReducer,
     diseases: diseasesReducer,
-    demographic: demographicReducer,
+    demographics: demographicsReducer,
     coverage: coverageReducer,
     estimates: estimatesReducer,
     runParameters: runParametersReducer,

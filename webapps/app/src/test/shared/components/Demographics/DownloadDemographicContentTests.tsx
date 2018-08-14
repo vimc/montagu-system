@@ -3,18 +3,16 @@ import {shallow} from "enzyme";
 import {expect} from "chai";
 import {Store} from "redux";
 
-import "../../../../helper";
-import {mockDemographicDataset, mockTouchstoneVersion} from "../../../../mocks/mockModels";
-import {Sandbox} from "../../../../Sandbox";
-import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
-import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
-import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
-
+import {mockDemographicDataset, mockTouchstoneVersion} from "../../../mocks/mockModels";
+import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";
+import {Sandbox} from "../../../Sandbox";
+import {createMockContribStore} from "../../../mocks/mockStore";
 import {
     DownloadDemographicsContent,
     DownloadDemographicsContentComponent
-} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsContent";
-import {DemographicOptions} from "../../../../../main/contrib/components/Responsibilities/Demographics/DemographicOptions";
+} from "../../../../main/shared/components/Demographics/DownloadDemographicsContent";
+import {LoadingElement} from "../../../../main/shared/partials/LoadingElement/LoadingElement";
+import {DemographicOptions} from "../../../../main/shared/components/Demographics/DemographicOptions";
 
 describe("Download Demographic Content Component", () => {
 
@@ -27,7 +25,7 @@ describe("Download Demographic Content Component", () => {
     beforeEach(() => {
         store = createMockContribStore({
             touchstones: {currentTouchstoneVersion: testTouchstone},
-            demographic: {
+            demographics: {
                 dataSets: [testDemographicSet],
                 selectedDataSet: testDemographicSet,
                 selectedGender: "both",
@@ -54,7 +52,7 @@ describe("Download Demographic Content Component", () => {
     it("renders on branch level, not passes", () => {
         store = createMockContribStore({
             touchstones: {currentTouchstoneVersion: null},
-            demographic: {
+            demographics: {
                 dataSets: [testDemographicSet],
                 selectedDataSet: testDemographicSet,
                 selectedGender: "both",

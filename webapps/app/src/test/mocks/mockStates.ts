@@ -14,7 +14,6 @@ import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
 import {touchstonesInitialState} from "../../main/contrib/reducers/contribTouchstonesReducer";
 import {responsibilitiesInitialState} from "../../main/contrib/reducers/responsibilitiesReducer";
 import {diseasesInitialState} from "../../main/contrib/reducers/diseasesReducer";
-import {demographicInitialState} from "../../main/contrib/reducers/demographicReducer";
 import {coverageInitialState} from "../../main/contrib/reducers/coverageReducer";
 import {estimatesInitialState} from "../../main/contrib/reducers/estimatesReducer";
 import {runParametersInitialState} from "../../main/contrib/reducers/runParametersReducer";
@@ -23,6 +22,7 @@ import {AdminAppState} from "../../main/admin/reducers/adminAppReducers";
 import {adminTouchstonesInitialState} from "../../main/admin/reducers/adminTouchstoneReducer";
 import {onetimeTokensInitialState, OneTimeTokenState} from "../../main/shared/reducers/oneTimeTokenReducer";
 import {initialNotificationState} from "../../main/shared/reducers/notificationReducer";
+import {demographicsInitialState} from "../../main/shared/reducers/demographicsReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -61,6 +61,7 @@ export const mockAdminUsersState = (props?: RecursivePartial<AdminUsersState>): 
 
 export const mockAdminState = (props?: RecursivePartial<AdminAppState>): AdminAppState => {
     const template: AdminAppState = {
+        demographics: demographicsInitialState,
         auth: mockAuthState(),
         form: formReducer,
         groups: AdminModellingGroupsInitialState,
@@ -82,7 +83,7 @@ export const mockContribState = (props?: RecursivePartial<ContribAppState>) :Con
         touchstones: touchstonesInitialState,
         responsibilities: responsibilitiesInitialState,
         diseases: diseasesInitialState,
-        demographic: demographicInitialState,
+        demographics: demographicsInitialState,
         coverage: coverageInitialState,
         estimates: estimatesInitialState,
         runParameters: runParametersInitialState,

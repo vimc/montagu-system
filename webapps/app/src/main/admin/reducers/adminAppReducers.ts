@@ -8,12 +8,14 @@ import {usersReducer, UsersState} from "./usersReducer";
 import {adminTouchstoneReducer, AdminTouchstoneState} from "./adminTouchstoneReducer";
 import {CommonState} from "../../shared/reducers/CommonState";
 import {notificationReducer} from "../../shared/reducers/notificationReducer";
+import {demographicsReducer, DemographicsState} from "../../shared/reducers/demographicsReducer";
 
 export interface AdminAppState extends CommonState {
     groups: ModellingGroupsState
     breadcrumbs: BreadcrumbsState;
     users: UsersState;
     touchstones: AdminTouchstoneState;
+    demographics: DemographicsState;
 }
 
 const reducers = combineReducers({
@@ -23,7 +25,8 @@ const reducers = combineReducers({
     breadcrumbs: breadcrumbsReducer,
     users: usersReducer,
     touchstones: adminTouchstoneReducer,
-    notifications: notificationReducer
+    notifications: notificationReducer,
+    demographics: demographicsReducer
 });
 
 export default reducers;

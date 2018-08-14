@@ -1,12 +1,11 @@
 import * as React from 'react';
 import {branch, compose, renderComponent} from "recompose";
 import {connect} from 'react-redux';
-
-import {DemographicDataset, TouchstoneVersion} from "../../../../shared/models/Generated";
+import {DemographicDataset, TouchstoneVersion} from "../../models/Generated";
 import {DemographicOptions} from "./DemographicOptions";
-import {ContribAppState} from "../../../reducers/contribAppReducers";
-import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
-import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
+import {FileDownloadButton} from "../FileDownloadLink";
+import {ContribAppState} from "../../../contrib/reducers/contribAppReducers";
+import {LoadingElement} from "../../partials/LoadingElement/LoadingElement";
 
 export interface DownloadDemographicsContentProps {
     dataSets: DemographicDataset[];
@@ -56,10 +55,10 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
 export const mapStateToProps = (state: ContribAppState): Partial<DownloadDemographicsContentProps> => {
     return {
         touchstone: state.touchstones.currentTouchstoneVersion,
-        dataSets: state.demographic.dataSets,
-        selectedDataSet: state.demographic.selectedDataSet,
-        selectedGender: state.demographic.selectedGender,
-        selectedFormat: state.demographic.selectedFormat,
+        dataSets: state.demographics.dataSets,
+        selectedDataSet: state.demographics.selectedDataSet,
+        selectedGender: state.demographics.selectedGender,
+        selectedFormat: state.demographics.selectedFormat,
     }
 };
 
