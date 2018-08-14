@@ -2,7 +2,7 @@ import {expect} from "chai";
 import {createMockAdminStore} from "../../../mocks/mockStore";
 import {Sandbox} from "../../../Sandbox";
 import {touchstoneDetailsPageActionCreators} from "../../../../main/admin/actions/pages/touchstoneDetailsPageActionCreators";
-import {mockAdminState} from "../../../mocks/mockStates";
+import {mockAdminState, RecursivePartial} from "../../../mocks/mockStates";
 import {AdminTouchstoneState} from "../../../../main/admin/reducers/adminTouchstoneReducer";
 import {mockTouchstone} from "../../../mocks/mockModels";
 import {touchstoneListPageActionCreators} from "../../../../main/admin/actions/pages/TouchstoneListPageActionCreators";
@@ -12,11 +12,17 @@ describe("touchstoneDetailsPageActionCreators", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
+    const tA = mockTouchstone({id: "tA"});
+    const tB = mockTouchstone({id: "tB"});
+    const touchstoneState: RecursivePartial<AdminTouchstoneState> = {
+        touchstones: [tA, tB],
+        currentTouchstone: mockTouchstone({id: "myId", description: "desc of myId"})
+    };
+    const state = mockAdminState({touchstones: touchstoneState});
+
     it("sets current touchstone on load", async () => {
-        const tA = mockTouchstone({id: "tA"});
-        const tB = mockTouchstone({id: "tB"});
-        const touchstoneState: Partial<AdminTouchstoneState> = {touchstones: [tA, tB]};
-        const store = createMockAdminStore({touchstones: touchstoneState});
+
+        const store = createMockAdminStore(state);
         await store.dispatch(touchstoneDetailsPageActionCreators.loadData({
             touchstoneId: "tB"
         }));
@@ -26,10 +32,7 @@ describe("touchstoneDetailsPageActionCreators", () => {
     });
 
     it("creates breadcrumbs", () => {
-        const touchstoneState: Partial<AdminTouchstoneState> = {
-            currentTouchstone: mockTouchstone({id: "myId"})
-        };
-        const state = mockAdminState({touchstones: touchstoneState});
+
         const result = touchstoneDetailsPageActionCreators.createBreadcrumb(state);
 
         expect(result.urlFragment).to.eq("myId/");
@@ -38,5 +41,9 @@ describe("touchstoneDetailsPageActionCreators", () => {
 
     it("has TouchstoneList as parent", () => {
         expect(touchstoneDetailsPageActionCreators.parent).to.eq(touchstoneListPageActionCreators)
+    });
+
+    it("has current touchstone description as title", () => {
+        expect(touchstoneDetailsPageActionCreators.title(state)).to.eq("desc of myId")
     });
 });

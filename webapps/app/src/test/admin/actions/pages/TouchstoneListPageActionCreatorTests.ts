@@ -31,4 +31,8 @@ describe("touchstoneListPageActionCreators", () => {
 
         expect(touchstoneListPageActionCreators.parent).to.eq(mainMenuPageActionCreators)
     });
+
+    it("creates title", () => {
+        expect(touchstoneListPageActionCreators.title()).to.eq("Touchstones")
+    });
 });
