@@ -68,7 +68,8 @@ export const mockAdminState = (props?: RecursivePartial<AdminAppState>): AdminAp
         breadcrumbs: initialBreadcrumbsState,
         users: adminUsersInitialState,
         touchstones: adminTouchstonesInitialState,
-        notifications: initialNotificationState
+        notifications: initialNotificationState,
+        onetimeTokens: onetimeTokensInitialState
     };
     return Object.assign(template, props);
 };

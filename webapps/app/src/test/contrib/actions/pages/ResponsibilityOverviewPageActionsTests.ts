@@ -42,7 +42,7 @@ describe("Responsibility Overview Page actions tests", () => {
         sandbox.stubReduxActionCreator(contribTouchstonesActionCreators, "setCurrentTouchstoneVersion", {type: "TV-test"});
 
         await store.dispatch(responsibilityOverviewPageActionCreators
-            .loadData({groupId: "g1", touchstoneVersionId: "t1v1"}));
+            .loadData({groupId: "g1", touchstoneId: "t1v1"}));
 
         const actions = store.getActions();
 
