@@ -13,7 +13,7 @@ import {compose} from "recompose";
 
 export interface ResponsibilityOverviewPageLocationProps {
     groupId: string;
-    touchstoneVersionId: string;
+    touchstoneId: string;
 }
 
 export interface ResponsibilityOverviewPageProps extends PageProperties<ResponsibilityOverviewPageLocationProps> {

@@ -9,6 +9,7 @@ import {adminTouchstoneReducer, AdminTouchstoneState} from "./adminTouchstoneRed
 import {CommonState} from "../../shared/reducers/CommonState";
 import {notificationReducer} from "../../shared/reducers/notificationReducer";
 import {demographicsReducer, DemographicsState} from "../../shared/reducers/demographicsReducer";
+import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneTimeTokenReducer";
 
 export interface AdminAppState extends CommonState {
     groups: ModellingGroupsState
@@ -16,6 +17,7 @@ export interface AdminAppState extends CommonState {
     users: UsersState;
     touchstones: AdminTouchstoneState;
     demographics: DemographicsState;
+    onetimeTokens: OneTimeTokenState;
 }
 
 const reducers = combineReducers({
@@ -26,7 +28,8 @@ const reducers = combineReducers({
     users: usersReducer,
     touchstones: adminTouchstoneReducer,
     notifications: notificationReducer,
-    demographics: demographicsReducer
+    demographics: demographicsReducer,
+    onetimeTokens: onetimeTokenReducer
 });
 
 export default reducers;
