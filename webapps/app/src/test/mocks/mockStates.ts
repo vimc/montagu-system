@@ -16,7 +16,6 @@ import {responsibilitiesInitialState} from "../../main/contrib/reducers/responsi
 import {diseasesInitialState} from "../../main/contrib/reducers/diseasesReducer";
 import {demographicInitialState} from "../../main/contrib/reducers/demographicReducer";
 import {coverageInitialState} from "../../main/contrib/reducers/coverageReducer";
-import {estimatesInitialState} from "../../main/contrib/reducers/estimatesReducer";
 import {runParametersInitialState} from "../../main/contrib/reducers/runParametersReducer";
 import {initialState as UserInitialState} from "../../main/contrib/reducers/userReducer";
 import {AdminAppState} from "../../main/admin/reducers/adminAppReducers";
@@ -84,7 +83,6 @@ export const mockContribState = (props?: RecursivePartial<ContribAppState>) :Con
         diseases: diseasesInitialState,
         demographic: demographicInitialState,
         coverage: coverageInitialState,
-        estimates: estimatesInitialState,
         runParameters: runParametersInitialState,
         onetimeTokens: onetimeTokensInitialState,
         notifications: initialNotificationState

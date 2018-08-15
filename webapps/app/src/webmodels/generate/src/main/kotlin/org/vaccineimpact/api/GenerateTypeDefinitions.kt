@@ -32,6 +32,7 @@ fun main(args: Array<String>) {
                         CohortRestriction::class,
                         CoverageSet::class,
                         Country::class,
+                        CreateBurdenEstimateSet::class,
                         Disease::class,
                         DemographicDataset::class,
                         NumberRange::class,

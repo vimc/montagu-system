@@ -80,9 +80,6 @@ export const helpers = {
             return null;
         }
     },
-    buildRedirectUrl(redirectPath: String) {
-       return "?redirectUrl=" + encodeURI(settings.montaguUrl() + redirectPath);
-    },
     removeQueryString() {
         history.replaceState({}, document.title, helpers.urlWithoutQueryString(location.href));
     },
@@ -92,5 +89,8 @@ export const helpers = {
         // we need to rebuild `search` now as it gets used by `format` under the hood
         parsed.search = querystring.stringify(parsed.query);
         return url.format(parsed);
+    },
+    getCurrentLocation(): string {
+        return window.location.href;
     }
 };

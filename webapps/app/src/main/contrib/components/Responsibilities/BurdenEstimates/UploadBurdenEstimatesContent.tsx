@@ -1,6 +1,6 @@
 import * as React from "react";
-import { compose, branch, renderComponent} from "recompose";
-import { connect } from 'react-redux';
+import {branch, compose, renderComponent} from "recompose";
+import {connect} from 'react-redux';
 
 import {ModellingGroup, Responsibility, Scenario, TouchstoneVersion} from "../../../../shared/models/Generated";
 import {TemplateLink} from "../Overview/List/OldStyleTemplates/TemplateLink";
@@ -8,13 +8,13 @@ import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSumm
 import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {isNullOrUndefined} from "util";
 
 export interface UploadBurdenEstimatesContentProps {
     touchstone: TouchstoneVersion;
     scenario: Scenario;
     group: ModellingGroup;
     responsibilitySetStatus: string;
-    token: string;
     responsibility: Responsibility;
     canCreate: boolean;
     canUpload: boolean;
@@ -64,9 +64,9 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
                     canUpload={this.props.canUpload}
                     canCreate={this.props.canCreate}
                     groupId={this.props.group.id}
-                    estimatesToken={this.props.token}
                     touchstoneId={this.props.touchstone.id}
                     scenarioId={this.props.scenario.id}
+                    estimateSet={this.props.responsibility.current_estimate_set}
                 />
             </div>
         </div>;
@@ -79,7 +79,6 @@ export const mapStateToProps = (state: ContribAppState): Partial<UploadBurdenEst
         scenario: state.responsibilities.currentResponsibility ? state.responsibilities.currentResponsibility.scenario : null,
         group: state.groups.currentUserGroup,
         responsibilitySetStatus: state.responsibilities.responsibilitiesSet ? state.responsibilities.responsibilitiesSet.status : null,
-        token: state.estimates.token,
         responsibility: state.responsibilities.currentResponsibility,
         canCreate: false,
         canUpload: false
@@ -90,7 +89,11 @@ export const mapStateToProps = (state: ContribAppState): Partial<UploadBurdenEst
     return newProps;
 };
 
+function notReady(props: UploadBurdenEstimatesContentProps): boolean {
+    return isNullOrUndefined(props.responsibility);
+}
+
 export const UploadBurdenEstimatesContent = compose(
-    connect(mapStateToProps, ),
-    branch((props: UploadBurdenEstimatesContentProps) => !props.responsibility, renderComponent(LoadingElement))
+    connect(mapStateToProps, (dispatch, props) => props),
+    branch(notReady, renderComponent(LoadingElement))
 )(UploadBurdenEstimatesContentComponent) as React.ComponentClass<Partial<UploadBurdenEstimatesContentProps>>;

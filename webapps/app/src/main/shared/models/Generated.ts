@@ -36,6 +36,18 @@ export interface Country {
     name: string;
 }
 
+export type BurdenEstimateSetTypeCode = "central-single-run" | "central-averaged" | "central-unknown" | "stochastic";
+
+export interface BurdenEstimateSetType {
+    details: string | null;
+    type: BurdenEstimateSetTypeCode;
+}
+
+export interface CreateBurdenEstimateSet {
+    model_run_parameter_set: number | null;
+    type: BurdenEstimateSetType;
+}
+
 export interface Disease {
     id: string;
     name: string;
@@ -114,13 +126,6 @@ export interface ExpectationMapping {
 }
 
 export type BurdenEstimateSetStatus = "empty" | "partial" | "complete";
-
-export type BurdenEstimateSetTypeCode = "central-single-run" | "central-averaged" | "central-unknown" | "stochastic";
-
-export interface BurdenEstimateSetType {
-    details: string | null;
-    type: BurdenEstimateSetTypeCode;
-}
 
 export interface BurdenEstimateSet {
     id: number;

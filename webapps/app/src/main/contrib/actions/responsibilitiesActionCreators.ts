@@ -1,12 +1,12 @@
-import { Dispatch } from "redux";
+import {Dispatch} from "redux";
 
 import {ResponsibilitiesService} from "../services/ResponsibilitiesService";
 import {
-    ResponsibilitiesTypes, SetCurrentResponsibility,
+    ResponsibilitiesTypes,
+    SetCurrentResponsibility,
     SetResponsibilities
 } from "../actionTypes/ResponsibilitiesTypes";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../models/ResponsibilitySet";
-import {estimatesActionCreators} from "./estimatesActionCreators";
 import {ContribAppState} from "../reducers/contribAppReducers";
 import {ResponsibilitySetWithExpectations} from "../../shared/models/Generated";
 
@@ -57,7 +57,6 @@ export const responsibilitiesActionCreators = {
             dispatch(this.clearCacheForResponsibilitySet());
             await dispatch(this.getResponsibilitySet());
             dispatch(this.setCurrentResponsibility(scenarioId));
-            await dispatch(estimatesActionCreators.getOneTimeToken());
         }
     }
 };

@@ -1,13 +1,12 @@
 import * as React from "react";
-import { Dispatch } from "redux";
+import {FormEvent} from "react";
+import {Dispatch} from "redux";
 import {Alert} from "reactstrap";
-import { compose, branch, renderComponent} from "recompose";
-import { connect } from 'react-redux';
+import {compose} from "recompose";
+import {connect} from 'react-redux';
 
 import {OptionSelector} from "../../OptionSelector/OptionSelector";
-import {BurdenEstimateSetTypeCode} from "../../../../shared/models/Generated";
-import {FormEvent} from "react";
-import {EstimatesCreateBurdenData} from "../../../actionTypes/EstimatesTypes";
+import {BurdenEstimateSetTypeCode, CreateBurdenEstimateSet} from "../../../../shared/models/Generated";
 import {estimatesActionCreators} from "../../../actions/estimatesActionCreators";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 
@@ -15,11 +14,11 @@ export interface CreateBurdenEstimateSetFormProps {
     groupId: string;
     touchstoneId: string;
     scenarioId: string;
-    createBurden: (data: EstimatesCreateBurdenData) => void;
+    createBurden: (data: CreateBurdenEstimateSet) => void;
 }
 
 export interface CreateBurdenEstimateSetFormState {
-    data: EstimatesCreateBurdenData;
+    data: CreateBurdenEstimateSet;
     hasSuccess: boolean;
     errors: Error[];
     disabled: boolean;
@@ -44,6 +43,7 @@ export class CreateBurdenEstimateSetFormComponent extends React.Component<Create
         super(props);
         this.state = {
             data: {
+                model_run_parameter_set: null,
                 type: {
                     type: null,
                     details: null
@@ -63,6 +63,7 @@ export class CreateBurdenEstimateSetFormComponent extends React.Component<Create
     onTypeChange(value: BurdenEstimateSetTypeCode) {
         this.setState( {
             data: {
+                model_run_parameter_set: null,
                 type: {
                     type: value,
                     details: this.state.data.type.details
@@ -76,6 +77,7 @@ export class CreateBurdenEstimateSetFormComponent extends React.Component<Create
         const details = (e.target as HTMLInputElement).value;
         this.setState({
             data: {
+                model_run_parameter_set: null,
                 type: {
                     details: details,
                     type: this.state.data.type.type
@@ -168,7 +170,7 @@ export class CreateBurdenEstimateSetFormComponent extends React.Component<Create
 
 export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<CreateBurdenEstimateSetFormProps> => {
     return {
-        createBurden: (data: EstimatesCreateBurdenData) => dispatch(estimatesActionCreators.createBurden(data))
+        createBurden: (data: CreateBurdenEstimateSet) => dispatch(estimatesActionCreators.createBurden(data))
     }
 };
 

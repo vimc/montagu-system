@@ -1,14 +1,13 @@
 import * as React from "react";
-
-import { settings } from "../Settings";
 import {helpers} from "../Helpers";
 import {ErrorInfo, Result} from "../models/Generated";
 import {Alert} from "reactstrap";
 
 import {CustomValidationResult} from "../validation/FileValidationHelpers";
+import {OneTimeLinkContext, OneTimeLinkProps} from "./OneTimeLinkContext";
 
 export interface UploadFileProps {
-    token: string;
+    href: string;
     enableSubmit: boolean;
     successMessage: string;
     validatePath?: (path: string) => CustomValidationResult;
@@ -48,52 +47,37 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
         if (this.props.validatePath) {
             return this.props.validatePath(this.state.fileName);
         }
-        return { isValid: true, content: null };
-    }
-
-    buildURL(urlFragment: string): string {
-        return settings.apiUrl() + urlFragment;
-    }
-    buildOneTimeLink(token: string): string {
-        return this.buildURL(`/onetime_link/${token}/`);
+        return {isValid: true, content: null};
     }
 
     render() {
-        const url = this.buildOneTimeLink(this.props.token);
         const enableSubmit = this.props.enableSubmit
-            && this.props.token != null
             && this.state.fileSelected
             && this.validatePath().isValid;
+        const href = enableSubmit ? this.props.href : null;
 
         const hasError = this.state.serverErrors.length > 0;
 
-        return <div>
-            <form action={url} className="form"
-                  method="POST" encType="multipart/form-data">
-                {this.props.children}
-                <div className="form-group">
-                    <label className="customFileUpload">
-                        <input name="file" type="file" onChange={this.handleChange.bind(this)}/>
-                        <div className="button mt-2 mb-2">
-                            Choose file
-                        </div>
-                    </label>
-
-                    <div className="mr-5">
-                        {this.renderSelectedFile()}
+        return <OneTimeUploadFileForm href={href}>
+            <div className="form-group">
+                <label className="customFileUpload">
+                    <input name="file" type="file" onChange={this.handleChange.bind(this)}/>
+                    <div className="button mt-2 mb-2">
+                        Choose file
                     </div>
+                </label>
+
+                <div className="mr-5">
+                    {this.renderSelectedFile()}
                 </div>
-                <Alert color="danger" isOpen={hasError}>
-                    {this.state.serverErrors[0] && this.state.serverErrors[0].message}
-                </Alert>
-                <Alert color="success" isOpen={this.state.hasSuccess}>
-                    {this.props.successMessage}
-                </Alert>
-                <button type="submit" className={enableSubmit ? "" : "disabled"}
-                        disabled={!enableSubmit}>Upload
-                </button>
-            </form>
-        </div>;
+            </div>
+            <Alert color="danger" isOpen={hasError}>
+                {this.state.serverErrors[0] && this.state.serverErrors[0].message}
+            </Alert>
+            <Alert color="success" isOpen={this.state.hasSuccess}>
+                {this.props.successMessage}
+            </Alert>
+        </OneTimeUploadFileForm>;
     }
 
     renderSelectedFile(): JSX.Element {
@@ -110,3 +94,22 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
         }
     }
 }
+
+export class OneTimeUploadFileFormInner extends React.Component<OneTimeLinkProps, undefined> {
+    render(): JSX.Element {
+        return <form action={this.props.href} className="form"
+                     method="POST" encType="multipart/form-data">
+            {this.props.children}
+
+            <button type="submit"
+                    className={this.props.enabled ? "" : "disabled"}
+                    disabled={!this.props.enabled}
+                    onClick={this.props.tokenConsumed}>
+                Upload
+            </button>
+        </form>
+    }
+}
+
+export const OneTimeUploadFileForm = OneTimeLinkContext(OneTimeUploadFileFormInner);
+

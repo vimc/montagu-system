@@ -2,7 +2,7 @@ import * as React from "react";
 import {expect} from "chai";
 import {shallow, ShallowWrapper} from "enzyme";
 import {Sandbox} from "../../Sandbox";
-import {UploadFileForm} from "../../../main/shared/components/UploadFileForm";
+import {OneTimeUploadFileForm, UploadFileForm} from "../../../main/shared/components/UploadFileForm";
 import {helpers} from "../../../main/shared/Helpers";
 import {Alert} from "reactstrap";
 import {resetFetcher} from "../../mocks/mockRemote";
@@ -14,61 +14,60 @@ describe('UploadForm', () => {
     before(() => resetFetcher());
     afterEach(() => sandbox.restore());
 
-    it("disables the submit button if enable submit is false", () => {
+    it("disables child component if enable submit is false", () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={false}
-                                           token="token"/>);
+                                           href="url"/>);
 
         rendered.setState({"fileSelected": true});
-        assertButtonIsDisabled();
+        assertChildComponentIsDisabled();
     });
 
-    it("disables submit button if token is null", () => {
+    it("disables child component if href is null", () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={true}
-                                           token={null}/>);
+                                           href={null}/>);
 
         rendered.setState({"fileSelected": true});
-        assertButtonIsDisabled();
+        assertChildComponentIsDisabled();
     });
 
-    it("disables submit button if file not selected", () => {
+    it("disables child component if file not selected", () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={true}
-                                           token="token"/>);
-        assertButtonIsDisabled();
+                                           href="url"/>);
+        assertChildComponentIsDisabled();
     });
 
-    it("disables submit button and renders explanation if checkPath fails validation", () => {
+    it("disables child component and renders explanation if checkPath fails validation", () => {
         const validate = () => {
             return {
                 isValid: false,
                 content: <span>Bad things</span>
             };
         };
-        rendered = shallow(<UploadFileForm token="token"
+        rendered = shallow(<UploadFileForm href="url"
                                            enableSubmit={true}
                                            successMessage="success"
                                            validatePath={validate}/>);
         rendered.setState({"fileSelected": true});
-        assertButtonIsDisabled();
+        assertChildComponentIsDisabled();
         expect(rendered.find(".pathProblems").children().text()).to.contain("Bad things");
     });
 
-    it("enables submit button if enableSubmit is true and token exists", () => {
+    it("enables child component if enableSubmit is true and URL is set", () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={true}
-                                           token="token"/>);
+                                           href="url"/>);
 
         rendered.setState({"fileSelected": true});
 
-        const uploadButton = rendered.find(`button`).first();
-        expect(uploadButton.prop("disabled")).to.eq(false);
-        expect(uploadButton.hasClass("disabled")).to.eq(false);
+        const child = rendered.find(OneTimeUploadFileForm).first();
+        expect(child.prop("href")).to.equal("url");
     });
 
     it("does not show alert", () => {
@@ -77,7 +76,7 @@ describe('UploadForm', () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success message"}
                                            enableSubmit={true}
-                                           token="token"/>);
+                                           href="url"/>);
 
         const alerts = rendered.find(Alert);
         expect(alerts).to.have.lengthOf(2);
@@ -96,7 +95,7 @@ describe('UploadForm', () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success"}
                                            enableSubmit={true}
-                                           token="token"/>);
+                                           href="url"/>);
 
         const alerts = rendered.find(Alert);
         const errorAlert = alerts.first();
@@ -116,7 +115,7 @@ describe('UploadForm', () => {
 
         rendered = shallow(<UploadFileForm successMessage={"success message"}
                                            enableSubmit={true}
-                                           token="token"/>);
+                                           href="url"/>);
 
         const alerts = rendered.find(Alert);
         const errorAlert = alerts.first();
@@ -126,10 +125,9 @@ describe('UploadForm', () => {
         expect(successAlert.childAt(0).text()).to.eql("success message");
     });
 
-    function assertButtonIsDisabled() {
-        const uploadButton = rendered.find(`button`).first();
-        expect(uploadButton.prop("disabled")).to.eq(true);
-        expect(uploadButton.hasClass("disabled")).to.eq(true);
+    function assertChildComponentIsDisabled() {
+        const form = rendered.find(OneTimeUploadFileForm).first();
+        expect(form.prop("href")).to.be.null;
     }
 
 });

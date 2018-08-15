@@ -1,11 +1,11 @@
-import { expect } from "chai";
-import { createMemoryHistory } from 'history';
+import {expect} from "chai";
+import {createMemoryHistory} from 'history';
 
 import {createContribStore} from "../../../main/contrib/createStore";
 import {EstimatesService} from "../../../main/contrib/services/EstimatesService";
 import {Sandbox} from "../../Sandbox";
 import {ContribAppState} from "../../../main/contrib/reducers/contribAppReducers";
-import {mockBurdenEstimateSet} from "../../mocks/mockModels";
+import {CreateBurdenEstimateSet} from "../../../main/shared/models/Generated";
 
 describe('Estimates service tests', () => {
     const sandbox = new Sandbox();
@@ -17,19 +17,6 @@ describe('Estimates service tests', () => {
         sandbox.restore();
     });
 
-    it('fetches one time token', () => {
-        const estimatesService = new EstimatesService(store.dispatch, store.getState as () => ContribAppState);
-
-        const getStub = sandbox.setStubFunc(estimatesService, "get", ()=>{
-            return Promise.resolve();
-        });
-
-        estimatesService.getOneTimeToken("group-1", "touchstone-1", "scenario-1", 3, "test/path");
-
-        expect(getStub.getCall(0).args[0])
-            .to.equal("/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimate-sets/3/get_onetime_link/test/path");
-    });
-
     it('creates burden post request', () => {
         const estimatesService = new EstimatesService(store.dispatch, store.getState as () => ContribAppState);
 
@@ -37,7 +24,13 @@ describe('Estimates service tests', () => {
             return Promise.resolve();
         });
 
-        const testEstimatesBurden = mockBurdenEstimateSet();
+        const testEstimatesBurden: CreateBurdenEstimateSet = {
+            type: {
+                type: "central-averaged",
+                details: "some details"
+            },
+            model_run_parameter_set: null
+        };
 
         estimatesService.createBurden("group-1", "touchstone-1", "scenario-1", testEstimatesBurden);
 

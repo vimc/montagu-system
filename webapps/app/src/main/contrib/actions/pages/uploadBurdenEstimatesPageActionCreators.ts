@@ -3,7 +3,6 @@ import {Dispatch} from "redux";
 import {responsibilityOverviewPageActionCreators} from "./responsibilityOverviewPageActionCreators";
 import {UploadBurdenEstimatesPageLocationProps} from "../../components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesPage";
 import {responsibilitiesActionCreators} from "../responsibilitiesActionCreators";
-import {estimatesActionCreators} from "../estimatesActionCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {ContribPageActionCreators} from "./ContribPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
@@ -21,7 +20,6 @@ class UploadBurdenEstimatesPageActionCreators extends ContribPageActionCreators<
     loadData(params: UploadBurdenEstimatesPageLocationProps) {
         return async (dispatch: Dispatch<ContribAppState>) => {
             dispatch(responsibilitiesActionCreators.setCurrentResponsibility(params.scenarioId));
-            await dispatch(estimatesActionCreators.getOneTimeToken());
         }
     }
 }
