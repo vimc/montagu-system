@@ -8,13 +8,9 @@ import {touchstoneResponsibilitiesPageActionCreators} from "../../../actions/pag
 import {ResponsibilityList} from "./ResponsibilityList";
 import {ResponsibilitySetWithExpectations} from "../../../../shared/models/Generated";
 import {compose} from "recompose";
+import {TouchstoneVersionPageLocationProps} from "./TouchstoneVersionPage";
 
-export interface ResponsibilitiesPageLocationProps {
-    touchstoneVersionId: string;
-    touchstoneId: string;
-}
-
-export interface ResponsibilitiesPageProps extends PageProperties<ResponsibilitiesPageLocationProps> {
+export interface ResponsibilitiesPageProps extends PageProperties<TouchstoneVersionPageLocationProps> {
     currentTouchstoneVersionId: string;
     responsibilitySets: ResponsibilitySetWithExpectations[]
 }
@@ -47,11 +43,11 @@ const mapStateToProps = (state: AdminAppState): Partial<ResponsibilitiesPageProp
 
 export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<ResponsibilitiesPageProps> => {
     return {
-        onLoad: (params: ResponsibilitiesPageLocationProps) =>
+        onLoad: (params: TouchstoneVersionPageLocationProps) =>
             dispatch(touchstoneResponsibilitiesPageActionCreators.onLoad(params))
     }
 };
 
 export const ResponsibilitiesPage =
-    compose<{}, PageProperties<ResponsibilitiesPageLocationProps>>(connect(mapStateToProps, mapDispatchToProps))
+    compose<{}, PageProperties<TouchstoneVersionPageLocationProps>>(connect(mapStateToProps, mapDispatchToProps))
     (ResponsibilitiesPageComponent);

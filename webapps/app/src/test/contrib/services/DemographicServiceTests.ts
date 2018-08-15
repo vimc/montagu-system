@@ -24,7 +24,7 @@ describe('Demographic service tests', () => {
             return Promise.resolve();
         });
 
-        demographicService.getDataSetsByTouchstoneId("touchstone-1");
+        demographicService.getDataSetsByTouchstoneVersionId("touchstone-1");
 
         expect(getStub.getCall(0).args[0]).to.equal("/touchstones/touchstone-1/demographics/");
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'sets' });

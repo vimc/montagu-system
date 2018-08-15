@@ -1,4 +1,4 @@
-import {DemographicDataset} from "../../shared/models/Generated";
+import {DemographicDataset} from "../models/Generated";
 
 export enum DemographicTypes {
     DEMOGRAPHIC_DATA_SETS_FETCHED = "DEMOGRAPHIC_DATA_SETS_FETCHED",

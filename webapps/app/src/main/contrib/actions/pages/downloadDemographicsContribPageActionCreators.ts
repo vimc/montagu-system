@@ -3,12 +3,12 @@ import {Dispatch} from "redux";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {DownloadDemographicsPageLocationProps} from "../../components/Responsibilities/Demographics/DownloadDemographicsPage";
 import {responsibilityOverviewPageActionCreators} from "./responsibilityOverviewPageActionCreators";
-import {demographicActionCreators} from "../demographicActionCreators";
+import {demographicActionCreators} from "../../../shared/actions/demographicActionCreators";
 import {ContribPageActionCreators} from "./ContribPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 
 
-class DownloadDemographicsPageActionCreators extends ContribPageActionCreators<DownloadDemographicsPageLocationProps> {
+class DownloadDemographicsContribPageActionCreators extends ContribPageActionCreators<DownloadDemographicsPageLocationProps> {
 
     parent = responsibilityOverviewPageActionCreators;
 
@@ -27,4 +27,4 @@ class DownloadDemographicsPageActionCreators extends ContribPageActionCreators<D
 
 }
 
-export const downloadDemographicsPageActionCreators = new DownloadDemographicsPageActionCreators();
+export const downloadDemographicsContribPageActionCreators = new DownloadDemographicsContribPageActionCreators();

@@ -4,11 +4,12 @@ import { compose, branch, renderComponent} from "recompose";
 import { Dispatch } from "redux";
 
 import { GenderControl } from "./GenderControl";
-import { DemographicDataset } from "../../../../shared/models/Generated";
-import { FormatControl } from "../FormatControl";
-import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
-import {ContribAppState} from "../../../reducers/contribAppReducers";
-import {demographicActionCreators} from "../../../actions/demographicActionCreators";
+import {DemographicDataset} from "../../models/Generated";
+import {FormatControl} from "../../../contrib/components/Responsibilities/FormatControl";
+import {ContribAppState} from "../../../contrib/reducers/contribAppReducers";
+import {AdminAppState} from "../../../admin/reducers/adminAppReducers";
+import {demographicActionCreators} from "../../actions/demographicActionCreators";
+import {LoadingElement} from "../../partials/LoadingElement/LoadingElement";
 
 export interface DemographicOptionsProps {
     dataSets: DemographicDataset[];
@@ -80,16 +81,16 @@ export class DemographicOptionsComponent extends React.Component<DemographicOpti
     }
 }
 
-export const mapStateToProps = (state: ContribAppState): Partial<DemographicOptionsProps> => {
+export const mapStateToProps = (state: ContribAppState | AdminAppState): Partial<DemographicOptionsProps> => {
     return {
-        dataSets: state.demographic.dataSets,
-        selectedDataSet: state.demographic.selectedDataSet,
-        selectedGender: state.demographic.selectedGender,
-        selectedFormat: state.demographic.selectedFormat,
+        dataSets: state.demographics.dataSets,
+        selectedDataSet: state.demographics.selectedDataSet,
+        selectedGender: state.demographics.selectedGender,
+        selectedFormat: state.demographics.selectedFormat,
     }
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<DemographicOptionsProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState | AdminAppState>): Partial<DemographicOptionsProps> => {
     return {
         onSelectDataSet: (e: React.ChangeEvent<HTMLSelectElement>) => {
             dispatch(demographicActionCreators.setDataSet(e.target.value));

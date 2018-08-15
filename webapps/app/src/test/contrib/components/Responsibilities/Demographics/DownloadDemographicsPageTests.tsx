@@ -10,12 +10,9 @@ import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/
 import {mockMatch} from "../../../../mocks/mocks";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {ResponsibilitiesPageTitle} from "../../../../../main/contrib/components/Responsibilities/PageTitle";
-import {
-    DownloadDemographicsPage,
-    DownloadDemographicsPageLocationProps
-} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsPage";
-import {downloadDemographicsPageActionCreators} from "../../../../../main/contrib/actions/pages/downloadDemographicsPageActionCreators";
-import {DownloadDemographicsContent} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsContent";
+import {DownloadDemographicsPageLocationProps, DownloadDemographicsPage} from "../../../../../main/contrib/components/Responsibilities/Demographics/DownloadDemographicsPage";
+import {downloadDemographicsContribPageActionCreators} from "../../../../../main/contrib/actions/pages/downloadDemographicsContribPageActionCreators";
+import {DownloadDemographicsContent} from "../../../../../main/shared/components/Demographics/DownloadDemographicsContent";
 
 describe("Download Demographics Page tests", () => {
 
@@ -34,10 +31,8 @@ describe("Download Demographics Page tests", () => {
             groupId: "g-1",
             touchstoneId: "t-1"
         });
-        const onLoadStub = sandbox.setStubReduxAction(downloadDemographicsPageActionCreators, "onLoad");
-        const rendered = shallow(<DownloadDemographicsPage
-            match={testMatch}
-        />, {context: {store}}).dive().dive();
+        const onLoadStub = sandbox.setStubReduxAction(downloadDemographicsContribPageActionCreators, "onLoad");
+        const rendered = shallow(<DownloadDemographicsPage match={testMatch} />, {context: {store}}).dive().dive();
         const pageArticle = rendered.find('PageArticle');
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.find(DownloadDemographicsContent).length).is.equal(1);

@@ -3,13 +3,13 @@ import {expect} from "chai";
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
 import {mockDemographicDataset} from "../../../mocks/mockModels";
-import {downloadDemographicsPageActionCreators} from "../../../../main/contrib/actions/pages/downloadDemographicsPageActionCreators";
 import {DemographicService} from "../../../../main/contrib/services/DemographicService";
-import {DemographicTypes} from "../../../../main/contrib/actionTypes/DemographicTypes";
 import {responsibilityOverviewPageActionCreators} from "../../../../main/contrib/actions/pages/responsibilityOverviewPageActionCreators";
 import {mockContribState} from "../../../mocks/mockStates";
+import {downloadDemographicsContribPageActionCreators} from "../../../../main/contrib/actions/pages/downloadDemographicsContribPageActionCreators";
+import {DemographicTypes} from "../../../../main/shared/actionTypes/DemographicTypes";
 
-describe("Download Demographic Page actions tests", () => {
+describe("Download Demographic Contrib Page actions tests", () => {
     const sandbox = new Sandbox();
     const testDemographicDataSet = mockDemographicDataset();
 
@@ -18,12 +18,12 @@ describe("Download Demographic Page actions tests", () => {
     });
 
     it("has responsibilities overview page as parent", () => {
-        expect(downloadDemographicsPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators)
+        expect(downloadDemographicsContribPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators)
     });
 
     it("creates breadcrumb", () => {
         const state = mockContribState();
-        const result = downloadDemographicsPageActionCreators.createBreadcrumb(state);
+        const result = downloadDemographicsContribPageActionCreators.createBreadcrumb(state);
         expect(result.urlFragment).to.eq("demographics/");
         expect(result.name).to.eq("Download demographic data sets");
     });
@@ -32,11 +32,11 @@ describe("Download Demographic Page actions tests", () => {
 
         const store = createMockContribStore();
 
-        sandbox.setStubFunc(DemographicService.prototype, "getDataSetsByTouchstoneId", () => {
+        sandbox.setStubFunc(DemographicService.prototype, "getDataSetsByTouchstoneVersionId", () => {
             return Promise.resolve([testDemographicDataSet]);
         });
 
-        await store.dispatch(downloadDemographicsPageActionCreators
+        await store.dispatch(downloadDemographicsContribPageActionCreators
             .loadData({groupId: "g1", touchstoneId: "t1"}));
 
         const actions = store.getActions();

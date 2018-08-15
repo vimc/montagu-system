@@ -1,7 +1,7 @@
 import {AbstractLocalService} from "../../shared/services/AbstractLocalService";
 
 export class DemographicService extends AbstractLocalService {
-    getDataSetsByTouchstoneId(touchstoneId: string) {
+    getDataSetsByTouchstoneVersionId(touchstoneId: string) {
         return this.setOptions({cacheKey: DemographicCacheKeysEnum.sets})
             .get(`/touchstones/${touchstoneId}/demographics/`);
     }

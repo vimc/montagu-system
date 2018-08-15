@@ -2,10 +2,9 @@ import * as React from "react";
 import { expect } from "chai";
 import { shallow } from "enzyme";
 
-import "../../../../helper";
-import { GenderControl } from "../../../../../main/contrib/components/Responsibilities/Demographics/GenderControl";
-import { mockDemographicDataset } from "../../../../mocks/mockModels";
 import ReactRadioButtonGroup from "react-radio-button-group";
+import {GenderControl} from "../../../../main/shared/components/Demographics/GenderControl";
+import {mockDemographicDataset} from "../../../mocks/mockModels";
 
 describe("GenderControl", () => {
     it("gender is applicable when data set is selected and that gender has gender applicable", () => {

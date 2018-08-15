@@ -1,11 +1,11 @@
 import * as React from "react";
 
 import {ResponsibilitiesPageTitle} from "../PageTitle";
-import {DownloadDemographicsContent} from "./DownloadDemographicsContent";
 import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
-import {downloadDemographicsPageActionCreators} from "../../../actions/pages/downloadDemographicsPageActionCreators";
+import {downloadDemographicsContribPageActionCreators} from "../../../actions/pages/downloadDemographicsContribPageActionCreators";
 import {ContribPage} from "../../../ContribPage";
+import {DownloadDemographicsContent} from "../../../../shared/components/Demographics/DownloadDemographicsContent";
 
 export interface DownloadDemographicsPageLocationProps {
     groupId: string;
@@ -29,4 +29,4 @@ export class DownloadDemographicsPageComponent extends React.Component<PagePrope
 }
 
 export const DownloadDemographicsPage =
-    ContribPage(downloadDemographicsPageActionCreators)(DownloadDemographicsPageComponent);
+    ContribPage(downloadDemographicsContribPageActionCreators)(DownloadDemographicsPageComponent);

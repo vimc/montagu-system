@@ -1,21 +1,21 @@
-import {DemographicDataset} from "../../shared/models/Generated";
+import {DemographicDataset} from "../models/Generated";
 import {Demographic, DemographicAction, DemographicTypes} from "../actionTypes/DemographicTypes";
 
-export interface DemographicState {
+export interface DemographicsState {
     dataSets: DemographicDataset[];
     selectedDataSet: DemographicDataset;
     selectedGender: string;
     selectedFormat: string;
 }
 
-export const demographicInitialState: DemographicState = {
+export const demographicsInitialState: DemographicsState = {
     dataSets: [],
     selectedDataSet: null,
     selectedGender: Demographic.SelectedGender.both,
     selectedFormat: Demographic.SelectedFormat.long
 };
 
-export const demographicReducer = (state = demographicInitialState, action: DemographicAction) => {
+export const demographicsReducer = (state = demographicsInitialState, action: DemographicAction) => {
     switch (action.type) {
         case DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED:
             return {...state, dataSets: action.data ? action.data : [] };
