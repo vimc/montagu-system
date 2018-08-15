@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ExpectationMapping, NumberRange} from "../../../../shared/models/Generated";
+import {ExpectationMapping, NumberRange, Scenario} from "../../../../shared/models/Generated";
 import {CountriesList} from "./CountriesList";
 import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
 
@@ -7,9 +7,14 @@ interface ExpectationsDescriptionProps {
     expectationMapping: ExpectationMapping;
     groupId: String;
     touchstoneVersionId: String;
+    scenarios: Scenario[];
 }
 
 export class ExpectationsDescription extends React.PureComponent<ExpectationsDescriptionProps> {
+
+    scenarioMapping(id: string) {
+        return <li key={id}>{id} : {this.props.scenarios.find(s => s.id == id).description}</li>
+    }
 
     render(): JSX.Element {
 
@@ -29,7 +34,7 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
             <div className="h3">{expectationMapping.expectation.description}</div>
             For scenarios:
             <ul id="scenarios">
-                {expectationMapping.applicable_scenarios.map((s) => {return <li key={s}>{s}</li>})}
+                {expectationMapping.applicable_scenarios.map(s => this.scenarioMapping(s))}
             </ul>
             <div>
                 Expecting data on:
@@ -38,8 +43,9 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
                 </ul>
                 For all combinations of:
                 <ul>
-                    <li key={"c"} id={"countries"}>{numCountries} countries: <CountriesList targetKey={`countries-${expectation.id}`}
-                                                                                  countries={expectation.countries} /></li>
+                    <li key={"c"} id={"countries"}>{numCountries} countries: <CountriesList
+                        targetKey={`countries-${expectation.id}`}
+                        countries={expectation.countries}/></li>
                     <li key={"y"} id={"years"}>{numYears} years: {rangeAsString(expectation.years)}</li>
                     <li key={"a"} id={"ages"}>{numAges} ages: {rangeAsString(expectation.ages)}</li>
                     {cohorts && <li key={"co"} id={"cohorts"}>{cohorts}</li>}

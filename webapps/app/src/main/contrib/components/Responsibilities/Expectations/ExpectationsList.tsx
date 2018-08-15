@@ -16,11 +16,13 @@ interface Props {
 class ExpectationsListComponent extends React.PureComponent<Props> {
     render(): JSX.Element {
         const {responsibilitySet, group, touchstoneVersion} = this.props;
+        const scenarios = responsibilitySet.responsibilities.map(r => r.scenario);
         const items = responsibilitySet.expectations.map(em =>
             <ExpectationsDescription
                 key={em.expectation.id}
                 expectationMapping={em}
                 groupId={group.id}
+                scenarios={scenarios}
                 touchstoneVersionId={touchstoneVersion.id}
             />
         );
