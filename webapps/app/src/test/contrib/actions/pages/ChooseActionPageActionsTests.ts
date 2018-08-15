@@ -1,6 +1,6 @@
-import { expect } from "chai";
+import {expect} from "chai";
 
-import { Sandbox } from "../../../Sandbox";
+import {Sandbox} from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
@@ -10,50 +10,54 @@ import {mockBreadcrumbs, mockModellingGroup, mockTouchstoneVersion} from "../../
 import {chooseActionPageActionCreators} from "../../../../main/contrib/actions/pages/chooseActionPageActionCreators";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
 import {TouchstoneTypes} from "../../../../main/shared/actionTypes/TouchstonesTypes";
+import {chooseGroupPageActionCreators} from "../../../../main/contrib/actions/pages/chooseGroupPageActionCreators";
+import {mockContribState} from "../../../mocks/mockStates";
 
 describe("Choose Action Page actions tests", () => {
     const sandbox = new Sandbox();
 
-    const testGroup = mockModellingGroup();
-    const testBreadcrumbs = mockBreadcrumbs();
+    const testGroup = mockModellingGroup({description: "desc", id: "g1"});
     const testTouchstone = mockTouchstoneVersion({id: "touchstone-1"});
+    const initialState = mockContribState({
+        auth: {modellingGroups: testGroup.id},
+        groups: {userGroups: [testGroup], currentUserGroup: testGroup}
+    });
 
     afterEach(() => {
         sandbox.restore();
     });
 
-    it("on load", (done) => {
-        const initialState = {
-            auth: {modellingGroups: testGroup.id},
-            groups: {userGroups: [testGroup], currentUserGroup: testGroup}
-        };
-        const store = createMockStore(initialState);
-
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", ()=>{
-            return Promise.resolve([testGroup]);
-        });
-        sandbox.setStubFunc(TouchstonesService.prototype, "getTouchstonesByGroupId", ()=>{
-            return Promise.resolve([testTouchstone]);
-        });
-        sandbox.setStubFunc(breadcrumbsModule, "initialize", ()=>{
-            return testBreadcrumbs;
-        });
-
-        store.dispatch(chooseActionPageActionCreators.onLoad({groupId: testGroup.id}));
-        setTimeout(() => {
-            const actions = store.getActions();
-
-            const expectedPayload = [
-                { type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup] },
-                { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup },
-                { type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]},
-                { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs }
-            ];
-            expect(actions).to.eql(expectedPayload);
-            done();
-        });
+    it("has choose group page as parent", () => {
+        expect(chooseActionPageActionCreators.parent).to.eq(chooseGroupPageActionCreators)
     });
 
+    it("creates breadcrumb", () => {
+
+        const result = chooseActionPageActionCreators.createBreadcrumb(initialState);
+
+        expect(result.name).to.eq("desc");
+        expect(result.urlFragment).to.eq("g1/");
+    });
+
+    it("loadData set current group and loads touchstones", async () => {
+
+        const store = createMockStore(initialState);
+
+        sandbox.setStubFunc(TouchstonesService.prototype, "getTouchstonesByGroupId", () => {
+            return Promise.resolve([testTouchstone]);
+        });
+
+        await store.dispatch(chooseActionPageActionCreators.loadData({groupId: testGroup.id}));
+
+        const actions = store.getActions();
+
+        const expectedPayload = [
+            {type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup},
+            {type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]}
+        ];
+        expect(actions).to.eql(expectedPayload);
+
+    });
 
 
 });

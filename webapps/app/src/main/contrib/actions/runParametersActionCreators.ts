@@ -1,10 +1,12 @@
-import { Dispatch } from "redux";
+import {Dispatch} from "redux";
 
 import {ContribAppState} from "../reducers/contribAppReducers";
 import {RunParametersService} from "../services/RunParametersService";
 import {
-    RunParametersSetsFetched, RunParametersSetUploadStatus, RunParametersTokenFetched,
-    RunParametersTypes, RunParametersUploadStatus, RunParametersUploadStatusData
+    RunParametersSetsFetched,
+    RunParametersSetUploadStatus,
+    RunParametersTypes,
+    RunParametersUploadStatus
 } from "../actionTypes/RunParametersTypes";
 import {ModelRunParameterSet, Result} from "../../shared/models/Generated";
 
@@ -24,19 +26,6 @@ export const runParametersActionCreators = {
                 type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED,
                 data: sets
             } as RunParametersSetsFetched );
-        }
-    },
-
-    getOneTimeToken(groupId: string, touchstoneId: string, setId: number) {
-        return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
-            const token: string = await (new RunParametersService(dispatch, getState)).getOneTimeToken(groupId, touchstoneId, setId);
-            return dispatch({
-                type: RunParametersTypes.RUN_PARAMETERS_TOKEN_FETCHED,
-                data: {
-                    id: setId,
-                    token
-                }
-            } as RunParametersTokenFetched);
         }
     },
 

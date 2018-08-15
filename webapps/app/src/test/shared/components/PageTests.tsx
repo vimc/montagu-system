@@ -15,10 +15,11 @@ import {mockMatch} from "../../mocks/mocks";
 import {BreadcrumbsTypes} from "../../../main/shared/actionTypes/BreadrumbsTypes";
 import {mockPageBreadcrumb} from "../../mocks/mockModels";
 import {PageBreadcrumb} from "../../../main/shared/components/PageWithHeader/PageProperties";
+import {AdminAppState} from "../../../main/admin/reducers/adminAppReducers";
 
 class DummyPageComponent extends React.Component<PageProperties<undefined>> {
     render(): JSX.Element {
-        return <div>Some content</div>
+        return <div>{this.props.title}</div>
     }
 }
 
@@ -28,6 +29,10 @@ const fakeBreadcrumbs = mockPageBreadcrumb();
 class DummyPageActionCreators extends AbstractPageActionCreators<any, any> {
 
     parent: AbstractPageActionCreators<any, any> = null;
+
+    title(state: AdminAppState) {
+        return state.auth.username
+    }
 
     createBreadcrumb(state: any): PageBreadcrumb {
         return fakeBreadcrumbs
@@ -59,6 +64,15 @@ describe('Page HOC', () => {
             const expectedActionTypes = [BreadcrumbsTypes.BREADCRUMBS_RECEIVED, fakeAction.type];
             expect(actions.map(a => a.type)).to.have.members(expectedActionTypes);
         });
+    });
+
+    it("populates title from state", () => {
+        const store = createMockAdminStore({auth: {loggedIn: true, username: "test"}});
+        const rendered = shallow(<DummyPage match={mockMatch()}/>, {context: {store}})
+            .dive().dive();
+
+        expect(rendered.find("div").text()).to.eq("test")
+
     });
 
 });

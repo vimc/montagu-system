@@ -26,7 +26,8 @@ export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, u
             className={"button" + (this.props.className ? ` ${this.props.className}` : "")}
             href={this.props.href}
             enabled={this.props.enabled}
-            refreshToken={this.props.refreshToken}>
+            loading={this.props.loading}
+            tokenConsumed={this.props.tokenConsumed}>
             {this.props.children}
             <span className="download-icon">
                 <DownloadIcon fillColor={"#ffffff"}/>
@@ -39,29 +40,27 @@ export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, u
 export class FileDownloadInner extends React.Component<OneTimeLinkProps, undefined> {
     constructor(props: OneTimeLinkProps) {
         super(props);
-        this.refreshToken = this.refreshToken.bind(this);
+        this.tokenConsumed = this.tokenConsumed.bind(this);
     }
 
-    refreshToken(e: React.MouseEvent<HTMLAnchorElement>) {
-        this.props.refreshToken();
+    tokenConsumed(e: React.MouseEvent<HTMLAnchorElement>) {
+        this.props.tokenConsumed();
     }
 
     render() {
-        const {href, enabled} = this.props;
-        let className: string;
+        const {href, enabled, loading} = this.props;
+        let className = this.props.className;
         let loader: JSX.Element = null;
 
-        if (href != null) {
-            className = this.props.className;
-        } else {
-            className = this.props.className + ' disabled';
-            if (enabled) {
-                loader = <img src={loaderAnimation}/>;
-            }
+        if (href == null || !enabled) {
+            className += ' disabled'
+        }
+        if (loading) {
+            loader = <img src={loaderAnimation}/>;
         }
 
         return <a href={href}
-                  onClick={this.refreshToken}
+                  onClick={this.tokenConsumed}
                   className={className}
                   target="_blank"
                   download="" // Filename is provided by server
