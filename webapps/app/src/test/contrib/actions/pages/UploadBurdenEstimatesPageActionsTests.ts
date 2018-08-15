@@ -2,20 +2,12 @@ import {expect} from "chai";
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
-import {
-    mockBreadcrumbs,
-    mockBurdenEstimateSet,
-    mockDisease,
-    mockModellingGroup,
-    mockResponsibilitySetWithExpectations,
-    mockTouchstone,
-} from "../../../mocks/mockModels";
+import {mockResponsibility, mockScenario,} from "../../../mocks/mockModels";
 import {uploadBurdenEstimatesPageActionCreators} from "../../../../main/contrib/actions/pages/uploadBurdenEstimatesPageActionCreators";
 import {estimatesActionCreators} from "../../../../main/contrib/actions/estimatesActionCreators";
 import {responsibilitiesActionCreators} from "../../../../main/contrib/actions/responsibilitiesActionCreators";
 import {responsibilityOverviewPageActionCreators} from "../../../../main/contrib/actions/pages/responsibilityOverviewPageActionCreators";
 import {mockContribState} from "../../../mocks/mockStates";
-import {mockResponsibility, mockScenario} from "../../../mocks/mockModels";
 
 describe("Upload burden estimates page actions tests", () => {
     const sandbox = new Sandbox();

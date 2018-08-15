@@ -1,6 +1,4 @@
 import * as React from "react";
-
-import {settings} from "../Settings";
 import {helpers} from "../Helpers";
 import {ErrorInfo, Result} from "../models/Generated";
 import {Alert} from "reactstrap";
@@ -54,13 +52,13 @@ export class UploadFileForm extends React.Component<UploadFileProps, UploadFileS
 
     render() {
         const enableSubmit = this.props.enableSubmit
-            && this.props.href != null
             && this.state.fileSelected
             && this.validatePath().isValid;
+        const href = enableSubmit ? this.props.href : null;
 
         const hasError = this.state.serverErrors.length > 0;
 
-        return <OneTimeUploadFileForm href={this.props.href} enabled={enableSubmit}>
+        return <OneTimeUploadFileForm href={href}>
             <div className="form-group">
                 <label className="customFileUpload">
                     <input name="file" type="file" onChange={this.handleChange.bind(this)}/>
@@ -106,7 +104,7 @@ export class OneTimeUploadFileFormInner extends React.Component<OneTimeLinkProps
             <button type="submit"
                     className={this.props.enabled ? "" : "disabled"}
                     disabled={!this.props.enabled}
-                    onClick={this.props.refreshToken}>
+                    onClick={this.props.tokenConsumed}>
                 Upload
             </button>
         </form>

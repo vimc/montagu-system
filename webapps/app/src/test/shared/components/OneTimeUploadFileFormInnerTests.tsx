@@ -11,14 +11,14 @@ describe("OneTimeUploadFileFormInner", () => {
         const defaultProps: OneTimeLinkProps = {
             enabled: true,
             href: "url",
-            refreshToken: doNothing
+            tokenConsumed: doNothing
         };
         const unifiedProps = Object.assign(defaultProps, props);
         return shallow(<OneTimeUploadFileFormInner {...unifiedProps} />);
     }
 
     it("renders children, then button", () => {
-        const rendered = shallow(<OneTimeUploadFileFormInner enabled={true} href="url" refreshToken={doNothing}>
+        const rendered = shallow(<OneTimeUploadFileFormInner enabled={true} href="url" tokenConsumed={doNothing}>
             <button>Before</button>
         </OneTimeUploadFileFormInner>);
         const buttons = rendered.find("button");
@@ -37,7 +37,7 @@ describe("OneTimeUploadFileFormInner", () => {
 
     it("on button click it invokes one time link callback", () => {
         const callback = sinon.spy();
-        const rendered = render({refreshToken: callback});
+        const rendered = render({tokenConsumed: callback});
         rendered.find("button").simulate("click");
         expect(callback.callCount).to.equal(1, "Expected callback to be invoked once");
     });
