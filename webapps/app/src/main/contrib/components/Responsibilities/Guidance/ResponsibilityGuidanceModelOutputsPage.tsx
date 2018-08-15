@@ -87,7 +87,7 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
                 First, download your central burden estimate template from
                 the Responsibilities page
                 (listed under ‘Scenarios’). These templates are customised
-                for each model following the discussions after the test runs.
+                for each model.
             </p>
             <p>
                 You will need to use this template to create one file for each
@@ -169,7 +169,7 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
             <p>
                 We require multiple independent realisations in the stochastic
                 estimates (30 for the test runs and 200 for the full set of runs). The template file only
-                contains all rows for a single realisations, so you will
+                contains all rows for a single realisation, so you will
                 need to generate 30 or 200 times as many rows.
             </p>
             <p>
