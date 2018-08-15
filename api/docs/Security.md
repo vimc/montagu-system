@@ -127,5 +127,11 @@ also with a numeric primary key.
             "scope_prefix": "modelling-group",
             "description": "Add new models and model versions",
             "permissions": [ "models.write" ]
+        },
+        {
+            "name": "funder",
+            "scope_prefix": null,
+            "description": "Funder",
+            "permissions": [ "coverage.read", "demographics.read" ]
         }
     ]
