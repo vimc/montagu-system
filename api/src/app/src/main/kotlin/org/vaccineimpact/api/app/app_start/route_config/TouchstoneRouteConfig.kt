@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.app.app_start.route_config
 
 import org.vaccineimpact.api.app.app_start.*
-import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.controllers.TouchstoneController
 import org.vaccineimpact.api.app.app_start.streamed
 
@@ -42,11 +41,6 @@ object TouchstoneRouteConfig : RouteConfig
 
             Endpoint("$baseUrl:touchstone-version-id/demographics/:source-code/:type-code/", controller, "getDemographicData")
                     .csv().streamed()
-                    .secure(demographicPermissions),
-
-            Endpoint("$baseUrl:touchstone-version-id/demographics/:source-code/:type-code/get_onetime_link/",
-                    OneTimeLinkController::class, "getTokenForDemographicData")
-                    .json()
                     .secure(demographicPermissions)
     )
 }

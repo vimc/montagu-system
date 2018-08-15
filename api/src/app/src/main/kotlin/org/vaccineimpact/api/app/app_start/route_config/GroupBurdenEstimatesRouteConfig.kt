@@ -5,7 +5,6 @@ import org.vaccineimpact.api.app.app_start.csv
 import org.vaccineimpact.api.app.app_start.json
 import org.vaccineimpact.api.app.app_start.secure
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
-import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import spark.route.HttpMethod
 
 object GroupBurdenEstimatesRouteConfig : RouteConfig
@@ -37,13 +36,6 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
             Endpoint("$baseUrl/:set-id/", controller, "populateBurdenEstimateSet", method = HttpMethod.post)
                     .json()
                     .secure(writePermissions),
-
-            Endpoint("$baseUrl/:set-id/get_onetime_link/",
-                    OneTimeLinkController::class,
-                    "getTokenForPopulateBurdenEstimateSet")
-                    .json()
-                    .secure(writePermissions),
-
             // Actions
             Endpoint("$baseUrl/:set-id/actions/clear/",
                     controller, "clearBurdenEstimateSet", method = HttpMethod.post)
