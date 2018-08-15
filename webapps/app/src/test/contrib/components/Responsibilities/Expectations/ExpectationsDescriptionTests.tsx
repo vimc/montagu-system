@@ -50,7 +50,7 @@ describe("ExpectationsDescription", () => {
         />);
 
         expect(rendered.find("#scenarios").find("li")).to.have.lengthOf(3);
-        expect(rendered.find("#scenarios").find("li").at(0).text()).to.eq("a : desc-a");
+        expect(rendered.find("#scenarios").find("li").at(0).text()).to.eq("a: desc-a");
 
     });
 
