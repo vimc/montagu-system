@@ -33,7 +33,7 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
                 Required model outputs
             </div>
             <p>
-                In this round of model runs we require the following:
+                In this round of model runs you will need to provide the following:
             </p>
             <table>
                 <thead>
@@ -41,7 +41,6 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
                     <th>Item</th>
                     <th>How to create</th>
                     <th>Where to upload complete file(s)</th>
-                    <th>Due by</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -52,7 +51,6 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
                         use this to create one file per scenario
                     </td>
                     <td>Montagu</td>
-                    <td>8 January</td>
                 </tr>
                 <tr>
                     <td>Stochastic estimates (multiple files)</td>
@@ -62,25 +60,25 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
                         you need.
                     </td>
                     <td>Dropbox</td>
-                    <td>15 January</td>
                 </tr>
                 <tr>
-                    <td>Parameter set (1 file per disease)</td>
+                    <td>Parameter set to accompany stochastic estimates (1 file per disease)</td>
                     <td>
                         Download stochastic parameters template from Montagu,
                         use this to create your parameter set.
                     </td>
                     <td>Montagu</td>
-                    <td>15 January</td>
                 </tr>
                 <tr>
-                    <td>Parameter certificate (1 file per disease)</td>
+                    <td>Parameter certificate to accompany stochastic estimates (1 file per disease)</td>
                     <td>You will be able to download this from Montagu once you have uploaded your parameter set.</td>
                     <td>Dropbox</td>
-                    <td>15 January</td>
                 </tr>
                 </tbody>
             </table>
+            <p>
+                Please refer to the scope of work in your subcontract for details of your deliverables and deadlines.
+            </p>        
             <div className="mb-3 mt-5">
                 <span className="sectionTitle">Central estimates</span>
                 &nbsp;(previously known as deterministic estimates)
@@ -169,11 +167,10 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
                 id should be based on the same parameter values.
             </p>
             <p>
-                We require 200 independent realisations in the stochastic
-                estimates. (We originally asked for 1000 realisations, but
-                we have now decreased this to 200.) The template file only
+                We require multiple independent realisations in the stochastic
+                estimates (30 for the test runs and 200 for the full set of runs). The template file only
                 contains all rows for a single realisations, so you will
-                need to generate 200 times as many rows.
+                need to generate 30 or 200 times as many rows.
             </p>
             <p>
                 You will need to use the stochastic burden estimate template
@@ -208,7 +205,7 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
             <p>
                 Once you have completed all files for each scenario, you
                 should upload each one to Dropbox, to the specific folder
-                that we have emailed you. We will then use scripts to
+                that we email you. We will then use scripts to
                 automatically process the uploaded files and import them
                 into Montagu.
             </p>
@@ -238,14 +235,14 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
                 same ‘run id’ are based on the same parameter values.
             </p>
             <p>
-                Your parameters file should contain 200 rows (i.e. in
-                addition to the row showing the column headings).
+                Your parameters file should contain 30 rows (for the stochastic test runs) or 200 rows (for the full set of stochastic runs), i.e. in
+                addition to the row showing the column headings.
             </p>
             <p>
                 The column headings in the template are labelled &lt;param_1&gt;
                 and &lt;param_2&gt; but you should rename these to the actual
                 parameters you are using, and add extra columns if necessary.
-                The parameters that you use are up to you.
+                For models explicitly fitted to data, probabilistic outputs can be a sample from the posterior distribution, and each run should be recorded with assumed parameter values as well as the likelihood. If no explicit model fitting has taken place, input parameters should be sampled from reasonable ranges. 
             </p>
             <p>
                 If the model uses country-specific parameters, each
@@ -260,7 +257,7 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
             <p>
                 Montagu will then give you a ‘parameter certificate’. After
                 you have downloaded this, please upload it to Dropbox, to
-                the specific folder that we have emailed you. You do not
+                the specific folder that we email you. You do not
                 need to open or read this file.
             </p>
             <p>
