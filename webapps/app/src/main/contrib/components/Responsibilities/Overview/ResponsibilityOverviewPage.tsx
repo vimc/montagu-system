@@ -13,18 +13,18 @@ import {compose} from "recompose";
 
 export interface ResponsibilityOverviewPageLocationProps {
     groupId: string;
-    touchstoneId: string;
+    touchstoneVersionId: string;
 }
 
 export interface ResponsibilityOverviewPageProps extends PageProperties<ResponsibilityOverviewPageLocationProps> {
-    touchstone: TouchstoneVersion;
+    touchstoneVersion: TouchstoneVersion;
 }
 
 export class ResponsibilityOverviewPageComponent extends React.Component<ResponsibilityOverviewPageProps> {
 
     render(): JSX.Element {
-        if (this.props.touchstone) {
-            return <PageArticle title={`Responsibilities in ${this.props.touchstone.description }`}>
+        if (this.props.touchstoneVersion) {
+            return <PageArticle title={`Responsibilities in ${this.props.touchstoneVersion.description }`}>
                 <ResponsibilityOverviewContent/>
             </PageArticle>;
         } else {
@@ -35,7 +35,7 @@ export class ResponsibilityOverviewPageComponent extends React.Component<Respons
 
 export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityOverviewPageProps> => {
     return {
-        touchstone: state.touchstones.currentTouchstoneVersion
+        touchstoneVersion: state.touchstones.currentTouchstoneVersion
     }
 };
 
