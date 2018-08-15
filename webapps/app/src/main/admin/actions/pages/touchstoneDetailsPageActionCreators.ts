@@ -10,6 +10,10 @@ export class TouchstoneDetailsPageActionCreators extends AdminPageActionCreators
 
     parent = touchstoneListPageActionCreators;
 
+    title(state: AdminAppState): string {
+        return state.touchstones.currentTouchstone ? state.touchstones.currentTouchstone.description : ""
+    }
+
     createBreadcrumb(state?: AdminAppState): PageBreadcrumb {
         return {
             name: state.touchstones.currentTouchstone.id,

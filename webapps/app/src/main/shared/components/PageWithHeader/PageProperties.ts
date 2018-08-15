@@ -14,4 +14,5 @@ export interface PageProperties<T> {
     history: History;
     createBreadcrumbs?: (pageBreadcrumb: PageBreadcrumb) => any;
     onLoad?: (props?: T) => any;
+    title?: string;
 }
