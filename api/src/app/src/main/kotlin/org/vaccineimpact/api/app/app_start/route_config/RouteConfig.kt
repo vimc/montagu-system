@@ -19,6 +19,7 @@ object MontaguRouteConfig : RouteConfig
             HomeRouteConfig.endpoints +
             ModellingGroupRouteConfig.endpoints +
             ModelRouteConfig.endpoints +
+            OneTimeLinkRouteConfig.endpoints +
             PasswordRouteConfig.endpoints +
             ResponsibilityRouteConfig.endpoints +
             TouchstoneRouteConfig.endpoints +

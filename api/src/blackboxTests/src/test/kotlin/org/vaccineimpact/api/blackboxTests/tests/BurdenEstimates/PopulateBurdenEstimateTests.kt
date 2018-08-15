@@ -128,7 +128,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can populate burden estimate via onetime link`()
+    fun `can populate burden estimate with onetime token`()
     {
         val requestHelper = RequestHelper()
         val setId = JooqContext().use {
@@ -141,7 +141,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can populate burden estimate via onetime link multipart file upload`()
+    fun `can populate burden estimate with onetime token multipart file upload`()
     {
         val requestHelper = RequestHelper()
         val setId = JooqContext().use {
@@ -154,7 +154,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can populate burden estimate via onetime link and redirect`()
+    fun `can populate burden estimate with onetime token and redirect`()
     {
         val requestHelper = RequestHelper()
 
@@ -226,7 +226,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `data in invalid file is not committed when using onetime link with redirect`()
+    fun `data in invalid file is not committed when using onetime token with redirect`()
     {
         TestUserHelper.setupTestUser()
         val setId = JooqContext().use {

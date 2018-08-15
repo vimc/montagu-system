@@ -14,7 +14,6 @@ import org.vaccineimpact.api.emails.getEmailManager
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.encompass
-import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.RoleAssignment
@@ -81,14 +80,14 @@ class UserController(
         val user = context.postData<CreateUser>()
         userRepository.addUser(user)
 
-        val params = mapOf(":username" to user.username)
+        val newUser = userRepository.getUserByUsername(user.username)
 
-        val token = oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.SET_PASSWORD,
-                username = user.username,
-                params = params,
-                queryString = context.queryString(),
-                redirectUrl = context.redirectUrl,
-                duration = Duration.ofDays(1))
+        val token = oneTimeTokenGenerator.getOneTimeLinkToken(
+                "/password/set/",
+                newUser.permissions,
+                newUser.roles,
+                newUser.username,
+                Duration.ofDays(1))
 
         emailManager.sendEmail(NewUserEmail(user, token), user)
         return objectCreation(context, "/users/${user.username}/")

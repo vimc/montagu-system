@@ -1,37 +1,46 @@
 package org.vaccineimpact.api.tests
 
 import com.nhaarman.mockito_kotlin.*
-import org.assertj.core.api.Assertions
 import org.junit.Test
-import org.vaccineimpact.api.app.RedirectValidator
-import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.errors.BadRequest
-import org.vaccineimpact.api.app.repositories.TokenRepository
+import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
-import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.WebTokenHelper
 import java.time.Duration
 
 class TokenGeneratorTests
 {
-
     private fun tokenHelperThatCanGenerateOnetimeTokens() = mock<WebTokenHelper> {
-        on { generateOldStyleOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn "MY-TOKEN"
+        on { generateOnetimeActionToken(any(), any(), any(), any(), anyOrNull()) } doReturn "MY-TOKEN"
     }
 
     @Test
-    fun `generates token if redirect param is valid`()
+    fun `can generate onetime token from profile`()
     {
-        // Mocks
-        val parameters = mapOf(":a" to "1", ":b" to "2")
-
-        val tokenRepo = mock<TokenRepository>()
+        val mockProfile = mock<CommonProfile> {
+            on { attributes } doReturn mapOf("permissions" to "perm", "roles" to "roles")
+            on { id } doReturn "username"
+        }
         val tokenHelper = tokenHelperThatCanGenerateOnetimeTokens()
-        val redirectValidator = mock<RedirectValidator>()
+        val sut = OneTimeTokenGenerator(mock(), tokenHelper)
+        sut.getOneTimeLinkToken("/some/url/", mockProfile)
 
-        // Behaviour under test
-        val sut = OneTimeTokenGenerator(tokenRepo, tokenHelper, redirectValidator = redirectValidator)
-        sut.getOneTimeLinkToken(OneTimeAction.SET_PASSWORD, parameters, "?redirectUrl=www.redirect.com", "www.redirect.com", "test.user", Duration.ofMinutes(10))
-
+        verify(tokenHelper).generateOnetimeActionToken("/some/url/", "username", "perm", "roles", null)
     }
+
+    @Test
+    fun `can generate onetime token from roles and permissions`()
+    {
+        val tokenHelper = tokenHelperThatCanGenerateOnetimeTokens()
+        val sut = OneTimeTokenGenerator(mock(), tokenHelper)
+        sut.getOneTimeLinkToken("/some/url/", listOf(ReifiedPermission("p", Scope.Global())),
+                listOf(ReifiedRole("role", Scope.Global())),
+                "username", Duration.ofDays(1))
+
+        verify(tokenHelper).generateOnetimeActionToken("/some/url/", "username", "*/p", "*/role",
+                Duration.ofDays(1))
+    }
+
 }

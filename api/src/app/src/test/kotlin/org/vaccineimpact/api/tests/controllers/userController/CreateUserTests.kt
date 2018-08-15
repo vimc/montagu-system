@@ -68,7 +68,7 @@ class CreateUserTests : MontaguTests()
 
         val tokenGenerator = mock<OneTimeTokenGenerator> {
             on {
-                getOneTimeLinkToken(any(), any(), anyOrNull(), anyOrNull(), any(), any())
+                getOneTimeLinkToken(any(), any(), any(), any(), any())
             } doReturn fakeToken
         }
         val sut = UserController(context,

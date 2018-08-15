@@ -12,7 +12,7 @@ import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
 import org.vaccineimpact.api.emails.getEmailManager
-import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.security.InternalUser
 import java.time.Duration
 
 class PasswordController(
@@ -36,6 +36,8 @@ class PasswordController(
     fun setPasswordForUser(username: String): String
     {
         val password = context.postData<SetPassword>().password
+        logger.debug(password)
+        logger.debug(username)
         userRepository.setPassword(username, password)
         return okayResponse()
     }
@@ -47,7 +49,7 @@ class PasswordController(
         val internalUser = userRepository.getUserByEmail(address)
         if (internalUser != null)
         {
-            val compressedToken = getCompressedSetPasswordToken(internalUser.username)
+            val compressedToken = getCompressedSetPasswordToken(internalUser)
             val email = PasswordSetEmail(compressedToken, internalUser.name)
             emailManager.sendEmail(email, internalUser)
         }
@@ -58,16 +60,13 @@ class PasswordController(
         return okayResponse()
     }
 
-    private fun getCompressedSetPasswordToken(username: String): String
+    private fun getCompressedSetPasswordToken(user: InternalUser): String
     {
-        val params = mapOf(":username" to username)
         return oneTimeTokenGenerator.getOneTimeLinkToken(
-                OneTimeAction.SET_PASSWORD,
-                queryString = null,
-                redirectUrl = null,
-                username = username,
-                params = params,
-                duration = Duration.ofDays(1))
+                "/v1/password/set/",
+                user.permissions,
+                user.roles,
+                user.username, Duration.ofDays(1))
     }
 
 }
