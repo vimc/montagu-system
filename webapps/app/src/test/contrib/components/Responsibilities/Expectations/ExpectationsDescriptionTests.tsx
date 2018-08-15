@@ -1,5 +1,5 @@
 import {ExpectationMapping} from "../../../../../main/shared/models/Generated";
-import {mockCountry, mockExpectationMapping, mockExpectations} from "../../../../mocks/mockModels";
+import {mockCountry, mockExpectationMapping, mockExpectations, mockScenario} from "../../../../mocks/mockModels";
 import {ExpectationsDescription} from "../../../../../main/contrib/components/Responsibilities/Expectations/ExpectationsDescription";
 import {shallow} from "enzyme";
 import * as React from "react";
@@ -8,6 +8,11 @@ import {FileDownloadButton} from "../../../../../main/shared/components/FileDown
 import {CountriesList} from "../../../../../main/contrib/components/Responsibilities/Expectations/CountriesList";
 
 describe("ExpectationsDescription", () => {
+
+    const mockScenarios = [
+        mockScenario({id: "a", description: "desc-a"}),
+        mockScenario({id: "b", description: "desc-b"}),
+        mockScenario({id: "c", description: "desc-c"})];
 
     it("renders description as title", () => {
 
@@ -18,6 +23,7 @@ describe("ExpectationsDescription", () => {
         };
 
         const rendered = shallow(<ExpectationsDescription
+            allScenarios={mockScenarios}
             expectationMapping={expectation}
             touchstoneVersionId="tId"
             groupId="gId"
@@ -37,13 +43,14 @@ describe("ExpectationsDescription", () => {
         };
 
         const rendered = shallow(<ExpectationsDescription
+            allScenarios={mockScenarios}
             expectationMapping={expectation}
             touchstoneVersionId="tId"
             groupId="gId"
         />);
 
         expect(rendered.find("#scenarios").find("li")).to.have.lengthOf(3);
-        expect(rendered.find("#scenarios").find("li").at(0).text()).to.eq("a");
+        expect(rendered.find("#scenarios").find("li").at(0).text()).to.eq("a : desc-a");
 
     });
 
@@ -54,6 +61,7 @@ describe("ExpectationsDescription", () => {
             disease: "YF"
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
+                                                          allScenarios={mockScenarios}
                                                           touchstoneVersionId="tId"
                                                           groupId="gId"/>);
         expect(rendered.find("#years").text()).to.equal("2 years: 1999 - 2000");
@@ -66,6 +74,7 @@ describe("ExpectationsDescription", () => {
             disease: "YF"
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
+                                                          allScenarios={mockScenarios}
                                                           touchstoneVersionId="tId"
                                                           groupId="gId"/>);
         expect(rendered.find("#ages").text()).to.equal("10 ages: 0 - 9");
@@ -79,6 +88,7 @@ describe("ExpectationsDescription", () => {
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
+                                                          allScenarios={mockScenarios}
                                                           groupId="gId"/>);
         expect(rendered.find("#cohorts").text()).to.equal("Not including cohorts born before 1980 or after 1982");
     });
@@ -91,6 +101,7 @@ describe("ExpectationsDescription", () => {
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
+                                                          allScenarios={mockScenarios}
                                                           groupId="gId"/>);
         expect(rendered.find("#cohorts")).to.have.lengthOf(0);
     });
@@ -103,6 +114,7 @@ describe("ExpectationsDescription", () => {
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
+                                                          allScenarios={mockScenarios}
                                                           groupId="gId"/>);
         expect(rendered.find("#cohorts").text()).to.equal("Not including cohorts born before 1980");
     });
@@ -115,6 +127,7 @@ describe("ExpectationsDescription", () => {
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
+                                                          allScenarios={mockScenarios}
                                                           groupId="gId"/>);
         expect(rendered.find("#cohorts").text()).to.equal("Not including cohorts born after 1982");
     });
@@ -127,6 +140,7 @@ describe("ExpectationsDescription", () => {
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
+                                                          allScenarios={mockScenarios}
                                                           groupId="gId"/>);
         expect(rendered.find("#outcomes").find("li")).to.have.lengthOf(2);
     });
@@ -140,16 +154,18 @@ describe("ExpectationsDescription", () => {
         };
         const rendered = shallow(<ExpectationsDescription expectationMapping={expectation}
                                                           touchstoneVersionId="tId"
+                                                          allScenarios={mockScenarios}
                                                           groupId="gId"/>);
         expect(rendered.find(CountriesList).prop("countries")).to.have.members(countries)
     });
 
 
     it("renders FileDownloadButton for central template", () => {
-        const em = mockExpectationMapping();
+        const em = mockExpectationMapping({},[]);
         const rendered = shallow(<ExpectationsDescription
             expectationMapping={em}
             touchstoneVersionId="tId"
+            allScenarios={mockScenarios}
             groupId="gId"
         />);
         expect(rendered.find(FileDownloadButton).at(0).prop("href"))
@@ -157,10 +173,11 @@ describe("ExpectationsDescription", () => {
     });
 
     it("renders FileDownloadButton for stochastic template", () => {
-        const em = mockExpectationMapping();
+        const em = mockExpectationMapping({},[]);
         const rendered = shallow(<ExpectationsDescription
             expectationMapping={em}
             touchstoneVersionId="tId"
+            allScenarios={mockScenarios}
             groupId="gId"
         />);
         expect(rendered.find(FileDownloadButton).at(1).prop("href"))

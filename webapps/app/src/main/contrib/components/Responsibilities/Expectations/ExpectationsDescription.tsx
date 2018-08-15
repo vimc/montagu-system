@@ -7,13 +7,13 @@ interface ExpectationsDescriptionProps {
     expectationMapping: ExpectationMapping;
     groupId: String;
     touchstoneVersionId: String;
-    scenarios: Scenario[];
+    allScenarios: Scenario[];
 }
 
 export class ExpectationsDescription extends React.PureComponent<ExpectationsDescriptionProps> {
 
     scenarioMapping(id: string) {
-        return <li key={id}>{id} : {this.props.scenarios.find(s => s.id == id).description}</li>
+        return <li key={id}>{id} : {this.props.allScenarios.find(s => s.id == id).description}</li>
     }
 
     render(): JSX.Element {

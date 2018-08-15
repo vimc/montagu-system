@@ -22,7 +22,7 @@ class ExpectationsListComponent extends React.PureComponent<Props> {
                 key={em.expectation.id}
                 expectationMapping={em}
                 groupId={group.id}
-                scenarios={scenarios}
+                allScenarios={scenarios}
                 touchstoneVersionId={touchstoneVersion.id}
             />
         );
