@@ -64,7 +64,7 @@ class AuthenticationTests : DatabaseTest()
         assertThat(cookie).contains("HttpOnly")
         assertThat(cookie).contains("SameSite=Strict")
 
-        val shinyToken = cookie.substring(cookie.indexOf("=") + 1, cookie.indexOf(";"))
+        val shinyToken = cookie.substring(cookie.indexOf("jwt_token=") + 1, cookie.indexOf(";"))
         val claims = JWT.decode(shinyToken)
         val allowedShiny = claims.getClaim("allowed_shiny")
         assertThat(allowedShiny.asString()).isEqualTo("true")
@@ -81,7 +81,7 @@ class AuthenticationTests : DatabaseTest()
         assertThat(cookieHeader).contains("HttpOnly")
         assertThat(cookieHeader).contains("SameSite=Strict")
 
-        val cookie = cookieHeader.substring(cookieHeader.indexOf("=") + 1, cookieHeader.indexOf(";"))
+        val cookie = cookieHeader.substring(cookieHeader.indexOf("jwt_token=") + 1, cookieHeader.indexOf(";"))
         assertThat(cookie.isEmpty()).isTrue()
     }
 
@@ -126,7 +126,7 @@ class AuthenticationTests : DatabaseTest()
         assertThat(cookie).contains("HttpOnly")
         assertThat(cookie).contains("SameSite=Strict")
 
-        val token = cookie.substring(cookie.indexOf("=") + 1, cookie.indexOf(";"))
+        val token = cookie.substring(cookie.indexOf("montagu_jwt_token=") + 1, cookie.indexOf(";"))
         val claims = JWT.decode(token.inflated())
         val tokenType = claims.getClaim("token_type")
         assertThat(tokenType.asString()).isEqualTo("BEARER")
