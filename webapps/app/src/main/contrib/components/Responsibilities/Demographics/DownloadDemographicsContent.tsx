@@ -22,7 +22,10 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
         const {touchstone, selectedDataSet, selectedFormat, selectedGender} = this.props;
         let url: string = null;
         if (canDownload) {
-            url = `/touchstones/${touchstone.id}/demographics/${selectedDataSet.source}/${selectedDataSet.id}/?format=${selectedFormat}&gender=${selectedGender}`;
+            url = `/touchstones/${touchstone.id}/demographics/${selectedDataSet.source}/${selectedDataSet.id}/?format=${selectedFormat}`
+            if (this.props.selectedDataSet.gender_is_applicable || this.props.selectedGender != null) {
+                url += `&gender=${selectedGender}`;
+            }
         }
 
         return <div className="demographics">
@@ -45,7 +48,6 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
             <DemographicOptions/>
             <FileDownloadButton
                 href={url}
-                enabled={canDownload}
                 delayBeforeReenable={5}
             >
                 Download data set

@@ -13,7 +13,6 @@ const url = require('url'),
 interface PropsSharedWithChildren {
     href: string;
     className?: string;
-    enabled?: boolean;
 }
 
 // Props that are passed to the HOC
@@ -33,6 +32,7 @@ interface Props extends PublicProps {
 // These props are passed to the children
 export interface OneTimeLinkProps extends PropsSharedWithChildren {
     enabled: boolean;
+    loading?: boolean;
     tokenConsumed: () => void;
 }
 
@@ -65,7 +65,7 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
         }
 
         componentDidUpdate(prevProps: Props) {
-            if (this.props.href != prevProps.href || this.props.enabled != prevProps.enabled) {
+            if (this.props.href != prevProps.href) {
                 this.refreshToken();
                 this.immediatelyEnable();
             }
@@ -84,7 +84,8 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
             return <WrappedComponent
                 className={this.props.className}
                 href={href}
-                enabled={this.getEnabled() && this.state.enabled}
+                enabled={this.state.enabled}
+                loading={this.props.href != null && this.props.token == null}
                 tokenConsumed={this.tokenConsumed.bind(this)}
                 children={this.props.children}/>;
         }
@@ -110,16 +111,8 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
         }
 
         private refreshToken() {
-            if (this.getEnabled()) {
+            if (this.props.href != null) {
                 this.props.refreshToken(this.props.href, this.getService());
-            }
-        }
-
-        private getEnabled(): boolean {
-            if (isNullOrUndefined(this.props.enabled)) {
-                return true;
-            } else {
-                return this.props.enabled;
             }
         }
 

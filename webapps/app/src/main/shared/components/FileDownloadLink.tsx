@@ -26,6 +26,7 @@ export class FileDownloadButtonInner extends React.Component<OneTimeLinkProps, u
             className={"button" + (this.props.className ? ` ${this.props.className}` : "")}
             href={this.props.href}
             enabled={this.props.enabled}
+            loading={this.props.loading}
             tokenConsumed={this.props.tokenConsumed}>
             {this.props.children}
             <span className="download-icon">
@@ -47,14 +48,14 @@ export class FileDownloadInner extends React.Component<OneTimeLinkProps, undefin
     }
 
     render() {
-        const {href, enabled} = this.props;
+        const {href, enabled, loading} = this.props;
         let className = this.props.className;
         let loader: JSX.Element = null;
 
         if (href == null || !enabled) {
             className += ' disabled'
         }
-        if (href == null && enabled) {
+        if (loading) {
             loader = <img src={loaderAnimation}/>;
         }
 
