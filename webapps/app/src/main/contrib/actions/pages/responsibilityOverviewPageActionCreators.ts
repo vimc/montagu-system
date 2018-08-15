@@ -23,7 +23,7 @@ class ResponsibilityOverviewPageActionCreators extends ContribPageActionCreators
     loadData(params: ResponsibilityOverviewPageLocationProps) {
         return async (dispatch: Dispatch<ContribAppState>, _: () => ContribAppState) => {
             await dispatch(diseasesActionCreators.getAllDiseases());
-            dispatch(contribTouchstonesActionCreators.setCurrentTouchstoneVersion(params.touchstoneVersionId));
+            dispatch(contribTouchstonesActionCreators.setCurrentTouchstoneVersion(params.touchstoneId));
             await dispatch(responsibilitiesActionCreators.getResponsibilitySet());
         }
     }

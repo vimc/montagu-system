@@ -268,26 +268,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             expect(runParametersSets).to.eql(expectedSet);
         });
 
-
-        it("fetches one time model run parameter sets token", async () => {
-            await addModelRunParameterSets(this.db);
-
-            const sets: ModelRunParameterSet[] = await (new RunParametersService(this.store.dispatch, this.store.getState))
-                .getParameterSets(groupId, touchstoneVersionId);
-
-            const token: string = await (new RunParametersService(this.store.dispatch, this.store.getState))
-                .getOneTimeToken(groupId, touchstoneVersionId, sets[0].id);
-
-            const decoded = inflateAndDecode(token);
-            expect(decoded.action).to.equal("model-run-parameters");
-            const payload = QueryString.parse(decoded.payload);
-            expect(payload).to.eql({
-                ":group-id": groupId,
-                ":touchstone-version-id": touchstoneVersionId,
-                ":model-run-parameter-set-id": String(sets[0].id)
-            });
-        });
-
         it("creates burden estimates set", async () => {
             await addResponsibilities(this.db);
             await addModel(this.db);
