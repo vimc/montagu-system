@@ -62,7 +62,7 @@ class AuthenticationTests : DatabaseTest()
 
         val cookie = response.headers["Set-Cookie"]!!
         assertThat(cookie).contains("HttpOnly")
-        assertThat(cookie).contains("SameSite=Lax")
+        assertThat(cookie).contains("SameSite=Strict")
 
         val shinyToken = cookie.substring(cookie.indexOf("=") + 1, cookie.indexOf(";"))
         val claims = JWT.decode(shinyToken)
@@ -79,7 +79,7 @@ class AuthenticationTests : DatabaseTest()
 
         val cookieHeader = response.headers["Set-Cookie"]!!
         assertThat(cookieHeader).contains("HttpOnly")
-        assertThat(cookieHeader).contains("SameSite=Lax")
+        assertThat(cookieHeader).contains("SameSite=Strict")
 
         val cookie = cookieHeader.substring(cookieHeader.indexOf("=") + 1, cookieHeader.indexOf(";"))
         assertThat(cookie.isEmpty()).isTrue()
