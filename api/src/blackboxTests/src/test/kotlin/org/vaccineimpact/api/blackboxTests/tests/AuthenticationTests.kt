@@ -67,15 +67,13 @@ class AuthenticationTests : DatabaseTest()
     }
 
     @Test
-    fun `can clear shiny cookie`()
+    fun `can log out`()
     {
-        val response = RequestHelper().get("/clear-shiny-cookie/")
-
+        val response = RequestHelper().get("/logout/")
         assertThat(response.statusCode).isEqualTo(200)
 
-        val cookieHeader = response.headers["Set-Cookie"]!!
-        assertThat(cookieHeader).contains("HttpOnly")
-        assertThat(cookieHeader).contains("SameSite=Strict")
+        val mainToken = checkCookieAndGetValue(response, "montagu_jwt_token")
+        assertThat(mainToken.isEmpty()).isTrue()
 
         val shinyToken = checkCookieAndGetValue(response, "jwt_token")
         assertThat(shinyToken.isEmpty()).isTrue()

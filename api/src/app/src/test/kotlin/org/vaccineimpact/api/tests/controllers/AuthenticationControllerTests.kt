@@ -98,11 +98,12 @@ class AuthenticationControllerTests : MontaguTests()
     }
 
     @Test
-    fun `can clear shiny cookie`()
+    fun `can clear cookies`()
     {
         val fakeContext = mock<ActionContext>()
         val sut = AuthenticationController(fakeContext, mock(), mock(), mock())
-        sut.clearShinyCookie()
+        sut.logOut()
+        verify(fakeContext).setCookie(eq(CookieName.Main), eq(""), any())
         verify(fakeContext).setCookie(eq(CookieName.Shiny), eq(""), any())
     }
 }
