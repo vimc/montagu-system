@@ -41,10 +41,6 @@ open class OnetimeLinkResolver(private val repositories: Repositories,
                         GroupModelRunParametersController(context, repos).getModelRunParameterSet(),
                         context
                 )
-                OneTimeAction.COVERAGE -> stream(
-                        GroupCoverageController(context, repos.modellingGroup).getCoverageData(),
-                        context
-                )
                 OneTimeAction.DEMOGRAPHY -> stream(
                         TouchstoneController(context, repos).getDemographicData(),
                         context

@@ -4,7 +4,7 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.controllers.GroupCoverageController
+import org.vaccineimpact.api.app.controllers.CoverageController
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.db.nextDecimal
@@ -22,7 +22,7 @@ class GroupCoverageControllerTests : MontaguTests()
     {
         val repo = makeRepoMockingGetCoverageSets(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
-        GroupCoverageController(context, repo).getCoverageSets()
+        CoverageController(context, repo).getCoverageSetsForGroup()
 
         verify(repo).getCoverageSets(eq("gId"), eq("tId"), eq("sId"))
     }
@@ -33,7 +33,7 @@ class GroupCoverageControllerTests : MontaguTests()
         val repo = makeRepoMockingGetCoverageSets(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
         Assertions.assertThatThrownBy {
-            GroupCoverageController(context, repo).getCoverageSets()
+            CoverageController(context, repo).getCoverageSetsForGroup()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 
@@ -42,7 +42,7 @@ class GroupCoverageControllerTests : MontaguTests()
     {
         val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
-        GroupCoverageController(context, repo).getCoverageData()
+        CoverageController(context, repo).getCoverageDataForGroup()
         verify(repo).getCoverageData(eq("gId"), eq("tId"), eq("sId"))
     }
 
@@ -58,8 +58,8 @@ class GroupCoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val data = GroupCoverageController(context, repo)
-                .getCoverageData().data
+        val data = CoverageController(context, repo)
+                .getCoverageDataForGroup().data
         Assertions.assertThat(data.first() is LongCoverageRow).isTrue()
     }
 
@@ -69,8 +69,8 @@ class GroupCoverageControllerTests : MontaguTests()
         val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
 
-        val data = GroupCoverageController(context, repo)
-                .getCoverageData().data
+        val data = CoverageController(context, repo)
+                .getCoverageDataForGroup().data
 
         // test data includes 5 years
         // there are 7 other variable properties, test data includes 2 of each
@@ -98,8 +98,8 @@ class GroupCoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val data = GroupCoverageController(context, repo)
-                .getCoverageData().data
+        val data = CoverageController(context, repo)
+                .getCoverageDataForGroup().data
 
         Assertions.assertThat(data.first() is WideCoverageRow).isTrue()
 
@@ -136,8 +136,8 @@ class GroupCoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val data = GroupCoverageController(context, repo)
-                .getCoverageData().data
+        val data = CoverageController(context, repo)
+                .getCoverageDataForGroup().data
 
         Assertions.assertThat(data.count()).isEqualTo(0)
     }
@@ -157,7 +157,7 @@ class GroupCoverageControllerTests : MontaguTests()
         }
 
         Assertions.assertThatThrownBy {
-            GroupCoverageController(context, repo).getCoverageData()
+            CoverageController(context, repo).getCoverageDataForGroup()
         }.isInstanceOf(BadRequest::class.java)
     }
 
@@ -168,7 +168,7 @@ class GroupCoverageControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(false)
 
         Assertions.assertThatThrownBy {
-            GroupCoverageController(context, repo).getCoverageData()
+            CoverageController(context, repo).getCoverageDataForGroup()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 

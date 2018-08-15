@@ -1,14 +1,14 @@
 package org.vaccineimpact.api.app.app_start.route_config
 
 import org.vaccineimpact.api.app.app_start.*
-import org.vaccineimpact.api.app.controllers.GroupCoverageController
+import org.vaccineimpact.api.app.controllers.CoverageController
 import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.app_start.streamed
 
 object GroupCoverageRouteConfig : RouteConfig
 {
     private val baseUrl = "/modelling-groups/:group-id/responsibilities/:touchstone-version-id/:scenario-id"
-    private val controller = GroupCoverageController::class
+    private val controller = CoverageController::class
 
     private val groupScope = "modelling-group:<group-id>"
     val permissions = setOf(
@@ -18,16 +18,16 @@ object GroupCoverageRouteConfig : RouteConfig
     )
 
     override val endpoints: List<EndpointDefinition> = listOf(
-            Endpoint("$baseUrl/coverage-sets/", controller, "getCoverageSets")
+            Endpoint("$baseUrl/coverage-sets/", controller, "getCoverageSetsForGroup")
                     .json()
                     .secure(permissions),
 
-            Endpoint("$baseUrl/coverage/", controller, "getCoverageDataAndMetadata")
+            Endpoint("$baseUrl/coverage/", controller, "getCoverageDataAndMetadataForGroup")
                     // TODO: Return true multipart data and change the data type
                     .json().streamed()
                     .secure(permissions),
 
-            Endpoint("$baseUrl/coverage/", controller, "getCoverageData")
+            Endpoint("$baseUrl/coverage/", controller, "getCoverageDataForGroup")
                     .csv().streamed()
                     .secure(permissions),
 

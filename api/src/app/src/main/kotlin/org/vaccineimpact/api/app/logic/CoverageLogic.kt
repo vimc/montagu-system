@@ -1,55 +1,62 @@
-package org.vaccineimpact.api.app.controllers
+package org.vaccineimpact.api.app.logic
 
-import org.vaccineimpact.api.app.app_start.Controller
-import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
+import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.models.CoverageRow
 import org.vaccineimpact.api.models.LongCoverageRow
 import org.vaccineimpact.api.models.ScenarioTouchstoneAndCoverageSets
 import org.vaccineimpact.api.models.WideCoverageRow
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
-import org.vaccineimpact.api.serialization.StreamSerializable
 
-class GroupCoverageController(
-        actionContext: ActionContext,
-        private val repo: ModellingGroupRepository
-) : Controller(actionContext)
+interface CoverageLogic
 {
-    constructor(context: ActionContext, repositories: Repositories)
-            : this(context, repositories.modellingGroup)
+    fun getCoverageData(touchstoneVersionId: String, scenarioId: String, format: String?)
+            : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
 
-    fun getCoverageSets(): ScenarioTouchstoneAndCoverageSets
+    fun getCoverageDataForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String, format: String?)
+            : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
+}
+
+class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingGroupRepository,
+                                private val responsibilitiesRepository: ResponsibilitiesRepository,
+                                private val touchstoneRepository: TouchstoneRepository) : CoverageLogic
+{
+    override fun getCoverageDataForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                         format: String?)
+            : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
-        val path = ResponsibilityPath(context)
-        val data = repo.getCoverageSets(path.groupId, path.touchstoneVersionId, path.scenarioId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, data.touchstoneVersion.status)
-        return data
+        modellingGroupRepository.getModellingGroup(groupId)
+        val responsibilityAndTouchstone = responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
+        val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
+        val splitData = SplitData(ScenarioTouchstoneAndCoverageSets(
+                responsibilityAndTouchstone.touchstoneVersion,
+                scenarioAndData.structuredMetadata.scenario,
+                scenarioAndData.structuredMetadata.coverageSets
+        ), scenarioAndData.tableData)
+
+        return getDatatable(splitData, format)
     }
 
-    fun getCoverageData(): StreamSerializable<CoverageRow>
+    override fun getCoverageData(touchstoneVersionId: String, scenarioId: String, format: String?)
+            : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
-        val data = getCoverageDataAndMetadata()
-        val metadata = data.structuredMetadata
-        val filename = "coverage_${metadata.touchstoneVersion.id}_${metadata.scenario.id}.csv"
-        context.addAttachmentHeader(filename)
-        return data.tableData
+        val touchstoneVersion = touchstoneRepository.touchstoneVersions.get(touchstoneVersionId)
+        val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
+        val splitData = SplitData(ScenarioTouchstoneAndCoverageSets(
+                touchstoneVersion,
+                scenarioAndData.structuredMetadata.scenario,
+                scenarioAndData.structuredMetadata.coverageSets
+        ), scenarioAndData.tableData)
+        return getDatatable(splitData, format)
     }
 
-    // TODO: https://vimc.myjetbrains.com/youtrack/issue/VIMC-307
-    // Use streams to speed up this process of sending large data
-    fun getCoverageDataAndMetadata(): SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
+    private fun getDatatable(splitData: SplitData<ScenarioTouchstoneAndCoverageSets, LongCoverageRow>,
+                             format: String?)
+            : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
-        val path = ResponsibilityPath(context)
-        val splitData = repo.getCoverageData(path.groupId, path.touchstoneVersionId, path.scenarioId)
-        context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, splitData.structuredMetadata.touchstoneVersion.status)
-
-        val format = context.queryParams("format")
-
         val tableData = when (format)
         {
 
@@ -116,4 +123,5 @@ class GroupCoverageController(
                 reference.ageRangeVerbatim,
                 coverageAndTargetPerYear)
     }
+
 }

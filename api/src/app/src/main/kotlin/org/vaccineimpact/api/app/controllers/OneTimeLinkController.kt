@@ -78,11 +78,6 @@ class OneTimeLinkController(
         return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.DEMOGRAPHY, context)
     }
 
-    fun getTokenForCoverageData(): String
-    {
-        return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.COVERAGE, context)
-    }
-
     fun getTokenForModelRunParameters(): String
     {
         return oneTimeTokenGenerator.getOneTimeLinkToken(OneTimeAction.MODEl_RUN_PARAMETERS, context)
