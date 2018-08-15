@@ -124,7 +124,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 805071637;
+    private static final long serialVersionUID = -1396563218;
 
     /**
      * The reference instance of <code>public</code>
@@ -784,6 +784,7 @@ public class Public extends SchemaImpl {
             Sequences.MODEL_RUN_PARAMETER_SET_ID_SEQ,
             Sequences.MODEL_RUN_PARAMETER_VALUE_ID_SEQ,
             Sequences.MODEL_VERSION_ID_SEQ,
+            Sequences.ONETIME_TOKEN_ID_SEQ,
             Sequences.RESPONSIBILITY_ID_SEQ,
             Sequences.RESPONSIBILITY_SET_ID_SEQ,
             Sequences.ROLE_ID_SEQ,

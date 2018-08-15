@@ -169,6 +169,11 @@ public class Sequences {
     public static final Sequence<Integer> MODEL_VERSION_ID_SEQ = new SequenceImpl<Integer>("model_version_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
 
     /**
+     * The sequence <code>public.onetime_token_id_seq</code>
+     */
+    public static final Sequence<Integer> ONETIME_TOKEN_ID_SEQ = new SequenceImpl<Integer>("onetime_token_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
      * The sequence <code>public.responsibility_id_seq</code>
      */
     public static final Sequence<Integer> RESPONSIBILITY_ID_SEQ = new SequenceImpl<Integer>("responsibility_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));

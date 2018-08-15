@@ -48,7 +48,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateExpectationRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateExpectation extends TableImpl<BurdenEstimateExpectationRecord> {
 
-    private static final long serialVersionUID = 384687512;
+    private static final long serialVersionUID = -1304917704;
 
     /**
      * The reference instance of <code>public.burden_estimate_expectation</code>
@@ -101,12 +101,12 @@ public class BurdenEstimateExpectation extends TableImpl<BurdenEstimateExpectati
     /**
      * The column <code>public.burden_estimate_expectation.description</code>.
      */
-    public final TableField<BurdenEstimateExpectationRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<BurdenEstimateExpectationRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.burden_estimate_expectation.version</code>.
      */
-    public final TableField<BurdenEstimateExpectationRecord, String> VERSION = createField("version", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<BurdenEstimateExpectationRecord, String> VERSION = createField("version", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * Create a <code>public.burden_estimate_expectation</code> table reference
