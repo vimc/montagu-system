@@ -399,7 +399,7 @@ class UserTests : RepositoryTests<UserRepository>()
     {
         withRepo { repo ->
             val roles = repo.globalRoles()
-            assertThat(roles.count()).isEqualTo(9)
+            assertThat(roles.count()).isEqualTo(10)
         }
     }
 
