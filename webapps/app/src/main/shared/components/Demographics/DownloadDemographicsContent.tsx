@@ -21,7 +21,7 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
         const {touchstone, selectedDataSet, selectedFormat, selectedGender} = this.props;
         let url: string = null;
         if (canDownload) {
-            url = `/touchstones/${touchstone.id}/demographics/${selectedDataSet.source}/${selectedDataSet.id}/?format=${selectedFormat}`
+            url = `/touchstones/${touchstone.id}/demographics/${selectedDataSet.source}/${selectedDataSet.id}/csv/?format=${selectedFormat}`
             if (this.props.selectedDataSet.gender_is_applicable || this.props.selectedGender != null) {
                 url += `&gender=${selectedGender}`;
             }
