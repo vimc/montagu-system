@@ -101,7 +101,7 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
                 </div>
             </div>
             <div className="mt-4">
-                <FileDownloadButton href={url}>
+                <FileDownloadButton href={url} delayBeforeReenable={1}>
                     Download combined coverage set data in CSV format
                 </FileDownloadButton>
             </div>
