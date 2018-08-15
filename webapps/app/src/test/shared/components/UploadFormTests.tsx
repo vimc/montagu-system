@@ -67,7 +67,7 @@ describe('UploadForm', () => {
         rendered.setState({"fileSelected": true});
 
         const child = rendered.find(OneTimeUploadFileForm).first();
-        expect(child.prop("enabled")).to.eq(true);
+        expect(child.prop("href")).to.equal("url");
     });
 
     it("does not show alert", () => {
@@ -127,7 +127,7 @@ describe('UploadForm', () => {
 
     function assertChildComponentIsDisabled() {
         const form = rendered.find(OneTimeUploadFileForm).first();
-        expect(form.prop("enabled")).to.eq(false);
+        expect(form.prop("href")).to.be.null;
     }
 
 });

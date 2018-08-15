@@ -36,10 +36,9 @@ describe("Upload burden estimates page actions tests", () => {
         expect(result.urlFragment).to.eq("burdens/s1/");
     });
 
-    it("sets current responsibility set and gets onetime token", async () => {
+    it("sets current responsibility set", async () => {
         const store = createMockContribStore();
 
-        sandbox.stubReduxActionCreator(estimatesActionCreators, "getOneTimeToken", {type: "test-token-type"});
         sandbox.stubReduxActionCreator(responsibilitiesActionCreators, "setCurrentResponsibility",
             {type: "test-responsibility-type"});
 
@@ -50,11 +49,7 @@ describe("Upload burden estimates page actions tests", () => {
 
         const expectedPayload = [
             {type: "test-responsibility-type", props: "s1"},
-            {type: "test-token-type", props: undefined as any}
         ];
         expect(actions).to.eql(expectedPayload);
-
     });
-
-
 });
