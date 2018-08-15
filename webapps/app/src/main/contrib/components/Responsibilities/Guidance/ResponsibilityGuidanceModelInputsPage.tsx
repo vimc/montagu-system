@@ -217,6 +217,18 @@ export class ResponsibilityGuidanceModelInputsPageComponent extends React.Compon
                 therefore the coverage file does not contain any data apart
                 from the header row.
             </p>
+            <p>
+<b>gavi_support</b> indicates per-year Gavi support. Where this is total, this means the coverage was Gavi-funded.
+            </p>
+            <p>
+<b>age_range_verbatim</b> is a description of the age range. We have used this to infer <b>age_first</b> and <b>age_last</b>.
+            </p>
+            <p>
+<b>coverage</b> shows the level of vaccination coverage, usually ranging from 0 (0%) to 1 (100%). In some cases, this value may be greater than 1. For example, if a campaign originally targets 1 million people but ends up vaccinating 1.1 million people, the coverage would be shown as 1.1 (equating to 110%).
+            </p>
+            <p>     
+<b>target</b> is the number of individuals in the target population. Where target is shown as a value, this means the target population for the vaccination is different from the population shown in the demographic data downloads. For example, the vaccination may be a campaign targeting particular regions or cohorts. Where target is shown as <b>NA</b>, you should assume the target population matches the population shown in the demographic data downloads.
+            </p>
             <ScrollableAnchor id={'demography'}>
                 <div className="largeSectionTitle">
                     Demography
