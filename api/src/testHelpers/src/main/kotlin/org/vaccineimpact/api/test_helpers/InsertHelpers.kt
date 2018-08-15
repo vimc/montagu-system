@@ -743,6 +743,7 @@ fun JooqContext.fetchOutcomes(count: Int): List<String>
 fun JooqContext.addExpectations(
         responsibilityId: Int,
         description: String = "description",
+        version: String = "version",
         yearMinInclusive: Short = 2000,
         yearMaxInclusive: Short = 2100,
         ageMinInclusive: Short = 0,
@@ -755,6 +756,7 @@ fun JooqContext.addExpectations(
 {
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_EXPECTATION).apply {
         this.description = description
+        this.version = version
         this.yearMinInclusive = yearMinInclusive
         this.yearMaxInclusive = yearMaxInclusive
         this.ageMinInclusive = ageMinInclusive
