@@ -60,11 +60,7 @@ class AuthenticationTests : DatabaseTest()
 
         assertThat(response.statusCode).isEqualTo(200)
 
-        val cookie = response.headers["Set-Cookie"]!!
-        assertThat(cookie).contains("HttpOnly")
-        assertThat(cookie).contains("SameSite=Strict")
-
-        val shinyToken = cookie.substring(cookie.indexOf("jwt_token=") + 1, cookie.indexOf(";"))
+        val shinyToken = checkCookieAndGetValue(response, "jwt_token")
         val claims = JWT.decode(shinyToken)
         val allowedShiny = claims.getClaim("allowed_shiny")
         assertThat(allowedShiny.asString()).isEqualTo("true")
@@ -81,8 +77,8 @@ class AuthenticationTests : DatabaseTest()
         assertThat(cookieHeader).contains("HttpOnly")
         assertThat(cookieHeader).contains("SameSite=Strict")
 
-        val cookie = cookieHeader.substring(cookieHeader.indexOf("jwt_token=") + 1, cookieHeader.indexOf(";"))
-        assertThat(cookie.isEmpty()).isTrue()
+        val shinyToken = checkCookieAndGetValue(response, "jwt_token")
+        assertThat(shinyToken.isEmpty()).isTrue()
     }
 
     @Test
@@ -119,14 +115,10 @@ class AuthenticationTests : DatabaseTest()
     @Test
     fun `correct password does authenticate`()
     {
-        val response = post("email@example.com", "password")
-        assertDoesAuthenticate(response.body)
+        val (response, body) = post("email@example.com", "password")
+        assertDoesAuthenticate(body)
 
-        val cookie = response.response.headers["Set-Cookie"]!!
-        assertThat(cookie).contains("HttpOnly")
-        assertThat(cookie).contains("SameSite=Strict")
-
-        val token = cookie.substring(cookie.indexOf("montagu_jwt_token=") + 1, cookie.indexOf(";"))
+        val token = checkCookieAndGetValue(response, "montagu_jwt_token")
         val claims = JWT.decode(token.inflated())
         val tokenType = claims.getClaim("token_type")
         assertThat(tokenType.asString()).isEqualTo("BEARER")
@@ -175,6 +167,15 @@ class AuthenticationTests : DatabaseTest()
         {
             return false
         }
+    }
+
+    private fun checkCookieAndGetValue(response: Response, key: String): String
+    {
+        val cookie = response.headers["Set-Cookie"]!!
+        assertThat(cookie).contains("HttpOnly")
+        assertThat(cookie).contains("SameSite=Strict")
+        val regex = Regex("""^$key=([^;]*);""")
+        return regex.find(cookie)!!.groupValues[1]
     }
 
     companion object
