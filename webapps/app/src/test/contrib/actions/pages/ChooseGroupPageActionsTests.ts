@@ -45,4 +45,8 @@ describe("Choose Group Page actions tests", () => {
         expect(chooseGroupPageActionCreators.parent).to.be.undefined;
     });
 
+    it("creates title", () => {
+        expect(chooseGroupPageActionCreators.title()).to.eq("Modellers' contribution portal");
+    });
+
 });

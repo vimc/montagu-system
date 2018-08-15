@@ -13,7 +13,7 @@ class UploadBurdenEstimatesPageActionCreators extends ContribPageActionCreators<
     createBreadcrumb(state: ContribAppState): PageBreadcrumb {
         return {
             name: `Upload burden estimates for ${state.responsibilities.currentResponsibility.scenario.description}`,
-            urlFragment: `burdens/${state.responsibilities.currentResponsibility.scenario.id}`
+            urlFragment: `burdens/${state.responsibilities.currentResponsibility.scenario.id}/`
         }
     }
 

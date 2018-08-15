@@ -1,18 +1,20 @@
 import {Dispatch} from "redux";
 
 import {modellingGroupsActionCreators} from "../modellingGroupsActionCreators";
-import {ChooseGroupPageComponent} from "../../components/ChooseGroup/ChooseGroupPage";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {ContribPageActionCreators} from "./ContribPageActionCreators";
-
 
 class ChooseGroupPageActionCreators extends ContribPageActionCreators<{}> {
 
     parent: null;
 
+    title() {
+        return "Modellers' contribution portal";
+    }
+
     createBreadcrumb() {
         return {
-            name: ChooseGroupPageComponent.title,
+            name: this.title(),
             urlFragment: "/"
         }
     }

@@ -2,15 +2,7 @@ import {expect} from "chai";
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
-import {
-    mockBreadcrumbs,
-    mockDisease,
-    mockModellingGroup,
-    mockModelRunParameterSet,
-    mockResponsibilitySetWithExpectations,
-    mockTouchstone
-} from "../../../mocks/mockModels";
-import {ExtendedResponsibilitySet} from "../../../../main/contrib/models/ResponsibilitySet";
+import {mockModellingGroup, mockModelRunParameterSet, mockTouchstone} from "../../../mocks/mockModels";
 import {modelRunParametersPageActionCreators} from "../../../../main/contrib/actions/pages/modelRunParametersPageActionCreators";
 import {RunParametersService} from "../../../../main/contrib/services/RunParametersService";
 import {RunParametersTypes} from "../../../../main/contrib/actionTypes/RunParametersTypes";
@@ -28,6 +20,13 @@ describe("Model Run Parameters Page actions tests", () => {
 
     afterEach(() => {
         sandbox.restore();
+    });
+
+    it("creates breadcrumb", () => {
+        const state = mockContribState();
+        const result = modelRunParametersPageActionCreators.createBreadcrumb(state);
+        expect(result.urlFragment).to.eq("parameters/");
+        expect(result.name).to.eq("Upload parameters");
     });
 
     it("loads parameter sets", async () => {
@@ -55,21 +54,6 @@ describe("Model Run Parameters Page actions tests", () => {
         ];
         expect(actions).to.eql(expectedPayload);
 
-    });
-
-    it("creates breadcrumb", async () => {
-        const touchstonesState: Partial<TouchstonesState> = {
-            touchstones: [testTouchstone],
-            currentTouchstoneVersion: testTouchstoneVersion
-        };
-        const state = mockContribState({
-            auth: {modellingGroups: testGroup.id},
-            groups: {userGroups: [testGroup], currentUserGroup: testGroup},
-            touchstones: touchstonesState
-        });
-
-        const breadcrumb = modelRunParametersPageActionCreators.createBreadcrumb(state);
-        expect(breadcrumb).to.eql({name: "Upload parameters", urlFragment: "parameters/"});
     });
 
     it("has responsibilities overview as parent", () => {

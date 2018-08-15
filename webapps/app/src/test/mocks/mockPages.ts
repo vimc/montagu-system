@@ -16,5 +16,5 @@ export function mockPageProperties(): PageProperties<undefined> {
 
 export function shallowRenderPage<P, T>(page: ReactElement<P>, store?: MockStore<T>): ShallowWrapper<any, any> {
     store = store || createMockStore();
-    return shallow(page, {context: {store}}).dive();
+    return shallow(page, {context: {store}}).dive().dive();
 }

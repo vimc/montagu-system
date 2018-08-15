@@ -4,6 +4,7 @@ import {mount, MountRendererProps, ReactWrapper} from "enzyme";
 import {ReactElement} from "react";
 import fetcher from "../main/shared/sources/Fetcher";
 import {mockFetcherResponse, resetFetcher} from "./mocks/mockRemote";
+import {Action} from "redux";
 
 export class Sandbox {
     sinon: sinon.SinonSandbox;
@@ -59,6 +60,10 @@ export class Sandbox {
 
     createSpy(): sinon.SinonSpy {
         return this.sinon.spy();
+    }
+
+    stubReduxActionCreator(obj: any, method: string, action: Action): sinon.SinonStub {
+        return this.sinon.stub(obj, method).callsFake((props: any) => ({type:action.type, props: props}));
     }
 
     setStubReduxAction(obj: any, method: string, action?: any): sinon.SinonStub {

@@ -30,4 +30,4 @@ class ResponsibilityOverviewPageActionCreators extends ContribPageActionCreators
 
 }
 
-export const responsibilityOverviewPageActionCreators = new ResponsibilityOverviewPageActionCreators();
+export const    responsibilityOverviewPageActionCreators = new ResponsibilityOverviewPageActionCreators();
