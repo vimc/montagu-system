@@ -166,13 +166,13 @@ class CoverageTests : DatabaseTest()
         val schema = CSVSchema("MergedCoverageData")
         val requestHelper = RequestHelper()
 
-            addCoverageData(it, touchstoneStatus = "open")
-        }
         JooqContext().use {
             userHelper.setupTestUser(it)
+            addCoverageData(it, touchstoneStatus = "open")
+        }
 
-        schema.validate(response.text)
         val response = requestHelper.get("${url}csv", minimumPermissions)
+        schema.validate(response.text)
     }
 
     @Test
