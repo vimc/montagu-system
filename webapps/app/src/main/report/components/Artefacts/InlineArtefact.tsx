@@ -19,13 +19,18 @@ export class InlineArtefact extends React.Component<Props, undefined> {
         if (InlineArtefact.canRenderInIFrame(extension)) {
             const urlFragment = buildArtefactUrl(report, version, filename, true);
             const fullUrl = buildURL(urlFragment, "reporting");
-            return <iframe
-                src={fullUrl}
-                width="100%"
-                height="600px"
-                className="border border-dark p-3"
-                frameBorder={0}
-            />;
+            return <div>
+                <iframe
+                    src={fullUrl}
+                    width="100%"
+                    height="600px"
+                    className="border border-dark p-3"
+                    frameBorder={0}
+                />
+                <div className="text-right">
+                    <a href={fullUrl}>View fullscreen</a>
+                </div>
+            </div>;
         } else {
             // Do other things here, like rendering CSV as a table, etc.
             return null;
