@@ -17,9 +17,13 @@ describe("InlineArtefact", () => {
         const artefact = mockArtefact({
             filenames: ["mock.png"]
         });
+        const expectedUrl = "http://localhost:8081/v1/reports/report/versions/version/artefacts/mock.png/?inline=true";
         const rendered = shallow(<InlineArtefact report="report" version="version" artefact={artefact}/>);
         const iframe = rendered.find("iframe");
         expect(iframe).to.have.length(1, "Couldn't find iframe");
-        expect(iframe.prop("src")).to.equal("http://localhost:8081/v1/reports/report/versions/version/artefacts/mock.png/?inline=true");
+        expect(iframe.prop("src")).to.equal(expectedUrl);
+        const fullscreenLink = rendered.find("a");
+        expect(fullscreenLink).to.have.length(1, "Couldn't find full screen link");
+        expect(fullscreenLink.prop("href")).to.equal(expectedUrl);
     });
 });
