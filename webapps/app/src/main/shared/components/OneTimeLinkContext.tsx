@@ -84,7 +84,7 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
             return <WrappedComponent
                 className={this.props.className}
                 href={href}
-                enabled={this.state.enabled}
+                enabled={this.props.href != null && this.state.enabled}
                 loading={this.props.href != null && this.props.token == null}
                 tokenConsumed={this.tokenConsumed.bind(this)}
                 children={this.props.children}/>;
