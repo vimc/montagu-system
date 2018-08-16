@@ -199,6 +199,7 @@ public class Keys {
     public static final Identity<ModelRunParameterSetRecord, Integer> IDENTITY_MODEL_RUN_PARAMETER_SET = Identities0.IDENTITY_MODEL_RUN_PARAMETER_SET;
     public static final Identity<ModelRunParameterValueRecord, Integer> IDENTITY_MODEL_RUN_PARAMETER_VALUE = Identities0.IDENTITY_MODEL_RUN_PARAMETER_VALUE;
     public static final Identity<ModelVersionRecord, Integer> IDENTITY_MODEL_VERSION = Identities0.IDENTITY_MODEL_VERSION;
+    public static final Identity<OnetimeTokenRecord, Integer> IDENTITY_ONETIME_TOKEN = Identities0.IDENTITY_ONETIME_TOKEN;
     public static final Identity<ResponsibilityRecord, Integer> IDENTITY_RESPONSIBILITY = Identities0.IDENTITY_RESPONSIBILITY;
     public static final Identity<ResponsibilitySetRecord, Integer> IDENTITY_RESPONSIBILITY_SET = Identities0.IDENTITY_RESPONSIBILITY_SET;
     public static final Identity<RoleRecord, Integer> IDENTITY_ROLE = Identities0.IDENTITY_ROLE;
@@ -451,6 +452,7 @@ public class Keys {
         public static Identity<ModelRunParameterSetRecord, Integer> IDENTITY_MODEL_RUN_PARAMETER_SET = Internal.createIdentity(ModelRunParameterSet.MODEL_RUN_PARAMETER_SET, ModelRunParameterSet.MODEL_RUN_PARAMETER_SET.ID);
         public static Identity<ModelRunParameterValueRecord, Integer> IDENTITY_MODEL_RUN_PARAMETER_VALUE = Internal.createIdentity(ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE, ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE.ID);
         public static Identity<ModelVersionRecord, Integer> IDENTITY_MODEL_VERSION = Internal.createIdentity(ModelVersion.MODEL_VERSION, ModelVersion.MODEL_VERSION.ID);
+        public static Identity<OnetimeTokenRecord, Integer> IDENTITY_ONETIME_TOKEN = Internal.createIdentity(OnetimeToken.ONETIME_TOKEN, OnetimeToken.ONETIME_TOKEN.ID);
         public static Identity<ResponsibilityRecord, Integer> IDENTITY_RESPONSIBILITY = Internal.createIdentity(Responsibility.RESPONSIBILITY, Responsibility.RESPONSIBILITY.ID);
         public static Identity<ResponsibilitySetRecord, Integer> IDENTITY_RESPONSIBILITY_SET = Internal.createIdentity(ResponsibilitySet.RESPONSIBILITY_SET, ResponsibilitySet.RESPONSIBILITY_SET.ID);
         public static Identity<RoleRecord, Integer> IDENTITY_ROLE = Internal.createIdentity(Role.ROLE, Role.ROLE.ID);
@@ -517,7 +519,7 @@ public class Keys {
         public static final UniqueKey<ModelVersionRecord> MODEL_VERSION_PKEY = Internal.createUniqueKey(ModelVersion.MODEL_VERSION, "model_version_pkey", ModelVersion.MODEL_VERSION.ID);
         public static final UniqueKey<ModelVersionRecord> MODEL_VERSION_MODEL_VERSION_KEY = Internal.createUniqueKey(ModelVersion.MODEL_VERSION, "model_version_model_version_key", ModelVersion.MODEL_VERSION.MODEL, ModelVersion.MODEL_VERSION.VERSION);
         public static final UniqueKey<ModellingGroupRecord> MODELLING_GROUP_PKEY = Internal.createUniqueKey(ModellingGroup.MODELLING_GROUP, "modelling_group_pkey", ModellingGroup.MODELLING_GROUP.ID);
-        public static final UniqueKey<OnetimeTokenRecord> ONETIME_TOKEN_PKEY = Internal.createUniqueKey(OnetimeToken.ONETIME_TOKEN, "onetime_token_pkey", OnetimeToken.ONETIME_TOKEN.TOKEN);
+        public static final UniqueKey<OnetimeTokenRecord> ONETIME_TOKEN_PKEY = Internal.createUniqueKey(OnetimeToken.ONETIME_TOKEN, "onetime_token_pkey", OnetimeToken.ONETIME_TOKEN.ID);
         public static final UniqueKey<PermissionRecord> PERMISSION_PKEY = Internal.createUniqueKey(Permission.PERMISSION, "permission_pkey", Permission.PERMISSION.NAME);
         public static final UniqueKey<ResponsibilityRecord> RESPONSIBILITY_PKEY = Internal.createUniqueKey(Responsibility.RESPONSIBILITY, "responsibility_pkey", Responsibility.RESPONSIBILITY.ID);
         public static final UniqueKey<ResponsibilityRecord> RESPONSIBILITY_RESPONSIBILITY_SET_SCENARIO_KEY = Internal.createUniqueKey(Responsibility.RESPONSIBILITY, "responsibility_responsibility_set_scenario_key", Responsibility.RESPONSIBILITY.RESPONSIBILITY_SET, Responsibility.RESPONSIBILITY.SCENARIO);
