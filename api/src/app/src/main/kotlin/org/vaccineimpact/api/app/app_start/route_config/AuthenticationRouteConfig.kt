@@ -15,9 +15,13 @@ object AuthenticationRouteConfig : RouteConfig
             Endpoint("/set-shiny-cookie/", controller, "setShinyCookie")
                     .secure()
                     .json(),
-            // This endpoint just removes a cookie, to log the user out of the shiny apps
-            // so there is no reason to secure it.
-            Endpoint("/clear-shiny-cookie/", controller, "clearShinyCookie")
+            // This endpoint just removes cookies to log the user out so there is no reason to secure it
+            Endpoint("/logout/", controller, "logOut")
+                    .json(),
+            // This endpoint just removes cookies to log the user out so there is no reason to secure it
+            // DEPRECATED: This is just an alias for logOut - to be removed once the webapps no longer use it
+            // TODO: VIMC-2084
+            Endpoint("/clear-shiny-cookie/", controller, "logOut")
                     .json()
     )
 }

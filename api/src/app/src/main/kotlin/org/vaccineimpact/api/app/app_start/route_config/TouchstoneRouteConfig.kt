@@ -41,6 +41,12 @@ object TouchstoneRouteConfig : RouteConfig
 
             Endpoint("$baseUrl:touchstone-version-id/demographics/:source-code/:type-code/", controller, "getDemographicData")
                     .csv().streamed()
+                    .secure(demographicPermissions),
+
+            Endpoint("$baseUrl:touchstone-version-id/demographics/:source-code/:type-code/csv/", controller, "getDemographicData")
+                    .streamed()
+                    .secure(demographicPermissions),
+
                     .secure(demographicPermissions)
     )
 }

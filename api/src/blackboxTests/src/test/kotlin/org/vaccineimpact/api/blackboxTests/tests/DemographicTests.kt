@@ -177,7 +177,7 @@ class DemographicTests : DatabaseTest()
     }
 
     @Test
-    fun `returns demographic data csv`()
+    fun `returns demographic data csv with splitdata`()
     {
         val userHelper = TestUserHelper()
         val requestHelper = RequestHelper()
@@ -210,6 +210,40 @@ class DemographicTests : DatabaseTest()
         val CSVSchema = CSVSchema("DemographicData")
         val body = CSVSchema.validate(csv)
 
+        Assertions.assertThat(body.count()).isEqualTo(expectedRows)
+    }
+
+    @Test
+    fun `returns demographic data csv only`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+        var expectedRows = 0
+
+        JooqContext().use {
+
+            val data = DemographicDummyData(it, touchstoneName, touchstoneVersion)
+                    .withTouchstone()
+                    .withPopulation(yearRange = 1950..1955 step 5, ageRange = 10..15 step 5)
+
+            userHelper.setupTestUser(it)
+
+            val numYears = 2
+            val numAges = 2
+
+            // should only ever be 2 variants - unwpp_estimates and unwpp_medium_variant
+            val numVariants = 2
+
+            val numCountries = data.countries.count()
+
+            expectedRows = numAges * numYears * numCountries * numVariants
+        }
+
+        val schema = CSVSchema("DemographicData")
+        val response = requestHelper.get("/touchstones/$touchstoneVersionId/demographics/unwpp2015/tot-pop/csv/",
+                requiredPermissions)
+
+        val body = schema.validate(response.text)
         Assertions.assertThat(body.count()).isEqualTo(expectedRows)
     }
 
