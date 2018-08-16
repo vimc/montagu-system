@@ -169,27 +169,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `bad CSV headers results in ValidationError in redirect`()
-    {
-        val setId = JooqContext().use {
-            setUpWithBurdenEstimateSet(it)
-        }
-
-        validate("$setUrl/$setId/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { _ ->
-            //set up already done
-        } requiringPermissions {
-            requiredWritePermissions
-        } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
-
-            val response = requestHelper.postFile(oneTimeURL, "bad_header,year,age,country,country_name,cohort_size")
-            val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-            JSONValidator().validateError(resultAsString, expectedErrorCode = "csv-unexpected-header")
-        }
-    }
-
-    @Test
     fun `cannot populate central burden estimate set if duplicate rows`()
     {
         TestUserHelper.setupTestUser()
