@@ -115,3 +115,38 @@ Total population:
          004,                    "AFG",          "Afghanistan", "female",   "2-2",   91720,    91784,   91884,   91920,  92679, ...   
          004,                    "AFG",          "Afghanistan", "female",   "3-3",   95671,    95612,   95700,   95724,  95780, ...   
          004,                    "AFG",          "Afghanistan", "female",   "4-4",   96103,    97724,   99720,  100120, 101103, ...   
+         
+## GET /touchstones/{touchstone-id}/demographics/{source-code}/{demographic-type-code}/csv/
+
+Returns the data set with given type, as a CSV
+
+### Example
+         
+     "country_code_numeric", "country_code", "country",     "age (years)",  "gender",  "year",   "people"
+      004,                   "AFG",          "Afghanistan", "0-0",    "both",    1950,      82724
+      004,                   "AFG",          "Afghanistan", "0-0",    "both",    1951,      84699
+      004,                   "AFG",          "Afghanistan", "0-0",    "both",    1952,      87807
+      004,                   "AFG",          "Afghanistan", "0-0",    "both",    1953,      89014
+      004,                   "AFG",          "Afghanistan", "0-0",    "both",    1954,      89993
+                
+
+### Query parameters:
+
+#### gender
+Optional. The gender to return, either `female`, `male`, or `both`. Defaults to `both`.
+
+#### format
+Optional. A format to return the CSV in, either `wide` or `long`. Defaults to `long`.
+
+Example:
+`/touchstones/2017-op-1/demographics/unwpp2015/tot_pop/?format=wide&gender=female`
+
+Total population:
+
+                "",       "",      "", "people"
+         "country_code_numeric", "country_code", "country",     "gender",   "age",    1950,    1951,    1952,    1953,    1954, ...                             
+         004,                    "AFG",          "Afghanistan", "female",   "0-0",   82724,    84699,   87807,   89014,  89993, ... 
+         004,                    "AFG",          "Afghanistan", "female",   "1-1",   88021,    89725,   91720,   91726,  91727, ...   
+         004,                    "AFG",          "Afghanistan", "female",   "2-2",   91720,    91784,   91884,   91920,  92679, ...   
+         004,                    "AFG",          "Afghanistan", "female",   "3-3",   95671,    95612,   95700,   95724,  95780, ...   
+         004,                    "AFG",          "Afghanistan", "female",   "4-4",   96103,    97724,   99720,  100120, 101103, ...   
