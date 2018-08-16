@@ -103,8 +103,6 @@ class DirectActionContext(private val context: SparkWebContext) : ActionContext
         }
         // https://www.owasp.org/index.php/SameSite
         addResponseHeader("Set-Cookie", "${name.cookieName}=$value; Path=/;$secure HttpOnly; SameSite=Strict")
-        // Allows the cookie to be set over AJAX (i.e. how we use it from the API)
-        addResponseHeader("Access-Control-Allow-Credentials", "true")
     }
 
     override fun hasPermission(requirement: ReifiedPermission): Boolean
