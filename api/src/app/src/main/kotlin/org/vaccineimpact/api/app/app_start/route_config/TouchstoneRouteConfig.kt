@@ -44,6 +44,10 @@ object TouchstoneRouteConfig : RouteConfig
                     .csv().streamed()
                     .secure(demographicPermissions),
 
+            Endpoint("$baseUrl:touchstone-version-id/demographics/:source-code/:type-code/csv/", controller, "getDemographicData")
+                    .streamed()
+                    .secure(demographicPermissions),
+
             Endpoint("$baseUrl:touchstone-version-id/demographics/:source-code/:type-code/get_onetime_link/",
                     OneTimeLinkController::class, "getTokenForDemographicData")
                     .json()
