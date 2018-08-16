@@ -7,6 +7,8 @@ import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
+import org.vaccineimpact.api.security.InternalUser
+import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
 import java.time.Duration
 
@@ -33,13 +35,17 @@ class TokenGeneratorTests
     @Test
     fun `can generate onetime token from roles and permissions`()
     {
+        val testUser = InternalUser(
+                UserProperties("username", "name", "email", null, null),
+                listOf(ReifiedRole("role", Scope.Global())),
+                listOf(ReifiedPermission("p", Scope.Global())))
+
         val tokenHelper = tokenHelperThatCanGenerateOnetimeTokens()
         val sut = OneTimeTokenGenerator(mock(), tokenHelper)
-        sut.getOneTimeLinkToken("/some/url/", listOf(ReifiedPermission("p", Scope.Global())),
-                listOf(ReifiedRole("role", Scope.Global())),
-                "username", Duration.ofDays(1))
 
-        verify(tokenHelper).generateOnetimeActionToken("/some/url/", "username", "*/p", "*/role",
+        sut.getSetPasswordToken(testUser)
+
+        verify(tokenHelper).generateOnetimeActionToken("/v1/password/set/", "username", "*/p", "*/role",
                 Duration.ofDays(1))
     }
 

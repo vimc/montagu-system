@@ -43,8 +43,7 @@ class PasswordControllerTests : MontaguTests()
 
         val tokenGenerator = mock<OneTimeTokenGenerator>() {
             on {
-                getOneTimeLinkToken("/v1/password/set/",
-                        emptyList(), emptyList(), user.username, Duration.ofDays(1))
+                getSetPasswordToken(any())
             } doReturn "TOKEN"
         }
         val sut = PasswordController(context, userRepo, tokenGenerator, emailManager)

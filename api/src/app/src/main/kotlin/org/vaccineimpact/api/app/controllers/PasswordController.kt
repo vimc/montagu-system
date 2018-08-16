@@ -62,11 +62,7 @@ class PasswordController(
 
     private fun getCompressedSetPasswordToken(user: InternalUser): String
     {
-        return oneTimeTokenGenerator.getOneTimeLinkToken(
-                "/v1/password/set/",
-                user.permissions,
-                user.roles,
-                user.username, Duration.ofDays(1))
+        return oneTimeTokenGenerator.getSetPasswordToken(user)
     }
 
 }

@@ -82,12 +82,7 @@ class UserController(
 
         val newUser = userRepository.getUserByUsername(user.username)
 
-        val token = oneTimeTokenGenerator.getOneTimeLinkToken(
-                "/v1/password/set/",
-                newUser.permissions,
-                newUser.roles,
-                newUser.username,
-                Duration.ofDays(1))
+        val token = oneTimeTokenGenerator.getSetPasswordToken(newUser)
 
         emailManager.sendEmail(NewUserEmail(user, token), user)
         return objectCreation(context, "/users/${user.username}/")
