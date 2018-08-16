@@ -2,6 +2,20 @@ package org.vaccineimpact.api.test_helpers
 
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.*
+import org.vaccineimpact.api.security.InternalUser
+import org.vaccineimpact.api.security.UserProperties
+
+fun exampleInternalUser(username: String = "username") = InternalUser(
+        UserProperties(
+                username,
+                name = "Full name",
+                email = "email@example.com",
+                lastLoggedIn = null,
+                passwordHash = null
+        ),
+        emptyList(),
+        emptyList()
+)
 
 fun exampleExpectations() = Expectations(
         id = 1,

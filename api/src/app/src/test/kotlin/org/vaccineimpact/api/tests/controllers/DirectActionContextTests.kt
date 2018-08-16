@@ -1,9 +1,7 @@
 package org.vaccineimpact.api.tests.controllers
 
 import com.beust.klaxon.json
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.*
 import org.apache.commons.fileupload.FileItemStream
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -17,11 +15,14 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
 import org.vaccineimpact.api.app.requests.MultipartData
 import org.vaccineimpact.api.app.security.montaguPermissions
+import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.security.CookieName
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import spark.Request
+import spark.Response
 import java.io.ByteArrayInputStream
 import javax.servlet.http.HttpServletRequest
 
@@ -134,6 +135,36 @@ class DirectActionContextTests : MontaguTests()
         val context = DirectActionContext(mockWebContext())
         val actual = context.getPart("partB", mockData)
         assertThat(actual.readText()).isEqualTo("Message B")
+    }
+
+    @Test
+    fun `cookie is Secure if allowLocalhost is false`()
+    {
+        val config = mock<ConfigWrapper> {
+            on { it.getBool("allow.localhost") } doReturn false
+        }
+        val mockResponse = mock<Response>()
+        val webContext = mock<SparkWebContext> {
+            on { it.sparkResponse } doReturn mockResponse
+        }
+        val sut = DirectActionContext(webContext)
+        sut.setCookie(CookieName.Main, "TOKEN", config)
+        verify(mockResponse).header(eq("Set-Cookie"), eq("montagu_jwt_token=TOKEN; Path=/; Secure; HttpOnly; SameSite=Strict"))
+    }
+
+    @Test
+    fun `cookie is not Secure if allowLocalhost is true`()
+    {
+        val config = mock<ConfigWrapper> {
+            on { it.getBool("allow.localhost") } doReturn true
+        }
+        val mockResponse = mock<Response>()
+        val webContext = mock<SparkWebContext> {
+            on { it.sparkResponse } doReturn mockResponse
+        }
+        val sut = DirectActionContext(webContext)
+        sut.setCookie(CookieName.Shiny, "TOKEN", config)
+        verify(mockResponse).header(eq("Set-Cookie"), eq("jwt_token=TOKEN; Path=/; HttpOnly; SameSite=Strict"))
     }
 
     private fun mockFileItem(name: String, contents: String, contentType: String): FileItemStream

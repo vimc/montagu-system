@@ -4,8 +4,11 @@ import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.app.requests.MultipartData
 import org.vaccineimpact.api.app.requests.MultipartDataMap
 import org.vaccineimpact.api.app.requests.ServletFileUploadWrapper
+import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.security.CookieName
 import spark.Request
 import java.io.OutputStream
 import java.io.Reader
@@ -38,6 +41,7 @@ interface ActionContext
     fun addAttachmentHeader(filename: String): Unit
     fun setResponseStatus(status: Int): Unit
     fun streamedResponse(contentType: String, work: (OutputStream) -> Unit): Unit
+    fun setCookie(name: CookieName, value: String, config: ConfigWrapper = Config)
 
     fun hasPermission(requirement: ReifiedPermission): Boolean
     fun requirePermission(requirement: ReifiedPermission): Unit
