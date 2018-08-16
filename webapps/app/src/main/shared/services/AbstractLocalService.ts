@@ -1,10 +1,10 @@
-import { Dispatch, Action } from "redux";
+import {Dispatch, Action} from "redux";
 import {clone} from "lodash";
 
-import { settings } from "../Settings";
-import { localStorageHandler } from "./localStorageHandler";
+import {settings} from "../Settings";
+import {localStorageHandler} from "./localStorageHandler";
 import {ErrorInfo, Result} from "../models/Generated";
-import { AuthTypeKeys } from "../actionTypes/AuthTypes";
+import {AuthTypeKeys} from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
 import {CacheInterface} from "../modules/cache/CacheInterface";
 import {singletonVariableCache} from "../modules/cache/singletonVariableCache";
@@ -12,8 +12,8 @@ import {APIService} from "../models/APIService";
 import {notificationActionCreators} from "../actions/notificationActionCreators";
 
 export interface OptionsHeaders {
-   Authorization?: string;
-   'Content-Type'?: string;
+    Authorization?: string;
+    'Content-Type'?: string;
 }
 
 export interface RequestOptions {
@@ -35,7 +35,6 @@ export interface InputOptions {
 export abstract class AbstractLocalService {
     protected dispatch: Dispatch<Action>;
 
-    protected bearerToken: string;
     protected options: InputOptions = {};
 
     protected cacheEngine: CacheInterface = null;
@@ -43,7 +42,6 @@ export abstract class AbstractLocalService {
     public constructor(dispatch: Dispatch<Action>, getState: () => GlobalState) {
         this.dispatch = dispatch;
 
-        this.bearerToken = this.getTokenFromState(getState());
         this.initOptions();
 
         this.cacheEngine = singletonVariableCache;
@@ -51,12 +49,6 @@ export abstract class AbstractLocalService {
         this.processResponse = this.processResponse.bind(this);
         this.notifyOnErrors = this.notifyOnErrors.bind(this);
         this.handleErrorsWithNotifications = this.handleErrorsWithNotifications.bind(this);
-    }
-
-    protected getTokenFromState(state: GlobalState) {
-        if (state.auth && state.auth.bearerToken) {
-            return state.auth.bearerToken
-        }
     }
 
     public setOptions(options: InputOptions) {
@@ -69,20 +61,17 @@ export abstract class AbstractLocalService {
         this.options.cacheKey = null;
         this.options.notificationOnError = true;
         this.options.noCache = false;
-        if (this.bearerToken) {
-            this.options.Authorization = 'Bearer ' + this.bearerToken;
-        }
     }
 
-    protected makeRequestOptions(method: string, body?: any) :RequestOptions {
+    protected makeRequestOptions(method: string, body?: any): RequestOptions {
         const headers: OptionsHeaders = {};
         if (this.options.Authorization) headers.Authorization = this.options.Authorization;
         if (this.options['Content-Type']) headers['Content-Type'] = this.options['Content-Type'];
-        const requestOptions : RequestOptions = {
+        const requestOptions: RequestOptions = {
             method,
             headers,
+            credentials: "include"
         };
-        if (this.options.credentials) requestOptions.credentials = this.options.credentials;
         if (body) requestOptions.body = body;
         return requestOptions;
     }
@@ -91,23 +80,23 @@ export abstract class AbstractLocalService {
         return buildURL(uri, service);
     }
 
-    protected doFetch(url: string, params? :any) {
+    protected doFetch(url: string, params?: any) {
         return fetch(url, params)
     }
 
-    public get(url: string, service?: APIService){
+    public get(url: string, service?: APIService) {
         console.log('get', url);
         service = service || "main";
         return this.getData(this.makeUrl(url, service), "GET");
     }
 
-    public post(url: string, params?:any, service?: APIService){
+    public post(url: string, params?: any, service?: APIService) {
         console.log('post', url, params);
         service = service || "main";
         return this.getData(this.makeUrl(url, service), "POST", params);
     }
 
-    private getFullyQualifiedCacheKey(cacheKey: string, url: string) : string {
+    private getFullyQualifiedCacheKey(cacheKey: string, url: string): string {
         return ["localService", this.constructor.name, cacheKey, encodeURIComponent(url)].join('.');
     }
 
@@ -143,10 +132,10 @@ export abstract class AbstractLocalService {
             .catch(this.notifyOnErrors);
     }
 
-    public postNoProcess(url: string, params?:any, service?: APIService){
+    public postNoProcess(url: string, params?: any, service?: APIService) {
         service = service || "main";
         return this.doFetch(this.makeUrl(url, service), this.makeRequestOptions('POST', params))
-            .then((response:any) => {
+            .then((response: any) => {
                 this.initOptions();
                 return response.json()
             });
@@ -164,19 +153,20 @@ export abstract class AbstractLocalService {
         console.log("Access token has expired or is otherwise invalid: Logging out.");
         this.dispatch(this.logOut());
         notificationActionCreators.notify("Your session has expired. You will need to log in again", "info")(this.dispatch, null);
+        setTimeout(() => notificationActionCreators.clear("error")(this.dispatch, null));
     }
 
-    handleErrorsWithNotifications (error: ErrorInfo) {
+    handleErrorsWithNotifications(error: ErrorInfo) {
         switch (error.code) {
-            case "bearer-token-invalid":
+            case "cookie-bearer-token-invalid":
                 return this.expiredTokenAction();
             default:
                 notificationActionCreators.notify(error.message, "error")(this.dispatch, null);
         }
     };
 
-    handleErrorsReturn (result: any) {
-        if (result.errors[0].code === "bearer-token-invalid") {
+    handleErrorsReturn(result: any) {
+        if (result.errors.some((x: ErrorInfo) => x.code === "cookie-bearer-token-invalid")) {
             return this.expiredTokenAction();
         }
         return result;

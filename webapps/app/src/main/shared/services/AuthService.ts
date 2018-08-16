@@ -11,13 +11,11 @@ export class AuthService extends AbstractLocalService {
     }
 
     setShinyCookie() {
-        return this.setOptions({credentials: "include"})
-            .get("/set-shiny-cookie/");
+        return this.get("/set-shiny-cookie/");
     }
 
     clearShinyCookie() {
-        return this.setOptions({credentials: "include"})
-            .get("/clear-shiny-cookie/");
+        return this.get("/clear-shiny-cookie/");
     }
 
     forgotPassword(email: string) {
