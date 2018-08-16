@@ -22,7 +22,9 @@ class OneTimeTokenCheckerTests : DatabaseTest()
     fun `checkToken returns true and clears token if any token matches`()
     {
         JooqContext().use { db ->
-            db.dsl.insertInto(ONETIME_TOKEN).values("TOKEN").execute()
+            db.dsl.newRecord(ONETIME_TOKEN).apply {
+                this.token = "TOKEN"
+            }.store()
         }
 
         val factory = RepositoryFactory()

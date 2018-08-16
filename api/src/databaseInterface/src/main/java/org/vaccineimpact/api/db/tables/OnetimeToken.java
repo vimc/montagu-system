@@ -10,6 +10,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Schema;
@@ -37,7 +38,7 @@ import org.vaccineimpact.api.db.tables.records.OnetimeTokenRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OnetimeToken extends TableImpl<OnetimeTokenRecord> {
 
-    private static final long serialVersionUID = 1517502793;
+    private static final long serialVersionUID = 101141878;
 
     /**
      * The reference instance of <code>public.onetime_token</code>
@@ -56,6 +57,11 @@ public class OnetimeToken extends TableImpl<OnetimeTokenRecord> {
      * The column <code>public.onetime_token.token</code>.
      */
     public final TableField<OnetimeTokenRecord, String> TOKEN = createField("token", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.onetime_token.id</code>.
+     */
+    public final TableField<OnetimeTokenRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('onetime_token_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * Create a <code>public.onetime_token</code> table reference
@@ -100,6 +106,14 @@ public class OnetimeToken extends TableImpl<OnetimeTokenRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.ONETIME_TOKEN_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<OnetimeTokenRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_ONETIME_TOKEN;
     }
 
     /**
