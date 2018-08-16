@@ -183,6 +183,11 @@ describe("OneTimeLinkContext", () => {
             expect(element.find(EmptyComponent).prop("enabled")).to.be.false;
         });
 
+        it("when href is null, wrapped component is disabled", () => {
+            const element = render(<Class href={null}/>);
+            expect(element.find(EmptyComponent).prop("enabled")).to.be.false;
+        });
+
         it("with delayBeforeReenable, disables temporarily after clicking", (done: DoneCallback) => {
             const element = render(<Class href="/url/" delayBeforeReenable={0.25}/>);
             element.find(EmptyComponent).dive().find("button").simulate("click");
