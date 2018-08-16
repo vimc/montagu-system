@@ -83,7 +83,7 @@ class UserController(
         val newUser = userRepository.getUserByUsername(user.username)
 
         val token = oneTimeTokenGenerator.getOneTimeLinkToken(
-                "/password/set/",
+                "/v1/password/set/",
                 newUser.permissions,
                 newUser.roles,
                 newUser.username,

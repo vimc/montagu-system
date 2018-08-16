@@ -43,7 +43,7 @@ class PasswordControllerTests : MontaguTests()
 
         val tokenGenerator = mock<OneTimeTokenGenerator>() {
             on {
-                getOneTimeLinkToken("/password/set/",
+                getOneTimeLinkToken("/v1/password/set/",
                         emptyList(), emptyList(), user.username, Duration.ofDays(1))
             } doReturn "TOKEN"
         }
@@ -78,7 +78,7 @@ class PasswordControllerTests : MontaguTests()
         sut.requestResetPasswordLink()
 
         verify(tokenHelper).generateOnetimeActionToken(
-                eq("/password/set/"),
+                eq("/v1/password/set/"),
                 eq(user.username),
                 eq(""),
                 eq(""),

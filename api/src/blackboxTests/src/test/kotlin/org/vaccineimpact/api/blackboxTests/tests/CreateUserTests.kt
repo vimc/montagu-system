@@ -9,6 +9,7 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.APP_USER
 import org.vaccineimpact.api.emails.WriteToDiskEmailManager
 import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.security.inflate
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
@@ -59,10 +60,12 @@ class CreateUserTests : DatabaseTest()
         }
 
         val onetimeToken = PasswordTests.getTokenFromFakeEmail()
-        requestHelper.post("/onetime_link/$onetimeToken/", json {
+        val t = inflate(onetimeToken)
+        val response = requestHelper.post("/password/set/?access_token=$onetimeToken/", json {
             obj("password" to "first_password")
         })
 
+        val text = response.text
         assertThat(TokenFetcher().getToken(email, "first_password"))
                 .isInstanceOf(TokenFetcher.TokenResponse.Token::class.java)
     }

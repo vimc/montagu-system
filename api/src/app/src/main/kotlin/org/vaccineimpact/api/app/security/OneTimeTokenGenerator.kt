@@ -33,8 +33,8 @@ open class OneTimeTokenGenerator(
                                  lifespan: Duration?): String
     {
         val token = tokenHelper.generateOnetimeActionToken(
-                url, username, permissions.joinToString { it.toString() },
-                roles.joinToString { it.toString() }, lifespan
+                url, username, permissions.joinToString(","),
+                roles.joinToString(","), lifespan
         )
         tokenRepository.storeToken(token)
         return token.deflated()

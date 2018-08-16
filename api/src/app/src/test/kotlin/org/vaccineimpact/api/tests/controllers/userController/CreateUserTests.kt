@@ -12,6 +12,8 @@ import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.NewUserEmail
 import org.vaccineimpact.api.emails.getEmailManager
+import org.vaccineimpact.api.security.InternalUser
+import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class CreateUserTests : MontaguTests()
@@ -21,12 +23,20 @@ class CreateUserTests : MontaguTests()
     private val username = "user.name"
     private val email = "email@example.com"
 
+    fun userRepo() = mock<UserRepository>() {
+        on { it.getUserByUsername(username) } doReturn InternalUser(
+                UserProperties(username, name, email, "", null),
+                listOf(),
+                listOf()
+        )
+    }
+
     @Test
     fun `can create user`()
     {
-        val userRepo = mock<UserRepository>()
-        val location = postToUserCreate(userRepo)
-        verify(userRepo).addUser(any())
+        val repo = userRepo()
+        val location = postToUserCreate(repo)
+        verify(repo).addUser(any())
         assertThat(location).endsWith("/v1/users/user.name/")
     }
 
@@ -34,7 +44,7 @@ class CreateUserTests : MontaguTests()
     fun `creating user sends email with password set link`()
     {
         val emailManager = mock<EmailManager>()
-        postToUserCreate(emailManager = emailManager)
+        postToUserCreate(userRepo = userRepo(), emailManager = emailManager)
         verify(emailManager).sendEmail(
                 check {
                     if (it is NewUserEmail)
