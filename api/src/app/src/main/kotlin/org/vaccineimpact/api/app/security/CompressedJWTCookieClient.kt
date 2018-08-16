@@ -22,7 +22,7 @@ class CompressedJWTCookieClient(helper: WebTokenHelper)
     {
         override val client = CompressedJWTCookieClient(helper)
         override val authorizationError = ErrorInfo(
-                "bearer-token-invalid",
+                "cookie-bearer-token-invalid",
                 "Bearer token not supplied in cookie '${cookie.cookieName}', or bearer token was invalid"
         )
     }
