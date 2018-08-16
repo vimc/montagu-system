@@ -76,7 +76,6 @@ class AuthenticationTests : DatabaseTest()
 
         val mainToken = checkCookieAndGetValue(response, "montagu_jwt_token")
         assertThat(mainToken.isEmpty()).isTrue()
-
         val shinyToken = checkCookieAndGetValue(response, "jwt_token")
         assertThat(shinyToken.isEmpty()).isTrue()
     }
