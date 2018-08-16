@@ -9,6 +9,7 @@ import khttp.structures.files.FileLike
 import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.security.CookieName
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import java.io.File
 import java.net.URLEncoder
@@ -36,6 +37,15 @@ class RequestHelper
         return get(url, standardHeaders(acceptsContentType, token))
     }
 
+    fun getWithCookie(url: String, token: TokenLiteral? = null, acceptsContentType: String = ContentTypes.json): Response
+    {
+        // Okay, this is bizarre - it seems like khttp's built in "send a cookie" functionality
+        // doesn't actually do anything, so I've instead manually constructed the cookie header
+        val headers = standardHeaders(acceptsContentType, token = null) +
+                mapOf("Cookie" to "${CookieName.Main.cookieName}=$token")
+        return get(url, headers)
+    }
+
     fun getWithoutGzip(url: String, permissions: Set<ReifiedPermission>, contentType: String = ContentTypes.json): Response
     {
         val token = TestUserHelper().getTokenForTestUser(permissions)
@@ -54,6 +64,7 @@ class RequestHelper
     {
         return post(url, permissions, data.toJsonString(prettyPrint = true))
     }
+
     fun post(url: String, permissions: Set<ReifiedPermission>, data: String? = null): Response
     {
         val token = TestUserHelper().getTokenForTestUser(permissions)
@@ -69,6 +80,7 @@ class RequestHelper
                 token = token,
                 acceptsContentType = acceptsContentType)
     }
+
     fun post(url: String, data: String? = null,
              token: TokenLiteral? = null,
              acceptsContentType: String = ContentTypes.json
@@ -142,8 +154,7 @@ class RequestHelper
             allowRedirects = false
     )
 
-    private fun get(url: String, headers: Map<String, String>)
-            = khttp.get(EndpointBuilder.build(url), headers)
+    private fun get(url: String, headers: Map<String, String>) = khttp.get(EndpointBuilder.build(url), headers)
 }
 
 fun <T> Response.montaguData(): T?

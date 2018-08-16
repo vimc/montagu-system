@@ -39,6 +39,8 @@ fun addDefaultResponseHeaders(req: Request, res: HttpServletResponse,
     {
         res.addHeader("Content-Encoding", "gzip")
     }
+    // This allows cookies to be set and received over AJAX
+    res.addHeader("Access-Control-Allow-Credentials", "true")
 }
 
 class DefaultHeadersFilter(val contentType: String, val method: HttpMethod) : Filter
