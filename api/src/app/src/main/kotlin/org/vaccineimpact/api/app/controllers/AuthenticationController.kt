@@ -53,8 +53,9 @@ class AuthenticationController(context: ActionContext,
         return okayResponse()
     }
 
-    fun clearShinyCookie(): String
+    fun logOut(): String
     {
+        context.setCookie(CookieName.Main, "")
         context.setCookie(CookieName.Shiny, "")
         return okayResponse()
     }

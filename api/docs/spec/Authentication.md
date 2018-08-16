@@ -17,7 +17,13 @@ Like so:
     grant_type=client_credentials
 
 ### Response
-If the username and password are correct, and the user has the `can-login` permission:
+If the username and password are correct, and the user has the `can-login` 
+permission then a JSON web token is returned that can be used in future 
+requests. It is returned in two ways, as a cookie and in the body of the 
+response. The cookie is for use in the browser. To use the token 
+programmatically, include the access token using the Authorization header,
+with this format: `Authorization: Bearer TOKEN` in future requests to other 
+endpoints.
 
 Schema: [`LoginSuccessful.schema.json`](../schemas/LoginSuccessful.schema.json)
 
@@ -28,9 +34,6 @@ Schema: [`LoginSuccessful.schema.json`](../schemas/LoginSuccessful.schema.json)
         "token_type": "bearer",
         "expires_in": 3600
     }
-
-Future requests to other endpoints should include the access token using the Authorization header,
-with this format: `Authorization: Bearer TOKEN`.
 
 Otherwise an error response is returned, as per [this part of the OAuth2 Spec](https://tools.ietf.org/html/rfc6749#section-5.2).
 
@@ -48,15 +51,16 @@ If the user is successfully authenticated, the response contains a `Set-Cookie` 
 `jwt_token` containing a JSON web token with a single claim, `allowed_shiny` which is true iff the user has the 
 `reports.review` permission. The cookie is HttpOnly, Secure, and lasts only as long as the browser session.
 
-
-## GET /clear-shiny-cookie/
+## GET /logout/
 Does not require authentication.
-This request can be made by a browser to clear the `jwt_token` cookie set by a request to the above endpoint.
+This request can be made by a browser to clear the main auth cookie 
+(`montagu_jwt_token`), as well as the `jwt_token` cookie set by a request to the 
+`set-shiny-cooke` endpoint.
 
 ### Request
 When making an ajax request to this endpoint the Request `credentials` property must be set to `include`:
 https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials
 
 ### Response
-The response contains a `Set-Cookie` header, which sets the cookie called 
-`jwt_token` to an empty string.
+The response contains `Set-Cookie` headers, which sets the cookies to an empty 
+string.

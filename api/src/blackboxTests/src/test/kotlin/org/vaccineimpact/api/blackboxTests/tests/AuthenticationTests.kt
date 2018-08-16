@@ -20,7 +20,9 @@ import org.vaccineimpact.api.db.Tables.APP_USER
 import org.vaccineimpact.api.db.direct.addUserForTesting
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedRole
-import org.vaccineimpact.api.security.*
+import org.vaccineimpact.api.security.UserHelper
+import org.vaccineimpact.api.security.ensureUserHasRole
+import org.vaccineimpact.api.security.inflated
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 data class ResponseWithJsonBody(val response: Response, val body: JsonObject)
@@ -67,11 +69,13 @@ class AuthenticationTests : DatabaseTest()
     }
 
     @Test
-    fun `can clear shiny cookie`()
+    fun `can log out`()
     {
-        val response = RequestHelper().get("/clear-shiny-cookie/")
+        val response = RequestHelper().get("/logout/")
         assertThat(response.statusCode).isEqualTo(200)
 
+        val mainToken = checkCookieAndGetValue(response, "montagu_jwt_token")
+        assertThat(mainToken.isEmpty()).isTrue()
         val shinyToken = checkCookieAndGetValue(response, "jwt_token")
         assertThat(shinyToken.isEmpty()).isTrue()
     }
@@ -166,11 +170,11 @@ class AuthenticationTests : DatabaseTest()
 
     private fun checkCookieAndGetValue(response: Response, key: String): String
     {
-        val cookie = response.headers["Set-Cookie"]!!
-        assertThat(cookie).contains("HttpOnly")
-        assertThat(cookie).contains("SameSite=Strict")
-        val regex = Regex("""^$key=([^;]*);""")
-        return regex.find(cookie)!!.groupValues[1]
+        val cookie = response.cookies.getCookie(key)
+                ?: throw Exception("No cookie with key '$key' was found in response: ${response.text}")
+        assertThat(cookie.attributes).containsKey("HttpOnly")
+        assertThat(cookie.attributes["SameSite"]).isEqualTo("Strict")
+        return cookie.value as String
     }
 
     companion object
@@ -180,7 +184,7 @@ class AuthenticationTests : DatabaseTest()
         fun post(username: String, password: String, includeAuth: Boolean = true): ResponseWithJsonBody
         {
             val auth = if (includeAuth) BasicAuthorization(username, password) else null
-            val response =  post(url,
+            val response = post(url,
                     data = mapOf("grant_type" to "client_credentials"),
                     auth = auth
             )
