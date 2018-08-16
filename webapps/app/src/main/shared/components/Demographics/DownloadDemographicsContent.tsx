@@ -27,6 +27,9 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
             }
         }
 
+        console.log(url)
+        console.log("--------------------------")
+
         return <div className="demographics">
             <div className="sectionTitle">
                 Demographic data for {this.props.touchstone.description}

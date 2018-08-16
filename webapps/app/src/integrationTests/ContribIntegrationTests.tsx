@@ -14,7 +14,7 @@ import {
     ScenarioTouchstoneAndCoverageSets,
     Touchstone,
 } from "../main/shared/models/Generated";
-import {inflateAndDecode, IntegrationTestSuite} from "./IntegrationTest";
+import {firstDownloadPromise, inflateAndDecode, IntegrationTestSuite, lastDownloadPromise} from "./IntegrationTest";
 import * as enzyme from "enzyme";
 import * as Adapter from "enzyme-adapter-react-15";
 import * as QueryString from "querystring";
@@ -31,8 +31,28 @@ import {appSettings} from "../main/shared/Settings";
 import {EstimatesService} from "../main/contrib/services/EstimatesService";
 import {UserService} from "../main/contrib/services/UserService";
 import {helpers} from "../main/shared/Helpers";
+import {Provider} from "react-redux";
+import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
+import {Sandbox} from "../test/Sandbox";
+import {
+    DownloadCoverageContent,
+    DownloadCoverageContentComponent
+} from "../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
+import {
+    DownloadDemographicsContent,
+    DownloadDemographicsContentComponent
+} from "../main/shared/components/Demographics/DownloadDemographicsContent";
+import {createMockContribStore} from "../test/mocks/mockStore";
+import {mockContribState} from "../test/mocks/mockStates";
+import {
+    mockModellingGroup,
+    mockResponsibility,
+    mockScenario,
+    mockTouchstone,
+    mockTouchstoneVersion
+} from "../test/mocks/mockModels";
 
-enzyme.configure({ adapter: new Adapter() });
+enzyme.configure({adapter: new Adapter()});
 
 const FormData = require('form-data');
 
@@ -52,6 +72,10 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
     }
 
     addTestsToMocha() {
+
+        const sandbox = new Sandbox();
+
+        afterEach(() => sandbox.restore());
 
         it("can upload model run parameter sets", async () => {
             await addResponsibilities(this.db);
@@ -83,17 +107,17 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
         it("signs confidentiality agreement", async () => {
 
-          const result = await (new UserService(this.store.dispatch, this.store.getState))
-            .signConfidentiality();
-          expect(result).to.eq("OK");
+            const result = await (new UserService(this.store.dispatch, this.store.getState))
+                .signConfidentiality();
+            expect(result).to.eq("OK");
 
         });
 
         it("gets confidentiality agreement", async () => {
 
-          const result = await (new UserService(this.store.dispatch, this.store.getState))
-            .getConfidentiality();
-         expect(result).to.eq(false);
+            const result = await (new UserService(this.store.dispatch, this.store.getState))
+                .getConfidentiality();
+            expect(result).to.eq(false);
 
         });
 
@@ -137,7 +161,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
                 .getResponsibilities(groupId, touchstoneVersionId);
-            
+
             expect(responsibilities).to.eql(expectedResponsibilitiesResponse());
         });
 
@@ -235,6 +259,66 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const estimateSet = responsibilities.responsibilities[0].current_estimate_set;
             expect(estimateSet.type).to.eql(data.type);
         });
+
+        it("can download coverage data", async () => {
+            const coverageSetId = await addCoverageSets(this.db);
+            const store = createMockContribStore(mockContribState({
+                touchstones: {
+                    currentTouchstoneVersion: mockTouchstoneVersion({id: touchstoneVersionId})
+                },
+                groups: {
+                    currentUserGroup: mockModellingGroup({id: groupId})
+                },
+                responsibilities: {
+                    currentResponsibility: mockResponsibility({}, mockScenario({id: scenarioId}))
+                },
+                coverage: {
+                    selectedFormat: "long",
+                    dataSets: [
+                        {
+                            id: coverageSetId,
+                            name: "Test set",
+                            touchstone_version: touchstoneVersionId,
+                            activity_type: "none",
+                            vaccine: "yf",
+                            gavi_support: "no vaccine"
+                        }
+                    ]
+                }
+            }));
+            const rendered = sandbox.mount(<Provider store={store}><DownloadCoverageContent/></Provider>);
+            const response = await firstDownloadPromise(rendered);
+            expect(response.status).to.equal(200)
+        });
+
+        it("can download demographic data", async () => {
+            await addDemographicDataSets(this.db);
+            const store = createMockContribStore(mockContribState({
+                touchstones: {
+                    currentTouchstoneVersion: mockTouchstoneVersion({id: touchstoneVersionId})
+                },
+                demographics: {
+                    dataSets:  [{
+                        id: "statistic",
+                        name: "Some statistic",
+                        gender_is_applicable: false,
+                        source: "source"
+                    }],
+                    selectedDataSet:
+                        {
+                            id: "statistic",
+                            name: "Some statistic",
+                            gender_is_applicable: false,
+                            source: "source"
+                        },
+                    selectedFormat: "long",
+                    selectedGender: "F"
+                }
+            }));
+            const rendered = sandbox.mount(<Provider store={store}><DownloadDemographicsContent/></Provider>);
+            const response = await firstDownloadPromise(rendered);
+            expect(response.status).to.equal(200)
+        })
     }
 }
 

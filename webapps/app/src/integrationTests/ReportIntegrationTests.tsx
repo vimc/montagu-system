@@ -3,7 +3,13 @@ import * as React from "react";
 import {ReactWrapper} from "enzyme";
 import {createMemoryHistory} from 'history';
 
-import {expectSameElements, inflateAndDecode, IntegrationTestSuite} from "./IntegrationTest";
+import {
+    expectSameElements,
+    firstDownloadPromise,
+    inflateAndDecode,
+    IntegrationTestSuite,
+    lastDownloadPromise
+} from "./IntegrationTest";
 import {Sandbox} from "../test/Sandbox";
 import {ArtefactItem} from "../main/report/components/Artefacts/ArtefactItem";
 import {ResourceLinks} from "../main/report/components/Resources/ResourceLinks";
@@ -126,37 +132,6 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const response = await lastDownloadPromise(rendered);
             expect(response.status).to.equal(200)
         });
-
-        async function firstDownloadPromise(rendered: ReactWrapper) {
-            let url = null;
-
-            // until onetime token has been fetched url will be null
-            while (url == null) {
-                await timeout(50);
-                rendered.update(); // mounted component won't update with new props automatically
-                const link = rendered.find("a").first();
-                url = link.prop("href");
-            }
-
-            return fetch(url)
-        }
-
-        async function lastDownloadPromise(rendered: ReactWrapper) {
-            let url = null;
-            // until onetime token has been fetched url will be null
-            while (url == null) {
-                await timeout(50);
-                rendered.update(); // mounted component won't update with new props automatically
-                const link = rendered.find("a").last();
-                url = link.prop("href");
-            }
-
-            return fetch(url)
-        }
-
-        async function timeout(ms: number) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
     }
 }
 

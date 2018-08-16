@@ -7,6 +7,7 @@ import {authActionCreators} from "../main/shared/actions/authActionCreators";
 import {localStorageHandler} from "../main/shared/services/localStorageHandler";
 import {singletonVariableCache} from "../main/shared/modules/cache/singletonVariableCache";
 import {jwtTokenAuth} from "../main/shared/modules/jwtTokenAuth";
+import {ReactWrapper} from "enzyme";
 
 const jwt_decode = require('jwt-decode');
 
@@ -67,6 +68,38 @@ export abstract class IntegrationTestSuite {
             this.addTestsToMocha();
         });
     }
+}
+
+export async function firstDownloadPromise(rendered: ReactWrapper) {
+    let url = null;
+
+    // until onetime token has been fetched url will be null
+    while (url == null) {
+        await timeout(50);
+        rendered.update(); // mounted component won't update with new props automatically
+        const link = rendered.find("a").first();
+        url = link.prop("href");
+        console.log(url)
+    }
+
+    return fetch(url)
+}
+
+export async function lastDownloadPromise(rendered: ReactWrapper) {
+    let url = null;
+    // until onetime token has been fetched url will be null
+    while (url == null) {
+        await timeout(50);
+        rendered.update(); // mounted component won't update with new props automatically
+        const link = rendered.find("a").last();
+        url = link.prop("href");
+    }
+
+    return fetch(url)
+}
+
+async function timeout(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function queryAgainstRootDb(query: string): Promise<void> {
