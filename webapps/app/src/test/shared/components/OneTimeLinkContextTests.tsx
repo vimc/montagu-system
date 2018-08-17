@@ -93,7 +93,7 @@ describe("OneTimeLinkContext", () => {
         const element = render(<Class href={url}/>);
         element.find(EmptyComponent).dive().find("button").simulate("click");
         checkAsync(done, () => {
-            expect(fetchTokenStub.calledTwice).to.equal(true, "Expected fetchToken to be called twice");
+            expect(fetchTokenStub.callCount).to.equal(2, "Expected fetchToken to be called twice");
             expect(fetchTokenStub.getCall(0).args[0]).to.equal(url, "Expected first call to be called with url");
             expect(fetchTokenStub.getCall(1).args[0]).to.equal(url, "Expected second call to be called with url");
         });
