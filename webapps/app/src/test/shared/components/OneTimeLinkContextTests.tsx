@@ -32,6 +32,11 @@ describe("OneTimeLinkContext", () => {
     afterEach(() => {
             fetchTokenStub.restore();
             sandbox.restore();
+            let now = new Date();
+            let then = new Date(now.getTime() + 500)
+            while (new Date() < then) {
+                
+            }
         }
     );
 
