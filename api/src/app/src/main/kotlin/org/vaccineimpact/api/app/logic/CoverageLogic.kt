@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.logic
 
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.models.CoverageRow
@@ -24,6 +25,10 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                                 private val responsibilitiesRepository: ResponsibilitiesRepository,
                                 private val touchstoneRepository: TouchstoneRepository) : CoverageLogic
 {
+    constructor(repositories: Repositories) : this(repositories.modellingGroup,
+            repositories.responsibilities,
+            repositories.touchstone)
+
     override fun getCoverageDataForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String,
                                          format: String?)
             : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>

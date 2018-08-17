@@ -21,9 +21,7 @@ class CoverageController(
 {
     constructor(context: ActionContext, repositories: Repositories)
             : this(context, repositories.modellingGroup,
-            RepositoriesCoverageLogic(repositories.modellingGroup,
-                    repositories.responsibilities,
-                    repositories.touchstone))
+            RepositoriesCoverageLogic(repositories))
 
     fun getCoverageSetsForGroup(): ScenarioTouchstoneAndCoverageSets
     {

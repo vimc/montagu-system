@@ -6,6 +6,7 @@ import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.CoverageController
 import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.logic.CoverageLogic
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.models.*
@@ -15,41 +16,41 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.math.BigDecimal
 import java.util.*
 
-class GroupCoverageControllerTests : MontaguTests()
+class CoverageControllerTests : MontaguTests()
 {
     @Test
-    fun `getCoverageSets gets parameters from URL`()
+    fun `getCoverageSetsForGroup gets parameters from URL`()
     {
         val repo = makeRepoMockingGetCoverageSets(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
-        CoverageController(context, repo).getCoverageSetsForGroup()
+        CoverageController(context, repo, mock()).getCoverageSetsForGroup()
 
         verify(repo).getCoverageSets(eq("gId"), eq("tId"), eq("sId"))
     }
 
     @Test
-    fun `getCoverageSets returns error if user does not have permission to see in-preparation touchstone`()
+    fun `getCoverageSetsForGroup returns error if user does not have permission to see in-preparation touchstone`()
     {
         val repo = makeRepoMockingGetCoverageSets(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
         Assertions.assertThatThrownBy {
-            CoverageController(context, repo).getCoverageSetsForGroup()
+            CoverageController(context, repo, mock()).getCoverageSetsForGroup()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 
     @Test
-    fun `getCoverageData gets parameters from URL`()
+    fun `getCoverageDataForGroup gets parameters from URL`()
     {
-        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
-        CoverageController(context, repo).getCoverageDataForGroup()
-        verify(repo).getCoverageData(eq("gId"), eq("tId"), eq("sId"))
+        CoverageController(context, mock(), logic).getCoverageDataForGroup()
+        verify(logic).getCoverageDataForGroup(eq("gId"), eq("tId"), eq("sId"), isNull())
     }
 
     @Test
-    fun `getCoverageData returns long format if format=long`()
+    fun `getCoverageDataForGroup returns long format if format=long`()
     {
-        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mock<ActionContext> {
             on { it.params(":group-id") } doReturn "gId"
             on { it.params(":touchstone-version-id") } doReturn "tId"
@@ -58,18 +59,18 @@ class GroupCoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val data = CoverageController(context, repo)
+        val data = CoverageController(context, mock(), logic)
                 .getCoverageDataForGroup().data
         Assertions.assertThat(data.first() is LongCoverageRow).isTrue()
     }
 
     @Test
-    fun `getCoverageData returns long format as default`()
+    fun `getCoverageDataForGroup returns long format as default`()
     {
-        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
 
-        val data = CoverageController(context, repo)
+        val data = CoverageController(context, mock(), logic)
                 .getCoverageDataForGroup().data
 
         // test data includes 5 years
@@ -81,51 +82,12 @@ class GroupCoverageControllerTests : MontaguTests()
     }
 
     @Test
-    fun `getCoverageData returns wide format if format=wide`()
-    {
-        val testYear = 1970
-        val testTarget = BigDecimal(123.123)
-        val testCoverage = BigDecimal(456.456)
-
-        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION,
-                testYear, testTarget, testCoverage)
-
-        val context = mock<ActionContext> {
-            on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstone-version-id") } doReturn "tId"
-            on { it.params(":scenario-id") } doReturn "sId"
-            on { it.queryParams("format") } doReturn "wide"
-            on { hasPermission(any()) } doReturn true
-        }
-
-        val data = CoverageController(context, repo)
-                .getCoverageDataForGroup().data
-
-        Assertions.assertThat(data.first() is WideCoverageRow).isTrue()
-
-        // there are 7 variable properties, test data includes 2 of each
-        val expectedRowCount = Math.pow(2.toDouble(), 7.toDouble())
-        Assertions.assertThat(data.count()).isEqualTo(expectedRowCount.toInt())
-
-        val expectedHeaders = listOf("target_$testYear", "coverage_$testYear",
-                "coverage_1985", "coverage_1990", "coverage_1995", "coverage_2000",
-                "target_1985", "target_1990", "target_1995", "target_2000")
-
-        val firstRow = (data.first() as WideCoverageRow)
-        val headers = firstRow.coverageAndTargetPerYear.keys
-
-        Assertions.assertThat(headers).hasSameElementsAs(expectedHeaders)
-        Assertions.assertThat(firstRow.coverageAndTargetPerYear["target_$testYear"] == testTarget)
-        Assertions.assertThat(firstRow.coverageAndTargetPerYear["coverage_$testYear"] == testCoverage)
-    }
-
-    @Test
     fun `wide format table is empty if long format is`()
     {
         val coverageSets = mockCoverageSetsData(TouchstoneStatus.IN_PREPARATION)
         val splitData = SplitData(coverageSets, DataTable.new(listOf<LongCoverageRow>().asSequence()))
-        val repo = mock<ModellingGroupRepository> {
-            on { getCoverageData(any(), any(), any()) } doReturn splitData
+        val logic = mock<CoverageLogic> {
+            on { getCoverageDataForGroup(any(), any(), any(), anyOrNull()) } doReturn splitData
         }
 
         val context = mock<ActionContext> {
@@ -136,7 +98,7 @@ class GroupCoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val data = CoverageController(context, repo)
+        val data = CoverageController(context, mock(), logic)
                 .getCoverageDataForGroup().data
 
         Assertions.assertThat(data.count()).isEqualTo(0)
@@ -145,30 +107,13 @@ class GroupCoverageControllerTests : MontaguTests()
     private val years = listOf(1985, 1990, 1995, 2000)
 
     @Test
-    fun `getCoverageData throw error if supplied format param is invalid`()
+    fun `getCoverageDataForGroup returns error if user does not have permission to see in-preparation touchstone`()
     {
-        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
-        val context = mock<ActionContext> {
-            on { it.params(":group-id") } doReturn "gId"
-            on { it.params(":touchstone-version-id") } doReturn "tId"
-            on { it.params(":scenario-id") } doReturn "sId"
-            on { it.queryParams("format") } doReturn "78493hfjk"
-            on { hasPermission(any()) } doReturn true
-        }
-
-        Assertions.assertThatThrownBy {
-            CoverageController(context, repo).getCoverageDataForGroup()
-        }.isInstanceOf(BadRequest::class.java)
-    }
-
-    @Test
-    fun `getCoverageData returns error if user does not have permission to see in-preparation touchstone`()
-    {
-        val repo = makeRepoMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
 
         Assertions.assertThatThrownBy {
-            CoverageController(context, repo).getCoverageDataForGroup()
+            CoverageController(context, mock(), logic).getCoverageDataForGroup()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 
@@ -186,16 +131,16 @@ class GroupCoverageControllerTests : MontaguTests()
         on { getCoverageSets(any(), any(), any()) } doReturn mockCoverageSetsData(status)
     }
 
-    private fun makeRepoMockingGetCoverageData(status: TouchstoneStatus,
+    private fun makeLogicMockingGetCoverageData(status: TouchstoneStatus,
                                                testYear: Int = 1970,
                                                target: BigDecimal = BigDecimal(123.123),
-                                               coverage: BigDecimal = BigDecimal(456.456)): ModellingGroupRepository
+                                               coverage: BigDecimal = BigDecimal(456.456)): CoverageLogic
     {
         val coverageSets = mockCoverageSetsData(status)
         val fakeRows = generateCoverageRows(testYear, target, coverage)
         val data = SplitData(coverageSets, DataTable.new(fakeRows.asSequence()))
         return mock {
-            on { getCoverageData(any(), any(), any()) } doReturn data
+            on { getCoverageDataForGroup(any(), any(), any(), anyOrNull()) } doReturn data
         }
     }
 
