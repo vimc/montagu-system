@@ -47,7 +47,7 @@ const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<Pro
 const mapDispatchToProps = (dispatch: Dispatch<any>, props: Props): Props => {
     return {
         ...props,
-        refreshToken: (url, service) => setTimeout(() => dispatch(oneTimeTokenActionCreators.fetchToken(url, service)))
+        refreshToken: (url, service) => dispatch(oneTimeTokenActionCreators.fetchToken(url, service))
     }
 };
 

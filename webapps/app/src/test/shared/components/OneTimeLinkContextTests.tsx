@@ -29,7 +29,11 @@ describe("OneTimeLinkContext", () => {
             .returns(Promise.resolve("token"))
     });
 
-    afterEach(() => sandbox.restore());
+    afterEach(() => {
+            fetchTokenStub.restore();
+            sandbox.restore();
+        }
+    );
 
     class EmptyComponent extends React.Component<OneTimeLinkProps, undefined> {
         render(): JSX.Element {
@@ -90,10 +94,11 @@ describe("OneTimeLinkContext", () => {
     });
 
     it("triggers fetchToken when wrapped component consumes token", (done: DoneCallback) => {
+        const url = "/table/";
         const element = render(<Class href={url}/>);
         element.find(EmptyComponent).dive().find("button").simulate("click");
         checkAsync(done, () => {
-            expect(fetchTokenStub.calledTwice).to.equal(true, "Expected fetchToken to be called twice");
+            expect(fetchTokenStub.callCount).to.equal(2, "Expected fetchToken to be called twice");
             expect(fetchTokenStub.getCall(0).args[0]).to.equal(url, "Expected first call to be called with url");
             expect(fetchTokenStub.getCall(1).args[0]).to.equal(url, "Expected second call to be called with url");
         });
@@ -105,7 +110,7 @@ describe("OneTimeLinkContext", () => {
         element.setProps({href: url});
 
         checkAsync(done, () => {
-            expect(fetchTokenStub.calledOnce).to.equal(true, "Expected fetchToken to be called once");
+            expect(fetchTokenStub.callCount).to.equal(1, "Expected fetchToken to be called once");
             expect(fetchTokenStub.getCall(0).args[0]).to.equal(url, "Expected fetchToken to be called with old url");
         });
     });
@@ -118,7 +123,7 @@ describe("OneTimeLinkContext", () => {
         element.setProps({href: newUrl});
 
         checkAsync(done, () => {
-            expect(fetchTokenStub.calledTwice).to.equal(true, "Expected fetchToken to be called twice");
+            expect(fetchTokenStub.callCount).to.equal(2, "Expected fetchToken to be called twice");
             expect(fetchTokenStub.getCall(0).args[0]).to.equal(url, "Expected fetchToken to be called with old url");
             expect(fetchTokenStub.getCall(1).args[0]).to.equal(newUrl, "Expected fetchToken to be called with new url");
         });
@@ -150,20 +155,6 @@ describe("OneTimeLinkContext", () => {
 
         checkAsync(done, () => {
             expect(element.find(EmptyComponent).prop("loading")).to.be.true;
-        });
-    });
-
-    it("it does trigger fetchToken on properties change if href is different", (done: DoneCallback) => {
-        const url = "/bamboo";
-        const element = render(<Class href={url}/>);
-
-        const newUrl = "/juniper";
-        element.setProps({href: newUrl});
-
-        checkAsync(done, () => {
-            expect(fetchTokenStub.calledTwice).to.equal(true, "Expected fetchToken to be called twice");
-            expect(fetchTokenStub.getCall(0).args[0]).to.equal(url, "Expected fetchToken to be called with old url");
-            expect(fetchTokenStub.getCall(1).args[0]).to.equal(newUrl, "Expected fetchToken to be called with new url");
         });
     });
 
