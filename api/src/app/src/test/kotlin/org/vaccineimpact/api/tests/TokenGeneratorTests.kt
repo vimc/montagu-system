@@ -10,9 +10,10 @@ import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Duration
 
-class TokenGeneratorTests
+class TokenGeneratorTests: MontaguTests()
 {
     private fun tokenHelperThatCanGenerateOnetimeTokens() = mock<WebTokenHelper> {
         on { generateOnetimeActionToken(any(), any(), any(), any(), anyOrNull()) } doReturn "MY-TOKEN"

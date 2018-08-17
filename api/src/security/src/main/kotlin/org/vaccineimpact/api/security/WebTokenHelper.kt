@@ -35,14 +35,14 @@ open class WebTokenHelper(
             username: String,
             permissions: String,
             roles: String,
-            lifeSpan: Duration? = null
+            duration: Duration? = null
     ): String
     {
         return generator.generate(mapOf(
                 "iss" to issuer,
                 "token_type" to TokenType.ONETIME,
                 "sub" to username,
-                "exp" to Date.from(Instant.now().plus(lifeSpan?: oneTimeLinkLifeSpan)),
+                "exp" to Date.from(Instant.now().plus(duration?: oneTimeLinkLifeSpan)),
                 "permissions" to permissions,
                 "roles" to roles,
                 "url" to url,

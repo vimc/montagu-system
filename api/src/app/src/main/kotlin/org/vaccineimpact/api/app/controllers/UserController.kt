@@ -17,7 +17,6 @@ import org.vaccineimpact.api.models.encompass
 import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.RoleAssignment
-import java.time.Duration
 
 class UserController(
         context: ActionContext,
@@ -81,7 +80,6 @@ class UserController(
         userRepository.addUser(user)
 
         val newUser = userRepository.getUserByUsername(user.username)
-
         val token = oneTimeTokenGenerator.getSetPasswordToken(newUser)
 
         emailManager.sendEmail(NewUserEmail(user, token), user)
