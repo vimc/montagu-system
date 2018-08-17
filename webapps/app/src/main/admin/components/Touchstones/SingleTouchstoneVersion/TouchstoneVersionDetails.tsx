@@ -21,13 +21,13 @@ export class TouchstoneVersionDetailsComponent extends React.Component<Touchston
         return <div>
             <h3>Status: {version.status}</h3>
             <div className="list-group">
-                <InternalLink href={`${baseUrl}scenarios`} className="list-group-item">
+                <InternalLink href={`${baseUrl}scenarios/`} className="list-group-item">
                     View scenarios
                 </InternalLink>
-                <InternalLink href={`${baseUrl}responsibilities`} className="list-group-item">
+                <InternalLink href={`${baseUrl}responsibilities/`} className="list-group-item">
                     View responsibilities
                 </InternalLink>
-                <InternalLink href={`${baseUrl}demographics`} className="list-group-item">
+                <InternalLink href={`${baseUrl}demographics/`} className="list-group-item">
                     Download demographic data
                 </InternalLink>
             </div>

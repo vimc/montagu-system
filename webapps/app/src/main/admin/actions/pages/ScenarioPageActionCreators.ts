@@ -4,10 +4,13 @@ import {TouchstoneDetailsPageLocationProps} from "../../components/Touchstones/D
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 import {touchstoneDetailsPageActionCreators} from "./touchstoneDetailsPageActionCreators";
+import {touchstoneVersionPageActionCreators} from "./touchstoneVersionPageActionCreators";
+import {scenarioActionCreators} from "../scenarioActionCreators";
+import {TouchstoneVersionPageLocationProps} from "../../components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
 
 export class ScenarioPageActionCreators extends AdminPageActionCreators<{}> {
 
-    parent = touchstoneDetailsPageActionCreators;
+    parent = touchstoneVersionPageActionCreators;
 
     title(state: AdminAppState): string {
         if (state.touchstones.currentTouchstoneVersion) {
@@ -24,8 +27,9 @@ export class ScenarioPageActionCreators extends AdminPageActionCreators<{}> {
         };
     }
 
-    loadData(params: TouchstoneDetailsPageLocationProps) {
+    loadData(params: TouchstoneVersionPageLocationProps) {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            await dispatch(scenarioActionCreators.getScenariosForTouchstoneVersion(params.touchstoneVersionId));
         }
     }
 }
