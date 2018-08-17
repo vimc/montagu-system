@@ -177,6 +177,22 @@ class CoverageTests : DatabaseTest()
     }
 
     @Test
+    fun `can get pure CSV coverage data via csv endpoint`()
+    {
+        val schema = CSVSchema("MergedCoverageData")
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("${url}csv", minimumPermissions)
+        schema.validate(response.text)
+    }
+
+    @Test
     fun `only touchstone preparer can get coverage data for in-preparation responsibility`()
     {
         val permission = "*/touchstones.prepare"

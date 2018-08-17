@@ -13,7 +13,9 @@ import org.vaccineimpact.api.app.requests.MultipartDataMap
 import org.vaccineimpact.api.app.requests.contents
 import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.security.CookieName
 import org.vaccineimpact.api.serialization.ModelBinder
 import spark.Request
 import spark.Response
@@ -87,6 +89,20 @@ class DirectActionContext(private val context: SparkWebContext) : ActionContext
     override fun addAttachmentHeader(filename: String)
     {
         addResponseHeader("Content-Disposition", """attachment; filename="$filename"""")
+    }
+
+    override fun setCookie(name: CookieName, value: String, config: ConfigWrapper)
+    {
+        val secure = if (config.getBool("allow.localhost"))
+        {
+            ""
+        }
+        else
+        {
+            " Secure;"
+        }
+        // https://www.owasp.org/index.php/SameSite
+        addResponseHeader("Set-Cookie", "${name.cookieName}=$value; Path=/;$secure HttpOnly; SameSite=Strict")
     }
 
     override fun hasPermission(requirement: ReifiedPermission): Boolean

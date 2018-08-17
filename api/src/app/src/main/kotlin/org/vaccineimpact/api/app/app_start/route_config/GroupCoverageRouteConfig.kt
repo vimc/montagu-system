@@ -31,6 +31,10 @@ object GroupCoverageRouteConfig : RouteConfig
                     .csv().streamed()
                     .secure(permissions),
 
+            Endpoint("$baseUrl/coverage/csv/", controller, "getCoverageData")
+                    .streamed()
+                    .secure(permissions),
+
             Endpoint("$baseUrl/coverage/get_onetime_link/",
                     OneTimeLinkController::class, "getTokenForCoverageData")
                     .json()

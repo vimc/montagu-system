@@ -258,7 +258,7 @@ public class Indexes {
         public static Index MODEL_VERSION_MODEL_VERSION_KEY = Internal.createIndex("model_version_model_version_key", ModelVersion.MODEL_VERSION, new OrderField[] { ModelVersion.MODEL_VERSION.MODEL, ModelVersion.MODEL_VERSION.VERSION }, true);
         public static Index MODEL_VERSION_PKEY = Internal.createIndex("model_version_pkey", ModelVersion.MODEL_VERSION, new OrderField[] { ModelVersion.MODEL_VERSION.ID }, true);
         public static Index MODELLING_GROUP_PKEY = Internal.createIndex("modelling_group_pkey", ModellingGroup.MODELLING_GROUP, new OrderField[] { ModellingGroup.MODELLING_GROUP.ID }, true);
-        public static Index ONETIME_TOKEN_PKEY = Internal.createIndex("onetime_token_pkey", OnetimeToken.ONETIME_TOKEN, new OrderField[] { OnetimeToken.ONETIME_TOKEN.TOKEN }, true);
+        public static Index ONETIME_TOKEN_PKEY = Internal.createIndex("onetime_token_pkey", OnetimeToken.ONETIME_TOKEN, new OrderField[] { OnetimeToken.ONETIME_TOKEN.ID }, true);
         public static Index PERMISSION_PKEY = Internal.createIndex("permission_pkey", Permission.PERMISSION, new OrderField[] { Permission.PERMISSION.NAME }, true);
         public static Index RESPONSIBILITY_PKEY = Internal.createIndex("responsibility_pkey", Responsibility.RESPONSIBILITY, new OrderField[] { Responsibility.RESPONSIBILITY.ID }, true);
         public static Index RESPONSIBILITY_RESPONSIBILITY_SET_SCENARIO_KEY = Internal.createIndex("responsibility_responsibility_set_scenario_key", Responsibility.RESPONSIBILITY, new OrderField[] { Responsibility.RESPONSIBILITY.RESPONSIBILITY_SET, Responsibility.RESPONSIBILITY.SCENARIO }, true);
