@@ -15,7 +15,8 @@ import * as Sinon from "sinon"
 
 describe("OneTimeLinkContext", () => {
     const sandbox = new Sandbox();
-    let store: MockStore<ReportAppState> = null
+    let store: MockStore<ReportAppState> = null,
+        fetchTokenStub: Sinon.SinonStub = null;
 
     const url = "/banana/";
     const token = "TOKEN";
@@ -24,17 +25,15 @@ describe("OneTimeLinkContext", () => {
 
     beforeEach(() => {
         store = createMockReportStore(mockReportAppState({onetimeTokens: mockOnetimeTokenState({tokens})}));
+        fetchTokenStub = sandbox.sinon.stub(OneTimeTokenService.prototype, "fetchToken")
+            .returns(Promise.resolve("token"))
     });
 
     afterEach(() => {
+            fetchTokenStub.restore();
             sandbox.restore();
         }
     );
-
-    function makeFetchTokenStub(): Sinon.SinonStub  {
-        return sandbox.sinon.stub(OneTimeTokenService.prototype, "fetchToken")
-            .returns(Promise.resolve("token"))
-    }
 
     class EmptyComponent extends React.Component<OneTimeLinkProps, undefined> {
         render(): JSX.Element {
@@ -45,7 +44,6 @@ describe("OneTimeLinkContext", () => {
     const Class = OneTimeLinkContext(EmptyComponent);
 
     it("if store does not contain matching token, href passed to child is null", (done: DoneCallback) => {
-        const fetchStub = makeFetchTokenStub();
         const rendered = render(<Class href="/orange/"/>);
         const child = rendered.find(EmptyComponent);
         checkAsync(done, () => {
@@ -54,7 +52,6 @@ describe("OneTimeLinkContext", () => {
     });
 
     it("can get properties from store with matching token", (done: DoneCallback) => {
-        const fetchStub = makeFetchTokenStub()
         const rendered = render(<Class href="/banana/"/>);
         const child = rendered.find(EmptyComponent);
         checkAsync(done, () => {
@@ -63,7 +60,6 @@ describe("OneTimeLinkContext", () => {
     });
 
     it("can handle url with query string", (done: DoneCallback) => {
-        const fetchStub = makeFetchTokenStub()
         const Class = OneTimeLinkContext(EmptyComponent);
         const url = "/banana/?query=whatevs";
         tokens[url] = token;
@@ -75,7 +71,6 @@ describe("OneTimeLinkContext", () => {
     });
 
     it("triggers fetchToken on mount", (done: DoneCallback) => {
-        const fetchTokenStub = makeFetchTokenStub()
         render(<Class href="/banana/" service="main"/>);
         checkAsync(done, () => {
             expect(fetchTokenStub.called).to.equal(true, "Expected fetchToken to be called");
@@ -84,7 +79,6 @@ describe("OneTimeLinkContext", () => {
     });
 
     it("does not trigger fetchToken if href is null", (done: DoneCallback) => {
-        const fetchTokenStub = makeFetchTokenStub()
         render(<Class href={null} service="main"/>);
         checkAsync(done, () => {
             expect(fetchTokenStub.notCalled).to.equal(true, "Expected fetchToken to not be called");
@@ -92,7 +86,6 @@ describe("OneTimeLinkContext", () => {
     });
 
     it("triggers fetchToken for reporting service if service is reporting", (done: DoneCallback) => {
-        const fetchTokenStub = makeFetchTokenStub()
         render(<Class href="/banana/" service="reporting"/>);
         checkAsync(done, () => {
             expect(fetchTokenStub.called).to.equal(true, "Expected fetchToken to be called");
@@ -101,7 +94,6 @@ describe("OneTimeLinkContext", () => {
     });
 
     it("triggers fetchToken when wrapped component consumes token", (done: DoneCallback) => {
-        const fetchTokenStub = makeFetchTokenStub()
         const element = render(<Class href={url}/>);
         element.find(EmptyComponent).dive().find("button").simulate("click");
         checkAsync(done, () => {
@@ -112,7 +104,6 @@ describe("OneTimeLinkContext", () => {
     });
 
     it("it does not trigger fetchToken on properties change if href is the same", (done: DoneCallback) => {
-        const fetchTokenStub = makeFetchTokenStub()
         const url = "/bamboo";
         const element = render(<Class href={url}/>);
         element.setProps({href: url});
@@ -124,7 +115,6 @@ describe("OneTimeLinkContext", () => {
     });
 
     it("it does trigger fetchToken on properties change if href is different", (done: DoneCallback) => {
-        const fetchTokenStub = makeFetchTokenStub()
         const url = "/bamboo";
         const element = render(<Class href={url}/>);
 
@@ -139,7 +129,6 @@ describe("OneTimeLinkContext", () => {
     });
 
     it("triggers fetchToken when href becomes not null", (done: DoneCallback) => {
-        const fetchTokenStub = makeFetchTokenStub()
         const url = "/bamboo";
         const element = render(<Class href={null}/>);
         element.setProps({href: url});
@@ -149,21 +138,18 @@ describe("OneTimeLinkContext", () => {
     });
 
     it("is loading when href is not null and token is null", () => {
-        const fetchTokenStub = makeFetchTokenStub()
         const url = "/url-with-no-token";
         const element = render(<Class href={url}/>);
         expect(element.find(EmptyComponent).prop("loading")).to.be.true;
     });
 
     it("is not loading when href is null", () => {
-        const fetchTokenStub = makeFetchTokenStub()
         const element = render(<Class href={null}/>);
         expect(element.find(EmptyComponent).prop("loading")).to.be.false;
     });
 
     it("is not loading when token is present", (done: DoneCallback) => {
         const url = "/bamboo";
-        const fetchTokenStub = makeFetchTokenStub()
         const element = render(<Class href={url}/>);
 
         checkAsync(done, () => {
@@ -174,7 +160,6 @@ describe("OneTimeLinkContext", () => {
     describe("enablement", () => {
 
         it("by default, stays enabled after clicking", (done: DoneCallback) => {
-            const fetchTokenStub = makeFetchTokenStub()
             const element = render(<Class href="/url/"/>);
             const wrapped = element.find(EmptyComponent);
             wrapped.dive().find("button").simulate("click");
@@ -182,7 +167,6 @@ describe("OneTimeLinkContext", () => {
         });
 
         it("when state.enabled is false, wrapped component is disabled", () => {
-            const fetchTokenStub = makeFetchTokenStub()
             const element = render(<Class href="/url/"/>);
             element.instance().setState({enabled: false});
             element.update();
@@ -190,13 +174,11 @@ describe("OneTimeLinkContext", () => {
         });
 
         it("when href is null, wrapped component is disabled", () => {
-            const fetchTokenStub = makeFetchTokenStub()
             const element = render(<Class href={null}/>);
             expect(element.find(EmptyComponent).prop("enabled")).to.be.false;
         });
 
         it("with delayBeforeReenable, disables temporarily after clicking", (done: DoneCallback) => {
-            const fetchTokenStub = makeFetchTokenStub()
             const element = render(<Class href="/url/" delayBeforeReenable={0.25}/>);
             element.find(EmptyComponent).dive().find("button").simulate("click");
             setTimeout(() => {
