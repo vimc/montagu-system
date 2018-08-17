@@ -40,7 +40,7 @@
     "chai": "^3.4.35",
     "copy-webpack-plugin": "^4.0.1",
     "create-actions": "^2.0.0",
-    "enzyme": "^3.2.0",
+    "enzyme": "3.4.1",
     "enzyme-adapter-react-15": "^1.0.5",
     "form-data": "^2.3.2",
     "hard-source-webpack-plugin": "^0.12.0",
