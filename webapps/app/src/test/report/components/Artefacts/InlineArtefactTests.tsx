@@ -1,9 +1,5 @@
 import {shallow} from "enzyme";
-import {
-    ArtefactIFrame,
-    ArtefactIFrameInner,
-    InlineArtefact
-} from "../../../../main/report/components/Artefacts/InlineArtefact";
+import {InlineArtefact} from "../../../../main/report/components/Artefacts/InlineArtefact";
 import {mockArtefact} from "../../../mocks/mockModels";
 import * as React from "react";
 import {expect} from "chai";
@@ -22,17 +18,8 @@ describe("InlineArtefact", () => {
             filenames: ["mock.png"]
         });
         const rendered = shallow(<InlineArtefact report="report" version="version" artefact={artefact}/>);
-        const wrappedIFrame = rendered.find(ArtefactIFrame);
-        expect(wrappedIFrame).to.have.length(1, "Couldn't find ArtefactIFrame");
-        expect(wrappedIFrame.prop("href")).to.equal("/reports/report/versions/version/artefacts/mock.png/?inline=true");
-    });
-});
-
-describe("ArtefactIFrame", () => {
-    it("renders as expected", () => {
-        const rendered = shallow(<ArtefactIFrameInner href="test" tokenConsumed={null} enabled={true} />);
         const iframe = rendered.find("iframe");
-        expect(iframe).to.have.length(1);
-        expect(iframe.prop("src")).to.eql("test");
+        expect(iframe).to.have.length(1, "Couldn't find iframe");
+        expect(iframe.prop("src")).to.equal("http://localhost:8081/v1/reports/report/versions/version/artefacts/mock.png/?inline=true");
     });
 });
