@@ -29,7 +29,11 @@ describe("OneTimeLinkContext", () => {
             .returns(Promise.resolve("token"))
     });
 
-    afterEach(() => sandbox.restore());
+    afterEach(() => {
+            sandbox.restore();
+            fetchTokenStub = null
+        }
+    );
 
     class EmptyComponent extends React.Component<OneTimeLinkProps, undefined> {
         render(): JSX.Element {
