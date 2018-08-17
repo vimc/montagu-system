@@ -31,7 +31,7 @@ class PasswordTests : DatabaseTest()
     @Test
     fun `can request set password link`()
     {
-        TestUserHelper.setupTestUser()
+        TestUserHelper.setupTestUserAndGetToken(setOf(), true)
         WriteToDiskEmailManager.cleanOutputDirectory()
         val requestHelper = RequestHelper()
 
@@ -43,7 +43,7 @@ class PasswordTests : DatabaseTest()
 
         // Use the token to change the password
         val token = getTokenFromFakeEmail()
-        requestHelper.post("/onetime_link/$token/", json {
+        requestHelper.post("/password/set/?access_token=$token/", json {
             obj("password" to "new_password")
         })
 

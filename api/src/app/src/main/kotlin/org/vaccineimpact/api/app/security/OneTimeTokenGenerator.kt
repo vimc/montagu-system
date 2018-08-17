@@ -6,6 +6,7 @@ import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.security.deflated
@@ -62,6 +63,17 @@ open class OneTimeTokenGenerator(
         val token = tokenHelper.generateNewStyleOnetimeActionToken(
                 url, profile.id, permissions, roles
         )
+        tokenRepository.storeToken(token)
+        return token.deflated()
+    }
+
+    open fun getSetPasswordToken(user: InternalUser): String
+    {
+        val token = tokenHelper.generateNewStyleOnetimeActionToken("/v1/password/set/",
+                user.username,
+                user.permissions.joinToString(","),
+                user.roles.joinToString(","),
+                Duration.ofDays(1))
         tokenRepository.storeToken(token)
         return token.deflated()
     }

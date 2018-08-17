@@ -1,9 +1,6 @@
 package org.vaccineimpact.api.tests.security
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Test
 import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.app.repositories.TokenRepository
@@ -28,13 +25,13 @@ class OneTimeTokenGeneratorTests : MontaguTests()
             on { this.id } doReturn "username"
         }
         val helper = mock<WebTokenHelper> {
-            on { generateNewStyleOnetimeActionToken(any(), any(), any(), any()) } doReturn "TOKEN"
+            on { generateNewStyleOnetimeActionToken(any(), any(), any(), any(), anyOrNull()) } doReturn "TOKEN"
         }
 
         val repo = mock<TokenRepository>()
         val sut = OneTimeTokenGenerator(repo, helper)
         val token = sut.getNewStyleOneTimeLinkToken("/some/url/", profile)
         verify(repo).storeToken(token.inflated())
-        verify(helper).generateNewStyleOnetimeActionToken("/some/url/", "username", "a,b,c", "x,y,z")
+        verify(helper).generateNewStyleOnetimeActionToken("/some/url/", "username", "a,b,c", "x,y,z", null)
     }
 }

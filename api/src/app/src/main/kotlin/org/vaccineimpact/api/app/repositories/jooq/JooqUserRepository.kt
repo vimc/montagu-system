@@ -202,6 +202,8 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
             username = newusername
             userGroup = newusername
         }.insert()
+
+        ensureUserHasRole(newusername, ReifiedRole("user", Scope.Global()))
     }
 
     override fun setPassword(username: String, plainPassword: String)
