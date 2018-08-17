@@ -9,19 +9,21 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
+import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
-import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Duration
 
-class TokenGeneratorTests
+class TokenGeneratorTests: MontaguTests()
 {
 
     private fun tokenHelperThatCanGenerateOnetimeTokens() = mock<WebTokenHelper> {
+        on { generateNewStyleOnetimeActionToken(any(), any(), any(), any(), anyOrNull()) } doReturn "token"
         on { generateOldStyleOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn "MY-TOKEN"
     }
 
