@@ -10,7 +10,6 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.logic.RepositoriesCoverageLogic
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
-import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.db.nextDecimal
