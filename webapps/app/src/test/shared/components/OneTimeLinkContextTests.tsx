@@ -171,21 +171,6 @@ describe("OneTimeLinkContext", () => {
         });
     });
 
-    it("it does trigger fetchToken on properties change if href is different", (done: DoneCallback) => {
-        const url = "/bamboo";
-        const fetchTokenStub = makeFetchTokenStub()
-        const element = render(<Class href={url}/>);
-
-        const newUrl = "/juniper";
-        element.setProps({href: newUrl});
-
-        checkAsync(done, () => {
-            expect(fetchTokenStub.calledTwice).to.equal(true, "Expected fetchToken to be called twice");
-            expect(fetchTokenStub.getCall(0).args[0]).to.equal(url, "Expected fetchToken to be called with old url");
-            expect(fetchTokenStub.getCall(1).args[0]).to.equal(newUrl, "Expected fetchToken to be called with new url");
-        });
-    });
-
     describe("enablement", () => {
 
         it("by default, stays enabled after clicking", (done: DoneCallback) => {
