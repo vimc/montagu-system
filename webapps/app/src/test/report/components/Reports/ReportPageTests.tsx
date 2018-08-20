@@ -37,9 +37,13 @@ describe("ReportPage", () => {
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(ReportTypeKeys.SET_CURRENT_REPORT);
-            expect(actions[1].type).to.eql(BreadcrumbsTypes.BREADCRUMBS_RECEIVED);
-            expect(actions[2].type).to.eql(ReportTypeKeys.REPORT_VERSIONS_FETCHED);
-            expect(actions[3].type).to.eql(ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED);
+            expect(actions[1]).to.eql({
+                type: ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED,
+                data: null
+            });
+            expect(actions[2].type).to.eql(BreadcrumbsTypes.BREADCRUMBS_RECEIVED);
+            expect(actions[3].type).to.eql(ReportTypeKeys.REPORT_VERSIONS_FETCHED);
+            expect(actions[4].type).to.eql(ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED);
             expect(createBreadCrumbSpy.called).to.eq(true);
             done();
         });
