@@ -31,7 +31,7 @@ object GroupCoverageRouteConfig : RouteConfig
                     .csv().streamed()
                     .secure(permissions),
 
-            Endpoint("$baseUrl/coverage/csv/", controller, "getCoverageData")
+            Endpoint("$baseUrl/coverage/csv/", controller, "getCoverageDataForGroup")
                     .streamed()
                     .secure(permissions),
 
