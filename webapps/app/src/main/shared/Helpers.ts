@@ -8,6 +8,12 @@ export function doNothing() {
 
 }
 
+// This allows us to make sure the dispatch doesn't get added to the props
+// which makes the tests easier to reason about
+export function discardDispatch<T>(dispatch: any, props: T): T {
+    return props;
+}
+
 export function titleCase(str: string) {
     if (!str) {
         return str;
