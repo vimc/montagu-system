@@ -21,7 +21,7 @@ describe("TouchstoneListItem", () => {
 
         const latestVersionCell = cells.at(3);
         expect(latestVersionCell.find(InternalLink).dive().text()).to.eql(v1.id);
-        expect(latestVersionCell.find(InternalLink).prop("href")).to.eql("/touchstones/t1/v1/responsibilities/");
+        expect(latestVersionCell.find(InternalLink).prop("href")).to.eql("/touchstones/t1/v1/");
     });
 
     it("latest version cell is empty where no versions exist yet", () => {

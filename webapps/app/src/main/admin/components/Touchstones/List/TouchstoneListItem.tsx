@@ -1,6 +1,6 @@
 import * as React from "react";
 import {InternalLink} from "../../../../shared/components/InternalLink";
-import {Touchstone, User} from "../../../../shared/models/Generated";
+import {Touchstone} from "../../../../shared/models/Generated";
 
 export class TouchstoneListItem extends React.Component<Touchstone, undefined> {
     render() {
@@ -11,7 +11,7 @@ export class TouchstoneListItem extends React.Component<Touchstone, undefined> {
         if (this.props.versions.length > 0) {
             // The API is guaranteed to return versions in descending order
             latestVersionId = this.props.versions[0].id;
-            latestVersionUrl = `/touchstones/${this.props.id}/${latestVersionId}/responsibilities/`;
+            latestVersionUrl = `/touchstones/${this.props.id}/${latestVersionId}/`;
         }
 
         return <tr>
