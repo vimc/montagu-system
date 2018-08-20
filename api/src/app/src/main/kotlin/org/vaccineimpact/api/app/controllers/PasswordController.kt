@@ -36,8 +36,6 @@ class PasswordController(
     fun setPasswordForUser(username: String): String
     {
         val password = context.postData<SetPassword>().password
-        logger.debug(password)
-        logger.debug(username)
         userRepository.setPassword(username, password)
         return okayResponse()
     }
