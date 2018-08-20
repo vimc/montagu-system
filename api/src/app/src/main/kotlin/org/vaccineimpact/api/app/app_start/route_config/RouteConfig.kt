@@ -15,6 +15,7 @@ object MontaguRouteConfig : RouteConfig
             DiseaseRouteConfig.endpoints +
             GroupBurdenEstimatesRouteConfig.endpoints +
             CoverageRouteConfig.endpoints +
+            GroupCoverageRouteConfig.endpoints +
             GroupModelRunParametersRouteConfig.endpoints +
             HomeRouteConfig.endpoints +
             ModellingGroupRouteConfig.endpoints +
