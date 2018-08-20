@@ -2,16 +2,19 @@ import * as React from "react";
 import {shallow} from "enzyme";
 
 import {expect} from "chai";
-import {mockArtefact, mockVersion} from "../../../mocks/mockModels";
+import {mockArtefact, mockReport, mockVersion} from "../../../mocks/mockModels";
 import {Sandbox} from "../../../Sandbox";
 import {
+    mapStateToProps,
+    ReportDetails,
     ReportDetailsComponent,
-    ReportDetailsProps,
-    mapStateToProps
+    ReportDetailsProps
 } from "../../../../main/report/components/Reports/ReportDetails";
 import {mockReportAppState} from "../../../mocks/mockStates";
 import {InlineArtefact} from "../../../../main/report/components/Artefacts/InlineArtefact";
 import {ReportTitle} from "../../../../main/report/components/Reports/ReportTitle";
+import {createMockReportStore} from "../../../mocks/mockStore";
+import {LoadingElement} from "../../../../main/shared/partials/LoadingElement/LoadingElement";
 
 describe("ReportDetails", () => {
     const sandbox = new Sandbox();
@@ -31,25 +34,8 @@ describe("ReportDetails", () => {
             const expected: ReportDetailsProps = {
                 report: "reportname",
                 versionDetails: mockVersion(),
-                ready: true
             };
             expect(mapStateToProps(reportStateProps)).to.eql(expected);
-        });
-
-        it("is ready when version details is there", () => {
-            const reportStateProps = mockReportAppState({
-                reports: {
-                    versionDetails: mockVersion(),
-                }
-            });
-            expect(mapStateToProps(reportStateProps).ready).to.eql(true);
-        });
-
-        it("is not ready when no version details", () => {
-            const reportStateProps = mockReportAppState({
-                reports: {}
-            });
-            expect(mapStateToProps(reportStateProps).ready).to.eql(false);
         });
 
     });
@@ -59,7 +45,6 @@ describe("ReportDetails", () => {
         const rendered = shallow(<ReportDetailsComponent
             versionDetails={mockVersion({id: "v1", artefacts: [{"a1": artefact}]})}
             report="reportname"
-            ready={true}
         />);
         expect(rendered.find(InlineArtefact).props()).to.eql({
             version: "v1",
@@ -73,12 +58,22 @@ describe("ReportDetails", () => {
 
         const rendered = shallow(<ReportDetailsComponent
             versionDetails={version}
-            report="reportname"
-            ready={true}/>);
+            report="reportname"/>);
 
         expect(rendered.find(ReportTitle).props()).to.eql({
             versionDetails: version
         });
     });
+
+    it("renders LoadingElement when versionDetails is null", () => {
+        const store = createMockReportStore({
+            reports: {
+                currentReport: "report",
+                versionDetails: null
+            }
+        });
+        const rendered = shallow(<ReportDetails/>, {context: {store}}).dive().dive();
+        expect(rendered.find(LoadingElement)).to.have.length(1);
+    })
 
 });

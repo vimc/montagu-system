@@ -1,14 +1,22 @@
 import { Dispatch } from "redux";
 
 import { reportActionCreators } from "./reportActionCreators";
-import {ReportPageComponent} from "../components/Reports/ReportPage";
+import {ReportPageComponent, ReportPageLocationProps} from "../components/Reports/ReportPage";
 import {breadcrumbsActionCreators} from "../../shared/actions/breadcrumbsActionsCreators";
+import {PageProperties} from "../../shared/components/PageWithHeader/PageProperties";
+import {Query} from "pg";
+import {ReportTypeKeys, ReportVersionDetailssFetched} from "../actionTypes/ReportsActionsTypes";
 
 export const reportPageActionCreators = {
 
-    onLoad(props: any) {
-        return (dispatch: Dispatch<any>) => {
+    onLoad(props: ReportPageLocationProps) {
+        return async (dispatch: Dispatch<any>) => {            
             dispatch(reportActionCreators.setCurrentReport(props.report));
+            dispatch({
+                type: ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED,
+                data: null
+            } as ReportVersionDetailssFetched);
+
             dispatch(reportActionCreators.getReportVersions(props.report));
             dispatch(reportActionCreators.getVersionDetails(props.report, props.version));
             dispatch(breadcrumbsActionCreators.createBreadcrumbs(ReportPageComponent.breadcrumb(props)));

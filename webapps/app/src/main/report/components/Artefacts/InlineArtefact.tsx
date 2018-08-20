@@ -2,6 +2,7 @@ import * as React from "react";
 import {Artefact} from "../../../shared/models/reports/Artefact";
 import {OneTimeLinkContext, OneTimeLinkProps} from "../../../shared/components/OneTimeLinkContext";
 import {buildArtefactUrl} from "../../LinkHelpers";
+import {buildURL} from "../../../shared/services/AbstractLocalService";
 
 interface Props {
     report: string;
@@ -16,10 +17,20 @@ export class InlineArtefact extends React.Component<Props, undefined> {
         const extension = filename.split('.').pop();
 
         if (InlineArtefact.canRenderInIFrame(extension)) {
-            return <ArtefactIFrame
-                href={buildArtefactUrl(report, version, filename, true)}
-                service="reporting"
-            />;
+            const urlFragment = buildArtefactUrl(report, version, filename, true);
+            const fullUrl = buildURL(urlFragment, "reporting");
+            return <div>
+                <iframe
+                    src={fullUrl}
+                    width="100%"
+                    height="600px"
+                    className="border border-dark p-3"
+                    frameBorder={0}
+                />
+                <div className="text-right">
+                    <a href={fullUrl}>View fullscreen</a>
+                </div>
+            </div>;
         } else {
             // Do other things here, like rendering CSV as a table, etc.
             return null;
@@ -34,22 +45,3 @@ export class InlineArtefact extends React.Component<Props, undefined> {
         return all.indexOf(ext) > -1;
     }
 }
-
-export class ArtefactIFrameInner extends React.Component<OneTimeLinkProps, undefined> {
-    render(): JSX.Element {
-        const {href} = this.props;
-        if (href != null) {
-            return <iframe
-                src={this.props.href}
-                width="100%"
-                height="600px"
-                className="border border-dark p-3"
-                frameBorder={0}
-            />;
-        } else {
-            return null;
-        }
-    }
-}
-
-export const ArtefactIFrame = OneTimeLinkContext(ArtefactIFrameInner);
