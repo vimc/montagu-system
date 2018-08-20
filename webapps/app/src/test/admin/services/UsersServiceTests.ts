@@ -34,6 +34,6 @@ describe('Users service tests', () => {
             return Promise.resolve();
         });
         usersService.setPassword("TOKEN", "password");
-        expect(postStub.getCall(0).args).to.eql(["/onetime_link/TOKEN/", `{"password":"password"}`]);
+        expect(postStub.getCall(0).args).to.eql(["/password/set/?access_token=TOKEN", `{"password":"password"}`]);
     });
 });

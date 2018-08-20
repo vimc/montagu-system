@@ -21,7 +21,7 @@ import {
     DownloadCoverageContentComponent,
 } from "../../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
 import {CoverageSetList} from "../../../../../main/contrib/components/Responsibilities/Coverage/CoverageSetList";
-import {FormatControl} from "../../../../../main/contrib/components/Responsibilities/FormatControl";
+import {FormatControl} from "../../../../../main/shared/components/FormatControl";
 import {coverageActionCreators} from "../../../../../main/contrib/actions/coverageActionCreators";
 import {ConfidentialityAgreementComponent} from "../../../../../main/contrib/components/Responsibilities/Overview/ConfidentialityAgreement";
 import {userActionCreators} from "../../../../../main/contrib/actions/userActionCreators";

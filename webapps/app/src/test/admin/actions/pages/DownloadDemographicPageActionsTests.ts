@@ -4,7 +4,7 @@ import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
 import {DemographicTypes} from "../../../../main/shared/actionTypes/DemographicTypes";
 import {downloadDemographicsAdminPageActionCreators} from "../../../../main/admin/actions/pages/downloadDemographicsAdminPageActionCreators";
-import {DemographicService} from "../../../../main/contrib/services/DemographicService";
+import {DemographicService} from "../../../../main/shared/services/DemographicService";
 import {mockDemographicDataset} from "../../../mocks/mockModels";
 import {touchstoneVersionPageActionCreators} from "../../../../main/admin/actions/pages/touchstoneVersionPageActionCreators";
 
