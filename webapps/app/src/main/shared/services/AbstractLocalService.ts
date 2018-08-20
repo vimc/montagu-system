@@ -76,8 +76,8 @@ export abstract class AbstractLocalService {
         const headers: OptionsHeaders = {};
         if (this.options.Authorization) headers.Authorization = this.options.Authorization;
         if (this.options['Content-Type']) headers['Content-Type'] = this.options['Content-Type'];
-        // If we're not running in a browser, manually add the cookie
-        if (typeof window === 'undefined') {
+        // If we're not running in a browser, manually add the cookie (for integration tests)
+        if (navigator.userAgent.startsWith("Node.js")) {
             headers.Cookie = `montagu_jwt_token=${this.bearerToken}`;
         }
 
