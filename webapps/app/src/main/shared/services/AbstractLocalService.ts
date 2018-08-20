@@ -15,6 +15,7 @@ import {CommonState} from "../reducers/CommonState";
 export interface OptionsHeaders {
     Authorization?: string;
     'Content-Type'?: string;
+    Cookie?: string;
 }
 
 export interface RequestOptions {
@@ -35,6 +36,7 @@ export interface InputOptions {
 export abstract class AbstractLocalService {
     protected dispatch: Dispatch<Action>;
 
+    protected bearerToken: string;
     protected options: InputOptions = {};
 
     protected cacheEngine: CacheInterface = null;
@@ -42,6 +44,7 @@ export abstract class AbstractLocalService {
     public constructor(dispatch: Dispatch<Action>, getState: () => CommonState) {
         this.dispatch = dispatch;
 
+        this.bearerToken = this.getTokenFromState(getState());
         this.initOptions();
 
         this.cacheEngine = singletonVariableCache;
@@ -49,6 +52,12 @@ export abstract class AbstractLocalService {
         this.processResponse = this.processResponse.bind(this);
         this.notifyOnErrors = this.notifyOnErrors.bind(this);
         this.handleErrorsWithNotifications = this.handleErrorsWithNotifications.bind(this);
+    }
+
+    protected getTokenFromState(state: CommonState) {
+        if (state.auth && state.auth.bearerToken) {
+            return state.auth.bearerToken
+        }
     }
 
     public setOptions(options: InputOptions) {
@@ -67,6 +76,11 @@ export abstract class AbstractLocalService {
         const headers: OptionsHeaders = {};
         if (this.options.Authorization) headers.Authorization = this.options.Authorization;
         if (this.options['Content-Type']) headers['Content-Type'] = this.options['Content-Type'];
+        // If we're not running in a browser, manually add the cookie
+        if (typeof window === 'undefined') {
+            headers.Cookie = `montagu_jwt_token=${this.bearerToken}`;
+        }
+
         const requestOptions: RequestOptions = {
             method,
             headers,
