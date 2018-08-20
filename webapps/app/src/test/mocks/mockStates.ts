@@ -22,6 +22,7 @@ import {adminTouchstonesInitialState} from "../../main/admin/reducers/adminTouch
 import {onetimeTokensInitialState, OneTimeTokenState} from "../../main/shared/reducers/oneTimeTokenReducer";
 import {initialNotificationState} from "../../main/shared/reducers/notificationReducer";
 import {demographicsInitialState} from "../../main/shared/reducers/demographicsReducer";
+import {scenarioInitialState} from "../../main/admin/reducers/scenarioReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -66,6 +67,7 @@ export const mockAdminState = (props?: RecursivePartial<AdminAppState>): AdminAp
         groups: AdminModellingGroupsInitialState,
         breadcrumbs: initialBreadcrumbsState,
         users: adminUsersInitialState,
+        scenario: scenarioInitialState,
         touchstones: adminTouchstonesInitialState,
         notifications: initialNotificationState,
         onetimeTokens: onetimeTokensInitialState

@@ -173,6 +173,25 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
             expect(result).to.have.deep.members(expectedResponsibilitySets)
         });
+
+        it("can get scenarios for touchstone", async () => {
+            await addResponsibilities(this.db);
+            const touchstoneService = new TouchstonesService(this.store.dispatch, this.store.getState);
+            const result = await touchstoneService.getScenariosForTouchstoneVersion(touchstoneVersionId);
+            expect(result).to.eql([
+                {
+                    "coverage_sets": [],
+                    "scenario": {
+                        "description": "Yellow Fever scenario",
+                        "disease": "yf",
+                        "id": "yf-1",
+                        "touchstones": [
+                            "test-1"
+                        ]
+                    }
+                }
+            ]);
+        });
     }
 }
 
