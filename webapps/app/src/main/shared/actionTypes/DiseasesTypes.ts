@@ -1,4 +1,4 @@
-import {Disease} from "../../shared/models/Generated";
+import {Disease} from "../models/Generated";
 
 export enum DiseasesTypes {
     DISEASES_FETCHED = "DISEASES_FETCHED",

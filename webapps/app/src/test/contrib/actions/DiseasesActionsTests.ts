@@ -1,9 +1,9 @@
 import { expect } from "chai";
 
 import { Sandbox } from "../../Sandbox";
-import { diseasesActionCreators } from "../../../main/contrib/actions/diseasesActionCreators";
-import { DiseasesService } from "../../../main/contrib/services/DiseasesService";
-import { DiseasesTypes } from "../../../main/contrib/actionTypes/DiseasesTypes";
+import { diseasesActionCreators } from "../../../main/shared/actions/diseasesActionCreators";
+import { DiseasesService } from "../../../main/shared/services/DiseasesService";
+import { DiseasesTypes } from "../../../main/shared/actionTypes/DiseasesTypes";
 import {createMockStore} from "../../mocks/mockStore";
 
 describe("Diseases actions tests", () => {

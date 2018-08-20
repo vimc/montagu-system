@@ -22,7 +22,7 @@ import * as QueryString from "querystring";
 import {createContribStore} from "../main/contrib/createStore";
 import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
 import {RunParametersService} from "../main/contrib/services/RunParametersService";
-import {DiseasesService} from "../main/contrib/services/DiseasesService";
+import {DiseasesService} from "../main/shared/services/DiseasesService";
 import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 import {ResponsibilitiesService} from "../main/contrib/services/ResponsibilitiesService";
 import {CoverageService} from "../main/contrib/services/CoverageService";

@@ -11,6 +11,7 @@ import {notificationReducer} from "../../shared/reducers/notificationReducer";
 import {demographicsReducer, DemographicsState} from "../../shared/reducers/demographicsReducer";
 import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneTimeTokenReducer";
 import {scenarioReducer, ScenarioState} from "./scenarioReducer";
+import {diseasesReducer} from "../../shared/reducers/diseasesReducer";
 
 export interface AdminAppState extends CommonState {
     groups: ModellingGroupsState
@@ -32,7 +33,8 @@ const reducers = combineReducers({
     scenario: scenarioReducer,
     notifications: notificationReducer,
     demographics: demographicsReducer,
-    onetimeTokens: onetimeTokenReducer
+    onetimeTokens: onetimeTokenReducer,
+    diseases: diseasesReducer,
 });
 
 export default reducers;

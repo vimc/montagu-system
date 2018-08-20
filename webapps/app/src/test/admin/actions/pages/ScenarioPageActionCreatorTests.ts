@@ -10,13 +10,15 @@ import {TouchstoneTypes} from "../../../../main/shared/actionTypes/TouchstonesTy
 import {scenarioPageActionCreators} from "../../../../main/admin/actions/pages/ScenarioPageActionCreators";
 import {scenarioActionCreators} from "../../../../main/admin/actions/scenarioActionCreators";
 import {AdminAppState} from "../../../../main/admin/reducers/adminAppReducers";
+import {diseasesActionCreators} from "../../../../main/shared/actions/diseasesActionCreators";
 
 describe("scenarioPageActionCreators", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("fetches scenarios on load", async () => {
-        const getScenariosStub = sandbox.setStubReduxAction(scenarioActionCreators, "getScenariosForTouchstoneVersion")
+    it("fetches scenarios and diseases on load", async () => {
+        const getScenariosStub = sandbox.setStubReduxAction(scenarioActionCreators, "getScenariosForTouchstoneVersion");
+        const getDiseasesStub = sandbox.setStubReduxAction(diseasesActionCreators, "getAllDiseases");
         const store = createMockAdminStore();
         await store.dispatch(scenarioPageActionCreators.loadData({
             touchstoneId: "touchstone",
@@ -24,6 +26,8 @@ describe("scenarioPageActionCreators", () => {
         }));
         expect(getScenariosStub.callCount).to.equal(1, "Expected stub to be called once");
         expect(getScenariosStub.getCall(0).args).to.eql(["touchstone-1"]);
+        expect(getDiseasesStub.callCount).to.equal(1, "Expected stub to be called once");
+        expect(getDiseasesStub.getCall(0).args).to.eql([]);
     });
 
     it("creates breadcrumbs", () => {

@@ -5,7 +5,7 @@ import {createMockContribStore} from "../../../mocks/mockStore";
 import {mockTouchstoneVersion} from "../../../mocks/mockModels";
 import {responsibilityOverviewPageActionCreators} from "../../../../main/contrib/actions/pages/responsibilityOverviewPageActionCreators";
 import {responsibilitiesActionCreators} from "../../../../main/contrib/actions/responsibilitiesActionCreators";
-import {diseasesActionCreators} from "../../../../main/contrib/actions/diseasesActionCreators";
+import {diseasesActionCreators} from "../../../../main/shared/actions/diseasesActionCreators";
 import {chooseActionPageActionCreators} from "../../../../main/contrib/actions/pages/chooseActionPageActionCreators";
 import {mockContribState} from "../../../mocks/mockStates";
 import {contribTouchstonesActionCreators} from "../../../../main/contrib/actions/contribTouchstonesActionCreators";

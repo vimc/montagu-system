@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { createMemoryHistory } from 'history';
 
 import {createContribStore} from "../../../main/contrib/createStore";
-import {DiseasesService} from "../../../main/contrib/services/DiseasesService";
+import {DiseasesService} from "../../../main/shared/services/DiseasesService";
 import {Sandbox} from "../../Sandbox";
 import {ContribAppState} from "../../../main/contrib/reducers/contribAppReducers";
 
