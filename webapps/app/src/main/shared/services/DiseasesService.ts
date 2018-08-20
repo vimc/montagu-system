@@ -1,4 +1,4 @@
-import { AbstractLocalService } from "../../shared/services/AbstractLocalService";
+import { AbstractLocalService } from "./AbstractLocalService";
 
 export class DiseasesService extends AbstractLocalService {
 

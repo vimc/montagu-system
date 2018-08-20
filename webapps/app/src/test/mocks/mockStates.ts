@@ -13,7 +13,7 @@ import {BreadcrumbsState, initialBreadcrumbsState} from "../../main/shared/reduc
 import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
 import {touchstonesInitialState} from "../../main/contrib/reducers/contribTouchstonesReducer";
 import {responsibilitiesInitialState} from "../../main/contrib/reducers/responsibilitiesReducer";
-import {diseasesInitialState} from "../../main/contrib/reducers/diseasesReducer";
+import {diseasesInitialState} from "../../main/shared/reducers/diseasesReducer";
 import {coverageInitialState} from "../../main/contrib/reducers/coverageReducer";
 import {runParametersInitialState} from "../../main/contrib/reducers/runParametersReducer";
 import {initialState as UserInitialState} from "../../main/contrib/reducers/userReducer";

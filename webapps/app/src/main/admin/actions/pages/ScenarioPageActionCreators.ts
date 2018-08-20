@@ -7,6 +7,7 @@ import {touchstoneDetailsPageActionCreators} from "./touchstoneDetailsPageAction
 import {touchstoneVersionPageActionCreators} from "./touchstoneVersionPageActionCreators";
 import {scenarioActionCreators} from "../scenarioActionCreators";
 import {TouchstoneVersionPageLocationProps} from "../../components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
+import {diseasesActionCreators} from "../../../shared/actions/diseasesActionCreators";
 
 export class ScenarioPageActionCreators extends AdminPageActionCreators<{}> {
 
@@ -29,6 +30,7 @@ export class ScenarioPageActionCreators extends AdminPageActionCreators<{}> {
 
     loadData(params: TouchstoneVersionPageLocationProps) {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            await dispatch(diseasesActionCreators.getAllDiseases());
             await dispatch(scenarioActionCreators.getScenariosForTouchstoneVersion(params.touchstoneVersionId));
         }
     }
