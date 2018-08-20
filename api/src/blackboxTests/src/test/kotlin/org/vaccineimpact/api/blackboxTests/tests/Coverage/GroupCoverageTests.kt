@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.blackboxTests.tests
+package org.vaccineimpact.api.blackboxTests.tests.Coverage
 
 import com.opencsv.CSVReader
 import org.assertj.core.api.Assertions
@@ -18,12 +18,8 @@ import org.vaccineimpact.api.validateSchema.JSONValidator
 import java.io.StringReader
 import java.math.BigDecimal
 
-class CoverageTests : DatabaseTest()
+class GroupCoverageTests : CoverageTests()
 {
-    val groupId = "group-1"
-    val touchstoneVersionId = "touchstone-1"
-    val scenarioId = "scenario-1"
-    val coverageSetId = 1
     val groupScope = "modelling-group:$groupId"
     val minimumPermissions = PermissionSet("*/can-login", "*/scenarios.read", "$groupScope/responsibilities.read", "$groupScope/coverage.read")
     val url = "/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/coverage/"
@@ -201,39 +197,6 @@ class CoverageTests : DatabaseTest()
                 given = { addCoverageData(it, touchstoneStatus = "in-preparation") },
                 expectedProblem = ExpectedProblem("unknown-touchstone-version", touchstoneVersionId))
     }
-
-    private fun addCoverageData(db: JooqContext, touchstoneStatus: String,
-                                testYear: Int = 1955,
-                                target: BigDecimal = BigDecimal(100.12),
-                                coverage: BigDecimal = BigDecimal(200.13))
-    {
-        db.addGroup(groupId, "description")
-        db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
-        db.addTouchstoneVersion("touchstone", 1, "description", touchstoneStatus, addTouchstone = true)
-        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "submitted")
-        db.addResponsibility(setId, touchstoneVersionId, scenarioId)
-        db.addCoverageSet(touchstoneVersionId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
-                addVaccine = true)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, coverageSetId, 0)
-        db.generateCoverageData(coverageSetId, countryCount = 2, yearRange = 1985..2000 step 5,
-                ageRange = 0..20 step 5, testYear = testYear, target = target, coverage = coverage)
-    }
-
-    // a helper class to deserialize the wide format coverage data
-    @FlexibleColumns
-    data class TestWideCoverageRow(
-            val scenario: String,
-            val setName: String,
-            val vaccine: String,
-            val gaviSupport: String,
-            val activityType: String,
-            val countryCode: String,
-            val country: String,
-            val ageFirst: Int?,
-            val ageLast: Int?,
-            val ageRangeVerbatim: String?,
-            val coverageAndTargetPerYear: Map<String, String?>
-    )
 
     private fun createUnorderedCoverageData(db: JooqContext)
     {
