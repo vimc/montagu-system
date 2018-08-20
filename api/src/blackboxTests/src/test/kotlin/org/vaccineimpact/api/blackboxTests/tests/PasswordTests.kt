@@ -43,7 +43,7 @@ class PasswordTests : DatabaseTest()
 
         // Use the token to change the password
         val token = getTokenFromFakeEmail()
-        requestHelper.post("/password/set/?access_token=$token/", json {
+        requestHelper.post("/password/set/?access_token=$token", json {
             obj("password" to "new_password")
         })
 

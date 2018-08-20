@@ -59,7 +59,7 @@ class CreateUserTests : DatabaseTest()
         }
 
         val onetimeToken = PasswordTests.getTokenFromFakeEmail()
-        requestHelper.post("/password/set/?access_token=$onetimeToken/", json {
+        requestHelper.post("/password/set/?access_token=$onetimeToken", json {
             obj("password" to "first_password")
         })
 
