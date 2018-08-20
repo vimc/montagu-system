@@ -4,6 +4,7 @@ import org.vaccineimpact.api.app.app_start.stream
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.OneTimeLinkActionContext
 import org.vaccineimpact.api.app.controllers.*
+import org.vaccineimpact.api.app.logic.RepositoriesCoverageLogic
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.helpers.OneTimeAction
@@ -42,7 +43,8 @@ open class OnetimeLinkResolver(private val repositories: Repositories,
                         context
                 )
                 OneTimeAction.COVERAGE -> stream(
-                        GroupCoverageController(context, repos.modellingGroup).getCoverageData(),
+                        CoverageController(context, repos.modellingGroup,
+                                RepositoriesCoverageLogic(repos)).getCoverageDataForGroup(),
                         context
                 )
                 OneTimeAction.DEMOGRAPHY -> stream(
