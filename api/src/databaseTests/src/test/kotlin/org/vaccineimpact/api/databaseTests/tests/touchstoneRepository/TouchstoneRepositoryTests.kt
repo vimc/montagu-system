@@ -34,5 +34,7 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
         it.addScenarioDescription("ms-2", "Measles 2", "Measles")
         it.addVaccine("YF", "Yellow Fever")
         it.addVaccine("Measles", "Measles")
+        it.addVaccine("BF", "Blue Fever")
+        it.addVaccine("AF", "Alpha Fever")
     }
 }

@@ -21,7 +21,6 @@ import org.vaccineimpact.api.serialization.SplitData
 
 class JooqModellingGroupRepository(
         dsl: DSLContext,
-        private val responsibilitiesRepository: ResponsibilitiesRepository,
         private val touchstoneRepository: TouchstoneRepository
 ) : JooqRepository(dsl), ModellingGroupRepository
 {
@@ -99,31 +98,6 @@ class JooqModellingGroupRepository(
         return ModellingGroupDetails(group.id, group.description, models, users)
     }
 
-    override fun getCoverageSets(groupId: String, touchstoneVersionId: String, scenarioId: String): ScenarioTouchstoneAndCoverageSets
-    {
-        getModellingGroup(groupId)
-        // We don't use the returned responsibility, but by using this method we check that the group exists
-        // and that the group is responsible for the given scenario in the given touchstoneVersion
-        val responsibilityAndTouchstone = responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
-        val scenario = touchstoneRepository.getScenario(touchstoneVersionId, scenarioId)
-        return ScenarioTouchstoneAndCoverageSets(
-                responsibilityAndTouchstone.touchstoneVersion,
-                scenario.scenario,
-                scenario.coverageSets)
-    }
-
-    override fun getCoverageData(groupId: String, touchstoneVersionId: String, scenarioId: String): SplitData<ScenarioTouchstoneAndCoverageSets, LongCoverageRow>
-    {
-        getModellingGroup(groupId)
-        val responsibilityAndTouchstone = responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
-        val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
-        return SplitData(ScenarioTouchstoneAndCoverageSets(
-                responsibilityAndTouchstone.touchstoneVersion,
-                scenarioAndData.structuredMetadata.scenario,
-                scenarioAndData.structuredMetadata.coverageSets
-        ), scenarioAndData.tableData)
-    }
-
     override fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
     {
         val group = getModellingGroup(groupId)
@@ -139,5 +113,4 @@ class JooqModellingGroupRepository(
 
     private fun mapModellingGroup(x: ModellingGroupRecord) = ModellingGroup(x.id, x.description)
 
-    private fun getTouchstoneVersion(touchstoneVersionId: String) = touchstoneRepository.touchstoneVersions.get(touchstoneVersionId)
 }
