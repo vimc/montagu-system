@@ -14,9 +14,7 @@ abstract class ModellingGroupRepositoryTests : RepositoryTests<ModellingGroupRep
     {
         val scenarioRepository = JooqScenarioRepository(db.dsl)
         val touchstoneRepository = JooqTouchstoneRepository(db.dsl, scenarioRepository)
-        val responsibilitiesRepository = JooqResponsibilitiesRepository(db.dsl, scenarioRepository,
-                touchstoneRepository)
 
-        return JooqModellingGroupRepository(db.dsl, responsibilitiesRepository, touchstoneRepository)
+        return JooqModellingGroupRepository(db.dsl, touchstoneRepository)
     }
 }
