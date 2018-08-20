@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 
 import {ContribAppState} from "../../contrib/reducers/contribAppReducers";
-import {DemographicService} from "../../contrib/services/DemographicService";
+import {DemographicService} from "../services/DemographicService";
 import {DemographicDataset} from "../models/Generated";
 import {AdminAppState} from "../../admin/reducers/adminAppReducers";
 import {Demographic, DemographicTypes} from "../actionTypes/DemographicTypes";
