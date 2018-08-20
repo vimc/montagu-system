@@ -3,54 +3,18 @@ import {expect} from "chai"
 import {Client, QueryResult} from "pg";
 import {createMemoryHistory} from 'history';
 
-import {
-    CreateBurdenEstimateSet,
-    DemographicDataset,
-    Disease,
-    ModellingGroup,
-    ModelRunParameterSet,
-    ResponsibilitySetWithExpectations,
-    Result,
-    ScenarioTouchstoneAndCoverageSets,
-    Touchstone,
-} from "../main/shared/models/Generated";
-import {firstDownloadPromise, inflateAndDecode, IntegrationTestSuite, lastDownloadPromise} from "./IntegrationTest";
+import {CoverageSet, ResponsibilitySetWithExpectations,} from "../main/shared/models/Generated";
+import {IntegrationTestSuite, TestService} from "./IntegrationTest";
 import * as enzyme from "enzyme";
+import {shallow} from "enzyme";
 import * as Adapter from "enzyme-adapter-react-15";
-import * as QueryString from "querystring";
 
 import {createContribStore} from "../main/contrib/createStore";
-import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
-import {RunParametersService} from "../main/contrib/services/RunParametersService";
-import {DiseasesService} from "../main/shared/services/DiseasesService";
-import {TouchstonesService} from "../main/shared/services/TouchstonesService";
-import {ResponsibilitiesService} from "../main/contrib/services/ResponsibilitiesService";
-import {CoverageService} from "../main/contrib/services/CoverageService";
-import {DemographicService} from "../main/shared/services/DemographicService";
-import {appSettings} from "../main/shared/Settings";
-import {EstimatesService} from "../main/contrib/services/EstimatesService";
-import {UserService} from "../main/contrib/services/UserService";
-import {helpers} from "../main/shared/Helpers";
-import {Provider} from "react-redux";
-import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
 import {Sandbox} from "../test/Sandbox";
-import {
-    DownloadCoverageContent,
-    DownloadCoverageContentComponent
-} from "../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
-import {
-    DownloadDemographicsContent,
-    DownloadDemographicsContentComponent
-} from "../main/shared/components/Demographics/DownloadDemographicsContent";
-import {createMockContribStore} from "../test/mocks/mockStore";
-import {mockContribState} from "../test/mocks/mockStates";
-import {
-    mockModellingGroup,
-    mockResponsibility,
-    mockScenario,
-    mockTouchstone,
-    mockTouchstoneVersion
-} from "../test/mocks/mockModels";
+import {DownloadCoverageContentComponent} from "../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
+import {mockModellingGroup, mockScenario, mockTouchstoneVersion} from "../test/mocks/mockModels";
+import {FileDownloadButton} from "../main/shared/components/FileDownloadLink";
+import {DownloadDemographicsContentComponent} from "../main/shared/components/Demographics/DownloadDemographicsContent";
 
 enzyme.configure({adapter: new Adapter()});
 
@@ -77,249 +41,246 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
         afterEach(() => sandbox.restore());
 
-        // it("can upload model run parameter sets", async () => {
-        //     await addResponsibilities(this.db);
-        //     await addModel(this.db);
-        //
-        //     const form = new FormData();
-        //     form.append('disease', 'yf');
-        //
-        //     const uploadResult: Result = await (new RunParametersService(this.store.dispatch, this.store.getState))
-        //         .uploadSet(groupId, touchstoneVersionId, form);
-        //
-        //     expect(uploadResult.errors[0].message).to.eq("You must supply a \'file\' parameter in the multipart body")
-        // });
-        //
-        // it("fetches diseases", async () => {
-        //     await this.db.query(`
-        //         INSERT INTO disease (id, name) VALUES ('d1', 'Disease 1');
-        //         INSERT INTO disease (id, name) VALUES ('d2', 'Disease 2');
-        //     `);
-        //
-        //     const fetchedDiseasesResult: Disease[] = await (new DiseasesService(this.store.dispatch, this.store.getState))
-        //         .getAllDiseases();
-        //
-        //     expect(fetchedDiseasesResult).to.eql([
-        //         {id: "d1", name: "Disease 1"},
-        //         {id: "d2", name: "Disease 2"}
-        //     ]);
-        // });
-        //
-        // it("signs confidentiality agreement", async () => {
-        //
-        //     const result = await (new UserService(this.store.dispatch, this.store.getState))
-        //         .signConfidentiality();
-        //     expect(result).to.eq("OK");
-        //
-        // });
-        //
-        // it("gets confidentiality agreement", async () => {
-        //
-        //     const result = await (new UserService(this.store.dispatch, this.store.getState))
-        //         .getConfidentiality();
-        //     expect(result).to.eq(false);
-        //
-        // });
-        //
-        // it("fetches modelling groups", async () => {
-        //     await addGroups(this.db);
-        //
-        //     const fetchedGroupsResult: ModellingGroup[] = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
-        //         .getAllGroups();
-        //
-        //     expect(fetchedGroupsResult).to.eql([
-        //         {id: groupId, description: "Group 1"},
-        //         {id: "Fake", description: "Group 2"}
-        //     ]);
-        // });
-        //
-        // it("fetches touchstones", async () => {
-        //     await addResponsibilities(this.db);
-        //
-        //     const fetchedTouchstonesResult: Touchstone[] = await (new TouchstonesService(this.store.dispatch, this.store.getState))
-        //         .getTouchstonesByGroupId(groupId);
-        //
-        //     const touchstone: Touchstone = {
-        //         id: "test",
-        //         description: "Testing",
-        //         comment: "comment",
-        //         versions: [{
-        //             id: touchstoneVersionId,
-        //             name: "test",
-        //             version: 1,
-        //             description: "Testing version 1",
-        //             status: "open"
-        //         }]
-        //     };
-        //     expect(fetchedTouchstonesResult).to.eql([touchstone]);
-        // });
-        //
-        // it("fetches responsibilities", async () => {
-        //     const responsibilityIds = await addResponsibilities(this.db);
-        //     const modelVersionId = await addModel(this.db);
-        //     await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
-        //
-        //     const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-        //         .getResponsibilities(groupId, touchstoneVersionId);
-        //
-        //     expect(responsibilities).to.eql(expectedResponsibilitiesResponse());
-        // });
-        //
-        // it("fetches coverage sets", async () => {
-        //     const coverageSetId: number = await addCoverageSets(this.db);
-        //
-        //     const coverageSets: ScenarioTouchstoneAndCoverageSets = await (new CoverageService(this.store.dispatch, this.store.getState))
-        //         .getDataSets(groupId, touchstoneVersionId, scenarioId);
-        //
-        //     const expectedCoverageSets: ScenarioTouchstoneAndCoverageSets = {
-        //         scenario: {
-        //             id: scenarioId,
-        //             description: "Yellow Fever scenario",
-        //             disease: "yf",
-        //             touchstones: [touchstoneVersionId]
-        //         },
-        //         touchstone_version: {
-        //             id: touchstoneVersionId,
-        //             name: "test",
-        //             version: 1,
-        //             description: "Testing version 1",
-        //             status: "open"
-        //         },
-        //         coverage_sets: [
-        //             {
-        //                 id: coverageSetId,
-        //                 name: "Test set",
-        //                 touchstone_version: touchstoneVersionId,
-        //                 activity_type: "none",
-        //                 vaccine: "yf",
-        //                 gavi_support: "no vaccine"
-        //             }
-        //         ]
-        //     };
-        //     expect(coverageSets).to.eql(expectedCoverageSets);
-        // });
-        //
-        // it("fetches demographic data sets", async () => {
-        //     await addDemographicDataSets(this.db);
-        //
-        //     const demographicDataSets: DemographicDataset[] = await (new DemographicService(this.store.dispatch, this.store.getState))
-        //         .getDataSetsByTouchstoneVersionId(touchstoneVersionId);
-        //
-        //     const expectedDataSets: DemographicDataset[] = [
-        //         {
-        //             id: "statistic",
-        //             name: "Some statistic",
-        //             gender_is_applicable: false,
-        //             source: "source"
-        //         }
-        //     ];
-        //     expect(demographicDataSets).to.eql(expectedDataSets)
-        // });
-        //
-        // it("fetches model run parameter sets", async () => {
-        //     await addModelRunParameterSets(this.db);
-        //
-        //     const runParametersSets: ModelRunParameterSet[] = await (new RunParametersService(this.store.dispatch, this.store.getState))
-        //         .getParameterSets(groupId, touchstoneVersionId);
-        //
-        //     const expectedSet = [
-        //         {
-        //             id: 1,
-        //             model: "model-1",
-        //             disease: "yf",
-        //             uploaded_on: '2017-12-25T12:00:00Z',
-        //             uploaded_by: 'test.user'
-        //         }
-        //     ];
-        //     expect(runParametersSets).to.eql(expectedSet);
-        // });
-        //
-        // it("creates burden estimates set", async () => {
-        //     await addResponsibilities(this.db);
-        //     await addModel(this.db);
-        //
-        //     const data = {
-        //         type: {
-        //             type: "central-averaged",
-        //             details: "details"
-        //         }
-        //     } as CreateBurdenEstimateSet;
-        //
-        //     const responsibilitiesInitial: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-        //         .getResponsibilities(groupId, touchstoneVersionId);
-        //
-        //     expect(responsibilitiesInitial.responsibilities[0].current_estimate_set).to.equal(null);
-        //
-        //     await (new EstimatesService(this.store.dispatch, this.store.getState))
-        //         .createBurden(groupId, touchstoneVersionId, scenarioId, data);
-        //
-        //     const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-        //         .setOptions({noCache: true}).getResponsibilities(groupId, touchstoneVersionId);
-        //
-        //     const estimateSet = responsibilities.responsibilities[0].current_estimate_set;
-        //     expect(estimateSet.type).to.eql(data.type);
-        // });
+        it("can upload model run parameter sets", async () => {
+            await addResponsibilities(this.db);
+            await addModel(this.db);
+
+            const form = new FormData();
+            form.append('disease', 'yf');
+
+            const uploadResult: Result = await (new RunParametersService(this.store.dispatch, this.store.getState))
+                .uploadSet(groupId, touchstoneVersionId, form);
+
+            expect(uploadResult.errors[0].message).to.eq("You must supply a \'file\' parameter in the multipart body")
+        });
+
+        it("fetches diseases", async () => {
+            await this.db.query(`
+                INSERT INTO disease (id, name) VALUES ('d1', 'Disease 1');
+                INSERT INTO disease (id, name) VALUES ('d2', 'Disease 2');
+            `);
+
+            const fetchedDiseasesResult: Disease[] = await (new DiseasesService(this.store.dispatch, this.store.getState))
+                .getAllDiseases();
+
+            expect(fetchedDiseasesResult).to.eql([
+                {id: "d1", name: "Disease 1"},
+                {id: "d2", name: "Disease 2"}
+            ]);
+        });
+
+        it("signs confidentiality agreement", async () => {
+
+            const result = await (new UserService(this.store.dispatch, this.store.getState))
+                .signConfidentiality();
+            expect(result).to.eq("OK");
+
+        });
+
+        it("gets confidentiality agreement", async () => {
+
+            const result = await (new UserService(this.store.dispatch, this.store.getState))
+                .getConfidentiality();
+            expect(result).to.eq(false);
+
+        });
+
+        it("fetches modelling groups", async () => {
+            await addGroups(this.db);
+
+            const fetchedGroupsResult: ModellingGroup[] = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
+                .getAllGroups();
+
+            expect(fetchedGroupsResult).to.eql([
+                {id: groupId, description: "Group 1"},
+                {id: "Fake", description: "Group 2"}
+            ]);
+        });
+
+        it("fetches touchstones", async () => {
+            await addResponsibilities(this.db);
+
+            const fetchedTouchstonesResult: Touchstone[] = await (new TouchstonesService(this.store.dispatch, this.store.getState))
+                .getTouchstonesByGroupId(groupId);
+
+            const touchstone: Touchstone = {
+                id: "test",
+                description: "Testing",
+                comment: "comment",
+                versions: [{
+                    id: touchstoneVersionId,
+                    name: "test",
+                    version: 1,
+                    description: "Testing version 1",
+                    status: "open"
+                }]
+            };
+            expect(fetchedTouchstonesResult).to.eql([touchstone]);
+        });
+
+        it("fetches responsibilities", async () => {
+            const responsibilityIds = await addResponsibilities(this.db);
+            const modelVersionId = await addModel(this.db);
+            await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
+
+            const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+                .getResponsibilities(groupId, touchstoneVersionId);
+
+            expect(responsibilities).to.eql(expectedResponsibilitiesResponse());
+        });
+
+        it("fetches coverage sets", async () => {
+            const coverageSetId: number = await addCoverageSets(this.db);
+
+            const coverageSets: ScenarioTouchstoneAndCoverageSets = await (new CoverageService(this.store.dispatch, this.store.getState))
+                .getDataSets(groupId, touchstoneVersionId, scenarioId);
+
+            const expectedCoverageSets: ScenarioTouchstoneAndCoverageSets = {
+                scenario: {
+                    id: scenarioId,
+                    description: "Yellow Fever scenario",
+                    disease: "yf",
+                    touchstones: [touchstoneVersionId]
+                },
+                touchstone_version: {
+                    id: touchstoneVersionId,
+                    name: "test",
+                    version: 1,
+                    description: "Testing version 1",
+                    status: "open"
+                },
+                coverage_sets: [
+                    {
+                        id: coverageSetId,
+                        name: "Test set",
+                        touchstone_version: touchstoneVersionId,
+                        activity_type: "none",
+                        vaccine: "yf",
+                        gavi_support: "no vaccine"
+                    }
+                ]
+            };
+            expect(coverageSets).to.eql(expectedCoverageSets);
+        });
+
+        it("fetches demographic data sets", async () => {
+            await addDemographicDataSets(this.db);
+
+            const demographicDataSets: DemographicDataset[] = await (new DemographicService(this.store.dispatch, this.store.getState))
+                .getDataSetsByTouchstoneVersionId(touchstoneVersionId);
+
+            const expectedDataSets: DemographicDataset[] = [
+                {
+                    id: "statistic",
+                    name: "Some statistic",
+                    gender_is_applicable: false,
+                    source: "source"
+                }
+            ];
+            expect(demographicDataSets).to.eql(expectedDataSets)
+        });
+
+        it("fetches model run parameter sets", async () => {
+            await addModelRunParameterSets(this.db);
+
+            const runParametersSets: ModelRunParameterSet[] = await (new RunParametersService(this.store.dispatch, this.store.getState))
+                .getParameterSets(groupId, touchstoneVersionId);
+
+            const expectedSet = [
+                {
+                    id: 1,
+                    model: "model-1",
+                    disease: "yf",
+                    uploaded_on: '2017-12-25T12:00:00Z',
+                    uploaded_by: 'test.user'
+                }
+            ];
+            expect(runParametersSets).to.eql(expectedSet);
+        });
+
+        it("creates burden estimates set", async () => {
+            await addResponsibilities(this.db);
+            await addModel(this.db);
+
+            const data = {
+                type: {
+                    type: "central-averaged",
+                    details: "details"
+                }
+            } as CreateBurdenEstimateSet;
+
+            const responsibilitiesInitial: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+                .getResponsibilities(groupId, touchstoneVersionId);
+
+            expect(responsibilitiesInitial.responsibilities[0].current_estimate_set).to.equal(null);
+
+            await (new EstimatesService(this.store.dispatch, this.store.getState))
+                .createBurden(groupId, touchstoneVersionId, scenarioId, data);
+
+            const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
+                .setOptions({noCache: true}).getResponsibilities(groupId, touchstoneVersionId);
+
+            const estimateSet = responsibilities.responsibilities[0].current_estimate_set;
+            expect(estimateSet.type).to.eql(data.type);
+        });
 
         it("can download coverage data", async () => {
             const coverageSetId = await addCoverageSets(this.db);
-            sandbox.setStubFunc(UserService.prototype, "getConfidentiality", () => true);
-            const store = createMockContribStore(mockContribState({
-                touchstones: {
-                    currentTouchstoneVersion: mockTouchstoneVersion({id: touchstoneVersionId})
-                },
-                groups: {
-                    currentUserGroup: mockModellingGroup({id: groupId})
-                },
-                responsibilities: {
-                    currentResponsibility: mockResponsibility({}, mockScenario({id: scenarioId}))
-                },
-                coverage: {
-                    selectedFormat: "long",
-                    dataSets: [
-                        {
-                            id: coverageSetId,
-                            name: "Test set",
-                            touchstone_version: touchstoneVersionId,
-                            activity_type: "none",
-                            vaccine: "yf",
-                            gavi_support: "no vaccine"
-                        }
-                    ]
+
+            const mockCoverageSets: CoverageSet[] = [
+                {
+                    id: coverageSetId,
+                    name: "Test set",
+                    touchstone_version: touchstoneVersionId,
+                    activity_type: "none",
+                    vaccine: "yf",
+                    gavi_support: "no vaccine"
                 }
-            }));
-            const rendered = sandbox.mount(<Provider store={store}><DownloadCoverageContent/></Provider>);
-            const response = await firstDownloadPromise(rendered);
+            ];
+
+            const rendered = shallow(<DownloadCoverageContentComponent
+                touchstone={mockTouchstoneVersion({id: touchstoneVersionId})}
+                coverageSets={mockCoverageSets}
+                group={mockModellingGroup({id: groupId})}
+                scenario={mockScenario({id: scenarioId})}
+                selectedFormat={"long"}
+                setFormat={() => {
+                }}/>);
+
+            const href = rendered.find(FileDownloadButton).prop("href");
+
+            const response = await new TestService(this.store.dispatch, this.store.getState)
+                .getAnyUrl(href);
+
             expect(response.status).to.equal(200)
         });
-        //
-        // it("can download demographic data", async () => {
-        //     await addDemographicDataSets(this.db);
-        //     const store = createMockContribStore(mockContribState({
-        //         touchstones: {
-        //             currentTouchstoneVersion: mockTouchstoneVersion({id: touchstoneVersionId})
-        //         },
-        //         demographics: {
-        //             dataSets:  [{
-        //                 id: "statistic",
-        //                 name: "Some statistic",
-        //                 gender_is_applicable: false,
-        //                 source: "source"
-        //             }],
-        //             selectedDataSet:
-        //                 {
-        //                     id: "statistic",
-        //                     name: "Some statistic",
-        //                     gender_is_applicable: false,
-        //                     source: "source"
-        //                 },
-        //             selectedFormat: "long",
-        //             selectedGender: "F"
-        //         }
-        //     }));
-        //     const rendered = sandbox.mount(<Provider store={store}><DownloadDemographicsContent/></Provider>);
-        //     const response = await firstDownloadPromise(rendered);
-        //     expect(response.status).to.equal(200)
-        // })
+
+        it("can download demographic data", async () => {
+            await addDemographicDataSets(this.db);
+
+            const mockDataSets = [{
+                id: "statistic",
+                name: "Some statistic",
+                gender_is_applicable: false,
+                source: "source"
+            }];
+
+            const rendered = shallow(<DownloadDemographicsContentComponent
+                touchstone={mockTouchstoneVersion({id: touchstoneVersionId})}
+                dataSets={mockDataSets}
+                selectedFormat={"long"}
+                selectedDataSet={mockDataSets[0]}
+                selectedGender={"F"}
+            />);
+
+
+            const href = rendered.find(FileDownloadButton).prop("href");
+
+            const response = await new TestService(this.store.dispatch, this.store.getState)
+                .getAnyUrl(href);
+
+            expect(response.status).to.equal(200)
+        })
     }
 }
 

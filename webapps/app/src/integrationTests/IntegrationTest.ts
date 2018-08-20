@@ -8,11 +8,19 @@ import {localStorageHandler} from "../main/shared/services/localStorageHandler";
 import {singletonVariableCache} from "../main/shared/modules/cache/singletonVariableCache";
 import {jwtTokenAuth} from "../main/shared/modules/jwtTokenAuth";
 import {ReactWrapper} from "enzyme";
+import {AbstractLocalService} from "../main/shared/services/AbstractLocalService";
 
 const jwt_decode = require('jwt-decode');
 
 const dbName = process.env.PGDATABASE;
 const dbTemplateName = process.env.PGTEMPLATE;
+
+export class TestService extends AbstractLocalService {
+
+    getAnyUrl(url: string) {
+        return this.doFetch(this.makeUrl(url, "main"), this.makeRequestOptions("GET", null));
+    }
+}
 
 export abstract class IntegrationTestSuite {
     abstract description(): string;
@@ -57,7 +65,8 @@ export abstract class IntegrationTestSuite {
                 this.store.dispatch(authActionCreators.logIn("test@example.com", "password"));
                 let unsubscribe = this.store.subscribe(handleChange);
                 let that = this;
-                function handleChange () {
+
+                function handleChange() {
                     const token = that.store.getState().auth.bearerToken;
                     sandbox.setStubFunc(localStorageHandler, 'get', () => token);
                     unsubscribe();
@@ -103,7 +112,7 @@ async function timeout(ms: number) {
 }
 
 function queryAgainstRootDb(query: string): Promise<void> {
-    const db = new Client({ database: "postgres" });
+    const db = new Client({database: "postgres"});
     db.connect();
     return db.query(query)
         .then(() => {

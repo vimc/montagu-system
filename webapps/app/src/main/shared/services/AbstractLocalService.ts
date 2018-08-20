@@ -5,7 +5,6 @@ import { settings } from "../Settings";
 import { localStorageHandler } from "./localStorageHandler";
 import {ErrorInfo, Result} from "../models/Generated";
 import { AuthTypeKeys } from "../actionTypes/AuthTypes";
-import {GlobalState} from "../reducers/GlobalState";
 import {CacheInterface} from "../modules/cache/CacheInterface";
 import {singletonVariableCache} from "../modules/cache/singletonVariableCache";
 import {APIService} from "../models/APIService";
