@@ -226,7 +226,7 @@ describe("Admin Users actions tests", () => {
     });
 
     it("setPassword clears token if service returns invalid token error", (done: DoneCallback) => {
-        const errors = [mockError("invalid-token-used", "message")];
+        const errors = [mockError("onetime-token-invalid", "message")];
         sandbox.stubService(UsersService.prototype, "setPassword", mockResult(null, errors));
         const store = createMockAdminStore({});
 
