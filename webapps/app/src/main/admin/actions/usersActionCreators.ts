@@ -115,7 +115,7 @@ export const usersActionCreators = {
             const result = await (new UsersService(dispatch, getState)).setPassword(resetToken, newPassword);
             if (result && isNonEmptyArray(result.errors)) {
                 const codes = result.errors.map(e => e.code);
-                if (codes.indexOf("invalid-token-used") > -1) {
+                if (codes.indexOf("onetime-token-invalid") > -1) {
                     dispatch(usersActionCreators.clearSetPasswordToken());
                 }
                 dispatch({

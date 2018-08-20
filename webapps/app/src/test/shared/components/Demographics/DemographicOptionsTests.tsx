@@ -16,7 +16,7 @@ import {LoadingElement} from "../../../../main/shared/partials/LoadingElement/Lo
 import {demographicActionCreators} from "../../../../main/shared/actions/demographicActionCreators";
 import {GenderControl} from "../../../../main/shared/components/Demographics/GenderControl";
 import {RadioButtonGroupProperties} from "react-radio-button-group";
-import {FormatControl} from "../../../../main/contrib/components/Responsibilities/FormatControl";
+import {FormatControl} from "../../../../main/shared/components/FormatControl";
 
 describe("DemographicOptions", () => {
 

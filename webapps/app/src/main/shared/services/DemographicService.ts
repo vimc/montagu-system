@@ -1,4 +1,4 @@
-import {AbstractLocalService} from "../../shared/services/AbstractLocalService";
+import {AbstractLocalService} from "./AbstractLocalService";
 
 export class DemographicService extends AbstractLocalService {
     getDataSetsByTouchstoneVersionId(touchstoneId: string) {
