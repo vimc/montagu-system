@@ -1,18 +1,23 @@
 package org.vaccineimpact.api.tests
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.OneTimeLink
 import org.vaccineimpact.api.app.OnetimeLinkResolver
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.context.postData
-import org.vaccineimpact.api.app.models.SetPassword
-import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.TokenRepository
-import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
+import org.vaccineimpact.api.models.DemographicDataForTouchstone
+import org.vaccineimpact.api.models.DemographicMetadata
+import org.vaccineimpact.api.models.TouchstoneStatus
+import org.vaccineimpact.api.models.TouchstoneVersion
 import org.vaccineimpact.api.models.helpers.OneTimeAction
-import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.tests.mocks.MockRepositories
 
@@ -69,25 +74,33 @@ class OnetimeLinkResolverTests : MontaguTests()
     fun `perform invokes callback in transaction`()
     {
         // Mocks
-        val userRepo = mock<UserRepository>()
+        val repo = mock<TouchstoneRepository>() {
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(
+                    TouchstoneVersion("t1", "t", 1, "description", TouchstoneStatus.OPEN)
+            ))
+            on { getDemographicData(any(), any(), any(), any()) } doReturn SplitData(
+                    DemographicDataForTouchstone(TouchstoneVersion("t1", "t", 1, "description", TouchstoneStatus.OPEN),
+                            DemographicMetadata("1", "1", "whatever", listOf(), "", "", "")),
+                    DataTable.new(sequenceOf())
+            )
+        }
         val innerRepos = mock<Repositories> {
-            on { token } doReturn mock<TokenRepository>()
-            on { user } doReturn userRepo
+            on { touchstone } doReturn repo
+            on { expectations } doReturn mock<ExpectationsRepository>()
+            on { modellingGroup } doReturn mock<ModellingGroupRepository>()
+            on { responsibilities } doReturn mock<ResponsibilitiesRepository>()
         }
         val repos = MockRepositories(innerRepos)
-        val mockContext = mock<ActionContext> {
-            on { postData<SetPassword>() } doReturn SetPassword("password")
-        }
-        val mockWebTokenHelper = mock<WebTokenHelper>()
 
         // Object under test
-        val link = OneTimeLink(OneTimeAction.SET_PASSWORD, mapOf(":username" to "user"),
-                mapOf(":queryKey" to "queryValue"), "test.user")
-        val sut = OnetimeLinkResolver(repos, mockWebTokenHelper)
-        sut.perform(link, mockContext)
+        val link = OneTimeLink(OneTimeAction.DEMOGRAPHY, mapOf(":touchstone-version-id" to "t1",
+                ":source-code" to "s", ":type-code" to "t"),
+                mapOf("format" to "long"), "test.user")
+        val sut = OnetimeLinkResolver(repos, mock())
+        sut.perform(link, mock())
 
         // Expectations
         assertThat(repos.workDoneInTransaction).isTrue()
-        verify(userRepo).setPassword("user", "password")
+        verify(repo).getDemographicData("t", "s", "t1")
     }
 }
