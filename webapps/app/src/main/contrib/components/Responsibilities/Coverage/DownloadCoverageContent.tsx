@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 
 import {CoverageSet, ModellingGroup, Scenario, TouchstoneVersion} from "../../../../shared/models/Generated";
 import {CoverageSetList} from "./CoverageSetList";
-import {FormatControl} from "../FormatControl";
+import {FormatControl} from "../../../../shared/components/FormatControl";
 
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";

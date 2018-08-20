@@ -26,7 +26,7 @@ import {DiseasesService} from "../main/contrib/services/DiseasesService";
 import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 import {ResponsibilitiesService} from "../main/contrib/services/ResponsibilitiesService";
 import {CoverageService} from "../main/contrib/services/CoverageService";
-import {DemographicService} from "../main/contrib/services/DemographicService";
+import {DemographicService} from "../main/shared/services/DemographicService";
 import {appSettings} from "../main/shared/Settings";
 import {EstimatesService} from "../main/contrib/services/EstimatesService";
 import {UserService} from "../main/contrib/services/UserService";

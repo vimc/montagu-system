@@ -2,7 +2,7 @@ import {expect} from "chai";
 
 import {Sandbox} from "../../Sandbox";
 import {demographicActionCreators} from "../../../main/shared/actions/demographicActionCreators";
-import {DemographicService} from "../../../main/contrib/services/DemographicService";
+import {DemographicService} from "../../../main/shared/services/DemographicService";
 import {createMockContribStore} from "../../mocks/mockStore";
 import {mockDemographicDataset} from "../../mocks/mockModels";
 import {DemographicTypes} from "../../../main/shared/actionTypes/DemographicTypes";

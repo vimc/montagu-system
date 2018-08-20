@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
 import {mockDemographicDataset} from "../../../mocks/mockModels";
-import {DemographicService} from "../../../../main/contrib/services/DemographicService";
+import {DemographicService} from "../../../../main/shared/services/DemographicService";
 import {responsibilityOverviewPageActionCreators} from "../../../../main/contrib/actions/pages/responsibilityOverviewPageActionCreators";
 import {mockContribState} from "../../../mocks/mockStates";
 import {downloadDemographicsContribPageActionCreators} from "../../../../main/contrib/actions/pages/downloadDemographicsContribPageActionCreators";
