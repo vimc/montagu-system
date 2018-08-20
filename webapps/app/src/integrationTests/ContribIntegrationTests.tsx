@@ -3,7 +3,13 @@ import {expect} from "chai"
 import {Client, QueryResult} from "pg";
 import {createMemoryHistory} from 'history';
 
-import {CoverageSet, ResponsibilitySetWithExpectations,} from "../main/shared/models/Generated";
+import {
+    CoverageSet, CreateBurdenEstimateSet, DemographicDataset,
+    Disease,
+    ModellingGroup, ModelRunParameterSet,
+    ResponsibilitySetWithExpectations,
+    Result, ScenarioTouchstoneAndCoverageSets, Touchstone,
+} from "../main/shared/models/Generated";
 import {IntegrationTestSuite, TestService} from "./IntegrationTest";
 import * as enzyme from "enzyme";
 import {shallow} from "enzyme";
@@ -15,6 +21,15 @@ import {DownloadCoverageContentComponent} from "../main/contrib/components/Respo
 import {mockModellingGroup, mockScenario, mockTouchstoneVersion} from "../test/mocks/mockModels";
 import {FileDownloadButton} from "../main/shared/components/FileDownloadLink";
 import {DownloadDemographicsContentComponent} from "../main/shared/components/Demographics/DownloadDemographicsContent";
+import {RunParametersService} from "../main/contrib/services/RunParametersService";
+import {DiseasesService} from "../main/shared/services/DiseasesService";
+import {UserService} from "../main/contrib/services/UserService";
+import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
+import {TouchstonesService} from "../main/shared/services/TouchstonesService";
+import {ResponsibilitiesService} from "../main/contrib/services/ResponsibilitiesService";
+import {CoverageService} from "../main/contrib/services/CoverageService";
+import {DemographicService} from "../main/shared/services/DemographicService";
+import {EstimatesService} from "../main/contrib/services/EstimatesService";
 
 enzyme.configure({adapter: new Adapter()});
 

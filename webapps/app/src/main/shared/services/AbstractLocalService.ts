@@ -156,8 +156,6 @@ export abstract class AbstractLocalService {
         return httpResponse.json()
             .then((response: any) => {
                 const apiResponse = <Result>response;
-                console.log(apiResponse)
-                console.log("xxxxxxxxxxxxxxxxxxxxxxxxxx")
                 return this.processResult(apiResponse, httpResponse);
             });
     }
@@ -207,8 +205,6 @@ export abstract class AbstractLocalService {
 
     notifyOnErrors(error: any) {
         this.initOptions();
-        console.log(error)
-        console.log("xxxxxxxxxxxxxxxxxxxxxxxxxx")
         notificationActionCreators.notify(error.toString(), "error")(this.dispatch, null);
     }
 
