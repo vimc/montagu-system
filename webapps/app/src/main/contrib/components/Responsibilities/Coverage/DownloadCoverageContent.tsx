@@ -35,8 +35,6 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
     render() {
         const {group, touchstone, scenario, selectedFormat} = this.props;
         const url = `/modelling-groups/${group.id}/responsibilities/${touchstone.id}/${scenario.id}/coverage/csv/?format=${selectedFormat}`;
-        console.log(url)
-        console.log("-------------------------------")
         return <div>
             <p>
                 Each scenario is based on vaccination coverage from up to 3 different
