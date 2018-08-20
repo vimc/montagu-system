@@ -3,6 +3,7 @@ import {AdminAppState} from "../../../reducers/adminAppReducers";
 import * as React from "react";
 import {connect} from "react-redux";
 import {ScenarioGroup} from "./ScenarioGroup";
+import {discardDispatch} from "../../../../shared/Helpers";
 
 export interface ScenariosListProps {
     scenarios: Scenario[];
@@ -28,4 +29,4 @@ function mapStateToProps(state: AdminAppState): ScenariosListProps {
     }
 }
 
-export const ScenariosList = connect(mapStateToProps)(ScenariosListComponent);
+export const ScenariosList = connect(mapStateToProps, discardDispatch)(ScenariosListComponent);
