@@ -6,11 +6,11 @@ export interface ScenarioState {
     scenarios: Scenario[]
 }
 
-export const initialScenarioState: ScenarioState = {
+export const scenarioInitialState: ScenarioState = {
     scenarios: []
 };
 
-export const scenarioReducer = (state = initialScenarioState, action: ScenarioAction): ScenarioState => {
+export const scenarioReducer = (state = scenarioInitialState, action: ScenarioAction): ScenarioState => {
     switch (action.type) {
         case ScenarioTypes.SOME_SCENARIOS_FETCHED:
             let newScenarios = [...state.scenarios];
