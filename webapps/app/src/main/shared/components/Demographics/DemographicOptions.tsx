@@ -5,7 +5,7 @@ import { Dispatch } from "redux";
 
 import { GenderControl } from "./GenderControl";
 import {DemographicDataset} from "../../models/Generated";
-import {FormatControl} from "../../../contrib/components/Responsibilities/FormatControl";
+import {FormatControl} from "../FormatControl";
 import {ContribAppState} from "../../../contrib/reducers/contribAppReducers";
 import {AdminAppState} from "../../../admin/reducers/adminAppReducers";
 import {demographicActionCreators} from "../../actions/demographicActionCreators";

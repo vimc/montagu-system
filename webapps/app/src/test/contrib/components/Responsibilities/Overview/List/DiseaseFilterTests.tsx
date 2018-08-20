@@ -12,7 +12,7 @@ import {
 import { DiseaseFilter, DiseaseFilterComponent } from "../../../../../../main/contrib/components/Responsibilities/Overview/List/DiseaseFilter";
 import { OptionSelector } from "../../../../../../main/contrib/components/OptionSelector/OptionSelector";
 import {createMockStore} from "../../../../../mocks/mockStore";
-import {diseasesActionCreators} from "../../../../../../main/contrib/actions/diseasesActionCreators";
+import {diseasesActionCreators} from "../../../../../../main/shared/actions/diseasesActionCreators";
 
 describe("Responsibility Overview Disease Filter Component tests", () => {
     const sandbox = new Sandbox();

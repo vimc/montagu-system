@@ -4,7 +4,7 @@ import {contribTouchstonesActionCreators} from "../contribTouchstonesActionCreat
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {ResponsibilityOverviewPageLocationProps} from "../../components/Responsibilities/Overview/ResponsibilityOverviewPage";
 import {responsibilitiesActionCreators} from "../responsibilitiesActionCreators";
-import {diseasesActionCreators} from "../diseasesActionCreators";
+import {diseasesActionCreators} from "../../../shared/actions/diseasesActionCreators";
 import {chooseActionPageActionCreators} from "./chooseActionPageActionCreators";
 import {ContribPageActionCreators} from "./ContribPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";

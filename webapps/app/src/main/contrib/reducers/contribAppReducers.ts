@@ -5,7 +5,7 @@ import {routerReducer} from "react-router-redux";
 import {authReducer} from "../../shared/reducers/authReducer";
 import {modellingGroupsReducer, ModellingGroupsState} from "./modellingGroupsReducer";
 import {contribTouchstonesReducer, TouchstonesState} from "./contribTouchstonesReducer";
-import {diseasesReducer, DiseasesState} from "./diseasesReducer";
+import {diseasesReducer} from "../../shared/reducers/diseasesReducer";
 import {responsibilitiesReducer, ResponsibilitiesState} from "./responsibilitiesReducer";
 import {coverageReducer, CoverageState} from "./coverageReducer";
 import {runParametersReducer, RunParametersState} from "./runParametersReducer";
@@ -22,7 +22,6 @@ export interface ContribAppState extends CommonState {
     breadcrumbs: BreadcrumbsState;
     touchstones: TouchstonesState;
     responsibilities: ResponsibilitiesState;
-    diseases: DiseasesState;
     demographics: DemographicsState;
     coverage: CoverageState;
     runParameters: RunParametersState;

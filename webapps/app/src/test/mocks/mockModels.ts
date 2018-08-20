@@ -16,8 +16,9 @@ export function mockDisease(properties?: any): models.Disease {
 }
 
 export function mockScenario(properties?: any): models.Scenario {
+    counter++;
     const template: models.Scenario = {
-        id: "scenario-id",
+        id: `scenario-${counter}`,
         description: "Description",
         disease: "disease-id",
         touchstones: []
@@ -176,6 +177,16 @@ export function mockCoverageSet(properties?: Partial<models.CoverageSet>): model
         vaccine: "some-vaccine"
     };
     return Object.assign(template, properties);
+}
+
+export function mockScenarioAndCoverageSets(
+    scenarioProperties?: Partial<models.Scenario>,
+    coverageSets?: models.CoverageSet[]
+): models.ScenarioAndCoverageSets {
+    return {
+        scenario: mockScenario(scenarioProperties),
+        coverage_sets: coverageSets || [mockCoverageSet()]
+    };
 }
 
 export function mockScenarioTouchstoneAndCoverageSets(scenarioProperties?: Partial<models.Scenario>,

@@ -10,6 +10,7 @@ import {CacheInterface} from "../modules/cache/CacheInterface";
 import {singletonVariableCache} from "../modules/cache/singletonVariableCache";
 import {APIService} from "../models/APIService";
 import {notificationActionCreators} from "../actions/notificationActionCreators";
+import {CommonState} from "../reducers/CommonState";
 
 export interface OptionsHeaders {
     Authorization?: string;
@@ -38,7 +39,7 @@ export abstract class AbstractLocalService {
 
     protected cacheEngine: CacheInterface = null;
 
-    public constructor(dispatch: Dispatch<Action>, getState: () => GlobalState) {
+    public constructor(dispatch: Dispatch<Action>, getState: () => CommonState) {
         this.dispatch = dispatch;
 
         this.initOptions();
