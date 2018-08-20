@@ -19,20 +19,23 @@ import org.vaccineimpact.api.models.responsibilities.ResponsibilityAndTouchstone
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
 import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.SplitData
+import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.math.BigDecimal
 import java.util.*
 
-class CoverageLogicTests
+class CoverageLogicTests : MontaguTests()
 {
     private val fakeScenario = Scenario("sId", "scDesc", "disease", listOf("t-1"))
-    private val touchstoneVersion = TouchstoneVersion("touchstone-1", "touchstone", 1, "open", TouchstoneStatus.OPEN)
+    private val fakeTouchstoneVersion = TouchstoneVersion("touchstone-1", "touchstone", 1,
+            "description", TouchstoneStatus.OPEN)
+
     private fun responsibilityRepo() = mock<ResponsibilitiesRepository> {
         on { getResponsibility(any(), any(), any()) } doReturn ResponsibilityAndTouchstone(1,
                 Responsibility(
                         fakeScenario,
                         ResponsibilityStatus.EMPTY, emptyList(), null
                 ),
-                touchstoneVersion)
+                fakeTouchstoneVersion)
     }
 
     private fun mockCoverageSetsData() = ScenarioAndCoverageSets(
@@ -52,7 +55,8 @@ class CoverageLogicTests
         val data = SplitData(coverageSets, DataTable.new(fakeRows.asSequence()))
         return mock {
             on { getScenarioAndCoverageData(any(), any()) } doReturn data
-            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(touchstoneVersion))
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(fakeTouchstoneVersion))
+            on { getScenario(any(), any()) } doReturn mockCoverageSetsData()
         }
     }
 
@@ -119,6 +123,42 @@ class CoverageLogicTests
         Assertions.assertThat(headers).hasSameElementsAs(expectedHeaders)
         Assertions.assertThat(firstRow.coverageAndTargetPerYear["target_$testYear"] == testTarget)
         Assertions.assertThat(firstRow.coverageAndTargetPerYear["coverage_$testYear"] == testCoverage)
+    }
+
+    @Test
+    fun `getCoverageSetsForGroup checks responsibility for group exists`()
+    {
+        val responsibilitiesRepository = responsibilityRepo()
+        val sut = RepositoriesCoverageLogic(mock(), responsibilitiesRepository, touchstoneRepo())
+
+        sut.getCoverageSetsForGroup("gId", "tId", "s1")
+        verify(responsibilitiesRepository).getResponsibility("gId", "tId", "s1")
+    }
+
+    @Test
+    fun `getCoverageSetsForGroup checks group exists`()
+    {
+        val groupRepo = mock<ModellingGroupRepository>()
+        val sut = RepositoriesCoverageLogic(groupRepo, responsibilityRepo(), touchstoneRepo())
+
+        sut.getCoverageSetsForGroup("gId", "tId", "s1")
+        verify(groupRepo).getModellingGroup("gId")
+    }
+
+    @Test
+    fun `can get coverage sets for group`()
+    {
+        val sut = RepositoriesCoverageLogic(mock(), responsibilityRepo(), touchstoneRepo())
+
+        val result = sut.getCoverageSetsForGroup("gId", "tId", "s1")
+        checkMetadataIsAsExpected(result)
+    }
+
+    private fun checkMetadataIsAsExpected(result: ScenarioTouchstoneAndCoverageSets)
+    {
+        Assertions.assertThat(result.touchstoneVersion).isEqualTo(fakeTouchstoneVersion)
+        Assertions.assertThat(result.scenario).isEqualTo(fakeScenario)
+        Assertions.assertThat(result.coverageSets[0].id).isEqualTo(1)
     }
 
     private val years = listOf(1985, 1990, 1995, 2000)

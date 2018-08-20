@@ -21,20 +21,20 @@ class CoverageControllerTests : MontaguTests()
     @Test
     fun `getCoverageSetsForGroup gets parameters from URL`()
     {
-        val repo = makeRepoMockingGetCoverageSets(TouchstoneStatus.IN_PREPARATION)
+        val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
-        CoverageController(context, repo, mock()).getCoverageSetsForGroup()
+        CoverageController(context, logic).getCoverageSetsForGroup()
 
-        verify(repo).getCoverageSets(eq("gId"), eq("tId"), eq("sId"))
+        verify(logic).getCoverageSetsForGroup(eq("gId"), eq("tId"), eq("sId"))
     }
 
     @Test
     fun `getCoverageSetsForGroup returns error if user does not have permission to see in-preparation touchstone`()
     {
-        val repo = makeRepoMockingGetCoverageSets(TouchstoneStatus.IN_PREPARATION)
+        val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
         Assertions.assertThatThrownBy {
-            CoverageController(context, repo, mock()).getCoverageSetsForGroup()
+            CoverageController(context, logic).getCoverageSetsForGroup()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 
@@ -43,7 +43,7 @@ class CoverageControllerTests : MontaguTests()
     {
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
-        CoverageController(context, mock(), logic).getCoverageDataForGroup()
+        CoverageController(context, logic).getCoverageDataForGroup()
         verify(logic).getCoverageDataForGroup(eq("gId"), eq("tId"), eq("sId"), isNull())
     }
 
@@ -59,7 +59,7 @@ class CoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val data = CoverageController(context, mock(), logic)
+        val data = CoverageController(context, logic)
                 .getCoverageDataForGroup().data
         Assertions.assertThat(data.first() is LongCoverageRow).isTrue()
     }
@@ -70,7 +70,7 @@ class CoverageControllerTests : MontaguTests()
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
 
-        val data = CoverageController(context, mock(), logic)
+        val data = CoverageController(context, logic)
                 .getCoverageDataForGroup().data
 
         // test data includes 5 years
@@ -98,7 +98,7 @@ class CoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val data = CoverageController(context, mock(), logic)
+        val data = CoverageController(context, logic)
                 .getCoverageDataForGroup().data
 
         Assertions.assertThat(data.count()).isEqualTo(0)
@@ -113,7 +113,7 @@ class CoverageControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(false)
 
         Assertions.assertThatThrownBy {
-            CoverageController(context, mock(), logic).getCoverageDataForGroup()
+            CoverageController(context, logic).getCoverageDataForGroup()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 
@@ -127,10 +127,6 @@ class CoverageControllerTests : MontaguTests()
         }
     }
 
-    private fun makeRepoMockingGetCoverageSets(status: TouchstoneStatus) = mock<ModellingGroupRepository> {
-        on { getCoverageSets(any(), any(), any()) } doReturn mockCoverageSetsData(status)
-    }
-
     private fun makeLogicMockingGetCoverageData(status: TouchstoneStatus,
                                                testYear: Int = 1970,
                                                target: BigDecimal = BigDecimal(123.123),
@@ -141,6 +137,7 @@ class CoverageControllerTests : MontaguTests()
         val data = SplitData(coverageSets, DataTable.new(fakeRows.asSequence()))
         return mock {
             on { getCoverageDataForGroup(any(), any(), any(), anyOrNull()) } doReturn data
+            on { getCoverageSetsForGroup(any(), any(), any()) } doReturn mockCoverageSetsData(status)
         }
     }
 
