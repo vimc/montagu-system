@@ -43,7 +43,7 @@ open class OnetimeLinkResolver(private val repositories: Repositories,
                         context
                 )
                 OneTimeAction.COVERAGE -> stream(
-                        CoverageController(context, repos.modellingGroup,
+                        CoverageController(context,
                                 RepositoriesCoverageLogic(repos)).getCoverageDataForGroup(),
                         context
                 )

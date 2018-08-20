@@ -5,7 +5,6 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.logic.CoverageLogic
 import org.vaccineimpact.api.app.logic.RepositoriesCoverageLogic
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.CoverageRow
@@ -15,18 +14,16 @@ import org.vaccineimpact.api.serialization.StreamSerializable
 
 class CoverageController(
         actionContext: ActionContext,
-        private val repo: ModellingGroupRepository,
         private val coverageLogic: CoverageLogic
 ) : Controller(actionContext)
 {
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, repositories.modellingGroup,
-            RepositoriesCoverageLogic(repositories))
+            : this(context, RepositoriesCoverageLogic(repositories))
 
     fun getCoverageSetsForGroup(): ScenarioTouchstoneAndCoverageSets
     {
         val path = ResponsibilityPath(context)
-        val data = repo.getCoverageSets(path.groupId, path.touchstoneVersionId, path.scenarioId)
+        val data = coverageLogic.getCoverageSetsForGroup(path.groupId, path.touchstoneVersionId, path.scenarioId)
         context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, data.touchstoneVersion.status)
         return data
     }

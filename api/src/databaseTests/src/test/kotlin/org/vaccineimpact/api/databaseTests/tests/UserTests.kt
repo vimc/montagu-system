@@ -32,8 +32,6 @@ class UserTests : RepositoryTests<UserRepository>()
     override fun makeRepository(db: JooqContext) = JooqUserRepository(db.dsl)
 
     fun makeGroupRepository(db: JooqContext) = JooqModellingGroupRepository(db.dsl,
-            JooqResponsibilitiesRepository(db.dsl, JooqScenarioRepository(db.dsl),
-                    JooqTouchstoneRepository(db.dsl, JooqScenarioRepository(db.dsl))),
             JooqTouchstoneRepository(db.dsl, JooqScenarioRepository(db.dsl)))
 
     private fun addTestUser(db: JooqContext)
