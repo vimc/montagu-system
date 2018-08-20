@@ -595,10 +595,13 @@ class UserTests : RepositoryTests<UserRepository>()
         givenABlankDatabase() makeTheseChanges { repo ->
             repo.addUser(CreateUser("user.name", "Full Name", "email@example.com"))
         } andCheck { repo ->
-            assertThat(repo.getUserByUsername("user.name")).isEqualTo(
-                    InternalUser(UserProperties("user.name", "Full Name", "email@example.com", null, null),
-                            listOf(), listOf())
-            )
+            val user = repo.getUserByUsername("user.name")
+            assertThat(user.properties).isEqualTo(
+                    UserProperties("user.name", "Full Name", "email@example.com", null, null))
+            assertThat(user.roles).hasSameElementsAs(listOf(ReifiedRole("user", Scope.Global())))
+            assertThat(user.permissions.joinToString(","))
+                    .isEqualTo("*/can-login,*/countries.read,*/demographics.read,*/estimates.read,*/modelling-groups.read,*/models.read,*/responsibilities.read,*/scenarios.read,*/touchstones.read,*/users.read")
+
         }
     }
 

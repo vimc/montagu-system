@@ -3,19 +3,27 @@ package org.vaccineimpact.api.tests
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions
 import org.junit.Test
+import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.app.RedirectValidator
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.TokenRepository
 import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
+import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.helpers.OneTimeAction
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
+import org.vaccineimpact.api.security.InternalUser
+import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Duration
 
-class TokenGeneratorTests
+class TokenGeneratorTests: MontaguTests()
 {
 
     private fun tokenHelperThatCanGenerateOnetimeTokens() = mock<WebTokenHelper> {
+        on { generateNewStyleOnetimeActionToken(any(), any(), any(), any(), anyOrNull()) } doReturn "token"
         on { generateOldStyleOneTimeActionToken(any(), any(), anyOrNull(), any(), any()) } doReturn "MY-TOKEN"
     }
 
@@ -104,4 +112,36 @@ class TokenGeneratorTests
         sut.getOneTimeLinkToken(OneTimeAction.COVERAGE, parameters, "?redirectUrl=www.redirect.com", "www.redirect.com", "test.user", Duration.ofMinutes(10))
 
     }
+
+    @Test
+    fun `can generate onetime token from roles and permissions`()
+    {
+        val testUser = InternalUser(
+                UserProperties("username", "name", "email", null, null),
+                listOf(ReifiedRole("role", Scope.Global())),
+                listOf(ReifiedPermission("p", Scope.Global())))
+
+        val tokenHelper = tokenHelperThatCanGenerateOnetimeTokens()
+        val sut = OneTimeTokenGenerator(mock(), tokenHelper)
+
+        sut.getSetPasswordToken(testUser)
+
+        verify(tokenHelper).generateNewStyleOnetimeActionToken("/v1/password/set/", "username", "*/p", "*/role",
+                Duration.ofDays(1))
+    }
+
+    @Test
+    fun `can generate onetime token from profile`()
+    {
+        val mockProfile = mock<CommonProfile> {
+            on { attributes } doReturn mapOf("permissions" to "perm", "roles" to "roles")
+            on { id } doReturn "username"
+        }
+        val tokenHelper = tokenHelperThatCanGenerateOnetimeTokens()
+        val sut = OneTimeTokenGenerator(mock(), tokenHelper)
+        sut.getNewStyleOneTimeLinkToken("/some/url/", mockProfile)
+
+        verify(tokenHelper).generateNewStyleOnetimeActionToken("/some/url/", "username", "perm", "roles", null)
+    }
+
 }

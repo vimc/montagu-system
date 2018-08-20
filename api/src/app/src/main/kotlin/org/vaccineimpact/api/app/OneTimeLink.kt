@@ -51,8 +51,6 @@ open class OnetimeLinkResolver(private val repositories: Repositories,
                         TouchstoneController(context, repos).getDemographicData(),
                         context
                 )
-                OneTimeAction.SET_PASSWORD -> PasswordController(context, repos.user, OneTimeTokenGenerator(repos.token, webTokenHelper))
-                        .setPasswordForUser(context.params("username"))
             }
         }
     }
