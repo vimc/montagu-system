@@ -1,23 +1,30 @@
-import {Scenario} from "../../../../shared/models/Generated";
+import {Disease, Scenario} from "../../../../shared/models/Generated";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import * as React from "react";
 import {connect} from "react-redux";
+import {ScenarioGroup} from "./ScenarioGroup";
 
 export interface ScenariosListProps {
-    scenario: Scenario[]
+    scenarios: Scenario[];
+    diseases: Disease[];
 }
 
 export class ScenariosListComponent extends React.Component<ScenariosListProps> {
     render(): JSX.Element {
-        return <ul>
-            {this.props.scenario.map(x => <li key={x.id}>{x.description}</li>)}
-        </ul>;
+        return <div>
+            {this.props.diseases.map(disease => <ScenarioGroup
+                key={disease.id}
+                disease={disease}
+                scenarios={this.props.scenarios.filter(s => s.disease == disease.id)}
+            />)}
+        </div>;
     }
 }
 
 function mapStateToProps(state: AdminAppState): ScenariosListProps {
     return {
-        scenario: state.scenario.scenarios
+        scenarios: state.scenario.scenarios,
+        diseases: state.diseases.diseases
     }
 }
 
