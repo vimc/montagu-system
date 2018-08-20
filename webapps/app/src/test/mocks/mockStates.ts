@@ -13,7 +13,6 @@ import {BreadcrumbsState, initialBreadcrumbsState} from "../../main/shared/reduc
 import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
 import {touchstonesInitialState} from "../../main/contrib/reducers/contribTouchstonesReducer";
 import {responsibilitiesInitialState} from "../../main/contrib/reducers/responsibilitiesReducer";
-import {diseasesInitialState} from "../../main/contrib/reducers/diseasesReducer";
 import {coverageInitialState} from "../../main/contrib/reducers/coverageReducer";
 import {runParametersInitialState} from "../../main/contrib/reducers/runParametersReducer";
 import {initialState as UserInitialState} from "../../main/contrib/reducers/userReducer";
@@ -22,6 +21,8 @@ import {adminTouchstonesInitialState} from "../../main/admin/reducers/adminTouch
 import {onetimeTokensInitialState, OneTimeTokenState} from "../../main/shared/reducers/oneTimeTokenReducer";
 import {initialNotificationState} from "../../main/shared/reducers/notificationReducer";
 import {demographicsInitialState} from "../../main/shared/reducers/demographicsReducer";
+import {scenarioInitialState} from "../../main/admin/reducers/scenarioReducer";
+import {diseasesInitialState} from "../../main/shared/reducers/diseasesReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -66,6 +67,8 @@ export const mockAdminState = (props?: RecursivePartial<AdminAppState>): AdminAp
         groups: AdminModellingGroupsInitialState,
         breadcrumbs: initialBreadcrumbsState,
         users: adminUsersInitialState,
+        scenario: scenarioInitialState,
+        diseases: diseasesInitialState,
         touchstones: adminTouchstonesInitialState,
         notifications: initialNotificationState,
         onetimeTokens: onetimeTokensInitialState
@@ -106,6 +109,7 @@ export const mockReportAppState = (props?: any): ReportAppState => {
         users: usersMock,
         breadcrumbs: breadcrumbsMock,
         onetimeTokens: onetimeTokensMock,
-        notifications: initialNotificationState
+        notifications: initialNotificationState,
+        diseases: diseasesInitialState,
     };
 };

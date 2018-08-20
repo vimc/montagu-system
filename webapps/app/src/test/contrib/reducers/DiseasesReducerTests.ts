@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
-import {diseasesInitialState, diseasesReducer} from "../../../main/contrib/reducers/diseasesReducer";
-import { DiseasesTypes } from "../../../main/contrib/actionTypes/DiseasesTypes";
+import {diseasesInitialState, diseasesReducer} from "../../../main/shared/reducers/diseasesReducer";
+import { DiseasesTypes } from "../../../main/shared/actionTypes/DiseasesTypes";
 
 describe('Diseases reducer tests', () => {
 

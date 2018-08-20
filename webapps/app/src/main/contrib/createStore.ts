@@ -1,15 +1,15 @@
-import { createStore, applyMiddleware } from 'redux';
+import {createStore, applyMiddleware, Store} from 'redux';
 import thunk from 'redux-thunk';
 import { routerMiddleware } from 'react-router-redux';
 import {History} from "history";
 
-import reducers from './reducers/contribAppReducers';
+import reducers, {ContribAppState} from './reducers/contribAppReducers';
 
-export function createContribStore(history: History) {
+export function createContribStore(history: History): Store<ContribAppState> {
     return createStore(
         reducers,
         applyMiddleware(thunk, routerMiddleware(history)),
-    );
+    ) as Store<ContribAppState>;
 }
 
 

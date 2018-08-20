@@ -126,9 +126,9 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         it("downloads zipped report", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
             const versionDetails = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails("minimal", versions[0]);
-            const rendered = sandbox.mount(<Provider store={this.store}><ReportDownloadsComponent report="minimal"
-                                                                                                  versionDetails={versionDetails}
-                                                                                                  ready={true}/></Provider>);
+            const rendered = sandbox.mount(<Provider store={this.store}>
+                <ReportDownloadsComponent report="minimal" versionDetails={versionDetails}/>
+            </Provider>);
             const response = await lastDownloadPromise(rendered);
             expect(response.status).to.equal(200)
         });

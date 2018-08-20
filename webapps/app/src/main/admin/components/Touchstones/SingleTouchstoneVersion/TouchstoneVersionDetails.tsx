@@ -6,7 +6,7 @@ import {Touchstone, TouchstoneVersion} from "../../../../shared/models/Generated
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {branch, compose, renderComponent} from "recompose";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
-import {stat} from "fs";
+import {InternalLink} from "../../../../shared/components/InternalLink";
 
 interface TouchstoneVersionDetailsProps {
     touchstoneVersion: TouchstoneVersion
@@ -19,13 +19,17 @@ export class TouchstoneVersionDetailsComponent extends React.Component<Touchston
         const version = this.props.touchstoneVersion;
         const baseUrl = `/touchstones/${this.props.touchstone.id}/${version.id}/`;
         return <div>
-            <h2>Status: {version.status}</h2>
-            <div className="mt-3">
-                <ButtonLink href={`${baseUrl}responsibilities`}>
-                    View responsibilities</ButtonLink>
-            </div>
-            <div className="mt-3">
-                <ButtonLink href={`${baseUrl}demographics`}>Download demographic data</ButtonLink>
+            <h3>Status: {version.status}</h3>
+            <div className="list-group">
+                <InternalLink href={`${baseUrl}scenarios/`} className="list-group-item">
+                    View scenarios
+                </InternalLink>
+                <InternalLink href={`${baseUrl}responsibilities/`} className="list-group-item">
+                    View responsibilities
+                </InternalLink>
+                <InternalLink href={`${baseUrl}demographics/`} className="list-group-item">
+                    Download demographic data
+                </InternalLink>
             </div>
         </div>;
     }

@@ -9,6 +9,7 @@ import {breadcrumbsReducer, BreadcrumbsState} from "../../shared/reducers/breadc
 import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneTimeTokenReducer";
 import {CommonState} from "../../shared/reducers/CommonState";
 import {notificationReducer} from "../../shared/reducers/notificationReducer";
+import {diseasesReducer} from "../../shared/reducers/diseasesReducer";
 
 export interface ReportAppState extends CommonState {
     reports: ReportsState;
@@ -25,7 +26,8 @@ const reducers = combineReducers({
     users: usersReducer,
     breadcrumbs: breadcrumbsReducer,
     onetimeTokens: onetimeTokenReducer,
-    notifications: notificationReducer
+    notifications: notificationReducer,
+    diseases: diseasesReducer,
 });
 
 export default reducers;

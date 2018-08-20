@@ -21,6 +21,7 @@ import {MainMenu} from "./MainMenu/MainMenu";
 import {ForgottenPasswordPage} from "../../shared/components/ForgottenPasswordPage";
 import {TouchstoneVersionPage} from "./Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
 import {DownloadDemographicsAdminPage} from "./Touchstones/Demography/DownloadDemographicsPage";
+import {ScenarioPage} from "./Touchstones/Scenarios/ScenarioPage";
 
 interface AdminRouterProps {
     loggedIn: boolean;
@@ -39,6 +40,7 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/" component={TouchstoneVersionPage}/>
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/responsibilities/" component={ResponsibilitiesPage}/>
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/demographics/" component={DownloadDemographicsAdminPage}/>
+        <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/scenarios/" component={ScenarioPage}/>
         <Route exact path="/users/" component={UsersListPage}/>
         <Route exact path="/users/:username/" component={UserDetailsPage}/>
         <Route exact path="/set-password/" component={SetPasswordPage} />
