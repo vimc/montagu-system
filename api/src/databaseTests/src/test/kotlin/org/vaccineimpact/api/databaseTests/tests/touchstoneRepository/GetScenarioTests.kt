@@ -50,68 +50,13 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         }
     }
 
-    private fun createGroupAndSupportingObjects(db: JooqContext)
-    {
-        db.addGroup(groupId, "description")
-        db.addTouchstoneVersion(touchstoneName, touchstoneVersion, "description", "open",
-                addTouchstone = true)
-        db.addScenarioDescription(scenarioId, "Yellow Fever Scenario", "YF", addDisease = true)
-        db.addVaccine("YF", "Yellow Fever")
-        db.addVaccine("BF", "Blue Fever")
-        db.addVaccine("AF", "Alpha Fever")
-    }
-
-    private fun giveCoverageSetsAndDataToResponsibility(db: JooqContext)
-    {
-        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "incomplete")
-        db.addResponsibility(setId, touchstoneVersionId, scenarioId)
-        db.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = setA)
-        db.addCoverageSet(touchstoneVersionId, "Second", "BF", "without", "campaign", id = setB)
-        db.addCoverageSet(touchstoneVersionId, "Third", "BF", "without", "routine", id = setC)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setB, 1)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setC, 2)
-
-        db.addCountries(listOf("AAA", "BBB", "CCC"))
-
-        // adding these in jumbled up order
-        db.addCoverageRow(setC, "BBB", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
-        db.addCoverageRow(setA, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
-        db.addCoverageRow(setC, "AAA", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
-        db.addCoverageRow(setC, "BBB", 2001, 2.toDecimal(), 2.toDecimal(), null, null, null)
-        db.addCoverageRow(setC, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null)
-        db.addCoverageRow(setB, "AAA", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
-        db.addCoverageRow(setC, "BBB", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
-
-    }
-
-    private fun giveCoverageSetsToResponsibility(db: JooqContext)
-    {
-        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "incomplete")
-        db.addResponsibility(setId, touchstoneVersionId, scenarioId)
-        db.addCoverageSet(touchstoneVersionId, "First", "YF", "without", "campaign", id = setA)
-        db.addCoverageSet(touchstoneVersionId, "Second", "YF", "with", "campaign", id = setB)
-        db.addCoverageSet(touchstoneVersionId, "Third", "YF", "bestminus", "campaign", id = setC)
-        db.addCoverageSet(touchstoneVersionId, "Fourth", "BF", "with", "campaign", id = setD)
-        db.addCoverageSet(touchstoneVersionId, "Fifth", "BF", "without", "campaign", id = setE)
-        db.addCoverageSet(touchstoneVersionId, "Sixth", "BF", "bestminus", "campaign", id = setF)
-
-        // Deliberately out of order, to check ordering logic later
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setF, 5)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setB, 1)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setC, 2)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setD, 3)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setE, 4)
-
-    }
-
     @Test
     fun `can get ordered coverage data`()
     {
         given {
-            createGroupAndSupportingObjects(it)
-            giveCoverageSetsAndDataToResponsibility(it)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            giveUnorderedCoverageSetsAndDataToScenario(it)
         } check {
             val result = it.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
 
@@ -148,8 +93,9 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     fun `can get ordered coverage sets`()
     {
         given {
-            createGroupAndSupportingObjects(it)
-            giveCoverageSetsToResponsibility(it)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            giveUnorderedCoverageSetsToScenario(it)
         } check {
             val result = it.getScenario(touchstoneVersionId, scenarioId)
 
@@ -233,5 +179,46 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             db.addCoverageRow(setA, "AAA", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull())
             db.addCoverageRow(setB, "BBB", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
         }
+    }
+
+    private fun giveUnorderedCoverageSetsAndDataToScenario(db: JooqContext)
+    {
+        db.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = setA)
+        db.addCoverageSet(touchstoneVersionId, "Second", "BF", "without", "campaign", id = setB)
+        db.addCoverageSet(touchstoneVersionId, "Third", "BF", "without", "routine", id = setC)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setB, 1)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setC, 2)
+
+        db.addCountries(listOf("AAA", "BBB", "CCC"))
+
+        // adding these in jumbled up order
+        db.addCoverageRow(setC, "BBB", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+        db.addCoverageRow(setA, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+        db.addCoverageRow(setC, "AAA", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
+        db.addCoverageRow(setC, "BBB", 2001, 2.toDecimal(), 2.toDecimal(), null, null, null)
+        db.addCoverageRow(setC, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null)
+        db.addCoverageRow(setB, "AAA", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
+        db.addCoverageRow(setC, "BBB", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
+
+    }
+
+    private fun giveUnorderedCoverageSetsToScenario(db: JooqContext)
+    {
+        db.addCoverageSet(touchstoneVersionId, "First", "YF", "without", "campaign", id = setA)
+        db.addCoverageSet(touchstoneVersionId, "Second", "YF", "with", "campaign", id = setB)
+        db.addCoverageSet(touchstoneVersionId, "Third", "YF", "bestminus", "campaign", id = setC)
+        db.addCoverageSet(touchstoneVersionId, "Fourth", "BF", "with", "campaign", id = setD)
+        db.addCoverageSet(touchstoneVersionId, "Fifth", "BF", "without", "campaign", id = setE)
+        db.addCoverageSet(touchstoneVersionId, "Sixth", "BF", "bestminus", "campaign", id = setF)
+
+        // Deliberately out of order, to check ordering logic later
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setF, 5)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setB, 1)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setC, 2)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setD, 3)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setE, 4)
+
     }
 }

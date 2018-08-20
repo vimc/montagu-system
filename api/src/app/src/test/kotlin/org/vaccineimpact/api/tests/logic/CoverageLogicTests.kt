@@ -126,13 +126,23 @@ class CoverageLogicTests : MontaguTests()
     }
 
     @Test
-    fun `getCoverageSetsForGroup checks scenario exists`()
+    fun `getCoverageSetsForGroup checks responsibility for group exists`()
     {
         val responsibilitiesRepository = responsibilityRepo()
         val sut = RepositoriesCoverageLogic(mock(), responsibilitiesRepository, touchstoneRepo())
 
         sut.getCoverageSetsForGroup("gId", "tId", "s1")
         verify(responsibilitiesRepository).getResponsibility("gId", "tId", "s1")
+    }
+
+    @Test
+    fun `getCoverageSetsForGroup checks group exists`()
+    {
+        val groupRepo = mock<ModellingGroupRepository>()
+        val sut = RepositoriesCoverageLogic(groupRepo, responsibilityRepo(), touchstoneRepo())
+
+        sut.getCoverageSetsForGroup("gId", "tId", "s1")
+        verify(groupRepo).getModellingGroup("gId")
     }
 
     @Test
@@ -150,17 +160,6 @@ class CoverageLogicTests : MontaguTests()
         Assertions.assertThat(result.scenario).isEqualTo(fakeScenario)
         Assertions.assertThat(result.coverageSets[0].id).isEqualTo(1)
     }
-
-    @Test
-    fun `getCoverageSetsForGroup checks group exists`()
-    {
-        val groupRepo = mock<ModellingGroupRepository>()
-        val sut = RepositoriesCoverageLogic(groupRepo, responsibilityRepo(), touchstoneRepo())
-
-        sut.getCoverageSetsForGroup("gId", "tId", "s1")
-        verify(groupRepo).getModellingGroup("gId")
-    }
-
 
     private val years = listOf(1985, 1990, 1995, 2000)
 
