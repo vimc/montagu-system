@@ -26,7 +26,6 @@ export interface RequestOptions {
 export interface InputOptions {
     Authorization?: string;
     'Content-Type'?: string;
-    credentials?: "omit" | "same-origin" | "include";
     cacheKey?: string;
     notificationOnError?: boolean;
     noCache?: boolean;
