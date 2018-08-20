@@ -2,13 +2,15 @@ package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.*
+import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
+import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
+import org.vaccineimpact.api.blackboxTests.helpers.getResultFromRedirect
+import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_STOCHASTIC
 import org.vaccineimpact.api.db.fieldsAsList
-import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
@@ -166,6 +168,22 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val response = requestHelper.postFile(oneTimeURL, csvData)
         val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
         JSONValidator().validateSuccess(resultAsString)
+    }
+
+    @Test
+    fun `bad CSV headers results in ValidationError in redirect`()
+    {
+        val requestHelper = RequestHelper()
+
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+
+        val oneTimeURL = getPopulateOneTimeURL(setId, redirect = true)
+        val response = requestHelper.postFile(oneTimeURL, "bad_header,year,age,country,country_name,cohort_size")
+        val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
+        JSONValidator().validateError(resultAsString, expectedErrorCode = "csv-unexpected-header")
+
     }
 
     @Test
