@@ -2,6 +2,7 @@ import { expect } from "chai";
 
 import {diseasesInitialState, diseasesReducer} from "../../../main/shared/reducers/diseasesReducer";
 import { DiseasesTypes } from "../../../main/shared/actionTypes/DiseasesTypes";
+import {mockDisease} from "../../mocks/mockModels";
 
 describe('Diseases reducer tests', () => {
 
@@ -12,6 +13,17 @@ describe('Diseases reducer tests', () => {
             type: DiseasesTypes.DISEASES_FETCHED,
             data: [testDisease]
         })).to.eql({...diseasesInitialState, diseases: [testDisease]});
+    });
+
+    it('orders diseases by name', () => {
+        const a = mockDisease({ name: "A" });
+        const b = mockDisease({ name: "B" });
+        const c = mockDisease({ name: "C" });
+
+        expect(diseasesReducer(undefined, {
+            type: DiseasesTypes.DISEASES_FETCHED,
+            data: [b, c, a]
+        })).to.eql({...diseasesInitialState, diseases: [a, b, c]});
     });
 
     it('sets empty diseases', () => {
