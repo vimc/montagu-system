@@ -15,7 +15,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class ScenarioTests : DatabaseTest()
 {
-    val requiredPermissions = PermissionSet("*/can-login", "*/touchstones.read", "*/scenarios.read", "*/coverage.read")
+    val requiredPermissions = PermissionSet("*/can-login", "*/touchstones.read", "*/scenarios.read")
     val touchstoneVersionId = "touchstone-1"
     val setId = 1
     val scenarioId = "scenario"
