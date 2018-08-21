@@ -8,6 +8,8 @@ import {discardDispatch} from "../../../../shared/Helpers";
 export interface ScenariosListProps {
     scenarios: Scenario[];
     diseases: Disease[];
+    canDownloadCoverage: boolean;
+    touchstoneVersionId: string;
 }
 
 export class ScenariosListComponent extends React.Component<ScenariosListProps> {
@@ -16,7 +18,9 @@ export class ScenariosListComponent extends React.Component<ScenariosListProps> 
             {this.props.diseases.map(disease => <ScenarioGroup
                 key={disease.id}
                 disease={disease}
+                canDownloadCoverage={this.props.canDownloadCoverage}
                 scenarios={this.props.scenarios.filter(s => s.disease == disease.id)}
+                touchstoneVersionId={this.props.touchstoneVersionId}
             />)}
         </div>;
     }
@@ -25,7 +29,10 @@ export class ScenariosListComponent extends React.Component<ScenariosListProps> 
 function mapStateToProps(state: AdminAppState): ScenariosListProps {
     return {
         scenarios: state.scenario.scenarios,
-        diseases: state.diseases.diseases
+        diseases: state.diseases.diseases,
+        canDownloadCoverage: state.auth.permissions.indexOf("*/coverage.read") > -1,
+        touchstoneVersionId: state.touchstones.currentTouchstoneVersion ? state.touchstones.currentTouchstoneVersion.id
+            : null
     }
 }
 
