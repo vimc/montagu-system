@@ -5,8 +5,6 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.CoverageRow
 import org.vaccineimpact.api.models.LongCoverageRow
 import org.vaccineimpact.api.models.ScenarioTouchstoneAndCoverageSets
@@ -38,7 +36,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         // We don't use the returned responsibility, but by using this method we check that the group exists
         // and that the group is responsible for the given scenario in the given touchstoneVersion
         val responsibilityAndTouchstone = responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
-        val scenarioAndCoverageSets = touchstoneRepository.getScenario(touchstoneVersionId, scenarioId)
+        val scenarioAndCoverageSets = touchstoneRepository.getScenarioAndCoverageSets(touchstoneVersionId, scenarioId)
         return ScenarioTouchstoneAndCoverageSets(
                 responsibilityAndTouchstone.touchstoneVersion,
                 scenarioAndCoverageSets.scenario,

@@ -3,7 +3,6 @@ package org.vaccineimpact.api.tests.controllers
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.TouchstoneController
@@ -77,7 +76,7 @@ class TouchstoneControllerTests : MontaguTests()
         val result = ScenarioAndCoverageSets(scenario, coverageSets)
 
         val repo = mock<TouchstoneRepository> {
-            on { getScenario(any(), any()) } doReturn result
+            on { getScenarioAndCoverageSets(any(), any()) } doReturn result
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
         }
 
@@ -89,7 +88,7 @@ class TouchstoneControllerTests : MontaguTests()
 
         val data = TouchstoneController(context, repo, mock()).getScenario()
 
-        verify(repo).getScenario(eq(openTouchstoneVersion.id), eq(scenario.id))
+        verify(repo).getScenarioAndCoverageSets(eq(openTouchstoneVersion.id), eq(scenario.id))
         assertThat(data.touchstoneVersion).isEqualTo(openTouchstoneVersion)
         assertThat(data.scenario).isEqualTo(scenario)
         assertThat(data.coverageSets).hasSameElementsAs(coverageSets)
@@ -100,7 +99,7 @@ class TouchstoneControllerTests : MontaguTests()
     {
         val repo = mock<TouchstoneRepository> {
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(inPrepTouchstoneVersion))
-            on { getScenario(any(), any()) } doReturn ScenarioAndCoverageSets(scenario, emptyList())
+            on { getScenarioAndCoverageSets(any(), any()) } doReturn ScenarioAndCoverageSets(scenario, emptyList())
         }
         val context = mock<ActionContext> {
             on { params(":touchstone-version-id") } doReturn inPrepTouchstoneVersion.id
