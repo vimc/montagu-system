@@ -1,13 +1,19 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
+import org.jooq.JoinType
 import org.jooq.Record
+import org.jooq.SelectConditionStep
 import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.jooq.mapping.MappingHelper
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.joinPath
+import org.vaccineimpact.api.db.tables.ScenarioDescription
 import org.vaccineimpact.api.models.ActivityType
 import org.vaccineimpact.api.models.Scenario
 
@@ -37,6 +43,42 @@ class JooqScenarioRepository(dsl: DSLContext,
                 .sortedWith(compareBy({ it.scenario.disease }, { it.activityType }))
                 .map { it.scenario }
 
+    }
+
+
+    override fun getScenariosForTouchstone(touchstoneVersionId: String,
+                                           scenarioFilterParameters: ScenarioFilterParameters): List<Scenario>
+    {
+        val scenarios = dsl.select(SCENARIO_DESCRIPTION.fieldsAsList())
+                .select(SCENARIO.TOUCHSTONE, COVERAGE_SET.ACTIVITY_TYPE)
+                .fromJoinPath(SCENARIO_DESCRIPTION, SCENARIO)
+                .leftJoin(COVERAGE_SET)
+                .on(SCENARIO.FOCAL_COVERAGE_SET.eq(COVERAGE_SET.ID))
+                .whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters)
+                .fetch()
+                .groupBy { it[SCENARIO_DESCRIPTION.ID] }
+                .map { mapScenarioWithFocalActivityType(it.value) }
+                .sortedWith(compareBy({ it.scenario.disease }, { it.activityType }))
+                .map { it.scenario }
+
+        return scenarios.filter { it.touchstones.contains(touchstoneVersionId) }
+    }
+
+    override fun getScenarioForTouchstone(touchstoneVersionId: String,
+                                          scenarioDescriptionId: String): Scenario
+    {
+        val scenarios = dsl.select(SCENARIO_DESCRIPTION.fieldsAsList())
+                .select(SCENARIO.TOUCHSTONE)
+                .fromJoinPath(SCENARIO_DESCRIPTION, SCENARIO)
+                .where(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
+                .fetch()
+
+        val scenario = mapScenario(scenarios)
+
+        if (!scenario.touchstones.contains(touchstoneVersionId))
+            throw UnknownObjectError(scenarioDescriptionId, "scenario")
+
+        return scenario
     }
 
     private fun mapScenarioWithFocalActivityType(input: List<Record>): ScenarioAndFocalActivityType
