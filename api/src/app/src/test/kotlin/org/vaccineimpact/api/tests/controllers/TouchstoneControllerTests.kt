@@ -3,15 +3,18 @@ package org.vaccineimpact.api.tests.controllers
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.TouchstoneController
 import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.logic.CoverageLogic
 import org.vaccineimpact.api.app.logic.ExpectationsLogic
+import org.vaccineimpact.api.app.logic.ScenarioLogic
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.SplitData
@@ -43,7 +46,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val controller = TouchstoneController(context, repo, mock())
+        val controller = TouchstoneController(context, repo, mock(), mock(), mock())
         assertThat(controller.getTouchstones()).hasSameElementsAs(listOf(touchstone))
     }
 
@@ -57,12 +60,13 @@ class TouchstoneControllerTests : MontaguTests()
         val permissiveContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
         }
-        assertThat(TouchstoneController(permissiveContext, repo, mock()).getTouchstones()).isEqualTo(listOf(touchstone))
+        assertThat(TouchstoneController(permissiveContext, repo, mock(), mock(), mock())
+                .getTouchstones()).isEqualTo(listOf(touchstone))
 
         val limitedContext = mock<ActionContext> {
             on { hasPermission(any()) } doReturn false
         }
-        assertThat(TouchstoneController(limitedContext, repo, mock()).getTouchstones()).isEqualTo(listOf(Touchstone(
+        assertThat(TouchstoneController(limitedContext, repo, mock(), mock(), mock()).getTouchstones()).isEqualTo(listOf(Touchstone(
                 id = "t",
                 description = "touchstone description",
                 comment = "comment",
@@ -71,25 +75,113 @@ class TouchstoneControllerTests : MontaguTests()
     }
 
     @Test
-    fun `getScenario fetches from repository`()
+    fun `getScenario fetches scenario without coverage sets if user has no coverage reading permission`()
     {
-        val coverageSets = listOf(CoverageSet(1, "t1", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN))
-        val result = ScenarioAndCoverageSets(scenario, coverageSets)
-
         val repo = mock<TouchstoneRepository> {
-            on { getScenario(any(), any()) } doReturn result
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
+        }
+
+        val logic = mock<ScenarioLogic> {
+            on { getScenario(any(), any()) } doReturn scenario
         }
 
         val context = mock<ActionContext> {
             on { hasPermission(any()) } doReturn true
             on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
             on { params(":scenario-id") } doReturn scenario.id
+            on { permissions } doReturn PermissionSet(listOf())
         }
 
-        val data = TouchstoneController(context, repo, mock()).getScenario()
+        val data = TouchstoneController(context, repo, mock(), logic, mock()).getScenario()
+                as ScenarioTouchstone
 
-        verify(repo).getScenario(eq(openTouchstoneVersion.id), eq(scenario.id))
+        assertThat(data.touchstoneVersion).isEqualTo(openTouchstoneVersion)
+        assertThat(data.scenario).isEqualTo(scenario)
+    }
+
+    @Test
+    fun `getScenario fetches scenario without coverage sets if user has wrongly scoped coverage reading permission`()
+    {
+        val repo = mock<TouchstoneRepository> {
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
+        }
+
+        val logic = mock<ScenarioLogic> {
+            on { getScenario(any(), any()) } doReturn scenario
+        }
+
+        val modellingGroupRepo = mock<ModellingGroupRepository> {
+            on { getModellingGroupsForScenario(any()) } doReturn listOf(ModellingGroup("gId", "desc"))
+        }
+
+        val context = mock<ActionContext> {
+            on { hasPermission(any()) } doReturn true
+            on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
+            on { params(":scenario-id") } doReturn scenario.id
+            on { permissions } doReturn PermissionSet(
+                    setOf(ReifiedPermission("coverage.read", Scope.Specific("modelling-group", "wrongId"))
+                    )
+            )
+        }
+
+        val data = TouchstoneController(context, repo, modellingGroupRepo, logic, mock()).getScenario()
+                as ScenarioTouchstone
+
+        assertThat(data.touchstoneVersion).isEqualTo(openTouchstoneVersion)
+        assertThat(data.scenario).isEqualTo(scenario)
+    }
+
+    @Test
+    fun `getScenario fetches scenario with coverage sets if user has global coverage reading permission`()
+    {
+        val coverageSets = listOf(CoverageSet(1, "t1", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN))
+
+        val repo = mock<TouchstoneRepository> {
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
+            on { getScenarioAndCoverageSets(any(), any()) } doReturn ScenarioAndCoverageSets(scenario, coverageSets)
+        }
+
+        val context = mock<ActionContext> {
+            on { hasPermission(any()) } doReturn true
+            on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
+            on { params(":scenario-id") } doReturn scenario.id
+            on { permissions } doReturn PermissionSet(
+                    setOf(ReifiedPermission("coverage.read", Scope.Global())))
+        }
+
+        val data = TouchstoneController(context, repo, mock(), mock(), mock()).getScenario()
+                as ScenarioTouchstoneAndCoverageSets
+
+        assertThat(data.touchstoneVersion).isEqualTo(openTouchstoneVersion)
+        assertThat(data.scenario).isEqualTo(scenario)
+        assertThat(data.coverageSets).hasSameElementsAs(coverageSets)
+    }
+
+    @Test
+    fun `getScenario fetches scenario with coverage sets if user has scoped coverage reading permission`()
+    {
+        val coverageSets = listOf(CoverageSet(1, "t1", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN))
+
+        val repo = mock<TouchstoneRepository> {
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
+            on { getScenarioAndCoverageSets(any(), any()) } doReturn ScenarioAndCoverageSets(scenario, coverageSets)
+        }
+
+        val modellingGroupRepo = mock<ModellingGroupRepository> {
+            on { getModellingGroupsForScenario(any()) } doReturn listOf(ModellingGroup("gId", "desc"))
+        }
+
+        val context = mock<ActionContext> {
+            on { hasPermission(any()) } doReturn true
+            on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
+            on { params(":scenario-id") } doReturn scenario.id
+            on { permissions } doReturn PermissionSet(
+                    setOf(ReifiedPermission("coverage.read", Scope.Specific("modelling-group", "gId"))))
+        }
+
+        val data = TouchstoneController(context, repo, modellingGroupRepo, mock(), mock()).getScenario()
+                as ScenarioTouchstoneAndCoverageSets
+
         assertThat(data.touchstoneVersion).isEqualTo(openTouchstoneVersion)
         assertThat(data.scenario).isEqualTo(scenario)
         assertThat(data.coverageSets).hasSameElementsAs(coverageSets)
@@ -100,13 +192,17 @@ class TouchstoneControllerTests : MontaguTests()
     {
         val repo = mock<TouchstoneRepository> {
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(inPrepTouchstoneVersion))
-            on { getScenario(any(), any()) } doReturn ScenarioAndCoverageSets(scenario, emptyList())
+            on { getScenarioAndCoverageSets(any(), any()) } doReturn ScenarioAndCoverageSets(scenario, emptyList())
+        }
+        val logic = mock<ScenarioLogic> {
+            on { getScenario(any(), any()) } doReturn scenario
         }
         val context = mock<ActionContext> {
             on { params(":touchstone-version-id") } doReturn inPrepTouchstoneVersion.id
             on { params(":scenario-id") } doReturn scenario.id
+            on { permissions } doReturn PermissionSet(listOf())
         }
-        TouchstoneController(context, repo, mock()).getScenario()
+        TouchstoneController(context, repo, mock(), logic, mock()).getScenario()
         verify(context).requirePermission(ReifiedPermission("touchstones.prepare", Scope.Global()))
     }
 
@@ -126,7 +222,7 @@ class TouchstoneControllerTests : MontaguTests()
         val context = mock<ActionContext> {
             on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
         }
-        val result = TouchstoneController(context, repo, logic).getResponsibilities()
+        val result = TouchstoneController(context, repo, mock(), mock(), logic).getResponsibilities()
         assertThat(result).isEqualTo(sets)
     }
 
@@ -144,7 +240,7 @@ class TouchstoneControllerTests : MontaguTests()
         val context = mock<ActionContext> {
             on { params(":touchstone-version-id") } doReturn inPrepTouchstoneVersion.id
         }
-        TouchstoneController(context, repo, logic).getResponsibilities()
+        TouchstoneController(context, repo, mock(), mock(), logic).getResponsibilities()
         verify(context).requirePermission(ReifiedPermission("touchstones.prepare", Scope.Global()))
     }
 
@@ -167,7 +263,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { params(":source-code") } doReturn source
         }
 
-        val data = TouchstoneController(context, repo, mock()).getDemographicDataAndMetadata()
+        val data = TouchstoneController(context, repo, mock(), mock(), mock()).getDemographicDataAndMetadata()
         assertThat(data.structuredMetadata).isEqualTo(demographicMetadata)
     }
 
@@ -184,7 +280,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { queryParams("format") } doReturn "wide"
         }
 
-        val data = TouchstoneController(context, repo, mock())
+        val data = TouchstoneController(context, repo, mock(), mock(), mock())
                 .getDemographicDataAndMetadata()
                 .data.toList()
 
@@ -215,7 +311,7 @@ class TouchstoneControllerTests : MontaguTests()
             on { queryParams("format") } doReturn "long"
         }
 
-        val data = TouchstoneController(context, repo, mock())
+        val data = TouchstoneController(context, repo, mock(), mock(), mock())
                 .getDemographicDataAndMetadata().data
 
         Assertions.assertThat(data.first() is LongDemographicRow).isTrue()
@@ -235,7 +331,7 @@ class TouchstoneControllerTests : MontaguTests()
         }
 
         Assertions.assertThatThrownBy {
-            TouchstoneController(context, repo, mock()).getDemographicDataAndMetadata()
+            TouchstoneController(context, repo, mock(), mock(), mock()).getDemographicDataAndMetadata()
         }.isInstanceOf(BadRequest::class.java)
     }
 

@@ -11,7 +11,7 @@ object TouchstoneRouteConfig : RouteConfig
     private val controller = TouchstoneController::class
 
     private val permissions = setOf("*/touchstones.read")
-    private val scenarioPermissions = permissions + setOf("*/scenarios.read", "*/coverage.read")
+    private val scenarioPermissions = permissions + setOf("*/scenarios.read")
     private val demographicPermissions = permissions + setOf("*/demographics.read")
     private val responsibilityPermissions = permissions + setOf("*/scenarios.read", "*/responsibilities.read")
 
@@ -28,7 +28,7 @@ object TouchstoneRouteConfig : RouteConfig
                     .json()
                     .secure(scenarioPermissions),
 
-            Endpoint("$baseUrl:touchstone-version-id/scenarios/:scenario-id/", controller, "getScenario")
+            Endpoint("$baseUrl:touchstone-version-id/scenarios/:scenario-id/", controller, "getScenarioAndCoverageSets")
                     .json()
                     .secure(scenarioPermissions),
 

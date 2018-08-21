@@ -6,13 +6,14 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.logic.ExpectationsLogic
 import org.vaccineimpact.api.app.logic.RepositoriesExpectationsLogic
+import org.vaccineimpact.api.app.logic.RepositoriesScenarioLogic
+import org.vaccineimpact.api.app.logic.ScenarioLogic
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.models.responsibilities.ResponsibilitySet
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
@@ -21,12 +22,16 @@ import org.vaccineimpact.api.serialization.StreamSerializable
 class TouchstoneController(
         context: ActionContext,
         private val touchstoneRepo: TouchstoneRepository,
+        private val modellingGroupRepository: ModellingGroupRepository,
+        private val scenarioLogic: ScenarioLogic,
         private val expectationsLogic: ExpectationsLogic
 ) : Controller(context)
 {
     constructor(context: ActionContext, repositories: Repositories) : this(
             context,
             repositories.touchstone,
+            repositories.modellingGroup,
+            RepositoriesScenarioLogic(repositories.scenario),
             RepositoriesExpectationsLogic(
                     repositories.responsibilities,
                     repositories.expectations,
@@ -42,12 +47,58 @@ class TouchstoneController(
         return touchstoneRepo.getTouchstones().filterByPermission(context)
     }
 
-    fun getScenarios(): List<ScenarioAndCoverageSets>
+    fun getScenarios(): List<Any>
     {
         val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
-        val filterParameters = ScenarioFilterParameters.fromContext(context)
-        return touchstoneRepo.scenarios(touchstoneVersion.id, filterParameters)
+        val filterParams = ScenarioFilterParameters.fromContext(context)
+        val disease = filterParams.disease
+
+        var requiredCoverageReadingScopes = listOf<Scope>(Scope.Global())
+        if (disease != null)
+        {
+            val groups = modellingGroupRepository.getModellingGroupsForDisease(disease)
+            requiredCoverageReadingScopes += groups.map {
+                Scope.Specific("modelling-group", it.id)
+            }
+        }
+        return if (coverageReadingScopes().intersect(requiredCoverageReadingScopes).any())
+        {
+            // return coverage with scenarios
+            touchstoneRepo.scenarios(touchstoneVersion.id, filterParams)
+        }
+        else
+        {
+            // return just scenarios
+            scenarioLogic.getScenarios(touchstoneVersion.id, filterParams)
+        }
     }
+
+    fun getScenario(): Any
+    {
+        val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
+        val scenarioDescriptionId: String = context.params(":scenario-id")
+        val groups = modellingGroupRepository.getModellingGroupsForScenario(scenarioDescriptionId)
+        val requiredCoverageReadingScopes = groups.map {
+            Scope.Specific("modelling-group", it.id)
+        } + Scope.Global()
+
+        return if (coverageReadingScopes().intersect(requiredCoverageReadingScopes).any())
+        {
+            // return coverage with scenario
+            val data = touchstoneRepo.getScenarioAndCoverageSets(touchstoneVersion.id, scenarioDescriptionId)
+            ScenarioTouchstoneAndCoverageSets(touchstoneVersion, data.scenario, data.coverageSets)
+        }
+        else
+        {
+            // return just scenario
+            val data = scenarioLogic.getScenario(touchstoneVersion.id, scenarioDescriptionId)
+            ScenarioTouchstone(touchstoneVersion, data)
+        }
+    }
+
+    private fun coverageReadingScopes() = context.permissions
+            .filter { it.name == "coverage.read" }
+            .map { it.scope }
 
     fun getResponsibilities(): List<ResponsibilitySetWithExpectations>
     {
@@ -131,14 +182,6 @@ class TouchstoneController(
                 reference.ageTo,
                 reference.gender,
                 valuesPerYear)
-    }
-
-    fun getScenario(): ScenarioTouchstoneAndCoverageSets
-    {
-        val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
-        val scenarioId: String = context.params(":scenario-id")
-        val data = touchstoneRepo.getScenario(touchstoneVersion.id, scenarioId)
-        return ScenarioTouchstoneAndCoverageSets(touchstoneVersion, data.scenario, data.coverageSets)
     }
 
     private fun touchstoneVersion(context: ActionContext, repo: TouchstoneRepository): TouchstoneVersion

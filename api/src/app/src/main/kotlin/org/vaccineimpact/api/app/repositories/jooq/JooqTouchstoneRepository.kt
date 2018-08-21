@@ -104,7 +104,7 @@ class JooqTouchstoneRepository(
         }
     }
 
-    override fun getScenario(touchstoneVersionId: String, scenarioDescId: String): ScenarioAndCoverageSets
+    override fun getScenarioAndCoverageSets(touchstoneVersionId: String, scenarioDescId: String): ScenarioAndCoverageSets
     {
         val records = getScenariosAndCoverageSets(touchstoneVersionId)
                 .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescId))

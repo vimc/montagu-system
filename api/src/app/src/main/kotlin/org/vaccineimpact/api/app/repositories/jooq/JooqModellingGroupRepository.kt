@@ -111,6 +111,26 @@ class JooqModellingGroupRepository(
                 .map { touchstoneRepository.mapTouchstone(it.value) }
     }
 
+    override fun getModellingGroupsForDisease(diseaseId: String): List<ModellingGroup>
+    {
+        return dsl.select(MODELLING_GROUP.fieldsAsList())
+                .fromJoinPath(MODELLING_GROUP, MODEL, DISEASE)
+                .where(DISEASE.ID.eq(diseaseId))
+                .and(MODELLING_GROUP.REPLACED_BY.isNull)
+                .fetchInto<ModellingGroupRecord>()
+                .map { mapModellingGroup(it) }
+    }
+
+    override fun getModellingGroupsForScenario(scenarioDescriptionId: String): List<ModellingGroup>
+    {
+        return dsl.select(MODELLING_GROUP.fieldsAsList())
+                .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO)
+                .where(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
+                .and(MODELLING_GROUP.REPLACED_BY.isNull)
+                .fetchInto<ModellingGroupRecord>()
+                .map { mapModellingGroup(it) }
+    }
+
     private fun mapModellingGroup(x: ModellingGroupRecord) = ModellingGroup(x.id, x.description)
 
 }
