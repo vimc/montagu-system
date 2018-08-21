@@ -3,10 +3,7 @@ package org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.db.direct.addDisease
-import org.vaccineimpact.api.db.direct.addGroup
-import org.vaccineimpact.api.db.direct.addModel
-import org.vaccineimpact.api.db.direct.addUserWithRoles
+import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.ModellingGroup
 import org.vaccineimpact.api.models.ModellingGroupDetails
 import org.vaccineimpact.api.models.ResearchModel
@@ -38,6 +35,39 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
             ))
         }
     }
+
+    @Test
+    fun `getModellingGroupsForDisease only returns groups with model for disease`()
+    {
+        given {
+            it.addGroup("a", "description a")
+            it.addGroup("b", "description b")
+            it.addDisease("disease1")
+            it.addModel("m1", "a", "disease1")
+        } check { repo ->
+            val groups = repo.getModellingGroupsForDisease("disease1")
+            assertThat(groups.count()).isEqualTo(1)
+            assertThat(groups[0].id).isEqualTo("a")
+        }
+    }
+
+    @Test
+    fun `getModellingGroupsForScenario only returns groups with responsibility for scenario`()
+    {
+        given {
+            it.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
+            it.addGroup("a", "description a")
+            it.addGroup("b", "description b")
+            it.addScenarioDescription("s1desc", "desxription", "disease1", addDisease = true)
+            it.addModel("m1", "a", "disease1")
+            it.addResponsibilityInNewSet("a", "touchstone-1", "s1desc")
+        } check { repo ->
+            val groups = repo.getModellingGroupsForScenario("s1desc")
+            assertThat(groups.count()).isEqualTo(1)
+            assertThat(groups[0].id).isEqualTo("a")
+        }
+    }
+
 
     @Test
     fun `only most recent version of modelling groups is returned`()
