@@ -3,10 +3,10 @@ import {createStore} from "redux";
 
 import {Sandbox} from "../../Sandbox";
 import * as sinon from 'sinon';
-import {AbstractLocalService} from "../../../main/shared/services/AbstractLocalService";
+import {AbstractLocalService, RequestOptions} from "../../../main/shared/services/AbstractLocalService";
 import {settings} from "../../../main/shared/Settings";
 import {AuthTypeKeys} from "../../../main/shared/actionTypes/AuthTypes";
-import {createMockStore} from "../../mocks/mockStore";
+import {createMockContribStore, createMockStore} from "../../mocks/mockStore";
 import {SingletonVariableCache} from "../../../main/shared/modules/cache/singletonVariableCache";
 import {Dispatch} from "react-redux";
 import {GlobalState} from "../../../main/shared/reducers/GlobalState";
@@ -15,70 +15,16 @@ import {mockContribState} from "../../mocks/mockStates";
 import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 
 describe('LocalService', () => {
-    describe("initialization", () => {
+    describe("requests", () => {
+
         const sandbox = new Sandbox();
 
         afterEach(() => {
             sandbox.restore();
         });
 
-        it('initializes default service', () => {
-            const store = createStore(state => state, mockContribState({auth: {bearerToken: null}}));
-
-            class TestService extends AbstractLocalService {
-                test() {
-                    return {
-                        options: this.options
-                    };
-                }
-            }
-
-            const testService = new TestService(store.dispatch, store.getState);
-            const serviceData = testService.test();
-            expect(typeof serviceData.options.Authorization).to.equal('undefined')
-        });
-
-        it('initializes default service with request engine and compressed token', () => {
-            const store = createStore(state => state, mockContribState({auth: {bearerToken: "token"}}));
-
-            class TestService extends AbstractLocalService {
-                test() {
-                    return {
-                        options: this.options,
-                        requestOptions: this.makeRequestOptions('POST')
-                    };
-                }
-            }
-
-            const testService = new TestService(store.dispatch, store.getState);
-            const serviceData = testService.test();
-            expect(serviceData.options.Authorization).is.equal("Bearer token");
-            expect(serviceData.requestOptions.headers.Authorization).is.equal("Bearer token");
-        });
-
-        it('initializes default service with request engine, token and withCredentials option', () => {
-
-            const store = createStore(state => state, mockContribState({auth: {bearerToken: "token"}}));
-
-            class TestService extends AbstractLocalService {
-                test() {
-                    this.setOptions({credentials: "include"});
-                    return {
-                        requestOptions: this.makeRequestOptions('POST'),
-                        options: this.options
-                    };
-                }
-            }
-
-            const testService = new TestService(store.dispatch, store.getState);
-            const serviceData = testService.test();
-            expect(serviceData.options.Authorization).is.equal("Bearer token");
-            expect(serviceData.requestOptions.credentials).is.equal("include");
-
-        });
-
-        it('initializes default service with request engine and basic authorization', () => {
-            const store = createStore(state => state, mockContribState());
+        it("can make query with basic auth credentials", () => {
+            const store = createMockContribStore();
             const email = "abc@abc.com";
             const password = "abc";
 
@@ -95,16 +41,19 @@ describe('LocalService', () => {
             const testService = new TestService(store.dispatch, store.getState);
             const serviceData = testService.test();
             expect(serviceData.options.Authorization).is.equal("Basic " + btoa(`${email}:${password}`));
-
         });
-    });
 
-    describe("requests", () => {
+        it("ordinary query includes credentials option", () => {
+            const store = createMockContribStore();
+            class TestService extends AbstractLocalService {
+                test(): RequestOptions {
+                    return this.makeRequestOptions('GET');
+                }
+            }
 
-        const sandbox = new Sandbox();
-
-        afterEach(() => {
-            sandbox.restore();
+            const testService = new TestService(store.dispatch, store.getState);
+            const serviceData = testService.test();
+            expect(serviceData.credentials).to.equal("include");
         });
 
         it('performs successful query', async () => {
