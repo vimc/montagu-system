@@ -10,7 +10,7 @@ interface TouchstoneRepository : Repository
     fun getTouchstones(): List<Touchstone>
     val touchstoneVersions: SimpleDataSet<TouchstoneVersion, String>
 
-    fun scenarios(touchstoneVersionId: String, filterParams: ScenarioFilterParameters): List<ScenarioAndCoverageSets>
+    fun scenariosAndCoverageSets(touchstoneVersionId: String, filterParams: ScenarioFilterParameters): List<ScenarioAndCoverageSets>
     fun getScenarioAndCoverageSets(touchstoneVersionId: String, scenarioDescId: String): ScenarioAndCoverageSets
     fun getScenarioAndCoverageData(touchstoneVersionId: String, scenarioDescId: String): SplitData<ScenarioAndCoverageSets, LongCoverageRow>
     fun getDemographicDatasets(touchstoneVersionId: String): List<DemographicDataset>

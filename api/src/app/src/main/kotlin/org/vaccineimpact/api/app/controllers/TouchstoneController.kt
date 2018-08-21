@@ -64,12 +64,13 @@ class TouchstoneController(
         return if (coverageReadingScopes().intersect(requiredCoverageReadingScopes).any())
         {
             // return coverage with scenarios
-            touchstoneRepo.scenarios(touchstoneVersion.id, filterParams)
+            touchstoneRepo.scenariosAndCoverageSets(touchstoneVersion.id, filterParams)
         }
         else
         {
             // return just scenarios
             scenarioLogic.getScenarios(touchstoneVersion.id, filterParams)
+                    .map{ ScenarioWrapper(it) }
         }
     }
 

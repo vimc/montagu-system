@@ -133,7 +133,7 @@ class GetScenariosTests : TouchstoneRepositoryTests()
                              filterParameters: ScenarioFilterParameters = ScenarioFilterParameters())
             : List<ScenarioAndCoverageSets>
     {
-        return it.scenarios(touchstoneVersionId, filterParameters)
+        return it.scenariosAndCoverageSets(touchstoneVersionId, filterParameters)
     }
 
     private fun checkResult(actuals: List<ScenarioAndCoverageSets?>, expecteds: List<ScenarioAndCoverageSets?>)
