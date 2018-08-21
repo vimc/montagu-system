@@ -30,6 +30,23 @@ class ScenarioTests : DatabaseTest()
         } andCheckArray {
             assertThat(it).isEqualTo(json {
                 array(obj(
+                        "scenario" to expectedScenario()
+                ))
+            })
+        }
+    }
+
+
+    @Test
+    fun `can get scenarios with coverage sets (as they exist within a touchstone)`()
+    {
+        validate("/touchstones/$touchstoneVersionId/scenarios/") against "ScenariosInTouchstone" given {
+            addTouchstoneWithScenarios(it, touchstoneVersionId, "open", coverageSetId = setId)
+        } withPermissions  {
+            requiredPermissions + PermissionSet("*/coverage.read")
+        } andCheckArray {
+            assertThat(it).isEqualTo(json {
+                array(obj(
                         "scenario" to expectedScenario(),
                         "coverage_sets" to expectedCoverageSets()
                 ))
@@ -56,6 +73,29 @@ class ScenarioTests : DatabaseTest()
             addTouchstoneWithScenarios(it, touchstoneVersionId, "open", coverageSetId = setId)
         } requiringPermissions {
             requiredPermissions
+        } andCheck {
+            assertThat(it).isEqualTo(json {
+                obj(
+                        "touchstone_version" to obj(
+                                "id" to touchstoneVersionId,
+                                "name" to "touchstone",
+                                "version" to 1,
+                                "description" to "Description",
+                                "status" to "open"
+                        ),
+                        "scenario" to expectedScenario()
+                )
+            })
+        }
+    }
+
+    @Test
+    fun `can get scenario and coverage sets (as it exists within a touchstone)`()
+    {
+        validate("/touchstones/$touchstoneVersionId/scenarios/$scenarioId") against "ScenarioAndCoverageSets" given {
+            addTouchstoneWithScenarios(it, touchstoneVersionId, "open", coverageSetId = setId)
+        } withPermissions  {
+            requiredPermissions + PermissionSet("*/coverage.read")
         } andCheck {
             assertThat(it).isEqualTo(json {
                 obj(
