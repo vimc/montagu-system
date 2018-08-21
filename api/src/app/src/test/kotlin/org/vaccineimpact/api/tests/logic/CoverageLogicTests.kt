@@ -158,7 +158,7 @@ class CoverageLogicTests : MontaguTests()
     {
         Assertions.assertThat(result.touchstoneVersion).isEqualTo(fakeTouchstoneVersion)
         Assertions.assertThat(result.scenario).isEqualTo(fakeScenario)
-        Assertions.assertThat(result.coverageSets[0].id).isEqualTo(1)
+        Assertions.assertThat(result.coverageSets!![0].id).isEqualTo(1)
     }
 
     private val years = listOf(1985, 1990, 1995, 2000)

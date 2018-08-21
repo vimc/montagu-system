@@ -17,6 +17,7 @@ import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.test_helpers.exampleResponsibilitySetWithExpectations
@@ -93,10 +94,10 @@ class TouchstoneControllerTests : MontaguTests()
         }
 
         val data = TouchstoneController(context, repo, mock(), logic, mock()).getScenario()
-                as ScenarioTouchstone
 
         assertThat(data.touchstoneVersion).isEqualTo(openTouchstoneVersion)
         assertThat(data.scenario).isEqualTo(scenario)
+        assertThat(data.coverageSets).isNull()
     }
 
     @Test
@@ -125,10 +126,10 @@ class TouchstoneControllerTests : MontaguTests()
         }
 
         val data = TouchstoneController(context, repo, modellingGroupRepo, logic, mock()).getScenario()
-                as ScenarioTouchstone
 
         assertThat(data.touchstoneVersion).isEqualTo(openTouchstoneVersion)
         assertThat(data.scenario).isEqualTo(scenario)
+        assertThat(data.coverageSets).isNull()
     }
 
     @Test
@@ -150,7 +151,6 @@ class TouchstoneControllerTests : MontaguTests()
         }
 
         val data = TouchstoneController(context, repo, mock(), mock(), mock()).getScenario()
-                as ScenarioTouchstoneAndCoverageSets
 
         assertThat(data.touchstoneVersion).isEqualTo(openTouchstoneVersion)
         assertThat(data.scenario).isEqualTo(scenario)
@@ -180,7 +180,6 @@ class TouchstoneControllerTests : MontaguTests()
         }
 
         val data = TouchstoneController(context, repo, modellingGroupRepo, mock(), mock()).getScenario()
-                as ScenarioTouchstoneAndCoverageSets
 
         assertThat(data.touchstoneVersion).isEqualTo(openTouchstoneVersion)
         assertThat(data.scenario).isEqualTo(scenario)

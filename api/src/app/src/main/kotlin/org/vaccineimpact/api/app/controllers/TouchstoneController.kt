@@ -47,7 +47,7 @@ class TouchstoneController(
         return touchstoneRepo.getTouchstones().filterByPermission(context)
     }
 
-    fun getScenarios(): List<Any>
+    fun getScenarios(): List<ScenarioAndCoverageSets>
     {
         val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
         val filterParams = ScenarioFilterParameters.fromContext(context)
@@ -70,11 +70,11 @@ class TouchstoneController(
         {
             // return just scenarios
             scenarioLogic.getScenarios(touchstoneVersion.id, filterParams)
-                    .map{ ScenarioWrapper(it) }
+                    .map{ ScenarioAndCoverageSets(it, null) }
         }
     }
 
-    fun getScenario(): Any
+    fun getScenario(): ScenarioTouchstoneAndCoverageSets
     {
         val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
         val scenarioDescriptionId: String = context.params(":scenario-id")
@@ -92,8 +92,8 @@ class TouchstoneController(
         else
         {
             // return just scenario
-            val data = scenarioLogic.getScenario(touchstoneVersion.id, scenarioDescriptionId)
-            ScenarioTouchstone(touchstoneVersion, data)
+            ScenarioTouchstoneAndCoverageSets(touchstoneVersion,
+                    scenarioLogic.getScenario(touchstoneVersion.id, scenarioDescriptionId), null)
         }
     }
 

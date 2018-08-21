@@ -52,7 +52,7 @@ open class MontaguSerializer : Serializer
         val instance: Serializer = MontaguSerializer()
     }
 
-    override val gson: Gson
+    override final val gson: Gson
 
     init
     {
@@ -82,6 +82,8 @@ open class MontaguSerializer : Serializer
         val baseGson = common.create()
         gson = common
                 .registerTypeAdapter<User>(ruleBasedSerializer(baseGson))
+                .registerTypeAdapter<ScenarioTouchstoneAndCoverageSets>(ruleBasedSerializer(baseGson))
+                .registerTypeAdapter<ScenarioAndCoverageSets>(ruleBasedSerializer(baseGson))
                 .create()
     }
 
