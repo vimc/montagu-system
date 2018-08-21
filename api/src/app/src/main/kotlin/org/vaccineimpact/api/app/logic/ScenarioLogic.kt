@@ -1,44 +1,85 @@
 package org.vaccineimpact.api.app.logic
 
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
-import org.vaccineimpact.api.models.LongCoverageRow
-import org.vaccineimpact.api.models.Scenario
-import org.vaccineimpact.api.models.ScenarioAndCoverageSets
-import org.vaccineimpact.api.serialization.SplitData
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.models.*
 
 interface ScenarioLogic
 {
-    fun getScenarios(touchstoneVersionId: String, filterParams: ScenarioFilterParameters): List<Scenario>
+    fun getScenariosAndCoverageSetsForTouchstone(touchstoneVersionId: String,
+                                                 coverageReadingScopes: List<Scope>,
+                                                 filterParams: ScenarioFilterParameters)
+            : List<ScenarioAndCoverageSets>
 
-    fun getScenario(touchstoneVersionId: String, scenarioDescId: String): Scenario
-    fun getScenarioAndCoverageSets(touchstoneVersionId: String, scenarioDescId: String): ScenarioAndCoverageSets
-
-    fun getScenarioAndCoverageData(touchstoneVersionId: String, scenarioDescId: String): SplitData<ScenarioAndCoverageSets, LongCoverageRow>
-
+    fun getScenarioTouchstoneAndCoverageSets(touchstoneVersion: TouchstoneVersion,
+                                             scenarioDescriptionId: String,
+                                             coverageReadingScopes: List<Scope>)
+            : ScenarioTouchstoneAndCoverageSets
 }
 
-class RepositoriesScenarioLogic(private val scenarioRepository: ScenarioRepository) : ScenarioLogic
+class RepositoriesScenarioLogic(private val touchstoneRepo: TouchstoneRepository,
+                                private val modellingGroupRepository: ModellingGroupRepository,
+                                private val scenarioRepository: ScenarioRepository) : ScenarioLogic
 {
-
-    override fun getScenarios(touchstoneVersionId: String, filterParams: ScenarioFilterParameters): List<Scenario>
+    override fun getScenarioTouchstoneAndCoverageSets(touchstoneVersion: TouchstoneVersion, scenarioDescriptionId: String, coverageReadingScopes: List<Scope>)
+            : ScenarioTouchstoneAndCoverageSets
     {
-        return scenarioRepository.getScenariosForTouchstone(touchstoneVersionId, filterParams)
+        val groups = modellingGroupRepository.getModellingGroupsForScenario(scenarioDescriptionId)
+
+        return if (hasRequiredCoverageReadingScope(groups, coverageReadingScopes))
+        {
+            // return coverage with scenario
+            val data = touchstoneRepo.getScenarioAndCoverageSets(touchstoneVersion.id, scenarioDescriptionId)
+            ScenarioTouchstoneAndCoverageSets(touchstoneVersion, data.scenario, data.coverageSets)
+        }
+        else
+        {
+            // return just scenario
+            ScenarioTouchstoneAndCoverageSets(touchstoneVersion,
+                    scenarioRepository.getScenarioForTouchstone(touchstoneVersion.id, scenarioDescriptionId), null)
+        }
     }
 
-    override fun getScenario(touchstoneVersionId: String, scenarioDescId: String): Scenario
+    override fun getScenariosAndCoverageSetsForTouchstone(touchstoneVersionId: String,
+                                                          coverageReadingScopes: List<Scope>,
+                                                          filterParams: ScenarioFilterParameters)
+            : List<ScenarioAndCoverageSets>
     {
-        return scenarioRepository.getScenarioForTouchstone(touchstoneVersionId, scenarioDescId)
+        val disease = filterParams.disease
+
+        val groups = if (disease != null)
+        {
+            modellingGroupRepository.getModellingGroupsForDisease(disease)
+
+        }
+        else
+        {
+            listOf()
+        }
+
+        return if (hasRequiredCoverageReadingScope(groups, coverageReadingScopes))
+        {
+            // return coverage with scenarios
+            touchstoneRepo.scenariosAndCoverageSets(touchstoneVersionId, filterParams)
+        }
+        else
+        {
+            // return just scenarios
+            scenarioRepository.getScenariosForTouchstone(touchstoneVersionId, filterParams)
+                    .map { ScenarioAndCoverageSets(it, null) }
+        }
     }
 
-    override fun getScenarioAndCoverageSets(touchstoneVersionId: String, scenarioDescId: String): ScenarioAndCoverageSets
+    private fun hasRequiredCoverageReadingScope(groups: List<ModellingGroup>,
+                                                scopes: List<Scope>): Boolean
     {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+        val requiredScopes = groups.map {
+            Scope.Specific("modelling-group", it.id)
+        } + Scope.Global()
 
-    override fun getScenarioAndCoverageData(touchstoneVersionId: String, scenarioDescId: String): SplitData<ScenarioAndCoverageSets, LongCoverageRow>
-    {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return scopes.intersect(requiredScopes).any()
     }
 
 }
