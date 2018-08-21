@@ -89,6 +89,7 @@ class OnetimeLinkResolverTests : MontaguTests()
             on { expectations } doReturn mock<ExpectationsRepository>()
             on { modellingGroup } doReturn mock<ModellingGroupRepository>()
             on { responsibilities } doReturn mock<ResponsibilitiesRepository>()
+            on { scenario } doReturn mock<ScenarioRepository>()
         }
         val repos = MockRepositories(innerRepos)
 
