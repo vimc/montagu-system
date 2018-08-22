@@ -30,7 +30,7 @@ export class LoggedInUserBoxComponent extends React.Component<LoggedInUserBoxPro
 }
 
 export const mapStateToProps = (state: GlobalState): Partial<LoggedInUserBoxProps> => ({
-    loggedIn: state.auth.loggedIn,
+    loggedIn: state.auth.receivedBearerToken,
     username: state.auth.username
 });
 

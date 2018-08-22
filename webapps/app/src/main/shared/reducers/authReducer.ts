@@ -1,8 +1,8 @@
 import {AuthActionsTypes, AuthTypeKeys} from "../actionTypes/AuthTypes";
 
 export interface AuthState {
-    loggedIn: boolean;
-    hasCookies: boolean;
+    receivedBearerToken: boolean;
+    receivedCookies: boolean;
     username: string;
     bearerToken: string;
     permissions: string[];
@@ -14,8 +14,8 @@ export interface AuthState {
 }
 
 export const initialAuthState: AuthState = {
-    loggedIn: false,
-    hasCookies: false,
+    receivedBearerToken: false,
+    receivedCookies: false,
     username: null,
     bearerToken: null,
     permissions: [],
@@ -34,7 +34,7 @@ export const authReducer = (state = initialAuthState, action: AuthActionsTypes) 
         case AuthTypeKeys.AUTHENTICATION_ERROR:
             return {...state, errorMessage: action.error};
         case AuthTypeKeys.RECEIVED_COOKIES:
-            return {...state, hasCookies: true};
+            return {...state, receivedCookies: true};
         default:
             return state;
     }

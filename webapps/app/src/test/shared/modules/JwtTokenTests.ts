@@ -57,7 +57,7 @@ describe('JwtTokenAuth Module Tests', () => {
         const testToken = signAndCompress(testData, "secret");
         const authData: AuthState = jwtTokenAuth.getDataFromCompressedToken(testToken);
 
-        expect(authData.loggedIn).to.eql(true);
+        expect(authData.receivedBearerToken).to.eql(true);
         expect(authData.bearerToken).to.eql(testToken);
         expect(authData.isAccountActive).to.eql(true);
         expect(authData.isModeller).to.eql(true);
