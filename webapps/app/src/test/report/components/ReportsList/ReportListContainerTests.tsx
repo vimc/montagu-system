@@ -34,7 +34,7 @@ describe("ReportListComponent", () => {
         let store = createMockStore(mockReportAppState({reports: {reports: null}}));
         const getReportsActionStub = sandbox.setStubReduxAction(reportActionCreators, 'getReports');
         // 1 dive leads us to bypass first hoc, so we pass connect and stop on lifecycle
-        const rendered = shallow(<ReportsList />, {context: {store}}).dive();
+        shallow(<ReportsList />, {context: {store}}).dive();
         expect(getReportsActionStub.called).to.eq(true);
     });
 
