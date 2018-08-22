@@ -1,10 +1,13 @@
 import * as React from "react";
 import {Disease, Scenario} from "../../../../shared/models/Generated";
 import {UncontrolledTooltip} from "reactstrap";
+import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
 
 export interface ScenarioGroupProps {
+    touchstoneVersionId: string;
     disease: Disease;
     scenarios: Scenario[];
+    canDownloadCoverage: boolean;
 }
 
 export class ScenarioGroup extends React.Component<ScenarioGroupProps> {
@@ -12,7 +15,7 @@ export class ScenarioGroup extends React.Component<ScenarioGroupProps> {
         return <div>
             <h3>{this.props.disease.name}</h3>
             <div className="row">
-                <ul className="list-group col-lg-9 col-md-9 col-12">
+                <ul className="list-group col-12">
                     {this.renderRows(this.props.scenarios)}
                 </ul>
             </div>
@@ -20,17 +23,27 @@ export class ScenarioGroup extends React.Component<ScenarioGroupProps> {
     }
 
     renderRows(scenarios: Scenario[]): JSX.Element[] {
-        return scenarios.map(s => <li key={s.id} className="list-group-item">
-            <div className="row align-items-center">
-                <div className="col-4 text-left">{s.description}</div>
-                <code className="col-4 text-center">{s.id}</code>
-                <div className="col-4 text-right">
-                    <button id={`download-coverage-${s.id}`} disabled={true}>Download coverage data</button>
-                    <UncontrolledTooltip placement="bottom" target={`download-coverage-${s.id}`}>
-                        Coming soon
-                    </UncontrolledTooltip>
-                </div>
-            </div>
-        </li>);
+        return scenarios.map(s => ScenarioItem(this.props, s));
     }
 }
+
+const ScenarioItem = (props: ScenarioGroupProps, scenario: Scenario) => {
+    let href = null;
+    if (props.canDownloadCoverage) {
+        href = `/touchstones/${props.touchstoneVersionId}/${scenario.id}/coverage/csv/`
+    }
+    return <li key={scenario.id} className="list-group-item">
+        <div className="row align-items-center">
+            <div className="col-4 text-left">{scenario.description}</div>
+            <code className="col-4 text-center">{scenario.id}</code>
+            <div className="col-4 text-right" id={`download-coverage-${scenario.id}`}>
+                <FileDownloadButton href={href}>
+                    Download coverage data</FileDownloadButton>
+                {!props.canDownloadCoverage &&
+                <UncontrolledTooltip placement="bottom" target={`download-coverage-${scenario.id}`}>
+                    You do not have permission to download coverage
+                </UncontrolledTooltip>}
+            </div>
+        </div>
+    </li>
+};

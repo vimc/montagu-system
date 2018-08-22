@@ -2,12 +2,12 @@ import thunk from 'redux-thunk';
 import {AdminAppState} from "../../main/admin/reducers/adminAppReducers";
 import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
 import {ReportAppState} from "../../main/report/reducers/reportAppReducers";
-import {RecursivePartial} from "./mockStates";
+import {mockAdminState, RecursivePartial} from "./mockStates";
 import {MockStore} from "redux-mock-store";
 const configureReduxMockStore  = require('redux-mock-store');
 
 export function createMockAdminStore(initialState?: RecursivePartial<AdminAppState>) {
-    return createMockStore(initialState);
+    return createMockStore(mockAdminState(initialState));
 }
 export function createMockContribStore(initialState?: RecursivePartial<ContribAppState>) {
     return createMockStore(initialState);
