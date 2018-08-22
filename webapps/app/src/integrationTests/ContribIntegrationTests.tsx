@@ -4,35 +4,34 @@ import {Client, QueryResult} from "pg";
 import {createMemoryHistory} from 'history';
 
 import {
-    CreateBurdenEstimateSet,
-    DemographicDataset,
+    CoverageSet, CreateBurdenEstimateSet, DemographicDataset,
     Disease,
-    ModellingGroup,
-    ModelRunParameterSet,
+    ModellingGroup, ModelRunParameterSet,
     ResponsibilitySetWithExpectations,
-    Result,
-    ScenarioTouchstoneAndCoverageSets,
-    Touchstone,
+    Result, ScenarioTouchstoneAndCoverageSets, Touchstone,
 } from "../main/shared/models/Generated";
-import {inflateAndDecode, IntegrationTestSuite} from "./IntegrationTest";
+import {IntegrationTestSuite, TestService} from "./IntegrationTest";
 import * as enzyme from "enzyme";
+import {shallow} from "enzyme";
 import * as Adapter from "enzyme-adapter-react-15";
-import * as QueryString from "querystring";
 
 import {createContribStore} from "../main/contrib/createStore";
-import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
+import {Sandbox} from "../test/Sandbox";
+import {DownloadCoverageContentComponent} from "../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
+import {mockModellingGroup, mockScenario, mockTouchstoneVersion} from "../test/mocks/mockModels";
+import {FileDownloadButton} from "../main/shared/components/FileDownloadLink";
+import {DownloadDemographicsContentComponent} from "../main/shared/components/Demographics/DownloadDemographicsContent";
 import {RunParametersService} from "../main/contrib/services/RunParametersService";
 import {DiseasesService} from "../main/shared/services/DiseasesService";
+import {UserService} from "../main/contrib/services/UserService";
+import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
 import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 import {ResponsibilitiesService} from "../main/contrib/services/ResponsibilitiesService";
 import {CoverageService} from "../main/contrib/services/CoverageService";
 import {DemographicService} from "../main/shared/services/DemographicService";
-import {appSettings} from "../main/shared/Settings";
 import {EstimatesService} from "../main/contrib/services/EstimatesService";
-import {UserService} from "../main/contrib/services/UserService";
-import {helpers} from "../main/shared/Helpers";
 
-enzyme.configure({ adapter: new Adapter() });
+enzyme.configure({adapter: new Adapter()});
 
 const FormData = require('form-data');
 
@@ -52,6 +51,10 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
     }
 
     addTestsToMocha() {
+
+        const sandbox = new Sandbox();
+
+        afterEach(() => sandbox.restore());
 
         it("can upload model run parameter sets", async () => {
             await addResponsibilities(this.db);
@@ -83,17 +86,17 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
         it("signs confidentiality agreement", async () => {
 
-          const result = await (new UserService(this.store.dispatch, this.store.getState))
-            .signConfidentiality();
-          expect(result).to.eq("OK");
+            const result = await (new UserService(this.store.dispatch, this.store.getState))
+                .signConfidentiality();
+            expect(result).to.eq("OK");
 
         });
 
         it("gets confidentiality agreement", async () => {
 
-          const result = await (new UserService(this.store.dispatch, this.store.getState))
-            .getConfidentiality();
-         expect(result).to.eq(false);
+            const result = await (new UserService(this.store.dispatch, this.store.getState))
+                .getConfidentiality();
+            expect(result).to.eq(false);
 
         });
 
@@ -137,7 +140,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
                 .getResponsibilities(groupId, touchstoneVersionId);
-            
+
             expect(responsibilities).to.eql(expectedResponsibilitiesResponse());
         });
 
@@ -235,6 +238,64 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const estimateSet = responsibilities.responsibilities[0].current_estimate_set;
             expect(estimateSet.type).to.eql(data.type);
         });
+
+        it("can download coverage data", async () => {
+            const coverageSetId = await addCoverageSets(this.db);
+
+            const mockCoverageSets: CoverageSet[] = [
+                {
+                    id: coverageSetId,
+                    name: "Test set",
+                    touchstone_version: touchstoneVersionId,
+                    activity_type: "none",
+                    vaccine: "yf",
+                    gavi_support: "no vaccine"
+                }
+            ];
+
+            const rendered = shallow(<DownloadCoverageContentComponent
+                touchstone={mockTouchstoneVersion({id: touchstoneVersionId})}
+                coverageSets={mockCoverageSets}
+                group={mockModellingGroup({id: groupId})}
+                scenario={mockScenario({id: scenarioId})}
+                selectedFormat={"long"}
+                setFormat={() => {
+                }}/>);
+
+            const href = rendered.find(FileDownloadButton).prop("href");
+
+            const response = await new TestService(this.store.dispatch, this.store.getState)
+                .getAnyUrl(href);
+
+            expect(response.status).to.equal(200)
+        });
+
+        it("can download demographic data", async () => {
+            await addDemographicDataSets(this.db);
+
+            const mockDataSets = [{
+                id: "statistic",
+                name: "Some statistic",
+                gender_is_applicable: false,
+                source: "source"
+            }];
+
+            const rendered = shallow(<DownloadDemographicsContentComponent
+                touchstone={mockTouchstoneVersion({id: touchstoneVersionId})}
+                dataSets={mockDataSets}
+                selectedFormat={"long"}
+                selectedDataSet={mockDataSets[0]}
+                selectedGender={"F"}
+            />);
+
+
+            const href = rendered.find(FileDownloadButton).prop("href");
+
+            const response = await new TestService(this.store.dispatch, this.store.getState)
+                .getAnyUrl(href);
+
+            expect(response.status).to.equal(200)
+        })
     }
 }
 

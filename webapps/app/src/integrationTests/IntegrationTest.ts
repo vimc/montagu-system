@@ -7,11 +7,20 @@ import {authActionCreators} from "../main/shared/actions/authActionCreators";
 import {localStorageHandler} from "../main/shared/services/localStorageHandler";
 import {singletonVariableCache} from "../main/shared/modules/cache/singletonVariableCache";
 import {jwtTokenAuth} from "../main/shared/modules/jwtTokenAuth";
+import {ReactWrapper} from "enzyme";
+import {AbstractLocalService} from "../main/shared/services/AbstractLocalService";
 
 const jwt_decode = require('jwt-decode');
 
 const dbName = process.env.PGDATABASE;
 const dbTemplateName = process.env.PGTEMPLATE;
+
+export class TestService extends AbstractLocalService {
+
+    getAnyUrl(url: string) {
+        return this.doFetch(this.makeUrl(url, "main"), this.makeRequestOptions("GET", null));
+    }
+}
 
 export abstract class IntegrationTestSuite {
     abstract description(): string;
@@ -56,7 +65,8 @@ export abstract class IntegrationTestSuite {
                 this.store.dispatch(authActionCreators.logIn("test@example.com", "password"));
                 let unsubscribe = this.store.subscribe(handleChange);
                 let that = this;
-                function handleChange () {
+
+                function handleChange() {
                     const token = that.store.getState().auth.bearerToken;
                     sandbox.setStubFunc(localStorageHandler, 'get', () => token);
                     unsubscribe();
@@ -69,8 +79,40 @@ export abstract class IntegrationTestSuite {
     }
 }
 
+export async function firstDownloadPromise(rendered: ReactWrapper) {
+    let url = null;
+
+    // until onetime token has been fetched url will be null
+    while (url == null) {
+        await timeout(50);
+        rendered.update(); // mounted component won't update with new props automatically
+        const link = rendered.find("a").first();
+        url = link.prop("href");
+        console.log(url)
+    }
+
+    return fetch(url)
+}
+
+export async function lastDownloadPromise(rendered: ReactWrapper) {
+    let url = null;
+    // until onetime token has been fetched url will be null
+    while (url == null) {
+        await timeout(50);
+        rendered.update(); // mounted component won't update with new props automatically
+        const link = rendered.find("a").last();
+        url = link.prop("href");
+    }
+
+    return fetch(url)
+}
+
+async function timeout(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function queryAgainstRootDb(query: string): Promise<void> {
-    const db = new Client({ database: "postgres" });
+    const db = new Client({database: "postgres"});
     db.connect();
     return db.query(query)
         .then(() => {
