@@ -26,7 +26,7 @@ class ScenarioLogicTests : MontaguTests()
         }
 
         val modellingGroupRepo = mock<ModellingGroupRepository> {
-            on { getModellingGroupsForScenario(any()) } doReturn listOf(ModellingGroup("gId", "desc"))
+            on { getModellingGroupsForScenario(any(), any()) } doReturn listOf(ModellingGroup("gId", "desc"))
         }
 
         val sut = RepositoriesScenarioLogic(mock(), modellingGroupRepo, scenarioRepo)
@@ -49,7 +49,7 @@ class ScenarioLogicTests : MontaguTests()
         }
 
         val modellingGroupRepo = mock<ModellingGroupRepository> {
-            on { getModellingGroupsForScenario(any()) } doReturn listOf(ModellingGroup("gId", "desc"))
+            on { getModellingGroupsForScenario(any(), any()) } doReturn listOf(ModellingGroup("gId", "desc"))
         }
 
         val sut = RepositoriesScenarioLogic(repo, modellingGroupRepo, mock())
@@ -72,7 +72,7 @@ class ScenarioLogicTests : MontaguTests()
         }
 
         val modellingGroupRepo = mock<ModellingGroupRepository> {
-            on { getModellingGroupsForScenario(any()) } doReturn listOf(ModellingGroup("gId", "desc"))
+            on { getModellingGroupsForScenario(any(), any()) } doReturn listOf(ModellingGroup("gId", "desc"))
         }
 
         val sut = RepositoriesScenarioLogic(repo, modellingGroupRepo, mock())
@@ -86,22 +86,19 @@ class ScenarioLogicTests : MontaguTests()
     }
 
     @Test
-    fun `getScenariosAndCoverageSetsForTouchstone fetches scenarios without coverage sets if user has wrongly scoped coverage reading permission`()
+    fun `getScenariosAndCoverageSetsForTouchstone fetches scenarios without coverage sets if user does not have global coverage reading permission`()
     {
         val scenarioRepo = mock<ScenarioRepository> {
             on { getScenariosForTouchstone(any(), any()) } doReturn listOf(scenario)
         }
 
-        val modellingGroupRepo = mock<ModellingGroupRepository> {
-            on { getModellingGroupsForScenario(any()) } doReturn listOf(ModellingGroup("gId", "desc"))
-        }
-
-        val sut = RepositoriesScenarioLogic(mock(), modellingGroupRepo, scenarioRepo)
+        val sut = RepositoriesScenarioLogic(mock(), mock(), scenarioRepo)
 
         val result = sut.getScenariosAndCoverageSetsForTouchstone(touchstoneVersion.id,
                 listOf(Scope.Specific("modelling-group", "wrong-id")),
                 ScenarioFilterParameters())
 
+        assertThat(result.count()).isGreaterThan(0)
         assertThat(result.all { it.coverageSets == null }).isTrue()
     }
 
@@ -111,41 +108,16 @@ class ScenarioLogicTests : MontaguTests()
         val coverageSets = listOf(CoverageSet(1, "t1", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN))
 
         val repo = mock<TouchstoneRepository> {
-            on { getScenarioAndCoverageSets(any(), any()) } doReturn ScenarioAndCoverageSets(scenario, coverageSets)
+            on { getScenariosAndCoverageSets(any(), any()) } doReturn listOf(ScenarioAndCoverageSets(scenario, coverageSets))
         }
 
-        val modellingGroupRepo = mock<ModellingGroupRepository> {
-            on { getModellingGroupsForScenario(any()) } doReturn listOf(ModellingGroup("gId", "desc"))
-        }
-
-        val sut = RepositoriesScenarioLogic(repo, modellingGroupRepo, mock())
+        val sut = RepositoriesScenarioLogic(repo, mock(), mock())
 
         val result = sut.getScenariosAndCoverageSetsForTouchstone(touchstoneVersion.id,
                 listOf(Scope.Global()),
                 ScenarioFilterParameters())
 
-        assertThat(result.all { it.coverageSets == coverageSets }).isTrue()
-    }
-
-    @Test
-    fun `getScenariosAndCoverageSetsForTouchstone fetches scenarios with coverage sets if user has scoped coverage reading permission`()
-    {
-        val coverageSets = listOf(CoverageSet(1, "t1", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN))
-
-        val repo = mock<TouchstoneRepository> {
-            on { getScenarioAndCoverageSets(any(), any()) } doReturn ScenarioAndCoverageSets(scenario, coverageSets)
-        }
-
-        val modellingGroupRepo = mock<ModellingGroupRepository> {
-            on { getModellingGroupsForScenario(any()) } doReturn listOf(ModellingGroup("gId", "desc"))
-        }
-
-        val sut = RepositoriesScenarioLogic(repo, modellingGroupRepo, mock())
-
-        val result = sut.getScenariosAndCoverageSetsForTouchstone(touchstoneVersion.id,
-                listOf(Scope.Specific("modelling0-group", "gId")),
-                ScenarioFilterParameters())
-
+        assertThat(result.count()).isGreaterThan(0)
         assertThat(result.all { it.coverageSets == coverageSets }).isTrue()
     }
 }

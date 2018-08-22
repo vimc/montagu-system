@@ -36,38 +36,25 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
         }
     }
 
-    @Test
-    fun `getModellingGroupsForDisease only returns groups with model for disease`()
-    {
-        given {
-            it.addGroup("a", "description a")
-            it.addGroup("b", "description b")
-            it.addDisease("disease1")
-            it.addModel("m1", "a", "disease1")
-        } check { repo ->
-            val groups = repo.getModellingGroupsForDisease("disease1")
-            assertThat(groups.count()).isEqualTo(1)
-            assertThat(groups[0].id).isEqualTo("a")
-        }
-    }
 
     @Test
     fun `getModellingGroupsForScenario only returns groups with responsibility for scenario`()
     {
         given {
             it.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
+            it.addTouchstoneVersion("touchstone", 2, addTouchstone = false)
             it.addGroup("a", "description a")
             it.addGroup("b", "description b")
             it.addScenarioDescription("s1desc", "desxription", "disease1", addDisease = true)
             it.addModel("m1", "a", "disease1")
             it.addResponsibilityInNewSet("a", "touchstone-1", "s1desc")
+            it.addResponsibilityInNewSet("b", "touchstone-2", "s1desc")
         } check { repo ->
-            val groups = repo.getModellingGroupsForScenario("s1desc")
+            val groups = repo.getModellingGroupsForScenario("s1desc", "touchstone-1")
             assertThat(groups.count()).isEqualTo(1)
             assertThat(groups[0].id).isEqualTo("a")
         }
     }
-
 
     @Test
     fun `only most recent version of modelling groups is returned`()
