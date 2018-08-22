@@ -8,7 +8,7 @@ export interface AppProps {
 
 export const mapStateToAppProps = (state: CommonState, props: Partial<AppProps>): AppProps => {
     return {
-        loggedIn: state.auth.loggedIn && state.auth.hasCookies,
+        loggedIn: state.auth.receivedBearerToken && state.auth.receivedCookies,
         history: props.history
     }
 };

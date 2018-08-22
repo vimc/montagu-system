@@ -59,8 +59,8 @@ export const jwtTokenAuth = {
         const permissions = decoded.permissions.split(",").filter((x: string) => x.length > 0);
         const modellingGroups = this.parseModellingGroups(decoded.roles);
         return {
-            loggedIn: true,
-            hasCookies: false,
+            receivedBearerToken: true,
+            receivedCookies: false,
             bearerToken: token,
             isAccountActive: permissions.some((x: string) => x == "*/can-login"),
             isModeller: modellingGroups.length > 0,
