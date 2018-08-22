@@ -136,13 +136,16 @@ Schema: [`ResponsibilitySets.schema.json`](../schemas/ResponsibilitySets.schema.
 ## GET /touchstones/{touchstone-id}/scenarios/
 Returns all scenarios associated with the touchstone.
 
-Required permissions: `touchstones.read`, `scenarios.read`, `coverage.read`
+Required permissions: `touchstones.read`, `scenarios.read`.
 
 Additionally, to view scenarios for an in-preparation touchstone, `touchstones.prepare` is required.
 
+If the user has global `coverage.read` permission then coverage sets metadata will be returned. Otherwise just the
+ scenario will be returned.
+
 Schema: [`ScenariosInTouchstone.schema.json`](../schemas/ScenariosInTouchstone.schema.json)
 
-### Example
+### Example with coverage.read
     [
         {
             "scenario": {
@@ -189,6 +192,26 @@ Schema: [`ScenariosInTouchstone.schema.json`](../schemas/ScenariosInTouchstone.s
             ]
         }
     ]
+    
+### Example without coverage.read
+    [
+        {
+            "scenario": {
+                "id": "menA-novacc",
+                "touchstones": [ "2016-op-1", "2017-wuenic-1", "2017-op-1" ],
+                "description": "Menigitis A, No vaccination",
+                "disease": "MenA"
+            }
+        },
+        {
+            "scenario": {
+                "id": "yf-campaign-reactive-nogavi",
+                "touchstones": [ "2017-wuenic-1", "2017-op-1" ],
+                "description": "Yellow Fever, Reactive campaign, SDF coverage without GAVI support",
+                "disease": "YF"
+            }
+        }
+    ]
 
 Note that the coverage sets returned are just those that belong to the touchstone in the URL.
 In other words, if the same scenario is associated with other coverage
@@ -201,13 +224,17 @@ The returned scenarios can be filtered using the same query parameters as `GET /
 ## GET /touchstones/{touchstone-id}/scenarios/{scenario-id}/
 Returns a single scenario associated with a touchstone.
 
-Required permissions: `touchstones.read`, `scenarios.read`, `coverage.read`
+Required permissions: `touchstones.read`, `scenarios.read`,
 
 Additionally, to view scenarios for an in-preparation touchstone, `touchstones.prepare` is required.
 
+If the user has `coverage.read` permission, either globally scoped or for a modelling-group that is responsible
+for the given scenario in the given touchstone, then coverage sets metadata will be returned. Otherwise just touchstone
+and scenario will be returned.
+
 Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSets.schema.json)
 
-### Example
+### Example with coverage.read
     {
         "touchstone_version": { 
             "id": "2017-op-1",
@@ -232,4 +259,22 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
                 "activity_type": "none"
             }
         ]
+    }
+
+
+### Example without coverage.read
+    {
+        "touchstone_version": { 
+            "id": "2017-op-1",
+            "name": "2017-op",
+            "version": 1,            
+            "description": "2017 Operational Forecast",
+            "status": "finished"
+        },
+        "scenario": {
+            "id": "menA-novacc",
+            "touchstones": [ "2016-op-1", "2017-wuenic-1", "op-2017-1" ],
+            "description": "Menigitis A, No vaccination",
+            "disease": "MenA"
+        }
     }
