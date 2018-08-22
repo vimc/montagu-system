@@ -52,7 +52,6 @@ class AuthenticationControllerTests : MontaguTests()
         val expectedToken = "TOKEN".deflated()
         assertThat(sut.authenticate()).isEqualTo(SuccessfulAuthentication(expectedToken, Duration.ofHours(1)))
         verify(fakeUserLogic).logInAndGetToken(fakeUser)
-        verify(fakeContext).setCookie(eq(CookieName.Main), eq(expectedToken), any())
     }
 
     @Test
@@ -74,11 +73,10 @@ class AuthenticationControllerTests : MontaguTests()
 
         assertThat(sut.authenticate()).isEqualTo(FailedAuthentication("problem"))
         verify(fakeUserLogic, never()).logInAndGetToken(any())
-        verify(fakeContext, never()).setCookie(any(), any(), any())
     }
 
     @Test
-    fun `can set shiny cookie`()
+    fun `can set cookies`()
     {
         val fakeContext = mock<ActionContext> {
             on { username } doReturn "username"
@@ -87,12 +85,14 @@ class AuthenticationControllerTests : MontaguTests()
             on { getUserByUsername("username")} doReturn fakeUser
         }
         val fakeTokenHelper = mock<WebTokenHelper> {
-            on { generateShinyToken(any()) } doReturn "TOKEN"
+            on { generateToken(fakeUser) } doReturn "MAIN_TOKEN"
+            on { generateShinyToken(fakeUser) } doReturn "SHINY_TOKEN"
         }
         val sut = AuthenticationController(fakeContext, fakeUserLogic, mock(), fakeTokenHelper)
 
         sut.setCookies()
-        verify(fakeContext).setCookie(eq(CookieName.Shiny), eq("TOKEN"), any())
+        verify(fakeContext).setCookie(eq(CookieName.Main), eq("MAIN_TOKEN"), any())
+        verify(fakeContext).setCookie(eq(CookieName.Shiny), eq("SHINY_TOKEN"), any())
     }
 
     @Test
