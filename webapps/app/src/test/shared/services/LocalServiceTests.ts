@@ -45,6 +45,7 @@ describe('LocalService', () => {
 
         it("ordinary query includes credentials option", () => {
             const store = createMockContribStore();
+
             class TestService extends AbstractLocalService {
                 test(): RequestOptions {
                     return this.makeRequestOptions('GET');
@@ -54,6 +55,24 @@ describe('LocalService', () => {
             const testService = new TestService(store.dispatch, store.getState);
             const serviceData = testService.test();
             expect(serviceData.credentials).to.equal("include");
+        });
+
+        it("can send bearer token with query", () => {
+            const store = createMockContribStore({
+                auth: {bearerToken: "TOKEN"}
+            });
+
+            class TestService extends AbstractLocalService {
+                test(): RequestOptions {
+                    return this
+                        .setOptions({includeBearerToken: true})
+                        .makeRequestOptions('GET');
+                }
+            }
+
+            const testService = new TestService(store.dispatch, store.getState);
+            const serviceData = testService.test();
+            expect(serviceData.headers.Authorization).to.equal("Bearer TOKEN");
         });
 
         it('performs successful query', async () => {

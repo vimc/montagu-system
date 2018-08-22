@@ -6,7 +6,13 @@ import {appSettings, settings} from "../Settings";
 import {appName} from 'appName';
 import {AuthState} from "../reducers/authReducer";
 import {localStorageHandler} from "../services/localStorageHandler";
-import {Authenticated, AuthenticationError, AuthTypeKeys, Unauthenticated} from "../actionTypes/AuthTypes";
+import {
+    Authenticated,
+    AuthenticationError,
+    AuthTypeKeys,
+    ReceivedCookies,
+    Unauthenticated
+} from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
 import {notificationActionCreators} from "./notificationActionCreators";
 
@@ -19,7 +25,7 @@ export const authActionCreators = {
                 if (response.error) {
                     dispatch(this.authenticationError(response.error));
                 } else {
-                    dispatch(this.receivedCompressedToken(response.access_token));
+                    await dispatch(this.receivedCompressedToken(response.access_token));
                 }
             } catch (error) {
                 dispatch(notificationActionCreators.notify(this.makeErrorMessage("Server error"), "error"));
@@ -28,7 +34,7 @@ export const authActionCreators = {
     },
 
     loadSavedToken() {
-        return (dispatch: Dispatch<any>) => {
+        return async (dispatch: Dispatch<any>) => {
             const token = localStorageHandler.get("accessToken");
             if (token) {
                 const inflated = jwtTokenAuth.inflateToken(token);
@@ -43,7 +49,7 @@ export const authActionCreators = {
                     dispatch(this.logOut())
                 } else {
                     console.log("Found unexpired access token in local storage, so we're already logged in");
-                    dispatch(this.receivedCompressedToken(token));
+                    await dispatch(this.receivedCompressedToken(token));
                 }
 
             }
@@ -65,7 +71,7 @@ export const authActionCreators = {
     },
 
     receivedCompressedToken(token: string) {
-        return (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             const user: AuthState = jwtTokenAuth.getDataFromCompressedToken(token);
             const error: string = this.validateAuthResult(user);
             if (!error) {
@@ -75,10 +81,19 @@ export const authActionCreators = {
                     type: AuthTypeKeys.AUTHENTICATED,
                     data: user,
                 } as Authenticated);
-                (new AuthService(dispatch, getState)).setShinyCookie();
+                await dispatch(this.setCookies());
             } else {
                 dispatch(notificationActionCreators.notify(error, "error"));
                 dispatch(this.authenticationError(error));
+            }
+        }
+    },
+
+    setCookies() {
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            const result = await new AuthService(dispatch, getState).setCookies();
+            if (result) {
+                dispatch({type: AuthTypeKeys.RECEIVED_COOKIES} as ReceivedCookies);
             }
         }
     },

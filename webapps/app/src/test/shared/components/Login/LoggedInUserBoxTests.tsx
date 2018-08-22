@@ -5,7 +5,7 @@ import {mount, shallow} from "enzyme";
 import {Provider} from "react-redux";
 import {MemoryRouter as Router} from 'react-router-dom';
 
-import {AuthState, initialAuthState} from "../../../../main/shared/reducers/authReducer";
+import {initialAuthState} from "../../../../main/shared/reducers/authReducer";
 import {InternalLink} from "../../../../main/shared/components/InternalLink";
 import {
     LoggedInUserBox,
@@ -13,7 +13,7 @@ import {
     mapStateToProps
 } from "../../../../main/shared/components/Login/LoggedInUserBox";
 import {mockContribState} from "../../../mocks/mockStates";
-import {createMockStore} from "../../../mocks/mockStore";
+import {createMockContribStore} from "../../../mocks/mockStore";
 import {AuthTypeKeys} from "../../../../main/shared/actionTypes/AuthTypes";
 import {AuthService} from "../../../../main/shared/services/AuthService";
 
@@ -24,7 +24,7 @@ describe("LoggedInUserBoxComponent", () => {
 
     it("renders nothing when the user is not logged in", () => {
         const rendered = shallow(<LoggedInUserBoxComponent
-            loggedIn={initialAuthState.loggedIn}
+            loggedIn={initialAuthState.receivedBearerToken}
             username={initialAuthState.username}
             logOut={() => ({})}
         />);
@@ -42,14 +42,14 @@ describe("LoggedInUserBoxComponent", () => {
     });
 
     it("maps state to props", () => {
-        const contribStateMock = mockContribState({auth: {loggedIn: true, username: "test.user"}});
+        const contribStateMock = mockContribState({auth: {receivedBearerToken: true, username: "test.user"}});
         const props = mapStateToProps(contribStateMock);
         expect(props.username).to.eq("test.user");
         expect(props.loggedIn).to.eq(true);
     });
 
     it("clicking log out dispatches unauthenticated action", (done: DoneCallback) => {
-        const store = createMockStore({auth: {loggedIn: true}});
+        const store = createMockContribStore({auth: {receivedBearerToken: true}});
         sandbox.setStub(AuthService.prototype, "logOutOfAPI");
         const rendered = mount(<Provider store={store}><Router><LoggedInUserBox/></Router></Provider>);
         rendered.find(InternalLink).simulate("click");

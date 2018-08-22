@@ -1,7 +1,8 @@
-import { AuthActionsTypes, AuthTypeKeys } from "../actionTypes/AuthTypes";
+import {AuthActionsTypes, AuthTypeKeys} from "../actionTypes/AuthTypes";
 
 export interface AuthState {
-    loggedIn: boolean;
+    receivedBearerToken: boolean;
+    receivedCookies: boolean;
     username: string;
     bearerToken: string;
     permissions: string[];
@@ -13,7 +14,8 @@ export interface AuthState {
 }
 
 export const initialAuthState: AuthState = {
-    loggedIn: false,
+    receivedBearerToken: false,
+    receivedCookies: false,
     username: null,
     bearerToken: null,
     permissions: [],
@@ -26,11 +28,13 @@ export const authReducer = (state = initialAuthState, action: AuthActionsTypes) 
     switch (action.type) {
         case AuthTypeKeys.AUTHENTICATED:
             console.log("Uncompressed token (use jwt.io read): " + action.data.bearerToken);
-            return { ...action.data };
+            return {...action.data};
         case AuthTypeKeys.UNAUTHENTICATED:
             return initialAuthState;
         case AuthTypeKeys.AUTHENTICATION_ERROR:
-            return { ...state, errorMessage: action.error };
+            return {...state, errorMessage: action.error};
+        case AuthTypeKeys.RECEIVED_COOKIES:
+            return {...state, receivedCookies: true};
         default:
             return state;
     }

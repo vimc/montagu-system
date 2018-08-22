@@ -1,16 +1,10 @@
 import * as React from "react";
-import { connect } from 'react-redux';
-import {History} from "history";
+import {connect} from 'react-redux';
 
-import { ErrorLog } from "../../shared/components/ErrorLog/ErrorLog";
-import { ContribRouter } from "./ContribRouter";
-import { NotificationArea } from "../../shared/components/NotificationArea/NotificationArea";
-import {ContribAppState} from "../reducers/contribAppReducers";
-
-interface AppProps {
-    loggedIn: boolean,
-    history?: History;
-}
+import {ErrorLog} from "../../shared/components/ErrorLog/ErrorLog";
+import {ContribRouter} from "./ContribRouter";
+import {NotificationArea} from "../../shared/components/NotificationArea/NotificationArea";
+import {AppProps, mapStateToAppProps} from "../../shared/components/App";
 
 export class ContribAppComponent extends React.Component<AppProps, undefined> {
     render() {
@@ -26,11 +20,4 @@ export class ContribAppComponent extends React.Component<AppProps, undefined> {
     }
 }
 
-const mapStateToProps = (state: ContribAppState, props: Partial<AppProps>) : Partial<AppProps> => {
-    return {
-        loggedIn: state.auth.loggedIn,
-        history: props.history
-    }
-};
-
-export const ContribApp = connect(mapStateToProps)(ContribAppComponent);
+export const ContribApp = connect(mapStateToAppProps)(ContribAppComponent);

@@ -43,7 +43,7 @@ describe("AuthActions", () => {
         sandbox.setStubFunc(AuthService.prototype, "logIn", () => {
             return Promise.resolve({access_token: testToken});
         });
-        sandbox.setStub(AuthService.prototype, "setShinyCookie");
+        sandbox.setStub(AuthService.prototype, "setCookies");
         store.dispatch(authActionCreators.logIn('test', 'test'));
         setTimeout(() => {
             const actions = store.getActions();
@@ -97,7 +97,7 @@ describe("AuthActions", () => {
     it("dispatches authenticated action if saved token can be loaded and not expired", (done) => {
         const testToken = signAndCompress(mockUsertokenData);
         sandbox.setStubFunc(localStorageHandler, "get", () => testToken);
-        sandbox.setStub(AuthService.prototype, "setShinyCookie");
+        sandbox.setStub(AuthService.prototype, "setCookies");
         store.dispatch(authActionCreators.loadSavedToken());
         setTimeout(() => {
             const actions = store.getActions();
@@ -128,6 +128,24 @@ describe("AuthActions", () => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
             done();
+        });
+    });
+
+    describe("setCookies", () => {
+        it("does nothing if service returns failure", async () => {
+            const stub = sandbox.setStubFunc(AuthService.prototype, "setCookies", () => Promise.resolve(null));
+            await store.dispatch(authActionCreators.setCookies());
+            expect(stub.callCount).to.equal(1, "Expected to call service once");
+            expect(store.getActions()).to.have.length(0);
+        });
+
+        it("dispatches action if service returns success", async () => {
+            const stub = sandbox.setStubFunc(AuthService.prototype, "setCookies", () => Promise.resolve(true));
+            await store.dispatch(authActionCreators.setCookies());
+            expect(stub.callCount).to.equal(1, "Expected to call service once")
+            expect(store.getActions()).to.eql([
+                { type: AuthTypeKeys.RECEIVED_COOKIES }
+            ])
         });
     });
 });
