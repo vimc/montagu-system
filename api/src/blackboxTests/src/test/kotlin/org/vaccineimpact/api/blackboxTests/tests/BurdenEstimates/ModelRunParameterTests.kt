@@ -148,37 +148,4 @@ class ModelRunParameterTests : BurdenEstimateTests()
         Assertions.assertThat(secondRow[2]).isEqualTo("dd")
     }
 
-    @Test
-    fun `can download model run parameter set via onetime link`()
-    {
-        validate("$modelRunParameterUrl/1/get_onetime_link/") against "Token" given { db->
-            setupDatabaseWithModelRunParameterSetValues(db)
-        } requiringPermissions { requiredWritePermissions } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
-            val response = requestHelper.get(oneTimeURL)
-
-            Assertions.assertThat(response.statusCode).isEqualTo(200)
-
-            val csv = StringReader(response.text)
-                    .use { CSVReader(it).readAll() }
-
-            val headers = csv.first().toList()
-            val firstRow = csv.drop(1).first().toList()
-
-            val expectedHeaders = listOf("run_id", "<param_1>", "<param_2>")
-
-            headers.forEachIndexed { index, h ->
-                Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
-            }
-
-            Assertions.assertThat(firstRow[0]).isEqualTo("1")
-            Assertions.assertThat(firstRow[1]).isEqualTo("aa")
-            Assertions.assertThat(firstRow[2]).isEqualTo("bb")
-
-            val badResponse = requestHelper.get(oneTimeURL)
-            JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
-        }
-    }
-
 }

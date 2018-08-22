@@ -2,13 +2,15 @@ package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.*
+import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
+import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
+import org.vaccineimpact.api.blackboxTests.helpers.getResultFromRedirect
+import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_STOCHASTIC
 import org.vaccineimpact.api.db.fieldsAsList
-import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
@@ -128,7 +130,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can populate burden estimate via onetime link`()
+    fun `can populate burden estimate with onetime token`()
     {
         val requestHelper = RequestHelper()
         val setId = JooqContext().use {
@@ -141,7 +143,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can populate burden estimate via onetime link multipart file upload`()
+    fun `can populate burden estimate with onetime token multipart file upload`()
     {
         val requestHelper = RequestHelper()
         val setId = JooqContext().use {
@@ -154,7 +156,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can populate burden estimate via onetime link and redirect`()
+    fun `can populate burden estimate with onetime token and redirect`()
     {
         val requestHelper = RequestHelper()
 
@@ -171,22 +173,17 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `bad CSV headers results in ValidationError in redirect`()
     {
+        val requestHelper = RequestHelper()
+
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
         }
 
-        validate("$setUrl/$setId/get_onetime_link/?redirectUrl=http://localhost") against "Token" given { _ ->
-            //set up already done
-        } requiringPermissions {
-            requiredWritePermissions
-        } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
+        val oneTimeURL = getPopulateOneTimeURL(setId, redirect = true)
+        val response = requestHelper.postFile(oneTimeURL, "bad_header,year,age,country,country_name,cohort_size")
+        val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
+        JSONValidator().validateError(resultAsString, expectedErrorCode = "csv-unexpected-header")
 
-            val response = requestHelper.postFile(oneTimeURL, "bad_header,year,age,country,country_name,cohort_size")
-            val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-            JSONValidator().validateError(resultAsString, expectedErrorCode = "csv-unexpected-header")
-        }
     }
 
     @Test
@@ -226,7 +223,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `data in invalid file is not committed when using onetime link with redirect`()
+    fun `data in invalid file is not committed when using onetime token with redirect`()
     {
         TestUserHelper.setupTestUser()
         val setId = JooqContext().use {

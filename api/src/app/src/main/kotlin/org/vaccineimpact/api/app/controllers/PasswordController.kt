@@ -12,7 +12,6 @@ import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.emails.EmailManager
 import org.vaccineimpact.api.emails.PasswordSetEmail
 import org.vaccineimpact.api.emails.getEmailManager
-import org.vaccineimpact.api.models.helpers.OneTimeAction
 import org.vaccineimpact.api.security.InternalUser
 import java.time.Duration
 

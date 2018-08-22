@@ -9,6 +9,8 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.APP_USER
 import org.vaccineimpact.api.emails.WriteToDiskEmailManager
 import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.security.UserHelper
+import org.vaccineimpact.api.security.inflate
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
@@ -49,7 +51,7 @@ class CreateUserTests : DatabaseTest()
         val token = TestUserHelper.setupTestUserAndGetToken(creationPermissions)
         requestHelper.post("/users/", token = token, data = postData.toJsonObject())
 
-        // User doesn't have a password at this point
+        // User has no password at this point
         JooqContext().use {
             val hash = it.dsl.select(APP_USER.PASSWORD_HASH)
                     .from(APP_USER)

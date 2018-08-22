@@ -156,32 +156,15 @@ class GroupCoverageTests : CoverageTests()
     }
 
     @Test
-    fun `can get pure CSV coverage data via one time link`()
-    {
-        validate("$url/get_onetime_link/") against "Token" given {
-            addCoverageData(it, touchstoneStatus = "open")
-        } requiringPermissions { minimumPermissions } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val schema = CSVSchema("MergedCoverageData")
-            val requestHelper = RequestHelper()
-            val response = requestHelper.get(oneTimeURL)
-            schema.validate(response.text)
-
-            val badResponse = requestHelper.get(oneTimeURL)
-            JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
-        }
-    }
-
-    @Test
     fun `can get pure CSV coverage data via csv endpoint`()
     {
-        val schema = CSVSchema("MergedCoverageData")
         val userHelper = TestUserHelper()
+        val schema = CSVSchema("MergedCoverageData")
         val requestHelper = RequestHelper()
 
         JooqContext().use {
-            addCoverageData(it, touchstoneStatus = "open")
             userHelper.setupTestUser(it)
+            addCoverageData(it, touchstoneStatus = "open")
         }
 
         val response = requestHelper.get("${url}csv", minimumPermissions)
