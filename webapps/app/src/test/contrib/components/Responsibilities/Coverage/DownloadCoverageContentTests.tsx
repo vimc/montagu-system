@@ -13,7 +13,7 @@ import {
     mockTouchstoneVersion
 } from "../../../../mocks/mockModels";
 import {Sandbox} from "../../../../Sandbox";
-import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
+import {createMockContribStore} from "../../../../mocks/mockStore";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {
@@ -32,7 +32,7 @@ describe("Download Coverage Content Component", () => {
     const testDisease = mockDisease();
     const testTouchstone = mockTouchstoneVersion();
     const rfpTouchstone = mockTouchstoneVersion({id: "rfp-1"});
-    const testScenario = mockScenario({disease: testDisease.id, touchstones: [testTouchstone]});
+    const testScenario = mockScenario({disease: testDisease.id, touchstones: [testTouchstone.id]});
     const testResponsibility = mockResponsibility({scenario: testScenario});
     const testCoverageSet = mockCoverageSet({touchstone_version: testTouchstone.id});
 

@@ -27,12 +27,13 @@ export class ScenariosListComponent extends React.Component<ScenariosListProps> 
 }
 
 function mapStateToProps(state: AdminAppState): ScenariosListProps {
+    const touchstoneVersion = state.touchstones.currentTouchstoneVersion;
+    const touchstoneVersionId = touchstoneVersion ? touchstoneVersion.id : null;
     return {
-        scenarios: state.scenario.scenarios,
+        scenarios: state.scenario.scenarios.filter(s => s.touchstones.some(t => t == touchstoneVersionId)),
         diseases: state.diseases.diseases,
         canDownloadCoverage: state.auth.permissions.indexOf("*/coverage.read") > -1,
-        touchstoneVersionId: state.touchstones.currentTouchstoneVersion ? state.touchstones.currentTouchstoneVersion.id
-            : null
+        touchstoneVersionId: touchstoneVersionId
     }
 }
 
