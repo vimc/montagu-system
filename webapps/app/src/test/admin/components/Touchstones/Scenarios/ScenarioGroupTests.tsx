@@ -3,7 +3,7 @@ import {shallow} from "enzyme";
 import * as React from "react";
 import {expect} from "chai";
 import {
-    ScenarioGroup,
+    ScenarioGroup, ScenarioGroupComponent,
     ScenarioGroupProps
 } from "../../../../../main/admin/components/Touchstones/Scenarios/ScenarioGroup";
 import {FileDownloadButton} from "../../../../../main/shared/components/FileDownloadLink";
@@ -17,7 +17,7 @@ describe("ScenarioGroup", () => {
             disease: mockDisease({name: "Chicken pox"}),
             scenarios: [mockScenario(), mockScenario()]
         };
-        const rendered = shallow(<ScenarioGroup {...props}/>);
+        const rendered = shallow(<ScenarioGroupComponent {...props}/>);
         expect(rendered.find("h3").text()).to.equal("Chicken pox");
         const rows = rendered.find("li");
         expect(rows).to.have.length(2);
@@ -30,7 +30,7 @@ describe("ScenarioGroup", () => {
             disease: mockDisease({name: "Chicken pox"}),
             scenarios: [mockScenario()]
         };
-        const rendered = shallow(<ScenarioGroup {...props}/>);
+        const rendered = shallow(<ScenarioGroupComponent {...props}/>);
         expect(rendered.find("h3").text()).to.equal("Chicken pox");
         const row = rendered.find("li").at(0);
         const button = row.find(FileDownloadButton);
@@ -47,7 +47,7 @@ describe("ScenarioGroup", () => {
             disease: mockDisease({name: "Chicken pox"}),
             scenarios: [mockScenario({id: "s1"})]
         };
-        const rendered = shallow(<ScenarioGroup {...props}/>);
+        const rendered = shallow(<ScenarioGroupComponent {...props}/>);
         expect(rendered.find("h3").text()).to.equal("Chicken pox");
         const row = rendered.find("li").at(0);
         const button = row.find(FileDownloadButton);
@@ -55,6 +55,28 @@ describe("ScenarioGroup", () => {
         expect(button.prop("href")).to.eq("/touchstones/t1/s1/coverage/csv/");
         expect(row.find(UncontrolledTooltip)).to.have.lengthOf(0);
 
+    });
+
+    it("renders component if there are scenarios", () => {
+        const props: ScenarioGroupProps = {
+            touchstoneVersionId: "t1",
+            canDownloadCoverage: true,
+            disease: mockDisease({name: "Chicken pox"}),
+            scenarios: [mockScenario({id: "s1"})]
+        };
+        const rendered = shallow(<ScenarioGroup {...props}/>);
+        expect(rendered.find(ScenarioGroupComponent)).to.have.lengthOf(1);
+    });
+
+    it("render nothing if there are no scenarios", () => {
+        const props: ScenarioGroupProps = {
+            touchstoneVersionId: "t1",
+            canDownloadCoverage: true,
+            disease: mockDisease({name: "Chicken pox"}),
+            scenarios: []
+        };
+        const rendered = shallow(<ScenarioGroup {...props}/>);
+        expect(rendered.find(ScenarioGroupComponent)).to.have.lengthOf(0);
     });
 
 });
