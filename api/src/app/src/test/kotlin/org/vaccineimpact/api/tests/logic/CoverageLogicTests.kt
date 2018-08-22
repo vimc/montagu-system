@@ -56,7 +56,7 @@ class CoverageLogicTests : MontaguTests()
         return mock {
             on { getScenarioAndCoverageData(any(), any()) } doReturn data
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(fakeTouchstoneVersion))
-            on { getScenario(any(), any()) } doReturn mockCoverageSetsData()
+            on { getScenarioAndCoverageSets(any(), any()) } doReturn mockCoverageSetsData()
         }
     }
 

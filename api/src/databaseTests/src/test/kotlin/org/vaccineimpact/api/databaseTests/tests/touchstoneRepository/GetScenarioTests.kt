@@ -27,7 +27,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         given {
             createTouchstoneAndScenarioDescriptions(it)
         } check {
-            Assertions.assertThatThrownBy { it.getScenario(touchstoneVersionId, scenarioId) }
+            Assertions.assertThatThrownBy { it.getScenarioAndCoverageSets(touchstoneVersionId, scenarioId) }
                     .isInstanceOf(UnknownObjectError::class.java)
         }
     }
@@ -45,7 +45,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             it.addScenarioToTouchstone(extraTouchstoneId, scenarioId, id = scenarioInTouchstoneId + 2)
             giveScenarioCoverageSets(it, scenarioId, includeCoverageData = false)
         } check {
-            val result = it.getScenario(touchstoneVersionId, "yf-1")
+            val result = it.getScenarioAndCoverageSets(touchstoneVersionId, "yf-1")
             checkScenarioIsAsExpected(result, listOf(extraTouchstoneId))
         }
     }
@@ -97,7 +97,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
             giveUnorderedCoverageSetsToScenario(it)
         } check {
-            val result = it.getScenario(touchstoneVersionId, scenarioId)
+            val result = it.getScenarioAndCoverageSets(touchstoneVersionId, scenarioId)
 
             assertThat(result.coverageSets.count()).isEqualTo(6)
 

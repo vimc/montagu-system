@@ -91,7 +91,7 @@ class JooqTouchstoneRepository(
         }.sortedBy { it.name }
     }
 
-    override fun scenarios(touchstoneVersionId: String, filterParams: ScenarioFilterParameters): List<ScenarioAndCoverageSets>
+    override fun getScenariosAndCoverageSets(touchstoneVersionId: String, filterParams: ScenarioFilterParameters): List<ScenarioAndCoverageSets>
     {
         val records = getScenariosAndCoverageSets(touchstoneVersionId)
                 .whereMatchesFilter(JooqScenarioFilter(), filterParams)
@@ -104,7 +104,7 @@ class JooqTouchstoneRepository(
         }
     }
 
-    override fun getScenario(touchstoneVersionId: String, scenarioDescId: String): ScenarioAndCoverageSets
+    override fun getScenarioAndCoverageSets(touchstoneVersionId: String, scenarioDescId: String): ScenarioAndCoverageSets
     {
         val records = getScenariosAndCoverageSets(touchstoneVersionId)
                 .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescId))

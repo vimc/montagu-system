@@ -7,12 +7,10 @@ import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.logic.ExpectationsLogic
 import org.vaccineimpact.api.app.logic.RepositoriesExpectationsLogic
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.models.responsibilities.ResponsibilitySet
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
@@ -46,7 +44,7 @@ class TouchstoneController(
     {
         val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
         val filterParameters = ScenarioFilterParameters.fromContext(context)
-        return touchstoneRepo.scenarios(touchstoneVersion.id, filterParameters)
+        return touchstoneRepo.getScenariosAndCoverageSets(touchstoneVersion.id, filterParameters)
     }
 
     fun getResponsibilities(): List<ResponsibilitySetWithExpectations>
@@ -137,7 +135,7 @@ class TouchstoneController(
     {
         val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
         val scenarioId: String = context.params(":scenario-id")
-        val data = touchstoneRepo.getScenario(touchstoneVersion.id, scenarioId)
+        val data = touchstoneRepo.getScenarioAndCoverageSets(touchstoneVersion.id, scenarioId)
         return ScenarioTouchstoneAndCoverageSets(touchstoneVersion, data.scenario, data.coverageSets)
     }
 
