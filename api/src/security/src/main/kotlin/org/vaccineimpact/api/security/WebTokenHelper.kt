@@ -30,27 +30,7 @@ open class WebTokenHelper(
         return generator.generate(claims(user, lifeSpan))
     }
 
-    open fun generateOldStyleOneTimeActionToken(action: String,
-                                                params: Map<String, String>,
-                                                queryString: String?,
-                                                lifeSpan: Duration,
-                                                username: String): String
-    {
-        return generator.generate(mapOf(
-                "iss" to issuer,
-                "token_type" to TokenType.LEGACY_ONETIME,
-                "sub" to oneTimeActionSubject,
-                "exp" to Date.from(Instant.now().plus(lifeSpan)),
-                "action" to action,
-                "payload" to params.map { "${it.key}=${it.value}" }.joinToString("&"),
-                "query" to queryString,
-                "nonce" to getNonce(),
-                "username" to username
-        ))
-    }
-
-
-    open fun generateNewStyleOnetimeActionToken(
+    open fun generateOnetimeActionToken(
             url: String,
             username: String,
             permissions: String,
@@ -124,7 +104,6 @@ open class WebTokenHelper(
 
     companion object
     {
-        val oneTimeActionSubject = "onetime_link"
         val apiResponseSubject = "api_response"
         val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
     }

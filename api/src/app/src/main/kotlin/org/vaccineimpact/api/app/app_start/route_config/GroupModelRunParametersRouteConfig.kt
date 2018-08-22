@@ -2,7 +2,6 @@ package org.vaccineimpact.api.app.app_start.route_config
 
 import org.vaccineimpact.api.app.app_start.*
 import org.vaccineimpact.api.app.controllers.GroupModelRunParametersController
-import org.vaccineimpact.api.app.controllers.OneTimeLinkController
 import org.vaccineimpact.api.app.app_start.streamed
 
 object GroupModelRunParametersRouteConfig : RouteConfig
@@ -29,11 +28,6 @@ object GroupModelRunParametersRouteConfig : RouteConfig
 
             Endpoint("$baseUrl/", controller, "addModelRunParameters")
                     .post()
-                    .json()
-                    .secure(permissions),
-
-            Endpoint("$baseUrl/:model-run-parameter-set-id/get_onetime_link/",
-                    OneTimeLinkController::class, "getTokenForModelRunParameters")
                     .json()
                     .secure(permissions)
     )

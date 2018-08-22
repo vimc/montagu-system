@@ -87,25 +87,6 @@ abstract class BurdenEstimateTests : DatabaseTest()
         db.addModelRunParameterValue(modelRunId2, modelRunParameterId2, "dd")
     }
 
-
-
-    protected fun validateOneTimeLinkWithRedirect(url: String)
-    {
-
-        validate("$url/get_onetime_link/?redirectUrl=http://localhost/") against "Token" given { db ->
-            setUp(db)
-        } requiringPermissions {
-            requiredWritePermissions
-        } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val requestHelper = RequestHelper()
-
-            val response = requestHelper.postFile(oneTimeURL, csvData)
-            val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-            JSONValidator().validateSuccess(resultAsString)
-        }
-    }
-
     val csvData = """
 "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
    "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA

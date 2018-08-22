@@ -177,50 +177,6 @@ class DemographicTests : DatabaseTest()
     }
 
     @Test
-    fun `can get pure CSV demographic data via one time link`()
-    {
-        validate("$url/get_onetime_link/") against "Token" given {
-
-            DemographicDummyData(it, touchstoneName, touchstoneVersion)
-                    .withTouchstone()
-                    .withPopulation()
-
-        } requiringPermissions { requiredPermissions } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val schema = CSVSchema("DemographicData")
-            val requestHelper = RequestHelper()
-            val response = requestHelper.get(oneTimeURL)
-            val body = schema.validate(response.text)
-            Assertions.assertThat(body.count()).isGreaterThan(0)
-
-            val badResponse = requestHelper.get(oneTimeURL)
-            JSONValidator().validateError(badResponse.text, expectedErrorCode = "invalid-token-used")
-        }
-    }
-
-
-    @Test
-    fun `can get gendered CSV demographic data via one time link`()
-    {
-        validate("$fertilityUrl/get_onetime_link/?gender=female") against "Token" given {
-
-            DemographicDummyData(it, touchstoneName, touchstoneVersion)
-                    .withTouchstone()
-                    .withFertility()
-
-        } requiringPermissions { requiredPermissions } andCheckString { token ->
-            val oneTimeURL = "/onetime_link/$token/"
-            val schema = CSVSchema("DemographicData")
-            val requestHelper = RequestHelper()
-            val response = requestHelper.get(oneTimeURL)
-            val body = schema.validate(response.text)
-
-            assertThat(body).allMatch { it[6] == "female" }
-        }
-    }
-
-
-    @Test
     fun `returns demographic data csv with splitdata`()
     {
         val userHelper = TestUserHelper()
