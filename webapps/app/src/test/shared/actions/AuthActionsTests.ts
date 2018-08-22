@@ -110,7 +110,7 @@ describe("AuthActions", () => {
         const mockUserTokenDataExpired = Object.assign(mockUsertokenData, {exp: Math.round(Date.now() / 1000)});
         const testToken = signAndCompress(mockUserTokenDataExpired, "secret");
         sandbox.setStubFunc(localStorageHandler, "get", () => testToken);
-        sandbox.setStub(AuthService.prototype, "clearShinyCookie");
+        sandbox.setStub(AuthService.prototype, "logOutOfAPI");
         store.dispatch(authActionCreators.loadSavedToken());
         setTimeout(() => {
             const actions = store.getActions();
@@ -122,7 +122,7 @@ describe("AuthActions", () => {
     it("dispatches unauthenticated action if saved token can't be inflated", (done) => {
         const testToken = jwt.sign(mockUsertokenData, "secret");
         sandbox.setStubFunc(localStorageHandler, "get", () => testToken);
-        sandbox.setStub(AuthService.prototype, "clearShinyCookie");
+        sandbox.setStub(AuthService.prototype, "logOutOfAPI");
         store.dispatch(authActionCreators.loadSavedToken());
         setTimeout(() => {
             const actions = store.getActions();

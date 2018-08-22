@@ -33,8 +33,8 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             expect(result).to.be.eq("OK");
         });
 
-        it("can clear shiny cookie", async () => {
-            const result = await (new AuthService(this.store.dispatch, this.store.getState)).clearShinyCookie();
+        it("can log out", async () => {
+            const result = await (new AuthService(this.store.dispatch, this.store.getState)).logOutOfAPI();
             expect(result).to.be.eq("OK");
         });
 
