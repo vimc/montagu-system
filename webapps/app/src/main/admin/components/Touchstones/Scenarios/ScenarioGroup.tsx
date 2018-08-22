@@ -13,7 +13,7 @@ export interface ScenarioGroupProps {
 
 export class ScenarioGroupComponent extends React.Component<ScenarioGroupProps> {
     render(): JSX.Element {
-        return <div className={"my-2"}>
+        return <div className={"my-5"}>
             <h3>{this.props.disease.name}</h3>
             <div className="row">
                 <ul className="list-group col-12">
