@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.models
 
 import org.vaccineimpact.api.models.helpers.FlexibleProperty
+import org.vaccineimpact.api.models.helpers.Rule
+import org.vaccineimpact.api.models.helpers.SerializationRule
 import java.math.BigDecimal
 
 data class CoverageSet(
@@ -14,13 +16,15 @@ data class CoverageSet(
 
 data class ScenarioAndCoverageSets(
         val scenario: Scenario,
-        val coverageSets: List<CoverageSet>
+        @SerializationRule(Rule.EXCLUDE_IF_NULL)
+        val coverageSets: List<CoverageSet>?
 )
 
 data class ScenarioTouchstoneAndCoverageSets(
         val touchstoneVersion: TouchstoneVersion,
         val scenario: Scenario,
-        val coverageSets: List<CoverageSet>
+        @SerializationRule(Rule.EXCLUDE_IF_NULL)
+        val coverageSets: List<CoverageSet>?
 )
 
 data class LongCoverageRow(
