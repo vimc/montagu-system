@@ -9,7 +9,7 @@ import {TouchstoneTypes} from "../../../main/shared/actionTypes/TouchstonesTypes
 describe("Shared touchstone actions tests", () => {
     const sandbox = new Sandbox();
 
-    const testTouchstone = mockTouchstone();
+
 
     afterEach(() => {
         sandbox.restore();

@@ -14,8 +14,8 @@ import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 
 const touchstoneVersionId = "test-1";
 const scenarioId = "yf-1";
-const modelId = "model-1";
-const modelVersion = "v1";
+
+
 
 class AdminIntegrationTests extends IntegrationTestSuite {
     description() {

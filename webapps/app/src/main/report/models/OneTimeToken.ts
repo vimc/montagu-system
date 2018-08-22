@@ -1,4 +1,4 @@
-const jwt_decode = require('jwt-decode');
+
 
 export interface OneTimeToken {
     raw: string;

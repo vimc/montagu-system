@@ -21,7 +21,7 @@ describe("SetPasswordPage", () => {
 
     function minimalProps(): SetPasswordPageProps {
         const p: Partial<SetPasswordPageProps> = {
-            saveTokenToState: x => {},
+            saveTokenToState: () => {},
             onLoad: () => {}
         };
         return p as SetPasswordPageProps;

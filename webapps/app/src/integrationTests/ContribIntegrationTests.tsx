@@ -370,10 +370,6 @@ function addBurdenEstimateSet(db: Client, responsibilityId: number, modelVersion
         .then(result => result.rows[0].id);
 }
 
-function updateCurrentBurdenEstimateSet(db: Client, responsibilityId: number, setId: number): Promise<QueryResult> {
-    return db.query(`UPDATE responsibility SET current_burden_estimate_set=${setId} WHERE id = ${responsibilityId}`);
-}
-
 function addCoverageSets(db: Client): Promise<number> {
     return addResponsibilities(db)
         .then(() => db.query(`

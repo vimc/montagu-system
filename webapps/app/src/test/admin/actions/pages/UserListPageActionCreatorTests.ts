@@ -11,7 +11,7 @@ describe("User List Page actions tests", () => {
     const sandbox = new Sandbox();
 
     const testUser = mockUser();
-    const testBreadcrumbs = mockBreadcrumbs();
+
 
     afterEach(() => {
         sandbox.restore();

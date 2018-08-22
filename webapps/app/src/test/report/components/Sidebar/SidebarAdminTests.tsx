@@ -27,21 +27,7 @@ describe("SidebarAdmin", () => {
         getReadersStub = sandbox.setStubReduxAction(userActionCreators, 'getReportReaders');
     });
 
-    const defaultSidebarProps: SidebarAdminProps = {
-        published: true,
-        isReviewer: true,
-        isAdmin: true,
-        ready: true,
-        report: "name",
-        version: "v1",
-        onChangeVersion: () => {
-        },
-        allVersions: ["v1", "v2"],
-        reportReaders: [],
-        getReportReaders: sandbox.sinon.stub(),
-        removeReportReader: sandbox.sinon.stub(),
-        addReportReader: sandbox.sinon.stub()
-    };
+
 
     const readyReportsState: ReportsState =
         mockReportsState({

@@ -33,7 +33,7 @@ export abstract class IntegrationTestSuite {
 
     db: Client;
 
-    constructor() {
+    protected constructor() {
         describe(this.description(), () => {
 
             const sandbox = new Sandbox();
