@@ -38,18 +38,22 @@ class AuthenticationController(context: ActionContext,
             {
                 val user = context.userProfile!!.internalUser!!
                 val token = userLogic.logInAndGetToken(user).deflated()
-                context.setCookie(CookieName.Main, token)
                 return SuccessfulAuthentication(token, tokenHelper.defaultLifespan)
             }
             is HTMLForm.InvalidForm -> FailedAuthentication(validationResult.problem)
         }
     }
 
-    fun setShinyCookie(): String
+    fun setCookies(): String
     {
         val internalUser = userLogic.getUserByUsername(context.username!!)
+
+        val token = tokenHelper.generateToken(internalUser)
+        context.setCookie(CookieName.Main, token)
+
         val shinyToken = tokenHelper.generateShinyToken(internalUser)
         context.setCookie(CookieName.Shiny, shinyToken)
+
         return okayResponse()
     }
 

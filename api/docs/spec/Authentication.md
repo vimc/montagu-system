@@ -17,13 +17,11 @@ Like so:
     grant_type=client_credentials
 
 ### Response
-If the username and password are correct, and the user has the `can-login` 
-permission then a JSON web token is returned that can be used in future 
-requests. It is returned in two ways, as a cookie and in the body of the 
-response. The cookie is for use in the browser. To use the token 
-programmatically, include the access token using the Authorization header,
-with this format: `Authorization: Bearer TOKEN` in future requests to other 
-endpoints.
+If the username and password are correct, and the user has the `can-login`
+permission then a JSON web token is returned that can be used in future
+requests. To use the token include the access token using the Authorization
+header, with this format: `Authorization: Bearer TOKEN` in future requests to
+other  endpoints.
 
 Schema: [`LoginSuccessful.schema.json`](../schemas/LoginSuccessful.schema.json)
 
@@ -37,19 +35,30 @@ Schema: [`LoginSuccessful.schema.json`](../schemas/LoginSuccessful.schema.json)
 
 Otherwise an error response is returned, as per [this part of the OAuth2 Spec](https://tools.ietf.org/html/rfc6749#section-5.2).
 
-## GET /set-shiny-cookie/
+## GET /set-cookies/
 Required permissions: `can-login`.
-This request can be made by a browser to set a cookie that allows authorized users to access Montagu shiny apps through
- their browser
+
+This request can be made by a browser to set two cookies:
+
+1. `montagu_jwt_token`: This is the same token as is returned by the
+   `/authenticate/` endpoint. It can be used as an alternative approach to 
+   getting access to further endpoint, especially in browser-based environments.
+2. `jwt_token`: This is a cookie that allows authorized users to access Montagu
+   shiny apps through their browser. It contains a JSON web token with a single 
+   claim, `allowed_shiny` which is true iff the user has the `reports.review` 
+   permission.
+
+ These cookies are HttpOnly, Secure, and last only as long as the browser session.
 
 ### Request
 When making an ajax request to this endpoint the Request `credentials` property must be set to `include`:
 https://developer.mozilla.org/en-US/docs/Web/API/Request/credentials
 
+To use the cookie in future AJAX requests, this `credentials` property must
+again be `include`.
+
 ### Response
-If the user is successfully authenticated, the response contains a `Set-Cookie` header, which sets a cookie called 
-`jwt_token` containing a JSON web token with a single claim, `allowed_shiny` which is true iff the user has the 
-`reports.review` permission. The cookie is HttpOnly, Secure, and lasts only as long as the browser session.
+If the user is successfully authenticated, the response contains a `Set-Cookie` header.
 
 ## GET /logout/
 Does not require authentication.
