@@ -133,5 +133,17 @@ also with a numeric primary key.
             "scope_prefix": null,
             "description": "Funder",
             "permissions": [ "coverage.read", "demographics.read" ]
+        },
+        {
+            "name": "admin",
+            "scope_prefix": null,
+            "description": "Consortium admin team ",
+            "permissions": [ "coverage.read", "touchstones.prepare", "reports.read" ]
+        },
+        {
+            "name": "developer",
+            "scope_prefix": null,
+            "description": "Consortium tech team",
+            "permissions": [ "coverage.read", "touchstones.prepare", "reports.read"  ]
         }
     ]
