@@ -15,7 +15,7 @@ export function mockDisease(properties?: any): models.Disease {
     }, properties);
 }
 
-export function mockScenario(properties?: any): models.Scenario {
+export function mockScenario(properties?: Partial<models.Scenario>): models.Scenario {
     counter++;
     const template: models.Scenario = {
         id: `scenario-${counter}`,
