@@ -33,8 +33,8 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             expect(result).to.be.eq("OK");
         });
 
-        it("can clear shiny cookie", async () => {
-            const result = await (new AuthService(this.store.dispatch, this.store.getState)).clearShinyCookie();
+        it("can log out", async () => {
+            const result = await (new AuthService(this.store.dispatch, this.store.getState)).logOutOfAPI();
             expect(result).to.be.eq("OK");
         });
 
@@ -138,7 +138,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const roles: string[] = await (new UsersService(this.store.dispatch, this.store.getState))
                 .getGlobalRoles();
 
-            expect(roles).to.have.length(10)
+            expect(roles).to.have.length(12)
         });
 
         it("can create a user", async () => {
