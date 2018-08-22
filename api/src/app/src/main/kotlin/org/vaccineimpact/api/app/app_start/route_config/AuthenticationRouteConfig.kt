@@ -16,7 +16,7 @@ object AuthenticationRouteConfig : RouteConfig
                     .secure()
                     .json(),
             // DEPRECATED: This is just an alias for /set-cookies/ - to be removed once the webapps no longer use it
-            // TODO
+            // TODO: VIMC-2118
             Endpoint("/set-shiny-cookie/", controller, "setCookies")
                     .secure()
                     .json(),
