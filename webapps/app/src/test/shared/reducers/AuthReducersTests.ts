@@ -5,6 +5,7 @@ import { AuthTypeKeys } from "../../../main/shared/actionTypes/AuthTypes";
 
 const testAuthData: AuthState = {
     loggedIn: true,
+    hasCookies: false,
     username: 'test.user',
     bearerToken: 'testtoken',
     permissions: [],
