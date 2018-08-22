@@ -95,7 +95,7 @@ export const authActionCreators = {
             localStorageHandler.remove("accessToken");
             (new AuthService(dispatch, getState))
                 .clearAllCache()
-                .clearShinyCookie();
+                .logOutOfAPI();
             dispatch({
                 type: AuthTypeKeys.UNAUTHENTICATED,
             } as Unauthenticated);
