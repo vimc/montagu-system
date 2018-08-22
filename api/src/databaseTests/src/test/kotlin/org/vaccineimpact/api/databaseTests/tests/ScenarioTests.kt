@@ -26,8 +26,8 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
         val disease2 = "disease-def"
         withDatabase {
             setUp(it)
-            setUpDisease(it, disease2)
-            setUpDisease(it, disease1)
+            createDiseaseWithThreeScenarios(it, disease2)
+            createDiseaseWithThreeScenarios(it, disease1)
         }
         withRepo {
             val scenarios = it.getScenarios(listOf("scenario-3$disease1", "scenario-1$disease1",
@@ -58,8 +58,8 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
         val disease2 = "disease-def"
         withDatabase {
             setUp(it)
-            setUpDisease(it, disease2)
-            setUpDisease(it, disease1)
+            createDiseaseWithThreeScenarios(it, disease2)
+            createDiseaseWithThreeScenarios(it, disease1)
         }
         withRepo {
             val scenarios = it.getScenariosForTouchstone(touchstoneVersionId,
@@ -89,8 +89,8 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
         val disease2 = "disease-def"
         withDatabase {
             setUp(it)
-            setUpDisease(it, disease2)
-            setUpDisease(it, disease1)
+            createDiseaseWithThreeScenarios(it, disease2)
+            createDiseaseWithThreeScenarios(it, disease1)
         }
         withRepo {
             val scenarios = it.getScenariosForTouchstone("fake-id",
@@ -107,14 +107,15 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
         val disease2 = "disease-def"
         withDatabase {
             setUp(it)
-            setUpDisease(it, disease2)
-            setUpDisease(it, disease1)
+            createDiseaseWithThreeScenarios(it, disease2)
+            createDiseaseWithThreeScenarios(it, disease1)
         }
         withRepo {
-            val scenarios = it.getScenariosForTouchstone("fake-id",
-                    ScenarioFilterParameters(disease = "fake-disease"))
+            val scenarios = it.getScenariosForTouchstone(touchstoneVersionId,
+                    ScenarioFilterParameters(disease = disease1))
 
-            assertThat(scenarios.count()).isEqualTo(0)
+            assertThat(scenarios.count()).isEqualTo(3)
+            assertThat(scenarios.all { s -> s.disease == disease1 }).isTrue()
         }
     }
 
@@ -125,8 +126,8 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
         val disease2 = "disease-def"
         withDatabase {
             setUp(it)
-            setUpDisease(it, disease2)
-            setUpDisease(it, disease1)
+            createDiseaseWithThreeScenarios(it, disease2)
+            createDiseaseWithThreeScenarios(it, disease1)
         }
         withRepo {
             val scenario = it.getScenarioForTouchstone(touchstoneVersionId, "scenario-1$disease1")
@@ -141,8 +142,8 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
         val disease2 = "disease-def"
         withDatabase {
             setUp(it)
-            setUpDisease(it, disease2)
-            setUpDisease(it, disease1)
+            createDiseaseWithThreeScenarios(it, disease2)
+            createDiseaseWithThreeScenarios(it, disease1)
         }
         withRepo {
             assertThatThrownBy {
@@ -159,7 +160,7 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
         db.addTouchstoneVersion("touchstone", 1, "description", "open", addTouchstone = true)
     }
 
-    private fun setUpDisease(db: JooqContext, diseaseId: String)
+    private fun createDiseaseWithThreeScenarios(db: JooqContext, diseaseId: String)
     {
         db.addScenarioDescription("scenario-1$diseaseId", "routine", diseaseId, addDisease = true)
         db.addScenarioDescription("scenario-3$diseaseId", "campaign", diseaseId, addDisease = false)

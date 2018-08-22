@@ -5,8 +5,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Before
 import org.junit.Test
-import org.vaccineimpact.api.app.repositories.TokenRepository
-import org.vaccineimpact.api.security.OneTimeTokenAuthenticator
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
@@ -16,10 +14,8 @@ import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.*
 import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.test_helpers.MontaguTests
-import org.vaccineimpact.api.tests.mocks.MockRepositoryFactory
 import java.time.Duration
 import java.time.Instant
-import java.time.LocalDate
 import java.util.*
 
 class WebTokenHelperTests : MontaguTests()
@@ -105,45 +101,6 @@ class WebTokenHelperTests : MontaguTests()
     }
 
     @Test
-    fun `can generate old style onetime action token`()
-    {
-        val queryString = "query=answer"
-        val token = sut.generateOldStyleOneTimeActionToken("test-action", mapOf(
-                ":a" to "1",
-                ":b" to "2"
-        ), queryString, WebTokenHelper.oneTimeLinkLifeSpan, "test.user")
-        val claims = sut.verify(token.deflated(), TokenType.LEGACY_ONETIME, mock())
-
-        assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
-        assertThat(claims["token_type"]).isEqualTo("LEGACY_ONETIME")
-        assertThat(claims["sub"]).isEqualTo("onetime_link")
-        assertThat(claims["exp"]).isInstanceOf(Date::class.java)
-        assertThat(claims["action"]).isEqualTo("test-action")
-        assertThat(claims["payload"]).isEqualTo(":a=1&:b=2")
-        assertThat(claims["query"]).isEqualTo(queryString)
-        assertThat(claims["username"]).isEqualTo("test.user")
-    }
-
-    @Test
-    fun `can generate old style onetime action token with null query string`()
-    {
-        val token = sut.generateOldStyleOneTimeActionToken("test-action", mapOf(
-                ":a" to "1",
-                ":b" to "2"
-        ), null, WebTokenHelper.oneTimeLinkLifeSpan, "test.user")
-        val claims = sut.verify(token.deflated(), TokenType.LEGACY_ONETIME, mock())
-
-        assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
-        assertThat(claims["token_type"]).isEqualTo("LEGACY_ONETIME")
-        assertThat(claims["sub"]).isEqualTo("onetime_link")
-        assertThat(claims["exp"]).isInstanceOf(Date::class.java)
-        assertThat(claims["action"]).isEqualTo("test-action")
-        assertThat(claims["payload"]).isEqualTo(":a=1&:b=2")
-        assertThat(claims["query"]).isNull()
-        assertThat(claims["username"]).isEqualTo("test.user")
-    }
-
-    @Test
     fun `token fails validation when issuer is wrong`()
     {
         val claims = sut.claims(InternalUser(properties, roles, permissions))
@@ -192,7 +149,7 @@ class WebTokenHelperTests : MontaguTests()
             on { checkToken(any()) } doReturn true
         }
 
-        val token = sut.generateNewStyleOnetimeActionToken("/some/url/", "username", permissions, roles)
+        val token = sut.generateOnetimeActionToken("/some/url/", "username", permissions, roles)
         val claims = sut.verify(token.deflated(), TokenType.ONETIME, mockTokenChecker)
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["token_type"]).isEqualTo("ONETIME")
@@ -210,7 +167,7 @@ class WebTokenHelperTests : MontaguTests()
         val mockTokenChecker = mock<OneTimeTokenChecker> {
             on { checkToken(any()) } doReturn false
         }
-        val token = sut.generateNewStyleOnetimeActionToken("/some/url/", "username", "", "")
+        val token = sut.generateOnetimeActionToken("/some/url/", "username", "", "")
         assertThatThrownBy { sut.verify(token.deflated(), TokenType.ONETIME, mockTokenChecker) }
     }
 
@@ -220,7 +177,7 @@ class WebTokenHelperTests : MontaguTests()
         val mockTokenChecker = mock<OneTimeTokenChecker> {
             on { checkToken(any()) } doReturn true
         }
-        val token = sut.generateNewStyleOnetimeActionToken("", "username", "", "")
+        val token = sut.generateOnetimeActionToken("", "username", "", "")
         assertThatThrownBy { sut.verify(token.deflated(), TokenType.ONETIME, mockTokenChecker) }
     }
 

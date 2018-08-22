@@ -4,6 +4,8 @@ import org.jooq.DSLContext
 import org.pac4j.core.credentials.password.PasswordEncoder
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.APP_USER
+import java.util.*
+import kotlin.streams.asSequence
 
 object UserHelper
 {

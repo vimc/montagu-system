@@ -62,7 +62,7 @@ class RepositoriesScenarioLogic(private val touchstoneRepo: TouchstoneRepository
         return if (hasRequiredCoverageReadingScope(groups, coverageReadingScopes))
         {
             // return coverage with scenarios
-            touchstoneRepo.scenariosAndCoverageSets(touchstoneVersionId, filterParams)
+            touchstoneRepo.getScenariosAndCoverageSets(touchstoneVersionId, filterParams)
         }
         else
         {
