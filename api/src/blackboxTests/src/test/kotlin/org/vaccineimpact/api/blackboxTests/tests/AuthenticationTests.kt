@@ -25,14 +25,11 @@ import org.vaccineimpact.api.security.ensureUserHasRole
 import org.vaccineimpact.api.security.inflated
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
-data class ResponseWithJsonBody(val response: Response, val body: JsonObject)
-
 class AuthenticationTests : DatabaseTest()
 {
     @Before
     fun addUser()
     {
-        //CertificateHelper.disableCertificateValidation()
         JooqContext().use {
             UserHelper.saveUser(it.dsl, "user", "Full Name", "email@example.com", "password")
         }
@@ -46,7 +43,7 @@ class AuthenticationTests : DatabaseTest()
     }
 
     @Test
-    fun `can set shiny cookie`()
+    fun `can set cookies`()
     {
         JooqContext().use {
             it.addUserForTesting(TestUserHelper.username,
@@ -62,9 +59,14 @@ class AuthenticationTests : DatabaseTest()
 
         assertThat(response.statusCode).isEqualTo(200)
 
+        val mainToken = checkCookieAndGetValue(response, "montagu_jwt_token")
+        val mainClaims = JWT.decode(mainToken.inflated())
+        val tokenType = mainClaims.getClaim("token_type")
+        assertThat(tokenType.asString()).isEqualTo("BEARER")
+
         val shinyToken = checkCookieAndGetValue(response, "jwt_token")
-        val claims = JWT.decode(shinyToken)
-        val allowedShiny = claims.getClaim("allowed_shiny")
+        val shinyClaims = JWT.decode(shinyToken)
+        val allowedShiny = shinyClaims.getClaim("allowed_shiny")
         assertThat(allowedShiny.asString()).isEqualTo("true")
     }
 
@@ -114,20 +116,15 @@ class AuthenticationTests : DatabaseTest()
     @Test
     fun `correct password does authenticate`()
     {
-        val (response, body) = post("email@example.com", "password")
-        assertDoesAuthenticate(body)
-
-        val token = checkCookieAndGetValue(response, "montagu_jwt_token")
-        val claims = JWT.decode(token.inflated())
-        val tokenType = claims.getClaim("token_type")
-        assertThat(tokenType.asString()).isEqualTo("BEARER")
+        val response = post("email@example.com", "password")
+        assertDoesAuthenticate(response)
     }
 
     @Test
     fun `email authentication is not case sensitive`()
     {
         val result = post("EMAIL@example.cOm", "password")
-        assertDoesAuthenticate(result.body)
+        assertDoesAuthenticate(result)
     }
 
     @Test
@@ -145,7 +142,6 @@ class AuthenticationTests : DatabaseTest()
         assertThat(isLong(result["expires_in"].toString()))
     }
 
-    private fun assertDoesNotAuthenticate(response: ResponseWithJsonBody) = assertDoesNotAuthenticate(response.body)
     private fun assertDoesNotAuthenticate(result: JsonObject)
     {
         assertThat(result).isEqualTo(json {
@@ -181,7 +177,7 @@ class AuthenticationTests : DatabaseTest()
     {
         val url = EndpointBuilder.build("/authenticate/")
 
-        fun post(username: String, password: String, includeAuth: Boolean = true): ResponseWithJsonBody
+        fun post(username: String, password: String, includeAuth: Boolean = true): JsonObject
         {
             val auth = if (includeAuth) BasicAuthorization(username, password) else null
             val response = post(url,
@@ -190,8 +186,7 @@ class AuthenticationTests : DatabaseTest()
             )
             val text = response.text
             println(text)
-            val body = Parser().parse(StringBuilder(text)) as JsonObject
-            return ResponseWithJsonBody(response, body)
+            return Parser().parse(StringBuilder(text)) as JsonObject
         }
     }
 }
