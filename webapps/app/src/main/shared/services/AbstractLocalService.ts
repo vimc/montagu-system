@@ -40,7 +40,7 @@ export abstract class AbstractLocalService {
 
     protected cacheEngine: CacheInterface = null;
 
-    constructor(dispatch: Dispatch<Action>, getState: () => CommonState) {
+    public constructor(dispatch: Dispatch<Action>, getState: () => CommonState) {
         this.dispatch = dispatch;
 
         this.bearerToken = this.getTokenFromState(getState());
