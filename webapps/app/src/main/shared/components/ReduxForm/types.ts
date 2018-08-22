@@ -3,7 +3,6 @@ import {FormEvent, InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttrib
 import {ErrorInfo} from "../../models/Generated";
 
 export type InputFieldProps = WrappedFieldProps & InputHTMLAttributes<HTMLInputElement>
-export type SelectFieldProps = WrappedFieldProps & SelectHTMLAttributes<HTMLSelectElement>
 export type TextAreaFieldProps = WrappedFieldProps & TextareaHTMLAttributes<HTMLTextAreaElement>
 
 export interface ReduxFormProps<TFieldProps> {

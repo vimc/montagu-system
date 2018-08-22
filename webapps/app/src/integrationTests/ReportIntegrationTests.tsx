@@ -1,6 +1,5 @@
 import {expect} from "chai";
 import * as React from "react";
-import {ReactWrapper} from "enzyme";
 import {createMemoryHistory} from 'history';
 
 import {

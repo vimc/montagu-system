@@ -15,6 +15,3 @@ export interface SetCurrentTouchstone {
     data: TouchstoneVersion;
 }
 
-export type TouchstonesAction =
-    | TouchstonesFetched
-    | SetCurrentTouchstone

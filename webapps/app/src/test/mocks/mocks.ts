@@ -28,13 +28,7 @@ export function mockHistory(params?: any) {
         location: "",
         push: () => {},
         replace: () => {},
-        go: () => {},
-        goBack: () => {},
-        goForward: () => {},
-        block: () => {},
-        listen: () => {},
-        createHref: () => {}
-    }, params);
+        block: () => {}}, params);
 }
 
 export function mockEvent() {
@@ -46,13 +40,6 @@ export function mockEvent() {
 
 export function mockOneTimeTokenData(props: any): OneTimeTokenData {
     return Object.assign(emptyOneTimeTokenData(), props);
-}
-
-export function mockOneTimeToken(url: string): OneTimeToken {
-    return {
-        raw: "TOKEN",
-        data: mockOneTimeTokenData({ url: url })
-    };
 }
 
 export function mockAction(): any {

@@ -113,11 +113,6 @@ export abstract class AbstractLocalService {
         return ["localService", this.constructor.name, cacheKey, encodeURIComponent(url)].join('.');
     }
 
-    public clearCacheByModuleKey(cacheKey: string) {
-        const path = ["localService", this.constructor.name, cacheKey].join('.');
-        this.cacheEngine.clear(path);
-    }
-
     protected clearCache(cacheKey: string, url: string, service?: APIService) {
         service = service || "main";
         const fullyQualifiedUrl = this.makeUrl(url, service);

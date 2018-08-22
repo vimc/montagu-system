@@ -1,5 +1,4 @@
 import * as React from "react";
-import { compose, branch, renderComponent } from "recompose";
 
 import { ModellingGroup, TouchstoneVersion } from "../../../shared/models/Generated";
 import { ButtonLink } from "../../../shared/components/ButtonLink";

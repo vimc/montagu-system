@@ -4,7 +4,6 @@ import {expect} from "chai";
 import {UserRole, UserRoleComponent} from "../../../../../main/admin/components/Users/SingleUser/UserRole";
 import {RoleAssignment} from "../../../../../main/shared/models/Generated";
 import {mockRole, mockUser} from "../../../../mocks/mockModels";
-import { Sandbox } from "../../../../Sandbox";
 import { InternalLink } from "../../../../../main/shared/components/InternalLink";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {AdminAppState} from "../../../../../main/admin/reducers/adminAppReducers";

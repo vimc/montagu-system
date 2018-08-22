@@ -1,8 +1,6 @@
 import * as React from "react";
-import {FileDownloadLink} from "../../../shared/components/FileDownloadLink";
 import {ArtefactsList} from "./ArtefactsList";
 import {Version} from "../../../shared/models/reports/Report";
-import {ReportDownloadSection} from "../Reports/DownloadSection";
 
 interface Props {
     report: string;

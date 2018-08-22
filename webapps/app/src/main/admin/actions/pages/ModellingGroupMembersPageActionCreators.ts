@@ -1,6 +1,5 @@
 import {Dispatch} from "redux";
 
-import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {AdminAppState} from "../../reducers/adminAppReducers";
 
 import {modellingGroupDetailsPageActionCreators} from "./ModellingGroupDetailsPageActionCreators";

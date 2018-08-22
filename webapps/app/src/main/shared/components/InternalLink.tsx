@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Link } from 'react-router-dom';
-import { appSettings } from "../Settings";
 import {Router} from 'react-router';
 
 interface InternalLinkProps {

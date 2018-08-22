@@ -7,7 +7,6 @@ import {userActionCreators} from "../../../main/report/actionCreators/userAction
 import {UserService} from "../../../main/report/services/UserService";
 import {mockUser} from "../../mocks/mockModels";
 import {checkAsync} from "../../testHelpers";
-import {ModellingGroupTypes} from "../../../main/contrib/actionTypes/ModellingGroupsTypes";
 
 process.on('unhandledRejection', (reason: any, p : any) => {
     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);

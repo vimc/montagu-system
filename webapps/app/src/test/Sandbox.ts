@@ -33,18 +33,7 @@ export class Sandbox {
         resetFetcher();
     }
 
-    fetcherSpy(): sinon.SinonSpy {
-        return this.sinon.spy(fetcher.fetcher, "fetch");
-    }
     // Use mockResponse to build the input to this
-    fetcherStub(promise: Promise<Response>): sinon.SinonSpy {
-        mockFetcherResponse();
-        return this.sinon.stub(fetcher.fetcher, "fetch").returns(promise);
-    }
-
-    stubFetch(obj: any, method: string): sinon.SinonStub {
-        return this.sinon.stub(obj, method).returns(Promise.resolve(true));
-    }
 
     setSpy(obj: any, method: string): sinon.SinonSpy {
         return this.sinon.spy(obj, method);

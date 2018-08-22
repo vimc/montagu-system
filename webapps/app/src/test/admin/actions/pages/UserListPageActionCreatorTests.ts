@@ -2,8 +2,6 @@ import {expect} from "chai";
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
-import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
-import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {mockBreadcrumbs, mockUser} from "../../../mocks/mockModels";
 import {usersListPageActionCreators} from "../../../../main/admin/actions/pages/UsersListPageActionCreators";
 import {UsersTypes} from "../../../../main/admin/actionTypes/UsersTypes";

@@ -7,10 +7,6 @@ import {
 } from "../../components/ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
 import {usersActionCreators} from "../usersActionCreators";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
-import {
-    modellingGroupMembersPageActionCreators,
-    ModellingGroupMembersPageActionCreators
-} from "./ModellingGroupMembersPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 import {modellingGroupsListPageActionCreators} from "./ModellingGroupsListPageActionCreators";
 

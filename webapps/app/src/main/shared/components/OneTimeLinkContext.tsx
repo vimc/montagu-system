@@ -4,7 +4,6 @@ import {ReportAppState} from "../../report/reducers/reportAppReducers";
 import {oneTimeTokenActionCreators} from "../actions/oneTimeTokenActionCreators";
 import {APIService} from "../models/APIService";
 import {buildURL} from "../services/AbstractLocalService";
-import {isNullOrUndefined} from "util";
 
 const url = require('url'),
     querystring = require("querystring");

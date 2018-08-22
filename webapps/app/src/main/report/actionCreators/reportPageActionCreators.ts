@@ -3,8 +3,6 @@ import { Dispatch } from "redux";
 import { reportActionCreators } from "./reportActionCreators";
 import {ReportPageComponent, ReportPageLocationProps} from "../components/Reports/ReportPage";
 import {breadcrumbsActionCreators} from "../../shared/actions/breadcrumbsActionsCreators";
-import {PageProperties} from "../../shared/components/PageWithHeader/PageProperties";
-import {Query} from "pg";
 import {ReportTypeKeys, ReportVersionDetailssFetched} from "../actionTypes/ReportsActionsTypes";
 
 export const reportPageActionCreators = {

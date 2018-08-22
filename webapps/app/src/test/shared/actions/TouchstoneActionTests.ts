@@ -2,7 +2,6 @@ import {expect} from "chai";
 
 import {Sandbox} from "../../Sandbox";
 
-import {TouchstonesState} from "../../../main/contrib/reducers/contribTouchstonesReducer";
 import {mockTouchstone, mockTouchstoneVersion} from "../../mocks/mockModels";
 import {touchstonesActionCreators} from "../../../main/shared/actions/touchstoneActionCreators";
 import {TouchstoneTypes} from "../../../main/shared/actionTypes/TouchstonesTypes";

@@ -17,22 +17,6 @@ export interface OneTimeTokenData {
     nonce: string;
 }
 
-export function decodeOneTimeToken(compressedToken: string): OneTimeToken {
-    try {
-        const token = jwtTokenAuth.inflateToken(compressedToken);
-        return {
-            raw: compressedToken,
-            data: jwt_decode(token),
-        };
-    } catch (e) {
-        console.log("Onetime token decoding failed, token is malformed: " + compressedToken);
-        return {
-            raw: compressedToken,
-            data: emptyOneTimeTokenData()
-        };
-    }
-}
-
 export function emptyOneTimeTokenData(): OneTimeTokenData {
     return {
         iss: null,

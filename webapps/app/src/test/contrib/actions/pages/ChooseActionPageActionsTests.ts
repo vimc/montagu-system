@@ -2,10 +2,7 @@ import {expect} from "chai";
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
-import {ModellingGroupsService} from "../../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
-import {BreadcrumbsTypes} from "../../../../main/shared/actionTypes/BreadrumbsTypes";
-import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
 import {mockBreadcrumbs, mockModellingGroup, mockTouchstoneVersion} from "../../../mocks/mockModels";
 import {chooseActionPageActionCreators} from "../../../../main/contrib/actions/pages/chooseActionPageActionCreators";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";

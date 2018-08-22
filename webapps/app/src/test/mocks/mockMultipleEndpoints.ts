@@ -13,11 +13,6 @@ export interface FakeEndpoint {
     api?: APIType
 }
 
-export function mockFetcherForMultipleResponses(responses: FakeEndpoint[]) {
-    fetcher.fetcher.fetch = createFetchHandler(APIType.Montagu, responses);
-    fetcher.fetcher.fetchFromReportingApi = createFetchHandler(APIType.Reporting, responses);
-}
-
 function createFetchHandler(api: APIType, responses: FakeEndpoint[]) {
     return function (urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
         const response = responses.find(r => {

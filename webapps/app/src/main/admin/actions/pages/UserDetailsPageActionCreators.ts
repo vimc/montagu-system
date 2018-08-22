@@ -1,7 +1,6 @@
 import {Dispatch} from "redux";
 
 import {usersActionCreators} from "../usersActionCreators";
-import {breadcrumbsActionCreators} from "../../../shared/actions/breadcrumbsActionsCreators";
 import {AdminAppState} from "../../reducers/adminAppReducers";
 import {
     UserDetailsPageComponent,

@@ -7,7 +7,6 @@ import {ResponsibilitiesTypes} from "../../../main/contrib/actionTypes/Responsib
 import {createMockContribStore} from "../../mocks/mockStore";
 import {mockModellingGroup, mockResponsibilitySetWithExpectations, mockTouchstone} from "../../mocks/mockModels";
 import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPropsHelper";
-import {EstimatesService} from "../../../main/contrib/services/EstimatesService";
 import {ExtendedResponsibilitySet} from "../../../main/contrib/models/ResponsibilitySet";
 
 describe("Responsibilities actions tests", () => {

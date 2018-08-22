@@ -11,14 +11,6 @@ export function promiseJSON(data: any): Response {
 }
 
 
-export function rejectedPromiseJSON(data: any): Response {
-    return {
-        json: () => new Promise<any>(function (resolve, reject) {
-            reject(data);
-        })
-    } as Response;
-}
-
 export function successResult(data: any): Result {
     return {
         status: "success",
@@ -70,12 +62,3 @@ export function mockFetcher(promise: Promise<Response>, reportingPromise?: Promi
     };
 }
 
-export function mockFetcherNonJson(promise: Promise<any>, reportingPromise?: Promise<any>) {
-    fetcher.fetcher = new AdminFetcher();
-    fetcher.fetcher.fetch = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
-        return promise;
-    };
-    fetcher.fetcher.fetchFromReportingApi = function(urlFragment: string, options?: FetchOptions, includeToken: boolean = true) {
-        return reportingPromise || mockResponse();
-    };
-}
