@@ -7,11 +7,9 @@ import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.AuthenticationController
 import org.vaccineimpact.api.app.logic.UserLogic
-import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.requests.FormHelpers
 import org.vaccineimpact.api.app.requests.HTMLForm
 import org.vaccineimpact.api.app.security.internalUser
-import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
 import org.vaccineimpact.api.security.*
@@ -93,7 +91,7 @@ class AuthenticationControllerTests : MontaguTests()
         }
         val sut = AuthenticationController(fakeContext, fakeUserLogic, mock(), fakeTokenHelper)
 
-        sut.setShinyCookie()
+        sut.setCookies()
         verify(fakeContext).setCookie(eq(CookieName.Shiny), eq("TOKEN"), any())
     }
 
