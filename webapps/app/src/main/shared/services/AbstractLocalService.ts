@@ -1,10 +1,10 @@
-import { Dispatch, Action } from "redux";
+import {Dispatch, Action} from "redux";
 import {clone} from "lodash";
 
-import { settings } from "../Settings";
-import { localStorageHandler } from "./localStorageHandler";
+import {settings} from "../Settings";
+import {localStorageHandler} from "./localStorageHandler";
 import {ErrorInfo, Result} from "../models/Generated";
-import { AuthTypeKeys } from "../actionTypes/AuthTypes";
+import {AuthTypeKeys} from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
 import {CacheInterface} from "../modules/cache/CacheInterface";
 import {singletonVariableCache} from "../modules/cache/singletonVariableCache";
@@ -13,8 +13,9 @@ import {notificationActionCreators} from "../actions/notificationActionCreators"
 import {CommonState} from "../reducers/CommonState";
 
 export interface OptionsHeaders {
-   Authorization?: string;
-   'Content-Type'?: string;
+    Authorization?: string;
+    'Content-Type'?: string;
+    Cookie?: string;
 }
 
 export interface RequestOptions {
@@ -27,7 +28,6 @@ export interface RequestOptions {
 export interface InputOptions {
     Authorization?: string;
     'Content-Type'?: string;
-    credentials?: "omit" | "same-origin" | "include";
     cacheKey?: string;
     notificationOnError?: boolean;
     noCache?: boolean;
@@ -70,20 +70,22 @@ export abstract class AbstractLocalService {
         this.options.cacheKey = null;
         this.options.notificationOnError = true;
         this.options.noCache = false;
-        if (this.bearerToken) {
-            this.options.Authorization = 'Bearer ' + this.bearerToken;
-        }
     }
 
-    protected makeRequestOptions(method: string, body?: any) :RequestOptions {
+    protected makeRequestOptions(method: string, body?: any): RequestOptions {
         const headers: OptionsHeaders = {};
         if (this.options.Authorization) headers.Authorization = this.options.Authorization;
         if (this.options['Content-Type']) headers['Content-Type'] = this.options['Content-Type'];
-        const requestOptions : RequestOptions = {
+        // If we're not running in a browser, manually add the cookie (for integration tests)
+        if (navigator.userAgent.startsWith("Node.js")) {
+            headers.Cookie = `montagu_jwt_token=${this.bearerToken}`;
+        }
+
+        const requestOptions: RequestOptions = {
             method,
             headers,
+            credentials: "include"
         };
-        if (this.options.credentials) requestOptions.credentials = this.options.credentials;
         if (body) requestOptions.body = body;
         return requestOptions;
     }
@@ -92,23 +94,23 @@ export abstract class AbstractLocalService {
         return buildURL(uri, service);
     }
 
-    protected doFetch(url: string, params? :any) {
+    protected doFetch(url: string, params?: any) {
         return fetch(url, params)
     }
 
-    public get(url: string, service?: APIService){
+    public get(url: string, service?: APIService) {
         console.log('get', url);
         service = service || "main";
         return this.getData(this.makeUrl(url, service), "GET");
     }
 
-    public post(url: string, params?:any, service?: APIService){
+    public post(url: string, params?: any, service?: APIService) {
         console.log('post', url, params);
         service = service || "main";
         return this.getData(this.makeUrl(url, service), "POST", params);
     }
 
-    private getFullyQualifiedCacheKey(cacheKey: string, url: string) : string {
+    private getFullyQualifiedCacheKey(cacheKey: string, url: string): string {
         return ["localService", this.constructor.name, cacheKey, encodeURIComponent(url)].join('.');
     }
 
@@ -144,10 +146,10 @@ export abstract class AbstractLocalService {
             .catch(this.notifyOnErrors);
     }
 
-    public postNoProcess(url: string, params?:any, service?: APIService){
+    public postNoProcess(url: string, params?: any, service?: APIService) {
         service = service || "main";
         return this.doFetch(this.makeUrl(url, service), this.makeRequestOptions('POST', params))
-            .then((response:any) => {
+            .then((response: any) => {
                 this.initOptions();
                 return response.json()
             });
@@ -165,19 +167,20 @@ export abstract class AbstractLocalService {
         console.log("Access token has expired or is otherwise invalid: Logging out.");
         this.dispatch(this.logOut());
         notificationActionCreators.notify("Your session has expired. You will need to log in again", "info")(this.dispatch, null);
+        setTimeout(() => notificationActionCreators.clear("error")(this.dispatch, null));
     }
 
-    handleErrorsWithNotifications (error: ErrorInfo) {
+    handleErrorsWithNotifications(error: ErrorInfo) {
         switch (error.code) {
-            case "bearer-token-invalid":
+            case "cookie-bearer-token-invalid":
                 return this.expiredTokenAction();
             default:
                 notificationActionCreators.notify(error.message, "error")(this.dispatch, null);
         }
     };
 
-    handleErrorsReturn (result: any) {
-        if (result.errors[0].code === "bearer-token-invalid") {
+    handleErrorsReturn(result: any) {
+        if (result.errors.some((x: ErrorInfo) => x.code === "cookie-bearer-token-invalid")) {
             return this.expiredTokenAction();
         }
         return result;
