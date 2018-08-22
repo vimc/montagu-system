@@ -3,7 +3,7 @@ import { expect } from "chai";
 import {usersInitialState, usersReducer} from "../../../main/admin/reducers/usersReducer";
 import {UsersTypes} from "../../../main/admin/actionTypes/UsersTypes";
 import {mockUser} from "../../mocks/mockModels";
-import {mockError} from "../../mocks/mockRemote";
+import {mockError} from "../../mocks/mockResult";
 
 describe('Admin Users reducer tests', () => {
 

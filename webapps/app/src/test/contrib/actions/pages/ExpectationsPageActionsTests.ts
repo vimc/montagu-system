@@ -28,7 +28,10 @@ describe("ExpectationsPage actions tests", () => {
 
         const store = createMockContribStore();
         await store.dispatch(expectationsPageActionCreators
-            .loadData());
+            .loadData({
+                groupId: "g1",
+                touchstoneId: "t1"
+            }));
 
         const actions = store.getActions();
         expect(actions).to.eql([]);

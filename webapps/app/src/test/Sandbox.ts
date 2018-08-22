@@ -2,7 +2,6 @@ import * as sinon from 'sinon';
 import {mount, MountRendererProps, ReactWrapper} from "enzyme";
 
 import {ReactElement} from "react";
-import {resetFetcher} from "./mocks/mockRemote";
 import {Action} from "redux";
 
 export class Sandbox {
@@ -29,10 +28,7 @@ export class Sandbox {
             x.unmount();
         });
         this.mounted = [];
-        resetFetcher();
     }
-
-    // Use mockResponse to build the input to this
 
     setSpy(obj: any, method: string): sinon.SinonSpy {
         return this.sinon.spy(obj, method);
