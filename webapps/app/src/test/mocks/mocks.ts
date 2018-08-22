@@ -1,4 +1,4 @@
-import {Location} from "history";
+import {History, Location} from "history";
 import {match} from 'react-router';
 
 export function mockLocation(params?: Partial<Location>): Location {
@@ -19,14 +19,21 @@ export function mockMatch<P>(params?: P) :match<P> {
     };
 }
 
-export function mockHistory(params?: any) {
-    return Object.assign({
+export function mockHistory(params?: Partial<History>): History {
+    const template: History = {
         length: 1,
-        action: "",
-        location: "",
+        action: "PUSH",
+        location: mockLocation(),
         push: () => {},
         replace: () => {},
-        block: () => {}}, params);
+        go: () => {},
+        goBack: () => {},
+        goForward: () => {},
+        block: (() => {}) as any,
+        listen: (() => {}) as any,
+        createHref: () => ""
+    };
+    return Object.assign(template, params);
 }
 
 export function mockEvent() {
