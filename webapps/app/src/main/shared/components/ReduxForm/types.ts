@@ -1,5 +1,5 @@
 import {WrappedFieldProps} from "redux-form";
-import {FormEvent, InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes} from "react";
+import {FormEvent, InputHTMLAttributes, TextareaHTMLAttributes} from "react";
 import {ErrorInfo} from "../../models/Generated";
 
 export type InputFieldProps = WrappedFieldProps & InputHTMLAttributes<HTMLInputElement>

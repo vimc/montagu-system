@@ -9,7 +9,7 @@ import {createMockStore} from "../../../../mocks/mockStore";
 import {Sandbox} from "../../../../Sandbox";
 import {Store} from "redux";
 import {AdminAppState} from "../../../../../main/admin/reducers/adminAppReducers";
-import {mockAdminState, mockAdminUsersState, mockUsersState} from "../../../../mocks/mockStates";
+import {mockAdminState, mockAdminUsersState} from "../../../../mocks/mockStates";
 
 describe("UsersListComponent", () => {
 

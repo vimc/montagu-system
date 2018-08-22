@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { expect } from "chai";
 import { Sandbox } from "../../../../Sandbox";
-import {mockLocation, mockMatch} from "../../../../mocks/mocks";
+import {mockMatch} from "../../../../mocks/mocks";
 
 import {UsersListPage, UsersListPageComponent} from "../../../../../main/admin/components/Users/List/UsersListPage";
 import {createMockStore} from "../../../../mocks/mockStore";

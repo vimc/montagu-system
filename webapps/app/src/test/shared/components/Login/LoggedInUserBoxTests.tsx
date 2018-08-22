@@ -5,7 +5,7 @@ import {mount, shallow} from "enzyme";
 import {Provider} from "react-redux";
 import {MemoryRouter as Router} from 'react-router-dom';
 
-import {AuthState, initialAuthState} from "../../../../main/shared/reducers/authReducer";
+import {initialAuthState} from "../../../../main/shared/reducers/authReducer";
 import {InternalLink} from "../../../../main/shared/components/InternalLink";
 import {
     LoggedInUserBox,

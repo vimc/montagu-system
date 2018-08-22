@@ -1,5 +1,5 @@
 import * as React from "react";
-import { compose, branch, renderComponent} from "recompose";
+import { compose} from "recompose";
 import { connect } from 'react-redux';
 import { Dispatch } from "redux";
 import {Alert} from "reactstrap";

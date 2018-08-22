@@ -11,7 +11,6 @@ import {User} from "../../../../../../main/shared/models/Generated";
 describe("Modelling Group Details Members component tests", () => {
     it("renders no members if group has no members", () => {
         const group = mockModellingGroupDetails({id: "group-id", members: []});
-        const users: User[] = [];
         const rendered = shallow(<ModellingGroupDetailsMembers group={group} members={users} canEdit={false}/>);
         expect(rendered.text()).to.contain("This group does not have any members");
         expect(rendered.find(InternalLink)).to.have.length(0);
@@ -19,7 +18,6 @@ describe("Modelling Group Details Members component tests", () => {
 
     it("renders add member link if group has no members", () => {
         const group = mockModellingGroupDetails({id: "group-id", members: []});
-        const users: User[] = [];
         const rendered = shallow(<ModellingGroupDetailsMembers group={group} members={users} canEdit={true}/>);
         expect(rendered.find(InternalLink).prop("href")).to.equal("/modelling-groups/group-id/admin/");
     });

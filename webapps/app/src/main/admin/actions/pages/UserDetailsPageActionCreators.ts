@@ -3,7 +3,6 @@ import {Dispatch} from "redux";
 import {usersActionCreators} from "../usersActionCreators";
 import {AdminAppState} from "../../reducers/adminAppReducers";
 import {
-    UserDetailsPageComponent,
     UserDetailsPageLocationProps
 } from "../../components/Users/SingleUser/UserDetailsPage";
 import {usersListPageActionCreators} from "./UsersListPageActionCreators";

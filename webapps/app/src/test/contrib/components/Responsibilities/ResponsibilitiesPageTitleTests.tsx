@@ -7,7 +7,7 @@ import {mockModellingGroup, mockTouchstoneVersion} from "../../../mocks/mockMode
 import { ResponsibilitiesPageTitle } from "../../../../main/contrib/components/Responsibilities/PageTitle";
 import { InternalLink } from "../../../../main/shared/components/InternalLink";
 import {Sandbox} from "../../../Sandbox";
-import {createMockContribStore, createMockStore} from "../../../mocks/mockStore";
+import {createMockContribStore} from "../../../mocks/mockStore";
 
 describe("ResponsibilitiesPageTitle", () => {
 

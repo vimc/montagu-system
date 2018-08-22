@@ -2,8 +2,7 @@ import * as sinon from 'sinon';
 import {mount, MountRendererProps, ReactWrapper} from "enzyme";
 
 import {ReactElement} from "react";
-import fetcher from "../main/shared/sources/Fetcher";
-import {mockFetcherResponse, resetFetcher} from "./mocks/mockRemote";
+import {resetFetcher} from "./mocks/mockRemote";
 import {Action} from "redux";
 
 export class Sandbox {

@@ -6,7 +6,6 @@ import { Store } from "redux";
 
 import "../../../helper";
 import {
-    mapDispatchToProps,
     // PublishSwitchProps,
     Props,
     PublishSwitchComponent,

@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {Sandbox} from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
-import {mockBreadcrumbs, mockModellingGroup, mockTouchstoneVersion} from "../../../mocks/mockModels";
+import {mockModellingGroup, mockTouchstoneVersion} from "../../../mocks/mockModels";
 import {chooseActionPageActionCreators} from "../../../../main/contrib/actions/pages/chooseActionPageActionCreators";
 import {TouchstonesService} from "../../../../main/shared/services/TouchstonesService";
 import {TouchstoneTypes} from "../../../../main/shared/actionTypes/TouchstonesTypes";

@@ -1,5 +1,3 @@
-import {jwtTokenAuth} from "../../shared/modules/jwtTokenAuth";
-
 const jwt_decode = require('jwt-decode');
 
 export interface OneTimeToken {
