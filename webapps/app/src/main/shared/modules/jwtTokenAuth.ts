@@ -60,6 +60,7 @@ export const jwtTokenAuth = {
         const modellingGroups = this.parseModellingGroups(decoded.roles);
         return {
             loggedIn: true,
+            hasCookies: false,
             bearerToken: token,
             isAccountActive: permissions.some((x: string) => x == "*/can-login"),
             isModeller: modellingGroups.length > 0,

@@ -10,8 +10,10 @@ export class AuthService extends AbstractLocalService {
             .postNoProcess("/authenticate/", "grant_type=client_credentials")
     }
 
-    setShinyCookie() {
-        return this.get("/set-shiny-cookie/");
+    setCookies(): Promise<string> {
+        return this
+            .setOptions({ includeBearerToken: true })
+            .get("/set-cookies/");
     }
 
     logOutOfAPI() {

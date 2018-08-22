@@ -29,7 +29,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
     addTestsToMocha() {
 
         it("can fetch shiny cookie", async () => {
-            const result = await (new AuthService(this.store.dispatch, this.store.getState)).setShinyCookie();
+            const result = await (new AuthService(this.store.dispatch, this.store.getState)).setCookies();
             expect(result).to.be.eq("OK");
         });
 

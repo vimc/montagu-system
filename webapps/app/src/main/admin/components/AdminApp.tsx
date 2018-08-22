@@ -1,17 +1,11 @@
 import * as React from "react";
 import {connect} from 'react-redux';
-import {History} from "history";
 import {ErrorLog} from "../../shared/components/ErrorLog/ErrorLog";
 import {AdminRouter} from "./AdminRouter";
 import {NotificationArea} from "../../shared/components/NotificationArea/NotificationArea";
-import {AdminAppState} from "../reducers/adminAppReducers";
+import {AppProps, mapStateToAppProps} from "../../shared/components/App";
 
-export interface AdminAppProps {
-    loggedIn: boolean;
-    history?: History;
-}
-
-export class AdminAppComponent extends React.Component<AdminAppProps, undefined> {
+export class AdminAppComponent extends React.Component<AppProps, undefined> {
     render() {
         return <div>
             <AdminRouter loggedIn={ this.props.loggedIn } history={this.props.history} />
@@ -21,11 +15,4 @@ export class AdminAppComponent extends React.Component<AdminAppProps, undefined>
     }
 }
 
-const mapStateToProps = (state: AdminAppState, props: Partial<AdminAppProps>): Partial<AdminAppProps> => {
-    return {
-        loggedIn: state.auth.loggedIn,
-        history: props.history
-    }
-};
-
-export const AdminApp = connect(mapStateToProps)(AdminAppComponent);
+export const AdminApp = connect(mapStateToAppProps)(AdminAppComponent);

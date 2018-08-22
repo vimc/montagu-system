@@ -28,6 +28,7 @@ export interface InputOptions {
     Authorization?: string;
     'Content-Type'?: string;
     cacheKey?: string;
+    includeBearerToken?: boolean;
     notificationOnError?: boolean;
     noCache?: boolean;
 }
@@ -73,12 +74,15 @@ export abstract class AbstractLocalService {
 
     protected makeRequestOptions(method: string, body?: any): RequestOptions {
         const headers: OptionsHeaders = {};
-        if (this.options.Authorization) headers.Authorization = this.options.Authorization;
-        if (this.options['Content-Type']) headers['Content-Type'] = this.options['Content-Type'];
+        if (this.options.includeBearerToken) {
+            this.options.Authorization = 'Bearer ' + this.bearerToken;
+        }
         // If we're not running in a browser, manually add the cookie (for integration tests)
         if (navigator.userAgent.startsWith("Node.js")) {
             headers.Cookie = `montagu_jwt_token=${this.bearerToken}`;
         }
+        if (this.options.Authorization) headers.Authorization = this.options.Authorization;
+        if (this.options['Content-Type']) headers['Content-Type'] = this.options['Content-Type'];
 
         const requestOptions: RequestOptions = {
             method,
