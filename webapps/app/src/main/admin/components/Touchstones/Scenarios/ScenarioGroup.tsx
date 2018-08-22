@@ -2,6 +2,7 @@ import * as React from "react";
 import {Disease, Scenario} from "../../../../shared/models/Generated";
 import {UncontrolledTooltip} from "reactstrap";
 import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
+import {branch, renderNothing} from "recompose";
 
 export interface ScenarioGroupProps {
     touchstoneVersionId: string;
@@ -10,9 +11,9 @@ export interface ScenarioGroupProps {
     canDownloadCoverage: boolean;
 }
 
-export class ScenarioGroup extends React.Component<ScenarioGroupProps> {
+export class ScenarioGroupComponent extends React.Component<ScenarioGroupProps> {
     render(): JSX.Element {
-        return <div>
+        return <div className={"my-2"}>
             <h3>{this.props.disease.name}</h3>
             <div className="row">
                 <ul className="list-group col-12">
@@ -26,6 +27,9 @@ export class ScenarioGroup extends React.Component<ScenarioGroupProps> {
         return scenarios.map(s => ScenarioItem(this.props, s));
     }
 }
+
+export const ScenarioGroup =
+    branch<ScenarioGroupProps>((props: ScenarioGroupProps) => props.scenarios.length == 0, renderNothing)(ScenarioGroupComponent);
 
 const ScenarioItem = (props: ScenarioGroupProps, scenario: Scenario) => {
     let href = null;
