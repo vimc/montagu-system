@@ -21,7 +21,7 @@ class ScenarioTests : DatabaseTest()
     val scenarioId = "scenario"
 
     @Test
-    fun `can get scenarios (as they exist within a touchstone)`()
+    fun `can get scenarios without coverage sets (as they exist within a touchstone)`()
     {
         validate("/touchstones/$touchstoneVersionId/scenarios/") against "ScenariosInTouchstone" given {
             addTouchstoneWithScenarios(it, touchstoneVersionId, "open", coverageSetId = setId)
@@ -67,7 +67,7 @@ class ScenarioTests : DatabaseTest()
     }
 
     @Test
-    fun `can get scenario (as it exists within a touchstone)`()
+    fun `can get scenario without coverage sets (as it exists within a touchstone)`()
     {
         validate("/touchstones/$touchstoneVersionId/scenarios/$scenarioId") against "ScenarioAndCoverageSets" given {
             addTouchstoneWithScenarios(it, touchstoneVersionId, "open", coverageSetId = setId)

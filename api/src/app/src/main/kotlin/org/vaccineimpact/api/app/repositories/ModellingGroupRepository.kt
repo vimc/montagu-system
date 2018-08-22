@@ -11,9 +11,7 @@ interface ModellingGroupRepository : Repository
     fun getModellingGroup(id: String): ModellingGroup
     fun getModellingGroupDetails(groupId: String): ModellingGroupDetails
 
-    fun getModellingGroupsForDisease(diseaseId: String): List<ModellingGroup>
-
-    fun getModellingGroupsForScenario(scenarioDescriptionId: String): List<ModellingGroup>
+    fun getModellingGroupsForScenario(scenarioDescriptionId: String, touchstoneVersionId: String): List<ModellingGroup>
 
     fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
 
