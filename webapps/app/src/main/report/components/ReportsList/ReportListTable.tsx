@@ -1,6 +1,9 @@
 import * as React from "react";
 import {Report} from "../../../shared/models/Generated";
-import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps} from 'react-table'
+import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps, TableProps} from 'react-table'
+
+const treeTableHOC = require("react-table/lib/hoc/treeTable");
+
 import {
     LatestVersion,
     latestVersionAccessorFunction,
@@ -53,6 +56,8 @@ export const TextFilter: FilterRender = (props: FilterProps<string>) => {
                   placeholder="Type to filter..."
                   onChange={event => props.onChange(event.target.value)}/>
 };
+
+const TreeTable = treeTableHOC(ReactTable) as React.ComponentClass<Partial<TableProps>>;
 
 export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
     = (props: ReportsListTableProps) => {
@@ -111,7 +116,8 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
         <p className="helper-text text-muted">
             Click on a column heading to sort by that field. Hold shift to multi-sort.
         </p>
-        <ReactTable
+        <TreeTable
+            pivotBy={["name"]}
             defaultSorted={[{id: "latest_version"}]}
             defaultFilterMethod={(filter: Filter, row: ReportRowProps) =>
                 String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
