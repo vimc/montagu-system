@@ -55,7 +55,7 @@ class AuthenticationTests : DatabaseTest()
         val token = TokenFetcher().getToken(TestUserHelper.email, TestUserHelper.defaultPassword)
                 as TokenFetcher.TokenResponse.Token
 
-        val response = RequestHelper().get("/set-shiny-cookie/", token.token)
+        val response = RequestHelper().get("/set-cookies/", token.token)
 
         assertThat(response.statusCode).isEqualTo(200)
 
