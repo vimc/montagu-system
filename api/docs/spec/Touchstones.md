@@ -145,7 +145,8 @@ If the user has global `coverage.read` permission then coverage sets metadata wi
 
 Schema: [`ScenariosInTouchstone.schema.json`](../schemas/ScenariosInTouchstone.schema.json)
 
-### Example with coverage.read
+### Example
+#### with coverage.read
     [
         {
             "scenario": {
@@ -193,7 +194,7 @@ Schema: [`ScenariosInTouchstone.schema.json`](../schemas/ScenariosInTouchstone.s
         }
     ]
     
-### Example without coverage.read
+### without coverage.read
     [
         {
             "scenario": {
@@ -234,7 +235,8 @@ and scenario will be returned.
 
 Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSets.schema.json)
 
-### Example with coverage.read
+### Example 
+### with coverage.read
     {
         "touchstone_version": { 
             "id": "2017-op-1",
@@ -261,8 +263,7 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
         ]
     }
 
-
-### Example without coverage.read
+### without coverage.read
     {
         "touchstone_version": { 
             "id": "2017-op-1",
