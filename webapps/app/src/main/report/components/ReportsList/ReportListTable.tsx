@@ -16,6 +16,7 @@ import {
 } from "./ReportListColumns/PublishStatusColumn";
 import {ReportVersionFilter} from "./ReportListColumns/LatestVersionFilter";
 import {nameAccessorFunction, NameCell} from "./ReportListColumns/NameColumn";
+import {Version} from "../../../shared/models/reports/Report";
 
 export interface ReportsListTableProps {
     reports: Report[]
@@ -81,18 +82,6 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 aggregate: vals => vals[0]
             },
             {
-                Header: "Version",
-                id: "version",
-                Cell: EmptyCell,
-                width: 345,
-                accessor: versionIdAccessorFunction,
-                sortMethod: versionSortMethod,
-                filterMethod: versionFilterMethod,
-                Filter: ReportVersionFilter,
-                aggregate: vals => vals[0],
-                Aggregated: AggregatedVersionCell
-            },
-            {
                 Header: "Author",
                 accessor: "author",
                 width: 220,
@@ -109,7 +98,19 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 Filter: TextFilter,
                 Aggregated: NonEmptyCell,
                 aggregate: vals => vals[0],
-            }
+            },
+            {
+                Header: "Version",
+                id: "version",
+                Cell: VersionCell,
+                width: 345,
+                accessor: versionIdAccessorFunction,
+                sortMethod: versionSortMethod,
+                filterMethod: versionFilterMethod,
+                Filter: ReportVersionFilter,
+                aggregate: vals => vals[0],
+                Aggregated: EmptyCell
+            },
         ];
 
     if (props.isReviewer) {
