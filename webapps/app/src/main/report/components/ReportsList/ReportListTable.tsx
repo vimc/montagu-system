@@ -2,7 +2,7 @@ import * as React from "react";
 import {Report} from "../../../shared/models/Generated";
 import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps, TableProps} from 'react-table'
 
-const treeTableHOC = require("react-table/lib/hoc/treeTable");
+import treeTableHOC from "react-table/lib/hoc/treeTable"
 
 import {
     LatestVersion,
@@ -25,7 +25,7 @@ export interface ReportsListTableProps {
 }
 
 export interface ReportRowRenderProps extends RowRenderProps {
-    original: Report,
+    row: ReportRowProps,
     value: string | LatestVersion | boolean;
 }
 
@@ -71,7 +71,8 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 id: "name",
                 Cell: NameCell,
                 accessor: nameAccessorFunction,
-                Filter: TextFilter
+                Filter: TextFilter,
+                aggregate: vals => {console.log(vals); return vals[0]}
             },
             {
                 Header: "Latest version",
@@ -81,19 +82,22 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 Cell: LatestVersionCell,
                 sortMethod: versionSortMethod,
                 filterMethod: versionFilterMethod,
-                Filter: ReportLatestVersionFilter
+                Filter: ReportLatestVersionFilter,
+                aggregate: vals => vals[0],
             },
             {
                 Header: "Author",
                 accessor: "author",
                 width: 220,
-                Filter: TextFilter
+                Filter: TextFilter,
+                aggregate: vals => vals[0],
             },
             {
                 Header: "Requester",
                 accessor: "requester",
                 width: 220,
-                Filter: TextFilter
+                Filter: TextFilter,
+                aggregate: vals => vals[0],
             },
         ];
 
@@ -105,7 +109,8 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             width: 120,
             Cell: PublishStatusCell,
             filterMethod: publishStatusFilterMethod,
-            Filter: PublishStatusFilter
+            Filter: PublishStatusFilter,
+            aggregate: vals => vals[0],
         })
     }
 

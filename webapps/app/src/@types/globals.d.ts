@@ -18,3 +18,5 @@ declare module 'moment';
 declare module 'pako';
 
 declare module 'react-open-iconic-svg';
+
+declare module "react-table/lib/hoc/treeTable"
