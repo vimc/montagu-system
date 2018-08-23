@@ -6,5 +6,5 @@
 		"coverage_sets": { "$ref": "CoverageSets.schema.json" }
 	},
 	"additionalProperties": false,
-	"required": [ "scenario", "coverage_sets" ]
+	"required": [ "scenario" ]
 }

@@ -60,7 +60,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         } check {
             val result = it.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
 
-            assertThat(result.structuredMetadata.coverageSets.count()).isEqualTo(3)
+            assertThat(result.structuredMetadata.coverageSets!!.count()).isEqualTo(3)
 
             assertThat(result.tableData.data.toList()).containsExactlyElementsOf(listOf(
                     LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
@@ -98,15 +98,16 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             giveUnorderedCoverageSetsToScenario(it)
         } check {
             val result = it.getScenarioAndCoverageSets(touchstoneVersionId, scenarioId)
+                    .coverageSets!!
 
-            assertThat(result.coverageSets.count()).isEqualTo(6)
+            assertThat(result.count()).isEqualTo(6)
 
-            assertThat(result.coverageSets[0].id).isEqualTo(setA)
-            assertThat(result.coverageSets[1].id).isEqualTo(setB)
-            assertThat(result.coverageSets[2].id).isEqualTo(setC)
-            assertThat(result.coverageSets[3].id).isEqualTo(setD)
-            assertThat(result.coverageSets[4].id).isEqualTo(setE)
-            assertThat(result.coverageSets[5].id).isEqualTo(setF)
+            assertThat(result[0].id).isEqualTo(setA)
+            assertThat(result[1].id).isEqualTo(setB)
+            assertThat(result[2].id).isEqualTo(setC)
+            assertThat(result[3].id).isEqualTo(setD)
+            assertThat(result[4].id).isEqualTo(setE)
+            assertThat(result[5].id).isEqualTo(setF)
         }
     }
 

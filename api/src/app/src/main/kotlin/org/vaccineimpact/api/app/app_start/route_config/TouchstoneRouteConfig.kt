@@ -10,7 +10,7 @@ object TouchstoneRouteConfig : RouteConfig
     private val controller = TouchstoneController::class
 
     private val permissions = setOf("*/touchstones.read")
-    private val scenarioPermissions = permissions + setOf("*/scenarios.read", "*/coverage.read")
+    private val scenarioPermissions = permissions + setOf("*/scenarios.read")
     private val demographicPermissions = permissions + setOf("*/demographics.read")
     private val responsibilityPermissions = permissions + setOf("*/scenarios.read", "*/responsibilities.read")
 

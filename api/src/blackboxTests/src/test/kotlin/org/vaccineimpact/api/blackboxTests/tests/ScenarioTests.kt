@@ -15,18 +15,35 @@ import org.vaccineimpact.api.test_helpers.DatabaseTest
 
 class ScenarioTests : DatabaseTest()
 {
-    val requiredPermissions = PermissionSet("*/can-login", "*/touchstones.read", "*/scenarios.read", "*/coverage.read")
+    val requiredPermissions = PermissionSet("*/can-login", "*/touchstones.read", "*/scenarios.read")
     val touchstoneVersionId = "touchstone-1"
     val setId = 1
     val scenarioId = "scenario"
 
     @Test
-    fun `can get scenarios (as they exist within a touchstone)`()
+    fun `can get scenarios without coverage sets (as they exist within a touchstone)`()
     {
         validate("/touchstones/$touchstoneVersionId/scenarios/") against "ScenariosInTouchstone" given {
             addTouchstoneWithScenarios(it, touchstoneVersionId, "open", coverageSetId = setId)
         } requiringPermissions {
             requiredPermissions
+        } andCheckArray {
+            assertThat(it).isEqualTo(json {
+                array(obj(
+                        "scenario" to expectedScenario()
+                ))
+            })
+        }
+    }
+
+
+    @Test
+    fun `can get scenarios with coverage sets (as they exist within a touchstone)`()
+    {
+        validate("/touchstones/$touchstoneVersionId/scenarios/") against "ScenariosInTouchstone" given {
+            addTouchstoneWithScenarios(it, touchstoneVersionId, "open", coverageSetId = setId)
+        } withPermissions  {
+            requiredPermissions + PermissionSet("*/coverage.read")
         } andCheckArray {
             assertThat(it).isEqualTo(json {
                 array(obj(
@@ -50,12 +67,35 @@ class ScenarioTests : DatabaseTest()
     }
 
     @Test
-    fun `can get scenario (as it exists within a touchstone)`()
+    fun `can get scenario without coverage sets (as it exists within a touchstone)`()
     {
         validate("/touchstones/$touchstoneVersionId/scenarios/$scenarioId") against "ScenarioAndCoverageSets" given {
             addTouchstoneWithScenarios(it, touchstoneVersionId, "open", coverageSetId = setId)
         } requiringPermissions {
             requiredPermissions
+        } andCheck {
+            assertThat(it).isEqualTo(json {
+                obj(
+                        "touchstone_version" to obj(
+                                "id" to touchstoneVersionId,
+                                "name" to "touchstone",
+                                "version" to 1,
+                                "description" to "Description",
+                                "status" to "open"
+                        ),
+                        "scenario" to expectedScenario()
+                )
+            })
+        }
+    }
+
+    @Test
+    fun `can get scenario and coverage sets (as it exists within a touchstone)`()
+    {
+        validate("/touchstones/$touchstoneVersionId/scenarios/$scenarioId") against "ScenarioAndCoverageSets" given {
+            addTouchstoneWithScenarios(it, touchstoneVersionId, "open", coverageSetId = setId)
+        } withPermissions  {
+            requiredPermissions + PermissionSet("*/coverage.read")
         } andCheck {
             assertThat(it).isEqualTo(json {
                 obj(

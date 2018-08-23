@@ -3,10 +3,7 @@ package org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.db.direct.addDisease
-import org.vaccineimpact.api.db.direct.addGroup
-import org.vaccineimpact.api.db.direct.addModel
-import org.vaccineimpact.api.db.direct.addUserWithRoles
+import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.ModellingGroup
 import org.vaccineimpact.api.models.ModellingGroupDetails
 import org.vaccineimpact.api.models.ResearchModel
@@ -36,6 +33,26 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
                     ModellingGroup("a", "description a"),
                     ModellingGroup("b", "description b")
             ))
+        }
+    }
+
+
+    @Test
+    fun `getModellingGroupsForScenario only returns groups with responsibility for scenario`()
+    {
+        given {
+            it.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
+            it.addTouchstoneVersion("touchstone", 2, addTouchstone = false)
+            it.addGroup("a", "description a")
+            it.addGroup("b", "description b")
+            it.addScenarioDescription("s1desc", "desxription", "disease1", addDisease = true)
+            it.addModel("m1", "a", "disease1")
+            it.addResponsibilityInNewSet("a", "touchstone-1", "s1desc")
+            it.addResponsibilityInNewSet("b", "touchstone-2", "s1desc")
+        } check { repo ->
+            val groups = repo.getModellingGroupsForScenario("s1desc", "touchstone-1")
+            assertThat(groups.count()).isEqualTo(1)
+            assertThat(groups[0].id).isEqualTo("a")
         }
     }
 
