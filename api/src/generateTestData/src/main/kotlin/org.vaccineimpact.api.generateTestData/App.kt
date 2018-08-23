@@ -17,10 +17,10 @@ fun main(args: Array<String>)
         db.addTouchstoneVersion("op-2017", 2, "Operational Forecast 2017 (v2)", "open")
 
         db.addTouchstone("fake-rfp", "Fake request for proposals")
-        db.addTouchstoneVersion("fake-rfp-1", 1, "Fake request for proposals (v1)", "finished")
+        db.addTouchstoneVersion("fake-rfp", 1, "Fake request for proposals (v1)", "finished")
 
         db.addTouchstone("future", "Future touchstone")
-        db.addTouchstoneVersion("future-1", 1, "Future (v1)", "in-preparation")
+        db.addTouchstoneVersion("future", 1, "Future (v1)", "in-preparation")
 
         val demographicTestData = DemographicTestData(db)
         demographicTestData.generate("op-2017-1", listOf("YF"))
