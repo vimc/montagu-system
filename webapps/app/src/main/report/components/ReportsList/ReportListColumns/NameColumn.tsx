@@ -6,7 +6,6 @@ import {ReportRowRenderProps} from "../ReportListTable";
 export const NameCell: React.SFC<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
 
     const report = props.row;
-    console.log(props);
 
     let name = <div>{report.name}</div>;
 

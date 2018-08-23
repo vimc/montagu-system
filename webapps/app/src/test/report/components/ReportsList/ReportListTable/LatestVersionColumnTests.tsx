@@ -6,10 +6,10 @@ import {mockReport} from "../../../../mocks/mockModels";
 import {Sandbox} from "../../../../Sandbox";
 import {
     latestVersionAccessorFunction,
-    LatestVersionCell,
+    VersionCell,
     versionFilterMethod, versionSortMethod,
 } from "../../../../../main/report/components/ReportsList/ReportListColumns/VersionColumn";
-import {ReportLatestVersionFilter} from "../../../../../main/report/components/ReportsList/ReportListColumns/LatestVersionFilter";
+import {ReportVersionFilter} from "../../../../../main/report/components/ReportsList/ReportListColumns/LatestVersionFilter";
 import {DateRangePicker} from "../../../../../main/shared/components/DatePicker/DateRangePicker";
 import {DatePicker} from "../../../../../main/shared/components/DatePicker/DatePicker";
 
@@ -36,8 +36,8 @@ describe("ReportListComponent", () => {
         });
 
         it("renders version id and date", function () {
-            const result = shallow(<LatestVersionCell original={mockReport({display_name: null})}
-                                                      value={{
+            const result = shallow(<VersionCell original={mockReport({display_name: null})}
+                                                value={{
                                                           version: "46324",
                                                           date: new Date(2018, 4, 15)
                                                       }}/>);
@@ -60,7 +60,7 @@ describe("ReportListComponent", () => {
 
             const onChange = sandbox.sinon.stub();
 
-            const result = shallow(<ReportLatestVersionFilter onChange={onChange} filter={filter}/>);
+            const result = shallow(<ReportVersionFilter onChange={onChange} filter={filter}/>);
 
             expect(result.find(DateRangePicker).prop("value"))
                 .to.eql({start: filterValue.start, end: filterValue.end});
@@ -71,7 +71,7 @@ describe("ReportListComponent", () => {
 
             const onChange = sandbox.sinon.stub();
 
-            const result = shallow(<ReportLatestVersionFilter onChange={onChange} filter={filter}/>);
+            const result = shallow(<ReportVersionFilter onChange={onChange} filter={filter}/>);
             result.find(DateRangePicker).dive().find(DatePicker).first().simulate("change",
                 new Date(2017, 12, 20));
 
@@ -87,7 +87,7 @@ describe("ReportListComponent", () => {
 
             const onChange = sandbox.sinon.stub();
 
-            const result = shallow(<ReportLatestVersionFilter onChange={onChange} filter={filter}/>);
+            const result = shallow(<ReportVersionFilter onChange={onChange} filter={filter}/>);
             result.find(DateRangePicker).dive().find(DatePicker).last().simulate("change",
                 new Date(2017, 1, 10));
 
@@ -103,7 +103,7 @@ describe("ReportListComponent", () => {
 
             const onChange = sandbox.sinon.stub();
 
-            const result = shallow(<ReportLatestVersionFilter onChange={onChange} filter={filter}/>);
+            const result = shallow(<ReportVersionFilter onChange={onChange} filter={filter}/>);
             result.find("input").simulate("change", {target: {value: "newid"}});
 
             expect(onChange.calledWith({

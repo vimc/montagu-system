@@ -2,13 +2,11 @@ import * as React from "react";
 import {Report} from "../../../shared/models/Generated";
 import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps, TableProps} from 'react-table'
 
-import treeTableHOC from "react-table/lib/hoc/treeTable"
-
 import {
-    LatestVersion,
-    latestVersionAccessorFunction,
-    LatestVersionCell,
-    versionFilterMethod,
+    AggregatedVersionCell,
+    ReportVersion,
+    VersionCell,
+    versionFilterMethod, versionIdAccessorFunction,
     versionSortMethod
 } from "./ReportListColumns/VersionColumn";
 import {
@@ -16,7 +14,7 @@ import {
     PublishStatusFilter,
     publishStatusFilterMethod
 } from "./ReportListColumns/PublishStatusColumn";
-import {ReportLatestVersionFilter} from "./ReportListColumns/LatestVersionFilter";
+import {ReportVersionFilter} from "./ReportListColumns/LatestVersionFilter";
 import {nameAccessorFunction, NameCell} from "./ReportListColumns/NameColumn";
 
 export interface ReportsListTableProps {
@@ -26,17 +24,19 @@ export interface ReportsListTableProps {
 
 export interface ReportRowRenderProps extends RowRenderProps {
     row: ReportRowProps,
-    value: string | LatestVersion | boolean;
+    value: string | ReportVersion | boolean;
 }
 
 export interface ReportRowProps {
-    latest_version: LatestVersion,
+    version: ReportVersion,
     name: string,
     author: string,
     requester: string,
     published: boolean,
 
-    [key: string]: string | boolean | LatestVersion
+    [key: string]: string | boolean | ReportVersion | ReportRowProps[]
+
+    _subRows?: ReportRowProps[]
 }
 
 export interface FilterGeneric<T> extends Filter {
@@ -57,7 +57,13 @@ export const TextFilter: FilterRender = (props: FilterProps<string>) => {
                   onChange={event => props.onChange(event.target.value)}/>
 };
 
-const TreeTable = treeTableHOC(ReactTable) as React.ComponentClass<Partial<TableProps>>;
+export const EmptyCell = () => {
+    return <span>&nbsp;</span>
+};
+
+export const NonEmptyCell = (row: ReportRowRenderProps) => {
+    return <span>{row.value}</span>
+};
 
 export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
     = (props: ReportsListTableProps) => {
@@ -72,33 +78,38 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 Cell: NameCell,
                 accessor: nameAccessorFunction,
                 Filter: TextFilter,
-                aggregate: vals => {console.log(vals); return vals[0]}
+                aggregate: vals => vals[0]
             },
             {
-                Header: "Latest version",
-                id: "latest_version",
+                Header: "Version",
+                id: "version",
+                Cell: EmptyCell,
                 width: 345,
-                accessor: latestVersionAccessorFunction,
-                Cell: LatestVersionCell,
+                accessor: versionIdAccessorFunction,
                 sortMethod: versionSortMethod,
                 filterMethod: versionFilterMethod,
-                Filter: ReportLatestVersionFilter,
+                Filter: ReportVersionFilter,
                 aggregate: vals => vals[0],
+                Aggregated: AggregatedVersionCell
             },
             {
                 Header: "Author",
                 accessor: "author",
                 width: 220,
                 Filter: TextFilter,
+                Cell: EmptyCell,
+                Aggregated: NonEmptyCell,
                 aggregate: vals => vals[0],
             },
             {
                 Header: "Requester",
                 accessor: "requester",
                 width: 220,
+                Cell: EmptyCell,
                 Filter: TextFilter,
+                Aggregated: NonEmptyCell,
                 aggregate: vals => vals[0],
-            },
+            }
         ];
 
     if (props.isReviewer) {
@@ -110,7 +121,8 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             Cell: PublishStatusCell,
             filterMethod: publishStatusFilterMethod,
             Filter: PublishStatusFilter,
-            aggregate: vals => vals[0],
+            aggregate: vals => "",
+            Aggregated: EmptyCell,
         })
     }
 
@@ -121,9 +133,9 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
         <p className="helper-text text-muted">
             Click on a column heading to sort by that field. Hold shift to multi-sort.
         </p>
-        <TreeTable
+        <ReactTable
             pivotBy={["name"]}
-            defaultSorted={[{id: "latest_version"}]}
+            defaultSorted={[{id: "version"}]}
             defaultFilterMethod={(filter: Filter, row: ReportRowProps) =>
                 String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
             filterable
