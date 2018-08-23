@@ -30,7 +30,7 @@ export const TouchstoneListComponent: React.SFC<TouchstoneListProps> = (props: T
     </div>;
 };
 
-export const mapStateToProps = (state: AdminAppState): TouchstoneListProps => {
+const mapStateToProps = (state: AdminAppState): TouchstoneListProps => {
     const touchstones = state.touchstones.touchstones;
     const [active, inactive] = partition(touchstones, t => t.versions.some(v => v.status != "finished"));
     return {active, inactive}
