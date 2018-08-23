@@ -2,7 +2,7 @@ import * as React from "react";
 import {shallow} from "enzyme";
 
 import {expect} from "chai";
-import {mockArtefact, mockReport, mockVersion} from "../../../mocks/mockModels";
+import {mockArtefact, mockVersion} from "../../../mocks/mockModels";
 import {Sandbox} from "../../../Sandbox";
 import {
     mapStateToProps,

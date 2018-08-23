@@ -189,17 +189,6 @@ export function mockScenarioAndCoverageSets(
     };
 }
 
-export function mockScenarioTouchstoneAndCoverageSets(scenarioProperties?: Partial<models.Scenario>,
-                                                      touchstoneProperties?: Partial<models.TouchstoneVersion>,
-                                                      coverageSets?: models.CoverageSet[]): models.ScenarioTouchstoneAndCoverageSets {
-    const touchstone = mockTouchstoneVersion(touchstoneProperties);
-    return {
-        touchstone_version: touchstone,
-        scenario: mockScenario(scenarioProperties),
-        coverage_sets: coverageSets || [mockCoverageSet({touchstone_version: touchstone.id})]
-    };
-}
-
 export function mockRole(properties?: any): models.RoleAssignment {
     counter++;
     return Object.assign({

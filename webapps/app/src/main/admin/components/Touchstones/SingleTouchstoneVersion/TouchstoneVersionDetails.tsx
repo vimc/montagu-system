@@ -1,7 +1,6 @@
 import * as React from "react";
 import {connect} from "react-redux";
 
-import {ButtonLink} from "../../../../shared/components/ButtonLink";
 import {Touchstone, TouchstoneVersion} from "../../../../shared/models/Generated";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {branch, compose, renderComponent} from "recompose";

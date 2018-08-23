@@ -1,7 +1,7 @@
 import * as React from "react";
-import { compose, branch, renderComponent} from "recompose";
-import { connect } from 'react-redux';
-import { Dispatch } from "redux";
+import {compose} from "recompose";
+import {connect} from 'react-redux';
+import {Dispatch} from "redux";
 import {Alert} from "reactstrap";
 
 import {CustomFileInput} from "../../../../shared/components/CustomFileInput";

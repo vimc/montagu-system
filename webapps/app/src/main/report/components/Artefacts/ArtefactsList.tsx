@@ -1,6 +1,5 @@
 import * as React from "react";
 import {ILookup} from "../../../shared/models/Lookup";
-import {settings} from "../../../shared/Settings";
 import {Artefact} from "../../../shared/models/reports/Artefact";
 import {ArtefactItem} from "./ArtefactItem";
 
@@ -11,12 +10,6 @@ interface ArtefactsListProps{
 }
 
 export class ArtefactsList extends React.Component<ArtefactsListProps, undefined> {
-
-    static buildUrl(type: string, hash: string): string {
-        return settings.reportingApiUrl() + "/data/"
-            + type + "/"
-            + hash;
-    }
 
     render() {
         const artefactItems = this.props.artefacts

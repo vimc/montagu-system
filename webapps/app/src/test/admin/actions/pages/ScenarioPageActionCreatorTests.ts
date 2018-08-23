@@ -1,12 +1,8 @@
 import {expect} from "chai";
 import {createMockAdminStore} from "../../../mocks/mockStore";
 import {Sandbox} from "../../../Sandbox";
-import {touchstoneDetailsPageActionCreators} from "../../../../main/admin/actions/pages/touchstoneDetailsPageActionCreators";
-import {mockAdminState, RecursivePartial} from "../../../mocks/mockStates";
-import {AdminTouchstoneState} from "../../../../main/admin/reducers/adminTouchstoneReducer";
-import {mockTouchstone, mockTouchstoneVersion} from "../../../mocks/mockModels";
-import {touchstoneListPageActionCreators} from "../../../../main/admin/actions/pages/TouchstoneListPageActionCreators";
-import {TouchstoneTypes} from "../../../../main/shared/actionTypes/TouchstonesTypes";
+import {RecursivePartial} from "../../../mocks/mockStates";
+import {mockTouchstoneVersion} from "../../../mocks/mockModels";
 import {scenarioPageActionCreators} from "../../../../main/admin/actions/pages/ScenarioPageActionCreators";
 import {scenarioActionCreators} from "../../../../main/admin/actions/scenarioActionCreators";
 import {AdminAppState} from "../../../../main/admin/reducers/adminAppReducers";

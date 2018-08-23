@@ -6,10 +6,10 @@ import {createMockAdminStore, createMockStore} from "../../mocks/mockStore";
 import {UserCacheKeysEnum, UsersService} from "../../../main/admin/services/UsersService";
 import {ChangeSetPasswordToken, UsersTypes} from "../../../main/admin/actionTypes/UsersTypes";
 import {mockUser} from "../../mocks/mockModels";
-import {mockError, mockResult} from "../../mocks/mockRemote";
 import * as Sinon from "sinon"
 import {checkPromise} from "../../testHelpers";
 import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
+import {mockError, mockResult} from "../../mocks/mockResult";
 
 describe("Admin Users actions tests", () => {
     const sandbox = new Sandbox();

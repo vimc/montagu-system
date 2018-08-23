@@ -5,13 +5,10 @@ import {Sandbox} from "../../Sandbox";
 import {OneTimeUploadFileForm, UploadFileForm} from "../../../main/shared/components/UploadFileForm";
 import {helpers} from "../../../main/shared/Helpers";
 import {Alert} from "reactstrap";
-import {resetFetcher} from "../../mocks/mockRemote";
 
 describe('UploadForm', () => {
     let rendered: ShallowWrapper<any, any>;
     const sandbox = new Sandbox();
-
-    before(() => resetFetcher());
     afterEach(() => sandbox.restore());
 
     it("disables child component if enable submit is false", () => {

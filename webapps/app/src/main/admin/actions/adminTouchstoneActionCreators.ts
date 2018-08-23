@@ -7,7 +7,6 @@ import {
     TouchstoneTypes
 } from "../../shared/actionTypes/TouchstonesTypes";
 import {TouchstoneCreation} from "../components/Touchstones/Create/CreateTouchstoneForm";
-import {runInNewContext} from "vm";
 
 export const adminTouchstoneActionCreators = {
     getAllTouchstones() {

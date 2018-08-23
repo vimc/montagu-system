@@ -8,7 +8,7 @@ import {mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
 import {mockContribState} from "../../../mocks/mockStates";
 import {ModellingGroup} from "../../../../main/shared/models/Generated";
 import {Sandbox} from "../../../Sandbox";
-import {createMockContribStore, createMockStore} from "../../../mocks/mockStore";
+import {createMockContribStore} from "../../../mocks/mockStore";
 import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";
 import {
     ChooseActionContent,

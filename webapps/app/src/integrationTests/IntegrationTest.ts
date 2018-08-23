@@ -120,10 +120,6 @@ function queryAgainstRootDb(query: string): Promise<void> {
         });
 }
 
-export function expectIsEqual<T>(actual: T, expected: T) {
-    expect(actual).to.eql(expected);
-}
-
 export function expectSameElements<Any>(actual: Any[], expected: Any[]) {
     const failMessage = `Expected ${JSON.stringify(actual, null, 4)} to have same members as ${JSON.stringify(expected, null, 4)}`;
     expect(actual).to.have.members(expected, failMessage);

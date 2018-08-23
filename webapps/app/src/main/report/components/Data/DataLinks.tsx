@@ -1,7 +1,6 @@
 import * as React from "react";
 import {ILookup} from "../../../shared/models/Lookup";
 import {FileDownloadLink} from "../../../shared/components/FileDownloadLink";
-import {Card,CardHeader, CardBody} from "reactstrap";
 import {ReportDownloadSection} from "../Reports/DownloadSection";
 
 export class DataLinks extends React.Component<ILookup<string>, undefined> {

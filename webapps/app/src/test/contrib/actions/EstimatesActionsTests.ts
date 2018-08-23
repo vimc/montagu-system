@@ -4,7 +4,7 @@ import { Sandbox } from "../../Sandbox";
 import { estimatesActionCreators } from "../../../main/contrib/actions/estimatesActionCreators";
 import { EstimatesService } from "../../../main/contrib/services/EstimatesService";
 import { ResponsibilitiesService } from "../../../main/contrib/services/ResponsibilitiesService";
-import {createMockContribStore, createMockStore} from "../../mocks/mockStore";
+import {createMockContribStore} from "../../mocks/mockStore";
 import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPropsHelper";
 import {mockModellingGroup, mockResponsibilitySetWithExpectations, mockTouchstone} from "../../mocks/mockModels";
 import {ExtendedResponsibilitySet} from "../../../main/contrib/models/ResponsibilitySet";

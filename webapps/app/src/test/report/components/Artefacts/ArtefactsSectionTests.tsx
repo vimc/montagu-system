@@ -3,9 +3,7 @@ import {shallow} from "enzyme";
 import {ArtefactsSection} from "../../../../main/report/components/Artefacts/ArtefactsSection";
 import {mockArtefact, mockVersion} from "../../../mocks/mockModels";
 import * as React from "react";
-import {FileDownloadLink} from "../../../../main/shared/components/FileDownloadLink";
 import {ArtefactsList} from "../../../../main/report/components/Artefacts/ArtefactsList";
-import {ReportDownloadSection} from "../../../../main/report/components/Reports/DownloadSection";
 
 describe("ArtefactsSection", () => {
 

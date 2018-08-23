@@ -5,7 +5,6 @@ import {Alert} from "reactstrap";
 import {BurdenEstimateSet, ErrorInfo, Result} from "../../../../shared/models/Generated";
 import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
 import {checkFileExtensionIsCSV} from "../../../../shared/validation/FileValidationHelpers";
-import {settings} from "../../../../shared/Settings";
 
 export interface UploadBurdenEstimatesFormComponentProps {
     touchstoneId: string;
