@@ -3,32 +3,37 @@ import * as React from "react";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {compose} from "recompose";
 import {connect} from "react-redux";
-import {TouchstoneListItem} from "./TouchstoneListItem";
+import {partition} from "lodash";
+import {TouchstoneTable} from "./TouchstoneTable";
 
 interface TouchstoneListProps {
-    touchstones: Touchstone[]
+    active: Touchstone[];
+    inactive: Touchstone[];
 }
 
 export const TouchstoneListComponent: React.SFC<TouchstoneListProps> = (props: TouchstoneListProps) => {
-    return <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Description</th>
-            <th>Comment</th>
-            <th>Latest version</th>
-        </tr>
-        </thead>
-        <tbody>
-        {props.touchstones.map(t => <TouchstoneListItem key={t.id} {...t} />)}
-        </tbody>
-    </table>;
+    return <div>
+        <div className="mb-5 row">
+            <div className="col-12">
+                <h4>Active touchstones</h4>
+                <div className="mb-2">The latest version of these touchstones is 'open' or 'in-preparation'.</div>
+                <TouchstoneTable touchstones={props.active}/>
+            </div>
+        </div>
+        <div className="mb-5 row">
+            <div className="col-12">
+                <h4>Inactive touchstones</h4>
+                <div className="mb-2">All versions of these touchstones are 'finished'.</div>
+                <TouchstoneTable touchstones={props.inactive}/>
+            </div>
+        </div>
+    </div>;
 };
 
 export const mapStateToProps = (state: AdminAppState): TouchstoneListProps => {
-    return {
-        touchstones: state.touchstones.touchstones
-    }
+    const touchstones = state.touchstones.touchstones;
+    const [active, inactive] = partition(touchstones, t => t.versions.some(v => v.status != "finished"));
+    return {active, inactive}
 };
 
 export const TouchstoneList = compose(

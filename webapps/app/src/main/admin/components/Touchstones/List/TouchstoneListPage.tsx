@@ -11,9 +11,8 @@ export class TouchstoneListPageComponent extends React.Component<PageProperties<
 
     render(): JSX.Element {
         return <PageArticle title={this.props.title}>
-            {settings.showTouchstoneCreation &&
-            <CreateTouchstoneForm/>}
             <TouchstoneList/>
+            {settings.showTouchstoneCreation && <CreateTouchstoneForm/>}
         </PageArticle>;
     }
 }
