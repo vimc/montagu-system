@@ -27,7 +27,17 @@ export const versionIdAccessorFunction = (data: Report): BasicVersionDetails => 
     return {version: data.id, date: new Date(data.updated_on)}
 };
 
-export const versionFilterMethod = (filter: FilterGeneric<VersionFilterValue>, row: ReportRow) => {
+export const aggregatedVersionFilterMethod = (filter: FilterGeneric<VersionFilterValue>, row: ReportRow) => {
+
+    if (row._subRows){
+        return row._subRows.some(r => versionFilterMethod(filter, r))
+    }
+    else {
+        return versionFilterMethod(filter, row);
+    }
+};
+
+const versionFilterMethod = (filter: FilterGeneric<VersionFilterValue>, row: ReportRow) => {
 
     // make sure end date is the end of the day, to get an inclusive date range
     filter.value.end.setHours(23, 59, 59);

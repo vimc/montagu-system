@@ -6,13 +6,13 @@ import {
     AggregatedVersionCell,
     BasicVersionDetails, getLatestVersion,
     VersionCell,
-    versionFilterMethod, versionIdAccessorFunction,
+    aggregatedVersionFilterMethod, versionIdAccessorFunction,
     versionSortMethod
 } from "./ReportListColumns/VersionColumn";
 import {
     PublishStatusCell,
     PublishStatusFilter,
-    publishStatusFilterMethod
+    aggregatedPublishStatusFilterMethod
 } from "./ReportListColumns/PublishStatusColumn";
 import {ReportVersionFilter} from "./ReportListColumns/ReportVersionFilter";
 import {nameAccessorFunction} from "./ReportListColumns/NameColumn";
@@ -105,7 +105,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 width: 345,
                 accessor: versionIdAccessorFunction,
                 sortMethod: versionSortMethod,
-                filterMethod: versionFilterMethod,
+                filterMethod: aggregatedVersionFilterMethod,
                 Filter: ReportVersionFilter,
                 aggregate: getLatestVersion,
                 Aggregated: AggregatedVersionCell
@@ -119,7 +119,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             id: "published",
             width: 120,
             Cell: PublishStatusCell,
-            filterMethod: publishStatusFilterMethod,
+            filterMethod: aggregatedPublishStatusFilterMethod,
             Filter: PublishStatusFilter,
             aggregate: _ => null,
             Aggregated: EmptyCell,

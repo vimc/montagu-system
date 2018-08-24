@@ -17,21 +17,17 @@ export const PublishStatusFilter: React.SFC<FilterProps<string>> = (props: Filte
     </select>
 };
 
-export const publishStatusFilterMethod = (filter: FilterGeneric<string>, row: ReportRow) => {
+export const aggregatedPublishStatusFilterMethod = (filter: FilterGeneric<string>, row: ReportRow) => {
 
-    if (row._subRows) {
-        const anyPublished = row._subRows.some(r => r.published);
-        const anyDrafts = row._subRows.some(r => !r.published);
-
-        switch(filter.value){
-            case "published":
-                return anyPublished;
-            case "internal":
-                return anyDrafts;
-            default: case "all":
-                return true;
-        }
+    if (row._subRows){
+        return row._subRows.some(r => publishStatusFilterMethod(filter, r))
     }
+    else{
+        return publishStatusFilterMethod(filter, row)
+    }
+};
+
+const publishStatusFilterMethod = (filter: FilterGeneric<string>, row: ReportRow) => {
 
     const published = row.published;
     if (filter.value === "all") {
