@@ -32,6 +32,7 @@ import {
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {TemplateLink} from "../../../../../main/contrib/components/Responsibilities/Overview/List/OldStyleTemplates/TemplateLink";
 import {RecursivePartial} from "../../../../mocks/mockStates";
+import {settings} from "../../../../../main/shared/Settings";
 
 describe("UploadBurdenEstimatesContent", () => {
 
@@ -98,16 +99,18 @@ describe("UploadBurdenEstimatesContent", () => {
         expect(firstTable.find('tr').at(1).find('td').at(1).text(), testScenario.description);
     });
 
-    it("renders on component level, passes props to TemplateLink component", () => {
-        const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-        const firstTable = rendered.find('table.specialColumn').at(0);
-        const burdEstimatesTemplatesCell = firstTable.find('tr').at(2).find('td').at(1);
-        const burdenEstimatesTemplates = burdEstimatesTemplatesCell.find(TemplateLink);
-        const burdenEstimatesTemplatesProps = burdenEstimatesTemplates.props();
-        expect(burdenEstimatesTemplatesProps.diseaseId).to.eql(testDisease.id);
-        expect(burdenEstimatesTemplatesProps.groupId).to.eql(testGroup.id);
-        expect(burdenEstimatesTemplatesProps.touchstoneId).to.eql(testTouchstone.id);
-    });
+    if (settings.showOldTemplates) {
+        it("renders on component level, passes props to TemplateLink component", () => {
+            const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
+            const firstTable = rendered.find('table.specialColumn').at(0);
+            const burdEstimatesTemplatesCell = firstTable.find('tr').at(2).find('td').at(1);
+            const burdenEstimatesTemplates = burdEstimatesTemplatesCell.find(TemplateLink);
+            const burdenEstimatesTemplatesProps = burdenEstimatesTemplates.props();
+            expect(burdenEstimatesTemplatesProps.diseaseId).to.eql(testDisease.id);
+            expect(burdenEstimatesTemplatesProps.groupId).to.eql(testGroup.id);
+            expect(burdenEstimatesTemplatesProps.touchstoneId).to.eql(testTouchstone.id);
+        });
+    }
 
     it("renders on component level, passes right params to CurrentEstimateSetSummary", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();

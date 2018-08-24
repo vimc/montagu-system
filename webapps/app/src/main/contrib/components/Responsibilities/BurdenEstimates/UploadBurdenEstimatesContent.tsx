@@ -9,6 +9,7 @@ import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {isNullOrUndefined} from "util";
+import {settings} from "../../../../shared/Settings";
 
 export interface UploadBurdenEstimatesContentProps {
     touchstone: TouchstoneVersion;
@@ -41,7 +42,7 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
                     <td>Scenario</td>
                     <td>{this.props.scenario.description}</td>
                 </tr>
-                <tr>
+                {settings.showOldTemplates && <tr>
                     <td>Burden estimates template</td>
                     <td>
                         <TemplateLink
@@ -50,7 +51,7 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
                             touchstoneId={this.props.touchstone.id}
                         />
                     </td>
-                </tr>
+                </tr>}
                 </tbody>
             </table>
 
