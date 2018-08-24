@@ -5,13 +5,14 @@ import {shallow} from "enzyme";
 import {mockReport} from "../../../../mocks/mockModels";
 import {Sandbox} from "../../../../Sandbox";
 import {
-    latestVersionAccessorFunction,
     VersionCell,
-    versionFilterMethod, versionSortMethod,
+    versionFilterMethod, versionIdAccessorFunction, versionSortMethod,
 } from "../../../../../main/report/components/ReportsList/ReportListColumns/VersionColumn";
 import {ReportVersionFilter} from "../../../../../main/report/components/ReportsList/ReportListColumns/LatestVersionFilter";
 import {DateRangePicker} from "../../../../../main/shared/components/DatePicker/DateRangePicker";
 import {DatePicker} from "../../../../../main/shared/components/DatePicker/DatePicker";
+import {ReportRowProps} from "../../../../../main/report/components/ReportsList/ReportListTable";
+import {InternalLink} from "../../../../../main/shared/components/InternalLink";
 
 describe("ReportListComponent", () => {
 
@@ -22,28 +23,50 @@ describe("ReportListComponent", () => {
     });
 
 
-    describe("LatestVersionColumn", () => {
+    describe("VersionColumn", () => {
 
         it("creates data object with id and last updated date", function () {
 
             const now = new Date(2018, 4, 15);
-            const result = latestVersionAccessorFunction(mockReport({
-                latest_version: "1234",
+            const result = versionIdAccessorFunction(mockReport({
+                id: "1234",
                 updated_on: now.toDateString()
             }));
 
             expect(result).to.eql({version: "1234", date: new Date(2018, 4, 15)});
         });
 
-        it("renders version id and date", function () {
-            const result = shallow(<VersionCell original={mockReport({display_name: null})}
+        it("renders version date", function () {
+            const row: ReportRowProps = {
+                ...mockReport({
+                    name: "report_name"
+                }),
+                version: null
+            };
+            const result = shallow(<VersionCell row={row}
                                                 value={{
                                                           version: "46324",
                                                           date: new Date(2018, 4, 15)
                                                       }}/>);
 
             expect(result.find("div").first().childAt(0).text()).to.eq("Tue May 15 2018");
-            expect(result.find("div").first().childAt(1).text()).to.eq("(46324)");
+        });
+
+        it("renders link to report page", function () {
+            const row: ReportRowProps = {
+                ...mockReport({
+                    name: "report_name"
+                }),
+                version: null
+            };
+
+            const result = shallow(<VersionCell row={row} value={{
+                version: "46324",
+                date: new Date(2018, 4, 15)
+            }}/>);
+
+            expect(result.find(InternalLink).childAt(0).text()).to.eq("46324");
+            expect(result.find(InternalLink).prop("href")).to.eq("/report_name/46324/");
         });
 
         const filterValue = {
@@ -116,7 +139,7 @@ describe("ReportListComponent", () => {
         it("filters reports by start date inclusive", function () {
 
             const row = {
-                latest_version: {date: new Date(2017, 5, 14, 12, 1, 2), version: "1234"}
+               version: {date: new Date(2017, 5, 14, 12, 1, 2), version: "1234"}
             };
 
             let filter = {
@@ -146,7 +169,7 @@ describe("ReportListComponent", () => {
         it("filters reports by end date inclusive", function () {
 
             const row = {
-                latest_version: {date: new Date(2018, 5, 14, 12, 1, 2), version: "1234"}
+                version: {date: new Date(2018, 5, 14, 12, 1, 2), version: "1234"}
             };
 
             let filter = {
@@ -176,7 +199,7 @@ describe("ReportListComponent", () => {
         it("filters reports by id", function () {
 
             const row = {
-                latest_version: {date: new Date(2018, 5, 14), version: "1234"}
+                version: {date: new Date(2018, 5, 14), version: "1234"}
             };
 
             const filter = {
@@ -200,7 +223,6 @@ describe("ReportListComponent", () => {
             const result = versionSortMethod(a, b);
             expect(result).to.eq(-1);
         });
-
 
     });
 

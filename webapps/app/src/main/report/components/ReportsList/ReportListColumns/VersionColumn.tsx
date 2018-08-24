@@ -3,12 +3,23 @@ import * as React from "react";
 import {Report} from "../../../../shared/models/Generated";
 import {FilterGeneric, ReportRowProps, ReportRowRenderProps} from "../ReportListTable";
 import {VersionFilterValue} from "./LatestVersionFilter";
+import {InternalLink} from "../../../../shared/components/InternalLink";
+
+export const LinkToReportCell: React.SFC<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
+
+    const report = props.row;
+    return  <InternalLink href={`/${report.name}/${report.version.version}/`}>
+        View report
+    </InternalLink>
+
+};
 
 export const VersionCell: React.StatelessComponent<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
     const value = props.value as ReportVersion;
     return <div>
         <div>{longDate(value.date)}</div>
         <div className="small">({value.version})</div>
+        <LinkToReportCell {...props}/>
     </div>
 };
 
@@ -29,8 +40,14 @@ export const versionFilterMethod = (filter: FilterGeneric<VersionFilterValue>, r
         lastVersionId.toLowerCase().indexOf(filter.value.versionId.toLowerCase()) > -1;
 };
 
-export const AggregatedVersionCell: React.StatelessComponent<ReportRowRenderProps> = (row: any) => {
-    return <span>Latest: <span className={"small"}>{row.value.version}</span></span>
+export const getLatestVersion = (vals: ReportVersion[]):  ReportVersion => {
+    return vals.sort(versionSortMethod)[0];
+};
+
+export const AggregatedVersionCell: React.StatelessComponent<ReportRowProps> = (row: ReportRowProps) => {
+    return <InternalLink href={`/${row.name}/${row.version.version}/`}>
+        View report
+    </InternalLink>
 };
 
 export const versionSortMethod = (a: ReportVersion, b: ReportVersion) => {

@@ -136,13 +136,13 @@
         content: "Name";
       }
       .rt-td:nth-of-type(2):before {
-        content: "Latest version";
-      }
-      .rt-td:nth-of-type(3):before {
         content: "Author";
       }
-      .rt-td:nth-of-type(4):before {
+      .rt-td:nth-of-type(3):before {
         content: "Requester";
+      }
+      .rt-td:nth-of-type(4):before {
+        content: "Version";
       }
       .rt-td:nth-of-type(5):before {
         content: "Published";

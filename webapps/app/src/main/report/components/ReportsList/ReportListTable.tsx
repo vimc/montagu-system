@@ -3,7 +3,6 @@ import {Report} from "../../../shared/models/Generated";
 import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps, TableProps} from 'react-table'
 
 import {
-    AggregatedVersionCell,
     ReportVersion,
     VersionCell,
     versionFilterMethod, versionIdAccessorFunction,
@@ -15,8 +14,7 @@ import {
     publishStatusFilterMethod
 } from "./ReportListColumns/PublishStatusColumn";
 import {ReportVersionFilter} from "./ReportListColumns/LatestVersionFilter";
-import {nameAccessorFunction, NameCell} from "./ReportListColumns/NameColumn";
-import {Version} from "../../../shared/models/reports/Report";
+import {nameAccessorFunction} from "./ReportListColumns/NameColumn";
 
 export interface ReportsListTableProps {
     reports: Report[]
@@ -66,6 +64,8 @@ export const NonEmptyCell = (row: ReportRowRenderProps) => {
     return <span>{row.value}</span>
 };
 
+const getFirstOfAggregatedValues = (vals: any) => vals[0];
+
 export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
     = (props: ReportsListTableProps) => {
 
@@ -76,10 +76,9 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             {
                 Header: "Name",
                 id: "name",
-                Cell: NameCell,
                 accessor: nameAccessorFunction,
                 Filter: TextFilter,
-                aggregate: vals => vals[0]
+                aggregate: getFirstOfAggregatedValues
             },
             {
                 Header: "Author",
@@ -88,7 +87,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 Filter: TextFilter,
                 Cell: EmptyCell,
                 Aggregated: NonEmptyCell,
-                aggregate: vals => vals[0],
+                aggregate: getFirstOfAggregatedValues,
             },
             {
                 Header: "Requester",
@@ -97,7 +96,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 Cell: EmptyCell,
                 Filter: TextFilter,
                 Aggregated: NonEmptyCell,
-                aggregate: vals => vals[0],
+                aggregate: getFirstOfAggregatedValues,
             },
             {
                 Header: "Version",
@@ -108,7 +107,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 sortMethod: versionSortMethod,
                 filterMethod: versionFilterMethod,
                 Filter: ReportVersionFilter,
-                aggregate: vals => vals[0],
+                aggregate:  getFirstOfAggregatedValues,
                 Aggregated: EmptyCell
             },
         ];
@@ -122,7 +121,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             Cell: PublishStatusCell,
             filterMethod: publishStatusFilterMethod,
             Filter: PublishStatusFilter,
-            aggregate: vals => "",
+            aggregate: _ => "",
             Aggregated: EmptyCell,
         })
     }
