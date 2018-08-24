@@ -3,7 +3,6 @@ import {
     SetPasswordPageComponent,
     SetPasswordPageProps
 } from "../../../../../main/admin/components/Users/Account/SetPasswordPage";
-import {spy} from "sinon";
 import {Sandbox} from "../../../../Sandbox";
 import {helpers} from "../../../../../main/shared/Helpers";
 import * as React from "react";
@@ -22,7 +21,7 @@ describe("SetPasswordPage", () => {
 
     function minimalProps(): SetPasswordPageProps {
         const p: Partial<SetPasswordPageProps> = {
-            saveTokenToState: x => {},
+            saveTokenToState: () => {},
             onLoad: () => {}
         };
         return p as SetPasswordPageProps;

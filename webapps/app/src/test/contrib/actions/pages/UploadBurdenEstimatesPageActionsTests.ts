@@ -4,7 +4,6 @@ import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
 import {mockResponsibility, mockScenario,} from "../../../mocks/mockModels";
 import {uploadBurdenEstimatesPageActionCreators} from "../../../../main/contrib/actions/pages/uploadBurdenEstimatesPageActionCreators";
-import {estimatesActionCreators} from "../../../../main/contrib/actions/estimatesActionCreators";
 import {responsibilitiesActionCreators} from "../../../../main/contrib/actions/responsibilitiesActionCreators";
 import {responsibilityOverviewPageActionCreators} from "../../../../main/contrib/actions/pages/responsibilityOverviewPageActionCreators";
 import {mockContribState} from "../../../mocks/mockStates";

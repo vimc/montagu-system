@@ -1,18 +1,16 @@
 import * as React from "react";
-import {shallow} from "enzyme";
 import {expect} from "chai";
 import {Store} from "redux";
 
 import "../../../../helper";
 import {Sandbox} from "../../../../Sandbox";
-import {createMockContribStore, createMockStore} from "../../../../mocks/mockStore";
+import {createMockContribStore} from "../../../../mocks/mockStore";
 import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
 import {mockMatch} from "../../../../mocks/mocks";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {ResponsibilitiesPageTitle} from "../../../../../main/contrib/components/Responsibilities/PageTitle";
 import {
     ModelRunParametersPage,
-    ModelRunParametersPageComponent,
     ModelRunParametersPageLocationProps
 } from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersPage";
 import {modelRunParametersPageActionCreators} from "../../../../../main/contrib/actions/pages/modelRunParametersPageActionCreators";

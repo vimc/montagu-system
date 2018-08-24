@@ -1,6 +1,5 @@
 import {jwtDecoder} from "./sources/JwtDecoder";
 import {Result} from "./models/Generated";
-import {settings} from "./Settings";
 import * as url from "url";
 import * as querystring from "querystring";
 

@@ -12,7 +12,6 @@ import {
 import {TouchstoneVersionPage} from "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
 import {shallow} from "enzyme";
 import {mockTouchstone, mockTouchstoneVersion} from "../../../../mocks/mockModels";
-import {ButtonLink} from "../../../../../main/shared/components/ButtonLink";
 import {InternalLink} from "../../../../../main/shared/components/InternalLink";
 
 describe("TouchstoneVersionPage", () => {

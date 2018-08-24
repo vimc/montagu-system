@@ -1,7 +1,5 @@
-import {Location} from "history";
+import {History, Location} from "history";
 import {match} from 'react-router';
-
-import {emptyOneTimeTokenData, OneTimeToken, OneTimeTokenData} from "../../main/report/models/OneTimeToken";
 
 export function mockLocation(params?: Partial<Location>): Location {
     return Object.assign({
@@ -21,37 +19,27 @@ export function mockMatch<P>(params?: P) :match<P> {
     };
 }
 
-export function mockHistory(params?: any) {
-    return Object.assign({
+export function mockHistory(params?: Partial<History>): History {
+    const template: History = {
         length: 1,
-        action: "",
-        location: "",
+        action: "PUSH",
+        location: mockLocation(),
         push: () => {},
         replace: () => {},
         go: () => {},
         goBack: () => {},
         goForward: () => {},
-        block: () => {},
-        listen: () => {},
-        createHref: () => {}
-    }, params);
+        block: (() => {}) as any,
+        listen: (() => {}) as any,
+        createHref: () => ""
+    };
+    return Object.assign(template, params);
 }
 
 export function mockEvent() {
     return {
         preventDefault: () => {
         }
-    };
-}
-
-export function mockOneTimeTokenData(props: any): OneTimeTokenData {
-    return Object.assign(emptyOneTimeTokenData(), props);
-}
-
-export function mockOneTimeToken(url: string): OneTimeToken {
-    return {
-        raw: "TOKEN",
-        data: mockOneTimeTokenData({ url: url })
     };
 }
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { expect } from "chai";
-import { shallow, mount } from "enzyme";
+import { shallow} from "enzyme";
 
 import "../../helper";
 import {DatePickerMonthYearForm} from "../../../main/shared/components/DatePicker/DatePickerMonthYearForm";

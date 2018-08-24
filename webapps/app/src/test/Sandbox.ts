@@ -2,8 +2,6 @@ import * as sinon from 'sinon';
 import {mount, MountRendererProps, ReactWrapper} from "enzyme";
 
 import {ReactElement} from "react";
-import fetcher from "../main/shared/sources/Fetcher";
-import {mockFetcherResponse, resetFetcher} from "./mocks/mockRemote";
 import {Action} from "redux";
 
 export class Sandbox {
@@ -30,20 +28,6 @@ export class Sandbox {
             x.unmount();
         });
         this.mounted = [];
-        resetFetcher();
-    }
-
-    fetcherSpy(): sinon.SinonSpy {
-        return this.sinon.spy(fetcher.fetcher, "fetch");
-    }
-    // Use mockResponse to build the input to this
-    fetcherStub(promise: Promise<Response>): sinon.SinonSpy {
-        mockFetcherResponse();
-        return this.sinon.stub(fetcher.fetcher, "fetch").returns(promise);
-    }
-
-    stubFetch(obj: any, method: string): sinon.SinonStub {
-        return this.sinon.stub(obj, method).returns(Promise.resolve(true));
     }
 
     setSpy(obj: any, method: string): sinon.SinonSpy {

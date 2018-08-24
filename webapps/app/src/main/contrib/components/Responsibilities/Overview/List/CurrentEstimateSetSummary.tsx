@@ -1,7 +1,7 @@
 import * as React from "react";
 import {BurdenEstimateSet} from "../../../../../shared/models/Generated";
 import {settings} from "../../../../../shared/Settings";
-import {longDate, longTimestamp} from "../../../../../shared/Helpers";
+import {longTimestamp} from "../../../../../shared/Helpers";
 
 export interface CurrentEstimateSetSummaryProps {
     estimateSet: BurdenEstimateSet;

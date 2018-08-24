@@ -13,7 +13,6 @@ import {LoadingElement} from "../../../../shared/partials/LoadingElement/Loading
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {withConfidentialityAgreement} from "./ConfidentialityAgreement";
 import {ResponsibilityOverviewDescription} from "./ResponsibilityOverviewDescription";
-import {InternalLink} from "../../../../shared/components/InternalLink";
 
 const stochasticParams = require('./stochastic_template_params.csv');
 

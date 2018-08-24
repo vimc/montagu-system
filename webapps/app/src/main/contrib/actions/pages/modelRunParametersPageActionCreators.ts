@@ -3,7 +3,6 @@ import {Dispatch} from "redux";
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {responsibilityOverviewPageActionCreators} from "./responsibilityOverviewPageActionCreators";
 import {
-    ModelRunParametersPageComponent,
     ModelRunParametersPageLocationProps
 } from "../../components/Responsibilities/ModelRunParameters/ModelRunParametersPage";
 import {runParametersActionCreators} from "../runParametersActionCreators";

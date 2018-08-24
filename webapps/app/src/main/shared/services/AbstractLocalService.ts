@@ -31,6 +31,7 @@ export interface InputOptions {
     includeBearerToken?: boolean;
     notificationOnError?: boolean;
     noCache?: boolean;
+    includeCredentials?: boolean;
 }
 
 export abstract class AbstractLocalService {
@@ -70,6 +71,7 @@ export abstract class AbstractLocalService {
         this.options.cacheKey = null;
         this.options.notificationOnError = true;
         this.options.noCache = false;
+        this.options.includeCredentials = true;
     }
 
     protected makeRequestOptions(method: string, body?: any): RequestOptions {
@@ -86,9 +88,9 @@ export abstract class AbstractLocalService {
 
         const requestOptions: RequestOptions = {
             method,
-            headers,
-            credentials: "include"
+            headers
         };
+        if (this.options.includeCredentials) requestOptions.credentials = "include";
         if (body) requestOptions.body = body;
         return requestOptions;
     }
@@ -115,11 +117,6 @@ export abstract class AbstractLocalService {
 
     private getFullyQualifiedCacheKey(cacheKey: string, url: string): string {
         return ["localService", this.constructor.name, cacheKey, encodeURIComponent(url)].join('.');
-    }
-
-    public clearCacheByModuleKey(cacheKey: string) {
-        const path = ["localService", this.constructor.name, cacheKey].join('.');
-        this.cacheEngine.clear(path);
     }
 
     protected clearCache(cacheKey: string, url: string, service?: APIService) {
