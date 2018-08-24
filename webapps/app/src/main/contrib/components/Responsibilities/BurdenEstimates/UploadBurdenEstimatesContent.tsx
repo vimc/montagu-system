@@ -9,6 +9,8 @@ import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {isNullOrUndefined} from "util";
+import {settings} from "../../../../shared/Settings";
+import {InternalLink} from "../../../../shared/components/InternalLink";
 
 export interface UploadBurdenEstimatesContentProps {
     touchstone: TouchstoneVersion;
@@ -22,6 +24,8 @@ export interface UploadBurdenEstimatesContentProps {
 
 export class UploadBurdenEstimatesContentComponent extends React.Component<UploadBurdenEstimatesContentProps> {
     render() {
+        const newTemplatesUrl = `/${this.props.group.id}/responsibilities/${this.props.touchstone.id}/templates/`;
+
         return <div>
             <p>
                 On this page you can upload burden estimates for the following scenario. We expect estimates which
@@ -44,11 +48,14 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
                 <tr>
                     <td>Burden estimates template</td>
                     <td>
+                        {settings.showOldTemplates &&
                         <TemplateLink
                             diseaseId={this.props.scenario.disease}
                             groupId={this.props.group.id}
                             touchstoneId={this.props.touchstone.id}
-                        />
+                        />}
+                        {settings.showNewTemplates &&
+                        <InternalLink href={newTemplatesUrl}>Download templates</InternalLink> }
                     </td>
                 </tr>
                 </tbody>
