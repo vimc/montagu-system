@@ -6,8 +6,9 @@ import {DatePicker} from "../../../../../main/shared/components/DatePicker/DateP
 import * as React from "react";
 import {Sandbox} from "../../../../Sandbox";
 import {Column} from "react-table";
-import {ReportsListTable} from "../../../../../main/report/components/ReportsList/ReportListTable";
+import {ReportRow, ReportsListTable} from "../../../../../main/report/components/ReportsList/ReportListTable";
 import ReactTable from "react-table";
+import {RecursivePartial} from "../../../../mocks/mockStates";
 
 describe("ReportListComponent", () => {
 
@@ -93,89 +94,206 @@ describe("ReportListComponent", () => {
             return col.filterMethod;
         }
 
-        it("filters reports by start date inclusive", function () {
+        describe("sub row filtering", () => {
+            it("filters reports by start date inclusive", function () {
 
-            const filterMethod = getFilterMethod();
+                const filterMethod = getFilterMethod();
 
-            const row = {
-                version: {date: new Date(2017, 5, 14, 12, 1, 2), version: "1234"}
-            };
+                const row = {
+                    version: {date: new Date(2017, 5, 14, 12, 1, 2), version: "1234"}
+                };
 
-            let filter = {
-                id: "version", value: {
-                    start: new Date(2017, 5, 14),
-                    end: new Date(2018, 5, 14),
-                    versionId: ""
-                }
-            };
+                let filter = {
+                    id: "version", value: {
+                        start: new Date(2017, 5, 14),
+                        end: new Date(2018, 5, 14),
+                        versionId: ""
+                    }
+                };
 
-            let result = filterMethod(filter, row);
-            expect(result).to.be.true;
+                let result = filterMethod(filter, row);
+                expect(result).to.be.true;
 
-            filter = {
-                id: "version", value: {
-                    start: new Date(2017, 6, 14),
-                    end: new Date(2018, 5, 14),
-                    versionId: ""
-                }
-            };
+                filter = {
+                    id: "version", value: {
+                        start: new Date(2017, 6, 14),
+                        end: new Date(2018, 5, 14),
+                        versionId: ""
+                    }
+                };
 
-            result = filterMethod(filter, row);
-            expect(result).to.be.false;
+                result = filterMethod(filter, row);
+                expect(result).to.be.false;
 
+            });
+
+            it("filters reports by end date inclusive", function () {
+
+                const filterMethod = getFilterMethod();
+
+                const row = {
+                    version: {date: new Date(2018, 5, 14, 12, 1, 2), version: "1234"}
+                };
+
+                let filter = {
+                    id: "version", value: {
+                        start: new Date(2017, 5, 14),
+                        end: new Date(2018, 5, 14),
+                        versionId: ""
+                    }
+                };
+
+                let result = filterMethod(filter, row);
+                expect(result).to.be.true;
+
+                filter = {
+                    id: "version", value: {
+                        start: new Date(2017, 5, 14),
+                        end: new Date(2018, 5, 13),
+                        versionId: ""
+                    }
+                };
+
+                result = filterMethod(filter, row);
+                expect(result).to.be.false;
+
+            });
+
+            it("filters reports by id", function () {
+
+                const filterMethod = getFilterMethod();
+
+                const row = {
+                    version: {date: new Date(2018, 5, 14), version: "1234"}
+                };
+
+                const filter = {
+                    id: "version", value: {
+                        start: new Date(2017, 5, 14),
+                        end: new Date(2018, 6, 14),
+                        versionId: "5678"
+                    }
+                };
+
+                const result = filterMethod(filter, row as any);
+                expect(result).to.be.false;
+            });
         });
 
-        it("filters reports by end date inclusive", function () {
+        describe("aggregate row filtering", () => {
+            it("filters by sub rows start date inclusive", () => {
+                const filterMethod = getFilterMethod();
 
-            const filterMethod = getFilterMethod();
+                const subRow = {
+                    version: {date: new Date(2017, 5, 14, 12, 1, 2), version: "1234"}
+                };
 
-            const row = {
-                version: {date: new Date(2018, 5, 14, 12, 1, 2), version: "1234"}
-            };
+                const earlierSubRow = {
+                    version: {date: new Date(2017, 1, 1 , 12, 1, 2), version: "3456"}
+                };
 
-            let filter = {
-                id: "version", value: {
-                    start: new Date(2017, 5, 14),
-                    end: new Date(2018, 5, 14),
-                    versionId: ""
-                }
-            };
+                let filter = {
+                    id: "version", value: {
+                        start: new Date(2017, 5, 14),
+                        end: new Date(2018, 5, 14),
+                        versionId: ""
+                    }
+                };
 
-            let result = filterMethod(filter, row);
-            expect(result).to.be.true;
+                const aggregateRow = {
+                    _subRows: [subRow, earlierSubRow]
+                };
 
-            filter = {
-                id: "version", value: {
-                    start: new Date(2017, 5, 14),
-                    end: new Date(2018, 5, 13),
-                    versionId: ""
-                }
-            };
+                let result = filterMethod(filter, aggregateRow);
+                expect(result).to.be.true;
 
-            result = filterMethod(filter, row);
-            expect(result).to.be.false;
+                filter = {
+                    id: "version", value: {
+                        start: new Date(2017, 6, 14),
+                        end: new Date(2018, 5, 14),
+                        versionId: ""
+                    }
+                };
 
+                result = filterMethod(filter, aggregateRow);
+                expect(result).to.be.false;
+            });
+
+            it("filters by sub rows end date inclusive", () => {
+                const filterMethod = getFilterMethod();
+
+                const subRow = {
+                    version: {date: new Date(2018, 5, 14, 12, 1, 2), version: "1234"}
+                };
+
+                const laterSubRow = {
+                    version: {date: new Date(2018, 6, 1 , 12, 1, 2), version: "3456"}
+                };
+
+                let aggregateRow = {
+                    _subRows: [subRow, laterSubRow]
+                };
+
+                let filter = {
+                    id: "version", value: {
+                        start: new Date(2017, 5, 14),
+                        end: new Date(2018, 5, 14),
+                        versionId: ""
+                    }
+                };
+
+                let result = filterMethod(filter, aggregateRow);
+                expect(result).to.be.true;
+
+                filter = {
+                    id: "version", value: {
+                        start: new Date(2017, 5, 14),
+                        end: new Date(2018, 5, 13),
+                        versionId: ""
+                    }
+                };
+
+                result = filterMethod(filter, aggregateRow);
+                expect(result).to.be.false;
+            });
+
+            it("filters by sub rows id", function () {
+
+                const filterMethod = getFilterMethod();
+
+                const goodSubRow = {
+                    version: {date: new Date(2018, 5, 14), version: "1234"}
+                };
+
+                const badSubRow = {
+                    version: {date: new Date(2018, 5, 14), version: "5678"}
+                };
+
+                const filter = {
+                    id: "version", value: {
+                        start: new Date(2017, 5, 14),
+                        end: new Date(2018, 6, 14),
+                        versionId: "1234"
+                    }
+                };
+
+                let aggregateRow = {
+                    _subRows: [goodSubRow, badSubRow]
+                };
+
+                let result = filterMethod(filter, aggregateRow);
+                expect(result).to.be.true;
+
+                aggregateRow = {
+                    _subRows: [badSubRow]
+                };
+
+                result = filterMethod(filter, aggregateRow);
+                expect(result).to.be.false;
+            });
         });
 
-        it("filters reports by id", function () {
 
-            const filterMethod = getFilterMethod();
-
-            const row = {
-                version: {date: new Date(2018, 5, 14), version: "1234"}
-            };
-
-            const filter = {
-                id: "version", value: {
-                    start: new Date(2017, 5, 14),
-                    end: new Date(2018, 6, 14),
-                    versionId: "5678"
-                }
-            };
-
-            const result = filterMethod(filter, row as any);
-            expect(result).to.be.false;
-        });
 
     });
 
