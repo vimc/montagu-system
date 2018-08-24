@@ -48,7 +48,7 @@ class AuthenticationController(context: ActionContext,
     {
         val internalUser = userLogic.getUserByUsername(context.username!!)
 
-        val token = tokenHelper.generateToken(internalUser)
+        val token = tokenHelper.generateToken(internalUser).deflated()
         context.setCookie(CookieName.Main, token)
 
         val shinyToken = tokenHelper.generateShinyToken(internalUser)

@@ -91,7 +91,7 @@ class AuthenticationControllerTests : MontaguTests()
         val sut = AuthenticationController(fakeContext, fakeUserLogic, mock(), fakeTokenHelper)
 
         sut.setCookies()
-        verify(fakeContext).setCookie(eq(CookieName.Main), eq("MAIN_TOKEN"), any())
+        verify(fakeContext).setCookie(eq(CookieName.Main), eq("MAIN_TOKEN".deflated()), any())
         verify(fakeContext).setCookie(eq(CookieName.Shiny), eq("SHINY_TOKEN"), any())
     }
 
