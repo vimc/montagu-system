@@ -2,22 +2,34 @@ import * as React from "react";
 import {expect} from "chai";
 import {shallow} from "enzyme";
 
-import {mockReport} from "../../../../mocks/mockModels";
+import {mockReportRow} from "../../../../mocks/mockModels";
 import {Sandbox} from "../../../../Sandbox";
-import ReactTable from "react-table";
+import ReactTable, {Column, Filter} from "react-table";
 import {
-    PublishStatusCell, PublishStatusFilter,
-    publishStatusFilterMethod
-} from "../../../../../main/report/components/ReportsList/ReportListColumns/PublishStatusColumn";
-import {ReportsListTable} from "../../../../../main/report/components/ReportsList/ReportListTable";
+    ReportRow,
+    ReportRowRenderProps,
+    ReportsListTable
+} from "../../../../../main/report/components/ReportsList/ReportListTable";
 
-describe("ReportListComponent", () => {
+describe("ReportListTable", () => {
 
     const sandbox = new Sandbox();
 
-    beforeEach(function () {
+    afterEach(function () {
         sandbox.restore();
     });
+
+    function getPublishStatusColumn(): Column {
+        const rendered = shallow(<ReportsListTable reports={[]} isReviewer={true}/>);
+        const columns = (rendered.find(ReactTable).prop("columns") as Column[]);
+        return columns[4];
+    }
+
+    function getFilterMethod(): (filter: Partial<Filter>, row: any) => boolean {
+        const col = getPublishStatusColumn() as Column.FilterProps;
+   //     return (filter: Filter, row: any) => col.filterMethod(filter, row, null);
+        return col.filterMethod as (filter: Partial<Filter>, row: any) => boolean
+    }
 
     describe("PublishStatusColumn", () => {
 
@@ -31,61 +43,189 @@ describe("ReportListComponent", () => {
             expect(result.find(ReactTable).prop("columns").some(c => c.Header == "Status")).to.be.true;
         });
 
-        it("renders published badge", function () {
-            const result = shallow(<PublishStatusCell original={mockReport()} value={true}/>);
+        it("renders published badge if status is published", function () {
+            const col = getPublishStatusColumn() as Column.CellProps;
+            const Cell = col.Cell as React.SFC<ReportRowRenderProps>;
+            const result = shallow(<Cell row={mockReportRow()} value={true}/>);
             expect(result.find(".badge-published")).to.have.lengthOf(1);
         });
 
-        it("renders internal badge", function () {
-            const result = shallow(<PublishStatusCell original={mockReport()} value={false}/>);
+        it("renders internal badge if status is unpublished", function () {
+            const col = getPublishStatusColumn() as Column.CellProps;
+            const Cell = col.Cell as React.SFC<ReportRowRenderProps>;
+            const result = shallow(<Cell row={mockReportRow()} value={false}/>);
             expect(result.find(".badge-internal")).to.have.lengthOf(1);
         });
 
         it("renders options to filter by status", function () {
             const onChange = sandbox.sinon.stub();
-            const result = shallow(<PublishStatusFilter onChange={onChange}/>);
+            const col = getPublishStatusColumn() as Column.FilterProps;
+            const Filter = col.Filter as React.SFC<any>;
+            const result = shallow(<Filter onChange={onChange}/>);
             expect(result.find("option").map(o => o.prop("value"))).to.have.members(["all", "published", "internal"])
         });
 
-        it("filters reports by status", function () {
-            let row = {
-                published: true
-            };
+        describe("'published' filter option", () => {
 
-            let filter = {value: "published"};
+            const publishedFilter = {value: "published"};
 
-            expect(publishStatusFilterMethod(filter as any, row as any),
-                "published reports should show if filter is set to 'published'").to.be.true;
+            it("reports with any published versions should show", function () {
 
-            filter = {value: "all"};
+                const filterMethod = getFilterMethod();
+                
+                let aggregateRow: Partial<ReportRow>  = {
+                    // the aggregator function maps `published` to null
+                    published: null,
+                    _subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
+                };
 
-            expect(publishStatusFilterMethod(filter as any, row as any),
-                "published reports should show if filter is set to 'all'").to.be.true;
+                expect(filterMethod(publishedFilter, aggregateRow)).to.be.true;
+            });
 
-            filter = {value: "internal"};
+            it("reports with no published versions should not show", function () {
 
-            expect(publishStatusFilterMethod(filter as any, row as any),
-                "published reports should not show if filter is set to 'internal'").to.be.false;
+                const filterMethod = getFilterMethod();
+                
+                let aggregateRow: Partial<ReportRow>  = {
+                    published: null,
+                    _subRows: [mockReportRow({published: false}), mockReportRow({published: false})]
+                };
 
-            row = {
-                published: false
-            };
+                expect(filterMethod(publishedFilter, aggregateRow)).to.be.false;
+            });
 
-            filter = {value: "internal"};
+            it("versions that are published should show", function () {
 
-            expect(publishStatusFilterMethod(filter as any, row as any),
-                "internal reports should show if filter is set to 'internal'").to.be.true;
+                const filterMethod = getFilterMethod();
+                
+                let subRow: Partial<ReportRow>  = {
+                    published: true
+                };
+                expect(filterMethod(publishedFilter, subRow)).to.be.true;
+            });
 
-            filter = {value: "all"};
 
-            expect(publishStatusFilterMethod(filter as any, row as any),
-                "internal reports should show if filter is set to 'all'").to.be.true;
+            it("versions that are not published should not show", function () {
 
-            filter = {value: "published"};
+                const filterMethod = getFilterMethod();
+                
+                let subRow: Partial<ReportRow>  = {
+                    published: false
+                };
 
-            expect(publishStatusFilterMethod(filter as any, row as any),
-                "internal reports should not show if filter is set to 'published'").to.be.false;
+                expect(filterMethod(publishedFilter, subRow)).to.be.false;
+            });
         });
+
+        describe("'internal' filter option", () => {
+
+            const internalFilter = {value: "internal"};
+
+            it("reports with any internal versions should show", function () {
+
+                const filterMethod = getFilterMethod();
+                
+                let aggregateRow: Partial<ReportRow> = {
+                    published: null,
+                    _subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
+                };
+
+                expect(filterMethod(internalFilter, aggregateRow)).to.be.true;
+            });
+
+            it("reports with no internal versions should not show", function () {
+
+                const filterMethod = getFilterMethod();
+                
+                let aggregateRow: Partial<ReportRow> = {
+                    published: null,
+                    _subRows: [mockReportRow({published: true}), mockReportRow({published: true})]
+                };
+
+                expect(filterMethod(internalFilter, aggregateRow)).to.be.false;
+            });
+
+            it("versions that are internal should show", function () {
+
+                const filterMethod = getFilterMethod();
+                
+                let subRow: Partial<ReportRow>  = {
+                    published: false
+                };
+                expect(filterMethod(internalFilter, subRow)).to.be.true;
+            });
+
+
+            it("versions that are published should not show", function () {
+
+                const filterMethod = getFilterMethod();
+                
+                let subRow: Partial<ReportRow>  = {
+                    published: true
+                };
+
+                expect(filterMethod(internalFilter, subRow)).to.be.false;
+            });
+        });
+
+        describe("'all' filter option", () => {
+
+            const allFilter = {value: "all"};
+
+            it("reports with mixed versions should show", function () {
+
+                const filterMethod = getFilterMethod();
+                let aggregateRow: Partial<ReportRow>  = {
+                    published: null,
+                    _subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
+                };
+
+                expect(filterMethod(allFilter, aggregateRow)).to.be.true;
+            });
+
+            it("reports with all published versions should show", function () {
+
+                const filterMethod = getFilterMethod();
+                let aggregateRow: Partial<ReportRow>  = {
+                    published: null,
+                    _subRows: [mockReportRow({published: true}), mockReportRow({published: true})]
+                };
+
+                expect(filterMethod(allFilter, aggregateRow)).to.be.true;
+            });
+
+            it("reports with all internal versions should show", function () {
+
+                const filterMethod = getFilterMethod();
+                let aggregateRow: Partial<ReportRow>  = {
+                    published: null,
+                    _subRows: [mockReportRow({published: false}), mockReportRow({published: false})]
+                };
+
+                expect(filterMethod(allFilter, aggregateRow)).to.be.true;
+            });
+
+            it("versions that are internal should show", function () {
+
+                const filterMethod = getFilterMethod();
+                let subRow: Partial<ReportRow>  = {
+                    published: false
+                };
+                expect(filterMethod(allFilter, subRow)).to.be.true;
+            });
+
+
+            it("versions that are published should show", function () {
+
+                const filterMethod = getFilterMethod();
+                let subRow: Partial<ReportRow>  = {
+                    published: true
+                };
+
+                expect(filterMethod(allFilter, subRow)).to.be.true;
+            });
+        });
+
     });
 
 });

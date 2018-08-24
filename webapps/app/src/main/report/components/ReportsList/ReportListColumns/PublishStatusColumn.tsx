@@ -1,9 +1,9 @@
 import * as React from "react";
-import {FilterGeneric, FilterProps, ReportRowProps, ReportRowRenderProps} from "../ReportListTable";
+import {FilterGeneric, FilterProps, ReportRow, ReportRowRenderProps} from "../ReportListTable";
 
 export const PublishStatusCell: React.SFC<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
     return props.value ?
-        <span className="badge-published badge ">published</span> :
+        <span className="badge-published badge">published</span> :
         <span className="badge-internal badge">internal</span>
 };
 
@@ -17,7 +17,7 @@ export const PublishStatusFilter: React.SFC<FilterProps<string>> = (props: Filte
     </select>
 };
 
-export const publishStatusFilterMethod = (filter: FilterGeneric<string>, row: ReportRowProps) => {
+export const publishStatusFilterMethod = (filter: FilterGeneric<string>, row: ReportRow) => {
 
     if (row._subRows) {
         const anyPublished = row._subRows.some(r => r.published);

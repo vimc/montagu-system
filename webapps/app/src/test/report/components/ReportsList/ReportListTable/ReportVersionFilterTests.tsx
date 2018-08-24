@@ -1,73 +1,23 @@
-import * as React from "react";
-import {expect} from "chai";
 import {shallow} from "enzyme";
-
-import {mockReport} from "../../../../mocks/mockModels";
-import {Sandbox} from "../../../../Sandbox";
-import {
-    VersionCell,
-    versionFilterMethod, versionIdAccessorFunction, versionSortMethod,
-} from "../../../../../main/report/components/ReportsList/ReportListColumns/VersionColumn";
-import {ReportVersionFilter} from "../../../../../main/report/components/ReportsList/ReportListColumns/LatestVersionFilter";
+import {ReportVersionFilter} from "../../../../../main/report/components/ReportsList/ReportListColumns/ReportVersionFilter";
+import {expect} from "chai";
 import {DateRangePicker} from "../../../../../main/shared/components/DatePicker/DateRangePicker";
 import {DatePicker} from "../../../../../main/shared/components/DatePicker/DatePicker";
-import {ReportRowProps} from "../../../../../main/report/components/ReportsList/ReportListTable";
-import {InternalLink} from "../../../../../main/shared/components/InternalLink";
+import * as React from "react";
+import {Sandbox} from "../../../../Sandbox";
+import {Column} from "react-table";
+import {ReportsListTable} from "../../../../../main/report/components/ReportsList/ReportListTable";
+import ReactTable from "react-table";
 
 describe("ReportListComponent", () => {
 
     const sandbox = new Sandbox();
 
-    beforeEach(function () {
+    afterEach(function () {
         sandbox.restore();
     });
 
-
-    describe("VersionColumn", () => {
-
-        it("creates data object with id and last updated date", function () {
-
-            const now = new Date(2018, 4, 15);
-            const result = versionIdAccessorFunction(mockReport({
-                id: "1234",
-                updated_on: now.toDateString()
-            }));
-
-            expect(result).to.eql({version: "1234", date: new Date(2018, 4, 15)});
-        });
-
-        it("renders version date", function () {
-            const row: ReportRowProps = {
-                ...mockReport({
-                    name: "report_name"
-                }),
-                version: null
-            };
-            const result = shallow(<VersionCell row={row}
-                                                value={{
-                                                          version: "46324",
-                                                          date: new Date(2018, 4, 15)
-                                                      }}/>);
-
-            expect(result.find("div").first().childAt(0).text()).to.eq("Tue May 15 2018");
-        });
-
-        it("renders link to report page", function () {
-            const row: ReportRowProps = {
-                ...mockReport({
-                    name: "report_name"
-                }),
-                version: null
-            };
-
-            const result = shallow(<VersionCell row={row} value={{
-                version: "46324",
-                date: new Date(2018, 4, 15)
-            }}/>);
-
-            expect(result.find(InternalLink).childAt(0).text()).to.eq("46324");
-            expect(result.find(InternalLink).prop("href")).to.eq("/report_name/46324/");
-        });
+    describe("ReportVersionFilter", () => {
 
         const filterValue = {
             start: new Date(2016, 12, 20),
@@ -136,10 +86,19 @@ describe("ReportListComponent", () => {
             }))
         });
 
+        function getFilterMethod(): any {
+            const rendered = shallow(<ReportsListTable reports={[]} isReviewer={true}/>);
+            const columns = (rendered.find(ReactTable).prop("columns") as Column[]);
+            const col = columns[3] as Column.FilterProps;
+            return col.filterMethod;
+        }
+
         it("filters reports by start date inclusive", function () {
 
+            const filterMethod = getFilterMethod();
+
             const row = {
-               version: {date: new Date(2017, 5, 14, 12, 1, 2), version: "1234"}
+                version: {date: new Date(2017, 5, 14, 12, 1, 2), version: "1234"}
             };
 
             let filter = {
@@ -150,7 +109,7 @@ describe("ReportListComponent", () => {
                 }
             };
 
-            let result = versionFilterMethod(filter, row as any);
+            let result = filterMethod(filter, row);
             expect(result).to.be.true;
 
             filter = {
@@ -161,12 +120,14 @@ describe("ReportListComponent", () => {
                 }
             };
 
-            result = versionFilterMethod(filter, row as any);
+            result = filterMethod(filter, row);
             expect(result).to.be.false;
 
         });
 
         it("filters reports by end date inclusive", function () {
+
+            const filterMethod = getFilterMethod();
 
             const row = {
                 version: {date: new Date(2018, 5, 14, 12, 1, 2), version: "1234"}
@@ -180,7 +141,7 @@ describe("ReportListComponent", () => {
                 }
             };
 
-            let result = versionFilterMethod(filter, row as any);
+            let result = filterMethod(filter, row);
             expect(result).to.be.true;
 
             filter = {
@@ -191,12 +152,14 @@ describe("ReportListComponent", () => {
                 }
             };
 
-            result = versionFilterMethod(filter, row as any);
+            result = filterMethod(filter, row);
             expect(result).to.be.false;
 
         });
 
         it("filters reports by id", function () {
+
+            const filterMethod = getFilterMethod();
 
             const row = {
                 version: {date: new Date(2018, 5, 14), version: "1234"}
@@ -210,21 +173,14 @@ describe("ReportListComponent", () => {
                 }
             };
 
-            const result = versionFilterMethod(filter, row as any);
+            const result = filterMethod(filter, row as any);
             expect(result).to.be.false;
-        });
-
-
-        it("sorts by date descending", function () {
-
-            const a = {date: new Date(2018, 5, 14), version: "1234"};
-            const b = {date: new Date(2018, 5, 13), version: "1234"};
-
-            const result = versionSortMethod(a, b);
-            expect(result).to.eq(-1);
         });
 
     });
 
-
 });
+
+
+
+

@@ -1,9 +1,17 @@
 import * as models from "../../main/shared/models/Generated";
-import {ExpectationMapping, ModellingGroupCreation, TouchstoneVersion} from "../../main/shared/models/Generated";
+import {
+    ExpectationMapping,
+    ModellingGroupCreation,
+    Report,
+    TouchstoneVersion
+} from "../../main/shared/models/Generated";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
 import {Version} from "../../main/shared/models/reports/Report";
 import {Artefact} from "../../main/shared/models/reports/Artefact";
 import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageProperties";
+import {ReportRow} from "../../main/report/components/ReportsList/ReportListTable";
+import {BasicVersionDetails} from "../../main/report/components/ReportsList/ReportListColumns/VersionColumn";
+import defineProperty = Reflect.defineProperty;
 
 let counter = 0;
 
@@ -252,6 +260,7 @@ export function mockReport(properties?: Partial<models.Report>): models.Report {
     const template: models.Report = {
         name: "report",
         display_name: "display name",
+        id: "3123",
         latest_version: "e62871eydhsjkh",
         author: "author",
         requester: "requester",
@@ -260,6 +269,28 @@ export function mockReport(properties?: Partial<models.Report>): models.Report {
     };
 
     return Object.assign(template, properties);
+}
+
+export function mockBasicVersionDetails(properties?: Partial<BasicVersionDetails>): BasicVersionDetails {
+    const template: BasicVersionDetails = {
+        version: "1234",
+        date: new Date()
+    };
+
+    return Object.assign(template, properties);
+}
+
+export function mockReportRow(report?: Partial<models.Report>, version?: BasicVersionDetails): ReportRow {
+
+    const template: ReportRow = {
+        ...mockReport({
+            name: "report_name"
+        }),
+        version: Object.assign(mockBasicVersionDetails(), version)
+    };
+
+    return Object.assign(template, report);
+
 }
 
 export function mockDemographicDataset(properties?: Partial<models.DemographicDataset>): models.DemographicDataset {

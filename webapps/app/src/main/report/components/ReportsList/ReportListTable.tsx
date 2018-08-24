@@ -1,9 +1,10 @@
 import * as React from "react";
 import {Report} from "../../../shared/models/Generated";
-import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps, TableProps} from 'react-table'
+import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps} from 'react-table'
 
 import {
-    ReportVersion,
+    AggregatedVersionCell,
+    BasicVersionDetails, getLatestVersion,
     VersionCell,
     versionFilterMethod, versionIdAccessorFunction,
     versionSortMethod
@@ -13,7 +14,7 @@ import {
     PublishStatusFilter,
     publishStatusFilterMethod
 } from "./ReportListColumns/PublishStatusColumn";
-import {ReportVersionFilter} from "./ReportListColumns/LatestVersionFilter";
+import {ReportVersionFilter} from "./ReportListColumns/ReportVersionFilter";
 import {nameAccessorFunction} from "./ReportListColumns/NameColumn";
 
 export interface ReportsListTableProps {
@@ -22,20 +23,20 @@ export interface ReportsListTableProps {
 }
 
 export interface ReportRowRenderProps extends RowRenderProps {
-    row: ReportRowProps,
-    value: string | ReportVersion | boolean;
+    row: ReportRow,
+    value: string | BasicVersionDetails | boolean;
 }
 
-export interface ReportRowProps {
-    version: ReportVersion,
+export interface ReportRow {
+    version: BasicVersionDetails,
     name: string,
     author: string,
     requester: string,
-    published: boolean,
+    published?: boolean,
 
-    [key: string]: string | boolean | ReportVersion | ReportRowProps[]
+    [key: string]: string | boolean | BasicVersionDetails | ReportRow[]
 
-    _subRows?: ReportRowProps[]
+    _subRows?: ReportRow[]
 }
 
 export interface FilterGeneric<T> extends Filter {
@@ -77,8 +78,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 Header: "Name",
                 id: "name",
                 accessor: nameAccessorFunction,
-                Filter: TextFilter,
-                aggregate: getFirstOfAggregatedValues
+                Filter: TextFilter
             },
             {
                 Header: "Author",
@@ -107,8 +107,8 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 sortMethod: versionSortMethod,
                 filterMethod: versionFilterMethod,
                 Filter: ReportVersionFilter,
-                aggregate:  getFirstOfAggregatedValues,
-                Aggregated: EmptyCell
+                aggregate: getLatestVersion,
+                Aggregated: AggregatedVersionCell
             },
         ];
 
@@ -121,7 +121,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
             Cell: PublishStatusCell,
             filterMethod: publishStatusFilterMethod,
             Filter: PublishStatusFilter,
-            aggregate: _ => "",
+            aggregate: _ => null,
             Aggregated: EmptyCell,
         })
     }
@@ -136,7 +136,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
         <ReactTable
             pivotBy={["name"]}
             defaultSorted={[{id: "version"}]}
-            defaultFilterMethod={(filter: Filter, row: ReportRowProps) =>
+            defaultFilterMethod={(filter: Filter, row: ReportRow) =>
                 String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
             filterable
             defaultPageSize={10}
