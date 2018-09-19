@@ -81,24 +81,6 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 Filter: TextFilter
             },
             {
-                Header: "Author",
-                accessor: "author",
-                width: 220,
-                Filter: TextFilter,
-                Cell: EmptyCell,
-                Aggregated: NonEmptyCell,
-                aggregate: getFirstOfAggregatedValues,
-            },
-            {
-                Header: "Requester",
-                accessor: "requester",
-                width: 220,
-                Cell: EmptyCell,
-                Filter: TextFilter,
-                Aggregated: NonEmptyCell,
-                aggregate: getFirstOfAggregatedValues,
-            },
-            {
                 Header: "Version",
                 id: "version",
                 Cell: VersionCell,
@@ -109,6 +91,22 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 Filter: ReportVersionFilter,
                 aggregate: getLatestVersion,
                 Aggregated: AggregatedVersionCell
+            },
+            {
+                Header: "Author",
+                accessor: "author",
+                Filter: TextFilter,
+                Cell: EmptyCell,
+                Aggregated: NonEmptyCell,
+                aggregate: getFirstOfAggregatedValues,
+            },
+            {
+                Header: "Requester",
+                accessor: "requester",
+                Cell: EmptyCell,
+                Filter: TextFilter,
+                Aggregated: NonEmptyCell,
+                aggregate: getFirstOfAggregatedValues,
             },
         ];
 
