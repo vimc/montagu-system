@@ -16,11 +16,17 @@ export const LinkToReportCell: React.SFC<ReportRow> = (props: ReportRow) => {
 
 export const VersionCell: React.StatelessComponent<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
     const value = props.value as BasicVersionDetails;
-    return <div>
-        <div>{longDate(value.date)}</div>
-        <div className="small">({value.version})</div>
-        <LinkToReportCell {...props.row}/>
-    </div>
+
+    const isLatest = props.original && props.original.latest_version == value.version;
+    const badge = isLatest ? <span className="badge-info badge float-right">latest</span>
+        : <span className="badge-light badge float-right">out-dated</span>;
+
+    const report = props.row;
+    return <InternalLink href={`/${report.name}/${report.version.version}/`}>
+            <div>{longDate(value.date)}{badge}
+                <div className="small">({value.version})</div>
+            </div>
+        </InternalLink>
 };
 
 export const versionIdAccessorFunction = (data: Report): BasicVersionDetails => {
@@ -29,7 +35,7 @@ export const versionIdAccessorFunction = (data: Report): BasicVersionDetails => 
 
 export const aggregatedVersionFilterMethod = (filter: FilterGeneric<VersionFilterValue>, row: ReportRow) => {
 
-    if (row._subRows){
+    if (row._subRows) {
         return row._subRows.some(r => versionFilterMethod(filter, r))
     }
     else {

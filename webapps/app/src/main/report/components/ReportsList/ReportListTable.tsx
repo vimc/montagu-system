@@ -3,16 +3,17 @@ import {Report} from "../../../shared/models/Generated";
 import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps} from 'react-table'
 
 import {
-    AggregatedVersionCell,
-    BasicVersionDetails, getLatestVersion,
+    aggregatedVersionFilterMethod,
+    BasicVersionDetails,
+    getLatestVersion,
     VersionCell,
-    aggregatedVersionFilterMethod, versionIdAccessorFunction,
+    versionIdAccessorFunction,
     versionSortMethod
 } from "./ReportListColumns/VersionColumn";
 import {
+    aggregatedPublishStatusFilterMethod,
     PublishStatusCell,
-    PublishStatusFilter,
-    aggregatedPublishStatusFilterMethod
+    PublishStatusFilter
 } from "./ReportListColumns/PublishStatusColumn";
 import {ReportVersionFilter} from "./ReportListColumns/ReportVersionFilter";
 import {nameAccessorFunction} from "./ReportListColumns/NameColumn";
@@ -33,10 +34,9 @@ export interface ReportRow {
     author: string,
     requester: string,
     published?: boolean,
+    _subRows?: ReportRow[]
 
     [key: string]: string | boolean | BasicVersionDetails | ReportRow[]
-
-    _subRows?: ReportRow[]
 }
 
 export interface FilterGeneric<T> extends Filter {
@@ -67,79 +67,104 @@ export const CellWithValue = (row: ReportRowRenderProps) => {
 
 const getFirstOfAggregatedValues = (vals: any) => vals[0];
 
-export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
-    = (props: ReportsListTableProps) => {
+export class ReportsListTable extends React.Component<ReportsListTableProps, any> {
 
-    // Note: if these column headers change, you must also change ./styles/report-table.scss
-    // where the headers are hard-coded for small devices
-    const columns: Column[] =
-        [
-            {
-                Header: "Name",
-                id: "name",
-                accessor: nameAccessorFunction,
-                Filter: TextFilter
-            },
-            {
-                Header: "Version",
-                id: "version",
-                Cell: VersionCell,
-                width: 345,
-                accessor: versionIdAccessorFunction,
-                sortMethod: versionSortMethod,
-                filterMethod: aggregatedVersionFilterMethod,
-                Filter: ReportVersionFilter,
-                aggregate: getLatestVersion,
-                Aggregated: AggregatedVersionCell
-            },
-            {
-                Header: "Author",
-                accessor: "author",
-                Filter: TextFilter,
-                Cell: EmptyCell,
-                Aggregated: CellWithValue,
-                aggregate: getFirstOfAggregatedValues,
-            },
-            {
-                Header: "Requester",
-                accessor: "requester",
-                Cell: EmptyCell,
-                Filter: TextFilter,
-                Aggregated: CellWithValue,
-                aggregate: getFirstOfAggregatedValues,
-            },
-        ];
-
-    if (props.isReviewer) {
-        columns.push({
-            Header: "Status",
-            accessor: "published",
-            id: "published",
-            width: 120,
-            Cell: PublishStatusCell,
-            filterMethod: aggregatedPublishStatusFilterMethod,
-            Filter: PublishStatusFilter,
-            aggregate: _ => null,
-            Aggregated: EmptyCell,
-        })
+    constructor(props: ReportsListTableProps) {
+        super();
+        const numRows = props.reports.length;
+        const expanded = {} as any;
+        for (let i = 0; i < numRows; i++) {
+            expanded[i] = true;
+        }
+        this.state = {
+            expanded: expanded
+        }
     }
 
-    return <div>
-        <h1 className="h3 mb-3">
-            Find a report
-        </h1>
-        <p className="helper-text text-muted">
-            Click on a column heading to sort by that field. Hold shift to multi-sort.
-        </p>
-        <ReactTable
-            pivotBy={["name"]}
-            defaultSorted={[{id: "version"}]}
-            defaultFilterMethod={(filter: Filter, row: ReportRow) =>
-                String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
-            filterable
-            defaultPageSize={10}
-            className="-striped -highlight responsive"
-            data={props.reports}
-            columns={columns}/>
-    </div>;
+    render() {
+
+        const numRows = this.props.reports.length;
+        const expanded = {} as any;
+        for (let i = 0; i < numRows; i++) {
+            expanded[i] = true;
+        }
+
+        // Note: if these column headers change, you must also change ./styles/report-table.scss
+        // where the headers are hard-coded for small devices
+        const columns: Column[] =
+            [
+                {
+                    Header: "Name",
+                    id: "name",
+                    accessor: nameAccessorFunction,
+                    Filter: TextFilter
+                },
+                {
+                    Header: "Version",
+                    id: "version",
+                    Cell: VersionCell,
+                    width: 345,
+                    accessor: versionIdAccessorFunction,
+                    sortMethod: versionSortMethod,
+                    filterMethod: aggregatedVersionFilterMethod,
+                    Filter: ReportVersionFilter,
+                    aggregate: getLatestVersion,
+                    Aggregated: EmptyCell
+                },
+                {
+                    Header: "Author",
+                    accessor: "author",
+                    Filter: TextFilter,
+                    Cell: EmptyCell,
+                    Aggregated: CellWithValue,
+                    aggregate: getFirstOfAggregatedValues,
+                },
+                {
+                    Header: "Requester",
+                    accessor: "requester",
+                    Cell: EmptyCell,
+                    Filter: TextFilter,
+                    Aggregated: CellWithValue,
+                    aggregate: getFirstOfAggregatedValues,
+                },
+            ];
+
+        if (this.props.isReviewer) {
+            columns.splice(2, 0, {
+                Header: "Status",
+                accessor: "published",
+                id: "published",
+                width: 120,
+                Cell: PublishStatusCell,
+                filterMethod: aggregatedPublishStatusFilterMethod,
+                Filter: PublishStatusFilter,
+                aggregate: _ => null,
+                Aggregated: EmptyCell,
+            })
+        }
+
+        return <div>
+            <h1 className="h3 mb-3">
+                Find a report
+            </h1>
+            <p className="helper-text text-muted">
+                Click on a column heading to sort by that field. Hold shift to multi-sort.
+            </p>
+            <ReactTable
+                pivotBy={["name"]}
+                defaultSorted={[{id: "version"}]}
+                defaultFilterMethod={(filter: Filter, row: ReportRow) =>
+                    String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
+                filterable
+                expanded={this.state.expanded}
+                onExpandedChange={expanded => this.setState({expanded})}
+                collapseOnSortingChange={false}
+                collapseOnDataChange={false}
+                collapseOnPageChange={false}
+                defaultPageSize={100}
+                className="-striped -highlight responsive"
+                data={this.props.reports}
+                columns={columns}/>
+        </div>;
+    }
 };

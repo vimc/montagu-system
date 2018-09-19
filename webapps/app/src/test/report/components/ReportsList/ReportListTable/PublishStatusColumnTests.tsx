@@ -22,7 +22,7 @@ describe("ReportListTable", () => {
     function getPublishStatusColumn(): Column {
         const rendered = shallow(<ReportsListTable reports={[]} isReviewer={true}/>);
         const columns = (rendered.find(ReactTable).prop("columns") as Column[]);
-        return columns[4];
+        return columns[2];
     }
 
     function getFilterMethod(): (filter: Partial<Filter>, row: any) => boolean {

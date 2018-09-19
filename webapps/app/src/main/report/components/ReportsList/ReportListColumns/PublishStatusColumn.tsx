@@ -3,8 +3,8 @@ import {FilterGeneric, FilterProps, ReportRow, ReportRowRenderProps} from "../Re
 
 export const PublishStatusCell: React.SFC<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
     return props.value ?
-        <span className="badge-published badge">published</span> :
-        <span className="badge-internal badge">internal</span>
+        <span className="badge-published badge float-left">published</span> :
+        <span className="badge-internal badge float-left">internal</span>
 };
 
 export const PublishStatusFilter: React.SFC<FilterProps<string>> = (props: FilterProps<string>) => {
