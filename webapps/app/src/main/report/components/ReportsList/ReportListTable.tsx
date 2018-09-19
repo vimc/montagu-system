@@ -17,6 +17,7 @@ import {
 } from "./ReportListColumns/PublishStatusColumn";
 import {ReportVersionFilter} from "./ReportListColumns/ReportVersionFilter";
 import {nameAccessorFunction} from "./ReportListColumns/NameColumn";
+import {Button, ButtonGroup} from "reactstrap";
 
 export interface ReportsListTableProps {
     reports: Report[]
@@ -79,6 +80,36 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
         this.state = {
             expanded: expanded
         }
+    }
+
+    allExpanded(props: ReportsListTableProps){
+        const numRows = props.reports.length;
+        const expanded = {} as any;
+        for (let i = 0; i < numRows; i++) {
+            expanded[i] = true;
+        }
+
+        return expanded
+    }
+
+    allCollapsed(props: ReportsListTableProps){
+        const numRows = props.reports.length;
+        const expanded = {} as any;
+        for (let i = 0; i < numRows; i++) {
+            expanded[i] = false;
+        }
+
+        return expanded
+    }
+
+    expandAll(){
+        const expanded = this.allExpanded(this.props);
+        this.setState({expanded})
+    }
+
+    collapseAll(){
+        const expanded = this.allCollapsed(this.props);
+        this.setState({expanded})
     }
 
     render() {
@@ -149,9 +180,13 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
             <h1 className="h3 mb-3">
                 Find a report
             </h1>
-            <p className="helper-text text-muted">
+            <div className="helper-text text-muted mb-2">
                 Click on a column heading to sort by that field. Hold shift to multi-sort.
-            </p>
+            </div>
+            <ButtonGroup className={"mb-3"}>
+                <Button onClick={this.collapseAll.bind(this)} className={"rounded-0"} color={"button"}>Collapse all rows</Button>
+                <Button onClick={this.expandAll.bind(this)} className={"rounded-0"} color={"button"}>Expand all rows</Button>
+            </ButtonGroup>
             <ReactTable
                 pivotBy={["name"]}
                 defaultSorted={[{id: "version"}]}
