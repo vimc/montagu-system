@@ -53,7 +53,7 @@ export const SetPasswordPage = compose(
     connect(mapStateToProps, mapDispatchToProps)
 )(SetPasswordPageComponent) as React.ComponentClass<SetPasswordPageProps>;
 
-export class RequestResetLinkButton extends React.Component<undefined> {
+export class RequestResetLinkButton extends React.Component<{}> {
     render(): JSX.Element {
         return <div className="mt-3">
             <div className="alert alert-warning">This password reset link has expired. Please request a new one</div>
