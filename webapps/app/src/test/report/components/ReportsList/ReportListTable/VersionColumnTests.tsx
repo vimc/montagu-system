@@ -28,7 +28,7 @@ describe("ReportListTable", () => {
     function getVersionColumn(): Column {
         const rendered = shallow(<ReportsListTable reports={[]} isReviewer={true}/>);
         const columns = (rendered.find(ReactTable).prop("columns") as Column[]);
-        return columns[3];
+        return columns[1];
     }
 
     describe("VersionColumn", () => {

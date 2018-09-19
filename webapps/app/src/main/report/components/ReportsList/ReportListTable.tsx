@@ -61,7 +61,7 @@ export const EmptyCell = () => {
     return <span>&nbsp;</span>
 };
 
-export const NonEmptyCell = (row: ReportRowRenderProps) => {
+export const CellWithValue = (row: ReportRowRenderProps) => {
     return <span>{row.value}</span>
 };
 
@@ -97,7 +97,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 accessor: "author",
                 Filter: TextFilter,
                 Cell: EmptyCell,
-                Aggregated: NonEmptyCell,
+                Aggregated: CellWithValue,
                 aggregate: getFirstOfAggregatedValues,
             },
             {
@@ -105,7 +105,7 @@ export const ReportsListTable: React.StatelessComponent<ReportsListTableProps>
                 accessor: "requester",
                 Cell: EmptyCell,
                 Filter: TextFilter,
-                Aggregated: NonEmptyCell,
+                Aggregated: CellWithValue,
                 aggregate: getFirstOfAggregatedValues,
             },
         ];

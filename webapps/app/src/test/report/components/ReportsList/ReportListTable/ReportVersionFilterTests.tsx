@@ -90,7 +90,7 @@ describe("ReportListComponent", () => {
         function getFilterMethod(): any {
             const rendered = shallow(<ReportsListTable reports={[]} isReviewer={true}/>);
             const columns = (rendered.find(ReactTable).prop("columns") as Column[]);
-            const col = columns[3] as Column.FilterProps;
+            const col = columns[1] as Column.FilterProps;
             return col.filterMethod;
         }
 
