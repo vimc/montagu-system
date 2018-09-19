@@ -114,6 +114,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                 {
                     Header: "Author",
                     accessor: "author",
+                    width: 200,
                     Filter: TextFilter,
                     Cell: EmptyCell,
                     Aggregated: CellWithValue,
@@ -122,6 +123,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                 {
                     Header: "Requester",
                     accessor: "requester",
+                    width: 200,
                     Cell: EmptyCell,
                     Filter: TextFilter,
                     Aggregated: CellWithValue,
