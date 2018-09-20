@@ -3,6 +3,7 @@ import {Report} from "../../../shared/models/Generated";
 import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps} from 'react-table'
 
 import {
+    AggregatedVersionCell,
     aggregatedVersionFilterMethod,
     BasicVersionDetails,
     getLatestVersion,
@@ -75,7 +76,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
         const numRows = props.reports.length;
         const expanded = {} as any;
         for (let i = 0; i < numRows; i++) {
-            expanded[i] = true;
+            expanded[i] = false;
         }
         this.state = {
             expanded: expanded
@@ -140,7 +141,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                     filterMethod: aggregatedVersionFilterMethod,
                     Filter: ReportVersionFilter,
                     aggregate: getLatestVersion,
-                    Aggregated: EmptyCell
+                    Aggregated: AggregatedVersionCell
                 },
                 {
                     Header: "Author",
