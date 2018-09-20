@@ -33,7 +33,7 @@ class BasicAuthActionAdapter(repositoryFactory: RepositoryFactory, serializer: S
     {
         HttpConstants.UNAUTHORIZED ->
         {
-            context.response.addHeader("WWW-Authenticate", "Basic")
+            context.response.addHeader("x-WWW-Authenticate", "Basic")
             haltWithError(code, context, unauthorizedResponse)
         }
         else -> super.adapt(code, context)
