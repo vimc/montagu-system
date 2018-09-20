@@ -27,13 +27,13 @@ class TokenIssuingConfigFactory(private val repositoryFactory: RepositoryFactory
 class BasicAuthActionAdapter(repositoryFactory: RepositoryFactory, serializer: Serializer)
     : MontaguHttpActionAdapter(repositoryFactory, serializer)
 {
-    private val unauthorizedResponse: String = serializer.gson.toJson(FailedAuthentication("Bad credentials"))
+    private val unauthorizedResponse: String = serializer.gson.toJson(FailedAuthentication("invalid_client"))
 
     override fun adapt(code: Int, context: SparkWebContext): Any? = when (code)
     {
         HttpConstants.UNAUTHORIZED ->
         {
-            context.response.addHeader("WWW-Authenticate", "Basic")
+            context.response.addHeader("x-WWW-Authenticate", "Basic")
             haltWithError(code, context, unauthorizedResponse)
         }
         else -> super.adapt(code, context)
