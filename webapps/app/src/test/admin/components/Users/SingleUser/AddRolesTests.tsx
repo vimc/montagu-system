@@ -6,7 +6,7 @@ import {Sandbox} from "../../../../Sandbox";
 import {shallow} from "enzyme";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {AdminAppState} from "../../../../../main/admin/reducers/adminAppReducers";
-import {mockRole, mockUser} from "../../../../mocks/mockModels";
+import {mockUser} from "../../../../mocks/mockModels";
 import {mockAdminState, mockAdminUsersState} from "../../../../mocks/mockStates";
 import {MockStore} from "redux-mock-store";
 import {usersActionCreators} from "../../../../../main/admin/actions/usersActionCreators";
@@ -15,7 +15,7 @@ describe("AddRoles", () => {
 
     const sandbox: Sandbox = new Sandbox();
 
-    const mockRoles = [mockRole({name: "role1"}), mockRole()];
+    const mockRoles = ["role1", "role2"];
 
     const mockUsersState = mockAdminUsersState({
         globalRoles: mockRoles,

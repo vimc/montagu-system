@@ -142,7 +142,8 @@ describe("ExpectationsDescription", () => {
                                                           touchstoneVersionId="tId"
                                                           allScenarios={mockScenarios}
                                                           groupId="gId"/>);
-        expect(rendered.find("#outcomes").find("li")).to.have.lengthOf(2);
+        // The extra li is for cohort_size, which is hardcoded
+        expect(rendered.find("#outcomes").find("li")).to.have.lengthOf(2 + 1);
     });
 
     it("renders countries list", () => {
