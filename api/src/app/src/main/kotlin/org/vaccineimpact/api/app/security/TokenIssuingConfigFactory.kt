@@ -33,13 +33,8 @@ class BasicAuthActionAdapter(repositoryFactory: RepositoryFactory, serializer: S
     {
         HttpConstants.UNAUTHORIZED ->
         {
-            // See https://tools.ietf.org/html/rfc6749#section-5.2
-            // To comply with the spec we must return { "error": "invalid_client" }. In addition we must either:
-            // 1. Just return an error 400
-            // 2. Return an error 401, as well as a WWW-Authenticate: Basic header
-            // If we do the later, Chrome pops up on a failed login, so we instead convert the UNAUTHORIZED (401) into
-            // a BAD_REQUEST (400)
-            haltWithError(HttpConstants.BAD_REQUEST, context, unauthorizedResponse)
+            context.response.addHeader("x-WWW-Authenticate", "Basic")
+            haltWithError(code, context, unauthorizedResponse)
         }
         else -> super.adapt(code, context)
     }
