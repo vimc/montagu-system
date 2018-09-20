@@ -76,7 +76,7 @@ describe("ReportListTable", () => {
                 let aggregateRow: Partial<ReportRow>  = {
                     // the aggregator function maps `published` to null
                     published: null,
-                    _subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
+                    subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
                 };
 
                 expect(filterMethod(publishedFilter, aggregateRow)).to.be.true;
@@ -88,7 +88,7 @@ describe("ReportListTable", () => {
                 
                 let aggregateRow: Partial<ReportRow>  = {
                     published: null,
-                    _subRows: [mockReportRow({published: false}), mockReportRow({published: false})]
+                    subRows: [mockReportRow({published: false}), mockReportRow({published: false})]
                 };
 
                 expect(filterMethod(publishedFilter, aggregateRow)).to.be.false;
@@ -127,7 +127,7 @@ describe("ReportListTable", () => {
                 
                 let aggregateRow: Partial<ReportRow> = {
                     published: null,
-                    _subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
+                    subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
                 };
 
                 expect(filterMethod(internalFilter, aggregateRow)).to.be.true;
@@ -139,7 +139,7 @@ describe("ReportListTable", () => {
                 
                 let aggregateRow: Partial<ReportRow> = {
                     published: null,
-                    _subRows: [mockReportRow({published: true}), mockReportRow({published: true})]
+                    subRows: [mockReportRow({published: true}), mockReportRow({published: true})]
                 };
 
                 expect(filterMethod(internalFilter, aggregateRow)).to.be.false;
@@ -177,7 +177,7 @@ describe("ReportListTable", () => {
                 const filterMethod = getFilterMethod();
                 let aggregateRow: Partial<ReportRow>  = {
                     published: null,
-                    _subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
+                    subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
                 };
 
                 expect(filterMethod(allFilter, aggregateRow)).to.be.true;
@@ -188,7 +188,7 @@ describe("ReportListTable", () => {
                 const filterMethod = getFilterMethod();
                 let aggregateRow: Partial<ReportRow>  = {
                     published: null,
-                    _subRows: [mockReportRow({published: true}), mockReportRow({published: true})]
+                    subRows: [mockReportRow({published: true}), mockReportRow({published: true})]
                 };
 
                 expect(filterMethod(allFilter, aggregateRow)).to.be.true;
@@ -199,7 +199,7 @@ describe("ReportListTable", () => {
                 const filterMethod = getFilterMethod();
                 let aggregateRow: Partial<ReportRow>  = {
                     published: null,
-                    _subRows: [mockReportRow({published: false}), mockReportRow({published: false})]
+                    subRows: [mockReportRow({published: false}), mockReportRow({published: false})]
                 };
 
                 expect(filterMethod(allFilter, aggregateRow)).to.be.true;

@@ -36,7 +36,7 @@ export interface ReportRow {
     author: string,
     requester: string,
     published?: boolean,
-    _subRows?: ReportRow[]
+    subRows?: ReportRow[]
 
     [key: string]: string | boolean | BasicVersionDetails | ReportRow[]
 }
@@ -130,13 +130,13 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                     id: "name",
                     accessor: nameAccessorFunction,
                     Filter: TextFilter,
-                    PivotValue: ({value}) =>
+                    PivotValue: (props) =>
                         <div style={{
                             whiteSpace: "normal",
                             verticalAlign: "top",
                             display: "inline-block"
                         }}>
-                            {value}
+                            {props.value} ({props.subRows.length})
                         </div>
                 },
                 {
@@ -212,7 +212,8 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                 defaultPageSize={100}
                 className="-striped -highlight responsive"
                 data={this.props.reports}
-                columns={columns}/>
+                columns={columns}
+                subRowsKey={'subRows'}/>
         </div>;
     }
-};
+}

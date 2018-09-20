@@ -21,22 +21,21 @@ export const VersionCell: React.StatelessComponent<ReportRowRenderProps> = (prop
     const badge = isLatest ? <span className="badge-info badge float-right">latest</span>
         : <span className="badge-light badge float-right">out-dated</span>;
 
-    const report = props.row;
-    return <InternalLink href={`/${report.name}/${report.version.version}/`}>
-            <div>{longDate(value.date)}{badge}
-                <div className="small">({value.version})</div>
-            </div>
-        </InternalLink>
+    return <InternalLink href={`/${value.name}/${value.version}/`}>
+        <div>{longDate(value.date)}{badge}
+            <div className="small">({value.version})</div>
+        </div>
+    </InternalLink>
 };
 
 export const versionIdAccessorFunction = (data: Report): BasicVersionDetails => {
-    return {version: data.id, date: new Date(data.updated_on)}
+    return {name: data.name, version: data.id, date: new Date(data.updated_on)}
 };
 
 export const aggregatedVersionFilterMethod = (filter: FilterGeneric<VersionFilterValue>, row: ReportRow) => {
 
-    if (row._subRows) {
-        return row._subRows.some(r => versionFilterMethod(filter, r))
+    if (row.subRows) {
+        return row.subRows.some(r => versionFilterMethod(filter, r))
     }
     else {
         return versionFilterMethod(filter, row);
@@ -61,10 +60,10 @@ export const getLatestVersion = (vals: BasicVersionDetails[]): BasicVersionDetai
 };
 
 export const AggregatedVersionCell: React.SFC<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
-    const report = props.row;
+
     const val = props.value as BasicVersionDetails;
     return <span>
-                <InternalLink href={`/${report.name}/${val.version}/`}>
+                <InternalLink href={`/${val.name}/${val.version}/`}>
                     View latest version
                 </InternalLink>
                 <div className={"small"}>({val.version})</div>
@@ -79,6 +78,7 @@ export const versionSortMethod = (a: BasicVersionDetails, b: BasicVersionDetails
 };
 
 export interface BasicVersionDetails {
+    name: string,
     version: string,
     date: Date
 }

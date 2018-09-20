@@ -33,17 +33,18 @@ describe("ReportListTable", () => {
 
     describe("VersionColumn", () => {
 
-        it("creates data object with version id and last updated date", function () {
+        it("creates data object with version id and last updated date and report name", function () {
 
             const accessor = getVersionColumn().accessor as (row: object) => any;
 
             const now = new Date(2018, 4, 15);
             const result = accessor(mockReport({
                 id: "1234",
-                updated_on: now.toDateString()
+                updated_on: now.toDateString(),
+                name: "report-name"
             }));
 
-            expect(result).to.eql({version: "1234", date: new Date(2018, 4, 15)});
+            expect(result).to.eql({version: "1234", date: new Date(2018, 4, 15), name: "report-name"});
         });
 
         // it("renders version date", function () {

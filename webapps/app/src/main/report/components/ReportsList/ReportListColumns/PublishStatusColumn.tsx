@@ -19,8 +19,8 @@ export const PublishStatusFilter: React.SFC<FilterProps<string>> = (props: Filte
 
 export const aggregatedPublishStatusFilterMethod = (filter: FilterGeneric<string>, row: ReportRow) => {
 
-    if (row._subRows){
-        return row._subRows.some(r => publishStatusFilterMethod(filter, r))
+    if (row.subRows){
+        return row.subRows.some(r => publishStatusFilterMethod(filter, r))
     }
     else{
         return publishStatusFilterMethod(filter, row)

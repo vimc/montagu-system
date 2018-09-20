@@ -201,7 +201,7 @@ describe("ReportListComponent", () => {
                 };
 
                 const aggregateRow = {
-                    _subRows: [subRow, earlierSubRow]
+                    subRows: [subRow, earlierSubRow]
                 };
 
                 let result = filterMethod(filter, aggregateRow);
@@ -231,7 +231,7 @@ describe("ReportListComponent", () => {
                 };
 
                 let aggregateRow = {
-                    _subRows: [subRow, laterSubRow]
+                    subRows: [subRow, laterSubRow]
                 };
 
                 let filter = {
@@ -278,14 +278,14 @@ describe("ReportListComponent", () => {
                 };
 
                 let aggregateRow = {
-                    _subRows: [goodSubRow, badSubRow]
+                    subRows: [goodSubRow, badSubRow]
                 };
 
                 let result = filterMethod(filter, aggregateRow);
                 expect(result).to.be.true;
 
                 aggregateRow = {
-                    _subRows: [badSubRow]
+                    subRows: [badSubRow]
                 };
 
                 result = filterMethod(filter, aggregateRow);

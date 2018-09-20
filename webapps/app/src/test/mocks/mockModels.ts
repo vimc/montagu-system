@@ -263,7 +263,8 @@ export function mockReport(properties?: Partial<models.Report>): models.Report {
 export function mockBasicVersionDetails(properties?: Partial<BasicVersionDetails>): BasicVersionDetails {
     const template: BasicVersionDetails = {
         version: "1234",
-        date: new Date()
+        date: new Date(),
+        name: "report-name"
     };
 
     return Object.assign(template, properties);
