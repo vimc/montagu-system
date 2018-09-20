@@ -83,7 +83,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
         }
     }
 
-    allExpanded(props: ReportsListTableProps){
+    allExpanded(props: ReportsListTableProps) {
         const numRows = props.reports.length;
         const expanded = {} as any;
         for (let i = 0; i < numRows; i++) {
@@ -93,7 +93,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
         return expanded
     }
 
-    allCollapsed(props: ReportsListTableProps){
+    allCollapsed(props: ReportsListTableProps) {
         const numRows = props.reports.length;
         const expanded = {} as any;
         for (let i = 0; i < numRows; i++) {
@@ -103,12 +103,12 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
         return expanded
     }
 
-    expandAll(){
+    expandAll() {
         const expanded = this.allExpanded(this.props);
         this.setState({expanded})
     }
 
-    collapseAll(){
+    collapseAll() {
         const expanded = this.allCollapsed(this.props);
         this.setState({expanded})
     }
@@ -129,7 +129,15 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                     Header: "Name",
                     id: "name",
                     accessor: nameAccessorFunction,
-                    Filter: TextFilter
+                    Filter: TextFilter,
+                    PivotValue: ({value}) =>
+                        <div style={{
+                            whiteSpace: "normal",
+                            verticalAlign: "top",
+                            display: "inline-block"
+                        }}>
+                            {value}
+                        </div>
                 },
                 {
                     Header: "Version",
@@ -185,8 +193,10 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                 Click on a column heading to sort by that field. Hold shift to multi-sort.
             </div>
             <ButtonGroup className={"mb-3"}>
-                <Button onClick={this.collapseAll.bind(this)} className={"rounded-0"} color={"button"}>Collapse all rows</Button>
-                <Button onClick={this.expandAll.bind(this)} className={"rounded-0"} color={"button"}>Expand all rows</Button>
+                <Button onClick={this.collapseAll.bind(this)} className={"rounded-0"} color={"button"}>Collapse all
+                    rows</Button>
+                <Button onClick={this.expandAll.bind(this)} className={"rounded-0"} color={"button"}>Expand all
+                    rows</Button>
             </ButtonGroup>
             <ReactTable
                 pivotBy={["name"]}
