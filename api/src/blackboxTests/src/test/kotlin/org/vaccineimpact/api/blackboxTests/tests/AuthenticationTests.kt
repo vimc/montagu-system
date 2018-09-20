@@ -146,7 +146,7 @@ class AuthenticationTests : DatabaseTest()
     {
         assertThat(result).isEqualTo(json {
             obj(
-                    "error" to "Bad credentials"
+                    "error" to "invalid_client"
             )
         })
     }
