@@ -214,6 +214,7 @@ abstract class BurdenEstimateWriter(
             }
             catch (e: Exception)
             {
+                inputStream.close()
                 e
             }
         })

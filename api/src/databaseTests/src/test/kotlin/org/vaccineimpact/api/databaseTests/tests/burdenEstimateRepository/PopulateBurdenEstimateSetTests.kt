@@ -163,7 +163,10 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         val setId = withDatabase {
             setupDatabaseWithBurdenEstimateSet(it)
         }
-        val estimates = sequenceOf(estimateObject(), estimateObject())
+        val estimates = (1..10000).map {
+            estimateObject()
+        }.asSequence()
+
         withRepo { repo ->
             assertThatThrownBy {
                 repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, estimates)

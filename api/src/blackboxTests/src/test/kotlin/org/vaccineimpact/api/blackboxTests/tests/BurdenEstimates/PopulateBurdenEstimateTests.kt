@@ -195,7 +195,13 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         }
         val token = TestUserHelper.getToken(requiredWritePermissions, includeCanLogin = true)
         val helper = RequestHelper()
-        val response = helper.post("$setUrl/$setId/", duplicateCsvData, token = token)
+        val longDuplicateData = duplicateCsvData + (1..10000).map {
+            """
+                |"Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
+                |""".trimMargin()
+        }.joinToString("")
+
+        val response = helper.post("$setUrl/$setId/", longDuplicateData, token = token)
         JSONValidator()
                 .validateError(response.text, "duplicate-key:burden_estimate_set,country,year,age,burden_outcome")
 
