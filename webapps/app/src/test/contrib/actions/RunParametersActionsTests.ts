@@ -10,6 +10,7 @@ import {
 } from "../../../main/contrib/actionTypes/RunParametersTypes";
 import {createMockContribStore, createMockStore} from "../../mocks/mockStore";
 import {mockModellingGroup, mockModelRunParameterSet, mockTouchstoneVersion} from "../../mocks/mockModels";
+import FormData = require("form-data");
 
 describe("Run Parameters actions tests", () => {
     const sandbox = new Sandbox();

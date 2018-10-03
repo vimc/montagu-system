@@ -8,6 +8,7 @@ import {CustomFileInput} from "../../../../shared/components/CustomFileInput";
 import {runParametersActionCreators} from "../../../actions/runParametersActionCreators";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {RunParametersUploadStatus} from "../../../actionTypes/RunParametersTypes";
+import FormData = require("form-data");
 
 export interface ModelRunParametersFormProps {
     disease: string;
