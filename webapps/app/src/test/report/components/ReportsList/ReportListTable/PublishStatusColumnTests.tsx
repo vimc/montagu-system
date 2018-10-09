@@ -2,7 +2,7 @@ import * as React from "react";
 import {expect} from "chai";
 import {shallow} from "enzyme";
 
-import {mockReportRow} from "../../../../mocks/mockModels";
+import {mockReport, mockReportRow} from "../../../../mocks/mockModels";
 import {Sandbox} from "../../../../Sandbox";
 import ReactTable, {Column, Filter} from "react-table";
 import {
@@ -46,14 +46,14 @@ describe("ReportListTable", () => {
         it("renders published badge if status is published", function () {
             const col = getPublishStatusColumn() as Column.CellProps;
             const Cell = col.Cell as React.SFC<ReportRowRenderProps>;
-            const result = shallow(<Cell row={mockReportRow()} value={true}/>);
+            const result = shallow(<Cell original={mockReport()} value={true}/>);
             expect(result.find(".badge-published")).to.have.lengthOf(1);
         });
 
         it("renders internal badge if status is unpublished", function () {
             const col = getPublishStatusColumn() as Column.CellProps;
             const Cell = col.Cell as React.SFC<ReportRowRenderProps>;
-            const result = shallow(<Cell row={mockReportRow()} value={false}/>);
+            const result = shallow(<Cell original={mockReport()} value={false}/>);
             expect(result.find(".badge-internal")).to.have.lengthOf(1);
         });
 

@@ -26,7 +26,7 @@ export interface ReportsListTableProps {
 }
 
 export interface ReportRowRenderProps extends RowRenderProps {
-    row: ReportRow,
+    original: Report,
     value: string | BasicVersionDetails | boolean;
 }
 

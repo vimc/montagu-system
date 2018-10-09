@@ -5,8 +5,8 @@ import {shallow} from "enzyme";
 import {mockReport, mockBasicVersionDetails, mockReportRow} from "../../../../mocks/mockModels";
 import {Sandbox} from "../../../../Sandbox";
 import {
-    LinkToReportCell,
-    VersionCell,
+    VersionBadge,
+    VersionCell
 } from "../../../../../main/report/components/ReportsList/ReportListColumns/VersionColumn";
 import {
     ReportRow,
@@ -16,6 +16,7 @@ import {
 import {InternalLink} from "../../../../../main/shared/components/InternalLink";
 import {Column} from "react-table";
 import ReactTable from "react-table";
+import {Report} from "../../../../../main/shared/models/Generated";
 
 describe("ReportListTable", () => {
 
@@ -47,59 +48,64 @@ describe("ReportListTable", () => {
             expect(result).to.eql({version: "1234", date: new Date(2018, 4, 15), name: "report-name"});
         });
 
-        // it("renders version date", function () {
-        //     const row: ReportRow = {
-        //         ...mockReport({
-        //             name: "report_name"
-        //         }),
-        //         version: null
-        //     };
-        //     const result = shallow(<VersionCell row={row}
-        //                                         value={{
-        //                                             version: "46324",
-        //                                             date: new Date(2018, 4, 15)
-        //                                         }}/>);
-        //
-        //     expect(result.find("div").first().childAt(0).text()).to.eq("Tue May 15 2018");
-        // });
-        //
-        // it("renders link cell", function () {
-        //
-        //     const col = getVersionColumn() as Column.CellProps;
-        //     const Cell = col.Cell as React.SFC<ReportRowRenderProps>;
-        //     const row: ReportRow = {
-        //         ...mockReport({
-        //             name: "report_name"
-        //         }),
-        //         version: null
-        //     };
-        //
-        //     const result = shallow(<Cell row={row} value={{
-        //         version: "46324",
-        //         date: new Date(2018, 4, 15)
-        //     }}/>);
-        //
-        //     const link = result.find(LinkToReportCell);
-        //     expect(link.props()).to.deep.eq(row);
-        //
-        // });
+        it("renders link with version date and id", function () {
+            const original: Report = mockReport({
+                name: "report_name",
+                latest_version: "12345"
+            });
 
-        describe("LinkToReportCell", () => {
+            const result = shallow(<VersionCell original={original}
+                                                value={{
+                                                    version: "46324",
+                                                    date: new Date(2018, 4, 15),
+                                                    name: "report_name"
+                                                }}/>);
 
-            it("renders link to report page", function () {
-                const row: ReportRow = {
-                    ...mockReport({
-                        name: "report_name"
-                    }),
-                    version: mockBasicVersionDetails({version: "46324"})
-                };
+            expect(result.find("div").first().childAt(0).text()).to.eq("Tue May 15 2018");
+            expect(result.find("div").last().text()).to.eq("(46324)");
+            expect(result.find(InternalLink).prop("href")).to.eq("/report_name/46324/");
+        });
 
-                const result = shallow(<LinkToReportCell {...row} />);
+        it("passes props to the latest version badge", function () {
+            let original: Report = mockReport({
+                    name: "report_name",
+                    latest_version: "12345"
+                });
 
-                const link = result.find(InternalLink);
+            let result = shallow(<VersionCell original={original}
+                                                value={{
+                                                    version: "46324",
+                                                    date: new Date(2018, 4, 15),
+                                                    name: "report_name"
+                                                }}/>);
 
-                expect(link.childAt(0).text()).to.eq("View version");
-                expect(link.prop("href")).to.eq("/report_name/46324/");
+            expect(result.find(VersionBadge).prop("latest")).to.be.false;
+
+            original["latest_version"] = "46324";
+
+            result = shallow(<VersionCell original={original}
+                                                value={{
+                                                    version: "46324",
+                                                    date: new Date(2018, 4, 15),
+                                                    name: "report_name"
+                                                }}/>);
+
+            expect(result.find(VersionBadge).prop("latest")).to.be.true
+        });
+
+        describe("VersionBadge", () => {
+
+
+            it("shows latest if version is the latest", () => {
+
+                const result = shallow(<VersionBadge latest={true}/>);
+                expect(result.find("span").text()).to.eq("latest")
+            });
+
+            it("shows out-dated if version is not the latest", () => {
+
+                const result = shallow(<VersionBadge  latest={false}/>);
+                expect(result.find("span").text()).to.eq("out-dated")
             });
 
         });
@@ -128,17 +134,17 @@ describe("ReportListTable", () => {
             expect(result).to.eq(b);
         });
 
-        // it("displays link to latest version in aggregate cell", () => {
-        //
-        //     const col = getVersionColumn();
-        //     const AggregateCell = col.Aggregated as React.SFC<ReportRowRenderProps>;
-        //
-        //     const rendered = shallow(<AggregateCell row={mockReportRow()}
-        //                                             value={mockBasicVersionDetails({version: "1234"})}/>);
-        //
-        //     expect(rendered.find(InternalLink).childAt(0).text()).to.eq("View latest version");
-        //     expect(rendered.find("span").childAt(1).text()).to.eq("(1234)");
-        // })
+        it("displays link to latest version in aggregate cell", () => {
+
+            const col = getVersionColumn();
+            const AggregateCell = col.Aggregated as React.SFC<ReportRowRenderProps>;
+
+            const rendered = shallow(<AggregateCell original={mockReport()}
+                                                    value={mockBasicVersionDetails({version: "1234"})}/>);
+
+            expect(rendered.find(InternalLink).childAt(0).text()).to.eq("View latest version");
+            expect(rendered.find("span").childAt(1).text()).to.eq("(1234)");
+        })
 
     });
 

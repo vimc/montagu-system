@@ -5,27 +5,20 @@ import {FilterGeneric, ReportRow, ReportRowRenderProps} from "../ReportListTable
 import {VersionFilterValue} from "./ReportVersionFilter";
 import {InternalLink} from "../../../../shared/components/InternalLink";
 
-export const LinkToReportCell: React.SFC<ReportRow> = (props: ReportRow) => {
-
-    const report = props;
-    return <InternalLink href={`/${report.name}/${report.version.version}/`}>
-        View version
-    </InternalLink>
-
-};
-
 export const VersionCell: React.StatelessComponent<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
     const value = props.value as BasicVersionDetails;
-
     const isLatest = props.original && props.original.latest_version == value.version;
-    const badge = isLatest ? <span className="badge-info badge float-right">latest</span>
-        : <span className="badge-light badge float-right">out-dated</span>;
 
     return <InternalLink href={`/${value.name}/${value.version}/`}>
-        <div>{longDate(value.date)}{badge}
+        <div>{longDate(value.date)}<VersionBadge latest={isLatest}/>
             <div className="small">({value.version})</div>
         </div>
     </InternalLink>
+};
+
+export const VersionBadge = (props: {latest: Boolean}) => {
+    return props.latest ? <span className="badge-info badge float-right">latest</span>
+        : <span className="badge-light badge float-right">out-dated</span>;
 };
 
 export const versionIdAccessorFunction = (data: Report): BasicVersionDetails => {
