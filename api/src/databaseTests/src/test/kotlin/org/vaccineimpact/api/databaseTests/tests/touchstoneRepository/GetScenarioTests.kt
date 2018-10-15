@@ -98,8 +98,8 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             createTouchstoneAndScenarioDescriptions(it)
             it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
             responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
-            it.addExpectations(responsibilityId, countries = countries)
             giveUnorderedCoverageSetsAndDataToScenario(it, countries = countries)
+            it.addExpectations(responsibilityId, countries = countries)
         } check {
             val result = it.getScenarioAndCoverageDataForResponsibility(responsibilityId, touchstoneVersionId, scenarioId)
 
