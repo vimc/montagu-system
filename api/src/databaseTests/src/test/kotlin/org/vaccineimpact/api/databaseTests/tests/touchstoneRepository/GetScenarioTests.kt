@@ -88,6 +88,26 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         }
     }
 
+    @Test
+    fun `can get coverage data for responsibility`()
+    {
+        var responsibilityId = 0
+        given {
+            val countries = listOf("AAA", "BBB", "CCC")
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+            it.addExpectations(responsibilityId, countries = countries)
+            giveUnorderedCoverageSetsAndDataToScenario(it, countries = countries)
+        } check {
+            val result = it.getScenarioAndCoverageDataForResponsibility(responsibilityId, touchstoneVersionId, scenarioId)
+
+            assertThat(result.structuredMetadata.coverageSets!!.count()).isEqualTo(3)
+            assertThat(result.tableData.data.toList().count()).isEqualTo(7)
+        }
+    }
+
 
     @Test
     fun `can get ordered coverage sets`()
@@ -182,7 +202,8 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         }
     }
 
-    private fun giveUnorderedCoverageSetsAndDataToScenario(db: JooqContext)
+    private fun giveUnorderedCoverageSetsAndDataToScenario(db: JooqContext,
+                                                           countries: List<String> = listOf("AAA", "BBB", "CCC"))
     {
         db.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = setA)
         db.addCoverageSet(touchstoneVersionId, "Second", "BF", "without", "campaign", id = setB)
@@ -191,7 +212,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setB, 1)
         db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setC, 2)
 
-        db.addCountries(listOf("AAA", "BBB", "CCC"))
+        db.addCountries(countries)
 
         // adding these in jumbled up order
         db.addCoverageRow(setC, "BBB", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)

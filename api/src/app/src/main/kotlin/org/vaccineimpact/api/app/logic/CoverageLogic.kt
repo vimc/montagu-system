@@ -1,14 +1,14 @@
 package org.vaccineimpact.api.app.logic
 
 import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.models.CoverageRow
-import org.vaccineimpact.api.models.LongCoverageRow
-import org.vaccineimpact.api.models.ScenarioTouchstoneAndCoverageSets
-import org.vaccineimpact.api.models.WideCoverageRow
+import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 

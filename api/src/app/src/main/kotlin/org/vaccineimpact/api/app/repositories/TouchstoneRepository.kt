@@ -13,6 +13,8 @@ interface TouchstoneRepository : Repository
     fun getScenariosAndCoverageSets(touchstoneVersionId: String, filterParams: ScenarioFilterParameters): List<ScenarioAndCoverageSets>
     fun getScenarioAndCoverageSets(touchstoneVersionId: String, scenarioDescId: String): ScenarioAndCoverageSets
     fun getScenarioAndCoverageData(touchstoneVersionId: String, scenarioDescId: String): SplitData<ScenarioAndCoverageSets, LongCoverageRow>
+    fun getScenarioAndCoverageDataForResponsibility(responsibilityId:Int, touchstoneVersionId: String, scenarioDescId: String): SplitData<ScenarioAndCoverageSets, LongCoverageRow>
+
     fun getDemographicDatasets(touchstoneVersionId: String): List<DemographicDataset>
     fun getDemographicData(statisticTypeCode: String, source: String, touchstoneVersionId: String, gender: String = "both"): SplitData<DemographicDataForTouchstone, LongDemographicRow>
 
