@@ -18,7 +18,7 @@ interface CoverageLogic
             : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
 
     fun getCoverageDataForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String,
-                                filterToExpectations: Boolean, format: String?)
+                                allCountries: Boolean, format: String?)
             : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
 
     fun getCoverageSetsForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String):
@@ -49,23 +49,23 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
             repositories.touchstone)
 
     override fun getCoverageDataForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String,
-                                         filterToExpectations: Boolean, format: String?)
+                                         allCountries: Boolean, format: String?)
             : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
         modellingGroupRepository.getModellingGroup(groupId)
         val responsibilityAndTouchstone =
                 responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
 
-        val scenarioAndData = if (filterToExpectations)
+        val scenarioAndData = if (allCountries)
+        {
+            touchstoneRepository.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
+        }
+        else
         {
             touchstoneRepository.getScenarioAndCoverageDataForResponsibility(
                     responsibilityAndTouchstone.responsibilityId,
                     touchstoneVersionId,
                     scenarioId)
-        }
-        else
-        {
-            touchstoneRepository.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
         }
 
         val splitData = SplitData(ScenarioTouchstoneAndCoverageSets(

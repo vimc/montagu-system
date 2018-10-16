@@ -63,6 +63,56 @@ class CoverageControllerTests : MontaguTests()
     }
 
     @Test
+    fun `getCoverageDataForGroup returns data for all countries if all-countries=true`()
+    {
+        val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { it.params(":scenario-id") } doReturn "sId"
+            on { it.queryParams("all-countries") } doReturn "true"
+            on { hasPermission(any()) } doReturn true
+        }
+
+        CoverageController(context, logic)
+                .getCoverageDataForGroup().data
+        verify(logic).getCoverageDataForGroup("gId", "tId", "sId", true, null)
+    }
+
+    @Test
+    fun `getCoverageDataForGroup does not return data for all countries if all-countries=false`()
+    {
+        val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { it.params(":scenario-id") } doReturn "sId"
+            on { it.queryParams("all-countries") } doReturn "false"
+            on { hasPermission(any()) } doReturn true
+        }
+
+        CoverageController(context, logic)
+                .getCoverageDataForGroup().data
+        verify(logic).getCoverageDataForGroup("gId", "tId", "sId", false, null)
+    }
+
+    @Test
+    fun `getCoverageDataForGroup does not return data for all countries by default`()
+    {
+        val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { it.params(":scenario-id") } doReturn "sId"
+            on { hasPermission(any()) } doReturn true
+        }
+
+        CoverageController(context, logic)
+                .getCoverageDataForGroup().data
+        verify(logic).getCoverageDataForGroup("gId", "tId", "sId", false, null)
+    }
+
+    @Test
     fun `getCoverageDataForGroup returns long format as default`()
     {
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)

@@ -53,8 +53,9 @@ class CoverageController(
     {
         val path = ResponsibilityPath(context)
         val format = context.queryParams("format")
+        val allCountries = context.queryParams("all-countries")?.toBoolean()?: false
         val splitData = coverageLogic.getCoverageDataForGroup(path.groupId,
-                path.touchstoneVersionId, path.scenarioId, format = format, filterToExpectations = false)
+                path.touchstoneVersionId, path.scenarioId, format = format, allCountries = allCountries)
         context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, splitData.structuredMetadata.touchstoneVersion.status)
         return splitData
     }
