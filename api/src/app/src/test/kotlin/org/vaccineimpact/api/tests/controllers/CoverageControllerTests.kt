@@ -5,9 +5,7 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.CoverageController
-import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.logic.CoverageLogic
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
@@ -44,7 +42,7 @@ class CoverageControllerTests : MontaguTests()
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
         CoverageController(context, logic).getCoverageDataForGroup()
-        verify(logic).getCoverageDataForGroup(eq("gId"), eq("tId"), eq("sId"), isNull())
+        verify(logic).getCoverageDataForGroup(eq("gId"), eq("tId"), eq("sId"), eq(false), isNull())
     }
 
     @Test
@@ -87,7 +85,7 @@ class CoverageControllerTests : MontaguTests()
         val coverageSets = mockCoverageSetsData(TouchstoneStatus.IN_PREPARATION)
         val splitData = SplitData(coverageSets, DataTable.new(listOf<LongCoverageRow>().asSequence()))
         val logic = mock<CoverageLogic> {
-            on { getCoverageDataForGroup(any(), any(), any(), anyOrNull()) } doReturn splitData
+            on { getCoverageDataForGroup(any(), any(), any(), any(), anyOrNull()) } doReturn splitData
         }
 
         val context = mock<ActionContext> {
@@ -128,15 +126,15 @@ class CoverageControllerTests : MontaguTests()
     }
 
     private fun makeLogicMockingGetCoverageData(status: TouchstoneStatus,
-                                               testYear: Int = 1970,
-                                               target: BigDecimal = BigDecimal(123.123),
-                                               coverage: BigDecimal = BigDecimal(456.456)): CoverageLogic
+                                                testYear: Int = 1970,
+                                                target: BigDecimal = BigDecimal(123.123),
+                                                coverage: BigDecimal = BigDecimal(456.456)): CoverageLogic
     {
         val coverageSets = mockCoverageSetsData(status)
         val fakeRows = generateCoverageRows(testYear, target, coverage)
         val data = SplitData(coverageSets, DataTable.new(fakeRows.asSequence()))
         return mock {
-            on { getCoverageDataForGroup(any(), any(), any(), anyOrNull()) } doReturn data
+            on { getCoverageDataForGroup(any(), any(), any(), any(), anyOrNull()) } doReturn data
             on { getCoverageSetsForGroup(any(), any(), any()) } doReturn mockCoverageSetsData(status)
         }
     }

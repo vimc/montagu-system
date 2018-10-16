@@ -54,7 +54,7 @@ class CoverageController(
         val path = ResponsibilityPath(context)
         val format = context.queryParams("format")
         val splitData = coverageLogic.getCoverageDataForGroup(path.groupId,
-                path.touchstoneVersionId, path.scenarioId, format)
+                path.touchstoneVersionId, path.scenarioId, format = format, filterToExpectations = false)
         context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, splitData.structuredMetadata.touchstoneVersion.status)
         return splitData
     }

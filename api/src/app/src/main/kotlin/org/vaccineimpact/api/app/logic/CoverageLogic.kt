@@ -1,14 +1,14 @@
 package org.vaccineimpact.api.app.logic
 
 import org.vaccineimpact.api.app.errors.BadRequest
-import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.db.Tables
-import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.models.CoverageRow
+import org.vaccineimpact.api.models.LongCoverageRow
+import org.vaccineimpact.api.models.ScenarioTouchstoneAndCoverageSets
+import org.vaccineimpact.api.models.WideCoverageRow
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 
@@ -17,7 +17,8 @@ interface CoverageLogic
     fun getCoverageData(touchstoneVersionId: String, scenarioId: String, format: String?)
             : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
 
-    fun getCoverageDataForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String, format: String?)
+    fun getCoverageDataForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                filterToExpectations: Boolean, format: String?)
             : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
 
     fun getCoverageSetsForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String):
@@ -48,12 +49,25 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
             repositories.touchstone)
 
     override fun getCoverageDataForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String,
-                                         format: String?)
+                                         filterToExpectations: Boolean, format: String?)
             : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
         modellingGroupRepository.getModellingGroup(groupId)
-        val responsibilityAndTouchstone = responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
-        val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
+        val responsibilityAndTouchstone =
+                responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
+
+        val scenarioAndData = if (filterToExpectations)
+        {
+            touchstoneRepository.getScenarioAndCoverageDataForResponsibility(
+                    responsibilityAndTouchstone.responsibilityId,
+                    touchstoneVersionId,
+                    scenarioId)
+        }
+        else
+        {
+            touchstoneRepository.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
+        }
+
         val splitData = SplitData(ScenarioTouchstoneAndCoverageSets(
                 responsibilityAndTouchstone.touchstoneVersion,
                 scenarioAndData.structuredMetadata.scenario,
