@@ -93,18 +93,41 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     {
         var responsibilityId = 0
         given {
-            val countries = listOf("AAA", "BBB", "CCC")
+            val countries = listOf("AAA", "BBB")
             it.addGroup(groupId)
             createTouchstoneAndScenarioDescriptions(it)
             it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
             responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
-            giveUnorderedCoverageSetsAndDataToScenario(it, countries = countries)
+            it.addCountries(countries)
+            giveUnorderedCoverageSetsAndDataToScenario(it, addCountries = false)
             it.addExpectations(responsibilityId, countries = countries)
         } check {
             val result = it.getScenarioAndCoverageDataForResponsibility(responsibilityId, touchstoneVersionId, scenarioId)
 
             assertThat(result.structuredMetadata.coverageSets!!.count()).isEqualTo(3)
             assertThat(result.tableData.data.toList().count()).isEqualTo(7)
+        }
+    }
+
+
+    @Test
+    fun `get coverage data for responsibility only returns expectations countries`()
+    {
+        var responsibilityId = 0
+        given {
+            val countries = listOf("AAA", "BBB", "CCC", "DDD")
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+            it.addCountries(countries)
+            giveUnorderedCoverageSetsAndDataToScenario(it, addCountries = false)
+            it.addExpectations(responsibilityId, countries = countries.subList(1, 3))
+        } check {
+            val result = it.getScenarioAndCoverageDataForResponsibility(responsibilityId, touchstoneVersionId, scenarioId)
+
+            assertThat(result.structuredMetadata.coverageSets!!.count()).isEqualTo(1)
+            assertThat(result.tableData.data.toList().count()).isEqualTo(4)
         }
     }
 
@@ -202,8 +225,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         }
     }
 
-    private fun giveUnorderedCoverageSetsAndDataToScenario(db: JooqContext,
-                                                           countries: List<String> = listOf("AAA", "BBB", "CCC"))
+    private fun giveUnorderedCoverageSetsAndDataToScenario(db: JooqContext, addCountries: Boolean = true)
     {
         db.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = setA)
         db.addCoverageSet(touchstoneVersionId, "Second", "BF", "without", "campaign", id = setB)
@@ -212,7 +234,10 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setB, 1)
         db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setC, 2)
 
-        db.addCountries(countries)
+        if (addCountries)
+        {
+            db.addCountries(listOf("AAA", "BBB"))
+        }
 
         // adding these in jumbled up order
         db.addCoverageRow(setC, "BBB", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
