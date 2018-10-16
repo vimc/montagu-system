@@ -33,7 +33,7 @@ export class CountriesList extends React.Component<Props, State> {
     render() {
         const countriesList = this.props.countries.map(c => c.name).sort().join(", ");
 
-        return <span><a href="" id={this.props.targetKey}
+        return <span><a href="#" id={this.props.targetKey}
                         onClick={this.toggle}>view list</a>
             <Popover placement="right" isOpen={this.state.showCountries} target={this.props.targetKey}
                      toggle={this.toggle}>
