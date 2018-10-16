@@ -789,6 +789,28 @@ fun JooqContext.addExpectations(
     return id
 }
 
+fun JooqContext.addExpectationsForAllCountries(
+        responsibilityId: Int,
+        description: String = "description",
+        version: String = "version",
+        yearMinInclusive: Short = 2000,
+        yearMaxInclusive: Short = 2100,
+        ageMinInclusive: Short = 0,
+        ageMaxInclusive: Short = 99,
+        cohortMinInclusive: Short? = null,
+        cohortMaxInclusive: Short? = null,
+        outcomes: List<String> = emptyList()
+): Int
+{
+
+    val countries =  dsl.select(COUNTRY.ID)
+            .from(COUNTRY)
+            .fetchInto(String::class.java)
+
+    return this.addExpectations(responsibilityId, description, version, yearMinInclusive, yearMaxInclusive,
+            ageMinInclusive, ageMaxInclusive, cohortMinInclusive, cohortMaxInclusive, countries, outcomes)
+}
+
 fun JooqContext.addExistingExpectationsToResponsibility(
         responsibilityId: Int, expectationsId: Int
 )
