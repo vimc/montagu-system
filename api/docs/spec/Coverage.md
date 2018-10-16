@@ -46,6 +46,8 @@ Schema: [`ScenarioAndCoverageSets.schema.json`](../schemas/ScenarioAndCoverageSe
 
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/coverage/
 Returns the amalgamated coverage data of all the coverage sets associated with this responsibility.
+By default we only return coverage data for countries that we expect this group to provide burden estimates for, 
+but this can be overriden by setting the query parameter `all-countries=true`.
 
 Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read` and `coverage.read`.  Additionally, to view coverage data for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
 
@@ -135,9 +137,15 @@ Example wide format:
     "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "campaign",   "AFG",    0,         2,                    NA,                      NA,            87.5,          93.4             98.2
     "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "campign",    "AFG",    0,         1,                    NA,                      NA,            88.5,          90.6             98.1
     
-    
+  
+### all-countries
+Optional. By default we only serve coverage data for those countries that we expect burden estimates for. Passing 
+`all-countries=true` returns coverage data for all countries.
+
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/coverage/csv/
-Returns the amalgamated coverage data of all the coverage sets associated with this responsibility in csv format.
+Returns the amalgamated coverage data of all the coverage sets associated with this responsibility in csv format. 
+By default we only return coverage data for countries that we expect this group to provide burden estimates for, 
+but this can be overriden by setting the query parameter `all-countries=true`.
 
 Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read` and `coverage.read`.  Additionally, to view coverage data for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
 
@@ -181,6 +189,9 @@ Example wide format:
     "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "campaign",   "AFG",    0,         2,                    NA,                      NA,            87.5,          93.4             98.2
     "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "campign",    "AFG",    0,         1,                    NA,                      NA,            88.5,          90.6             98.1
     
+### all-countries
+Optional. By default we only return coverage data for countries that we expect this group to provide
+ burden estimates for. Passing `all-countries=true` returns coverage data for all countries.
         
 ## GET /touchstones/{touchstone-id}/{scenario-id}/coverage/
 Returns the amalgamated coverage data of all the coverage sets associated with this scenario.
