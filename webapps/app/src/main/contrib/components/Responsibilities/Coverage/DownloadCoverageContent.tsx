@@ -12,6 +12,7 @@ import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {coverageActionCreators} from "../../../actions/coverageActionCreators";
 import {withConfidentialityAgreement} from "../Overview/ConfidentialityAgreement";
 import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
+import {UncontrolledTooltip} from "reactstrap";
 
 export interface DownloadCoverageContentProps {
     group: ModellingGroup;
@@ -22,19 +23,36 @@ export interface DownloadCoverageContentProps {
     setFormat: (format: string) => void;
 }
 
-export class DownloadCoverageContentComponent extends React.Component<DownloadCoverageContentProps> {
+interface DownloadCoverageState {
+    allCountries: boolean
+}
+
+export class DownloadCoverageContentComponent extends React.Component<DownloadCoverageContentProps, DownloadCoverageState> {
     constructor() {
         super();
+        this.state = {
+            allCountries: false
+        };
         this.onSelectFormat = this.onSelectFormat.bind(this);
+        this.toggleAllCountries = this.toggleAllCountries.bind(this);
     }
 
     onSelectFormat(format: string) {
         this.props.setFormat(format);
     }
 
+    toggleAllCountries() {
+        this.setState({
+            allCountries: !this.state.allCountries
+        })
+    }
+
     render() {
         const {group, touchstone, scenario, selectedFormat} = this.props;
-        const url = `/modelling-groups/${group.id}/responsibilities/${touchstone.id}/${scenario.id}/coverage/csv/?format=${selectedFormat}`;
+
+        const url = `/modelling-groups/${group.id}/responsibilities/${touchstone.id}/${scenario.id}/coverage/csv/`
+            + `?format=${selectedFormat}&allCountries=${this.state.allCountries}`;
+
         return <div>
             <p>
                 Each scenario is based on vaccination coverage from up to 3 different
@@ -98,6 +116,18 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
                         </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <div className="row mt-4">
+                <div className="col-12">
+                   <label className="checkbox-inline"><input type="checkbox"
+                                                             className={"mr-1"}
+                                                             onChange={this.toggleAllCountries}
+                                                             checked={this.state.allCountries} />
+                       Include all countries</label>
+                    <a href={"#"} id={"tooltip"} className={"ml-1 small"} onClick={(e)=> {e.preventDefault()}}>What's this?</a>
+                    <UncontrolledTooltip target="tooltip" className={"text-muted"}>By default we only include coverage data for
+                        countries we expect burden estimates for. To include coverage data for all countries, please select this option</UncontrolledTooltip>
                 </div>
             </div>
             <div className="mt-4">
