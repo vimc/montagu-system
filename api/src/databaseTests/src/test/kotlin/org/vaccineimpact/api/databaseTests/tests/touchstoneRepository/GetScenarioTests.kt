@@ -98,14 +98,24 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             createTouchstoneAndScenarioDescriptions(it)
             it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
             responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+
             it.addCountries(countries)
             giveUnorderedCoverageSetsAndDataToScenario(it, addCountries = false)
             it.addExpectations(responsibilityId, countries = countries)
-        } check {
-            val result = it.getScenarioAndCoverageDataForResponsibility(responsibilityId, touchstoneVersionId, scenarioId)
 
-            assertThat(result.structuredMetadata.coverageSets!!.count()).isEqualTo(3)
-            assertThat(result.tableData.data.toList().count()).isEqualTo(7)
+            // add extra data
+            it.addGroup("bad-group")
+            it.addResponsibilityInNewSet("bad-group", touchstoneVersionId, scenarioId)
+            it.addScenarioToTouchstone(touchstoneVersionId, "yf-2")
+            it.addTouchstoneVersion(touchstoneName, 2, addTouchstone = false)
+            it.addScenarioToTouchstone("$touchstoneName-2", scenarioId)
+
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId,
+                    responsibilityId,
+                    scenarioId)
+
+            assertThat(result.toList().count()).isEqualTo(7)
         }
     }
 
@@ -124,10 +134,9 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             giveUnorderedCoverageSetsAndDataToScenario(it, addCountries = false)
             it.addExpectations(responsibilityId, countries = countries.subList(1, 3))
         } check {
-            val result = it.getScenarioAndCoverageDataForResponsibility(responsibilityId, touchstoneVersionId, scenarioId)
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
 
-            assertThat(result.structuredMetadata.coverageSets!!.count()).isEqualTo(1)
-            assertThat(result.tableData.data.toList().count()).isEqualTo(4)
+            assertThat(result.toList().count()).isEqualTo(4)
         }
     }
 
@@ -154,7 +163,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `getScenarioAndCoverageData throws exception if scenario doesn't exist`()
+    fun `getScenarioAndCoverageData throws exception if scenario doesnt exist`()
     {
         given {
             createTouchstoneAndScenarioDescriptions(it)
@@ -198,7 +207,30 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `can get scenario for responsibility with empty coverage data`()
+    fun `can get coverage sets for scenario with empty coverage data`()
+    {
+        given {
+            val countries = listOf("AAA", "BBB", "CCC")
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            val responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+            it.addCountries(countries)
+            giveScenarioCoverageSets(it, scenarioId, includeCoverageData = false)
+            it.addExpectations(responsibilityId, countries = countries)
+        } check {
+            val result = it.getCoverageSetsForScenario(touchstoneVersionId,scenarioId)
+
+            assertThat(result).hasSameElementsAs(listOf(
+                    CoverageSet(setA, touchstoneVersionId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
+                    CoverageSet(setB, touchstoneVersionId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
+            ))
+            assertThat(result.toList()).isEmpty()
+        }
+    }
+
+    @Test
+    fun `can get coverage data for responsibility with empty coverage data`()
     {
         var responsibilityId = 0
         given {
@@ -211,10 +243,27 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             giveScenarioCoverageSets(it, scenarioId, includeCoverageData = false)
             it.addExpectations(responsibilityId, countries = countries)
         } check {
-            val result = it.getScenarioAndCoverageDataForResponsibility(responsibilityId, touchstoneVersionId, scenarioId)
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId,
+                    scenarioId)
 
-            checkScenarioIsAsExpected(result.structuredMetadata)
-            assertThat(result.tableData.data.toList()).isEmpty()
+            assertThat(result.toList()).isEmpty()
+        }
+    }
+
+    @Test
+    fun `can get coverage data for responsibility with no expectations`()
+    {
+        var responsibilityId = 0
+        given {
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+            giveScenarioCoverageSets(it, scenarioId, includeCoverageData = true)
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId,responsibilityId, scenarioId)
+
+            assertThat(result.toList()).isEmpty()
         }
     }
 
