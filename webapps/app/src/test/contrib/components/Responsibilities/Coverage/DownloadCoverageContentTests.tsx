@@ -25,6 +25,7 @@ import {FormatControl} from "../../../../../main/shared/components/FormatControl
 import {coverageActionCreators} from "../../../../../main/contrib/actions/coverageActionCreators";
 import {ConfidentialityAgreementComponent} from "../../../../../main/contrib/components/Responsibilities/Overview/ConfidentialityAgreement";
 import {userActionCreators} from "../../../../../main/contrib/actions/userActionCreators";
+import {FileDownloadButton} from "../../../../../main/shared/components/FileDownloadLink";
 
 describe("Download Coverage Content Component", () => {
 
@@ -129,4 +130,28 @@ describe("Download Coverage Content Component", () => {
         downloadCoverageContentComponentInstance.onSelectFormat("long");
         expect(onFormatSelectStub.called).to.equal(true);
     });
+
+    it("allCountries is deselected by default", () => {
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
+            .dive().dive().dive();
+        expect(rendered.find("#all-countries").props().checked).to.be.false;
+    });
+
+    it("url has all-countries query parameter set to false by default", () => {
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
+            .dive().dive().dive();
+
+        const expected = "/modelling-groups/group-186/responsibilities/touchstone-188/scenario-190/coverage/csv/?format=long&all-countries=false";
+        expect(rendered.find(FileDownloadButton).props().href).to.eq(expected)
+    });
+
+    it("url has all-countries query parameter set to true when allCountries is selected", () => {
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
+            .dive().dive().dive();
+
+        rendered.find("#all-countries").simulate("change");
+        const expected = "/modelling-groups/group-186/responsibilities/touchstone-188/scenario-190/coverage/csv/?format=long&all-countries=true";
+        expect(rendered.find(FileDownloadButton).props().href).to.eq(expected)
+    });
+
 });
