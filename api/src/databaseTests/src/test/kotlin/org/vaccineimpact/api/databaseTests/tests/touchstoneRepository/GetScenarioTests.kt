@@ -225,7 +225,6 @@ class GetScenarioTests : TouchstoneRepositoryTests()
                     CoverageSet(setA, touchstoneVersionId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN),
                     CoverageSet(setB, touchstoneVersionId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
             ))
-            assertThat(result.toList()).isEmpty()
         }
     }
 
