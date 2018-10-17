@@ -131,7 +131,6 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         }
     }
 
-
     @Test
     fun `can get ordered coverage sets`()
     {
@@ -197,6 +196,28 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             assertThat(result.tableData.data.toList()).isEmpty()
         }
     }
+
+    @Test
+    fun `can get scenario for responsibility with empty coverage data`()
+    {
+        var responsibilityId = 0
+        given {
+            val countries = listOf("AAA", "BBB", "CCC")
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+            it.addCountries(countries)
+            giveScenarioCoverageSets(it, scenarioId, includeCoverageData = false)
+            it.addExpectations(responsibilityId, countries = countries)
+        } check {
+            val result = it.getScenarioAndCoverageDataForResponsibility(responsibilityId, touchstoneVersionId, scenarioId)
+
+            checkScenarioIsAsExpected(result.structuredMetadata)
+            assertThat(result.tableData.data.toList()).isEmpty()
+        }
+    }
+
 
     private fun checkScenarioIsAsExpected(result: ScenarioAndCoverageSets, extraTouchstones: List<String> = emptyList())
     {

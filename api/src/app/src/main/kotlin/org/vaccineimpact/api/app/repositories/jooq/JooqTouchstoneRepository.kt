@@ -203,15 +203,14 @@ class JooqTouchstoneRepository(
                 .select(TOUCHSTONE.ID)
                 .select(COVERAGE.fieldsAsList())
                 .select(COUNTRY.ID, COUNTRY.NAME)
-                .fromJoinPath(TOUCHSTONE, SCENARIO, RESPONSIBILITY)
+                .fromJoinPath(TOUCHSTONE, SCENARIO)
                 .joinPath(SCENARIO, SCENARIO_DESCRIPTION)
                 // We don't mind if there are no coverage sets, so do a left join
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
-                .and(RESPONSIBILITY.ID.eq(responsibilityId))
-                .and(COUNTRY.ID.`in`(expectedCountries))
+                .and(COUNTRY.ID.isNull.or(COUNTRY.ID.`in`(expectedCountries)))
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
                         COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO)
 
