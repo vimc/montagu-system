@@ -1,10 +1,10 @@
 package org.vaccineimpact.api.tests.logic
 
-import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.logic.RepositoriesCoverageLogic
@@ -30,8 +30,10 @@ class CoverageLogicTests : MontaguTests()
     private val fakeTouchstoneVersion = TouchstoneVersion("touchstone-1", "touchstone", 1,
             "description", TouchstoneStatus.OPEN)
 
+    private val groupId = "g1"
+    private val responsibilityId = 11
     private fun responsibilityRepo() = mock<ResponsibilitiesRepository> {
-        on { getResponsibility(any(), any(), any()) } doReturn ResponsibilityAndTouchstone(1,
+        on { getResponsibility(groupId, fakeTouchstoneVersion.id, fakeScenario.id) } doReturn ResponsibilityAndTouchstone(responsibilityId,
                 Responsibility(
                         fakeScenario,
                         ResponsibilityStatus.EMPTY, emptyList(), null
@@ -41,14 +43,16 @@ class CoverageLogicTests : MontaguTests()
 
     private fun mockCoverageSetsData() = ScenarioAndCoverageSets(
             fakeScenario,
-            listOf(
-                    CoverageSet(1, "tId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
-            )
+            listOf(CoverageSet(1, "tId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN))
     )
 
     private fun scenarioRepo() = mock<ScenarioRepository> {
-        on { getScenarioForTouchstone(any(), any()) } doReturn fakeScenario
+        on { getScenarioForTouchstone(fakeTouchstoneVersion.id, fakeScenario.id) } doReturn fakeScenario
     }
+
+    private val fakeCoverageSets = listOf(
+            CoverageSet(1, "tId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
+    )
 
     private fun touchstoneRepo(
             testYear: Int = 1970,
@@ -59,15 +63,23 @@ class CoverageLogicTests : MontaguTests()
         val fakeRows = generateCoverageRows(testYear, target, coverage)
         val data = SplitData(coverageSets, DataTable.new(fakeRows.asSequence()))
         return mock {
-            on { getScenarioAndCoverageData(any(), any()) } doReturn data
+            on { getScenarioAndCoverageData(fakeTouchstoneVersion.id, fakeScenario.id) } doReturn data
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(fakeTouchstoneVersion))
-            on { getScenarioAndCoverageSets(any(), any()) } doReturn mockCoverageSetsData()
-            on { getCoverageSetsForScenario(any(), any()) } doReturn listOf(
-                    CoverageSet(1, "tId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
-            )
-            on { getCoverageDataForResponsibility(any(), any(), any()) } doReturn fakeRows.asSequence()
-            on { getCoverageDataForScenario(any(), any()) } doReturn fakeRows.asSequence()
+            on { getScenarioAndCoverageSets(fakeTouchstoneVersion.id, fakeScenario.id) } doReturn mockCoverageSetsData()
+            on { getCoverageSetsForScenario(fakeTouchstoneVersion.id, fakeScenario.id) } doReturn fakeCoverageSets
+            on { getCoverageDataForResponsibility(fakeTouchstoneVersion.id, responsibilityId, fakeScenario.id) } doReturn fakeRows.asSequence()
+            on { getCoverageDataForScenario(fakeTouchstoneVersion.id, fakeScenario.id) } doReturn fakeRows.asSequence()
         }
+    }
+
+    @Test
+    fun `can getCoverageDataForGroup`()
+    {
+        val sut = RepositoriesCoverageLogic(mock(), responsibilityRepo(), touchstoneRepo(), scenarioRepo())
+        val result = sut.getCoverageDataForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id, format = null, allCountries = false)
+        assertThat(result.structuredMetadata.scenario).isEqualTo(fakeScenario)
+        assertThat(result.structuredMetadata.coverageSets).hasSameElementsAs(fakeCoverageSets)
+        assertThat(result.structuredMetadata.touchstoneVersion).isEqualTo(fakeTouchstoneVersion)
     }
 
     @Test
@@ -76,8 +88,8 @@ class CoverageLogicTests : MontaguTests()
         val touchstoneRepo = touchstoneRepo()
         val sut = RepositoriesCoverageLogic(mock(), responsibilityRepo(), touchstoneRepo, scenarioRepo())
 
-        sut.getCoverageDataForGroup("gId", "tId", "sId", format = null, allCountries = false)
-        verify(touchstoneRepo).getCoverageDataForResponsibility("tId", 1, "sId")
+        sut.getCoverageDataForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id, format = null, allCountries = false)
+        verify(touchstoneRepo).getCoverageDataForResponsibility(fakeTouchstoneVersion.id, responsibilityId, fakeScenario.id)
     }
 
     @Test
@@ -86,8 +98,8 @@ class CoverageLogicTests : MontaguTests()
         val touchstoneRepo = touchstoneRepo()
         val sut = RepositoriesCoverageLogic(mock(), responsibilityRepo(), touchstoneRepo, scenarioRepo())
 
-        sut.getCoverageDataForGroup("gId", "tId", "sId", format = null, allCountries = true)
-        verify(touchstoneRepo).getCoverageDataForScenario("tId", "sId")
+        sut.getCoverageDataForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id, format = null, allCountries = true)
+        verify(touchstoneRepo).getCoverageDataForScenario(fakeTouchstoneVersion.id, fakeScenario.id)
     }
 
     @Test
@@ -96,7 +108,7 @@ class CoverageLogicTests : MontaguTests()
         val sut = RepositoriesCoverageLogic(mock(), responsibilityRepo(), touchstoneRepo(), scenarioRepo())
 
         Assertions.assertThatThrownBy {
-            sut.getCoverageDataForGroup("gId", "tId", "s1", format = "bad-format", allCountries = true)
+            sut.getCoverageDataForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id, format = "bad-format", allCountries = true)
         }.isInstanceOf(BadRequest::class.java)
     }
 
@@ -106,8 +118,8 @@ class CoverageLogicTests : MontaguTests()
         val groupRepo = mock<ModellingGroupRepository>()
         val sut = RepositoriesCoverageLogic(groupRepo, responsibilityRepo(), touchstoneRepo(), scenarioRepo())
 
-        sut.getCoverageDataForGroup("gId", "tId", "s1", format = null, allCountries = true)
-        verify(groupRepo).getModellingGroup("gId")
+        sut.getCoverageDataForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id, format = null, allCountries = true)
+        verify(groupRepo).getModellingGroup(groupId)
     }
 
     @Test
@@ -116,15 +128,15 @@ class CoverageLogicTests : MontaguTests()
         val repo = responsibilityRepo()
         val sut = RepositoriesCoverageLogic(mock(), repo, touchstoneRepo(), scenarioRepo())
 
-        sut.getCoverageDataForGroup("gId", "tId", "s1", format = null, allCountries = true)
-        verify(repo).getResponsibility("gId", "tId", "s1")
+        sut.getCoverageDataForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id, format = null, allCountries = true)
+        verify(repo).getResponsibility(groupId, fakeTouchstoneVersion.id, fakeScenario.id)
     }
 
     @Test
     fun `can getCoverageData`()
     {
         val sut = RepositoriesCoverageLogic(mock(), responsibilityRepo(), touchstoneRepo(), scenarioRepo())
-        sut.getCoverageData("touchstone-1", "s1", null)
+        sut.getCoverageData(fakeTouchstoneVersion.id, fakeScenario.id, null)
     }
 
     @Test
@@ -135,7 +147,7 @@ class CoverageLogicTests : MontaguTests()
         val testCoverage = BigDecimal(456.456)
 
         val data = RepositoriesCoverageLogic(mock(), responsibilityRepo(), touchstoneRepo(), scenarioRepo())
-                .getCoverageDataForGroup("gId", "tId", "s1", format = "wide", allCountries = true).data
+                .getCoverageDataForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id, format = "wide", allCountries = true).data
 
         Assertions.assertThat(data.first() is WideCoverageRow).isTrue()
 
@@ -161,8 +173,8 @@ class CoverageLogicTests : MontaguTests()
         val responsibilitiesRepository = responsibilityRepo()
         val sut = RepositoriesCoverageLogic(mock(), responsibilitiesRepository, touchstoneRepo(), scenarioRepo())
 
-        sut.getCoverageSetsForGroup("gId", "tId", "s1")
-        verify(responsibilitiesRepository).getResponsibility("gId", "tId", "s1")
+        sut.getCoverageSetsForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id)
+        verify(responsibilitiesRepository).getResponsibility(groupId, fakeTouchstoneVersion.id, fakeScenario.id)
     }
 
     @Test
@@ -171,8 +183,8 @@ class CoverageLogicTests : MontaguTests()
         val groupRepo = mock<ModellingGroupRepository>()
         val sut = RepositoriesCoverageLogic(groupRepo, responsibilityRepo(), touchstoneRepo(), scenarioRepo())
 
-        sut.getCoverageSetsForGroup("gId", "tId", "s1")
-        verify(groupRepo).getModellingGroup("gId")
+        sut.getCoverageSetsForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id)
+        verify(groupRepo).getModellingGroup(groupId)
     }
 
     @Test
@@ -180,7 +192,7 @@ class CoverageLogicTests : MontaguTests()
     {
         val sut = RepositoriesCoverageLogic(mock(), responsibilityRepo(), touchstoneRepo(), scenarioRepo())
 
-        val result = sut.getCoverageSetsForGroup("gId", "tId", "s1")
+        val result = sut.getCoverageSetsForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id)
         checkMetadataIsAsExpected(result)
     }
 
