@@ -185,7 +185,7 @@ class JooqTouchstoneRepository(
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET)
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
-                .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE)
+                .orderBy(SCENARIO_COVERAGE_SET.ORDER)
                 .fetch()
 
         return records.map { mapCoverageSet(it) }

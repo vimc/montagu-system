@@ -33,7 +33,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `can get scenario with ordered coverage sets`()
+    fun `can get scenario with coverage sets`()
     {
         val scenarioInTouchstoneId = 1
         val extraTouchstoneId = "extra-1"
@@ -51,7 +51,70 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `can get ordered coverage data`()
+    fun `can get scenario with ordered coverage sets`()
+    {
+        given {
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            giveUnorderedCoverageSetsToScenario(it)
+        } check {
+            val result = it.getScenarioAndCoverageSets(touchstoneVersionId, scenarioId)
+                    .coverageSets!!
+
+            assertThat(result.count()).isEqualTo(6)
+
+            assertThat(result[0].id).isEqualTo(setA)
+            assertThat(result[1].id).isEqualTo(setB)
+            assertThat(result[2].id).isEqualTo(setC)
+            assertThat(result[3].id).isEqualTo(setD)
+            assertThat(result[4].id).isEqualTo(setE)
+            assertThat(result[5].id).isEqualTo(setF)
+        }
+    }
+
+    @Test
+    fun `can get ordered coverage sets`()
+    {
+        given {
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            giveUnorderedCoverageSetsToScenario(it)
+        } check {
+            val result = it.getCoverageSetsForScenario(touchstoneVersionId, scenarioId)
+
+            assertThat(result.count()).isEqualTo(6)
+
+            assertThat(result[0].id).isEqualTo(setA)
+            assertThat(result[1].id).isEqualTo(setB)
+            assertThat(result[2].id).isEqualTo(setC)
+            assertThat(result[3].id).isEqualTo(setD)
+            assertThat(result[4].id).isEqualTo(setE)
+            assertThat(result[5].id).isEqualTo(setF)
+        }
+    }
+
+
+    @Test
+    fun `can get scenario with coverage data`()
+    {
+        given {
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            giveScenarioCoverageSets(it, scenarioId, includeCoverageData = true)
+        } check {
+            val result = it.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
+            checkScenarioIsAsExpected(result.structuredMetadata)
+            assertThat(result.tableData.data.toList()).containsExactlyElementsOf(listOf(
+                    LongCoverageRow(scenarioId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                            "AAA", "AAA-Name", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull()),
+                    LongCoverageRow(scenarioId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
+                            "BBB", "BBB-Name", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
+            ))
+        }
+    }
+
+    @Test
+    fun `can get scenario with ordered coverage data`()
     {
         given {
             createTouchstoneAndScenarioDescriptions(it)
@@ -88,8 +151,70 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         }
     }
 
+
     @Test
-    fun `can get coverage data for responsibility`()
+    fun `getScenarioAndCoverageData throws exception if scenario doesnt exist`()
+    {
+        given {
+            createTouchstoneAndScenarioDescriptions(it)
+        } check {
+            Assertions.assertThatThrownBy { it.getScenarioAndCoverageData(touchstoneVersionId, scenarioId) }
+                    .isInstanceOf(UnknownObjectError::class.java)
+        }
+    }
+
+    @Test
+    fun `can get scenario with empty coverage data`()
+    {
+        given {
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            giveScenarioCoverageSets(it, scenarioId, includeCoverageData = false)
+        } check {
+            val result = it.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
+            checkScenarioIsAsExpected(result.structuredMetadata)
+            assertThat(result.tableData.data.toList()).isEmpty()
+        }
+    }
+
+    @Test
+    fun `can get ordered coverage data for scenario`()
+    {
+        given {
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            giveUnorderedCoverageSetsAndDataToScenario(it)
+        } check {
+            val result = it.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
+
+            assertThat(result.toList()).containsExactlyElementsOf(listOf(
+                    LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "AAA", "AAA-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null),
+                    // first order by vaccine
+                    LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                            "AAA", "AAA-Name", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null),
+                    // then by activity type
+                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "AAA", "AAA-Name", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null),
+                    // then by country
+                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null),
+                    // then by year
+                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null),
+                    // then by age first
+                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2001, 2.toDecimal(), 2.toDecimal(), null, null, null),
+                    // then by age last
+                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+
+            ))
+        }
+    }
+
+    @Test
+    fun `can get ordered coverage data for responsibility`()
     {
         var responsibilityId = 0
         given {
@@ -115,7 +240,29 @@ class GetScenarioTests : TouchstoneRepositoryTests()
                     responsibilityId,
                     scenarioId)
 
-            assertThat(result.toList().count()).isEqualTo(7)
+            assertThat(result.toList()).containsExactlyElementsOf(listOf(
+                    LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "AAA", "AAA-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null),
+                    // first order by vaccine
+                    LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                            "AAA", "AAA-Name", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null),
+                    // then by activity type
+                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "AAA", "AAA-Name", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null),
+                    // then by country
+                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null),
+                    // then by year
+                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null),
+                    // then by age first
+                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2001, 2.toDecimal(), 2.toDecimal(), null, null, null),
+                    // then by age last
+                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+
+            ))
         }
     }
 
@@ -141,83 +288,14 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `can get ordered coverage sets`()
-    {
-        given {
-            createTouchstoneAndScenarioDescriptions(it)
-            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
-            giveUnorderedCoverageSetsToScenario(it)
-        } check {
-            val result = it.getScenarioAndCoverageSets(touchstoneVersionId, scenarioId)
-                    .coverageSets!!
-
-            assertThat(result.count()).isEqualTo(6)
-
-            assertThat(result[0].id).isEqualTo(setA)
-            assertThat(result[1].id).isEqualTo(setB)
-            assertThat(result[2].id).isEqualTo(setC)
-            assertThat(result[3].id).isEqualTo(setD)
-            assertThat(result[4].id).isEqualTo(setE)
-            assertThat(result[5].id).isEqualTo(setF)
-        }
-    }
-
-    @Test
-    fun `getScenarioAndCoverageData throws exception if scenario doesnt exist`()
-    {
-        given {
-            createTouchstoneAndScenarioDescriptions(it)
-        } check {
-            Assertions.assertThatThrownBy { it.getScenarioAndCoverageData(touchstoneVersionId, scenarioId) }
-                    .isInstanceOf(UnknownObjectError::class.java)
-        }
-    }
-
-    @Test
-    fun `can get scenario with coverage data`()
-    {
-        given {
-            createTouchstoneAndScenarioDescriptions(it)
-            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
-            giveScenarioCoverageSets(it, scenarioId, includeCoverageData = true)
-        } check {
-            val result = it.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
-            checkScenarioIsAsExpected(result.structuredMetadata)
-            assertThat(result.tableData.data.toList()).containsExactlyElementsOf(listOf(
-                    LongCoverageRow(scenarioId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                            "AAA", "AAA-Name", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull()),
-                    LongCoverageRow(scenarioId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
-                            "BBB", "BBB-Name", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
-            ))
-        }
-    }
-
-    @Test
-    fun `can get scenario with empty coverage data`()
-    {
-        given {
-            createTouchstoneAndScenarioDescriptions(it)
-            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
-            giveScenarioCoverageSets(it, scenarioId, includeCoverageData = false)
-        } check {
-            val result = it.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
-            checkScenarioIsAsExpected(result.structuredMetadata)
-            assertThat(result.tableData.data.toList()).isEmpty()
-        }
-    }
-
-    @Test
     fun `can get coverage sets for scenario with empty coverage data`()
     {
         given {
             val countries = listOf("AAA", "BBB", "CCC")
-            it.addGroup(groupId)
             createTouchstoneAndScenarioDescriptions(it)
             it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
-            val responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
             it.addCountries(countries)
             giveScenarioCoverageSets(it, scenarioId, includeCoverageData = false)
-            it.addExpectations(responsibilityId, countries = countries)
         } check {
             val result = it.getCoverageSetsForScenario(touchstoneVersionId,scenarioId)
 
