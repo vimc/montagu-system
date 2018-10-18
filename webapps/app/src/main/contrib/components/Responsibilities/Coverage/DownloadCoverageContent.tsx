@@ -126,7 +126,7 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
                                                              onChange={this.toggleAllCountries}
                                                              checked={this.state.allCountries} />
                        Include all countries</label>
-                    <a href={"#"} id={"countries-toolip"} className={"ml-1 small"} onClick={(e)=> {e.preventDefault()}}>What's this?</a>
+                    <a href={"#"} id={"countries-tooltip"} className={"ml-1 small"} onClick={(e)=> {e.preventDefault()}}>What's this?</a>
                     <UncontrolledTooltip target="countries-tooltip" className={"text-muted"}>By default we only include coverage data for
                         countries we expect burden estimates for. To include coverage data for all countries, please select this option</UncontrolledTooltip>
                 </div>
