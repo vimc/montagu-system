@@ -86,25 +86,6 @@ class JooqScenarioRepository(dsl: DSLContext,
         return scenario
     }
 
-    override fun getScenarioForResponsibility(touchstoneVersionId: String,
-                                              scenarioDescriptionId: String,
-                                              responsibilityId: Int): Scenario
-    {
-        val scenarios = dsl.select(SCENARIO_DESCRIPTION.fieldsAsList())
-                .select(SCENARIO.TOUCHSTONE)
-                .fromJoinPath(SCENARIO_DESCRIPTION, SCENARIO, RESPONSIBILITY)
-                .where(RESPONSIBILITY.ID.eq(responsibilityId))
-                .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
-                .fetch()
-
-        val scenario = mapScenario(scenarios)
-
-        if (!scenario.touchstones.contains(touchstoneVersionId))
-            throw UnknownObjectError(scenarioDescriptionId, "scenario")
-
-        return scenario
-    }
-
     private fun mapScenarioWithFocalActivityType(input: List<Record>): ScenarioAndFocalActivityType
     {
         val first = input.first()

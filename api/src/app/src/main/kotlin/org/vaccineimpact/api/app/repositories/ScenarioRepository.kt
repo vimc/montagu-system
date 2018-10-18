@@ -15,7 +15,4 @@ interface ScenarioRepository : Repository
 
     fun getScenarioForTouchstone(touchstoneVersionId: String, scenarioDescriptionId: String): Scenario
 
-    fun getScenarioForResponsibility(touchstoneVersionId: String,
-                                     scenarioDescriptionId: String,
-                                     responsibilityId: Int): Scenario
 }

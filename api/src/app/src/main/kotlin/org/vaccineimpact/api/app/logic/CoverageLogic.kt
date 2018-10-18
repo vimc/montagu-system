@@ -54,23 +54,18 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         val responsibilityAndTouchstone =
                 responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
 
-        val responsibilityId = responsibilityAndTouchstone.responsibilityId
-        val scenario = scenarioRepository.getScenarioForResponsibility(touchstoneVersionId,
-                scenarioId,
-                responsibilityId)
-
+        val scenario = scenarioRepository.getScenarioForTouchstone(touchstoneVersionId, scenarioId)
         val coverageSets = touchstoneRepository.getCoverageSetsForScenario(touchstoneVersionId, scenarioId)
 
         val data = if (allCountries)
         {
             touchstoneRepository.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
-
         }
         else
         {
             touchstoneRepository.getCoverageDataForResponsibility(
                     touchstoneVersionId,
-                    responsibilityId,
+                    responsibilityAndTouchstone.responsibilityId,
                     scenario.id)
         }
 
