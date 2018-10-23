@@ -20,6 +20,7 @@ import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.SplitData
 import java.math.BigDecimal
+import kotlin.sequences.Sequence
 
 class JooqTouchstoneRepository(
         dsl: DSLContext,
@@ -36,6 +37,7 @@ class JooqTouchstoneRepository(
                 .groupBy { it[TOUCHSTONE_NAME.ID] }
                 .map { mapTouchstone(it.value) }
     }
+
     override val touchstoneVersions: SimpleDataSet<TouchstoneVersion, String>
         get() = JooqSimpleDataSet.new(dsl, TOUCHSTONE, { it.ID }, { mapTouchstoneVersion(it) })
 
@@ -135,38 +137,105 @@ class JooqTouchstoneRepository(
             scenarioDescId: String
     ): SplitData<ScenarioAndCoverageSets, LongCoverageRow>
     {
-        val records = getCoverageSetsAndCoverageDataForScenario(touchstoneVersionId, scenarioDescId)
-        val scenario = getScenariosFromRecords(records).singleOrNull()
-                ?: throw UnknownObjectError(scenarioDescId, "scenario")
-        val metadata = ScenarioAndCoverageSets(scenario, getCoverageSetsFromRecord(records, scenario))
-        val coverageRows = records
-                .filter { it[COVERAGE.ID] != null }
-                .map { mapCoverageRow(it, scenarioDescId) }
-        return SplitData(metadata, DataTable.new(coverageRows.asSequence()))
+        val scenario = scenarioRepository.getScenarioForTouchstone(touchstoneVersionId, scenarioDescId)
+
+        val coverageSets = getCoverageSetsForScenario(touchstoneVersionId, scenarioDescId)
+        val coverageData = getCoverageDataForScenario(touchstoneVersionId, scenarioDescId)
+        val metadata = ScenarioAndCoverageSets(scenario, coverageSets)
+
+        return SplitData(metadata, DataTable.new(coverageData.asSequence()))
     }
 
-    private fun getCoverageSetsAndCoverageDataForScenario(
+    override fun getCoverageDataForScenario(
+            touchstoneVersionId: String,
+            scenarioDescriptionId: String
+    ): Sequence<LongCoverageRow>
+    {
+        val coverageRecords = getCoverageRowsForScenario(touchstoneVersionId, scenarioDescriptionId)
+                .filter { it[COVERAGE_SET.ID] != null }
+
+        return coverageRecords
+                .filter { it[COVERAGE.ID] != null }
+                .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
+    }
+
+    override fun getCoverageDataForResponsibility(
+            touchstoneVersionId: String,
+            responsibilityId: Int,
+            scenarioDescriptionId: String
+    ): Sequence<LongCoverageRow>
+    {
+        val coverageRecords = getCoverageRowsForResponsibility(responsibilityId, touchstoneVersionId)
+                .filter { it[COVERAGE_SET.ID] != null }
+
+        return coverageRecords
+                .filter { it[COVERAGE.ID] != null }
+                .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
+    }
+
+    override fun getCoverageSetsForScenario(
+            touchstoneVersionId: String,
+            scenarioDescriptionId: String)
+            : List<CoverageSet>
+    {
+        val records = dsl
+                .select(COVERAGE_SET.fieldsAsList())
+                .select(TOUCHSTONE.ID)
+                .fromJoinPath(TOUCHSTONE, SCENARIO)
+                .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET)
+                .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
+                .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
+                .orderBy(SCENARIO_COVERAGE_SET.ORDER)
+                .fetch()
+
+        return records.map { mapCoverageSet(it) }
+    }
+
+    private fun getCoverageRowsForScenario(
             touchstoneVersionId: String,
             scenarioDescriptionId: String)
             : Result<Record>
     {
         return dsl
-                .select(SCENARIO_DESCRIPTION.fieldsAsList())
                 .select(COVERAGE_SET.fieldsAsList())
-                .select(TOUCHSTONE.ID)
                 .select(COVERAGE.fieldsAsList())
                 .select(COUNTRY.NAME)
                 .fromJoinPath(TOUCHSTONE, SCENARIO)
-                .joinPath(SCENARIO, SCENARIO_DESCRIPTION)
                 // We don't mind if there are no coverage sets, so do a left join
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
-                .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
+                .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
-                        COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO)
-                .fetch()
+                        COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO).fetch()
+
+    }
+
+    private fun getCoverageRowsForResponsibility(
+            responsibilityId: Int,
+            touchstoneVersionId: String)
+            : Result<Record>
+    {
+        val expectedCountries = dsl.select(COUNTRY.ID)
+                .fromJoinPath(COUNTRY, BURDEN_ESTIMATE_COUNTRY_EXPECTATION, BURDEN_ESTIMATE_EXPECTATION,
+                        RESPONSIBILITY)
+                .where(RESPONSIBILITY.ID.eq(responsibilityId))
+
+        return dsl
+                .select(COVERAGE_SET.fieldsAsList())
+                .select(COVERAGE.fieldsAsList())
+                .select(COUNTRY.NAME)
+                .fromJoinPath(TOUCHSTONE, SCENARIO, RESPONSIBILITY)
+                // We don't mind if there are no coverage sets, so do a left join
+                .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
+                .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
+                .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
+                .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
+                .and(RESPONSIBILITY.ID.eq(responsibilityId))
+                .and(COUNTRY.ID.isNull.or(COUNTRY.ID.`in`(expectedCountries)))
+                .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
+                        COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO).fetch()
     }
 
     private val TOUCHSTONE_SOURCES = "touchstoneSources"

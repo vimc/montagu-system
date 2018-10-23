@@ -5,9 +5,7 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.CoverageController
-import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.logic.CoverageLogic
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
@@ -44,7 +42,7 @@ class CoverageControllerTests : MontaguTests()
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
         CoverageController(context, logic).getCoverageDataForGroup()
-        verify(logic).getCoverageDataForGroup(eq("gId"), eq("tId"), eq("sId"), isNull())
+        verify(logic).getCoverageDataForGroup(eq("gId"), eq("tId"), eq("sId"), eq(false), isNull())
     }
 
     @Test
@@ -62,6 +60,56 @@ class CoverageControllerTests : MontaguTests()
         val data = CoverageController(context, logic)
                 .getCoverageDataForGroup().data
         Assertions.assertThat(data.first() is LongCoverageRow).isTrue()
+    }
+
+    @Test
+    fun `getCoverageDataForGroup returns data for all countries if all-countries=true`()
+    {
+        val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { it.params(":scenario-id") } doReturn "sId"
+            on { it.queryParams("all-countries") } doReturn "true"
+            on { hasPermission(any()) } doReturn true
+        }
+
+        CoverageController(context, logic)
+                .getCoverageDataForGroup().data
+        verify(logic).getCoverageDataForGroup("gId", "tId", "sId", true, null)
+    }
+
+    @Test
+    fun `getCoverageDataForGroup does not return data for all countries if all-countries=false`()
+    {
+        val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { it.params(":scenario-id") } doReturn "sId"
+            on { it.queryParams("all-countries") } doReturn "false"
+            on { hasPermission(any()) } doReturn true
+        }
+
+        CoverageController(context, logic)
+                .getCoverageDataForGroup().data
+        verify(logic).getCoverageDataForGroup("gId", "tId", "sId", false, null)
+    }
+
+    @Test
+    fun `getCoverageDataForGroup does not return data for all countries by default`()
+    {
+        val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
+        val context = mock<ActionContext> {
+            on { it.params(":group-id") } doReturn "gId"
+            on { it.params(":touchstone-version-id") } doReturn "tId"
+            on { it.params(":scenario-id") } doReturn "sId"
+            on { hasPermission(any()) } doReturn true
+        }
+
+        CoverageController(context, logic)
+                .getCoverageDataForGroup().data
+        verify(logic).getCoverageDataForGroup("gId", "tId", "sId", false, null)
     }
 
     @Test
@@ -87,7 +135,7 @@ class CoverageControllerTests : MontaguTests()
         val coverageSets = mockCoverageSetsData(TouchstoneStatus.IN_PREPARATION)
         val splitData = SplitData(coverageSets, DataTable.new(listOf<LongCoverageRow>().asSequence()))
         val logic = mock<CoverageLogic> {
-            on { getCoverageDataForGroup(any(), any(), any(), anyOrNull()) } doReturn splitData
+            on { getCoverageDataForGroup(any(), any(), any(), any(), anyOrNull()) } doReturn splitData
         }
 
         val context = mock<ActionContext> {
@@ -128,15 +176,15 @@ class CoverageControllerTests : MontaguTests()
     }
 
     private fun makeLogicMockingGetCoverageData(status: TouchstoneStatus,
-                                               testYear: Int = 1970,
-                                               target: BigDecimal = BigDecimal(123.123),
-                                               coverage: BigDecimal = BigDecimal(456.456)): CoverageLogic
+                                                testYear: Int = 1970,
+                                                target: BigDecimal = BigDecimal(123.123),
+                                                coverage: BigDecimal = BigDecimal(456.456)): CoverageLogic
     {
         val coverageSets = mockCoverageSetsData(status)
         val fakeRows = generateCoverageRows(testYear, target, coverage)
         val data = SplitData(coverageSets, DataTable.new(fakeRows.asSequence()))
         return mock {
-            on { getCoverageDataForGroup(any(), any(), any(), anyOrNull()) } doReturn data
+            on { getCoverageDataForGroup(any(), any(), any(), any(), anyOrNull()) } doReturn data
             on { getCoverageSetsForGroup(any(), any(), any()) } doReturn mockCoverageSetsData(status)
         }
     }

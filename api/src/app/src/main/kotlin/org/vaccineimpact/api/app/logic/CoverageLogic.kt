@@ -1,14 +1,10 @@
 package org.vaccineimpact.api.app.logic
 
 import org.vaccineimpact.api.app.errors.BadRequest
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
-import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.models.CoverageRow
-import org.vaccineimpact.api.models.LongCoverageRow
-import org.vaccineimpact.api.models.ScenarioTouchstoneAndCoverageSets
-import org.vaccineimpact.api.models.WideCoverageRow
+import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 
@@ -17,7 +13,8 @@ interface CoverageLogic
     fun getCoverageData(touchstoneVersionId: String, scenarioId: String, format: String?)
             : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
 
-    fun getCoverageDataForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String, format: String?)
+    fun getCoverageDataForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                allCountries: Boolean, format: String?)
             : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
 
     fun getCoverageSetsForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String):
@@ -27,7 +24,8 @@ interface CoverageLogic
 
 class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingGroupRepository,
                                 private val responsibilitiesRepository: ResponsibilitiesRepository,
-                                private val touchstoneRepository: TouchstoneRepository) : CoverageLogic
+                                private val touchstoneRepository: TouchstoneRepository,
+                                private val scenarioRepository: ScenarioRepository) : CoverageLogic
 {
     override fun getCoverageSetsForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String):
             ScenarioTouchstoneAndCoverageSets
@@ -45,20 +43,37 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
 
     constructor(repositories: Repositories) : this(repositories.modellingGroup,
             repositories.responsibilities,
-            repositories.touchstone)
+            repositories.touchstone,
+            repositories.scenario)
 
     override fun getCoverageDataForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String,
-                                         format: String?)
+                                         allCountries: Boolean, format: String?)
             : SplitData<ScenarioTouchstoneAndCoverageSets, CoverageRow>
     {
         modellingGroupRepository.getModellingGroup(groupId)
-        val responsibilityAndTouchstone = responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
-        val scenarioAndData = touchstoneRepository.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
+        val responsibilityAndTouchstone =
+                responsibilitiesRepository.getResponsibility(groupId, touchstoneVersionId, scenarioId)
+
+        val scenario = scenarioRepository.getScenarioForTouchstone(touchstoneVersionId, scenarioId)
+        val coverageSets = touchstoneRepository.getCoverageSetsForScenario(touchstoneVersionId, scenarioId)
+
+        val data = if (allCountries)
+        {
+            touchstoneRepository.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
+        }
+        else
+        {
+            touchstoneRepository.getCoverageDataForResponsibility(
+                    touchstoneVersionId,
+                    responsibilityAndTouchstone.responsibilityId,
+                    scenario.id)
+        }
+
         val splitData = SplitData(ScenarioTouchstoneAndCoverageSets(
                 responsibilityAndTouchstone.touchstoneVersion,
-                scenarioAndData.structuredMetadata.scenario,
-                scenarioAndData.structuredMetadata.coverageSets
-        ), scenarioAndData.tableData)
+                scenario,
+                coverageSets
+        ), DataTable.new(data))
 
         return getDatatable(splitData, format)
     }

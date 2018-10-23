@@ -38,7 +38,10 @@ abstract class CoverageTests : DatabaseTest()
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
         db.addTouchstoneVersion("touchstone", 1, "description", touchstoneStatus, addTouchstone = true)
         val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "submitted")
-        db.addResponsibility(setId, touchstoneVersionId, scenarioId)
+        val responsibilityId = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
+
+        db.addExpectationsForAllCountries(responsibilityId)
+
         db.addCoverageSet(touchstoneVersionId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
                 addVaccine = true)
         db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, coverageSetId, 0)

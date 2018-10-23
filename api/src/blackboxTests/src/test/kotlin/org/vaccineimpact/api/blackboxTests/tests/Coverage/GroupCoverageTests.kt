@@ -35,6 +35,45 @@ class GroupCoverageTests : CoverageTests()
     }
 
     @Test
+    fun `only returns coverage data for expected countries`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            createUnorderedCoverageData(it)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val rows = csv.drop(1) // drop headers
+        Assertions.assertThat(rows.count()).isEqualTo(6)
+    }
+
+    @Test
+    fun `can get coverage data for group, for all countries`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            createUnorderedCoverageData(it)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?all-countries=true", minimumPermissions, acceptsContentType = "text/csv")
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val rows = csv.drop(1) // drop headers
+        Assertions.assertThat(rows.count()).isEqualTo(12)
+    }
+
+    @Test
     fun `can get streamed data without gzip`()
     {
         val userHelper = TestUserHelper()
@@ -110,7 +149,7 @@ class GroupCoverageTests : CoverageTests()
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+        val response = requestHelper.get("$url?format=wide&all-countries=true", minimumPermissions, acceptsContentType = "text/csv")
         val yearMap = mapOf("coverage_2000" to "<NA>",
                 "coverage_2001" to "<NA>", "target_2000" to "<NA>", "target_2001" to "<NA>")
 
@@ -190,7 +229,7 @@ class GroupCoverageTests : CoverageTests()
         db.addVaccine("AF", "Alpha Fever")
 
         val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "incomplete")
-        db.addResponsibility(setId, touchstoneVersionId, scenarioId)
+        val responsibilityId = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
         db.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = 1)
         db.addCoverageSet(touchstoneVersionId, "Second", "BF", "without", "campaign", id = 2)
         db.addCoverageSet(touchstoneVersionId, "Third", "BF", "without", "routine", id = 3)
@@ -199,6 +238,7 @@ class GroupCoverageTests : CoverageTests()
         db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, coverageSetId = 3, order = 2)
 
         db.addCountries(listOf("AAA", "BBB"))
+        db.addExpectations(responsibilityId, countries = listOf("AAA"))
 
         // adding these in jumbled up order
         // values are null because we are just testing the order these rows appear in

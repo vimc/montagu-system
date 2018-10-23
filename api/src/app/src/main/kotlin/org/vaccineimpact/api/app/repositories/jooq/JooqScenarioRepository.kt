@@ -73,6 +73,11 @@ class JooqScenarioRepository(dsl: DSLContext,
                 .where(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
                 .fetch()
 
+        if (!scenarios.any())
+        {
+            throw UnknownObjectError(scenarioDescriptionId, "scenario")
+        }
+
         val scenario = mapScenario(scenarios)
 
         if (!scenario.touchstones.contains(touchstoneVersionId))
