@@ -24,14 +24,14 @@ export interface DownloadCoverageContentProps {
 }
 
 interface DownloadCoverageState {
-    allCountries: boolean
+    filterToExpectations: boolean
 }
 
 export class DownloadCoverageContentComponent extends React.Component<DownloadCoverageContentProps, DownloadCoverageState> {
     constructor() {
         super();
         this.state = {
-            allCountries: false
+            filterToExpectations: true
         };
         this.onSelectFormat = this.onSelectFormat.bind(this);
         this.toggleAllCountries = this.toggleAllCountries.bind(this);
@@ -43,7 +43,7 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
 
     toggleAllCountries() {
         this.setState({
-            allCountries: !this.state.allCountries
+            filterToExpectations: !this.state.filterToExpectations
         })
     }
 
@@ -51,7 +51,7 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
         const {group, touchstone, scenario, selectedFormat} = this.props;
 
         const url = `/modelling-groups/${group.id}/responsibilities/${touchstone.id}/${scenario.id}/coverage/csv/`
-            + `?format=${selectedFormat}&all-countries=${this.state.allCountries}`;
+            + `?format=${selectedFormat}&all-countries=${!this.state.filterToExpectations}`;
 
         return <div>
             <p>
@@ -121,14 +121,14 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
             <div className="row mt-4">
                 <div className="col-12">
                    <label className="checkbox-inline"><input type="checkbox"
-                                                             id={"all-countries"}
+                                                             id={"filter-countries"}
                                                              className={"mr-1"}
                                                              onChange={this.toggleAllCountries}
-                                                             checked={this.state.allCountries} />
-                       Include all countries</label>
+                                                             checked={this.state.filterToExpectations} />
+                       Filter to touchstone countries</label>
                     <a href={"#"} id={"countries-tooltip"} className={"ml-1 small"} onClick={(e)=> {e.preventDefault()}}>What's this?</a>
-                    <UncontrolledTooltip target="countries-tooltip" className={"text-muted"}>By default we only include coverage data for
-                        countries we expect burden estimates for. To include coverage data for all countries, please select this option</UncontrolledTooltip>
+                    <UncontrolledTooltip target="countries-tooltip" className={"text-muted"}>When this is checked we will only include coverage data for
+                        countries we expect burden estimates for in this touchstone. To include all the coverage data we have for this scenario, please de-select this option</UncontrolledTooltip>
                 </div>
             </div>
             <div className="mt-4">

@@ -131,10 +131,10 @@ describe("Download Coverage Content Component", () => {
         expect(onFormatSelectStub.called).to.equal(true);
     });
 
-    it("allCountries is deselected by default", () => {
+    it("filterToExpectations is selected by default", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
             .dive().dive().dive();
-        expect(rendered.find("#all-countries").props().checked).to.be.false;
+        expect(rendered.find("#filter-countries").props().checked).to.be.true;
     });
 
     it("url has all-countries query parameter set to false by default", () => {
@@ -145,11 +145,11 @@ describe("Download Coverage Content Component", () => {
         expect(rendered.find(FileDownloadButton).props().href).to.eq(expected)
     });
 
-    it("url has all-countries query parameter set to true when allCountries is selected", () => {
+    it("url has all-countries query parameter set to true when filterToExpectations is de-selected", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
             .dive().dive().dive();
 
-        rendered.find("#all-countries").simulate("change");
+        rendered.find("#filter-countries").simulate("change");
         const expected = "/modelling-groups/group-186/responsibilities/touchstone-188/scenario-190/coverage/csv/?format=long&all-countries=true";
         expect(rendered.find(FileDownloadButton).props().href).to.eq(expected)
     });
