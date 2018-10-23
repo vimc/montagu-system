@@ -4,7 +4,7 @@ import {PageArticle} from "../../../shared/components/PageWithHeader/PageArticle
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageProperties";
 import {ButtonLink} from "../../../shared/components/ButtonLink";
 
-const menuStyles = require("./MainMenu.css");
+import "./MainMenu.scss"
 
 export class MainMenu extends React.Component<PageProperties<undefined>> {
 
@@ -13,7 +13,7 @@ export class MainMenu extends React.Component<PageProperties<undefined>> {
     render(): JSX.Element {
         return <PageArticle title={MainMenu.title}>
             Please select which area of Montagu you would like to manage:
-            <ol className={menuStyles.menu}>
+            <ol className="admin-menu">
                 <li>
                     <ButtonLink href="/modelling-groups/">Modelling groups</ButtonLink>
                 </li>

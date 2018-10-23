@@ -22,7 +22,9 @@ export class CountriesList extends React.Component<Props, State> {
         };
     }
 
-    toggle() {
+    toggle(e?: any) {
+        e && e.preventDefault();
+
         this.setState({
             showCountries: !this.state.showCountries
         });

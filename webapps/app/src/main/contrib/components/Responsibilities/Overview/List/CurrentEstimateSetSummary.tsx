@@ -44,7 +44,7 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
     }
 }
 
-export class ReviewedAndApprovedMessage extends React.Component<undefined, undefined> {
+export class ReviewedAndApprovedMessage extends React.Component<{}, undefined> {
     render(): JSX.Element {
         const supportEmail = `mailto:${settings.supportContact}`;
         return <span>

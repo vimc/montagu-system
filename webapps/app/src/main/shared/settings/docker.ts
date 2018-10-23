@@ -14,5 +14,6 @@ export const settings: Partial<Settings> = {
     report: {
         publicPath: "/reports",
         requiresModellingGroupMembership: false
-    }
+    },
+    showNewTemplates: true
 };
