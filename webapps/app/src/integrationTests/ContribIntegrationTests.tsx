@@ -299,7 +299,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 setFormat={() => {
                 }}/>);
 
-            rendered.find("#all-countries").simulate("change");
+            rendered.find("#filter-countries").simulate("change");
 
             const href = rendered.find(FileDownloadButton).prop("href");
 
