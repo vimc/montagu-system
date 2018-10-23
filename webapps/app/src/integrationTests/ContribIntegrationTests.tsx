@@ -241,6 +241,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
         it("can download coverage data", async () => {
             const coverageSetId = await addCoverageSets(this.db);
+            await addCoverageData(this.db, coverageSetId);
 
             const mockCoverageSets: CoverageSet[] = [
                 {
@@ -267,7 +268,50 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const response = await new TestService(this.store.dispatch, this.store.getState)
                 .getAnyUrl(href);
 
-            expect(response.status).to.equal(200)
+            expect(response.status).to.equal(200);
+            const result = await response.text();
+
+            // we expect no rows, because there are no expectations for this responsibility
+            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage\n")
+        });
+
+        it("can download coverage data for all countries", async () => {
+            const coverageSetId = await addCoverageSets(this.db);
+            await addCoverageData(this.db, coverageSetId);
+
+            const mockCoverageSets: CoverageSet[] = [
+                {
+                    id: coverageSetId,
+                    name: "Test set",
+                    touchstone_version: touchstoneVersionId,
+                    activity_type: "none",
+                    vaccine: "yf",
+                    gavi_support: "no vaccine"
+                }
+            ];
+
+            const rendered = shallow(<DownloadCoverageContentComponent
+                touchstone={mockTouchstoneVersion({id: touchstoneVersionId})}
+                coverageSets={mockCoverageSets}
+                group={mockModellingGroup({id: groupId})}
+                scenario={mockScenario({id: scenarioId})}
+                selectedFormat={"long"}
+                setFormat={() => {
+                }}/>);
+
+            rendered.find("#filter-countries").simulate("change");
+
+            const href = rendered.find(FileDownloadButton).prop("href");
+
+            const response = await new TestService(this.store.dispatch, this.store.getState)
+                .getAnyUrl(href);
+
+            expect(response.status).to.equal(200);
+            const result = await response.text();
+
+            // we expect one row for the country ATL, even though there are no expectations for this responsibility
+            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage\n" +
+                "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1970,1,2,1-2,1000,1000\n")
         });
 
         it("can download demographic data", async () => {
@@ -329,6 +373,7 @@ function addResponsibilities(db: Client): Promise<ResponsibilityIds> {
             DO $$
                 DECLARE scenario_id integer;
                 DECLARE set_id integer;
+                DECLARE expectation_id integer;
             BEGIN
                 INSERT INTO disease (id, name) VALUES ('yf', 'Yellow Fever');
                 INSERT INTO scenario_description (id, description, disease)
@@ -343,6 +388,7 @@ function addResponsibilities(db: Client): Promise<ResponsibilityIds> {
                 
                 INSERT INTO responsibility (responsibility_set, scenario, is_open)
                 VALUES (set_id, scenario_id, true);
+               
             END $$;
     `))
         .then(() => db.query(`SELECT responsibility.id as responsibility, responsibility_set.id as responsibility_set 
@@ -391,6 +437,14 @@ function addCoverageSets(db: Client): Promise<number> {
         `))
         .then(() => db.query(`SELECT id FROM coverage_set`))
         .then(result => result.rows[0].id);
+}
+
+function addCoverageData(db: Client, coverageSetId: number): Promise<QueryResult> {
+    return db.query(`
+                INSERT INTO country (id, name) VALUES ('ATL', 'Atlantis');
+                INSERT INTO coverage (coverage_set, country, year, age_from, age_to, age_range_verbatim, target, coverage)
+                VALUES (${coverageSetId}, 'ATL', 1970, 1, 2, '1-2', 1000, 1000);
+        `)
 }
 
 function addDemographicDataSets(db: Client): Promise<QueryResult> {
