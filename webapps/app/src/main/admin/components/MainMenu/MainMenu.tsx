@@ -17,7 +17,7 @@ interface Props {
     canViewTouchstones: boolean;
 }
 
-export class MainMenuListComponent extends React.Component<Props> {
+class MainMenuListComponent extends React.Component<Props> {
 
     render(): JSX.Element {
         return <PageArticle title={mainMenuPageActionCreators.title()}>
@@ -39,7 +39,7 @@ export class MainMenuListComponent extends React.Component<Props> {
     }
 }
 
-export const mapStateToProps = (state: AdminAppState): Props => ({
+const mapStateToProps = (state: AdminAppState): Props => ({
     canViewGroups: state.auth.permissions.indexOf("*/modelling-groups.read") > -1,
     canViewTouchstones: state.auth.permissions.indexOf("*/touchstones.read") > -1,
     canViewUsers: state.auth.permissions.indexOf("*/users.read") > -1
