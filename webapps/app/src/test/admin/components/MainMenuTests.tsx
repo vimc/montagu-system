@@ -6,7 +6,16 @@ import {createMockStore} from "../../mocks/mockStore";
 import {mockAdminState, mockAuthState} from "../../mocks/mockStates";
 import {ButtonLink} from "../../../main/shared/components/ButtonLink";
 
-describe("Admin main menu page tests", () => {
+
+describe("Admin main menu tests", () => {
+    
+    function createStoreWithPermissions(permissions: string[]) {
+        return createMockStore(mockAdminState({
+            auth: mockAuthState({
+                permissions: permissions
+            })
+        }));
+    }
 
     it("does not show buttons if user does not have permissions", () => {
 
@@ -19,11 +28,8 @@ describe("Admin main menu page tests", () => {
 
     it("show touchstone button if user has permission", () => {
 
-        const store = createMockStore(mockAdminState({
-            auth: mockAuthState({
-                permissions: ["*/touchstones.read"]
-            })
-        }));
+        const store = createStoreWithPermissions(["*/touchstones.read"]);
+
         const rendered = shallow(<MainMenuList/>, {context: {store}})
             .dive();
         const buttons = rendered.find(ButtonLink);
@@ -34,11 +40,8 @@ describe("Admin main menu page tests", () => {
 
     it("show users button if user has permission", () => {
 
-        const store = createMockStore(mockAdminState({
-            auth: mockAuthState({
-                permissions: ["*/users.read"]
-            })
-        }));
+        const store = createStoreWithPermissions(["*/users.read"]);
+
         const rendered = shallow(<MainMenuList/>, {context: {store}})
             .dive(); const buttons = rendered.find(ButtonLink);
         expect(buttons.length).to.eq(1);
@@ -48,11 +51,8 @@ describe("Admin main menu page tests", () => {
 
     it("show groups button if user has permission", () => {
 
-        const store = createMockStore(mockAdminState({
-            auth: mockAuthState({
-                permissions: ["*/modelling-groups.read"]
-            })
-        }));
+        const store = createStoreWithPermissions(["*/modelling-groups.read"]);
+
         const rendered = shallow(<MainMenuList/>, {context: {store}})
             .dive();
         const buttons = rendered.find(ButtonLink);
