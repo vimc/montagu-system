@@ -8,7 +8,7 @@ import {ButtonLink} from "../../../main/shared/components/ButtonLink";
 
 
 describe("Admin main menu tests", () => {
-    
+
     function createStoreWithPermissions(permissions: string[]) {
         return createMockStore(mockAdminState({
             auth: mockAuthState({
