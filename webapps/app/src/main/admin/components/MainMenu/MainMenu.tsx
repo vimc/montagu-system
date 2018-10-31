@@ -19,21 +19,19 @@ interface Props {
 
 export class MainMenuListComponent extends React.Component<Props> {
 
-    static title: string = "Main menu";
-
     render(): JSX.Element {
-        return <PageArticle title={MainMenu.title}>
+        return <PageArticle title={mainMenuPageActionCreators.title()}>
             Please select which area of Montagu you would like to manage:
             <ol className="admin-menu">
                 {this.props.canViewGroups && <li>
                     <ButtonLink href="/modelling-groups/">Modelling groups</ButtonLink>
                 </li>}
 
-                {this.props.canViewUsers && <li>
+                {this.props.canViewTouchstones && <li>
                     <ButtonLink href="/touchstones/">Touchstones</ButtonLink>
                 </li>}
 
-                {this.props.canViewTouchstones && <li>
+                {this.props.canViewUsers && <li>
                     <ButtonLink href="/users/">Users and permissions</ButtonLink>
                 </li>}
             </ol>
@@ -42,9 +40,9 @@ export class MainMenuListComponent extends React.Component<Props> {
 }
 
 export const mapStateToProps = (state: AdminAppState): Props => ({
-    canViewGroups: state.auth.permissions.indexOf("modelling-groups.read") > -1,
-    canViewTouchstones: state.auth.permissions.indexOf("touchstones.read") > -1,
-    canViewUsers: state.auth.permissions.indexOf("users.read") > -1
+    canViewGroups: state.auth.permissions.indexOf("*/modelling-groups.read") > -1,
+    canViewTouchstones: state.auth.permissions.indexOf("*/touchstones.read") > -1,
+    canViewUsers: state.auth.permissions.indexOf("*/users.read") > -1
 });
 
 export const MainMenuList = compose(

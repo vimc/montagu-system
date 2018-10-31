@@ -17,4 +17,10 @@ describe("Admin main menu page actions tests", () => {
 
     });
 
+    it("title is Main menu", () => {
+
+        expect(mainMenuPageActionCreators.title()).to.eq("Main menu");
+
+    });
+
 });
