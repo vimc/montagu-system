@@ -17,7 +17,7 @@ import {UserDetailsPage} from "./Users/SingleUser/UserDetailsPage";
 import {TouchstoneListPage} from "./Touchstones/List/TouchstoneListPage";
 import {TouchstoneDetailsPage} from "./Touchstones/Details/TouchstoneDetailsPage";
 import {ResponsibilitiesPage} from "./Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
-import {MainMenu} from "./MainMenu/MainMenu";
+import {MainMenuPage} from "./MainMenu/MainMenu";
 import {ForgottenPasswordPage} from "../../shared/components/ForgottenPasswordPage";
 import {TouchstoneVersionPage} from "./Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
 import {DownloadDemographicsAdminPage} from "./Touchstones/Demography/DownloadDemographicsPage";
@@ -31,7 +31,7 @@ interface AdminRouterProps {
 export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: AdminRouterProps) => {
 
     const loggedIn = <Switch>
-        <Route exact path="/" component={MainMenu}/>
+        <Route exact path="/" component={MainMenuPage}/>
         <Route exact path="/modelling-groups/" component={ModellingGroupsListPage}/>
         <Route exact path="/modelling-groups/:groupId/" component={ModellingGroupDetailsPage}/>
         <Route exact path="/modelling-groups/:groupId/admin/" component={ModellingGroupMembersPage}/>
