@@ -22,6 +22,7 @@ export class CreateTouchstoneFormComponent
 
     render() {
         return <form className="form mb-5" onSubmit={this.props.handleSubmit(this.props.submit)}>
+            <h4>Create a new touchstone</h4>
             <table className="tableForm specialColumn">
                 <tbody>
                 <tr>
