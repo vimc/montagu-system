@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Report} from "../../../shared/models/Generated";
-import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowInfo, RowRenderProps} from 'react-table'
+import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps} from 'react-table'
 
 import {
     aggregatedVersionFilterMethod,
@@ -25,7 +25,7 @@ export interface ReportsListTableProps {
 }
 
 export interface ReportRowRenderProps extends RowRenderProps {
-    row: ReportRow,
+    original: Report,
     value: string | BasicVersionDetails | boolean;
 }
 
@@ -35,7 +35,7 @@ export interface ReportRow {
     author: string,
     requester: string,
     published?: boolean,
-    _subRows?: ReportRow[]
+    subRows?: ReportRow[]
 
     [key: string]: string | boolean | BasicVersionDetails | ReportRow[]
 }
@@ -78,7 +78,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
         }
     }
 
-    allExpanded(props: ReportsListTableProps){
+    allExpanded(props: ReportsListTableProps) {
         const numRows = props.reports.length;
         const expanded = {} as any;
         for (let i = 0; i < numRows; i++) {
@@ -88,7 +88,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
         return expanded
     }
 
-    allCollapsed(props: ReportsListTableProps){
+    allCollapsed(props: ReportsListTableProps) {
         const numRows = props.reports.length;
         const expanded = {} as any;
         for (let i = 0; i < numRows; i++) {
@@ -98,12 +98,12 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
         return expanded
     }
 
-    expandAll(){
+    expandAll() {
         const expanded = this.allExpanded(this.props);
         this.setState({expanded})
     }
 
-    collapseAll(){
+    collapseAll() {
         const expanded = this.allCollapsed(this.props);
         this.setState({expanded})
     }
@@ -140,7 +140,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                     width: 200,
                     Filter: TextFilter,
                     Cell: CellWithValue,
-                    Aggregated: EmptyCell,
+                    Aggregated: CellWithValue,
                     aggregate: getFirstOfAggregatedValues,
                 },
                 {
@@ -149,7 +149,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                     width: 200,
                     Cell: CellWithValue,
                     Filter: TextFilter,
-                    Aggregated: EmptyCell,
+                    Aggregated: CellWithValue,
                     aggregate: getFirstOfAggregatedValues,
                 },
             ];
@@ -194,7 +194,8 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                 defaultPageSize={100}
                 className="-striped -highlight responsive"
                 data={this.props.reports}
-                columns={columns}/>
+                columns={columns}
+                subRowsKey={'subRows'}/>
         </div>;
     }
 }

@@ -2,7 +2,7 @@ import * as React from "react";
 import {expect} from "chai";
 import {shallow} from "enzyme";
 
-import {mockReportRow} from "../../../../mocks/mockModels";
+import {mockReport, mockReportRow} from "../../../../mocks/mockModels";
 import {Sandbox} from "../../../../Sandbox";
 import ReactTable, {Column, Filter} from "react-table";
 import {
@@ -45,14 +45,14 @@ describe("ReportListTable", () => {
         it("renders published badge if status is published", function () {
             const col = getPublishStatusColumn() as Column.CellProps;
             const Cell = col.Cell as React.SFC<ReportRowRenderProps>;
-            const result = shallow(<Cell row={mockReportRow()} value={true}/>);
+            const result = shallow(<Cell original={mockReport()} value={true}/>);
             expect(result.find(".badge-published")).to.have.lengthOf(1);
         });
 
         it("renders internal badge if status is unpublished", function () {
             const col = getPublishStatusColumn() as Column.CellProps;
             const Cell = col.Cell as React.SFC<ReportRowRenderProps>;
-            const result = shallow(<Cell row={mockReportRow()} value={false}/>);
+            const result = shallow(<Cell original={mockReport()} value={false}/>);
             expect(result.find(".badge-internal")).to.have.lengthOf(1);
         });
 
@@ -75,7 +75,7 @@ describe("ReportListTable", () => {
                 let aggregateRow: Partial<ReportRow>  = {
                     // the aggregator function maps `published` to null
                     published: null,
-                    _subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
+                    subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
                 };
 
                 expect(filterMethod(publishedFilter, aggregateRow)).to.be.true;
@@ -87,7 +87,7 @@ describe("ReportListTable", () => {
                 
                 let aggregateRow: Partial<ReportRow>  = {
                     published: null,
-                    _subRows: [mockReportRow({published: false}), mockReportRow({published: false})]
+                    subRows: [mockReportRow({published: false}), mockReportRow({published: false})]
                 };
 
                 expect(filterMethod(publishedFilter, aggregateRow)).to.be.false;
@@ -126,7 +126,7 @@ describe("ReportListTable", () => {
                 
                 let aggregateRow: Partial<ReportRow> = {
                     published: null,
-                    _subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
+                    subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
                 };
 
                 expect(filterMethod(internalFilter, aggregateRow)).to.be.true;
@@ -138,7 +138,7 @@ describe("ReportListTable", () => {
                 
                 let aggregateRow: Partial<ReportRow> = {
                     published: null,
-                    _subRows: [mockReportRow({published: true}), mockReportRow({published: true})]
+                    subRows: [mockReportRow({published: true}), mockReportRow({published: true})]
                 };
 
                 expect(filterMethod(internalFilter, aggregateRow)).to.be.false;
@@ -176,7 +176,7 @@ describe("ReportListTable", () => {
                 const filterMethod = getFilterMethod();
                 let aggregateRow: Partial<ReportRow>  = {
                     published: null,
-                    _subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
+                    subRows: [mockReportRow({published: true}), mockReportRow({published: false})]
                 };
 
                 expect(filterMethod(allFilter, aggregateRow)).to.be.true;
@@ -187,7 +187,7 @@ describe("ReportListTable", () => {
                 const filterMethod = getFilterMethod();
                 let aggregateRow: Partial<ReportRow>  = {
                     published: null,
-                    _subRows: [mockReportRow({published: true}), mockReportRow({published: true})]
+                    subRows: [mockReportRow({published: true}), mockReportRow({published: true})]
                 };
 
                 expect(filterMethod(allFilter, aggregateRow)).to.be.true;
@@ -198,7 +198,7 @@ describe("ReportListTable", () => {
                 const filterMethod = getFilterMethod();
                 let aggregateRow: Partial<ReportRow>  = {
                     published: null,
-                    _subRows: [mockReportRow({published: false}), mockReportRow({published: false})]
+                    subRows: [mockReportRow({published: false}), mockReportRow({published: false})]
                 };
 
                 expect(filterMethod(allFilter, aggregateRow)).to.be.true;
