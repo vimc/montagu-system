@@ -197,6 +197,43 @@ class ExpectationsLogicTests : MontaguTests()
         }
     }
 
+    @Test
+    fun `can get expectations for responsibility`()
+    {
+        val sut = RepositoriesExpectationsLogic(
+                responsibilitiesRepo,
+                expectationsRepo,
+                modellingGroupRepo,
+                touchstonesRepo
+        )
+        val result = sut.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId)
+        assertThat(result).isEqualTo(fakeExpectationsMapping.expectation)
+    }
+
+    @Test
+    fun `getExpectationsForResponsibility throws if touchstone version does not exist`()
+    {
+        assertChecksThatTouchstoneVersionExists {
+            it.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId)
+        }
+    }
+
+    @Test
+    fun `getExpectationsForResponsibility throws if group does not exist`()
+    {
+        assertChecksThatGroupExists {
+            it.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId)
+        }
+    }
+
+    @Test
+    fun `getExpectationsForResponsibility throws if responsibility does not exist`()
+    {
+        assertChecksThatResponsibilityExists {
+            it.getExpectationsForResponsibility(groupId, touchstoneVersionId, scenarioId)
+        }
+    }
+
     private fun assertChecksThatGroupExists(work: (sut: ExpectationsLogic) -> Any)
     {
 
@@ -229,5 +266,21 @@ class ExpectationsLogicTests : MontaguTests()
         assertThatThrownBy { work(sut) }
                 .isInstanceOf(UnknownObjectError::class.java)
                 .hasMessageContaining(touchstoneVersionId)
+    }
+
+    private fun assertChecksThatResponsibilityExists(work: (sut: ExpectationsLogic) -> Any)
+    {
+        val responsibilitiesRepoWithoutResponsibility = mock<ResponsibilitiesRepository> {
+            on { getResponsibilityId(any(), any(), any()) } doThrow UnknownObjectError(scenarioId, "responsibility")
+        }
+        val sut = RepositoriesExpectationsLogic(
+                responsibilitiesRepoWithoutResponsibility,
+                expectationsRepo,
+                modellingGroupRepo,
+                touchstonesRepo
+        )
+        assertThatThrownBy { work(sut) }
+                .isInstanceOf(UnknownObjectError::class.java)
+                .hasMessageContaining(scenarioId)
     }
 }

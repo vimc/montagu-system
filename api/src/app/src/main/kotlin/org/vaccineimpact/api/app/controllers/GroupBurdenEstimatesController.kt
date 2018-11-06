@@ -8,6 +8,8 @@ import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.logic.ExpectationsLogic
+import org.vaccineimpact.api.app.logic.RepositoriesExpectationsLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.requests.PostDataHelper
@@ -20,14 +22,20 @@ import java.time.Instant
 
 open class GroupBurdenEstimatesController(
         context: ActionContext,
+        private val expecationsLogic: ExpectationsLogic,
         private val repositories: Repositories,
         private val estimateRepository: BurdenEstimateRepository,
         private val postDataHelper: PostDataHelper = PostDataHelper(),
         private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair)
-        ) : Controller(context)
+) : Controller(context)
 {
     constructor(context: ActionContext, repos: Repositories)
-            : this(context, repos, repos.burdenEstimates)
+            : this(context,
+            RepositoriesExpectationsLogic(repos.responsibilities,
+                    repos.expectations, repos.modellingGroup,
+                    repos.touchstone),
+            repos,
+            repos.burdenEstimates)
 
     fun getBurdenEstimates(): List<BurdenEstimateSet>
     {
@@ -62,6 +70,10 @@ open class GroupBurdenEstimatesController(
             // Next, get the metadata that will enable us to interpret the CSV
             val setId = context.params(":set-id").toInt()
             val metadata = estimateRepository.getBurdenEstimateSet(setId)
+
+            // Get the expectations for this set
+            val expectations = expecationsLogic
+                    .getExpectationsForResponsibility(path.groupId, path.touchstoneVersionId, path.scenarioId)
 
             // Then add the burden estimates
             val data = getBurdenEstimateDataFromCSV(metadata, source)
