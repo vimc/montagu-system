@@ -3,7 +3,6 @@ import {Report} from "../../../shared/models/Generated";
 import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps} from 'react-table'
 
 import {
-    AggregatedVersionCell,
     aggregatedVersionFilterMethod,
     BasicVersionDetails,
     getLatestVersion,
@@ -17,8 +16,8 @@ import {
     PublishStatusFilter
 } from "./ReportListColumns/PublishStatusColumn";
 import {ReportVersionFilter} from "./ReportListColumns/ReportVersionFilter";
-import {nameAccessorFunction} from "./ReportListColumns/NameColumn";
-import {Button, ButtonGroup} from "reactstrap";
+import {aggregatedNameFilterMethod, NameCell} from "./ReportListColumns/NameColumn";
+import {ButtonGroup} from "reactstrap";
 
 export interface ReportsListTableProps {
     reports: Report[]
@@ -73,11 +72,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
 
     constructor(props: ReportsListTableProps) {
         super();
-        const numRows = props.reports.length;
-        const expanded = {} as any;
-        for (let i = 0; i < numRows; i++) {
-            expanded[i] = false;
-        }
+        const expanded = this.allCollapsed(props);
         this.state = {
             expanded: expanded
         }
@@ -115,12 +110,6 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
 
     render() {
 
-        const numRows = this.props.reports.length;
-        const expanded = {} as any;
-        for (let i = 0; i < numRows; i++) {
-            expanded[i] = true;
-        }
-
         // Note: if these column headers change, you must also change ./styles/report-table.scss
         // where the headers are hard-coded for small devices
         const columns: Column[] =
@@ -128,16 +117,10 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                 {
                     Header: "Name",
                     id: "name",
-                    accessor: nameAccessorFunction,
                     Filter: TextFilter,
-                    PivotValue: (props) =>
-                        <div style={{
-                            whiteSpace: "normal",
-                            verticalAlign: "top",
-                            display: "inline-block"
-                        }}>
-                            {props.value} ({props.subRows.length})
-                        </div>
+                    accessor: "name",
+                    PivotValue: NameCell,
+                    filterMethod: aggregatedNameFilterMethod
                 },
                 {
                     Header: "Version",
@@ -149,14 +132,14 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                     filterMethod: aggregatedVersionFilterMethod,
                     Filter: ReportVersionFilter,
                     aggregate: getLatestVersion,
-                    Aggregated: AggregatedVersionCell
+                    Aggregated: EmptyCell
                 },
                 {
                     Header: "Author",
                     accessor: "author",
                     width: 200,
                     Filter: TextFilter,
-                    Cell: EmptyCell,
+                    Cell: CellWithValue,
                     Aggregated: CellWithValue,
                     aggregate: getFirstOfAggregatedValues,
                 },
@@ -164,7 +147,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                     Header: "Requester",
                     accessor: "requester",
                     width: 200,
-                    Cell: EmptyCell,
+                    Cell: CellWithValue,
                     Filter: TextFilter,
                     Aggregated: CellWithValue,
                     aggregate: getFirstOfAggregatedValues,
@@ -193,10 +176,9 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
                 Click on a column heading to sort by that field. Hold shift to multi-sort.
             </div>
             <ButtonGroup className={"mb-3"}>
-                <Button onClick={this.collapseAll.bind(this)} className={"rounded-0"} color={"button"}>Collapse all
-                    rows</Button>
-                <Button onClick={this.expandAll.bind(this)} className={"rounded-0"} color={"button"}>Expand all
-                    rows</Button>
+                <a href={"#"} onClick={this.collapseAll.bind(this)} className={"mr-2"}>Collapse all reports</a>
+                /
+                <a href={'#'} onClick={this.expandAll.bind(this)} className={"ml-2"}>Expand all reports</a>
             </ButtonGroup>
             <ReactTable
                 pivotBy={["name"]}

@@ -27,7 +27,6 @@ describe("ReportListTable", () => {
 
     function getFilterMethod(): (filter: Partial<Filter>, row: any) => boolean {
         const col = getPublishStatusColumn() as Column.FilterProps;
-   //     return (filter: Filter, row: any) => col.filterMethod(filter, row, null);
         return col.filterMethod as (filter: Partial<Filter>, row: any) => boolean
     }
 

@@ -52,17 +52,6 @@ export const getLatestVersion = (vals: BasicVersionDetails[]): BasicVersionDetai
     return vals.sort(versionSortMethod)[0];
 };
 
-export const AggregatedVersionCell: React.SFC<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
-
-    const val = props.value as BasicVersionDetails;
-    return <span>
-                <InternalLink href={`/${val.name}/${val.version}/`}>
-                    View latest version
-                </InternalLink>
-                <div className={"small"}>({val.version})</div>
-        </span>
-};
-
 export const versionSortMethod = (a: BasicVersionDetails, b: BasicVersionDetails) => {
     if (a.date > b.date) {
         return -1
