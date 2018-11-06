@@ -3,6 +3,7 @@ package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.postgresql.util.PSQLException
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
@@ -15,6 +16,7 @@ import org.vaccineimpact.api.db.direct.addBurdenEstimate
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
 import org.vaccineimpact.api.db.direct.addCountries
 import org.vaccineimpact.api.db.direct.addStochasticBurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 
 class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
 {
@@ -209,6 +211,55 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
             sut.clearEstimateSet(setId)
             assertThat(getEstimatesInOrder(db)).isEmpty()
         }
+    }
+
+    @Test
+    fun `duplicate rows throw error`()
+    {
+        val setId = createCentralSetWithoutModelRuns()
+        withDatabase { db ->
+            val badData = (1..10000).map {
+                estimateObject()
+            }.asSequence()
+            val sut = CentralBurdenEstimateWriter(db.dsl)
+
+            Assertions.assertThatThrownBy {
+                sut.addEstimatesToSet(setId, badData, diseaseId)
+            }.isInstanceOf(PSQLException::class.java)
+        }
+        assertThatTableIsEmpty(Tables.BURDEN_ESTIMATE)
+    }
+
+    @Test
+    fun `duplicate stochastic rows throws error`()
+    {
+        val (setId, modelRun) = createStochasticSetWithModelRuns()
+        withDatabase { db ->
+            val badData = sequenceOf(
+                    estimateObject(runId = modelRun.externalIds[0]),
+                    estimateObject(runId = modelRun.externalIds[0])
+            )
+            val sut = StochasticBurdenEstimateWriter(db.dsl)
+
+            Assertions.assertThatThrownBy {
+                sut.addEstimatesToSet(setId, badData, diseaseId)
+            }.isInstanceOf(PSQLException::class.java)
+        }
+        assertThatTableIsEmpty(Tables.BURDEN_ESTIMATE_STOCHASTIC)
+    }
+
+    private fun estimateObject(
+            diseaseId: String = this.diseaseId,
+            runId: String? = null,
+            year: Int = 2000,
+            age: Int = 25,
+            countryId: String = "AFG",
+            countryName: String = "Afghanistan",
+            cohortSize: Float = 100F,
+            outcomes: Map<String, Float> = emptyMap()
+    ): BurdenEstimateWithRunId
+    {
+        return BurdenEstimateWithRunId(diseaseId, runId, year, age, countryId, countryName, cohortSize, outcomes)
     }
 
 }
