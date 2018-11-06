@@ -24,7 +24,7 @@ import java.beans.ConstructorProperties
 import java.sql.Timestamp
 import java.time.Instant
 
-private data class ResponsibilityInfo
+data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
 constructor(val id: Int, val disease: String, val setStatus: String, val setId: Int)
 
@@ -66,7 +66,7 @@ class JooqBurdenEstimateRepository(
                 .fetchInto(ModelRunParameterSet::class.java)
     }
 
-    private fun getBurdenEstimateSetForResponsibility(setId: Int, responsibilityId: Int): BurdenEstimateSet
+    override fun getBurdenEstimateSetForResponsibility(setId: Int, responsibilityId: Int): BurdenEstimateSet
     {
         val table = BURDEN_ESTIMATE_SET
         val records = dsl.select(
@@ -153,7 +153,7 @@ class JooqBurdenEstimateRepository(
                 modelVersion, modelRuns, uploader, timestamp)
     }
 
-    fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
+    private fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
                                 modelRuns: List<ModelRun>,
                                 uploader: String, timestamp: Instant): Int
     {
@@ -268,27 +268,14 @@ class JooqBurdenEstimateRepository(
         }
     }
 
-    override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
-                                           estimates: Sequence<BurdenEstimateWithRunId>)
-    {
-        val (set, responsibilityInfo) = getSetAndResponsibilityInfo(groupId, touchstoneVersionId, scenarioId, setId)
-        val type = set.type.type
-
-        if (set.status == BurdenEstimateSetStatus.COMPLETE)
-        {
-            throw InvalidOperationError("This burden estimate set has been marked as complete." +
-                    " You must create a new set if you want to upload any new estimates.")
-        }
-
-        getEstimateWriter(set).addEstimatesToSet(setId, estimates, responsibilityInfo.disease)
-        changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, type)
-    }
-
     override fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
     {
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+
         // Check all the IDs match up
-        val (set, _) = getSetAndResponsibilityInfo(groupId, touchstoneVersionId, scenarioId, setId)
+        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
+        val set = getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
         if (getEstimateWriter(set).isSetEmpty(setId))
         {
             throw InvalidOperationError("This burden estimate set does not have any burden estimate data. " +
@@ -342,7 +329,13 @@ class JooqBurdenEstimateRepository(
 
     override fun clearBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
     {
-        val (set, _) = getSetAndResponsibilityInfo(groupId, touchstoneVersionId, scenarioId, setId)
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+
+        // make sure set belongs to responsibility
+        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
+        val set = getBurdenEstimateSetForResponsibility(responsibilityInfo.id, setId)
+
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
             throw InvalidOperationError("You cannot clear a burden estimate set which is marked as 'complete'.")
@@ -354,7 +347,7 @@ class JooqBurdenEstimateRepository(
         getEstimateWriter(set).clearEstimateSet(setId)
     }
 
-    private fun getEstimateWriter(set: BurdenEstimateSet): BurdenEstimateWriter
+    override fun getEstimateWriter(set: BurdenEstimateSet): BurdenEstimateWriter
     {
         return if (set.isStochastic())
         {
@@ -364,17 +357,6 @@ class JooqBurdenEstimateRepository(
         {
             centralBurdenEstimateWriter
         }
-    }
-
-    private fun getSetAndResponsibilityInfo(
-            groupId: String, touchstoneVersionId: String, scenarioId: String, setId: Int
-    ): Pair<BurdenEstimateSet, ResponsibilityInfo>
-    {
-        // Dereference modelling group IDs
-        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
-        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
-        val set = getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
-        return Pair(set, responsibilityInfo)
     }
 
     private fun getlatestModelVersion(groupId: String, disease: String): Int
@@ -391,7 +373,7 @@ class JooqBurdenEstimateRepository(
 
     }
 
-    private fun changeBurdenEstimateStatus(setId: Int, newStatus: BurdenEstimateSetStatus)
+    override fun changeBurdenEstimateStatus(setId: Int, newStatus: BurdenEstimateSetStatus)
     {
         dsl.update(BURDEN_ESTIMATE_SET)
                 .set(BURDEN_ESTIMATE_SET.STATUS, mapper.mapEnum(newStatus))
@@ -399,7 +381,7 @@ class JooqBurdenEstimateRepository(
                 .execute()
     }
 
-    private fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetTypeCode)
+    override fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetTypeCode)
     {
         val field = if (type.isStochastic())
         {
@@ -435,7 +417,7 @@ class JooqBurdenEstimateRepository(
         return setRecord.id
     }
 
-    private fun getResponsibilityInfo(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityInfo
+    override fun getResponsibilityInfo(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityInfo
     {
         // Get responsibility ID
         return dsl.select(RESPONSIBILITY.ID, SCENARIO_DESCRIPTION.DISEASE, RESPONSIBILITY_SET.STATUS, RESPONSIBILITY_SET.ID.`as`("setId"))

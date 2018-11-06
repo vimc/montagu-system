@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
@@ -84,8 +85,7 @@ class GroupEstimatesControllerTests : MontaguTests()
     fun `can populate central estimate set`()
     {
         val touchstoneSet = mockTouchstones()
-        val repo = mockRepository(touchstoneSet,
-                existingBurdenEstimateSet = defaultEstimateSet.withType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN))
+        val logic = mockLogic()
 
         val expectedData = listOf(
                 BurdenEstimateWithRunId("yf", null, 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
@@ -99,7 +99,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         )
 
         val mockContext = mockActionContext()
-        verifyRepositoryIsInvokedToPopulateSet(mockContext, repo, touchstoneSet,
+        verifyLogicIsInvokedToPopulateSet(mockContext, mockRepository(touchstoneSet), logic, touchstoneSet,
                 normalCSVData.asSequence(), expectedData)
     }
 
@@ -107,8 +107,7 @@ class GroupEstimatesControllerTests : MontaguTests()
     fun `can populate stochastic estimate set`()
     {
         val touchstoneSet = mockTouchstones()
-        val repo = mockRepository(touchstoneSet,
-                existingBurdenEstimateSet = defaultEstimateSet.withType(BurdenEstimateSetTypeCode.STOCHASTIC))
+        val logic = mockLogic()
 
         val csvData = listOf(
                 StochasticBurdenEstimate("yf", "runA", 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
@@ -132,7 +131,9 @@ class GroupEstimatesControllerTests : MontaguTests()
         )
 
         val mockContext = mockActionContext()
-        verifyRepositoryIsInvokedToPopulateSet(mockContext, repo, touchstoneSet,
+        val repo = mockRepository(touchstoneSet, existingBurdenEstimateSet = defaultEstimateSet.copy(
+                type = BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC)))
+        verifyLogicIsInvokedToPopulateSet(mockContext, repo, logic, touchstoneSet,
                 csvData.asSequence(), expectedData)
     }
 
@@ -163,7 +164,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         val repo = mockRepository()
         val mockContext = mockActionContext(keepOpen = keepOpen)
         val mockPostData = mockCSVPostData(normalCSVData)
-        GroupBurdenEstimatesController(mockContext, mock(), mockRepositories(repo), repo, postDataHelper = mockPostData).populateBurdenEstimateSet()
+        GroupBurdenEstimatesController(mockContext, mockRepositories(repo), mock(), repo, postDataHelper = mockPostData).populateBurdenEstimateSet()
         verify(repo, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
                 "group-1", "touchstone-1", "scenario-1")
     }
@@ -180,27 +181,6 @@ class GroupEstimatesControllerTests : MontaguTests()
         }
         GroupBurdenEstimatesController(mockContext, mock(), mock(), repo).closeBurdenEstimateSet()
         verify(repo).closeBurdenEstimateSet(1, "group-1", "touchstone-1", "scenario-1")
-    }
-
-    @Test
-    fun `cannot upload data with multiple diseases`()
-    {
-        val data = sequenceOf(
-                BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
-                        "deaths" to 10F,
-                        "cases" to 100F
-                )),
-                BurdenEstimate("menA", 1980, 30, "AGO", "Angola", 2000F, mapOf(
-                        "deaths" to 20F,
-                        "dalys" to 73.6F
-                ))
-        )
-        val actionContext = mockActionContext()
-        val repo = mockRepository()
-        val controller = GroupBurdenEstimatesController(actionContext, mock(), mockRepositories(repo), repo, mockCSVPostData(data))
-        assertThatThrownBy {
-            controller.populateBurdenEstimateSet()
-        }.isInstanceOf(InconsistentDataError::class.java)
     }
 
     @Test
@@ -237,8 +217,10 @@ class GroupEstimatesControllerTests : MontaguTests()
         }
     }
 
-    private fun <T : Any> verifyRepositoryIsInvokedToPopulateSet(
-            actionContext: ActionContext, repo: BurdenEstimateRepository,
+    private fun <T : Any> verifyLogicIsInvokedToPopulateSet(
+            actionContext: ActionContext,
+            repo: BurdenEstimateRepository,
+            logic: BurdenEstimateLogic,
             touchstoneVersionSet: SimpleDataSet<TouchstoneVersion, String>,
             actualData: Sequence<T>,
             expectedData: List<BurdenEstimateWithRunId>
@@ -247,9 +229,12 @@ class GroupEstimatesControllerTests : MontaguTests()
         val postDataHelper = mock<PostDataHelper> {
             on { csvData<T>(any(), any()) } doReturn actualData
         }
-        GroupBurdenEstimatesController(actionContext, mock(), mockRepositories(repo), repo, postDataHelper = postDataHelper).populateBurdenEstimateSet()
+
+        val sut = GroupBurdenEstimatesController(actionContext, mockRepositories(repo), logic, repo, postDataHelper = postDataHelper)
+
+        sut.populateBurdenEstimateSet()
         verify(touchstoneVersionSet).get("touchstone-1")
-        verify(repo).populateBurdenEstimateSet(eq(1),
+        verify(logic).populateBurdenEstimateSet(eq(1),
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
                 argWhere { it.toSet() == expectedData.toSet() }
         )
@@ -275,9 +260,14 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { touchstoneRepository } doReturn touchstoneRepo
             on { getBurdenEstimateSet(any()) } doReturn existingBurdenEstimateSet
             on { createBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doReturn 1
+        }
+    }
+
+    private fun mockLogic(): BurdenEstimateLogic {
+        return mock {
             on { populateBurdenEstimateSet(any(), any(), any(), any(), any()) } doAnswer { args ->
                 // Force evaluation of sequence
-                args.getArgument<Sequence<BurdenEstimate>>(4).toList()
+                args.getArgument<Sequence<BurdenEstimateWithRunId>>(4).toList()
                 Unit
             }
         }

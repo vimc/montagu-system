@@ -27,8 +27,6 @@ interface ExpectationsLogic
             touchstoneVersionId: String,
             filterParameters: ScenarioFilterParameters
     ): ResponsibilitySetWithExpectations
-
-    fun getExpectationsForResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String): Expectations
 }
 
 class RepositoriesExpectationsLogic(private val responsibilitiesRepository: ResponsibilitiesRepository,
@@ -55,13 +53,6 @@ class RepositoriesExpectationsLogic(private val responsibilitiesRepository: Resp
         val data = responsibilitiesRepository.getResponsibility(group.id, touchstoneVersionId, scenarioId)
         val expectations = expectationsRepository.getExpectationsForResponsibility(data.responsibilityId)
         return ResponsibilityDetails(data.responsibility, data.touchstoneVersion, expectations.expectation)
-    }
-
-    override fun getExpectationsForResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String): Expectations
-    {
-        val group = checkGroupAndTouchstoneExist(groupId, touchstoneVersionId)
-        val responsibilityId = responsibilitiesRepository.getResponsibilityId(group.id, touchstoneVersionId, scenarioId)
-        return expectationsRepository.getExpectationsForResponsibility(responsibilityId).expectation
     }
 
     override fun getResponsibilitySetsWithExpectations(touchstoneVersionId: String): List<ResponsibilitySetWithExpectations>

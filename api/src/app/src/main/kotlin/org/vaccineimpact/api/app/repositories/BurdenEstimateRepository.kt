@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.app.repositories
 
+import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
+import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.time.Instant
@@ -16,9 +18,6 @@ interface BurdenEstimateRepository : Repository
     fun getBurdenEstimateSet(setId: Int): BurdenEstimateSet
     fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
 
-    fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
-                                  estimates: Sequence<BurdenEstimateWithRunId>)
-
     fun clearBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
 
     fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
@@ -30,4 +29,9 @@ interface BurdenEstimateRepository : Repository
     fun getModelRunParameterSets(groupId: String, touchstoneVersionId: String): List<ModelRunParameterSet>
 
     fun getModelRunParameterSet(setId: Int): FlexibleDataTable<ModelRun>
+    fun changeBurdenEstimateStatus(setId: Int, newStatus: BurdenEstimateSetStatus)
+    fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetTypeCode)
+    fun getEstimateWriter(set: BurdenEstimateSet): BurdenEstimateWriter
+    fun getBurdenEstimateSetForResponsibility(setId: Int, responsibilityId: Int): BurdenEstimateSet
+    fun getResponsibilityInfo(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityInfo
 }
