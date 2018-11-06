@@ -110,7 +110,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
 
         sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, basicData)
-        verify(writer.addEstimatesToSet(setId, basicData, disease))
+        verify(writer).addEstimatesToSet(eq(setId), argWhere { it.toSet() == basicData.toSet() }, eq(disease))
     }
 
     @Test
@@ -120,7 +120,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
 
         sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, basicData)
-        verify(repo.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL))
+        verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)
     }
 
     @Test
@@ -147,6 +147,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
 
         sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, basicData)
+        verify(writer).addEstimatesToSet(eq(setId), argWhere { it.toSet() == basicData.toSet() }, eq(disease))
     }
 
     @Test
