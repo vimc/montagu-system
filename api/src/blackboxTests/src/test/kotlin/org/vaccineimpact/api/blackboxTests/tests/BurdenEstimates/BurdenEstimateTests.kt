@@ -41,6 +41,8 @@ abstract class BurdenEstimateTests : DatabaseTest()
     {
         val returnedIds = setUp(db)
         TestUserHelper.setupTestUser()
+
+        db.addExpectations(returnedIds.responsibilityId)
         return db.addBurdenEstimateSet(
                 returnedIds.responsibilityId,
                 returnedIds.modelVersionId,
@@ -57,6 +59,7 @@ abstract class BurdenEstimateTests : DatabaseTest()
                 TestUserHelper.username)
         db.addModelRun(parameterSetId, "A")
         db.addModelRun(parameterSetId, "B")
+        db.addExpectations(ids.responsibilityId)
         return db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId,
                 TestUserHelper.username,
                 setType = "stochastic",
