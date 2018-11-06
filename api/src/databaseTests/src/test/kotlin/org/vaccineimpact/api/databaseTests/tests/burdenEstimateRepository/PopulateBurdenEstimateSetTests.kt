@@ -18,15 +18,17 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `can update set status`()
     {
-        val (returnedIds, setId) = withDatabase { db ->
-            setupDatabaseWithBurdenEstimateSetAndReturnIds(db, type = "central-averaged")
+        val setId = withDatabase { db ->
+            setupDatabaseWithBurdenEstimateSet(db, type = "central-averaged")
         }
         withRepo {
             it.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)
         }
 
         withDatabase { db ->
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "partial")
+            val t = Tables.BURDEN_ESTIMATE_SET
+            val set = db.dsl.selectFrom(t).where(t.ID.eq(setId)).fetchOne()
+            Assertions.assertThat(set[t.STATUS]).isEqualTo("partial")
         }
     }
 
