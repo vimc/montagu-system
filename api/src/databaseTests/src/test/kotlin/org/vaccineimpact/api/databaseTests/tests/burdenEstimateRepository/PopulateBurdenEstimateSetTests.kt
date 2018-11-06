@@ -12,7 +12,7 @@ import org.vaccineimpact.api.models.BurdenEstimateSetType
 import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
 import java.time.Instant
 
-class PopulateBurdenEstimateRepositoryTests : BurdenEstimateRepositoryTests()
+class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 {
 
     @Test
@@ -96,17 +96,5 @@ class PopulateBurdenEstimateRepositoryTests : BurdenEstimateRepositoryTests()
         }
 
     }
-
-    //
-//    @Test
-//    fun `populate set throws unknown object error if set does not exist`()
-//    {
-//        JooqContext().use {
-//            setupDatabase(it)
-//            val repo = makeRepository(it)
-//            Assertions.assertThatThrownBy {
-//                repo.populateBurdenEstimateSet(12, groupId, touchstoneVersionId, scenarioId, data())
-//            }.isInstanceOf(UnknownObjectError::class.java)
-//        }
-//    }
+    
 }
