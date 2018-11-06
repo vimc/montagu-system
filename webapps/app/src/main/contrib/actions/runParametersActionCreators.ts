@@ -9,6 +9,7 @@ import {
     RunParametersUploadStatus
 } from "../actionTypes/RunParametersTypes";
 import {ModelRunParameterSet, Result} from "../../shared/models/Generated";
+import FormData = require("form-data");
 
 export const runParametersActionCreators = {
 

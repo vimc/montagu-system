@@ -5,6 +5,7 @@ import {createContribStore} from "../../../main/contrib/createStore";
 import {RunParametersService} from "../../../main/contrib/services/RunParametersService";
 import {Sandbox} from "../../Sandbox";
 import {ContribAppState} from "../../../main/contrib/reducers/contribAppReducers";
+import FormData = require("form-data");
 
 describe('Run Parameters service tests', () => {
     const sandbox = new Sandbox();

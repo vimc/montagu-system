@@ -48,21 +48,6 @@ function commonConfig(name, public_path) {
                     test: /\.js$/,
                     loader: "source-map-loader"
                 },
-                // Use CSS modules
-                {
-                    test: /\.css$/,
-                    loaders: [
-                        "style-loader",
-                        {
-                            loader: "css-loader",
-                            options: {
-                                modules: true,
-                                // The local name must come last so that CSSTransitionGroup can append suffixes
-                                localIdentName: "[name]_[local]",
-                            }
-                        }
-                    ]
-                },
                 {
                     test: /\.scss$/,
                     loaders: [

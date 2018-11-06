@@ -3,7 +3,7 @@ import {compact} from "lodash";
 
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
 import {AdminAppState} from "../reducers/adminAppReducers";
-import {ModellingGroup, ModellingGroupCreation, ModellingGroupDetails} from "../../shared/models/Generated";
+import {ModellingGroup, ModellingGroupCreation, ModellingGroupDetails, User} from "../../shared/models/Generated";
 import {
     GroupsFetched,
     ModellingGroupTypes,
@@ -80,7 +80,7 @@ export const modellingGroupsActionCreators = {
         return (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             const currentGroupDetails = getState().groups.currentGroupDetails;
             const allUsers = getState().users.users;
-            let currentGroupMembers = [];
+            let currentGroupMembers: User[] = [];
 
             if (currentGroupDetails && isNonEmptyArray(allUsers)) {
                 currentGroupMembers = compact(currentGroupDetails.members

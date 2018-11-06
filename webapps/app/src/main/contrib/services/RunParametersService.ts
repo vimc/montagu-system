@@ -1,4 +1,5 @@
 import { AbstractLocalService } from "../../shared/services/AbstractLocalService";
+import FormData = require("form-data");
 
 export class RunParametersService extends AbstractLocalService {
 
