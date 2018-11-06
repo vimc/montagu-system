@@ -102,6 +102,7 @@ export interface ModelRunParameterSet {
 export interface Report {
     author: string;
     display_name: string | null;
+    id: string | null;
     latest_version: string;
     name: string;
     published: boolean;

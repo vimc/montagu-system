@@ -4,7 +4,7 @@ export class ReportsService extends AbstractLocalService {
 
     getAllReports() {
         return this.setOptions({cacheKey: ReportsCacheKeysEnum.reports})
-            .get("/reports/", "reporting");
+            .get("/versions/", "reporting");
     }
 
     getReportVersions(reportId: string) {
