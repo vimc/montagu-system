@@ -85,6 +85,17 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
                 status = status, setType = type)
     }
 
+    protected fun setupDatabaseWithBurdenEstimateSetAndReturnIds(
+            db: JooqContext,
+            status: String = "empty",
+            type: String = "central-single-run"
+    ): Pair<ReturnedIds, Int>
+    {
+        val ids = setupDatabase(db)
+        return Pair(ids, db.addBurdenEstimateSet(ids.responsibility, ids.modelVersion!!, username,
+                status = status, setType = type))
+    }
+
     protected fun setupDatabaseWithModelRunParameterSet(db: JooqContext,
                                                         responsibilitySetStatus: String = "incomplete"): ReturnedIds
     {
