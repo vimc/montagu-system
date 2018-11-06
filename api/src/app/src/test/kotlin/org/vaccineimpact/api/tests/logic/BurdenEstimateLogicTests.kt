@@ -130,7 +130,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
 
         sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, basicData)
-        verify(repo.getEstimateWriter(defaultEstimateSet))
+        verify(repo).getEstimateWriter(defaultEstimateSet)
     }
 
     @Test
