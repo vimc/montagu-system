@@ -1,214 +1,102 @@
-package org.vaccineimpact.api.databaseTests.tests
+package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.times
-import com.nhaarman.mockito_kotlin.verify
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.postgresql.util.PSQLException
-import org.vaccineimpact.api.app.errors.InvalidOperationError
-import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
-import org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository.BurdenEstimateRepositoryTests
-import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
-import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_STOCHASTIC
-import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
-import org.vaccineimpact.api.db.direct.addResponsibility
-import org.vaccineimpact.api.db.direct.addScenarioDescription
-import org.vaccineimpact.api.models.BurdenEstimateWithRunId
+import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.models.BurdenEstimateSet
+import org.vaccineimpact.api.models.BurdenEstimateSetStatus
+import org.vaccineimpact.api.models.BurdenEstimateSetType
+import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
+import java.time.Instant
 
 class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 {
-    override val usesAnnex = true
 
     @Test
-    fun `can populate burden estimate set`()
+    fun `can update set status`()
     {
-        val returnedIds = withDatabase { db ->
-            setupDatabase(db)
+        val setId = withDatabase { db ->
+            setupDatabaseWithBurdenEstimateSet(db, type = "central-averaged")
         }
-        val setId = withRepo { repo ->
-            val setId = repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
-            repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data())
-            setId
+        withRepo {
+            it.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)
         }
+
         withDatabase { db ->
-            checkBurdenEstimates(db, setId)
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "partial")
+            val t = Tables.BURDEN_ESTIMATE_SET
+            val set = db.dsl.selectFrom(t).where(t.ID.eq(setId)).fetchOne()
+            Assertions.assertThat(set[t.STATUS]).isEqualTo("partial")
         }
     }
 
     @Test
-    fun `can populate burden estimate set more than once`()
+    fun `can update current central estimate set`()
     {
-        val d = data()
-        val returnedIds = withDatabase { db -> setupDatabase(db) }
-        val setId = withRepo { repo ->
-            val setId = repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
-            repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, d.take(1))
-            repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, d.drop(1))
-            setId
+        val (returnedIds, setId) = withDatabase { db ->
+            setupDatabaseWithBurdenEstimateSetAndReturnIds(db, type = "central-averaged")
         }
+        withRepo {
+            it.updateCurrentBurdenEstimateSet(returnedIds.responsibility, setId,
+                    BurdenEstimateSetTypeCode.CENTRAL_AVERAGED)
+        }
+
         withDatabase { db ->
-            checkBurdenEstimates(db, setId)
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "partial")
+            val t = Tables.RESPONSIBILITY
+            val r = db.dsl.selectFrom(t).where(t.ID.eq(returnedIds.responsibility)).fetchOne()
+            Assertions.assertThat(r[t.CURRENT_BURDEN_ESTIMATE_SET]).isEqualTo(setId)
         }
     }
 
     @Test
-    fun `can populate stochastic burden estimate set`()
+    fun `can update current stochastic estimate set`()
     {
-        val (setId, modelRunData, returnedIds) = withDatabase { db ->
-            val returnedIds = setupDatabase(db)
-            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
-            val setId = db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
-                    username, setType = "stochastic", timestamp = timestamp, modelRunParameterSetId = modelRunData.runParameterSetId)
-            Triple(setId, modelRunData, returnedIds)
+        val (returnedIds, setId) = withDatabase { db ->
+            setupDatabaseWithBurdenEstimateSetAndReturnIds(db, type = "stochastic")
+        }
+        withRepo {
+            it.updateCurrentBurdenEstimateSet(returnedIds.responsibility, setId,
+                    BurdenEstimateSetTypeCode.STOCHASTIC)
         }
 
-        withRepo { repo ->
-            val data = data(modelRunData.externalIds)
-            repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data)
-        }
         withDatabase { db ->
-            checkStochasticBurdenEstimates(db, setId)
-            checkBurdenEstimateSetMetadata(db, setId, returnedIds, "partial")
-            checkStochasticModelRuns(db, modelRunData)
+            val t = Tables.RESPONSIBILITY
+            val r = db.dsl.selectFrom(t).where(t.ID.eq(returnedIds.responsibility)).fetchOne()
+            Assertions.assertThat(r[t.CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET]).isEqualTo(setId)
         }
     }
 
     @Test
-    fun `uses central estimate writer when set type is central`()
+    fun `gets central estimate writer when set type is stochastic`()
     {
-        val mockCentralEstimateWriter = mock<CentralBurdenEstimateWriter>()
-        val mockStochasticEstimateWriter = mock<StochasticBurdenEstimateWriter>()
-        withDatabase { db ->
-            setupDatabase(db)
-            val data = data()
-            val sut = makeRepository(db, mockCentralEstimateWriter, mockStochasticEstimateWriter)
-            val setId = sut.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
-            sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data)
-
-            verify(mockCentralEstimateWriter).addEstimatesToSet(setId, data, diseaseId)
-            verify(mockStochasticEstimateWriter, times(0)).addEstimatesToSet(setId, data, diseaseId)
-        }
-    }
-
-    @Test
-    fun `uses stochastic estimate writer when set type is stochastic`()
-    {
-        val mockCentralEstimateWriter = mock<CentralBurdenEstimateWriter>()
-        val mockStochasticEstimateWriter = mock<StochasticBurdenEstimateWriter>()
-        withDatabase { db ->
-            setupDatabase(db)
-            val data = data()
-            val sut = makeRepository(db, mockCentralEstimateWriter, mockStochasticEstimateWriter)
-            val setId = sut.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultStochasticProperties, username, timestamp)
-            sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data)
-
-            verify(mockCentralEstimateWriter, times(0)).addEstimatesToSet(setId, data, diseaseId)
-            verify(mockStochasticEstimateWriter).addEstimatesToSet(setId, data, diseaseId)
-        }
-    }
-
-    @Test
-    fun `cannot populate a set if status is complete`()
-    {
-        JooqContext().use {
-            val returnedIds = setupDatabase(it)
-            val setId = it.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion!!, username, "complete")
-
-            val repo = makeRepository(it)
-            assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data())
-            }.isInstanceOf(InvalidOperationError::class.java)
-                    .hasMessageContaining("You must create a new set if you want to upload any new estimates.")
-        }
-    }
-
-    @Test
-    fun `populate set throws unknown object error if set does not exist`()
-    {
-        JooqContext().use {
-            setupDatabase(it)
-            val repo = makeRepository(it)
-            assertThatThrownBy {
-                repo.populateBurdenEstimateSet(12, groupId, touchstoneVersionId, scenarioId, data())
-            }.isInstanceOf(UnknownObjectError::class.java)
-        }
-    }
-
-    @Test
-    fun `populate set throws unknown object error if set is for different responsibility`()
-    {
-        val scenario2 = "scenario-2"
-        val setId = withDatabase {
-            val returnedIds = setupDatabase(it)
-            it.addScenarioDescription(scenario2, "Test scenario 2", diseaseId, addDisease = false)
-            val responsibilityId = it.addResponsibility(returnedIds.responsibilitySetId, touchstoneVersionId, scenario2)
-            it.addBurdenEstimateSet(responsibilityId, returnedIds.modelVersion!!, username, "complete")
-        }
-        withRepo { repo ->
-            assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data())
-            }.isInstanceOf(UnknownObjectError::class.java)
-        }
-    }
-
-    @Test
-    fun `populate central estimate set with duplicate rows throws error`()
-    {
-        val setId = withDatabase {
-            setupDatabaseWithBurdenEstimateSet(it)
-        }
-        val estimates = (1..10000).map {
-            estimateObject()
-        }.asSequence()
-
-        withRepo { repo ->
-            assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, estimates)
-            }.isInstanceOf(PSQLException::class.java)
-        }
-        assertThatTableIsEmpty(BURDEN_ESTIMATE)
-    }
-
-    @Test
-    fun `populate stochastic estimate set with duplicate rows throws error`()
-    {
-        val (setId, modelRunId) = withDatabase { db ->
-            val ids = setupDatabase(db)
-            val modelRunData = addModelRuns(db, ids.responsibilitySetId, ids.modelVersion!!)
-            val setId = db.addBurdenEstimateSet(ids.responsibility, ids.modelVersion,
-                    username, setType = "stochastic", modelRunParameterSetId = modelRunData.runParameterSetId)
-            Pair(setId, modelRunData.externalIds.first())
-        }
-        val estimates = sequenceOf(
-                estimateObject(runId = modelRunId),
-                estimateObject(runId = modelRunId)
+        val centralEstimateSet = BurdenEstimateSet(
+                1, Instant.now(), "test.user",
+                BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean"),
+                BurdenEstimateSetStatus.EMPTY,
+                emptyList()
         )
-        withRepo { repo ->
-            assertThatThrownBy {
-                repo.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, estimates)
-            }.isInstanceOf(PSQLException::class.java)
+        withRepo {
+            val result = it.getEstimateWriter(centralEstimateSet)
+            assertThat(result is CentralBurdenEstimateWriter).isTrue()
         }
-        assertThatTableIsEmpty(BURDEN_ESTIMATE_STOCHASTIC)
     }
 
-    private fun estimateObject(
-            diseaseId: String = this.diseaseId,
-            runId: String? = null,
-            year: Int = 2000,
-            age: Int = 25,
-            countryId: String = "AFG",
-            countryName: String = "Afghanistan",
-            cohortSize: Float = 100F,
-            outcomes: Map<String, Float> = emptyMap()
-    ): BurdenEstimateWithRunId
+    @Test
+    fun `gets stochastic estimate writer when set type is stochastic`()
     {
-        return BurdenEstimateWithRunId(diseaseId, runId, year, age, countryId, countryName, cohortSize, outcomes)
+        val stochasticEstimateSet = BurdenEstimateSet(
+                1, Instant.now(), "test.user",
+                BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC, "mean"),
+                BurdenEstimateSetStatus.EMPTY,
+                emptyList()
+        )
+        withRepo {
+            val result = it.getEstimateWriter(stochasticEstimateSet)
+            assertThat(result is StochasticBurdenEstimateWriter).isTrue()
+        }
+
     }
 
 }

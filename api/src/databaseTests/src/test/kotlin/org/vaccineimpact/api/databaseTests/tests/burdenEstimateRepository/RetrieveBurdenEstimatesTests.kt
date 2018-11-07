@@ -3,10 +3,9 @@ package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.addBurdenEstimateProblem
-import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
-import org.vaccineimpact.api.db.direct.addUserForTesting
+import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.BurdenEstimateSet
 import org.vaccineimpact.api.models.BurdenEstimateSetType
 import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
@@ -79,6 +78,24 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             val set = repo.getBurdenEstimateSet(setId)
             assertThat(set.uploadedBy).isEqualTo(username)
             assertThat(set.problems).isEmpty()
+        }
+    }
+
+    @Test
+    fun `getSetForResponsibility set throws unknown object error if set is for different responsibility`()
+    {
+        val scenario2 = "scenario-2"
+        val (setId, responsibilityId) = withDatabase {
+            val returnedIds = setupDatabase(it)
+            it.addScenarioDescription(scenario2, "Test scenario 2", diseaseId, addDisease = false)
+            val responsibilityId = it.addResponsibility(returnedIds.responsibilitySetId, touchstoneVersionId, scenario2)
+            val setId = it.addBurdenEstimateSet(responsibilityId, returnedIds.modelVersion!!, username, "complete")
+            Pair(responsibilityId, setId)
+        }
+        withRepo { repo ->
+            Assertions.assertThatThrownBy {
+                repo.getBurdenEstimateSetForResponsibility(setId, responsibilityId)
+            }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
 

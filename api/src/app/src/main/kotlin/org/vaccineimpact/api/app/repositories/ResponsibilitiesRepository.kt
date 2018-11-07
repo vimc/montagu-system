@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.repositories
 
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityAndTouchstone
@@ -11,10 +12,13 @@ interface ResponsibilitiesRepository: Repository {
                             scenarioFilterParameters: ScenarioFilterParameters,
                             touchstoneVersionId: String,
                             modellingGroupId: String): ResponsibilitySet
+    @Throws(UnknownObjectError::class)
     fun getResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityAndTouchstone
+    @Throws(UnknownObjectError::class)
     fun getResponsibilitiesForGroup(groupId: String,
                                     touchstoneVersionId: String,
                                     scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitySet
 
+    @Throws(UnknownObjectError::class)
     fun getResponsibilityId(groupId: String, touchstoneVersionId: String, scenarioId: String): Int
 }
