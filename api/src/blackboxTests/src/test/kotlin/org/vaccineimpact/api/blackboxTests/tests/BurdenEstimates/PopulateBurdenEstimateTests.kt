@@ -217,7 +217,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val token = TestUserHelper.getToken(requiredWritePermissions, includeCanLogin = true)
         val helper = RequestHelper()
         val response = helper.post("$setUrl/$setId/", duplicateStochasticCSVData, token = token)
-        val expectedError = "inconsistent-data"
+        val expectedError = "duplicate-key:burden_estimate_set,model_run,country,year,age,burden_outcome"
         JSONValidator().validateError(response.text, expectedError)
         JooqContext().use {
             val records = it.dsl

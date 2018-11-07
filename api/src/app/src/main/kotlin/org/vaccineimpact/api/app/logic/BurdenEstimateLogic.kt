@@ -50,17 +50,21 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
 
         burdenEstimateRepository.getEstimateWriter(set).addEstimatesToSet(setId, validatedEstimates, responsibilityInfo.disease)
 
-        val missingRows = expectedRows.filter(::falseRows)
-        if (missingRows.any())
+        if (!set.isStochastic())
         {
-            throw BadRequest("Missing rows:\n${missingRows.map(::serialiseRows).joinToString(",\n")}")
+            val missingRows = expectedRows.filter(::missingRows)
+
+            if (missingRows.any())
+            {
+                throw BadRequest("Missing rows:\n${missingRows.map(::serialiseRows).joinToString(",\n")}")
+            }
         }
 
         burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)
         burdenEstimateRepository.updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, type)
     }
 
-    private fun falseRows(countryMapEntry: Map.Entry<String, HashMap<Int, HashMap<Int, Boolean>>>): Boolean
+    private fun missingRows(countryMapEntry: Map.Entry<String, HashMap<Int, HashMap<Int, Boolean>>>): Boolean
     {
         return countryMapEntry.value.any { a ->
             a.value.any { y -> !y.value }
