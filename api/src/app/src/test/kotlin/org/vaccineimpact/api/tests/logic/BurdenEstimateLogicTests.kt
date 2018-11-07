@@ -3,22 +3,15 @@ package org.vaccineimpact.api.tests.logic
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions
 import org.junit.Test
-import org.postgresql.util.PSQLException
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
-import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
-import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.ExpectationsRepository
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
-import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
-import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
-import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.Tables
-import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
-import org.vaccineimpact.api.db.direct.addResponsibility
-import org.vaccineimpact.api.db.direct.addScenarioDescription
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Instant
@@ -62,7 +55,9 @@ class BurdenEstimateLogicTests : MontaguTests()
         }
     }
 
-    private val fakeExpectations = Expectations(1, "desc", 1..11, 2000..2009, CohortRestriction(), listOf(), listOf())
+    private val fakeExpectations = Expectations(1, "desc", 2000..2001, 1..2, CohortRestriction(),
+            listOf(Country("AFG", "")),
+            listOf())
 
     private fun mockExpectationsRepository(): ExpectationsRepository = mock {
         on { getExpectationsForResponsibility(responsibilityId) } doReturn ExpectationMapping(fakeExpectations, listOf(), disease)
@@ -72,25 +67,33 @@ class BurdenEstimateLogicTests : MontaguTests()
         on { getModellingGroup(groupId) } doReturn ModellingGroup(groupId, "description")
     }
 
-    val basicData = sequenceOf(
-            BurdenEstimateWithRunId("yf", null, 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
+    private val validData = sequenceOf(
+            BurdenEstimateWithRunId("yf", null, 2000, 1, "AFG", "Afghanistan", 1000F, mapOf(
                     "deaths" to 10F,
                     "cases" to 100F
             )),
-            BurdenEstimateWithRunId("yf", null, 1980, 30, "AGO", "Angola", 2000F, mapOf(
-                    "deaths" to 20F,
-                    "dalys" to 73.6F
+            BurdenEstimateWithRunId("yf", null, 2001, 1, "AFG", "Afghanistan", 1000F, mapOf(
+                    "deaths" to 10F,
+                    "cases" to 100F
+            )),
+            BurdenEstimateWithRunId("yf", null, 2000, 2, "AFG", "Afghanistan", 1000F, mapOf(
+                    "deaths" to 10F,
+                    "cases" to 100F
+            )),
+            BurdenEstimateWithRunId("yf", null, 2001, 2, "AFG", "Afghanistan", 1000F, mapOf(
+                    "deaths" to 10F,
+                    "cases" to 100F
             )))
 
     @Test
     fun `cannot upload data with multiple diseases`()
     {
         val data = sequenceOf(
-                BurdenEstimateWithRunId("yf", null, 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
+                BurdenEstimateWithRunId("yf", null, 2000, 1, "AFG", "Afghanistan", 1000F, mapOf(
                         "deaths" to 10F,
                         "cases" to 100F
                 )),
-                BurdenEstimateWithRunId("menA", null, 1980, 30, "AGO", "Angola", 2000F, mapOf(
+                BurdenEstimateWithRunId("menA", null, 2001, 2, "AFG", "Afghanistan", 2000F, mapOf(
                         "deaths" to 20F,
                         "dalys" to 73.6F
                 )))
@@ -100,6 +103,24 @@ class BurdenEstimateLogicTests : MontaguTests()
         Assertions.assertThatThrownBy {
             sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data)
         }.isInstanceOf(InconsistentDataError::class.java)
+                .hasMessageContaining("disease")
+    }
+
+    @Test
+    fun `cannot upload data with missing rows`()
+    {
+        val data = sequenceOf(
+                BurdenEstimateWithRunId("yf", null, 2000, 1, "AFG", "Afghanistan", 1000F, mapOf(
+                        "deaths" to 10F,
+                        "cases" to 100F
+                )))
+        val estimateWriter = mockWriter()
+        val estimatesRepo = mockEstimatesRepository(estimateWriter)
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), estimatesRepo, mockExpectationsRepository())
+        Assertions.assertThatThrownBy {
+            sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data)
+        }.isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining("Missing rows:\nAFG : [age 1 : [2000, 2001], age 2 : [2000, 2001]]")
     }
 
     @Test
@@ -109,8 +130,9 @@ class BurdenEstimateLogicTests : MontaguTests()
         val repo = mockEstimatesRepository(writer)
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
 
-        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, basicData)
-        verify(writer).addEstimatesToSet(eq(setId), argWhere { it.toSet() == basicData.toSet() }, eq(disease))
+        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
+
+        verify(writer).addEstimatesToSet(eq(setId), any(), eq(disease))
     }
 
     @Test
@@ -119,7 +141,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val repo = mockEstimatesRepository()
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
 
-        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, basicData)
+        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
         verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)
     }
 
@@ -129,7 +151,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val repo = mockEstimatesRepository()
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
 
-        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, basicData)
+        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
         verify(repo).getEstimateWriter(defaultEstimateSet)
     }
 
@@ -146,8 +168,8 @@ class BurdenEstimateLogicTests : MontaguTests()
         }
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
 
-        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, basicData)
-        verify(writer).addEstimatesToSet(eq(setId), argWhere { it.toSet() == basicData.toSet() }, eq(disease))
+        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
+        verify(writer).addEstimatesToSet(eq(setId), any(), eq(disease))
     }
 
     @Test
@@ -162,7 +184,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
 
         Assertions.assertThatThrownBy {
-            sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, basicData)
+            sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
         }.isInstanceOf(InvalidOperationError::class.java)
                 .hasMessageContaining("You must create a new set if you want to upload any new estimates.")
 

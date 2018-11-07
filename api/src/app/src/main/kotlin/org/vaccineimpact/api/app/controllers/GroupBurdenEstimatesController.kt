@@ -2,12 +2,10 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ResultRedirector
 import org.vaccineimpact.api.app.app_start.Controller
-import org.vaccineimpact.api.app.checkAllValuesAreEqual
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
-import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
