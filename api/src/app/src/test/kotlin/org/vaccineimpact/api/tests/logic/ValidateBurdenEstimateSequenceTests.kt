@@ -13,7 +13,7 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class ValidateBurdenEstimateSequenceTests : MontaguTests()
 {
-    private val countries = listOf(Country("AFG", ""))
+    private val countries = listOf(Country("AFG", ""), Country("AGO", ""))
     private val expectations = Expectations(1, "desc", 2000..2001, 1..2, CohortRestriction(),
             countries,
             listOf())
@@ -22,9 +22,22 @@ class ValidateBurdenEstimateSequenceTests : MontaguTests()
     fun `sequence is passed through unchanged if all values are expected and disease consistent`()
     {
         val source = listOf(BurdenEstimateWithRunId("d1", null, 2000, 1, "AFG", "Afghanistan", 10000F, mapOf()),
-                BurdenEstimateWithRunId("d1", null, 2001, 1, "AFG", "Afghanistan", 10000F, mapOf()))
+                BurdenEstimateWithRunId("d1", null, 2001, 1, "AFG", "Afghanistan", 10000F, mapOf()),
+                BurdenEstimateWithRunId("d1", null, 2000, 1, "AGO", "Angola", 10000F, mapOf()),
+                BurdenEstimateWithRunId("d1", null, 2000, 2, "AFG", "Afghanistan", 10000F, mapOf()))
         val checked = source.asSequence().validate(expectations.expectedRowHashMap())
         assertThat(checked.toList()).hasSameElementsAs(source)
+    }
+
+    @Test
+    fun `throws exception on multiple diseases`()
+    {
+        val source = listOf(BurdenEstimateWithRunId("d1", null, 2000, 1, "AFG", "", 10000F, mapOf()),
+                BurdenEstimateWithRunId("d2", null, 2001, 1, "AFG", "", 10000F, mapOf()))
+
+        assertThatThrownBy {
+            source.asSequence().validate(expectations.expectedRowHashMap()).toList()
+        }.isInstanceOf(InconsistentDataError::class.java).hasMessageContaining("disease")
     }
 
     @Test

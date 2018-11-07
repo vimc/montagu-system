@@ -6,6 +6,7 @@ import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.validate
+import org.vaccineimpact.api.app.validateStochastic
 import org.vaccineimpact.api.models.BurdenEstimateSetStatus
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 
@@ -30,7 +31,14 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
                 .expectation.expectedRowHashMap()
 
-        val validatedEstimates = estimates.validate(expectedRows)
+        val validatedEstimates = if (set.isStochastic())
+        {
+            estimates.validateStochastic()
+        }
+        else
+        {
+            estimates.validate(expectedRows)
+        }
 
         val type = set.type.type
 

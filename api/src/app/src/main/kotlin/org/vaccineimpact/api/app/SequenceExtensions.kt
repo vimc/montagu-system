@@ -38,3 +38,17 @@ fun Sequence<BurdenEstimateWithRunId>.validate(expectedRows: HashMap<String, Has
         expectedRows[it.country]!![it.age]!![it.year] = true
     }
 }
+
+
+// TODO actually validate rows, based on runId as well as year/age/country
+fun Sequence<BurdenEstimateWithRunId>.validateStochastic(): Sequence<BurdenEstimateWithRunId>
+{
+    var first: BurdenEstimateWithRunId? = null
+    return this.onEach {
+        first = first ?: it
+        if (first!!.disease != it.disease)
+        {
+            throw InconsistentDataError("More than one value was present in the disease column")
+        }
+    }
+}
