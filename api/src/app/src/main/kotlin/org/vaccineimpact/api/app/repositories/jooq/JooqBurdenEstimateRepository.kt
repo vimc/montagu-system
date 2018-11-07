@@ -322,7 +322,7 @@ class JooqBurdenEstimateRepository(
         val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
 
         val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion, properties)
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, properties.type.type)
+        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, properties.type)
 
         return setId
     }
@@ -381,7 +381,7 @@ class JooqBurdenEstimateRepository(
                 .execute()
     }
 
-    override fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetTypeCode)
+    override fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetType)
     {
         val field = if (type.isStochastic())
         {
