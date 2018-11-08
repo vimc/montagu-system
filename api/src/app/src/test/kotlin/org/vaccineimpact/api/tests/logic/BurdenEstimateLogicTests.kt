@@ -6,12 +6,15 @@ import org.junit.Test
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
+import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Instant
@@ -171,6 +174,64 @@ class BurdenEstimateLogicTests : MontaguTests()
         }.isInstanceOf(InvalidOperationError::class.java)
                 .hasMessageContaining("You must create a new set if you want to upload any new estimates.")
 
+    }
+
+    @Test
+    fun `modelling-group id is checked before closing burden estimate set`()
+    {
+        val repo = mock<BurdenEstimateRepository> {
+            on { getBurdenEstimateSetForResponsibility(any(), any()) } doReturn defaultEstimateSet
+                    .copy(status = BurdenEstimateSetStatus.PARTIAL)
+            on { getResponsibilityInfo(any(), any(), any()) } doReturn
+                    ResponsibilityInfo(responsibilityId, disease, "open", setId)
+        }
+        val groupRepo = mockGroupRepository()
+        val sut = RepositoriesBurdenEstimateLogic(groupRepo, repo, mockExpectationsRepository())
+        sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
+        verify(groupRepo).getModellingGroup(groupId)
+    }
+
+    @Test
+    fun `can close non-empty burden estimate set`()
+    {
+        val repo = mock<BurdenEstimateRepository> {
+            on { getBurdenEstimateSetForResponsibility(any(), any()) } doReturn defaultEstimateSet
+                    .copy(status = BurdenEstimateSetStatus.PARTIAL)
+            on { getResponsibilityInfo(any(), any(), any()) } doReturn
+                    ResponsibilityInfo(responsibilityId, disease, "open", setId)
+        }
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
+    }
+
+    @Test
+    fun `cannot close empty burden estimate set`()
+    {
+        val repo = mock<BurdenEstimateRepository> {
+            on { getBurdenEstimateSetForResponsibility(any(), any()) } doReturn defaultEstimateSet
+                    .copy(status = BurdenEstimateSetStatus.EMPTY)
+            on { getResponsibilityInfo(any(), any(), any()) } doReturn
+                    ResponsibilityInfo(responsibilityId, disease, "open", setId)
+        }
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
+    }
+
+    @Test
+    fun `cannot close burden estimate set when responsibility lookup throws an error`()
+    {
+        val repo = mock<BurdenEstimateRepository> {
+            on { getBurdenEstimateSetForResponsibility(any(), any()) } doReturn defaultEstimateSet
+                    .copy(status = BurdenEstimateSetStatus.PARTIAL)
+            on { getResponsibilityInfo(groupId, touchstoneVersionId, scenarioId) } doThrow
+                    UnknownObjectError(scenarioId, "responsibility")
+        }
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+
+
+        Assertions.assertThatThrownBy {
+            sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
+        }.isInstanceOf(UnknownObjectError::class.java).hasMessageContaining(scenarioId)
     }
 
 }

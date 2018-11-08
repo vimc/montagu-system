@@ -99,6 +99,46 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         }
     }
 
+    @Test
+    fun `getResponsibilityInfo throws unknown object error if touchstone does not exist`()
+    {
+        withRepo { repo ->
+            Assertions.assertThatThrownBy {
+                repo.getResponsibilityInfo(groupId, touchstoneVersionId, scenarioId)
+            }.isInstanceOf(UnknownObjectError::class.java)
+                    .hasMessageContaining("touchstone")
+        }
+    }
+
+    @Test
+    fun `getResponsibilityInfo throws unknown object error if scenario does not exist`()
+    {
+        withDatabase {
+            it.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
+        }
+        withRepo { repo ->
+            Assertions.assertThatThrownBy {
+                repo.getResponsibilityInfo(groupId, touchstoneVersionId, scenarioId)
+            }.isInstanceOf(UnknownObjectError::class.java)
+                    .hasMessageContaining("scenario")
+        }
+    }
+
+    @Test
+    fun `getResponsibilityInfo throws unknown object error if group is not responsible for scenario`()
+    {
+        withDatabase {
+            it.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
+            it.addScenarioDescription(scenarioId, "description", "disease", addDisease = true)
+        }
+        withRepo { repo ->
+            Assertions.assertThatThrownBy {
+                repo.getResponsibilityInfo(groupId, touchstoneVersionId, scenarioId)
+            }.isInstanceOf(UnknownObjectError::class.java)
+                    .hasMessageContaining("responsibility")
+        }
+    }
+
     private fun checkSetHasExpectedType(sets: List<BurdenEstimateSet>, setId: Int, expectedType: BurdenEstimateSetType)
     {
         val set = sets.singleOrNull { it.id == setId }

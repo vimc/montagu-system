@@ -268,25 +268,6 @@ class JooqBurdenEstimateRepository(
         }
     }
 
-    override fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
-    {
-        // Dereference modelling group IDs
-        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
-
-        // Check all the IDs match up
-        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
-        val set = getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
-        if (getEstimateWriter(set).isSetEmpty(setId))
-        {
-            throw InvalidOperationError("This burden estimate set does not have any burden estimate data. " +
-                            "It cannot be marked as complete")
-        }
-        else
-        {
-            changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
-        }
-    }
-
     override fun createBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
                                          properties: CreateBurdenEstimateSet,
                                          uploader: String, timestamp: Instant): Int

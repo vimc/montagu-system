@@ -161,26 +161,26 @@ class GroupEstimatesControllerTests : MontaguTests()
     {
         val timesExpected = if (expectedClosed) times(1) else never()
 
-        val repo = mockRepository()
+        val logic = mockLogic()
         val mockContext = mockActionContext(keepOpen = keepOpen)
         val mockPostData = mockCSVPostData(normalCSVData)
-        GroupBurdenEstimatesController(mockContext, mockRepositories(repo), mock(), repo, postDataHelper = mockPostData).populateBurdenEstimateSet()
-        verify(repo, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
+        GroupBurdenEstimatesController(mockContext, mock(), logic, mock(), postDataHelper = mockPostData).populateBurdenEstimateSet()
+        verify(logic, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
                 "group-1", "touchstone-1", "scenario-1")
     }
 
     @Test
     fun `can close burden estimate set`()
     {
-        val repo = mockRepository()
+        val logic = mockLogic()
         val mockContext = mock<ActionContext> {
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
-        GroupBurdenEstimatesController(mockContext, mock(), mock(), repo).closeBurdenEstimateSet()
-        verify(repo).closeBurdenEstimateSet(1, "group-1", "touchstone-1", "scenario-1")
+        GroupBurdenEstimatesController(mockContext, mock(), logic, mock()).closeBurdenEstimateSet()
+        verify(logic).closeBurdenEstimateSet(1, "group-1", "touchstone-1", "scenario-1")
     }
 
     @Test
