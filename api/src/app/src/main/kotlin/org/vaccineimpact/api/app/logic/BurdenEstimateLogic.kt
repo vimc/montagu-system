@@ -60,13 +60,6 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         val validatedEstimates = estimates.validate(expectedRows)
 
         burdenEstimateRepository.getEstimateWriter(set).addEstimatesToSet(set.id, validatedEstimates, responsibilityInfo.disease)
-
-        val missingRows = expectedRows.filter(::missingRows)
-
-        if (missingRows.any())
-        {
-            throw BadRequest("Missing rows:\n${missingRows.map(::serialiseRows).joinToString(",\n")}")
-        }
     }
 
     private fun populateStochasticBurdenEstimateSet(set: BurdenEstimateSet, responsibilityInfo: ResponsibilityInfo,
@@ -75,19 +68,5 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         val validatedEstimates = estimates.validateStochastic()
         burdenEstimateRepository.getEstimateWriter(set)
                 .addEstimatesToSet(set.id, validatedEstimates, responsibilityInfo.disease)
-    }
-
-    private fun missingRows(countryMapEntry: Map.Entry<String, HashMap<Int, HashMap<Int, Boolean>>>): Boolean
-    {
-        return countryMapEntry.value.any { a ->
-            a.value.any { y -> !y.value }
-        }
-    }
-
-    private fun serialiseRows(countryMapEntry: Map.Entry<String, HashMap<Int, HashMap<Int, Boolean>>>): String
-    {
-        return "${countryMapEntry.key} : ${countryMapEntry.value.map { a ->
-            "age ${a.key} : ${a.value.map { it.key.toString() }}"
-        }}"
     }
 }

@@ -107,23 +107,6 @@ class BurdenEstimateLogicTests : MontaguTests()
     }
 
     @Test
-    fun `cannot upload data with missing rows`()
-    {
-        val data = sequenceOf(
-                BurdenEstimateWithRunId("yf", null, 2000, 1, "AFG", "Afghanistan", 1000F, mapOf(
-                        "deaths" to 10F,
-                        "cases" to 100F
-                )))
-        val estimateWriter = mockWriter()
-        val estimatesRepo = mockEstimatesRepository(estimateWriter)
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), estimatesRepo, mockExpectationsRepository())
-        Assertions.assertThatThrownBy {
-            sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data)
-        }.isInstanceOf(BadRequest::class.java)
-                .hasMessageContaining("Missing rows:\nAFG : [age 1 : [2000, 2001], age 2 : [2000, 2001]]")
-    }
-
-    @Test
     fun `can populate burden estimate set`()
     {
         val writer = mockWriter()
