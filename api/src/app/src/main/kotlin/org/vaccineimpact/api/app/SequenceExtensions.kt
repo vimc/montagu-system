@@ -32,7 +32,7 @@ fun Sequence<BurdenEstimateWithRunId>.validate(expectedRows: HashMap<String, Has
         }
 
         if (years[it.year]!!){
-            throw InconsistentDataError("Duplicate row: ${it.country} ${it.age} ${it.year}")
+            throw InconsistentDataError("Duplicate entry for country:${it.country} age:${it.age} year:${it.year}")
         }
 
         expectedRows[it.country]!![it.age]!![it.year] = true

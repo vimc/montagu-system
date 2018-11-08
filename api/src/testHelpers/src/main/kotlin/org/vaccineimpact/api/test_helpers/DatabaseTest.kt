@@ -1,9 +1,11 @@
 package org.vaccineimpact.api.test_helpers
 
+import org.jooq.impl.TableImpl
 import org.junit.After
 import org.junit.Before
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.fieldsAsList
 
 abstract class DatabaseTest : MontaguTests()
 {
@@ -28,6 +30,11 @@ abstract class DatabaseTest : MontaguTests()
         {
             DatabaseCreationHelper.annex.dropDatabase()
         }
+    }
+
+    protected fun <T> withDatabase(doThis: (JooqContext) -> T): T
+    {
+        return JooqContext().use { doThis(it) }
     }
 }
 
