@@ -39,17 +39,17 @@ data class Expectations(
         }
     }
 
-    fun expectedRowHashMap(): HashMap<String, HashMap<Int, HashMap<Int, Boolean>>>
+    fun expectedRowHashMap(): HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>
     {
-        val map = HashMap<String, HashMap<Int, HashMap<Int, Boolean>>>()
+        val map = HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>()
         for (country in countries)
         {
-            val ageMap = HashMap<Int, HashMap<Int, Boolean>>()
+            val ageMap = HashMap<Short, HashMap<Short, Boolean>>()
             for (age in ages)
             {
-                val yearMap = HashMap<Int, Boolean>()
-                years.map { if ((it - age).withinCohortRange()) yearMap[it] = false }
-                ageMap[age] = yearMap
+                val yearMap = HashMap<Short, Boolean>()
+                years.map { if ((it - age).withinCohortRange()) yearMap[it.toShort()] = false }
+                ageMap[age.toShort()] = yearMap
             }
             map[country.id] = ageMap
         }
