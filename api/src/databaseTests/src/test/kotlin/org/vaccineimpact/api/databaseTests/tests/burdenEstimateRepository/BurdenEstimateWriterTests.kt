@@ -251,8 +251,8 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
     private fun estimateObject(
             diseaseId: String = this.diseaseId,
             runId: String? = null,
-            year: Int = 2000,
-            age: Int = 25,
+            year: Short = 2000,
+            age: Short = 25,
             countryId: String = "AFG",
             countryName: String = "Afghanistan",
             cohortSize: Float = 100F,
