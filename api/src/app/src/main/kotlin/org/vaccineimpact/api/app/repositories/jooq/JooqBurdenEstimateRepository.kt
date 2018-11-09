@@ -2,10 +2,6 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
 import org.jooq.JoinType
-import org.vaccineimpact.api.app.errors.BadRequest
-import org.vaccineimpact.api.app.errors.DatabaseContentsError
-import org.vaccineimpact.api.app.errors.InvalidOperationError
-import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
@@ -23,6 +19,14 @@ import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
 import java.sql.Timestamp
 import java.time.Instant
+import jdk.nashorn.internal.objects.NativeArray.forEach
+import org.jooq.Record
+import org.jooq.impl.DSL.selectFrom
+import org.vaccineimpact.api.app.errors.*
+import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
+import java.util.stream.Stream
+
 
 data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
@@ -38,8 +42,47 @@ class JooqBurdenEstimateRepository(
         stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
-    private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter ?:
-            CentralBurdenEstimateWriter(dsl)
+    private fun getCountriesAsLookup(): Map<Short, String> = dsl.select(Tables.COUNTRY.ID, Tables.COUNTRY.NID)
+            .from(Tables.COUNTRY)
+            .fetch()
+            .intoMap(Tables.COUNTRY.NID, Tables.COUNTRY.ID)
+
+    override fun validateEstimates(set: BurdenEstimateSet, expectedRowMap: HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>): HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>
+    {
+        val countries = getCountriesAsLookup()
+        dsl.select(BURDEN_ESTIMATE.COUNTRY, BURDEN_ESTIMATE.AGE, BURDEN_ESTIMATE.YEAR)
+                .from(BURDEN_ESTIMATE)
+                .where(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET.eq(set.id)).stream().use { stream ->
+                    stream.forEach { validate(it.into(BURDEN_ESTIMATE), countries, expectedRowMap) }
+                }
+
+        return expectedRowMap
+    }
+
+    private fun validate(r: BurdenEstimateRecord, countries: Map<Short, String>, expectedRows: HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>)
+    {
+        val countryId = countries[r.country]
+        val ages = expectedRows[countryId]
+                ?: throw BadRequest("We are not expecting data for country $countryId")
+
+        val years = ages[r.age]
+                ?: throw BadRequest("We are not expecting data for age ${r.age}")
+
+        if (!years.containsKey(r.year))
+        {
+            throw BadRequest("We are not expecting data for age ${r.age} and year ${r.year}")
+        }
+
+        if (years[r.year]!!)
+        {
+            throw InconsistentDataError("Duplicate entry for country:$countryId age:${r.age} year:${r.year}")
+        }
+
+        expectedRows[countryId]!![r.age]!![r.year] = true
+    }
+
+    private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter
+            ?: CentralBurdenEstimateWriter(dsl)
 
     private val stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter
             ?: StochasticBurdenEstimateWriter(dsl)
@@ -154,8 +197,8 @@ class JooqBurdenEstimateRepository(
     }
 
     private fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
-                                modelRuns: List<ModelRun>,
-                                uploader: String, timestamp: Instant): Int
+                                        modelRuns: List<ModelRun>,
+                                        uploader: String, timestamp: Instant): Int
     {
         val uploadInfoId = addUploadInfo(uploader, timestamp)
         val parameterSetId = addParameterSet(responsibilitySetId, modelVersionId, uploadInfoId)

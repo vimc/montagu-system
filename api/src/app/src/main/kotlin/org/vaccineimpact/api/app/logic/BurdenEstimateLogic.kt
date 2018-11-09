@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.app.logic
 
+import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
@@ -7,9 +9,7 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.app.validateStochastic
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.BurdenEstimateSetStatus
-import org.vaccineimpact.api.models.BurdenEstimateWithRunId
+import org.vaccineimpact.api.models.*
 
 interface BurdenEstimateLogic
 {
@@ -38,6 +38,9 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         }
         else
         {
+            val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
+                    .expectation.expectedRowHashMap()
+            val validatedRowMap = burdenEstimateRepository.validateEstimates(set, expectedRows)
             burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
         }
     }
