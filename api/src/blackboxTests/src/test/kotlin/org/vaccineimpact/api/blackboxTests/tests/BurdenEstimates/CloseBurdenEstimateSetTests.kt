@@ -21,7 +21,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
             EmptySchema
         } given { db ->
             setUpWithBurdenEstimateSet(db, setId = setId)
-            db.addBurdenEstimate(setId, "AFG")
+            db.addBurdenEstimate(setId, "AFG", age = 50, year = 1996)
         } requiringPermissions {
             requiredWritePermissions
         } andCheckHasStatus 200..200
