@@ -16,6 +16,7 @@ import java.io.Reader
 interface ActionContext
 {
     val request: Request
+
     val permissions: PermissionSet
     val userProfile: CommonProfile?
     /** If the user logged in with a token this will be their username

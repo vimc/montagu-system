@@ -1,11 +1,14 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.ResultRedirector
+import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
+import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
@@ -79,11 +82,23 @@ open class GroupBurdenEstimatesController(
             val keepOpen = context.queryParams("keepOpen")?.toBoolean() ?: false
             if (!keepOpen)
             {
-                estimatesLogic.closeBurdenEstimateSet(setId,
-                        path.groupId, path.touchstoneVersionId, path.scenarioId)
+                closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
             }
 
             okayResponse()
+        }
+    }
+
+    private fun closeEstimateSetAndReturnMissingRowError(setId: Int, groupId: String, touchstoneVersionId: String,
+                                                         scenarioId: String): Any {
+        try
+        {
+            estimatesLogic.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
+            return okayResponse()
+        }
+        catch(error: MissingRowsError){
+            context.setResponseStatus(400)
+            return error.asResult()
         }
     }
 
@@ -95,12 +110,11 @@ open class GroupBurdenEstimatesController(
         return okayResponse()
     }
 
-    fun closeBurdenEstimateSet(): String
+    fun closeBurdenEstimateSet(): Any
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
         val setId = context.params(":set-id").toInt()
-        estimatesLogic.closeBurdenEstimateSet(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
-        return okayResponse()
+        return closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
     }
 
     private fun getBurdenEstimateDataFromCSV(

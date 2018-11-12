@@ -24,7 +24,8 @@ data class Endpoint(
         override val method: HttpMethod = HttpMethod.get,
         override val postProcess: ResultProcessor = ::passThrough,
         override val requiredPermissions: List<PermissionRequirement> = listOf(),
-        override val basicAuth: Boolean = false
+        override val basicAuth: Boolean = false,
+        override val transform: Boolean = true
 
 ) : EndpointDefinition
 {
@@ -114,6 +115,11 @@ fun Endpoint.basicAuth(): Endpoint
 fun Endpoint.post(): Endpoint
 {
     return this.copy(method = spark.route.HttpMethod.post)
+}
+
+fun Endpoint.noTransform(): Endpoint
+{
+    return this.copy(transform = false)
 }
 
 private fun passThrough(x: Any?, @Suppress("UNUSED_PARAMETER") context: ActionContext): Any? = x

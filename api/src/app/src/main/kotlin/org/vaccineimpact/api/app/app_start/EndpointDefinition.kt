@@ -19,6 +19,7 @@ interface EndpointDefinition
     val postProcess: ResultProcessor
     val requiredPermissions: List<PermissionRequirement>
     val basicAuth: Boolean
+    val transform: Boolean
 
     fun additionalSetup(url: String, webTokenHelper: WebTokenHelper, repositoryFactory: RepositoryFactory)
 }

@@ -5,9 +5,7 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.mockito.Mockito
-import org.vaccineimpact.api.app.errors.InconsistentDataError
-import org.vaccineimpact.api.app.errors.InvalidOperationError
-import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.errors.*
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
@@ -195,6 +193,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val repo = mockEstimatesRepository(writer)
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
         sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
+        verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
     }
 
     @Test
@@ -211,10 +210,45 @@ class BurdenEstimateLogicTests : MontaguTests()
     }
 
     @Test
+    fun `closing a burden estimate set with missing rows marks it as invalid`()
+    {
+        val writer = mockWriter()
+        Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
+        val repo = mockEstimatesRepository(writer)
+        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(fakeExpectations.expectedRowHashMap())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+
+        assertThatThrownBy {
+            sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
+        }.isInstanceOf(MissingRowsError::class.java)
+        verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
+    }
+
+    @Test
+    fun `missing rows message contains all country names and one example row`()
+    {
+        val expectations = fakeExpectations.copy(ages = 10..15, countries = listOf(Country("AFG", ""), Country("AGO", ""),
+                Country("NGA", "")))
+        val writer = mockWriter()
+        Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
+        val repo = mockEstimatesRepository(writer)
+        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(expectations.expectedRowHashMap())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+
+        assertThatThrownBy {
+            sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
+        }.isInstanceOf(MissingRowsError::class.java)
+                .hasMessage("""the following problems occurred:
+Missing rows for AFG, AGO, NGA
+For example:
+AFG, age 10, year 2000""")
+    }
+
+    @Test
     fun `cannot close burden estimate set when responsibility lookup throws an error`()
     {
         val writer = mockWriter()
-        Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(true)
+        Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
 
         val repo = mock<BurdenEstimateRepository> {
             on { getBurdenEstimateSetForResponsibility(any(), any()) } doReturn defaultEstimateSet

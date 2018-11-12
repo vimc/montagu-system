@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.logic
 
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
+import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
@@ -45,7 +46,8 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
             val missingRows = validatedRowMap.filter(::missingRows)
             if (missingRows.any())
             {
-                throw BadRequest(rowErrorMessage(missingRows))
+                burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
+                throw MissingRowsError(rowErrorMessage(missingRows))
             }
             burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
         }
@@ -61,10 +63,11 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
     private fun rowErrorMessage(missingRows: Map<String, HashMap<Short, HashMap<Short, Boolean>>>): String
     {
         val countries = missingRows.keys
-        val message = "Missing rows for ${countries.joinToString(",")}"
+        val message = "Missing rows for ${countries.joinToString(", ")}"
         val firstRowAges = missingRows[countries.first()]
-        val exampleRows = "For example country: ${countries.first()} age: ${firstRowAges!!.keys.first()}" +
-                " year: ${firstRowAges.values.first()}"
+        val firstMissingAge = firstRowAges!!.keys.first()
+        val exampleRows = "For example:\n${countries.first()}, age $firstMissingAge," +
+                " year ${firstRowAges[firstMissingAge]!!.keys.first()}"
         return "$message\n$exampleRows"
     }
 
