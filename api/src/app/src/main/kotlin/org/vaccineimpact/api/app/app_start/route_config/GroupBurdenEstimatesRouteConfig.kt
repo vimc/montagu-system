@@ -43,6 +43,5 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
                     controller, "closeBurdenEstimateSet", method = HttpMethod.post)
                     .json()
                     .secure(writePermissions)
-                    .noTransform()
     )
 }
