@@ -39,6 +39,23 @@ data class Expectations(
         }
     }
 
+    fun expectedRowHashMap(): HashMap<String, HashMap<Int, HashMap<Int, Boolean>>>
+    {
+        val map = HashMap<String, HashMap<Int, HashMap<Int, Boolean>>>()
+        for (country in countries)
+        {
+            val ageMap = HashMap<Int, HashMap<Int, Boolean>>()
+            for (age in ages)
+            {
+                val yearMap = HashMap<Int, Boolean>()
+                years.map { if ((it - age).withinCohortRange()) yearMap[it] = false }
+                ageMap[age] = yearMap
+            }
+            map[country.id] = ageMap
+        }
+        return map
+    }
+
     private fun outcomesMap() = outcomes.associateBy({ it }, { null })
 
     private fun mapCentralRow(disease: String, year: Int, age: Int, country: Country): ExpectedCentralRow
