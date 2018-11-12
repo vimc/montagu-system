@@ -20,10 +20,6 @@ abstract class RepositoryTests<TRepository : Repository> : DatabaseTest()
         return RepositoryTestConfig(this::makeRepository, populateDatabase = {})
     }
 
-    protected fun <T> withDatabase(doThis: (JooqContext) -> T): T
-    {
-        return JooqContext().use { doThis(it) }
-    }
 
     protected fun <T> withRepo(doThis: (TRepository) -> T): T
     {

@@ -1,11 +1,15 @@
 package org.vaccineimpact.api.app.logic
 
-import org.vaccineimpact.api.app.checkAllValuesAreEqual
-import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
+import org.vaccineimpact.api.app.validate
+import org.vaccineimpact.api.app.validateStochastic
+import org.vaccineimpact.api.db.tables.Responsibility
+import org.vaccineimpact.api.models.BurdenEstimateSet
 import org.vaccineimpact.api.models.BurdenEstimateSetStatus
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 
@@ -23,14 +27,9 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
                                            estimates: Sequence<BurdenEstimateWithRunId>)
     {
-        val validatedEstimates = estimates.checkAllValuesAreEqual({ it.disease },
-                InconsistentDataError("More than one value was present in the disease column")
-        )
         val group = modellingGroupRepository.getModellingGroup(groupId)
         val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(group.id, touchstoneVersionId, scenarioId)
         val set = burdenEstimateRepository.getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
-
-        val type = set.type.type
 
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
@@ -38,21 +37,36 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                     " You must create a new set if you want to upload any new estimates.")
         }
 
-        val expectations = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
-                .expectation
-
-        val expectedRows = if (set.isStochastic())
+        if (set.isStochastic())
         {
-            expectations.expectedStochasticRows(responsibilityInfo.disease)
+            populateStochasticBurdenEstimateSet(set, responsibilityInfo, estimates)
         }
         else
         {
-            expectations.expectedCentralRows(responsibilityInfo.disease)
+            populateCentralBurdenEstimateSet(set, responsibilityInfo, estimates)
         }
 
-        burdenEstimateRepository.getEstimateWriter(set).addEstimatesToSet(setId, validatedEstimates, responsibilityInfo.disease)
         burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)
-        burdenEstimateRepository.updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, type)
+        burdenEstimateRepository.updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type)
     }
 
+    private fun populateCentralBurdenEstimateSet(set: BurdenEstimateSet, responsibilityInfo: ResponsibilityInfo,
+                                                 estimates: Sequence<BurdenEstimateWithRunId>)
+    {
+        val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
+                .expectation.expectedRowHashMap()
+
+
+        val validatedEstimates = estimates.validate(expectedRows)
+
+        burdenEstimateRepository.getEstimateWriter(set).addEstimatesToSet(set.id, validatedEstimates, responsibilityInfo.disease)
+    }
+
+    private fun populateStochasticBurdenEstimateSet(set: BurdenEstimateSet, responsibilityInfo: ResponsibilityInfo,
+                                                    estimates: Sequence<BurdenEstimateWithRunId>)
+    {
+        val validatedEstimates = estimates.validateStochastic()
+        burdenEstimateRepository.getEstimateWriter(set)
+                .addEstimatesToSet(set.id, validatedEstimates, responsibilityInfo.disease)
+    }
 }

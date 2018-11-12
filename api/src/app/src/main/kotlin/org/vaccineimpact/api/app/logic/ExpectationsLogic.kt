@@ -7,7 +7,6 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.models.ExpectationMapping
-import org.vaccineimpact.api.models.Expectations
 import org.vaccineimpact.api.models.ModellingGroup
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations

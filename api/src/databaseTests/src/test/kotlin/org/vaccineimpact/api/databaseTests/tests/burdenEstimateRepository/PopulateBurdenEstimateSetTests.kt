@@ -40,7 +40,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         }
         withRepo {
             it.updateCurrentBurdenEstimateSet(returnedIds.responsibility, setId,
-                    BurdenEstimateSetTypeCode.CENTRAL_AVERAGED)
+                    BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED))
         }
 
         withDatabase { db ->
@@ -58,7 +58,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         }
         withRepo {
             it.updateCurrentBurdenEstimateSet(returnedIds.responsibility, setId,
-                    BurdenEstimateSetTypeCode.STOCHASTIC)
+                    BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC))
         }
 
         withDatabase { db ->
