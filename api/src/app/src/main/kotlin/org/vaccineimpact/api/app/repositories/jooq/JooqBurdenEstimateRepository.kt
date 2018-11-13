@@ -73,11 +73,6 @@ class JooqBurdenEstimateRepository(
             throw BadRequest("We are not expecting data for age ${r.age} and year ${r.year}")
         }
 
-        if (years[r.year]!!)
-        {
-            throw InconsistentDataError("Duplicate entry for country:$countryId age:${r.age} year:${r.year}")
-        }
-
         expectedRows[countryId]!![r.age]!![r.year] = true
     }
 

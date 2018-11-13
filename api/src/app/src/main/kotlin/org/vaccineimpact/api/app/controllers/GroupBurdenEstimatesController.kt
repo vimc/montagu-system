@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app.controllers
 import org.vaccineimpact.api.app.ResultRedirector
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.app_start.Controller
+import org.vaccineimpact.api.app.asSuccessfulResult
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.context.postData
@@ -58,9 +59,9 @@ open class GroupBurdenEstimatesController(
     }
 
     fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestDataSource.fromContentType(context))
-    fun populateBurdenEstimateSet(source: RequestDataSource): String
+    fun populateBurdenEstimateSet(source: RequestDataSource): Result
     {
-        return ResultRedirector(tokenHelper, repositories).redirectIfRequested(context, "") { repos ->
+        return ResultRedirector(tokenHelper, repositories).redirectIfRequested(context, "".asSuccessfulResult()) { repos ->
             val estimateRepository = repos.burdenEstimates
 
             // First check if we're allowed to see this touchstoneVersion
@@ -84,22 +85,24 @@ open class GroupBurdenEstimatesController(
             {
                 closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
             }
-
-            okayResponse()
+            else
+            {
+                okayResponse().asSuccessfulResult()
+            }
         }
     }
 
     private fun closeEstimateSetAndReturnMissingRowError(setId: Int, groupId: String, touchstoneVersionId: String,
-                                                         scenarioId: String): Any {
-        try
-        {
+                                                         scenarioId: String): Result {
+       // try
+       // {
             estimatesLogic.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-            return okayResponse()
-        }
-        catch(error: MissingRowsError){
-            context.setResponseStatus(400)
-            return error.asResult()
-        }
+            return okayResponse().asSuccessfulResult()
+       // }
+//        catch(error: MissingRowsError){
+//            context.setResponseStatus(400)
+//            return error.asResult()
+//        }
     }
 
     fun clearBurdenEstimateSet(): String
@@ -110,7 +113,7 @@ open class GroupBurdenEstimatesController(
         return okayResponse()
     }
 
-    fun closeBurdenEstimateSet(): Any
+    fun closeBurdenEstimateSet(): Result
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
         val setId = context.params(":set-id").toInt()

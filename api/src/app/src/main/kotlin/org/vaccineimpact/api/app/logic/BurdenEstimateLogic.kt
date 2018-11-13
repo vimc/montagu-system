@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.app.logic
 
-import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
@@ -18,6 +17,7 @@ interface BurdenEstimateLogic
     fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
                                   estimates: Sequence<BurdenEstimateWithRunId>)
 
+    @Throws(MissingRowsError::class)
     fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
 }
 
