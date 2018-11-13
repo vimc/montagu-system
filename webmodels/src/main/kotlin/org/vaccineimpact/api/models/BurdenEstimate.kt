@@ -9,8 +9,8 @@ interface BurdenEstimateRow
 @FlexibleColumns
 data class BurdenEstimate(
         val disease: String,
-        val year: Int,
-        val age: Int,
+        val year: Short,
+        val age: Short,
         val country: String,
         val countryName: String,
         val cohortSize: Float,
@@ -22,8 +22,8 @@ data class BurdenEstimate(
 data class StochasticBurdenEstimate(
         val disease: String,
         val runId: String,
-        val year: Int,
-        val age: Int,
+        val year: Short,
+        val age: Short,
         val country: String,
         val countryName: String,
         val cohortSize: Float,
@@ -34,8 +34,8 @@ data class StochasticBurdenEstimate(
 data class BurdenEstimateWithRunId(
         val disease: String,
         val runId: String?,
-        val year: Int,
-        val age: Int,
+        val year: Short,
+        val age: Short,
         val country: String,
         val countryName: String,
         val cohortSize: Float,

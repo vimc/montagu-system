@@ -57,5 +57,6 @@ enum class BurdenEstimateSetStatus
 {
     EMPTY,
     PARTIAL,
-    COMPLETE
+    COMPLETE,
+    INVALID
 }
