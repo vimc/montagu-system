@@ -15,5 +15,6 @@ export const settings: Partial<Settings> = {
         publicPath: "/reports",
         requiresModellingGroupMembership: false
     },
-    showNewTemplates: true
+    showNewTemplates: true,
+    pinnedReports: ["modup2-201807"]
 };

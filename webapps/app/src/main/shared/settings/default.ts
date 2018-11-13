@@ -11,6 +11,7 @@ export const settings: Settings = {
     showTouchstoneCreation: false,
     showOldTemplates: false,
     showNewTemplates: false,
+    pinnedReports: [],
     admin: {
         publicPath: "/admin",
         requiresModellingGroupMembership: false

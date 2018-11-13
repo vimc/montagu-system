@@ -1,4 +1,5 @@
 export const settings: Partial<Settings> = {
     showTouchstoneCreation: true,
-    showNewTemplates: true
+    showNewTemplates: true,
+    pinnedReports: ["other"]
 };
