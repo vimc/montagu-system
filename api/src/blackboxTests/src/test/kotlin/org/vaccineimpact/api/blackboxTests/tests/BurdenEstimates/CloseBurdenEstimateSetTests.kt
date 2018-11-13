@@ -38,10 +38,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
             requiredWritePermissions
         } andCheckHasStatus 200..200
 
-        JooqContext().use { db ->
-            val record = db.dsl.fetchOne(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET.ID.eq(setId))
-            assertThat(record.status).isEqualTo("complete")
-        }
+        assertSetHasStatus("complete")
     }
 
     @Test
@@ -55,10 +52,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
                 requiredWritePermissions + "*/can-login")
         assertThat(response.statusCode).isEqualTo(400)
         JSONValidator().validateError(response.text, expectedErrorCode = "missing-rows")
-        JooqContext().use { db ->
-            val record = db.dsl.fetchOne(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET.ID.eq(setId))
-            assertThat(record.status).isEqualTo("invalid")
-        }
+        assertSetHasStatus("invalid")
     }
 
     @Test
@@ -81,6 +75,8 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
                     .fetch()
             assertThat(records).isNotEmpty
         }
+
+        assertSetHasStatus("complete")
     }
 
     @Test
@@ -92,6 +88,8 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
         val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
         val response = RequestHelper().postFile("$setUrl$setId/", csvData, token = token)
         JSONValidator().validateSuccess(response.text)
+
+        assertSetHasStatus("complete")
     }
 
     @Test
@@ -103,6 +101,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
         val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
         val response = RequestHelper().postFile("$setUrl$setId/", partialCSVData, token = token)
         JSONValidator().validateError(response.text, expectedErrorCode = "missing-rows")
+        assertSetHasStatus("invalid")
     }
 
     @Test
@@ -118,6 +117,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
         val response = requestHelper.postFile(oneTimeURL, csvData)
         val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
         JSONValidator().validateSuccess(resultAsString)
+        assertSetHasStatus("complete")
     }
 
     @Test
@@ -133,5 +133,14 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
         val response = requestHelper.postFile(oneTimeURL, partialCSVData)
         val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
         JSONValidator().validateError(resultAsString, expectedErrorCode = "missing-rows")
+        assertSetHasStatus("invalid")
+    }
+
+    private fun assertSetHasStatus(status: String){
+
+        JooqContext().use { db ->
+            val record = db.dsl.fetchOne(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE_SET.ID.eq(setId))
+            assertThat(record.status).isEqualTo(status)
+        }
     }
 }
