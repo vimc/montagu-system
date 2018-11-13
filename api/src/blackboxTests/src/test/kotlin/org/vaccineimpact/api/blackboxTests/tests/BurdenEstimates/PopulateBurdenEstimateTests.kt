@@ -248,16 +248,4 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         }
     }
 
-    private fun getPopulateOneTimeURL(setId: Int, redirect: Boolean = false): String
-    {
-        var url = "$setUrl/$setId/?keepOpen=true"
-        if (redirect)
-        {
-            url += "&redirectResultTo=http://localhost/"
-        }
-        val token = TestUserHelper.getToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
-        val oneTimeToken = RequestHelper().getOneTimeToken(url, token)
-        return "$url&access_token=$oneTimeToken"
-    }
-
 }

@@ -188,7 +188,21 @@ class GroupEstimatesControllerTests : MontaguTests()
     }
 
     @Test
-    fun `catches error when closing burden estimate set`()
+    fun `populate burden estimate set catches missing row error and returns result`()
+    {
+        val logic = mockLogic()
+        Mockito.`when`(logic.closeBurdenEstimateSet(any(), any(), any(), any()))
+                .doThrow(MissingRowsError("message"))
+        val repo = mockRepository()
+        val mockContext = mockActionContext()
+        val mockPostData = mockCSVPostData(normalCSVData)
+        val result = GroupBurdenEstimatesController(mockContext, mockRepositories(repo), logic, repo,
+                postDataHelper = mockPostData).populateBurdenEstimateSet()
+        assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
+    }
+
+    @Test
+    fun `catches error and returns result when closing burden estimate set`()
     {
         val logic = mockLogic()
         val repo = mockRepository()

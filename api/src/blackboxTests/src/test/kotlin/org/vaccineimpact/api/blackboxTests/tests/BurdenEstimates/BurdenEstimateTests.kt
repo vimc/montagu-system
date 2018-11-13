@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
@@ -91,6 +92,25 @@ abstract class BurdenEstimateTests : DatabaseTest()
         db.addModelRunParameterValue(modelRunId2, modelRunParameterId1, "cc")
         db.addModelRunParameterValue(modelRunId2, modelRunParameterId2, "dd")
     }
+
+    protected fun getPopulateOneTimeURL(setId: Int, redirect: Boolean = false, keepOpen: Boolean = true): String
+    {
+        var url = "$setUrl/$setId/?keepOpen=${keepOpen}"
+        if (redirect)
+        {
+            url += "&redirectResultTo=http://localhost/"
+        }
+        val token = TestUserHelper.getToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
+        val oneTimeToken = RequestHelper().getOneTimeToken(url, token)
+        return "$url&access_token=$oneTimeToken"
+    }
+
+    val partialCSVData = """
+"disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
+   "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
+   "Hib3",   1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
+   "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
+"""
 
     val csvData = """
 "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
