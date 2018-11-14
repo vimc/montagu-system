@@ -2,11 +2,14 @@ package org.vaccineimpact.api.models
 
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.models.helpers.FlexibleProperty
+import java.beans.ConstructorProperties
 import java.math.BigDecimal
 
-data class AggregatedBurdenEstimate(
-        val year: Int,
-        val age: Int,
+data class AggregatedBurdenEstimate
+@ConstructorProperties("year", "age", "value")
+constructor(
+        val year: Short,
+        val age: Short,
         val value: Float
 )
 
