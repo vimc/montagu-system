@@ -49,7 +49,7 @@ describe("ReportListTable", () => {
         });
     });
 
-    describe("NamFilterMethod", () => {
+    describe("NameFilterMethod", () => {
 
 
         it("returns true if any sub row matches name", function () {
@@ -72,6 +72,25 @@ describe("ReportListTable", () => {
             };
 
             expect(filter({value: "test"}, aggregateRow)).to.be.true;
+        });
+
+        it("is case insensitive", function () {
+            const filter = getFilterMethod();
+
+            let aggregateRow: Partial<RowInfo> = {
+                subRows: [{_original: {name: "Testing", display_name: null}},
+                    {_original: {name: "name", display_name: null}}]
+            };
+
+            expect(filter({value: "test"}, aggregateRow)).to.be.true;
+
+
+            aggregateRow = {
+                subRows: [{_original: {name: "whatever", display_name: "test"}},
+                    {_original: {name: "name", display_name: null}}]
+            };
+
+            expect(filter({value: "TEST"}, aggregateRow)).to.be.true;
         });
 
     });
