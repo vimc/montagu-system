@@ -46,6 +46,8 @@ class JooqBurdenEstimateRepository(
                 .from(BURDEN_ESTIMATE)
                 .join(RESPONSIBILITY)
                 .on(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET))
+                .where(RESPONSIBILITY.ID.eq(responsibilityId))
+                .and(BURDEN_ESTIMATE.BURDEN_OUTCOME.`in`(outcomeIds))
                 .groupBy(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE)
                 .fetchInto(AggregatedBurdenEstimate::class.java)
                 .groupBy { it.age }

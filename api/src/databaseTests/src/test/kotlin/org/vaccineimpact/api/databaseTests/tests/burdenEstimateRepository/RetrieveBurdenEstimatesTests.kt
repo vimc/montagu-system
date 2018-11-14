@@ -32,6 +32,8 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
                 {
                     it.addBurdenEstimate(setId, "AFG", year = y.toShort(), age = a.toShort(), outcome = "deaths")
                     it.addBurdenEstimate(setId, "AGO", year = y.toShort(), age = a.toShort(), outcome = "deaths")
+                    it.addBurdenEstimate(setId, "AGO", year = y.toShort(), age = a.toShort(), outcome = "cases")
+                    it.addBurdenEstimate(setId, "AGO", year = y.toShort(), age = a.toShort(), outcome = "casess")
                 }
             }
 
