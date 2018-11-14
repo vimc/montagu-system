@@ -3,8 +3,10 @@ package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.vaccineimpact.api.app.asSuccessfulResult
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.BurdenEstimateSet
 import org.vaccineimpact.api.models.BurdenEstimateSetType
@@ -13,6 +15,44 @@ import java.time.Instant
 
 class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
 {
+
+    @Test
+    fun `can get aggregated estimates for responsibility`()
+    {
+
+        val (responsibilityId, outcomeId) = withDatabase {
+            val ids = setupDatabase(it)
+            val modelVersionId = ids.modelVersion!!
+            val setId = it.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+            it.updateCurrentEstimate(ids.responsibility, setId)
+
+            for (a in 1..10)
+            {
+                for (y in 2000..2003)
+                {
+                    it.addBurdenEstimate(setId, "AFG", year = y.toShort(), age = a.toShort(), outcome = "deaths")
+                    it.addBurdenEstimate(setId, "AGO", year = y.toShort(), age = a.toShort(), outcome = "deaths")
+                }
+            }
+
+            val outcomeId = it.dsl.select(Tables.BURDEN_OUTCOME.ID)
+                    .from(Tables.BURDEN_OUTCOME)
+                    .where(Tables.BURDEN_OUTCOME.CODE.eq("deaths"))
+                    .fetchOne().value1()
+
+            Pair(ids.responsibility, outcomeId)
+        }
+
+        val result = withRepo {
+            it.getAggregatedEstimatesForResponsibility(responsibilityId, listOf(outcomeId))
+        }
+
+        assertThat(result.keys).hasSameElementsAs((1..10).map { it.toShort() })
+        assertThat(result.values.all{ it.count() == 4 }).isTrue()
+        assertThat(result.values.all{ it.all{ it.value == 200F } }).isTrue()
+    }
+
+
     @Test
     fun `can retrieve burden estimate sets`()
     {

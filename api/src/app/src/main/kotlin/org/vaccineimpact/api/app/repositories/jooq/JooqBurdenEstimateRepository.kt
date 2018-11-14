@@ -39,8 +39,8 @@ class JooqBurdenEstimateRepository(
         stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
-    override fun getAggregatedEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Int>):
-            List<AggregatedBurdenEstimate>
+    override fun getAggregatedEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Short>):
+            Map<Short, List<AggregatedBurdenEstimate>>
     {
         return dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"))
                 .from(BURDEN_ESTIMATE)
@@ -48,14 +48,15 @@ class JooqBurdenEstimateRepository(
                 .on(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET))
                 .groupBy(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE)
                 .fetchInto(AggregatedBurdenEstimate::class.java)
+                .groupBy { it.age }
     }
 
-    override fun getBurdenOutcomeIds(matching: String): List<Int>
+    override fun getBurdenOutcomeIds(matching: String): List<Short>
     {
         return dsl.select(BURDEN_OUTCOME.ID)
                 .from(BURDEN_OUTCOME)
                 .where(BURDEN_OUTCOME.NAME.like(matching))
-                .fetchInto(Int::class.java)
+                .fetchInto(Short::class.java)
     }
 
     private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter ?:

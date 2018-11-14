@@ -10,7 +10,7 @@ import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 // Note that the exception will originate from whatever part of the program is currently
 // asking for another element from the sequence, not from the caller of
 // this function.
-fun Sequence<BurdenEstimateWithRunId>.validate(expectedRows: HashMap<String, HashMap<Int, HashMap<Int, Boolean>>>
+fun Sequence<BurdenEstimateWithRunId>.validate(expectedRows: HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>
 ): Sequence<BurdenEstimateWithRunId>
 {
     var first: BurdenEstimateWithRunId? = null

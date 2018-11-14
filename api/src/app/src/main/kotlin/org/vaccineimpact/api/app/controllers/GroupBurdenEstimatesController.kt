@@ -87,7 +87,7 @@ open class GroupBurdenEstimatesController(
         }
     }
 
-    fun getEstimatedDeathsForResponsibility(): List<AggregatedBurdenEstimate>
+    fun getEstimatedDeathsForResponsibility(): Map<Short, List<AggregatedBurdenEstimate>>
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
         return estimatesLogic.getEstimatedDeathsForResponsibility(path.groupId, path.touchstoneVersionId,
