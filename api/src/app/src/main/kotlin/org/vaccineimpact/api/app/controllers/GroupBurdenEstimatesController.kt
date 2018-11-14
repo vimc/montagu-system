@@ -87,6 +87,13 @@ open class GroupBurdenEstimatesController(
         }
     }
 
+    fun getEstimatedDeathsForResponsibility(): List<AggregatedBurdenEstimate>
+    {
+        val path = getValidResponsibilityPath(context, estimateRepository)
+        return estimatesLogic.getEstimatedDeathsForResponsibility(path.groupId, path.touchstoneVersionId,
+                path.scenarioId)
+    }
+
     fun clearBurdenEstimateSet(): String
     {
         val path = getValidResponsibilityPath(context, estimateRepository)

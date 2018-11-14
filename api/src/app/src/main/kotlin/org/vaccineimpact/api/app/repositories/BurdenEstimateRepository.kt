@@ -34,4 +34,7 @@ interface BurdenEstimateRepository : Repository
     fun getEstimateWriter(set: BurdenEstimateSet): BurdenEstimateWriter
     fun getBurdenEstimateSetForResponsibility(setId: Int, responsibilityId: Int): BurdenEstimateSet
     fun getResponsibilityInfo(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityInfo
+    fun getBurdenOutcomeIds(matching: String): List<Int>
+    fun getAggregatedEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Int>):
+            List<AggregatedBurdenEstimate>
 }

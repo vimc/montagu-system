@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
 import org.jooq.JoinType
+import org.jooq.impl.DSL.sum
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
@@ -38,6 +39,25 @@ class JooqBurdenEstimateRepository(
         stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
+    override fun getAggregatedEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Int>):
+            List<AggregatedBurdenEstimate>
+    {
+        return dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"))
+                .from(BURDEN_ESTIMATE)
+                .join(RESPONSIBILITY)
+                .on(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET))
+                .groupBy(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE)
+                .fetchInto(AggregatedBurdenEstimate::class.java)
+    }
+
+    override fun getBurdenOutcomeIds(matching: String): List<Int>
+    {
+        return dsl.select(BURDEN_OUTCOME.ID)
+                .from(BURDEN_OUTCOME)
+                .where(BURDEN_OUTCOME.NAME.like(matching))
+                .fetchInto(Int::class.java)
+    }
+
     private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter ?:
             CentralBurdenEstimateWriter(dsl)
 

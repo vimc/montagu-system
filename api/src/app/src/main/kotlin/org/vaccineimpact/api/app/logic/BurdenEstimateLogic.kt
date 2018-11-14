@@ -9,20 +9,30 @@ import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.app.validateStochastic
 import org.vaccineimpact.api.db.tables.Responsibility
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.BurdenEstimateSetStatus
-import org.vaccineimpact.api.models.BurdenEstimateWithRunId
+import org.vaccineimpact.api.models.*
 
 interface BurdenEstimateLogic
 {
     fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
                                   estimates: Sequence<BurdenEstimateWithRunId>)
+
+    fun getEstimatedDeathsForResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String):
+            List<AggregatedBurdenEstimate>
 }
 
 class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: ModellingGroupRepository,
                                       private val burdenEstimateRepository: BurdenEstimateRepository,
                                       private val expectationsRepository: ExpectationsRepository) : BurdenEstimateLogic
 {
+    override fun getEstimatedDeathsForResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String)
+            : List<AggregatedBurdenEstimate>
+    {
+        val group = modellingGroupRepository.getModellingGroup(groupId)
+        val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(group.id, touchstoneVersionId,
+                scenarioId)
+        val outcomeIds = burdenEstimateRepository.getBurdenOutcomeIds("deaths")
+        return burdenEstimateRepository.getAggregatedEstimatesForResponsibility(responsibilityInfo.id, outcomeIds)
+    }
 
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
                                            estimates: Sequence<BurdenEstimateWithRunId>)
