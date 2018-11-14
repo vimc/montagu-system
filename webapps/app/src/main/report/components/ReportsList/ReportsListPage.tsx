@@ -21,8 +21,6 @@ export class ReportsListPageComponent extends React.Component<PageProperties<und
 
     render(): JSX.Element {
 
-        const bundleUrl = `/reports/modup2-201807/20181102-113924-b8b05c83/all/`;
-
         return <div className={"container-fluid pt-5"}>
             <div className={"row"}>
                 <div className={"col-12 col-lg-10 offset-lg-1"}>

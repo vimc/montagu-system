@@ -1,3 +1,3 @@
 export const settings: Partial<Settings> = {
-    teamcityServiceMessages: true
+    teamcityServiceMessages: true,
 };
