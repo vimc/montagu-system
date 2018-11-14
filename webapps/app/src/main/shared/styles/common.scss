@@ -89,5 +89,11 @@ select.form-control {
 }
 
 .download-icon {
-  margin-left: 15px;
+  margin-left: 10px;
+
+  svg {
+    overflow: hidden;
+    vertical-align: sub;
+    margin-bottom: -1px;
+  }
 }
