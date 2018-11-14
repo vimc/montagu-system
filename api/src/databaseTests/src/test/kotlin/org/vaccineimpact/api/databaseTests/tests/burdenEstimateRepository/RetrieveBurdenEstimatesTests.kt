@@ -32,8 +32,6 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
                 {
                     it.addBurdenEstimate(setId, "AFG", year = y.toShort(), age = a.toShort(), outcome = "deaths")
                     it.addBurdenEstimate(setId, "AGO", year = y.toShort(), age = a.toShort(), outcome = "deaths")
-                    it.addBurdenEstimate(setId, "AGO", year = y.toShort(), age = a.toShort(), outcome = "cases")
-                    it.addBurdenEstimate(setId, "AGO", year = y.toShort(), age = a.toShort(), outcome = "casess")
                 }
             }
 
@@ -50,8 +48,74 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         }
 
         assertThat(result.keys).hasSameElementsAs((1..10).map { it.toShort() })
-        assertThat(result.values.all{ it.count() == 4 }).isTrue()
-        assertThat(result.values.all{ it.all{ it.value == 200F } }).isTrue()
+        assertThat(result.values.all { it.count() == 4 }).isTrue()
+        assertThat(result.values.all { it.all { it.value == 200F } }).isTrue()
+    }
+
+    @Test
+    fun `does not get aggregated estimates for wrong responsibility`()
+    {
+
+        val outcomeId = withDatabase {
+            val ids = setupDatabase(it)
+            val modelVersionId = ids.modelVersion!!
+            val setId = it.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+            it.updateCurrentEstimate(ids.responsibility, setId)
+
+            for (a in 1..10)
+            {
+                for (y in 2000..2003)
+                {
+                    it.addBurdenEstimate(setId, "AFG", year = y.toShort(), age = a.toShort(), outcome = "deaths")
+                    it.addBurdenEstimate(setId, "AGO", year = y.toShort(), age = a.toShort(), outcome = "deaths")
+                }
+            }
+
+            it.dsl.select(Tables.BURDEN_OUTCOME.ID)
+                    .from(Tables.BURDEN_OUTCOME)
+                    .where(Tables.BURDEN_OUTCOME.CODE.eq("deaths"))
+                    .fetchOne().value1()
+        }
+
+        val result = withRepo {
+            it.getAggregatedEstimatesForResponsibility(67, listOf(outcomeId))
+        }
+
+        assertThat(result.keys.count()).isEqualTo(0)
+    }
+
+    @Test
+    fun `does not get aggregated estimates for wrong outcomes`()
+    {
+
+        val (responsibilityId, outcomeId) = withDatabase {
+            val ids = setupDatabase(it)
+            val modelVersionId = ids.modelVersion!!
+            val setId = it.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+            it.updateCurrentEstimate(ids.responsibility, setId)
+
+            for (a in 1..10)
+            {
+                for (y in 2000..2003)
+                {
+                    it.addBurdenEstimate(setId, "AFG", year = y.toShort(), age = a.toShort(), outcome = "cases")
+                    it.addBurdenEstimate(setId, "AGO", year = y.toShort(), age = a.toShort(), outcome = "cases")
+                }
+            }
+
+            val outcomeId = it.dsl.select(Tables.BURDEN_OUTCOME.ID)
+                    .from(Tables.BURDEN_OUTCOME)
+                    .where(Tables.BURDEN_OUTCOME.CODE.eq("deaths"))
+                    .fetchOne().value1()
+
+            Pair(ids.responsibility, outcomeId)
+        }
+
+        val result = withRepo {
+            it.getAggregatedEstimatesForResponsibility(responsibilityId, listOf(outcomeId))
+        }
+
+        assertThat(result.keys.count()).isEqualTo(0)
     }
 
 
