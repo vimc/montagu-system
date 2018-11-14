@@ -34,7 +34,7 @@ export class PinnedReportsComponent extends React.Component<PinnedReportsProps> 
             <div className={"row mb-5"}>
                 {this.props.reports.map((r: Report) =>
 
-                    <div className={"col-12 col-sm-6 col-lg-4"}>
+                    <div className={"col-12 col-sm-6 col-lg-4"} key={r.id}>
                         <Card>
                             <CardHeader>
                                 <InternalLink href={PinnedReportsComponent.reportUrl(r)}>{r.name}</InternalLink>
