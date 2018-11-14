@@ -4,6 +4,12 @@ import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import java.math.BigDecimal
 
+data class AggregatedBurdenEstimate(
+        val year: Int,
+        val age: Int,
+        val value: Float
+)
+
 interface BurdenEstimateRow
 
 @FlexibleColumns
