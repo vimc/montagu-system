@@ -2,9 +2,9 @@ import * as React from "react";
 import {compose} from "recompose";
 
 import {ReportsList} from "./ReportsList";
-import {PageProperties} from "../../../shared/components/PageWithHeader/PageProperties";
+import {PageBreadcrumb, PageProperties} from "../../../shared/components/PageWithHeader/PageProperties";
 import {BreadcrumbInitializer} from "../../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
-import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
+import {PinnedReports} from "./PinnedReports";
 
 export class ReportsListPageComponent extends React.Component<PageProperties<undefined>> {
     static breadcrumb(): PageBreadcrumb {
@@ -20,9 +20,11 @@ export class ReportsListPageComponent extends React.Component<PageProperties<und
     }
 
     render(): JSX.Element {
+
         return <div className={"container-fluid pt-5"}>
             <div className={"row"}>
                 <div className={"col-12 col-lg-10 offset-lg-1"}>
+                    <PinnedReports/>
                     <ReportsList/>
                 </div>
             </div>

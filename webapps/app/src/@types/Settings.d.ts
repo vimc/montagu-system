@@ -14,6 +14,7 @@ interface Settings {
     showTouchstoneCreation: boolean;
     showNewTemplates: boolean;
     showOldTemplates: boolean;
+    pinnedReports: string[];
 }
 
 interface AppSpecificSettings {
