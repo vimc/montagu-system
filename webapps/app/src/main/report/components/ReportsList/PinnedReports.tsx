@@ -37,7 +37,7 @@ export class PinnedReportsComponent extends React.Component<PinnedReportsProps> 
                     <div className={"col-12 col-sm-6 col-lg-4"} key={r.id}>
                         <Card>
                             <CardHeader>
-                                <InternalLink href={PinnedReportsComponent.reportUrl(r)}>{r.name}</InternalLink>
+                                <InternalLink href={PinnedReportsComponent.reportUrl(r)}>{r.display_name || r.name}</InternalLink>
                                 <div
                                     className={"text-muted small"}>Updated: {longTimestamp(new Date(r.updated_on))}
                                 </div>

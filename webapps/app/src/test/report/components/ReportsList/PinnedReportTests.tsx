@@ -31,9 +31,9 @@ describe("PinnedReports", () => {
     const stateWithMatchingReports = mockReportAppState({
         reports: {
             reports: [mockReport({name: "else", published: true, id: "1"}),
-                mockReport({name: "other", published: false, id: "1"}),
-                mockReport({name: "other", published: true, id: "1"}),
-                mockReport({name: "other", published: true, id: "2"})]
+                mockReport({name: "other", display_name: "full name", published: false, id: "1"}),
+                mockReport({name: "other",  display_name: "full name", published: true, id: "1"}),
+                mockReport({name: "other",  display_name: "full name", published: true, id: "2"})]
         }
     });
 
@@ -99,7 +99,25 @@ describe("PinnedReports", () => {
             .dive().dive();
 
         const card = rendered.find(Card);
-        expect(card.find(InternalLink).prop("href")).to.eq("/other/1/")
+        expect(card.find(InternalLink).prop("href")).to.eq("/other/1/");
+        expect(card.find(InternalLink).childAt(0).text()).to.eq("full name")
+
+    });
+
+    it("pinned report uses name when display name is null", () => {
+
+        const state = mockReportAppState({
+            reports: {
+                reports: [mockReport({name: "other", display_name: null, published: true, id: "1"})]
+            }
+        });
+        const store = createMockReportStore(state);
+
+        const rendered = shallow(<PinnedReports/>, {context: {store}})
+            .dive().dive();
+
+        const card = rendered.find(Card);
+        expect(card.find(InternalLink).childAt(0).text()).to.eq("other")
 
     });
 
