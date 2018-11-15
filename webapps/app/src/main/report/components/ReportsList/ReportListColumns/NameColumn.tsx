@@ -35,5 +35,8 @@ export const aggregatedNameFilterMethod = (filter: FilterGeneric<string>, row: R
 
 const nameFilterMethod = (filter: FilterGeneric<string>, row: any) => {
     const report = row._original as Report;
-    return report.name.search(filter.value) > -1 || report.display_name && report.display_name.search(filter.value) > -1
+    const value = filter.value.toLowerCase();
+    const name = report.name.toLowerCase();
+    const displayName = report.display_name && report.display_name.toLowerCase();
+    return name.search(value) > -1 || displayName && displayName.search(value) > -1
 };
