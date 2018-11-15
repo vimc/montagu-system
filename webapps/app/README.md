@@ -1,11 +1,14 @@
+**Ensure that the following commands are all run from the app folder.**
+
 # Development
+
 1. Install Node.js:
    ```
    curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
    sudo apt-get install -y nodejs
    ```
 2. Run `npm install` to get dependencies
-3. Run `sudo npm install webpack --global` to install webpack
+3. Run `sudo npm install webpack@3.10.0 --global` to install webpack
 4. Run `webpack` to build, or `webpack --watch` to continuously monitor files
    and rebuild as needed.
 5. Run `npm run SHORT_NAME` to run a development server serving one of the three
