@@ -84,6 +84,7 @@ open class MontaguSerializer : Serializer
                 .registerTypeAdapter<User>(ruleBasedSerializer(baseGson))
                 .registerTypeAdapter<ScenarioTouchstoneAndCoverageSets>(ruleBasedSerializer(baseGson))
                 .registerTypeAdapter<ScenarioAndCoverageSets>(ruleBasedSerializer(baseGson))
+                .registerTypeAdapter<DisAggregatedBurdenEstimate>(chartSerializer(baseGson))
                 .create()
     }
 

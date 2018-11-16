@@ -51,6 +51,11 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
             Endpoint("$baseEstimatesUrl/deaths/",
                     controller, "getEstimatedDeathsForResponsibility")
                     .json()
+                    .secure(readPermissions),
+
+            Endpoint("$baseEstimatesUrl/aggregated-deaths/",
+                    controller, "getAggregatedEstimatedDeathsForResponsibility")
+                    .json()
                     .secure(readPermissions)
     )
 }

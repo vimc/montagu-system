@@ -4,10 +4,17 @@ import com.github.salomonbrys.kotson.SerializerArg
 import com.github.salomonbrys.kotson.jsonSerializer
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import org.vaccineimpact.api.models.ChartSerializable
 import org.vaccineimpact.api.models.helpers.Rule
 import org.vaccineimpact.api.models.helpers.SerializationRule
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
+
+inline fun <reified T: ChartSerializable>chartSerializer(baseGson: Gson) = jsonSerializer<T>
+{
+        val dataPoint = it.src.toDataPoint()
+        baseGson.toJsonTree(dataPoint)
+}
 
 inline fun <reified T : Any> ruleBasedSerializer(baseGson: Gson) = jsonSerializer<T> {
     val json = baseGson.toJsonTree(it.src) as JsonObject

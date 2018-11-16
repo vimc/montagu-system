@@ -24,9 +24,6 @@ import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
 import java.sql.Timestamp
 import java.time.Instant
-import java.util.stream.Collectors.counting
-import java.util.stream.Collectors.groupingBy
-
 
 data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
@@ -42,8 +39,8 @@ class JooqBurdenEstimateRepository(
         stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
-    override fun getAggregatedEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Short>):
-           List<AggregatedBurdenEstimate>
+    override fun getEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Short>):
+            Map<Short, List<DisAggregatedBurdenEstimate>>
     {
         return dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"))
                 .from(BURDEN_ESTIMATE)
@@ -52,7 +49,29 @@ class JooqBurdenEstimateRepository(
                 .where(RESPONSIBILITY.ID.eq(responsibilityId))
                 .and(BURDEN_ESTIMATE.BURDEN_OUTCOME.`in`(outcomeIds))
                 .groupBy(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE)
-                .fetchInto(AggregatedBurdenEstimate::class.java)
+                .fetchInto(DisAggregatedBurdenEstimate::class.java)
+                .groupBy { it.age }
+    }
+
+    override fun getAggregatedEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Short>, aggregateOver: String):
+            List<DataPoint>
+    {
+        val groupBy = if (aggregateOver == "year")
+        {
+            BURDEN_ESTIMATE.YEAR
+        }
+        else
+        {
+            BURDEN_ESTIMATE.AGE
+        }
+        return dsl.select(groupBy.`as`("x"), sum(BURDEN_ESTIMATE.VALUE).`as`("y"))
+                .from(BURDEN_ESTIMATE)
+                .join(RESPONSIBILITY)
+                .on(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET))
+                .where(RESPONSIBILITY.ID.eq(responsibilityId))
+                .and(BURDEN_ESTIMATE.BURDEN_OUTCOME.`in`(outcomeIds))
+                .groupBy(groupBy)
+                .fetchInto(DataPoint::class.java)
     }
 
     override fun getBurdenOutcomeIds(matching: String): List<Short>

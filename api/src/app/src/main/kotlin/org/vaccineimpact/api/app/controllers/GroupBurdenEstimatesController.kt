@@ -13,6 +13,7 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.app.requests.csvData
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstoneVersion
+import org.vaccineimpact.api.db.tables.DisabilityWeight
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
@@ -87,19 +88,19 @@ open class GroupBurdenEstimatesController(
         }
     }
 
-    fun getEstimatedDeathsForResponsibility(): Any
+    fun getEstimatedDeathsForResponsibility(): Map<Short, List<DisAggregatedBurdenEstimate>>
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
-        val estimates = estimatesLogic.getEstimatedDeathsForResponsibility(path.groupId, path.touchstoneVersionId,
+        return estimatesLogic.getEstimatedDeathsForResponsibility(path.groupId, path.touchstoneVersionId,
                 path.scenarioId)
-        return if (context.queryParams("aggregate") == null)
-        {
-            estimates
-        }
-        else
-        {
-            estimates.groupBy { it.age }
-        }
+    }
+
+    fun getAggregatedEstimatedDeathsForResponsibility(): List<DataPoint>
+    {
+        val path = getValidResponsibilityPath(context, estimateRepository)
+        val aggregateOver = context.queryParams("aggregateOver")?: "ages"
+        return estimatesLogic.getAggregatedEstimatedDeathsForResponsibility(path.groupId, path.touchstoneVersionId,
+                path.scenarioId, aggregateOver)
     }
 
     fun clearBurdenEstimateSet(): String
