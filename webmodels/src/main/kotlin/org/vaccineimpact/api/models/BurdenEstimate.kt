@@ -8,9 +8,9 @@ import java.math.BigDecimal
 data class AggregatedBurdenEstimate
 @ConstructorProperties("year", "age", "value")
 constructor(
-        val year: Short,
+        val x: Short,
         val age: Short,
-        val value: Float
+        val y: Float
 )
 
 interface BurdenEstimateRow
