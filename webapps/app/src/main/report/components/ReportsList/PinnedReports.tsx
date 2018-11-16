@@ -60,6 +60,7 @@ export class PinnedReportsComponent extends React.Component<PinnedReportsProps> 
 export const mapStateToProps = (state: ReportAppState): Partial<PinnedReportsProps> => {
     return {
         reports: settings.pinnedReports.map(name => state.reports.reports && state.reports.reports
+            .sort((a,b) => (a.updated_on > b.updated_on ? 1 : -1))
             .find(r => r.name == name && r.published)).filter(r => r)
     }
 };
