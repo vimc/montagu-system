@@ -30,16 +30,25 @@ describe("PinnedReports", () => {
 
     const stateWithMatchingReports = mockReportAppState({
         reports: {
-            reports: [mockReport({
-                name: "else",
-                published: true,
-                id: "1",
-                updated_on: new Date(2018, 12, 11).toDateString()
-            }),
+            reports: [
                 mockReport({
                     name: "other",
                     display_name: "full name",
-                    published: false,
+                    published: true,
+                    id: "3",
+                    updated_on: new Date(2017, 11, 10).toDateString()
+                }),
+                mockReport({
+                    name: "other",
+                    display_name: "full name",
+                    published: true,
+                    id: "2",
+                    updated_on: new Date(2018, 10, 10).toDateString()
+                }),
+                mockReport({
+                    name: "other",
+                    display_name: "full name",
+                    published: true,
                     id: "1",
                     updated_on: new Date(2018, 12, 10).toDateString()
                 }),
@@ -47,25 +56,65 @@ describe("PinnedReports", () => {
                     name: "other",
                     display_name: "full name",
                     published: true,
-                    id: "2",
-                    updated_on: new Date(2017, 11, 10).toDateString()
-                }),
-                mockReport({
-                    name: "other",
-                    display_name: "full name",
-                    published: true,
-                    id: "3",
-                    updated_on: new Date(2018, 11, 10).toDateString()
+                    id: "0",
+                    updated_on: new Date(2017, 11, 9).toDateString()
                 })]
         }
     });
 
-    it("gets most recent published version of reports in settings.pinnedReports", () => {
+    it("orders by date", () => {
+        const then = new Date(2018, 10, 10).toDateString();
+        const now = new Date(2018, 12, 10).toDateString();
+
+        const old = new Date(2017, 11, 9).toDateString();
+
+        expect(then < now).to.be.true;
+        expect(old < then).to.be.true;
+    });
+
+    it("gets most recent version of reports", () => {
 
         const props = mapStateToProps(stateWithMatchingReports);
         expect(props.reports).to.have.lengthOf(1);
-        expect(props.reports[0].id).to.eq("3");
+        expect(props.reports[0].id).to.eq("1");
         expect(props.reports[0].published).to.be.true;
+    });
+
+    it("does not return report with wrong name", () => {
+
+        const state = mockReportAppState({
+            reports: {
+                reports: [mockReport({
+                    name: "else",
+                    display_name: "full name",
+                    published: true,
+                    id: "3",
+                    updated_on: new Date(2018, 7, 10).toDateString()
+                })]
+            }
+        });
+
+        const props = mapStateToProps(state);
+        expect(props.reports).to.have.lengthOf(0);
+    });
+
+
+    it("does not return unpublished reports", () => {
+
+        const state = mockReportAppState({
+            reports: {
+                reports: [mockReport({
+                    name: "other",
+                    display_name: "full name",
+                    published: false,
+                    id: "3",
+                    updated_on: new Date(2018, 7, 10).toDateString()
+                })]
+            }
+        });
+
+        const props = mapStateToProps(state);
+        expect(props.reports).to.have.lengthOf(0);
     });
 
     it("no pinned reports if there are no reports in app state", () => {
@@ -109,7 +158,7 @@ describe("PinnedReports", () => {
             .dive().dive();
 
         const downloadLink = rendered.find(Card).find(FileDownloadButton);
-        expect(downloadLink.prop("href")).to.eq("/reports/other/versions/3/all/");
+        expect(downloadLink.prop("href")).to.eq("/reports/other/versions/1/all/");
         expect(downloadLink.prop("service")).to.eq("reporting");
 
     });
@@ -122,7 +171,7 @@ describe("PinnedReports", () => {
             .dive().dive();
 
         const card = rendered.find(Card);
-        expect(card.find(InternalLink).prop("href")).to.eq("/other/3/");
+        expect(card.find(InternalLink).prop("href")).to.eq("/other/1/");
         expect(card.find(InternalLink).childAt(0).text()).to.eq("full name")
 
     });

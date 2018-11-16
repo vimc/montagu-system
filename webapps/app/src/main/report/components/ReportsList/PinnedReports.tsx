@@ -37,7 +37,8 @@ export class PinnedReportsComponent extends React.Component<PinnedReportsProps> 
                     <div className={"col-12 col-sm-6 col-lg-4"} key={r.id}>
                         <Card>
                             <CardHeader>
-                                <InternalLink href={PinnedReportsComponent.reportUrl(r)}>{r.display_name || r.name}</InternalLink>
+                                <InternalLink
+                                    href={PinnedReportsComponent.reportUrl(r)}>{r.display_name || r.name}</InternalLink>
                                 <div
                                     className={"text-muted small"}>Updated: {longTimestamp(new Date(r.updated_on))}
                                 </div>
@@ -57,11 +58,23 @@ export class PinnedReportsComponent extends React.Component<PinnedReportsProps> 
     }
 }
 
+function getLatestPublishedMatchingReport(name: String, reports: Report[]) {
+    const filteredReports = reports
+        .filter(r => r.name == name && r.published);
+
+    filteredReports
+        .sort((a, b) => (a.updated_on > b.updated_on ? -1 : 1));
+
+    if (filteredReports.length > 0) {
+        return filteredReports[0];
+    }
+    return null;
+}
+
 export const mapStateToProps = (state: ReportAppState): Partial<PinnedReportsProps> => {
     return {
-        reports: settings.pinnedReports.map(name => state.reports.reports && state.reports.reports
-            .sort((a,b) => (a.updated_on > b.updated_on ? 1 : -1))
-            .find(r => r.name == name && r.published)).filter(r => r)
+        reports: settings.pinnedReports.map(name => state.reports.reports &&
+            getLatestPublishedMatchingReport(name, state.reports.reports)).filter(r => r)
     }
 };
 
