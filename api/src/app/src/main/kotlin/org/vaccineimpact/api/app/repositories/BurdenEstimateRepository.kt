@@ -36,5 +36,5 @@ interface BurdenEstimateRepository : Repository
     fun getResponsibilityInfo(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityInfo
     fun getBurdenOutcomeIds(matching: String): List<Short>
     fun getAggregatedEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Short>):
-            Map<Short, List<AggregatedBurdenEstimate>>
+           List<AggregatedBurdenEstimate>
 }

@@ -43,7 +43,7 @@ class JooqBurdenEstimateRepository(
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
     override fun getAggregatedEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Short>):
-            Map<Short, List<AggregatedBurdenEstimate>>
+           List<AggregatedBurdenEstimate>
     {
         return dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"))
                 .from(BURDEN_ESTIMATE)
@@ -53,7 +53,6 @@ class JooqBurdenEstimateRepository(
                 .and(BURDEN_ESTIMATE.BURDEN_OUTCOME.`in`(outcomeIds))
                 .groupBy(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE)
                 .fetchInto(AggregatedBurdenEstimate::class.java)
-                .groupBy { it.age }
     }
 
     override fun getBurdenOutcomeIds(matching: String): List<Short>

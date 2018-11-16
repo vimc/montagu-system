@@ -17,7 +17,7 @@ interface BurdenEstimateLogic
                                   estimates: Sequence<BurdenEstimateWithRunId>)
 
     fun getEstimatedDeathsForResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String):
-            Map<Short, List<AggregatedBurdenEstimate>>
+           List<AggregatedBurdenEstimate>
 }
 
 class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: ModellingGroupRepository,
@@ -25,7 +25,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                                       private val expectationsRepository: ExpectationsRepository) : BurdenEstimateLogic
 {
     override fun getEstimatedDeathsForResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String)
-            : Map<Short, List<AggregatedBurdenEstimate>>
+            : List<AggregatedBurdenEstimate>
     {
         val group = modellingGroupRepository.getModellingGroup(groupId)
         val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(group.id, touchstoneVersionId,

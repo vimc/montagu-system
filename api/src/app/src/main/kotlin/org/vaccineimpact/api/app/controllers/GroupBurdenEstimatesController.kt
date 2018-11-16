@@ -87,11 +87,19 @@ open class GroupBurdenEstimatesController(
         }
     }
 
-    fun getEstimatedDeathsForResponsibility(): Map<Short, List<AggregatedBurdenEstimate>>
+    fun getEstimatedDeathsForResponsibility(): Any
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
-        return estimatesLogic.getEstimatedDeathsForResponsibility(path.groupId, path.touchstoneVersionId,
+        val estimates = estimatesLogic.getEstimatedDeathsForResponsibility(path.groupId, path.touchstoneVersionId,
                 path.scenarioId)
+        return if (context.queryParams(":aggregate") == null)
+        {
+            estimates
+        }
+        else
+        {
+            estimates.groupBy { it.age }
+        }
     }
 
     fun clearBurdenEstimateSet(): String
