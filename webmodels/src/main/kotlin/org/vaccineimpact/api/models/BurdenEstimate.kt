@@ -3,15 +3,28 @@ package org.vaccineimpact.api.models
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import java.beans.ConstructorProperties
-import java.math.BigDecimal
 
-data class AggregatedBurdenEstimate
-@ConstructorProperties("year", "age", "value")
+data class DataPoint
 constructor(
         val x: Short,
-        val age: Short,
         val y: Float
 )
+
+interface ChartSerializable {
+    fun toDataPoint(): DataPoint
+}
+
+data class DisAggregatedBurdenEstimate
+@ConstructorProperties("year", "age", "value")
+constructor(
+        val year: Short,
+        val age: Short,
+        val value: Float
+): ChartSerializable
+{
+
+    override fun toDataPoint(): DataPoint = DataPoint(this.year, this.value)
+}
 
 interface BurdenEstimateRow
 
@@ -25,7 +38,7 @@ data class BurdenEstimate(
         val cohortSize: Float,
         @FlexibleProperty
         val outcomes: Map<String, Float?>
-): BurdenEstimateRow
+) : BurdenEstimateRow
 
 @FlexibleColumns
 data class StochasticBurdenEstimate(
@@ -38,7 +51,7 @@ data class StochasticBurdenEstimate(
         val cohortSize: Float,
         @FlexibleProperty
         val outcomes: Map<String, Float?>
-): BurdenEstimateRow
+) : BurdenEstimateRow
 
 data class BurdenEstimateWithRunId(
         val disease: String,
@@ -57,6 +70,7 @@ data class BurdenEstimateWithRunId(
             estimate.year, estimate.age, estimate.country, estimate.countryName,
             estimate.cohortSize, estimate.outcomes
     )
+
     constructor(estimate: StochasticBurdenEstimate) : this(
             estimate.disease, estimate.runId,
             estimate.year, estimate.age, estimate.country, estimate.countryName,
