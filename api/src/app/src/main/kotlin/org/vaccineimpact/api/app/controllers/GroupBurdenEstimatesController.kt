@@ -92,7 +92,7 @@ open class GroupBurdenEstimatesController(
         val path = getValidResponsibilityPath(context, estimateRepository)
         val estimates = estimatesLogic.getEstimatedDeathsForResponsibility(path.groupId, path.touchstoneVersionId,
                 path.scenarioId)
-        return if (context.queryParams(":aggregate") == null)
+        return if (context.queryParams("aggregate") == null)
         {
             estimates
         }
