@@ -24,6 +24,9 @@ import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
 import java.sql.Timestamp
 import java.time.Instant
+import java.util.stream.Collectors.counting
+import java.util.stream.Collectors.groupingBy
+
 
 data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
@@ -61,8 +64,8 @@ class JooqBurdenEstimateRepository(
                 .fetchInto(Short::class.java)
     }
 
-    private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter ?:
-            CentralBurdenEstimateWriter(dsl)
+    private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter
+            ?: CentralBurdenEstimateWriter(dsl)
 
     private val stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter
             ?: StochasticBurdenEstimateWriter(dsl)
@@ -177,8 +180,8 @@ class JooqBurdenEstimateRepository(
     }
 
     private fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
-                                modelRuns: List<ModelRun>,
-                                uploader: String, timestamp: Instant): Int
+                                        modelRuns: List<ModelRun>,
+                                        uploader: String, timestamp: Instant): Int
     {
         val uploadInfoId = addUploadInfo(uploader, timestamp)
         val parameterSetId = addParameterSet(responsibilitySetId, modelVersionId, uploadInfoId)
@@ -302,7 +305,7 @@ class JooqBurdenEstimateRepository(
         if (getEstimateWriter(set).isSetEmpty(setId))
         {
             throw InvalidOperationError("This burden estimate set does not have any burden estimate data. " +
-                            "It cannot be marked as complete")
+                    "It cannot be marked as complete")
         }
         else
         {

@@ -49,7 +49,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
 
         assertThat(result.keys).hasSameElementsAs((1..10).map { it.toShort() })
         assertThat(result.values.all { it.count() == 4 }).isTrue()
-        assertThat(result.values.all { it.all { it.value == 200F } }).isTrue()
+        assertThat(result.values.all { it.all { it.y == 200F } }).isTrue()
     }
 
     @Test
