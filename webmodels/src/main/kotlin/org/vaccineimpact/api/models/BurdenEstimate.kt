@@ -4,28 +4,6 @@ import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import java.beans.ConstructorProperties
 
-data class DataPoint
-constructor(
-        val x: Short,
-        val y: Float
-)
-
-interface ChartSerializable {
-    fun toDataPoint(): DataPoint
-}
-
-data class DisAggregatedBurdenEstimate
-@ConstructorProperties("year", "age", "value")
-constructor(
-        val year: Short,
-        val age: Short,
-        val value: Float
-): ChartSerializable
-{
-
-    override fun toDataPoint(): DataPoint = DataPoint(this.year, this.value)
-}
-
 interface BurdenEstimateRow
 
 @FlexibleColumns
