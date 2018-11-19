@@ -180,16 +180,16 @@ class BurdenEstimateLogicTests : MontaguTests()
                 mapOf(1.toShort() to listOf(DisAggregatedBurdenEstimate(2000, 1, 100F, BurdenEstimateGrouping.AGE)))
 
         val repo = mock<BurdenEstimateRepository> {
-            on { getBurdenOutcomeIds("deaths") } doReturn listOf(1.toShort(), 2)
-            on { getEstimatesForResponsibility(any(), any(),any()) } doReturn fakeEstimates
+            on { getBurdenOutcomeIds("test-outcome") } doReturn listOf(1.toShort(), 2)
+            on { getEstimates(any(), any(),any(), any()) } doReturn fakeEstimates
             on { getResponsibilityInfo(any(), any(), any()) } doReturn
                     ResponsibilityInfo(responsibilityId, disease, "open", setId)
         }
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
 
-        val result = sut.getEstimatedDeathsForResponsibility(groupId, touchstoneVersionId, scenarioId)
+        val result = sut.getEstimates(1, groupId, touchstoneVersionId, scenarioId, "test-outcome")
         assertThat(result).containsAllEntriesOf(fakeEstimates)
-        verify(repo).getBurdenOutcomeIds("deaths")
+        verify(repo).getBurdenOutcomeIds("test-outcome")
     }
 
 }

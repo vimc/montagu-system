@@ -2,6 +2,7 @@ package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.JooqContext
@@ -37,11 +38,10 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
     fun `can get aggregated estimates for responsibility grouped by age`()
     {
 
-        val (responsibilityId, outcomeId) = withDatabase {
+        val (responsibilityId, outcomeId, setId) = withDatabase {
             val ids = setupDatabase(it)
             val modelVersionId = ids.modelVersion!!
             val setId = it.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
-            it.updateCurrentEstimate(ids.responsibility, setId)
 
             for (a in 1..10)
             {
@@ -57,11 +57,11 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
                     .where(Tables.BURDEN_OUTCOME.CODE.eq("deaths"))
                     .fetchOne().value1()
 
-            Pair(ids.responsibility, outcomeId)
+            Triple(ids.responsibility, outcomeId, setId)
         }
 
         val result = withRepo {
-            it.getEstimatesForResponsibility(responsibilityId, listOf(outcomeId))
+            it.getEstimates(setId, responsibilityId, listOf(outcomeId))
         }
 
         assertThat(result.keys).hasSameElementsAs((1..10).map { it.toShort() })
@@ -73,11 +73,10 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
     fun `can get aggregated estimates for responsibility grouped by year`()
     {
 
-        val (responsibilityId, outcomeId) = withDatabase {
+        val (responsibilityId, outcomeId, setId) = withDatabase {
             val ids = setupDatabase(it)
             val modelVersionId = ids.modelVersion!!
             val setId = it.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
-            it.updateCurrentEstimate(ids.responsibility, setId)
 
             for (a in 1..10)
             {
@@ -93,11 +92,11 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
                     .where(Tables.BURDEN_OUTCOME.CODE.eq("deaths"))
                     .fetchOne().value1()
 
-            Pair(ids.responsibility, outcomeId)
+            Triple(ids.responsibility, outcomeId, setId)
         }
 
         val result = withRepo {
-            it.getEstimatesForResponsibility(responsibilityId, listOf(outcomeId), BurdenEstimateGrouping.YEAR)
+            it.getEstimates(setId, responsibilityId, listOf(outcomeId), BurdenEstimateGrouping.YEAR)
         }
 
         assertThat(result.keys).hasSameElementsAs((2000..2003).map { it.toShort() })
@@ -109,11 +108,10 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
     fun `does not get aggregated estimates for wrong responsibility`()
     {
 
-        val outcomeId = withDatabase {
+        val (outcomeId, setId) = withDatabase {
             val ids = setupDatabase(it)
             val modelVersionId = ids.modelVersion!!
             val setId = it.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
-            it.updateCurrentEstimate(ids.responsibility, setId)
 
             for (a in 1..10)
             {
@@ -124,24 +122,27 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
                 }
             }
 
-            it.dsl.select(Tables.BURDEN_OUTCOME.ID)
+            val outcomeId = it.dsl.select(Tables.BURDEN_OUTCOME.ID)
                     .from(Tables.BURDEN_OUTCOME)
                     .where(Tables.BURDEN_OUTCOME.CODE.eq("deaths"))
                     .fetchOne().value1()
+
+            Pair(outcomeId, setId)
         }
 
-        val result = withRepo {
-            it.getEstimatesForResponsibility(67, listOf(outcomeId))
+        withRepo {
+            assertThatThrownBy {
+                it.getEstimates(setId, 67, listOf(outcomeId))
+            }.isInstanceOf(UnknownObjectError::class.java).hasMessageContaining("burden-estimate-set")
         }
 
-        assertThat(result.keys.count()).isEqualTo(0)
     }
 
     @Test
     fun `does not get aggregated estimates for wrong outcomes`()
     {
 
-        val (responsibilityId, outcomeId) = withDatabase {
+        val (responsibilityId, outcomeId, setId) = withDatabase {
             val ids = setupDatabase(it)
             val modelVersionId = ids.modelVersion!!
             val setId = it.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
@@ -161,11 +162,11 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
                     .where(Tables.BURDEN_OUTCOME.CODE.eq("deaths"))
                     .fetchOne().value1()
 
-            Pair(ids.responsibility, outcomeId)
+            Triple(ids.responsibility, outcomeId, setId)
         }
 
         val result = withRepo {
-            it.getEstimatesForResponsibility(responsibilityId, listOf(outcomeId))
+            it.getEstimates(setId, responsibilityId, listOf(outcomeId))
         }
 
         assertThat(result.keys.count()).isEqualTo(0)

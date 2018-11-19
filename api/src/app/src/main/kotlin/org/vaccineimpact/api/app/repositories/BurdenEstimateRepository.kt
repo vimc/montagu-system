@@ -37,7 +37,7 @@ interface BurdenEstimateRepository : Repository
                               scenarioId: String): ResponsibilityInfo
     fun getBurdenOutcomeIds(matching: String): List<Short>
 
-    fun getEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Short>,
-                                      burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):
+    fun getEstimates(setId: Int, responsibilityId: Int, outcomeIds: List<Short>,
+                     burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):
             Map<Short, List<DisAggregatedBurdenEstimate>>
 }

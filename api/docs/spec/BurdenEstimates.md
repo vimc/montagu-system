@@ -150,3 +150,24 @@ Marks a burden estimate set as `complete`. This can only be invoked if:
   suspicious values, etc.
 
 Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
+
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/estimates/{outcome-code}/
+Get estimates for the given set and given outcome type. Returns data in a format that can be used by `react-vis`, that is
+a dictionary of datasets, specified as a series of points determined by `x` and `y` coordinates, disaggregated by either year or age.
+ By default datasets are disaggregated by age, with x values corresponding to years (example 1). 
+ To disaggregate by year instead, and have x values corresponding to ages (example 2), pass
+`?groupBy=year` as a query parameter. Estimates are always aggregated over all countries in the set.
+
+### Example
+    {
+        "1": [{"x": 2000, "y": 32156}, {"x": 2001}, "y": 32678}],
+        "2": [{"x": 2000, "y": 23158}, {"x": 2001}, "y": 25679}]
+    }
+
+### Example
+    {
+        "2000": [{"x": 1, "y": 32156}, {"x": 2}, "y": 32678}],
+        "2001": [{"x": 1, "y": 23158}, {"x": 2}, "y": 25679}]
+    }
+
+Required permissions: Scoped to modelling group: `estimates.read`, `responsibilities.read`.

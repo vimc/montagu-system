@@ -40,21 +40,27 @@ class JooqBurdenEstimateRepository(
         stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
-    override fun getEstimatesForResponsibility(responsibilityId: Int,
-                                               outcomeIds: List<Short>,
-                                               burdenEstimateGrouping: BurdenEstimateGrouping):
+    override fun getEstimates(setId: Int, responsibilityId: Int,
+                              outcomeIds: List<Short>,
+                              burdenEstimateGrouping: BurdenEstimateGrouping):
             Map<Short, List<DisAggregatedBurdenEstimate>>
     {
+        // check set belongs to this responsibility
+        dsl.select()
+                .from(BURDEN_ESTIMATE_SET)
+                .where(BURDEN_ESTIMATE_SET.RESPONSIBILITY.eq(responsibilityId))
+                .singleOrNull()
+                ?: throw UnknownObjectError(setId, BurdenEstimateSet::class)
+
+
         return dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"),
                 inline(burdenEstimateGrouping.toString()).`as`("groupBy"))
                 .from(BURDEN_ESTIMATE)
-                .join(RESPONSIBILITY)
-                .on(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET))
-                .where(RESPONSIBILITY.ID.eq(responsibilityId))
+                .where(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET.eq(setId))
                 .and(BURDEN_ESTIMATE.BURDEN_OUTCOME.`in`(outcomeIds))
                 .groupBy(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE)
                 .fetchInto(DisAggregatedBurdenEstimate::class.java)
-                .groupBy { if (burdenEstimateGrouping == BurdenEstimateGrouping.AGE) it.age else it.year}
+                .groupBy { if (burdenEstimateGrouping == BurdenEstimateGrouping.AGE) it.age else it.year }
     }
 
     override fun getBurdenOutcomeIds(matching: String): List<Short>

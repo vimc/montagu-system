@@ -10,7 +10,6 @@ import spark.route.HttpMethod
 object GroupBurdenEstimatesRouteConfig : RouteConfig
 {
     private val baseUrl = "/modelling-groups/:group-id/responsibilities/:touchstone-version-id/:scenario-id/estimate-sets"
-    private val baseEstimatesUrl = "/modelling-groups/:group-id/responsibilities/:touchstone-version-id/:scenario-id/estimates"
     private val controller = GroupBurdenEstimatesController::class
 
     private val groupScope = "modelling-group:<group-id>"
@@ -48,13 +47,8 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
                     .json()
                     .secure(writePermissions),
 
-            Endpoint("$baseEstimatesUrl/deaths/",
-                    controller, "getEstimatedDeathsForResponsibility")
-                    .json()
-                    .secure(readPermissions),
-
-            Endpoint("$baseEstimatesUrl/aggregated-deaths/",
-                    controller, "getAggregatedEstimatedDeathsForResponsibility")
+            Endpoint("$baseUrl/:set-id/estimates/:outcome-code/",
+                    controller, "getEstimatesForOutcome")
                     .json()
                     .secure(readPermissions)
     )

@@ -203,12 +203,14 @@ class GroupEstimatesControllerTests : MontaguTests()
     }
 
     @Test
-    fun `gets estimated deaths grouped by age`()
+    fun `gets estimated outcome grouped by age`()
     {
         val context = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
+            on { params(":outcome-code") } doReturn "test-outcome"
+            on { params(":set-id") } doReturn "1"
         }
         val logic = mock<BurdenEstimateLogic>()
         val touchstones = mockTouchstoneRepository()
@@ -216,19 +218,22 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { touchstoneRepository } doReturn touchstones
         }
         val sut = GroupBurdenEstimatesController(context, mock(), logic, repo)
-        sut.getEstimatedDeathsForResponsibility()
+        sut.getEstimatesForOutcome()
 
-        verify(logic).getEstimatedDeathsForResponsibility(eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+        verify(logic).getEstimates(eq(1), eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                eq("test-outcome"),
                 eq(BurdenEstimateGrouping.AGE))
     }
 
     @Test
-    fun `gets estimated deaths grouped by year`()
+    fun `gets estimated outcome grouped by year`()
     {
         val context = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
+            on { params(":outcome-code") } doReturn "deaths"
+            on { params(":set-id") } doReturn "1"
             on { queryParams("groupBy") } doReturn "year"
         }
         val logic = mock<BurdenEstimateLogic>()
@@ -237,9 +242,10 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { touchstoneRepository } doReturn touchstones
         }
         val sut = GroupBurdenEstimatesController(context, mock(), logic, repo)
-        sut.getEstimatedDeathsForResponsibility()
+        sut.getEstimatesForOutcome()
 
-        verify(logic).getEstimatedDeathsForResponsibility(eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+        verify(logic).getEstimates(eq(1), eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                eq("deaths"),
                 eq(BurdenEstimateGrouping.YEAR))
     }
 

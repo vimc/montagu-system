@@ -41,7 +41,7 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `can get estimated deaths for scenario`()
     {
-        validate("$urlBase/estimates/deaths/") against "BurdenEstimateSeries" given { db ->
+        validate("$setUrl/1/estimates/deaths/") against "BurdenEstimateSeries" given { db ->
             val returnedIds = setUp(db)
             TestUserHelper.setupTestUser()
 
@@ -55,6 +55,35 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
                     setId = 1)
             db.updateCurrentEstimate(returnedIds.responsibilityId, 1)
             db.addBurdenEstimate(1, "AFG", age = 50, year = 1996, value = 100F, outcome = "deaths")
+        } requiringPermissions {
+            PermissionSet(
+                    "$groupScope/estimates.read",
+                    "$groupScope/responsibilities.read"
+            )
+        } andCheck { data ->
+            assertThat(data["50"]).isEqualTo(json {
+                array(obj("x" to 1996, "y" to 100.0))
+            })
+        }
+    }
+
+    @Test
+    fun `can get estimated cases for scenario`()
+    {
+        validate("$setUrl/1/estimates/cases/") against "BurdenEstimateSeries" given { db ->
+            val returnedIds = setUp(db)
+            TestUserHelper.setupTestUser()
+
+            db.addExpectations(returnedIds.responsibilityId, yearMinInclusive = 1996, yearMaxInclusive = 1997,
+                    ageMaxInclusive = 50, ageMinInclusive = 50, countries = listOf("AFG", "AGO"))
+            db.addBurdenEstimateSet(
+                    returnedIds.responsibilityId,
+                    returnedIds.modelVersionId,
+                    TestUserHelper.username,
+                    status = "complete",
+                    setId = 1)
+            db.updateCurrentEstimate(returnedIds.responsibilityId, 1)
+            db.addBurdenEstimate(1, "AFG", age = 50, year = 1996, value = 100F, outcome = "cases")
         } requiringPermissions {
             PermissionSet(
                     "$groupScope/estimates.read",

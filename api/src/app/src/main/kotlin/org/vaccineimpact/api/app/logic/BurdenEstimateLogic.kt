@@ -14,10 +14,12 @@ interface BurdenEstimateLogic
     fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
                                   estimates: Sequence<BurdenEstimateWithRunId>)
 
-    fun getEstimatedDeathsForResponsibility(groupId: String,
-                                            touchstoneVersionId: String,
-                                            scenarioId: String,
-                                            burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):
+    fun getEstimates(setId: Int,
+                     groupId: String,
+                     touchstoneVersionId: String,
+                     scenarioId: String,
+                     outcome: String,
+                     burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):
             Map<Short, List<DisAggregatedBurdenEstimate>>
 }
 
@@ -25,15 +27,16 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                                       private val burdenEstimateRepository: BurdenEstimateRepository,
                                       private val expectationsRepository: ExpectationsRepository) : BurdenEstimateLogic
 {
-    override fun getEstimatedDeathsForResponsibility(groupId: String, touchstoneVersionId: String,
-                                                     scenarioId: String,
-                                                     burdenEstimateGrouping: BurdenEstimateGrouping)
+    override fun getEstimates(setId:Int, groupId: String, touchstoneVersionId: String,
+                              scenarioId: String,
+                              outcome: String,
+                              burdenEstimateGrouping: BurdenEstimateGrouping)
             : Map<Short, List<DisAggregatedBurdenEstimate>>
     {
         val group = modellingGroupRepository.getModellingGroup(groupId)
         val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(group.id, touchstoneVersionId, scenarioId)
-        val outcomeIds = burdenEstimateRepository.getBurdenOutcomeIds("deaths")
-        return burdenEstimateRepository.getEstimatesForResponsibility(responsibilityInfo.id, outcomeIds,
+        val outcomeIds = burdenEstimateRepository.getBurdenOutcomeIds(outcome)
+        return burdenEstimateRepository.getEstimates(setId, responsibilityInfo.id, outcomeIds,
                 burdenEstimateGrouping)
     }
 
