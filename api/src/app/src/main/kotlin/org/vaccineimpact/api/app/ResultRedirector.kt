@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app
 
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.ResultStatus
@@ -23,7 +24,7 @@ class ResultRedirector(
                 redirectValidator.validateRedirectUrl(redirectUrl)
                 repositories.inTransaction { reposInSubTransaction ->
                     val data = work(reposInSubTransaction)
-                    redirectWithResult(context, data.asSuccessfulResult(), redirectUrl, tokenHelper)
+                    redirectWithResult(context, data.asResult(), redirectUrl, tokenHelper)
                 }
             }
             catch (e: Exception)
@@ -57,4 +58,4 @@ class ResultRedirector(
     }
 }
 
-fun Any?.asSuccessfulResult() = Result(ResultStatus.SUCCESS, this, emptyList())
+fun Any?.asResult() = if (this is Result) this else Result(ResultStatus.SUCCESS, this, emptyList())

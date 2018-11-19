@@ -4,10 +4,12 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.mockito.Mockito
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import org.vaccineimpact.api.app.errors.InconsistentDataError
+import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
@@ -161,17 +163,19 @@ class GroupEstimatesControllerTests : MontaguTests()
     {
         val timesExpected = if (expectedClosed) times(1) else never()
 
+        val logic = mockLogic()
         val repo = mockRepository()
         val mockContext = mockActionContext(keepOpen = keepOpen)
         val mockPostData = mockCSVPostData(normalCSVData)
-        GroupBurdenEstimatesController(mockContext, mockRepositories(repo), mock(), repo, postDataHelper = mockPostData).populateBurdenEstimateSet()
-        verify(repo, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
+        GroupBurdenEstimatesController(mockContext, mockRepositories(repo), logic, repo, postDataHelper = mockPostData).populateBurdenEstimateSet()
+        verify(logic, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
                 "group-1", "touchstone-1", "scenario-1")
     }
 
     @Test
     fun `can close burden estimate set`()
     {
+        val logic = mockLogic()
         val repo = mockRepository()
         val mockContext = mock<ActionContext> {
             on { params(":set-id") } doReturn "1"
@@ -179,8 +183,40 @@ class GroupEstimatesControllerTests : MontaguTests()
             on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
-        GroupBurdenEstimatesController(mockContext, mock(), mock(), repo).closeBurdenEstimateSet()
-        verify(repo).closeBurdenEstimateSet(1, "group-1", "touchstone-1", "scenario-1")
+        GroupBurdenEstimatesController(mockContext, mockRepositories(repo), logic, repo).closeBurdenEstimateSet()
+        verify(logic).closeBurdenEstimateSet(1, "group-1", "touchstone-1", "scenario-1")
+    }
+
+    @Test
+    fun `populate burden estimate set catches missing row error and returns result`()
+    {
+        val logic = mockLogic()
+        Mockito.`when`(logic.closeBurdenEstimateSet(any(), any(), any(), any()))
+                .doThrow(MissingRowsError("message"))
+        val repo = mockRepository()
+        val mockContext = mockActionContext()
+        val mockPostData = mockCSVPostData(normalCSVData)
+        val result = GroupBurdenEstimatesController(mockContext, mockRepositories(repo), logic, repo,
+                postDataHelper = mockPostData).populateBurdenEstimateSet()
+        assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
+    }
+
+    @Test
+    fun `catches error and returns result when closing burden estimate set`()
+    {
+        val logic = mockLogic()
+        val repo = mockRepository()
+        Mockito.`when`(logic.closeBurdenEstimateSet(any(), any(), any(), any()))
+                .doThrow(MissingRowsError("message"))
+        val mockContext = mock<ActionContext> {
+            on { params(":set-id") } doReturn "1"
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
+            on { params(":scenario-id") } doReturn "scenario-1"
+        }
+        val result = GroupBurdenEstimatesController(mockContext, mockRepositories(repo), logic, repo)
+                .closeBurdenEstimateSet()
+        assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
     }
 
     @Test

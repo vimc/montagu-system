@@ -25,7 +25,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
         }
-        validate("$setUrl$setId/", method = HttpMethod.post) withRequestSchema {
+        validate("$setUrl$setId/?keepOpen=true", method = HttpMethod.post) withRequestSchema {
             CSVSchema("BurdenEstimate")
         } sending {
             csvData
@@ -48,7 +48,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
             setUpWithBurdenEstimateSet(it)
         }
         val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
-        val response = RequestHelper().postFile("$setUrl$setId/", csvData, token = token)
+        val response = RequestHelper().postFile("$setUrl$setId/?keepOpen=true", csvData, token = token)
         JSONValidator().validateSuccess(response.text)
     }
 
@@ -59,7 +59,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
             setUpWithBurdenEstimateSet(it)
         }
         val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
-        val response = RequestHelper().post("$setUrl$setId/?redirectResultTo=http://localhost", csvData, token)
+        val response = RequestHelper().post("$setUrl$setId/?keepOpen=true&redirectResultTo=http://localhost", csvData, token)
         val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
         JSONValidator().validateSuccess(resultAsString)
     }
@@ -83,7 +83,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val setId = JooqContext().use {
             setUpWithStochasticBurdenEstimateSet(it)
         }
-        validate("$setUrl/$setId/", method = HttpMethod.post) withRequestSchema {
+        validate("$setUrl/$setId/?keepOpen=true", method = HttpMethod.post) withRequestSchema {
             CSVSchema("StochasticBurdenEstimate")
         } sending {
             stochasticCSVData
@@ -246,18 +246,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
                     .fetch()
             assertThat(records).isEmpty()
         }
-    }
-
-    private fun getPopulateOneTimeURL(setId: Int, redirect: Boolean = false): String
-    {
-        var url = "$setUrl/$setId/?"
-        if (redirect)
-        {
-            url += "&redirectResultTo=http://localhost/"
-        }
-        val token = TestUserHelper.getToken(requiredWritePermissions.plus(PermissionSet("*/can-login")))
-        val oneTimeToken = RequestHelper().getOneTimeToken(url, token)
-        return "$url&access_token=$oneTimeToken"
     }
 
 }

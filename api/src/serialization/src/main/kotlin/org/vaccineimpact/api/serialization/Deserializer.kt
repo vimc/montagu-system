@@ -31,6 +31,7 @@ class Deserializer
         {
             String::class.createType() -> raw
             Int::class.createType() -> raw.toInt()
+            Short::class.createType() -> raw.toShort()
             Float::class.createType() -> raw.toFloat()
             else -> throw UnsupportedOperationException("org.vaccineimpact.api.serialization.Deserializer does not support target type $targetType")
         }
