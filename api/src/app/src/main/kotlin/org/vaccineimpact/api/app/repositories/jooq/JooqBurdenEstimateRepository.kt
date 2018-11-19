@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
 import org.jooq.JoinType
+import org.jooq.impl.DSL.inline
 import org.jooq.impl.DSL.sum
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
@@ -39,10 +40,13 @@ class JooqBurdenEstimateRepository(
         stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
-    override fun getEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Short>):
+    override fun getEstimatesForResponsibility(responsibilityId: Int,
+                                               outcomeIds: List<Short>,
+                                               burdenEstimateGrouping: BurdenEstimateGrouping):
             Map<Short, List<DisAggregatedBurdenEstimate>>
     {
-        return dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"))
+        return dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"),
+                inline(burdenEstimateGrouping.toString()).`as`("groupBy"))
                 .from(BURDEN_ESTIMATE)
                 .join(RESPONSIBILITY)
                 .on(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET))
@@ -50,35 +54,14 @@ class JooqBurdenEstimateRepository(
                 .and(BURDEN_ESTIMATE.BURDEN_OUTCOME.`in`(outcomeIds))
                 .groupBy(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE)
                 .fetchInto(DisAggregatedBurdenEstimate::class.java)
-                .groupBy { it.age }
-    }
-
-    override fun getAggregatedEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Short>, aggregateOver: String):
-            List<DataPoint>
-    {
-        val groupBy = if (aggregateOver == "year")
-        {
-            BURDEN_ESTIMATE.YEAR
-        }
-        else
-        {
-            BURDEN_ESTIMATE.AGE
-        }
-        return dsl.select(groupBy.`as`("x"), sum(BURDEN_ESTIMATE.VALUE).`as`("y"))
-                .from(BURDEN_ESTIMATE)
-                .join(RESPONSIBILITY)
-                .on(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET))
-                .where(RESPONSIBILITY.ID.eq(responsibilityId))
-                .and(BURDEN_ESTIMATE.BURDEN_OUTCOME.`in`(outcomeIds))
-                .groupBy(groupBy)
-                .fetchInto(DataPoint::class.java)
+                .groupBy { if (burdenEstimateGrouping == BurdenEstimateGrouping.AGE) it.age else it.year}
     }
 
     override fun getBurdenOutcomeIds(matching: String): List<Short>
     {
         return dsl.select(BURDEN_OUTCOME.ID)
                 .from(BURDEN_OUTCOME)
-                .where(BURDEN_OUTCOME.NAME.like(matching))
+                .where(BURDEN_OUTCOME.CODE.like("%$matching%"))
                 .fetchInto(Short::class.java)
     }
 

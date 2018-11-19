@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.app.logic
 
-import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
@@ -8,7 +7,6 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.app.validateStochastic
-import org.vaccineimpact.api.db.tables.Responsibility
 import org.vaccineimpact.api.models.*
 
 interface BurdenEstimateLogic
@@ -16,39 +14,27 @@ interface BurdenEstimateLogic
     fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
                                   estimates: Sequence<BurdenEstimateWithRunId>)
 
-    fun getEstimatedDeathsForResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String):
+    fun getEstimatedDeathsForResponsibility(groupId: String,
+                                            touchstoneVersionId: String,
+                                            scenarioId: String,
+                                            burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):
             Map<Short, List<DisAggregatedBurdenEstimate>>
-
-    fun getAggregatedEstimatedDeathsForResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String,
-                                                      aggregateOver: String):
-            List<DataPoint>
 }
 
 class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: ModellingGroupRepository,
                                       private val burdenEstimateRepository: BurdenEstimateRepository,
                                       private val expectationsRepository: ExpectationsRepository) : BurdenEstimateLogic
 {
-    override fun getEstimatedDeathsForResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String)
+    override fun getEstimatedDeathsForResponsibility(groupId: String, touchstoneVersionId: String,
+                                                     scenarioId: String,
+                                                     burdenEstimateGrouping: BurdenEstimateGrouping)
             : Map<Short, List<DisAggregatedBurdenEstimate>>
     {
         val group = modellingGroupRepository.getModellingGroup(groupId)
-        val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(group.id, touchstoneVersionId,
-                scenarioId)
+        val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(group.id, touchstoneVersionId, scenarioId)
         val outcomeIds = burdenEstimateRepository.getBurdenOutcomeIds("deaths")
-        return burdenEstimateRepository.getEstimatesForResponsibility(responsibilityInfo.id, outcomeIds)
-    }
-
-
-    override fun getAggregatedEstimatedDeathsForResponsibility(groupId: String, touchstoneVersionId: String,
-                                                               scenarioId: String, aggregateOver: String)
-            : List<DataPoint>
-    {
-        val group = modellingGroupRepository.getModellingGroup(groupId)
-        val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(group.id, touchstoneVersionId,
-                scenarioId)
-        val outcomeIds = burdenEstimateRepository.getBurdenOutcomeIds("deaths")
-        return burdenEstimateRepository.getAggregatedEstimatesForResponsibility(responsibilityInfo.id,
-                outcomeIds, aggregateOver)
+        return burdenEstimateRepository.getEstimatesForResponsibility(responsibilityInfo.id, outcomeIds,
+                burdenEstimateGrouping)
     }
 
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,

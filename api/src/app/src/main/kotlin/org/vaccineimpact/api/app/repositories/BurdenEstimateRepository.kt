@@ -33,12 +33,11 @@ interface BurdenEstimateRepository : Repository
     fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetType)
     fun getEstimateWriter(set: BurdenEstimateSet): BurdenEstimateWriter
     fun getBurdenEstimateSetForResponsibility(setId: Int, responsibilityId: Int): BurdenEstimateSet
-    fun getResponsibilityInfo(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityInfo
+    fun getResponsibilityInfo(groupId: String, touchstoneVersionId: String,
+                              scenarioId: String): ResponsibilityInfo
     fun getBurdenOutcomeIds(matching: String): List<Short>
 
-    fun getEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Short>):
+    fun getEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Short>,
+                                      burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):
             Map<Short, List<DisAggregatedBurdenEstimate>>
-
-    fun getAggregatedEstimatesForResponsibility(responsibilityId: Int, outcomeIds: List<Short>, aggregateOver: String):
-            List<DataPoint>
 }

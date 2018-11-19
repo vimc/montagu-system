@@ -2,12 +2,10 @@ package org.vaccineimpact.api.tests.controllers
 
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
-import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
@@ -204,6 +202,48 @@ class GroupEstimatesControllerTests : MontaguTests()
         ))
     }
 
+    @Test
+    fun `gets estimated deaths grouped by age`()
+    {
+        val context = mock<ActionContext> {
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
+            on { params(":scenario-id") } doReturn "scenario-1"
+        }
+        val logic = mock<BurdenEstimateLogic>()
+        val touchstones = mockTouchstoneRepository()
+        val repo = mock<BurdenEstimateRepository> {
+            on { touchstoneRepository } doReturn touchstones
+        }
+        val sut = GroupBurdenEstimatesController(context, mock(), logic, repo)
+        sut.getEstimatedDeathsForResponsibility()
+
+        verify(logic).getEstimatedDeathsForResponsibility(eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                eq(BurdenEstimateGrouping.AGE))
+    }
+
+    @Test
+    fun `gets estimated deaths grouped by year`()
+    {
+        val context = mock<ActionContext> {
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
+            on { params(":scenario-id") } doReturn "scenario-1"
+            on { queryParams("groupBy") } doReturn "year"
+        }
+        val logic = mock<BurdenEstimateLogic>()
+        val touchstones = mockTouchstoneRepository()
+        val repo = mock<BurdenEstimateRepository> {
+            on { touchstoneRepository } doReturn touchstones
+        }
+        val sut = GroupBurdenEstimatesController(context, mock(), logic, repo)
+        sut.getEstimatedDeathsForResponsibility()
+
+        verify(logic).getEstimatedDeathsForResponsibility(eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                eq(BurdenEstimateGrouping.YEAR))
+    }
+
+
     private fun mockActionContext(keepOpen: String? = null): ActionContext
     {
         return mock {
@@ -263,7 +303,8 @@ class GroupEstimatesControllerTests : MontaguTests()
         }
     }
 
-    private fun mockLogic(): BurdenEstimateLogic {
+    private fun mockLogic(): BurdenEstimateLogic
+    {
         return mock {
             on { populateBurdenEstimateSet(any(), any(), any(), any(), any()) } doAnswer { args ->
                 // Force evaluation of sequence

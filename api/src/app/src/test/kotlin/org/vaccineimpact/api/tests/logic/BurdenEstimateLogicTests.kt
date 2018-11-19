@@ -2,8 +2,8 @@ package org.vaccineimpact.api.tests.logic
 
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
@@ -171,6 +171,25 @@ class BurdenEstimateLogicTests : MontaguTests()
         }.isInstanceOf(InvalidOperationError::class.java)
                 .hasMessageContaining("You must create a new set if you want to upload any new estimates.")
 
+    }
+
+    @Test
+    fun `can get estimated deaths for responsibility`()
+    {
+        val fakeEstimates: Map<Short, List<DisAggregatedBurdenEstimate>> =
+                mapOf(1.toShort() to listOf(DisAggregatedBurdenEstimate(2000, 1, 100F, BurdenEstimateGrouping.AGE)))
+
+        val repo = mock<BurdenEstimateRepository> {
+            on { getBurdenOutcomeIds("deaths") } doReturn listOf(1.toShort(), 2)
+            on { getEstimatesForResponsibility(any(), any(),any()) } doReturn fakeEstimates
+            on { getResponsibilityInfo(any(), any(), any()) } doReturn
+                    ResponsibilityInfo(responsibilityId, disease, "open", setId)
+        }
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+
+        val result = sut.getEstimatedDeathsForResponsibility(groupId, touchstoneVersionId, scenarioId)
+        assertThat(result).containsAllEntriesOf(fakeEstimates)
+        verify(repo).getBurdenOutcomeIds("deaths")
     }
 
 }
