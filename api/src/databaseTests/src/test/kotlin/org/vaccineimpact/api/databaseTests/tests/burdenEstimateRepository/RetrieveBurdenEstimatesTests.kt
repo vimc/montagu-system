@@ -35,7 +35,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `can get aggregated estimates for responsibility grouped by age`()
+    fun `can get estimates for responsibility grouped by age`()
     {
 
         val (responsibilityId, outcomeId, setId) = withDatabase {
@@ -70,7 +70,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `can get aggregated estimates for responsibility grouped by year`()
+    fun `can get estimates grouped by year`()
     {
 
         val (responsibilityId, outcomeId, setId) = withDatabase {
@@ -105,7 +105,41 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `does not get aggregated estimates for wrong responsibility`()
+    fun `does not get estimates for wrong set`()
+    {
+
+        val (outcomeId, responsibilityId, badSetId) = withDatabase {
+            val ids = setupDatabase(it)
+            val modelVersionId = ids.modelVersion!!
+            val setId = it.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+            val badSetId = it.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+
+            for (a in 1..10)
+            {
+                for (y in 2000..2003)
+                {
+                    it.addBurdenEstimate(setId, "AFG", year = y.toShort(), age = a.toShort(), outcome = "deaths")
+                    it.addBurdenEstimate(setId, "AGO", year = y.toShort(), age = a.toShort(), outcome = "deaths")
+                }
+            }
+
+            val outcomeId = it.dsl.select(Tables.BURDEN_OUTCOME.ID)
+                    .from(Tables.BURDEN_OUTCOME)
+                    .where(Tables.BURDEN_OUTCOME.CODE.eq("deaths"))
+                    .fetchOne().value1()
+
+            Triple(outcomeId, ids.responsibility, badSetId)
+        }
+
+        val result = withRepo {
+            it.getEstimates(badSetId, responsibilityId, listOf(outcomeId))
+        }
+
+        assertThat(result.keys.count()).isEqualTo(0)
+    }
+
+    @Test
+    fun `getEstimates throws error if set does not belong to responsibility`()
     {
 
         val (outcomeId, setId) = withDatabase {
@@ -139,7 +173,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `does not get aggregated estimates for wrong outcomes`()
+    fun `does not get estimates for wrong outcomes`()
     {
 
         val (responsibilityId, outcomeId, setId) = withDatabase {

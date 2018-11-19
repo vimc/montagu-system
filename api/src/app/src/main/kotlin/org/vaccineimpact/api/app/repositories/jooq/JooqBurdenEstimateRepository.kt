@@ -49,6 +49,7 @@ class JooqBurdenEstimateRepository(
         dsl.select()
                 .from(BURDEN_ESTIMATE_SET)
                 .where(BURDEN_ESTIMATE_SET.RESPONSIBILITY.eq(responsibilityId))
+                .and(BURDEN_ESTIMATE_SET.ID.eq(setId))
                 .singleOrNull()
                 ?: throw UnknownObjectError(setId, BurdenEstimateSet::class)
 
