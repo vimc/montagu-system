@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Report} from "../../../shared/models/Generated";
+import {ReportVersion} from "../../../shared/models/Generated";
 import ReactTable, {Column, Filter, FilterRender, ReactTableFunction, RowRenderProps} from 'react-table'
 
 import {
@@ -20,12 +20,12 @@ import {aggregatedNameFilterMethod, NameCell} from "./ReportListColumns/NameColu
 import {ButtonGroup} from "reactstrap";
 
 export interface ReportsListTableProps {
-    reports: Report[]
+    reports: ReportVersion[]
     isReviewer: boolean;
 }
 
 export interface ReportRowRenderProps extends RowRenderProps {
-    original: Report,
+    original: ReportVersion,
     value: string | BasicVersionDetails | boolean;
 }
 

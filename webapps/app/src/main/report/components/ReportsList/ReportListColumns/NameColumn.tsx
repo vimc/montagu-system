@@ -2,7 +2,7 @@ import * as React from "react";
 import {FilterGeneric} from "../ReportListTable";
 import {InternalLink} from "../../../../shared/components/InternalLink";
 import {RowInfo} from "react-table";
-import {Report} from "../../../../shared/models/Generated";
+import {ReportVersion} from "../../../../shared/models/Generated";
 
 export const NameCell: React.SFC<RowInfo> = (props: RowInfo) => {
 
@@ -34,9 +34,9 @@ export const aggregatedNameFilterMethod = (filter: FilterGeneric<string>, row: R
 };
 
 const nameFilterMethod = (filter: FilterGeneric<string>, row: any) => {
-    const report = row._original as Report;
+    const reportVersion = row._original as ReportVersion;
     const value = filter.value.toLowerCase();
-    const name = report.name.toLowerCase();
-    const displayName = report.display_name && report.display_name.toLowerCase();
+    const name = reportVersion.name.toLowerCase();
+    const displayName = reportVersion.display_name && reportVersion.display_name.toLowerCase();
     return name.search(value) > -1 || displayName && displayName.search(value) > -1
 };

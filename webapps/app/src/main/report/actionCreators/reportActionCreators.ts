@@ -7,13 +7,13 @@ import {
     ReportVersionsFetched
 } from "../actionTypes/ReportsActionsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
-import {Report} from "../../shared/models/Generated";
+import {ReportVersion} from "../../shared/models/Generated";
 
 export const reportActionCreators = {
 
     getReports() {
         return async (dispatch: Dispatch<ReportsAction>, getState: () => GlobalState) => {
-            const reports: Report[] = await (new ReportsService(dispatch, getState)).getAllReports();
+            const reports: ReportVersion[] = await (new ReportsService(dispatch, getState)).getAllReports();
             dispatch({
                 type: ReportTypeKeys.REPORTS_FETCHED,
                 data: reports

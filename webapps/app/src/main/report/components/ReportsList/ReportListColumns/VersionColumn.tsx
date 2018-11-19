@@ -1,6 +1,6 @@
 import {longDate} from "../../../../shared/Helpers";
 import * as React from "react";
-import {Report} from "../../../../shared/models/Generated";
+import {ReportVersion} from "../../../../shared/models/Generated";
 import {FilterGeneric, ReportRow, ReportRowRenderProps} from "../ReportListTable";
 import {VersionFilterValue} from "./ReportVersionFilter";
 import {InternalLink} from "../../../../shared/components/InternalLink";
@@ -21,8 +21,8 @@ export const VersionBadge = (props: {latest: Boolean}) => {
         : <span className="badge-light badge float-right">out-dated</span>;
 };
 
-export const versionIdAccessorFunction = (data: Report): BasicVersionDetails => {
-    return {name: data.name, version: data.id, date: new Date(data.updated_on)}
+export const versionIdAccessorFunction = (data: ReportVersion): BasicVersionDetails => {
+    return {name: data.name, version: data.id, date: new Date(data.date)}
 };
 
 export const aggregatedVersionFilterMethod = (filter: FilterGeneric<VersionFilterValue>, row: ReportRow) => {

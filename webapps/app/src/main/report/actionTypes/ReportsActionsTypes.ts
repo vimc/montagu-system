@@ -1,4 +1,4 @@
-import { Report } from "../../shared/models/Generated";
+import { ReportVersion } from "../../shared/models/Generated";
 import {Version} from "../../shared/models/reports/Report";
 
 export enum ReportTypeKeys {
@@ -12,7 +12,7 @@ export enum ReportTypeKeys {
 
 export interface ReportsFetched {
     type: ReportTypeKeys.REPORTS_FETCHED;
-    data: Report[];
+    data: ReportVersion[];
 }
 
 export interface SetCurrentReport {

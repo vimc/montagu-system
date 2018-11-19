@@ -8,7 +8,7 @@ import {
     mapStateToProps,
     PinnedReports,
 } from "../../../../main/report/components/ReportsList/PinnedReports";
-import {mockReport} from "../../../mocks/mockModels";
+import {mockReportVersion} from "../../../mocks/mockModels";
 import {shallow} from "enzyme";
 import {createMockReportStore} from "../../../mocks/mockStore";
 import {Card} from "reactstrap";
@@ -23,41 +23,41 @@ describe("PinnedReports", () => {
 
     const stateWithNoMatchingReports = mockReportAppState({
         reports: mockReportsState({
-            reports: [mockReport({name: "else", published: true, id: "1"}),
-                mockReport({name: "other", published: false, id: "1"})]
+            reports: [mockReportVersion({name: "else", published: true, id: "1"}),
+                mockReportVersion({name: "other", published: false, id: "1"})]
         })
     });
 
     const stateWithMatchingReports = mockReportAppState({
         reports: {
             reports: [
-                mockReport({
+                mockReportVersion({
                     name: "other",
                     display_name: "full name",
                     published: true,
                     id: "3",
-                    updated_on: new Date(2017, 11, 10).toDateString()
+                    date: new Date(2017, 11, 10).toDateString()
                 }),
-                mockReport({
+                mockReportVersion({
                     name: "other",
                     display_name: "full name",
                     published: true,
                     id: "2",
-                    updated_on: new Date(2018, 10, 10).toDateString()
+                    date: new Date(2018, 10, 10).toDateString()
                 }),
-                mockReport({
+                mockReportVersion({
                     name: "other",
                     display_name: "full name",
                     published: true,
                     id: "1",
-                    updated_on: new Date(2018, 12, 10).toDateString()
+                    date: new Date(2018, 12, 10).toDateString()
                 }),
-                mockReport({
+                mockReportVersion({
                     name: "other",
                     display_name: "full name",
                     published: true,
                     id: "0",
-                    updated_on: new Date(2017, 11, 9).toDateString()
+                    date: new Date(2017, 11, 9).toDateString()
                 })]
         }
     });
@@ -84,12 +84,12 @@ describe("PinnedReports", () => {
 
         const state = mockReportAppState({
             reports: {
-                reports: [mockReport({
+                reports: [mockReportVersion({
                     name: "else",
                     display_name: "full name",
                     published: true,
                     id: "3",
-                    updated_on: new Date(2018, 7, 10).toDateString()
+                    date: new Date(2018, 7, 10).toDateString()
                 })]
             }
         });
@@ -103,12 +103,12 @@ describe("PinnedReports", () => {
 
         const state = mockReportAppState({
             reports: {
-                reports: [mockReport({
+                reports: [mockReportVersion({
                     name: "other",
                     display_name: "full name",
                     published: false,
                     id: "3",
-                    updated_on: new Date(2018, 7, 10).toDateString()
+                    date: new Date(2018, 7, 10).toDateString()
                 })]
             }
         });
@@ -180,7 +180,7 @@ describe("PinnedReports", () => {
 
         const state = mockReportAppState({
             reports: {
-                reports: [mockReport({name: "other", display_name: null, published: true, id: "1"})]
+                reports: [mockReportVersion({name: "other", display_name: null, published: true, id: "1"})]
             }
         });
         const store = createMockReportStore(state);

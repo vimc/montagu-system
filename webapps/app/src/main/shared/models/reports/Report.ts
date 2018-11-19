@@ -1,7 +1,7 @@
 import {Artefact} from "./Artefact";
 import {ILookup} from "../Lookup";
 
-export interface Version {
+export interface Version { //This really corresponds to the raw JsonObject coming out of Orderly table
     name: string;
     displayname: string;
     id: string;

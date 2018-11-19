@@ -4,11 +4,11 @@ import {
     ReportTypeKeys,
     ReportUnpublished
 } from "../actionTypes/ReportsActionsTypes";
-import {Report} from "../../shared/models/Generated";
+import {ReportVersion} from "../../shared/models/Generated";
 import {Version} from "../../shared/models/reports/Report";
 
 export interface ReportsState {
-    reports: Report[];
+    reports: ReportVersion[];
     versions: string[];
     currentReport: string;
     versionDetails: Version;

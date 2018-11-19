@@ -3,7 +3,7 @@ import { expect } from "chai";
 import {shallow} from "enzyme";
 
 import "../../../helper";
-import { mockReport } from "../../../mocks/mockModels";
+import { mockReportVersion } from "../../../mocks/mockModels";
 import {mapStateToProps, ReportsList} from "../../../../main/report/components/ReportsList/ReportsList";
 import {mockReportAppState} from "../../../mocks/mockStates";
 import {Sandbox} from "../../../Sandbox";
@@ -24,7 +24,7 @@ describe("ReportListComponent", () => {
     });
 
     it ("it maps props from state with reports", () => {
-        const stateMock = mockReportAppState({reports: { reports: [ mockReport(), mockReport() ]}});
+        const stateMock = mockReportAppState({reports: { reports: [ mockReportVersion(), mockReportVersion() ]}});
         const props =  mapStateToProps(stateMock);
         expect(props.reports.length).to.eql(2);
         expect(props.ready).to.eql(true);

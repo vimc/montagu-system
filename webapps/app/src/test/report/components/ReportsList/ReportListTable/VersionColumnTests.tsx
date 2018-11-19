@@ -2,7 +2,7 @@ import * as React from "react";
 import {expect} from "chai";
 import {shallow} from "enzyme";
 
-import {mockReport} from "../../../../mocks/mockModels";
+import {mockReportVersion} from "../../../../mocks/mockModels";
 import {Sandbox} from "../../../../Sandbox";
 import {
     VersionBadge,
@@ -11,7 +11,7 @@ import {
 import {ReportsListTable} from "../../../../../main/report/components/ReportsList/ReportListTable";
 import {InternalLink} from "../../../../../main/shared/components/InternalLink";
 import ReactTable, {Column} from "react-table";
-import {Report} from "../../../../../main/shared/models/Generated";
+import {ReportVersion} from "../../../../../main/shared/models/Generated";
 
 describe("ReportListTable", () => {
 
@@ -34,9 +34,9 @@ describe("ReportListTable", () => {
             const accessor = getVersionColumn().accessor as (row: object) => any;
 
             const now = new Date(2018, 4, 15);
-            const result = accessor(mockReport({
+            const result = accessor(mockReportVersion({
                 id: "1234",
-                updated_on: now.toDateString(),
+                date: now.toDateString(),
                 name: "report-name"
             }));
 
@@ -44,7 +44,7 @@ describe("ReportListTable", () => {
         });
 
         it("renders link with version date and id", function () {
-            const original: Report = mockReport({
+            const original: ReportVersion = mockReportVersion({
                 name: "report_name",
                 latest_version: "12345"
             });
@@ -62,7 +62,7 @@ describe("ReportListTable", () => {
         });
 
         it("passes props to the latest version badge", function () {
-            let original: Report = mockReport({
+            let original: ReportVersion = mockReportVersion({
                 name: "report_name",
                 latest_version: "12345"
             });
