@@ -1,6 +1,6 @@
 import {reportsReducer, ReportsState} from "../../../main/report/reducers/reportsReducer";
 import {mockReportsState} from "../../mocks/mockStates";
-import {mockReport, mockVersion} from "../../mocks/mockModels";
+import {mockReportVersion, mockVersion} from "../../mocks/mockModels";
 import {ReportTypeKeys} from "../../../main/report/actionTypes/ReportsActionsTypes";
 import {expect} from "chai";
 
@@ -10,7 +10,7 @@ describe('Reports reducer tests', () => {
     it('should pass through state unchanged when report published', () => {
 
         const originalState = mockReportsState({
-            reports: [mockReport({name: "r1"})],
+            reports: [mockReportVersion({name: "r1"})],
             versionDetails: mockVersion({name: "r1", id: "v1"})
         });
 
@@ -26,7 +26,7 @@ describe('Reports reducer tests', () => {
     it('should pass through state unchanged when report unpublished', () => {
 
         const originalState = mockReportsState({
-            reports: [mockReport({name: "r1"})],
+            reports: [mockReportVersion({name: "r1"})],
             versionDetails: mockVersion({name: "r1", id: "v1"})
         });
 
@@ -39,7 +39,7 @@ describe('Reports reducer tests', () => {
     });
 
     it('sets fetched reports list', () => {
-        const reportMock = mockReport();
+        const reportMock = mockReportVersion();
         const newState: ReportsState = reportsReducer(undefined, {
             type: ReportTypeKeys.REPORTS_FETCHED,
             data: [reportMock]

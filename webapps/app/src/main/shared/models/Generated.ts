@@ -102,12 +102,36 @@ export interface ModelRunParameterSet {
 export interface Report {
     author: string;
     display_name: string | null;
-    id: string | null;
     latest_version: string;
     name: string;
     published: boolean;
     requester: string;
     updated_on: string;
+}
+
+export interface ReportVersion {
+    author: string;
+    date: string;
+    display_name: string | null;
+    id: string;
+    latest_version: string;
+    name: string;
+    published: boolean;
+    requester: string;
+}
+
+export interface ReportVersionDetails {
+    author: string;
+    comment: string;
+    date: string;
+    description: string;
+    display_name: string | null;
+    hash_script: string | null;
+    id: string;
+    name: string;
+    published: boolean;
+    requester: string;
+    script: string | null;
 }
 
 export interface Expectations {
@@ -177,7 +201,7 @@ export interface Result {
 }
 
 export interface ScenarioAndCoverageSets {
-    coverage_sets: CoverageSet[];
+    coverage_sets: CoverageSet[] | null;
     scenario: Scenario;
 }
 
@@ -192,7 +216,7 @@ export interface TouchstoneVersion {
 }
 
 export interface ScenarioTouchstoneAndCoverageSets {
-    coverage_sets: CoverageSet[];
+    coverage_sets: CoverageSet[] | null;
     scenario: Scenario;
     touchstone_version: TouchstoneVersion;
 }

@@ -16,7 +16,7 @@ import {DataLinks} from "../main/report/components/Data/DataLinks";
 
 import {createReportStore} from "../main/report/stores/createReportStore";
 import {ReportsService} from "../main/report/services/ReportsService";
-import {Report} from "../main/shared/models/Generated";
+import {ReportVersion} from "../main/shared/models/Generated";
 import {UserService} from "../main/report/services/UserService";
 import {mockArtefact} from "../test/mocks/mockModels";
 import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
@@ -45,9 +45,9 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other",
                 "use_resource", "html"];
             const reports = await (new ReportsService(this.store.dispatch, this.store.getState)).getAllReports();
-            const names = reports.map((item: Report) => item.name);
-            const versions = reports.filter((item: Report) => item.latest_version.length > 0);
-            const otherReport = reports.filter((item: Report) => item.name == "other");
+            const names = reports.map((item: ReportVersion) => item.name);
+            const versions = reports.filter((item: ReportVersion) => item.latest_version.length > 0);
+            const otherReport = reports.filter((item: ReportVersion) => item.name == "other");
 
             expectSameElements<string>(names, expectedNames);
 

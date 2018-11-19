@@ -244,16 +244,16 @@ export function mockArtefact(properties?: Partial<Artefact>): Artefact {
     return Object.assign(template, properties);
 }
 
-export function mockReport(properties?: Partial<models.Report>): models.Report {
+export function mockReportVersion(properties?: Partial<models.ReportVersion>): models.ReportVersion {
 
-    const template: models.Report = {
+    const template: models.ReportVersion = {
         name: "report",
         display_name: "display name",
         id: "3123",
         latest_version: "e62871eydhsjkh",
         author: "author",
         requester: "requester",
-        updated_on: new Date().toDateString(),
+        date: new Date().toDateString(),
         published: false
     };
 
@@ -273,7 +273,7 @@ export function mockBasicVersionDetails(properties?: Partial<BasicVersionDetails
 export function mockReportRow(report?: Partial<models.Report>, version?: BasicVersionDetails): ReportRow {
 
     const template: ReportRow = {
-        ...mockReport({
+        ...mockReportVersion({
             name: "report_name"
         }),
         version: Object.assign(mockBasicVersionDetails(), version)

@@ -6,22 +6,22 @@ import {FileDownloadButton} from "../../../shared/components/FileDownloadLink";
 import {Card, CardBody, CardHeader} from "reactstrap";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {connect} from "react-redux";
-import {Report} from "../../../shared/models/Generated";
+import {ReportVersion} from "../../../shared/models/Generated";
 import {InternalLink} from "../../../shared/components/InternalLink";
 import {longTimestamp} from "../../../shared/Helpers";
 import {settings} from "../../../shared/Settings";
 
 interface PinnedReportsProps {
-    reports: Report[]
+    reports: ReportVersion[]
 }
 
 export class PinnedReportsComponent extends React.Component<PinnedReportsProps> {
 
-    static bundleUrl(report: Report) {
+    static bundleUrl(report: ReportVersion) {
         return `/reports/${report.name}/versions/${report.id}/all/`;
     }
 
-    static reportUrl(report: Report) {
+    static reportUrl(report: ReportVersion) {
         return `/${report.name}/${report.id}/`;
     }
 
@@ -32,7 +32,7 @@ export class PinnedReportsComponent extends React.Component<PinnedReportsProps> 
                 Pinned reports
             </h1>
             <div className={"row mb-5"}>
-                {this.props.reports.map((r: Report) =>
+                {this.props.reports.map((r: ReportVersion) =>
 
                     <div className={"col-12 col-sm-6 col-lg-4"} key={r.id}>
                         <Card>
@@ -40,7 +40,7 @@ export class PinnedReportsComponent extends React.Component<PinnedReportsProps> 
                                 <InternalLink
                                     href={PinnedReportsComponent.reportUrl(r)}>{r.display_name || r.name}</InternalLink>
                                 <div
-                                    className={"text-muted small"}>Updated: {longTimestamp(new Date(r.updated_on))}
+                                    className={"text-muted small"}>Updated: {longTimestamp(new Date(r.date))}
                                 </div>
                             </CardHeader>
                             <CardBody>
@@ -58,12 +58,12 @@ export class PinnedReportsComponent extends React.Component<PinnedReportsProps> 
     }
 }
 
-function getLatestPublishedMatchingReport(name: String, reports: Report[]) {
+function getLatestPublishedMatchingReport(name: String, reports: ReportVersion[]) {
     const filteredReports = reports
         .filter(r => r.name == name && r.published);
 
     filteredReports
-        .sort((a, b) => (a.updated_on > b.updated_on ? -1 : 1));
+        .sort((a, b) => (a.date > b.date ? -1 : 1));
 
     if (filteredReports.length > 0) {
         return filteredReports[0];
