@@ -1,5 +1,8 @@
 {
-    "id": "BurdenEstimates",
-    "type": "array",
-    "items": { "$ref": "BurdenEstimateSet.schema.json" }
+    "id": "BurdenEstimateSeries",
+    "type": "object",
+    "additionalProperties": {
+    "type" : "array",
+        "items": { "$ref": "DataPoint.schema.json"}
+    }
 }
