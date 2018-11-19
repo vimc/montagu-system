@@ -16,4 +16,4 @@ constructor(val name: String,
             val description: String,
             val comment: String,
             val script: String?,
-            val hashScript: String?)
+            val hashScript: String? )
