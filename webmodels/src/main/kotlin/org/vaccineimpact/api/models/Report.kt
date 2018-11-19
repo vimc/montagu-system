@@ -15,13 +15,13 @@ constructor(val name: String,
             val requester: String)
 
 data class ReportVersion
-@ConstructorProperties("name", "displayname", "id", "latestVersion", "published", "updatedOn", "author",
+@ConstructorProperties("name", "displayname", "id", "latestVersion", "published", "date", "author",
         "requester")
 constructor(val name: String,
             val displayName: String?,
             val id: String,
             val latestVersion: String,
             val published: Boolean,
-            val updatedOn: Instant,
+            val date: Instant,
             val author: String,
             val requester: String)
