@@ -1,9 +1,6 @@
 package org.vaccineimpact.api.app.app_start.route_config
 
-import org.vaccineimpact.api.app.app_start.Endpoint
-import org.vaccineimpact.api.app.app_start.csv
-import org.vaccineimpact.api.app.app_start.json
-import org.vaccineimpact.api.app.app_start.secure
+import org.vaccineimpact.api.app.app_start.*
 import org.vaccineimpact.api.app.controllers.GroupBurdenEstimatesController
 import spark.route.HttpMethod
 

@@ -5,11 +5,13 @@ import org.vaccineimpact.api.app.app_start.route_config.RouteConfig
 import org.vaccineimpact.api.app.consumeRemainder
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.DirectActionContext
+import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.errors.UnsupportedValueException
 import org.vaccineimpact.api.app.models.PublicEndpointDescription
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.models.AuthenticationResponse
+import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.serialization.StreamSerializable
@@ -42,7 +44,9 @@ class Router(val config: RouteConfig,
     {
         is AuthenticationResponse -> serializer.gson.toJson(x)!!
         is StreamSerializable<*> -> throw Exception("Streamable content is not expected here")
-        else -> serializer.toResult(x)
+        // in some cases we may wish to build up the result object ourselves, .e.g to return a failure status
+        // without throwing an exception
+        else -> if (x is Result) serializer.toJson(x) else serializer.toResult(x)
     }
 
     private fun mapEndpoint(
@@ -54,6 +58,7 @@ class Router(val config: RouteConfig,
         val contentType = endpoint.contentType
 
         logger.info("Mapping $fullUrl to ${endpoint.actionName} on ${endpoint.controller.simpleName}")
+
         when (endpoint.method)
         {
             HttpMethod.get -> Spark.get(fullUrl, contentType, route, this::transform)

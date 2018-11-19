@@ -25,6 +25,14 @@ import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
 import java.sql.Timestamp
 import java.time.Instant
+import jdk.nashorn.internal.objects.NativeArray.forEach
+import org.jooq.Record
+import org.jooq.impl.DSL.selectFrom
+import org.vaccineimpact.api.app.errors.*
+import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
+import java.util.stream.Stream
+
 
 data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
@@ -53,7 +61,6 @@ class JooqBurdenEstimateRepository(
                 .singleOrNull()
                 ?: throw UnknownObjectError(setId, BurdenEstimateSet::class)
 
-
         return dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"),
                 inline(burdenEstimateGrouping.toString()).`as`("groupBy"))
                 .from(BURDEN_ESTIMATE)
@@ -70,6 +77,40 @@ class JooqBurdenEstimateRepository(
                 .from(BURDEN_OUTCOME)
                 .where(BURDEN_OUTCOME.CODE.like("%$matching%"))
                 .fetchInto(Short::class.java)
+    }
+
+    private fun getCountriesAsLookup(): Map<Short, String> = dsl.select(Tables.COUNTRY.ID, Tables.COUNTRY.NID)
+            .from(Tables.COUNTRY)
+            .fetch()
+            .intoMap(Tables.COUNTRY.NID, Tables.COUNTRY.ID)
+
+    override fun validateEstimates(set: BurdenEstimateSet, expectedRowMap: HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>): HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>
+    {
+        val countries = getCountriesAsLookup()
+        dsl.select(BURDEN_ESTIMATE.COUNTRY, BURDEN_ESTIMATE.AGE, BURDEN_ESTIMATE.YEAR)
+                .from(BURDEN_ESTIMATE)
+                .where(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET.eq(set.id)).stream().use { stream ->
+                    stream.forEach { validate(it.into(BURDEN_ESTIMATE), countries, expectedRowMap) }
+                }
+
+        return expectedRowMap
+    }
+
+    private fun validate(r: BurdenEstimateRecord, countries: Map<Short, String>, expectedRows: HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>)
+    {
+        val countryId = countries[r.country]
+        val ages = expectedRows[countryId]
+                ?: throw BadRequest("We are not expecting data for country $countryId")
+
+        val years = ages[r.age]
+                ?: throw BadRequest("We are not expecting data for age ${r.age}")
+
+        if (!years.containsKey(r.year))
+        {
+            throw BadRequest("We are not expecting data for age ${r.age} and year ${r.year}")
+        }
+
+        expectedRows[countryId]!![r.age]!![r.year] = true
     }
 
     private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter
@@ -299,25 +340,6 @@ class JooqBurdenEstimateRepository(
                 this.modelRunParameter = parameterIds[it.key]
                 this.value = it.value
             }.store()
-        }
-    }
-
-    override fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
-    {
-        // Dereference modelling group IDs
-        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
-
-        // Check all the IDs match up
-        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
-        val set = getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
-        if (getEstimateWriter(set).isSetEmpty(setId))
-        {
-            throw InvalidOperationError("This burden estimate set does not have any burden estimate data. " +
-                    "It cannot be marked as complete")
-        }
-        else
-        {
-            changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
         }
     }
 
