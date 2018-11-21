@@ -2,6 +2,7 @@ package org.vaccineimpact.api.serialization
 
 import com.github.salomonbrys.kotson.jsonSerializer
 import com.github.salomonbrys.kotson.registerTypeAdapter
+import com.github.salomonbrys.kotson.registerTypeHierarchyAdapter
 import com.google.gson.*
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
@@ -84,6 +85,7 @@ open class MontaguSerializer : Serializer
                 .registerTypeAdapter<User>(ruleBasedSerializer(baseGson))
                 .registerTypeAdapter<ScenarioTouchstoneAndCoverageSets>(ruleBasedSerializer(baseGson))
                 .registerTypeAdapter<ScenarioAndCoverageSets>(ruleBasedSerializer(baseGson))
+                .registerTypeAdapter<BurdenEstimateDataSeries>(BurdenEstimateDataSeriesTypeAdaptor())
                 .create()
     }
 

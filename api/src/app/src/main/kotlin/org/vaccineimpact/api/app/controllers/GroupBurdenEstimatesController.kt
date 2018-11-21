@@ -103,6 +103,23 @@ open class GroupBurdenEstimatesController(
         }
     }
 
+    fun getEstimatesForOutcome(): BurdenEstimateDataSeries
+    {
+        val path = getValidResponsibilityPath(context, estimateRepository)
+        val groupBy = context.queryParams("groupBy")
+        val grouping = if (groupBy == "year")
+        {
+            BurdenEstimateGrouping.YEAR
+        }
+        else
+        {
+            BurdenEstimateGrouping.AGE
+        }
+        return estimatesLogic.getEstimates(context.params(":set-id").toInt(),
+                path.groupId, path.touchstoneVersionId,
+                path.scenarioId, context.params(":outcome-code"), grouping)
+    }
+
     fun clearBurdenEstimateSet(): String
     {
         val path = getValidResponsibilityPath(context, estimateRepository)

@@ -76,7 +76,7 @@ fun main(args: Array<String>)
         val responsibilityId2018 = db.addResponsibility(setId2018, yfRoutine2018)
         val secondResponsibilityId2018 = db.addResponsibility(setId2018, yfCampaign2018)
 
-        db.addExpectations(responsibilityId, countries = db.fetchCountries(2), outcomes = db.fetchOutcomes(2),
+        db.addExpectations(responsibilityId, countries = db.fetchCountries(2), outcomes = db.fetchOutcomes(6),
                 cohortMinInclusive = 1980, cohortMaxInclusive = null)
         db.addExpectations(secondResponsibilityId, countries = db.fetchCountries(96), outcomes = db.fetchOutcomes(1))
 
