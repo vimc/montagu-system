@@ -47,6 +47,7 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
         return <div>
             <ResponsibilityOverviewDescription
                 currentTouchstoneId={props.touchstoneId}
+                groupId={props.modellingGroup.id}
             />
             <ResponsibilitySetStatusMessage status={props.responsibilitySet.status}/>
             <div className="largeSectionTitle">Demographic data</div>

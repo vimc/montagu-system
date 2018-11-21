@@ -3,7 +3,7 @@ set -ex
 here=$(dirname $0)
 
 $here/cli.sh add "Test User" test.user \
-    test@example.com password \
+    test.user@example.com password \
     --if-not-exists
 
 $here/cli.sh addRole test.user user

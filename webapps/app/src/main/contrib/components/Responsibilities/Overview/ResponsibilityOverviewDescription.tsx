@@ -5,6 +5,7 @@ import {InternalLink} from "../../../../shared/components/InternalLink";
 
 interface ResponsibilityOverviewDescriptionProps {
     currentTouchstoneId: string;
+    groupId: string;
 }
 
 const outputGuide = require("./outputs-guide.pdf");
@@ -82,8 +83,8 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
             return JanuaryRfpTouchstone()
         }
     } else {
-        const guidanceInputsUrl = `/help/model-inputs/`;
-        const guidanceOutputsUrl = `/help/model-outputs/`;
+        const guidanceInputsUrl = `/help/model-inputs/${props.currentTouchstoneId}`;
+        const guidanceOutputsUrl = `/help/model-outputs/${props.currentTouchstoneId}`;
         return <div>
             On this page you can:
             <ul>
