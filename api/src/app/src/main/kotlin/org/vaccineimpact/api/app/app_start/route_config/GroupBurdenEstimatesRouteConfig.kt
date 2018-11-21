@@ -42,6 +42,11 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
             Endpoint("$baseUrl/:set-id/actions/close/",
                     controller, "closeBurdenEstimateSet", method = HttpMethod.post)
                     .json()
-                    .secure(writePermissions)
+                    .secure(writePermissions),
+
+            Endpoint("$baseUrl/:set-id/estimates/:outcome-code/",
+                    controller, "getEstimatesForOutcome")
+                    .json()
+                    .secure(readPermissions)
     )
 }

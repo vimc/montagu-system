@@ -1,0 +1,8 @@
+{
+    "id": "ChartSeries",
+    "type": "object",
+    "additionalProperties": {
+    "type" : "array",
+        "items": { "$ref": "DataPoint.schema.json"}
+    }
+}

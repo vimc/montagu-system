@@ -8,9 +8,7 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.app.validateStochastic
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.BurdenEstimateSetStatus
-import org.vaccineimpact.api.models.BurdenEstimateWithRunId
+import org.vaccineimpact.api.models.*
 
 interface BurdenEstimateLogic
 {
@@ -19,12 +17,33 @@ interface BurdenEstimateLogic
 
     @Throws(MissingRowsError::class)
     fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
+
+    fun getEstimates(setId: Int,
+                     groupId: String,
+                     touchstoneVersionId: String,
+                     scenarioId: String,
+                     outcome: String,
+                     burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):
+            BurdenEstimateDataSeries
 }
 
 class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: ModellingGroupRepository,
                                       private val burdenEstimateRepository: BurdenEstimateRepository,
                                       private val expectationsRepository: ExpectationsRepository) : BurdenEstimateLogic
 {
+    override fun getEstimates(setId: Int, groupId: String, touchstoneVersionId: String,
+                              scenarioId: String,
+                              outcome: String,
+                              burdenEstimateGrouping: BurdenEstimateGrouping)
+            : BurdenEstimateDataSeries
+    {
+        val group = modellingGroupRepository.getModellingGroup(groupId)
+        val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(group.id, touchstoneVersionId, scenarioId)
+        val outcomeIds = burdenEstimateRepository.getBurdenOutcomeIds(outcome)
+        return burdenEstimateRepository.getEstimates(setId, responsibilityInfo.id, outcomeIds,
+                burdenEstimateGrouping)
+    }
+
     override fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
     {
         // Dereference modelling group IDs

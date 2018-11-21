@@ -462,6 +462,17 @@ fun JooqContext.addCountries(ids: List<String>)
     this.dsl.batchStore(records).execute()
 }
 
+fun JooqContext.addBurdenOutcomes(codes: List<String>)
+{
+    val records = codes.map {
+        this.dsl.newRecord(BURDEN_OUTCOME).apply {
+            this.code = it
+            this.name = "$it-Name"
+        }
+    }
+    this.dsl.batchStore(records).execute()
+}
+
 fun JooqContext.addTouchstoneCountries(touchstoneVersionId: String, countryIds: List<String>, disease: String)
 {
     val records = countryIds.map { country ->

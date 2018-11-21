@@ -2,6 +2,12 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
 import org.jooq.JoinType
+import org.jooq.impl.DSL.inline
+import org.jooq.impl.DSL.sum
+import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.DatabaseContentsError
+import org.vaccineimpact.api.app.errors.InvalidOperationError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
@@ -19,13 +25,8 @@ import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
 import java.sql.Timestamp
 import java.time.Instant
-import jdk.nashorn.internal.objects.NativeArray.forEach
-import org.jooq.Record
-import org.jooq.impl.DSL.selectFrom
-import org.vaccineimpact.api.app.errors.*
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
-import java.util.stream.Stream
 
 
 data class ResponsibilityInfo
@@ -42,6 +43,38 @@ class JooqBurdenEstimateRepository(
         stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
+    override fun getEstimates(setId: Int, responsibilityId: Int,
+                              outcomeIds: List<Short>,
+                              burdenEstimateGrouping: BurdenEstimateGrouping):
+            BurdenEstimateDataSeries
+    {
+        // check set belongs to this responsibility
+        dsl.select()
+                .from(BURDEN_ESTIMATE_SET)
+                .where(BURDEN_ESTIMATE_SET.RESPONSIBILITY.eq(responsibilityId))
+                .and(BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .singleOrNull()
+                ?: throw UnknownObjectError(setId, BurdenEstimateSet::class)
+
+        val data = dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"))
+                .from(BURDEN_ESTIMATE)
+                .where(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET.eq(setId))
+                .and(BURDEN_ESTIMATE.BURDEN_OUTCOME.`in`(outcomeIds))
+                .groupBy(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE)
+                .fetchInto(BurdenEstimateDataPoint::class.java)
+                .groupBy { if (burdenEstimateGrouping == BurdenEstimateGrouping.AGE) it.age else it.year }
+
+        return BurdenEstimateDataSeries(burdenEstimateGrouping, data)
+    }
+
+    override fun getBurdenOutcomeIds(matching: String): List<Short>
+    {
+        return dsl.select(BURDEN_OUTCOME.ID)
+                .from(BURDEN_OUTCOME)
+                .where(BURDEN_OUTCOME.CODE.like("%$matching%"))
+                .fetchInto(Short::class.java)
+    }
+
     private fun getCountriesAsLookup(): Map<Short, String> = dsl.select(Tables.COUNTRY.ID, Tables.COUNTRY.NID)
             .from(Tables.COUNTRY)
             .fetch()
