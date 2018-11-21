@@ -5,7 +5,6 @@ import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWrit
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.FlexibleDataTable
-import java.rmi.activation.UnknownObjectException
 import java.time.Instant
 
 interface BurdenEstimateRepository : Repository
@@ -43,5 +42,5 @@ interface BurdenEstimateRepository : Repository
 
     fun getEstimates(setId: Int, responsibilityId: Int, outcomeIds: List<Short>,
                      burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):
-            Map<Short, List<DisAggregatedBurdenEstimate>>
+            BurdenEstimateDataSeries
 }

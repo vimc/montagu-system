@@ -64,9 +64,10 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             it.getEstimates(setId, responsibilityId, listOf(outcomeId))
         }
 
-        assertThat(result.keys).hasSameElementsAs((1..10).map { it.toShort() })
-        assertThat(result.values.all { it.count() == 4 }).isTrue()
-        assertThat(result.values.all { it.all { it.value == 200F } }).isTrue()
+        assertThat(result.burdenEstimateGrouping).isEqualTo(BurdenEstimateGrouping.AGE)
+        assertThat(result.data.keys).hasSameElementsAs((1..10).map { it.toShort() })
+        assertThat(result.data.values.all { it.count() == 4 }).isTrue()
+        assertThat(result.data.values.all { it.all { it.value == 200F } }).isTrue()
     }
 
     @Test
@@ -99,9 +100,10 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             it.getEstimates(setId, responsibilityId, listOf(outcomeId), BurdenEstimateGrouping.YEAR)
         }
 
-        assertThat(result.keys).hasSameElementsAs((2000..2003).map { it.toShort() })
-        assertThat(result.values.all { it.count() == 10 }).isTrue()
-        assertThat(result.values.all { it.all { it.value == 200F } }).isTrue()
+        assertThat(result.burdenEstimateGrouping).isEqualTo(BurdenEstimateGrouping.YEAR)
+        assertThat(result.data.keys).hasSameElementsAs((2000..2003).map { it.toShort() })
+        assertThat(result.data.values.all { it.count() == 10 }).isTrue()
+        assertThat(result.data.values.all { it.all { it.value == 200F } }).isTrue()
     }
 
     @Test
@@ -132,7 +134,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         }
 
         val result = withRepo {
-            it.getEstimates(badSetId, responsibilityId, listOf(outcomeId))
+            it.getEstimates(badSetId, responsibilityId, listOf(outcomeId)).data
         }
 
         assertThat(result.keys.count()).isEqualTo(0)
@@ -200,7 +202,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         }
 
         val result = withRepo {
-            it.getEstimates(setId, responsibilityId, listOf(outcomeId))
+            it.getEstimates(setId, responsibilityId, listOf(outcomeId)).data
         }
 
         assertThat(result.keys.count()).isEqualTo(0)

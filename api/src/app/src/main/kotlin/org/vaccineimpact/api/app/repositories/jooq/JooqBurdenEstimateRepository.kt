@@ -25,13 +25,8 @@ import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
 import java.sql.Timestamp
 import java.time.Instant
-import jdk.nashorn.internal.objects.NativeArray.forEach
-import org.jooq.Record
-import org.jooq.impl.DSL.selectFrom
-import org.vaccineimpact.api.app.errors.*
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
-import java.util.stream.Stream
 
 
 data class ResponsibilityInfo
@@ -51,7 +46,7 @@ class JooqBurdenEstimateRepository(
     override fun getEstimates(setId: Int, responsibilityId: Int,
                               outcomeIds: List<Short>,
                               burdenEstimateGrouping: BurdenEstimateGrouping):
-            Map<Short, List<DisAggregatedBurdenEstimate>>
+            BurdenEstimateDataSeries
     {
         // check set belongs to this responsibility
         dsl.select()
@@ -61,14 +56,16 @@ class JooqBurdenEstimateRepository(
                 .singleOrNull()
                 ?: throw UnknownObjectError(setId, BurdenEstimateSet::class)
 
-        return dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"),
+        val data = dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"),
                 inline(burdenEstimateGrouping.toString()).`as`("groupBy"))
                 .from(BURDEN_ESTIMATE)
                 .where(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET.eq(setId))
                 .and(BURDEN_ESTIMATE.BURDEN_OUTCOME.`in`(outcomeIds))
                 .groupBy(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE)
-                .fetchInto(DisAggregatedBurdenEstimate::class.java)
+                .fetchInto(BurdenEstimateDataPoint::class.java)
                 .groupBy { if (burdenEstimateGrouping == BurdenEstimateGrouping.AGE) it.age else it.year }
+
+        return BurdenEstimateDataSeries(burdenEstimateGrouping, data)
     }
 
     override fun getBurdenOutcomeIds(matching: String): List<Short>

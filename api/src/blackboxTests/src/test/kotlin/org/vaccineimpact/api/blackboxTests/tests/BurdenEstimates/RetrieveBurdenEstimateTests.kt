@@ -41,7 +41,7 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `can get estimated deaths for scenario`()
     {
-        validate("$setUrl/1/estimates/deaths/") against "BurdenEstimateSeries" given { db ->
+        validate("$setUrl/1/estimates/deaths/") against "ChartSeries" given { db ->
             val returnedIds = setUp(db)
             TestUserHelper.setupTestUser()
 
@@ -70,7 +70,7 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `can get estimated cases for scenario`()
     {
-        validate("$setUrl/1/estimates/cases/") against "BurdenEstimateSeries" given { db ->
+        validate("$setUrl/1/estimates/cases/") against "ChartSeries" given { db ->
             val returnedIds = setUp(db)
             TestUserHelper.setupTestUser()
 

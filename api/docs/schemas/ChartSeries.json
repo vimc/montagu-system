@@ -1,5 +1,5 @@
 {
-    "id": "BurdenEstimateSeries",
+    "id": "ChartSeries",
     "type": "object",
     "additionalProperties": {
     "type" : "array",

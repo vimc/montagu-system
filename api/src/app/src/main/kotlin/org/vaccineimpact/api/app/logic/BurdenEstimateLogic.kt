@@ -8,9 +8,6 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.app.validateStochastic
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.BurdenEstimateSetStatus
-import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 import org.vaccineimpact.api.models.*
 
 interface BurdenEstimateLogic
@@ -27,18 +24,18 @@ interface BurdenEstimateLogic
                      scenarioId: String,
                      outcome: String,
                      burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):
-            Map<Short, List<DisAggregatedBurdenEstimate>>
+            BurdenEstimateDataSeries
 }
 
 class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: ModellingGroupRepository,
                                       private val burdenEstimateRepository: BurdenEstimateRepository,
                                       private val expectationsRepository: ExpectationsRepository) : BurdenEstimateLogic
 {
-    override fun getEstimates(setId:Int, groupId: String, touchstoneVersionId: String,
+    override fun getEstimates(setId: Int, groupId: String, touchstoneVersionId: String,
                               scenarioId: String,
                               outcome: String,
                               burdenEstimateGrouping: BurdenEstimateGrouping)
-            : Map<Short, List<DisAggregatedBurdenEstimate>>
+            : BurdenEstimateDataSeries
     {
         val group = modellingGroupRepository.getModellingGroup(groupId)
         val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(group.id, touchstoneVersionId, scenarioId)

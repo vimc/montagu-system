@@ -270,19 +270,20 @@ AFG, age 10, year 2000""")
     @Test
     fun `can get estimated deaths for responsibility`()
     {
-        val fakeEstimates: Map<Short, List<DisAggregatedBurdenEstimate>> =
-                mapOf(1.toShort() to listOf(DisAggregatedBurdenEstimate(2000, 1, 100F, BurdenEstimateGrouping.AGE)))
+        val fakeEstimates: Map<Short, List<BurdenEstimateDataPoint>> =
+                mapOf(1.toShort() to listOf(BurdenEstimateDataPoint(2000, 1, 100F)))
 
         val repo = mock<BurdenEstimateRepository> {
             on { getBurdenOutcomeIds("test-outcome") } doReturn listOf(1.toShort(), 2)
-            on { getEstimates(any(), any(),any(), any()) } doReturn fakeEstimates
+            on { getEstimates(any(), any(),any(), any()) } doReturn
+                    BurdenEstimateDataSeries(BurdenEstimateGrouping.AGE, fakeEstimates)
             on { getResponsibilityInfo(any(), any(), any()) } doReturn
                     ResponsibilityInfo(responsibilityId, disease, "open", setId)
         }
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
 
         val result = sut.getEstimates(1, groupId, touchstoneVersionId, scenarioId, "test-outcome")
-        assertThat(result).containsAllEntriesOf(fakeEstimates)
+        assertThat(result.data).containsAllEntriesOf(fakeEstimates)
         verify(repo).getBurdenOutcomeIds("test-outcome")
     }
 

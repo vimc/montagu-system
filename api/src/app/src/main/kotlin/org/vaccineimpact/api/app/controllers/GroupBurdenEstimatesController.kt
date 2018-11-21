@@ -103,7 +103,7 @@ open class GroupBurdenEstimatesController(
         }
     }
 
-    fun getEstimatesForOutcome(): Map<Short, List<DisAggregatedBurdenEstimate>>
+    fun getEstimatesForOutcome(): BurdenEstimateDataSeries
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
         val groupBy = context.queryParams("groupBy")
