@@ -2,35 +2,16 @@ package org.vaccineimpact.api.models
 
 import java.beans.ConstructorProperties
 
-data class DataPoint
-constructor(
-        val x: Short,
-        val y: Float
-)
+data class BurdenEstimateDataSeries(val burdenEstimateGrouping: BurdenEstimateGrouping,
+                                    val data: Map<Short, List<BurdenEstimateDataPoint>>)
 
-interface ChartSerializable
-{
-    fun toDataPoint(): DataPoint
-}
-
-data class DisAggregatedBurdenEstimate
+data class BurdenEstimateDataPoint
 @ConstructorProperties("year", "age", "value", "groupBy")
 constructor(
         val year: Short,
         val age: Short,
-        val value: Float,
-        val groupBy: BurdenEstimateGrouping
-) : ChartSerializable
-{
-    override fun toDataPoint(): DataPoint = if (groupBy == BurdenEstimateGrouping.AGE)
-    {
-        DataPoint(this.year, this.value)
-    }
-    else
-    {
-        DataPoint(this.age, this.value)
-    }
-}
+        val value: Float
+)
 
 enum class BurdenEstimateGrouping
 {
