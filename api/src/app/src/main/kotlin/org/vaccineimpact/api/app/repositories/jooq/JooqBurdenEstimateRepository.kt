@@ -56,8 +56,7 @@ class JooqBurdenEstimateRepository(
                 .singleOrNull()
                 ?: throw UnknownObjectError(setId, BurdenEstimateSet::class)
 
-        val data = dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"),
-                inline(burdenEstimateGrouping.toString()).`as`("groupBy"))
+        val data = dsl.select(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE, sum(BURDEN_ESTIMATE.VALUE).`as`("value"))
                 .from(BURDEN_ESTIMATE)
                 .where(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET.eq(setId))
                 .and(BURDEN_ESTIMATE.BURDEN_OUTCOME.`in`(outcomeIds))
