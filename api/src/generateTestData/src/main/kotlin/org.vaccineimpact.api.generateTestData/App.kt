@@ -33,8 +33,8 @@ fun main(args: Array<String>)
         val yfRoutine = db.addScenarioToTouchstone("op-2017-2", "yf-routine")
         val yfCampaign = db.addScenarioToTouchstone("op-2017-2", "yf-campaign")
 
-        val yfRoutine2018 = db.addScenarioToTouchstone("op-2018-1", "yf-routine-2018")
-        val yfCampaign2018 = db.addScenarioToTouchstone("op-2018-1", "yf-campaign-2018")
+        val yfRoutine2018 = db.addScenarioToTouchstone("op-2018-1", "yf-routine")
+        val yfCampaign2018 = db.addScenarioToTouchstone("op-2018-1", "yf-campaign")
 
         val yfNoVacc = db.addCoverageSet("op-2017-2", "Yellow Fever, no vaccination", "YF", "none", "none")
         val yfRoutineWithout = db.addCoverageSet("op-2017-2", "Yellow Fever, routine, without GAVI", "YF", "without", "routine")
@@ -61,8 +61,8 @@ fun main(args: Array<String>)
         db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfCampaignWithout, 3)
         db.addCoverageSetToScenario("yf-campaign", "op-2017-2", yfCampaignWith, 4)
 
-        db.addCoverageSetToScenario("yf-routine-2018", "op-2018-1", yfNoVacc2018, 0)
-        db.addCoverageSetToScenario("yf-routine-2018", "op-2018-1", yfRoutineWithout2018, 1)
+        db.addCoverageSetToScenario("yf-routine", "op-2018-1", yfNoVacc2018, 3)
+        db.addCoverageSetToScenario("yf-routine", "op-2018-1", yfRoutineWithout2018, 4)
 
         db.addGroup("IC-Garske", "Imperial Yellow Fever modelling group")
         db.addGroup("IC-Imaginary", "Imperial speculative modelling group")
