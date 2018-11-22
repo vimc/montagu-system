@@ -34,7 +34,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
         });
 
         const testMatch = mockMatch<ResponsibilityGuidancePageLocationProps>({
-            touchstoneId: testTouchstone.id;
+            touchstoneId: testTouchstone.id
     });
 
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelOutputsPageActionCreators, "onLoad");

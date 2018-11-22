@@ -6,7 +6,6 @@ import {settings} from "../../../../../shared/Settings";
 import * as React from "react";
 import {mapStateToGuidanceContentProps, ResponsibilityGuidanceContentProps} from "./ResponsibilityGuidanceContentProps";
 import {connect} from "react-redux";
-import {ResponsibilityGuidanceModelInputsContent2017Component} from "./ResponsibilityGuidanceModelInputsContent2017";
 
 export class ResponsibilityGuidanceModelInputsContentLatestComponent extends React.Component<ResponsibilityGuidanceContentProps> {
 
