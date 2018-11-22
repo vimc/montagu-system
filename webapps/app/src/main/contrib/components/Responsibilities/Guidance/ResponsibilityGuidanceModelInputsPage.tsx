@@ -5,21 +5,16 @@ import {branch, compose, renderComponent} from "recompose";
 
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {settings} from "../../../../shared/Settings";
 import {ContribPage} from "../../../ContribPage";
 import {responsibilityGuidanceModelInputsPageActionCreators} from "../../../actions/pages/responsibilityGuidancePageActionCreators";
 
-import { ResponsibilityGuidancePageProps, ResponsibilityGuidancePageComponent} from "./ResponsibilityGuidancePage";
-import { ResponsibilityGuidanceModelInputsContent2017} from "./ResponsibilityGuidanceModelInputsContent2017";
-import { ResponsibilityGuidanceModelInputsContentLatest} from "./ResponsibilityGuidanceModelInputsContentLatest";
+import { ResponsibilityGuidancePageProps } from "./ResponsibilityGuidancePageProps";
+import { ResponsibilityGuidanceModelInputsContent2017 } from "./content/ResponsibilityGuidanceModelInputsContent2017";
+import { ResponsibilityGuidanceModelInputsContentLatest } from "./content/ResponsibilityGuidanceModelInputsContentLatest";
+import { ResponsibilityGuidanceTouchstoneNotOpenContent } from "./content/ResponsibilityGuidanceTouchstoneNotOpenContent";
 
-const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityGuidancePageProps> => {
-    return {
-        touchstoneVersion: state.touchstones.currentTouchstoneVersion
-    }
-};
-
-
-export class ResponsibilityGuidanceModelInputsPageComponent extends ResponsibilityGuidancePageComponent {
+export class ResponsibilityGuidanceModelInputsPageComponent extends React.Component<ResponsibilityGuidancePageProps> {
 
     render() :JSX.Element {
 
@@ -28,14 +23,26 @@ export class ResponsibilityGuidanceModelInputsPageComponent extends Responsibili
             return <LoadingElement/>
         }
 
-        if (this.currentTouchstoneIs2017()) {
-            return <ResponsibilityGuidanceModelInputsContent2017/>
+        if (this.props.touchstoneVersion.status !== "open")
+        {
+            return <ResponsibilityGuidanceTouchstoneNotOpenContent />
+        }
+
+        if (settings.is2017Touchstone(this.props.touchstoneVersion.id)) {
+            return <ResponsibilityGuidanceModelInputsContent2017 />
         }
         else {
-            return <ResponsibilityGuidanceModelInputsContentLatest/>
+            return <ResponsibilityGuidanceModelInputsContentLatest />
         }
     }
 }
+
+export const mapStateToProps = (state: ContribAppState, props: Partial<ResponsibilityGuidancePageProps>):
+    Partial<ResponsibilityGuidancePageProps> => {
+    return {
+        touchstoneVersion: state.touchstones.currentTouchstoneVersion,
+    }
+};
 
 export const ResponsibilityGuidanceModelInputsPage = compose<ResponsibilityGuidancePageProps,
     Partial<ResponsibilityGuidancePageProps>>(

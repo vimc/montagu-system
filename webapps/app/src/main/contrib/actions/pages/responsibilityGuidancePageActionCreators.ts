@@ -2,23 +2,14 @@ import {Dispatch} from "redux";
 
 import {contribTouchstonesActionCreators} from "../contribTouchstonesActionCreators";
 import {ContribAppState} from "../../reducers/contribAppReducers";
-import {ResponsibilityOverviewPageLocationProps} from "../../components/Responsibilities/Overview/ResponsibilityOverviewPage";
-import {responsibilitiesActionCreators} from "../responsibilitiesActionCreators";
-import {diseasesActionCreators} from "../../../shared/actions/diseasesActionCreators";
 import {chooseGroupPageActionCreators} from "./chooseGroupPageActionCreators";
 import {ContribPageActionCreators} from "./ContribPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
-import {ResponsibilityGuidancePageLocationProps} from "../../components/Responsibilities/Guidance/ResponsibilityGuidancePage"
-import {ChooseGroupPageComponent} from "../../components/ChooseGroup/ChooseGroupPage";
-import {modellingGroupsActionCreators} from "../modellingGroupsActionCreators";
-import {responsibilityOverviewPageActionCreators} from "../pages/responsibilityOverviewPageActionCreators";
-
+import {ResponsibilityGuidancePageLocationProps} from "../../components/Responsibilities/Guidance/ResponsibilityGuidancePageProps"
 
 abstract class ResponsibilityGuidancePageActionCreators extends ContribPageActionCreators<ResponsibilityGuidancePageLocationProps> {
 
-    //parent = responsibilityOverviewPageActionCreators;
     parent = chooseGroupPageActionCreators;
-
 
     loadData(params: ResponsibilityGuidancePageLocationProps) {
 
@@ -40,3 +31,15 @@ class ResponsibilityGuidanceModelInputsPageActionCreators extends Responsibility
 }
 
 export const responsibilityGuidanceModelInputsPageActionCreators = new ResponsibilityGuidanceModelInputsPageActionCreators();
+
+
+class ResponsibilityGuidanceModelOutputsPageActionCreators extends ResponsibilityGuidancePageActionCreators {
+    createBreadcrumb(state: ContribAppState): PageBreadcrumb {
+        return {
+            name: `Model Outputs Guidance for ${state.touchstones.currentTouchstoneVersion.description}`,
+            urlFragment: `help/model-outputs/${state.touchstones.currentTouchstoneVersion.id}`
+        }
+    }
+}
+
+export const responsibilityGuidanceModelOutputsPageActionCreators = new ResponsibilityGuidanceModelOutputsPageActionCreators();

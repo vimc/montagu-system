@@ -1,17 +1,20 @@
-import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
-import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
+import {LoadingElement} from "../../../../../shared/partials/LoadingElement/LoadingElement";
+import {PageArticle} from "../../../../../shared/components/PageWithHeader/PageArticle";
 import ScrollableAnchor from "react-scrollable-anchor";
-import {InternalLink} from "../../../../shared/components/InternalLink";
-import {settings} from "../../../../shared/Settings";
+import {InternalLink} from "../../../../../shared/components/InternalLink";
+import {settings} from "../../../../../shared/Settings";
 import * as React from "react";
+import {mapStateToGuidanceContentProps, ResponsibilityGuidanceContentProps} from "./ResponsibilityGuidanceContentProps";
+import {connect} from "react-redux";
+import {ResponsibilityGuidanceModelInputsContent2017Component} from "./ResponsibilityGuidanceModelInputsContent2017";
 
-export class ResponsibilityGuidanceModelInputsContentLatest extends React.Component {
+export class ResponsibilityGuidanceModelInputsContentLatestComponent extends React.Component<ResponsibilityGuidanceContentProps> {
 
 
     render() :JSX.Element {
 
         return <PageArticle title="Guidance on model inputs: coverage and demographic data">
-            <div className="alert alert-primary">Guidance for Latest touchstones</div>
+            <div className="alert alert-primary">Guidance for touchstone {this.props.touchstoneVersion.description}</div>
             <div className="largeSectionTitle">
                 Input data sources
             </div>
@@ -305,3 +308,5 @@ export class ResponsibilityGuidanceModelInputsContentLatest extends React.Compon
         </PageArticle>
     }
 }
+
+export const ResponsibilityGuidanceModelInputsContentLatest = connect(mapStateToGuidanceContentProps)(ResponsibilityGuidanceModelInputsContentLatestComponent);
