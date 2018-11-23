@@ -3,7 +3,7 @@ import {mockTouchstoneVersion} from "../../../../mocks/mockModels";
 import {createMockContribStore} from "../../../../mocks/mockStore";
 import {mockMatch} from "../../../../mocks/mocks";
 import {TouchstoneVersion} from "../../../../../main/shared/models/Generated";
-import {ResponsibilityGuidancePageLocationProps} from "../../../../../main/contrib/components/Responsibilities/Guidance/ResponsibilityGuidancePageProps";
+import {ResponsibilityGuidanceContentProps} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceContentProps";
 import {responsibilityGuidanceModelInputsPageActionCreators} from "../../../../../main/contrib/actions/pages/responsibilityGuidancePageActionCreators";
 import {shallow} from "enzyme";
 import {ResponsibilityGuidanceModelInputsContentLatest} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceModelInputsContentLatest";
@@ -22,7 +22,6 @@ describe("Guidance Content Component tests", () => {
 
     const sandbox = new Sandbox();
     let testTouchstone : TouchstoneVersion;
-    let testMatch : match<ResponsibilityGuidancePageLocationProps>;
     let store : Store<ContribAppState>;
 
     beforeEach(() => {
@@ -32,9 +31,6 @@ describe("Guidance Content Component tests", () => {
             touchstones: {currentTouchstoneVersion: testTouchstone}
         });
 
-        testMatch = mockMatch<ResponsibilityGuidancePageLocationProps>({
-            touchstoneId: testTouchstone.id
-        });
     });
 
     afterEach(() => sandbox.restore());
@@ -42,7 +38,7 @@ describe("Guidance Content Component tests", () => {
     it("renders Latest Input Content component with expected content", () => {
 
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
-        const rendered = shallow(<ResponsibilityGuidanceModelInputsContentLatest match={testMatch}/>, {context: {store}});
+        const rendered = shallow(<ResponsibilityGuidanceModelInputsContentLatest touchstoneVersion={testTouchstone}/>, {context: {store}});
 
         const props = rendered.props();
         expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
@@ -57,7 +53,7 @@ describe("Guidance Content Component tests", () => {
     it("renders Touchstone Not Open component with expected content", () => {
 
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
-        const rendered = shallow(<ResponsibilityGuidanceModelInputsContent2017 match={testMatch}/>, {context: {store}});
+        const rendered = shallow(<ResponsibilityGuidanceModelInputsContent2017 touchstoneVersion={testTouchstone}/>, {context: {store}});
 
         const props = rendered.props();
         expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
@@ -72,7 +68,7 @@ describe("Guidance Content Component tests", () => {
     it("renders Touchstone Not Open component with expected content", () => {
 
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
-        const rendered = shallow(<ResponsibilityGuidanceTouchstoneNotOpenContent match={testMatch}/>, {context: {store}});
+        const rendered = shallow(<ResponsibilityGuidanceTouchstoneNotOpenContent touchstoneVersion={testTouchstone}/>, {context: {store}});
 
         const props = rendered.props();
         expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
@@ -87,7 +83,7 @@ describe("Guidance Content Component tests", () => {
     it("renders Latest Output Content component with expected content", () => {
 
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
-        const rendered = shallow(<ResponsibilityGuidanceModelOutputsContentLatest match={testMatch}/>, {context: {store}});
+        const rendered = shallow(<ResponsibilityGuidanceModelOutputsContentLatest touchstoneVersion={testTouchstone}/>, {context: {store}});
 
         const props = rendered.props();
         expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
@@ -102,7 +98,7 @@ describe("Guidance Content Component tests", () => {
     it("renders 2017 Output Content component with expected content", () => {
 
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
-        const rendered = shallow(<ResponsibilityGuidanceModelOutputsContent2017 match={testMatch}/>, {context: {store}});
+        const rendered = shallow(<ResponsibilityGuidanceModelOutputsContent2017 touchstoneVersion={testTouchstone}/>, {context: {store}});
 
         const props = rendered.props();
         expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
@@ -115,5 +111,5 @@ describe("Guidance Content Component tests", () => {
     });
 
 
-}
+});
 

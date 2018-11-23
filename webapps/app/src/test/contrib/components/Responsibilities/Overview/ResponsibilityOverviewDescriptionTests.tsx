@@ -11,15 +11,16 @@ describe("Responsibility Overview Description Component", () => {
     const sandbox = new Sandbox();
     const testTouchstoneId1 = "t-1";
     const testTouchstoneId2 = "rfp-1";
+    const testGroupId = "g-1";
     afterEach(() => sandbox.restore());
 
     it("renders component on touchstone not applicants", () => {
-        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId1}/>);
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId1} groupId={testGroupId}/>);
         expect(rendered.text().indexOf("See an overview of which scenarios") > -1).to.equal(true);
     });
 
     it("renders component on touchstone is applicants", () => {
-        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId2}/>);
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId2} groupId={testGroupId}/>);
         expect(rendered.text().indexOf("Access the standardised demographic") > -1).to.equal(true);
     });
 });
