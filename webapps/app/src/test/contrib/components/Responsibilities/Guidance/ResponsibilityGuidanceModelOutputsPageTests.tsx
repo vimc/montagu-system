@@ -15,7 +15,7 @@ import {ResponsibilityGuidanceModelOutputsContent2017} from "../../../../../main
 import {ResponsibilityGuidanceTouchstoneNotOpenContent} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceTouchstoneNotOpenContent";
 
 
-describe("Guidance Model Inputs Page Component tests", () => {
+describe("Guidance Model Outputs Page Component tests", () => {
 
     const sandbox = new Sandbox();
 
@@ -90,7 +90,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
     });
 
     it("renders component for 2017 touchstone", () => {
-        const testTouchstone = mockTouchstoneVersion({id: "op-2017-1"});
+        const testTouchstone = mockTouchstoneVersion({id: "201710gavi-1"});
 
         const store = createMockContribStore({
             touchstones: {currentTouchstoneVersion: testTouchstone}

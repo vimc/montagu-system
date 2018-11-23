@@ -18,7 +18,7 @@ import {match} from 'react-router';
 import { Store } from "redux";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 
-describe("Guidance Latest Content Component tests", () => {
+describe("Guidance Content Component tests", () => {
 
     const sandbox = new Sandbox();
     let testTouchstone : TouchstoneVersion;
@@ -33,7 +33,7 @@ describe("Guidance Latest Content Component tests", () => {
         });
 
         testMatch = mockMatch<ResponsibilityGuidancePageLocationProps>({
-            touchstoneId: testTouchstone.id;
+            touchstoneId: testTouchstone.id
         });
     });
 
