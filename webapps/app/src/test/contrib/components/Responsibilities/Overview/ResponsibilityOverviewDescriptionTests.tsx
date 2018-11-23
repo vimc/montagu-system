@@ -24,5 +24,10 @@ describe("Responsibility Overview Description Component", () => {
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId2} groupId={testGroupId} touchstoneStatus={touchstoneStatus}/>);
         expect(rendered.text().indexOf("Access the standardised demographic") > -1).to.equal(true);
     });
+
+    it("renders component on touchstone is not open", () => {
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId2} groupId={testGroupId} touchstoneStatus="finished"/>);
+        expect(rendered.text().indexOf("This touchstone is no longer open")).to.greaterThan(-1);
+    });
 });
 
