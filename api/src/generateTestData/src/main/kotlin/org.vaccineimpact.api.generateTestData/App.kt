@@ -49,8 +49,8 @@ fun main(args: Array<String>) {
         db.generateCoverageData(yfNoVacc)
         db.generateCoverageData(yfRoutineWithout)
 
-        db.addCoverageSetToScenario("yf-routine", "op-2017-1", yfNoVacc2018, 3)
-        db.addCoverageSetToScenario("yf-routine", "op-2017-1", yfRoutineWithout2018, 4)
+        db.addCoverageSetToScenario("yf-routine", "op-2017-1", yfNoVacc, 3)
+        db.addCoverageSetToScenario("yf-routine", "op-2017-1", yfRoutineWithout, 4)
 
         val setId = db.addResponsibilitySet("IC-Garske", "op-2017-1", "incomplete")
         val responsibilityId = db.addResponsibility(setId, yfRoutine)
