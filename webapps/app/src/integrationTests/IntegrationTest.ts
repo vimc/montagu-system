@@ -62,7 +62,7 @@ export abstract class IntegrationTestSuite {
                 // stores recording the user to some extent
 
                 this.store = this.createStore();
-                this.store.dispatch(authActionCreators.logIn("test@example.com", "password"));
+                this.store.dispatch(authActionCreators.logIn("test.user@example.com", "password"));
                 let unsubscribe = this.store.subscribe(handleChange);
                 let that = this;
 
