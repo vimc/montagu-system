@@ -34,33 +34,34 @@ fun main(args: Array<String>) {
     }
 
 }
-    fun addAllTestDataForOp2017v1(db: JooqContext){
-        //Add all test data and relationships for Touchstone Version "op-2017-1"
-        db.addTouchstoneVersion("op-2017", 1, "Operational Forecast 2017 (v1)", "finished")
 
-        val demographicTestData = DemographicTestData(db)
-        demographicTestData.generate("op-2017-1", listOf("YF"))
+fun addAllTestDataForOp2017v1(db: JooqContext){
+    //Add all test data and relationships for Touchstone Version "op-2017-1"
+    db.addTouchstoneVersion("op-2017", 1, "Operational Forecast 2017 (v1)", "finished")
 
-        val yfRoutine = db.addScenarioToTouchstone("op-2017-1", "yf-routine")
-        val yfCampaign = db.addScenarioToTouchstone("op-2017-1", "yf-campaign")
+    val demographicTestData = DemographicTestData(db)
+    demographicTestData.generate("op-2017-1", listOf("YF"))
 
-        val yfNoVacc = db.addCoverageSet("op-2017-1", "Yellow Fever, no vaccination", "YF", "none", "none")
-        val yfRoutineWithout = db.addCoverageSet("op-2017-1", "Yellow Fever, routine, without GAVI", "YF", "without", "routine")
-        db.generateCoverageData(yfNoVacc)
-        db.generateCoverageData(yfRoutineWithout)
+    val yfRoutine = db.addScenarioToTouchstone("op-2017-1", "yf-routine")
+    val yfCampaign = db.addScenarioToTouchstone("op-2017-1", "yf-campaign")
 
-        db.addCoverageSetToScenario("yf-routine", "op-2017-1", yfNoVacc, 3)
-        db.addCoverageSetToScenario("yf-routine", "op-2017-1", yfRoutineWithout, 4)
+    val yfNoVacc = db.addCoverageSet("op-2017-1", "Yellow Fever, no vaccination", "YF", "none", "none")
+    val yfRoutineWithout = db.addCoverageSet("op-2017-1", "Yellow Fever, routine, without GAVI", "YF", "without", "routine")
+    db.generateCoverageData(yfNoVacc)
+    db.generateCoverageData(yfRoutineWithout)
 
-        val setId = db.addResponsibilitySet("IC-Garske", "op-2017-1", "incomplete")
-        val responsibilityId = db.addResponsibility(setId, yfRoutine)
-        val secondResponsibilityId = db.addResponsibility(setId, yfCampaign)
+    db.addCoverageSetToScenario("yf-routine", "op-2017-1", yfNoVacc, 3)
+    db.addCoverageSetToScenario("yf-routine", "op-2017-1", yfRoutineWithout, 4)
 
-        db.addExpectations(responsibilityId, countries = db.fetchCountries(2), outcomes = db.fetchOutcomes(2),
-                cohortMinInclusive = 1980, cohortMaxInclusive = null)
-        db.addExpectations(secondResponsibilityId, countries = db.fetchCountries(96), outcomes = db.fetchOutcomes(1))
+    val setId = db.addResponsibilitySet("IC-Garske", "op-2017-1", "incomplete")
+    val responsibilityId = db.addResponsibility(setId, yfRoutine)
+    val secondResponsibilityId = db.addResponsibility(setId, yfCampaign)
 
-    }
+    db.addExpectations(responsibilityId, countries = db.fetchCountries(2), outcomes = db.fetchOutcomes(2),
+            cohortMinInclusive = 1980, cohortMaxInclusive = null)
+    db.addExpectations(secondResponsibilityId, countries = db.fetchCountries(96), outcomes = db.fetchOutcomes(1))
+
+}
 
 fun addAllTestDataForOp2017v2(db: JooqContext){
     //Add all test data and relationships for Touchstone Version "op-2017-2"
