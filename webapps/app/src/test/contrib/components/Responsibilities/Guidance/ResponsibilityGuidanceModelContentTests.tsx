@@ -60,7 +60,7 @@ describe("Guidance Content Component tests", () => {
         const pageArticle = rendered.dive().find('PageArticle');
         expect(pageArticle.props().title).is.equal("Guidance on model inputs: coverage and demographic data");
 
-        const alert = rendered.dive().find('.alert-warning');
+        const alert = rendered.dive().find('.alert-primary');
         expect(alert.getElements().length).is.equal(1);
 
     });
@@ -105,7 +105,7 @@ describe("Guidance Content Component tests", () => {
         const pageArticle = rendered.dive().find('PageArticle');
         expect(pageArticle.props().title).is.equal("Guidance on model outputs: how to generate and upload central and stochastic estimates");
 
-        const alert = rendered.dive().find('.alert-warning');
+        const alert = rendered.dive().find('.alert-primary');
         expect(alert.getElements().length).is.equal(1);
 
     });

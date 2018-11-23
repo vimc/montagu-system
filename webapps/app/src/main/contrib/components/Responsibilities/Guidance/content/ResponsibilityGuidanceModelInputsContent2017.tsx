@@ -14,7 +14,7 @@ export class ResponsibilityGuidanceModelInputsContent2017Component extends React
     render() :JSX.Element {
 
         return <PageArticle title="Guidance on model inputs: coverage and demographic data">
-            <div className="alert alert-warning">Guidance for 2017 touchstone {this.props.touchstoneVersion.description}</div>
+            <div className="alert alert-primary">Guidance for 2017 touchstone {this.props.touchstoneVersion.description}</div>
                 <div className="largeSectionTitle">
                     Input data sources
                 </div>

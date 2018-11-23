@@ -26,8 +26,8 @@ export class ResponsibilityGuidanceHasMovedPageComponent extends React.Component
     render() :JSX.Element {
         return <PageArticle title="Guidance pages have moved">
             <div className="alert alert-danger">The guidance pages for models have moved.
-                Please return to the portal <InternalLink href="/">homepage</InternalLink> and follow instructions to find guidance on using current
-                touchstones.</div>
+                You can find guidance for current touchstones via the Responsibilities overview page,
+                which you can access by returning to the portal <InternalLink href="/">homepage</InternalLink> and following the links.</div>
         </PageArticle>
     }
 }

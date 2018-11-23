@@ -21,6 +21,7 @@ export interface ResponsibilityOverviewContentProps {
     currentDiseaseId: string;
     modellingGroup: ModellingGroup;
     touchstoneId: string;
+    touchstoneStatus: string;
 }
 
 function paramsSection(props: ResponsibilityOverviewContentProps) {
@@ -48,6 +49,7 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
             <ResponsibilityOverviewDescription
                 currentTouchstoneId={props.touchstoneId}
                 groupId={props.modellingGroup.id}
+                touchstoneStatus={props.touchstoneStatus}
             />
             <ResponsibilitySetStatusMessage status={props.responsibilitySet.status}/>
             <div className="largeSectionTitle">Demographic data</div>
@@ -73,7 +75,8 @@ export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityO
         responsibilitySet: state.responsibilities.responsibilitiesSet,
         currentDiseaseId: state.diseases.currentDiseaseId,
         modellingGroup: state.groups.currentUserGroup,
-        touchstoneId: state.touchstones.currentTouchstoneVersion.id
+        touchstoneId: state.touchstones.currentTouchstoneVersion.id,
+        touchstoneStatus: state.touchstones.currentTouchstoneVersion.status
     }
 };
 

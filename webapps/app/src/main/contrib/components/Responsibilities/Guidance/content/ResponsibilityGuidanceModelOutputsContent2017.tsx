@@ -14,7 +14,7 @@ export class ResponsibilityGuidanceModelOutputsContent2017Component extends Reac
         const dalysPdf = require("./guidance-201710-DALYs.pdf");
 
         return <PageArticle title="Guidance on model outputs: how to generate and upload central and stochastic estimates">
-            <div className="alert alert-warning">Guidance for 2017 touchstone {this.props.touchstoneVersion.description}</div>
+            <div className="alert alert-primary">Guidance for 2017 touchstone {this.props.touchstoneVersion.description}</div>
             <div className="largeSectionTitle">
                 Required model outputs
             </div>
