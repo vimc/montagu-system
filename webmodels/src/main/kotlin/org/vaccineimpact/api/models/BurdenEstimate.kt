@@ -2,7 +2,7 @@ package org.vaccineimpact.api.models
 
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.models.helpers.FlexibleProperty
-import java.math.BigDecimal
+import java.beans.ConstructorProperties
 
 interface BurdenEstimateRow
 
@@ -16,7 +16,7 @@ data class BurdenEstimate(
         val cohortSize: Float,
         @FlexibleProperty
         val outcomes: Map<String, Float?>
-): BurdenEstimateRow
+) : BurdenEstimateRow
 
 @FlexibleColumns
 data class StochasticBurdenEstimate(
@@ -29,7 +29,7 @@ data class StochasticBurdenEstimate(
         val cohortSize: Float,
         @FlexibleProperty
         val outcomes: Map<String, Float?>
-): BurdenEstimateRow
+) : BurdenEstimateRow
 
 data class BurdenEstimateWithRunId(
         val disease: String,
@@ -48,6 +48,7 @@ data class BurdenEstimateWithRunId(
             estimate.year, estimate.age, estimate.country, estimate.countryName,
             estimate.cohortSize, estimate.outcomes
     )
+
     constructor(estimate: StochasticBurdenEstimate) : this(
             estimate.disease, estimate.runId,
             estimate.year, estimate.age, estimate.country, estimate.countryName,
