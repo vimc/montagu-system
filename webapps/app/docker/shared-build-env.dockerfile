@@ -1,12 +1,11 @@
 FROM node:8
 
 # Install OpenJDK
-RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
+RUN echo 'deb http://deb.debian.org/debian stretch-backports main' > /etc/apt/sources.list.d/stretch-backports.list
 RUN apt-get update
-RUN apt-get install -t jessie-backports -y \
-    ca-certificates-java \
+RUN apt-get install -t stretch-backports -y \
     openjdk-8-jdk
-RUN rm /etc/apt/sources.list.d/jessie-backports.list
+RUN rm /etc/apt/sources.list.d/stretch-backports.list
 
 # Install docker
 RUN apt-get update
@@ -21,7 +20,7 @@ RUN add-apt-repository \
    $(lsb_release -cs) \
    stable"
 RUN apt-get update
-RUN apt-get install -y docker-ce=17.03.0~ce-0~debian-jessie
+RUN apt-get install -y docker-ce=5:18.09.0~3-0~debian-stretch
 
 # Install Docker Compose
 RUN curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` \

@@ -99,16 +99,6 @@ export interface ModelRunParameterSet {
     uploaded_on: string;
 }
 
-export interface Report {
-    author: string;
-    display_name: string | null;
-    latest_version: string;
-    name: string;
-    published: boolean;
-    requester: string;
-    updated_on: string;
-}
-
 export interface ReportVersion {
     author: string;
     date: string;
@@ -150,7 +140,7 @@ export interface ExpectationMapping {
     expectation: Expectations;
 }
 
-export type BurdenEstimateSetStatus = "empty" | "partial" | "complete";
+export type BurdenEstimateSetStatus = "empty" | "partial" | "complete" | "invalid";
 
 export interface BurdenEstimateSet {
     id: number;
