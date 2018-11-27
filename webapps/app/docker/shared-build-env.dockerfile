@@ -5,6 +5,7 @@ RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sou
 RUN apt-get update
 RUN apt-get install -t jessie-backports -y \
     ca-certificates-java \
+    openjdk-8-jre \
     openjdk-8-jdk
 RUN rm /etc/apt/sources.list.d/jessie-backports.list
 
