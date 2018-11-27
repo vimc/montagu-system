@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.databaseTests.tests.touchstoneRepository
 
+import java.math.BigDecimal
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
@@ -219,17 +220,17 @@ class GetScenarioTests : TouchstoneRepositoryTests()
 
         given{
             createTouchstoneAndScenarioDescriptions(it)
-            it.addScenarioToTouchstone(touchstoneVersionId, scenarioID)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
             giveUnorderedCoverageSetAndDataWithDuplicatesToScenario(it)
         } check {
             val result = it.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
             assertThat(result.toList()).containsExactlyElementsOf(listOf(
                     LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 600, 0.63333),
+                            "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), BigDecimal(0.63333)),
                     LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 1500, 0.213333),
+                            "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1500), BigDecimal(0.213333)),
                     LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", 1000, 0.5)
+                            "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
             ))
         }
     }
@@ -432,15 +433,15 @@ class GetScenarioTests : TouchstoneRepositoryTests()
 
         db.addCountries(listOf("AAA", "BBB"))
 
-        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 100, 0.2)
-        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 200, 0.6)
-        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 300, 0.8)
+        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal(0.2))
+        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), BigDecimal(0.6))
+        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(300), BigDecimal(0.8))
 
-        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 400, 0.1)
-        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 500, 0.2)
-        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 600, 0.3)
+        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(400), BigDecimal(0.1))
+        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(500), BigDecimal(0.2))
+        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), BigDecimal(0.3))
 
-        db.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", 1000, 0.5)
+        db.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
     }
 
     private fun giveUnorderedCoverageSetsToScenario(db: JooqContext)
