@@ -2,8 +2,8 @@ import * as models from "../../main/shared/models/Generated";
 import {
     ExpectationMapping,
     ModellingGroupCreation,
-    Report,
-    TouchstoneVersion
+    TouchstoneVersion,
+    ReportVersion
 } from "../../main/shared/models/Generated";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
 import {Version} from "../../main/shared/models/reports/Report";
@@ -270,7 +270,7 @@ export function mockBasicVersionDetails(properties?: Partial<BasicVersionDetails
     return Object.assign(template, properties);
 }
 
-export function mockReportRow(report?: Partial<models.Report>, version?: BasicVersionDetails): ReportRow {
+export function mockReportRow(report?: Partial<models.ReportVersion>, version?: BasicVersionDetails): ReportRow {
 
     const template: ReportRow = {
         ...mockReportVersion({
