@@ -214,6 +214,13 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     }
 
     @Test
+    fun `can get grouped coverage data for scenario`()
+    {
+
+        throw Exception('Not implemented')
+    }
+
+    @Test
     fun `can get ordered coverage data for responsibility`()
     {
         var responsibilityId = 0
@@ -264,6 +271,13 @@ class GetScenarioTests : TouchstoneRepositoryTests()
 
             ))
         }
+    }
+
+    @Test
+    fun `can get grouped coverage data for responsibility`()
+    {
+
+        throw Exception('Not implemented')
     }
 
 
