@@ -217,7 +217,21 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     fun `can get grouped coverage data for scenario`()
     {
 
-        throw Exception('Not implemented')
+        given{
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioID)
+            giveUnorderedCoverageSetAndDataWithDuplicatesToScenario(it)
+        } check {
+            val result = it.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
+            assertThat(result.toList()).containsExactlyElementsOf(listOf(
+                    LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 600, 0.63333),
+                    LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 1500, 0.213333),
+                    LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", 1000, 0.5)
+            ))
+        }
     }
 
     @Test
@@ -277,7 +291,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     fun `can get grouped coverage data for responsibility`()
     {
 
-        throw Exception('Not implemented')
+        throw Exception("Not implemented")
     }
 
 
@@ -409,6 +423,24 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         db.addCoverageRow(setB, "AAA", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
         db.addCoverageRow(setC, "BBB", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
 
+    }
+
+    private fun giveUnorderedCoverageSetAndDataWithDuplicatesToScenario(db: JooqContext)
+    {
+        db.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = setA)
+        db.addCoverageSet(touchstoneVersionId, "Second", "BF", "without", "campaign", id = setB)
+
+        db.addCountries(listOf("AAA", "BBB"))
+
+        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 100, 0.2)
+        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 200, 0.6)
+        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 300, 0.8)
+
+        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 400, 0.1)
+        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 500, 0.2)
+        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 600, 0.3)
+
+        db.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", 1000, 0.5)
     }
 
     private fun giveUnorderedCoverageSetsToScenario(db: JooqContext)
