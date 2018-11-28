@@ -214,7 +214,7 @@ class JooqTouchstoneRepository(
                 //This is rounded to 2 dec places
                 round(sum(COVERAGE.TARGET.mul(COVERAGE.COVERAGE_)).div(sum(COVERAGE.TARGET)),2).`as`("coverage"),
                 //Aggregated target
-                sum(COVERAGE.TARGET).`as`("target")
+                round(sum(COVERAGE.TARGET),2).`as`("target")
         ).toList()
     }
 

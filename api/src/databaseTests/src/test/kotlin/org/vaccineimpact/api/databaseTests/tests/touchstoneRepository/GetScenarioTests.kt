@@ -108,7 +108,7 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             checkScenarioIsAsExpected(result.structuredMetadata)
             assertThat(result.tableData.data.toList()).containsExactlyElementsOf(listOf(
                     LongCoverageRow(scenarioId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                            "AAA", "AAA-Name", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.50".toDecimalOrNull()),
+                            "AAA", "AAA-Name", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", "100.00".toDecimalOrNull(), "50.50".toDecimalOrNull()),
                     LongCoverageRow(scenarioId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
                             "BBB", "BBB-Name", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
             ))
@@ -228,11 +228,11 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             assertLongCoverageRowListEqualWithCoverageTolerance(result.toList(),
                     listOf(
                     LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), BigDecimal(0.63)),
+                            "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", "600.00".toDecimalOrNull(), "0.63".toDecimalOrNull()),
                     LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1500), BigDecimal(0.21)),
+                            "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", "1500.00".toDecimalOrNull(), "0.21".toDecimalOrNull()),
                     LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                            "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5)))
+                            "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000.00".toDecimalOrNull(), "0.5".toDecimalOrNull()))
                     , 0.001)
         }
     }
@@ -310,11 +310,11 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             assertLongCoverageRowListEqualWithCoverageTolerance(result.toList(),
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), BigDecimal(0.63)),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", "600.00".toDecimalOrNull(), "0.63".toDecimalOrNull()),
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1500), BigDecimal(0.21)),
+                                    "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", "1500.00".toDecimalOrNull(), "0.21".toDecimalOrNull()),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000.00".toDecimalOrNull(), "0.5".toDecimalOrNull())
                     ),
                     0.001)
         }
