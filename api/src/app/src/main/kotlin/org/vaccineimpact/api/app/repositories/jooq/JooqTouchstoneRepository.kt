@@ -171,6 +171,7 @@ class JooqTouchstoneRepository(
 
         return coverageRecords
                 .filter { it[COVERAGE.ID] != null }
+                .filter{ it[COUNTRY.NAME] != null }
                 .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
     }
 
@@ -255,9 +256,11 @@ class JooqTouchstoneRepository(
                         RESPONSIBILITY)
                 .where(RESPONSIBILITY.ID.eq(responsibilityId))
 
+        //This query is now grouped to support sub-national campaigns
         return dsl
                 .select(COVERAGE_SET.fieldsAsList())
-                .select(COVERAGE.fieldsAsList())
+                .select(coverageDimensions().toList())
+                .select(aggregatedCoverageValues())
                 .select(COUNTRY.NAME)
                 .fromJoinPath(TOUCHSTONE, SCENARIO, RESPONSIBILITY)
                 // We don't mind if there are no coverage sets, so do a left join
@@ -267,6 +270,9 @@ class JooqTouchstoneRepository(
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(RESPONSIBILITY.ID.eq(responsibilityId))
                 .and(COUNTRY.ID.isNull.or(COUNTRY.ID.`in`(expectedCountries)))
+                .groupBy(*COVERAGE_SET.fields(),
+                        *coverageDimensions(),
+                        COUNTRY.NAME)
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
                         COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO).fetch()
     }

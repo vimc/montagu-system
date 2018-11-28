@@ -232,9 +232,8 @@ class GetScenarioTests : TouchstoneRepositoryTests()
                     LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
                             "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1500), BigDecimal(0.21)),
                     LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                            "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
-                    ),
-                    0.001)
+                            "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5)))
+                    , 0.001)
         }
     }
 
@@ -294,8 +293,32 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     @Test
     fun `can get grouped coverage data for responsibility`()
     {
+        var responsibilityId = 0
+        given {
+            val countries = listOf("AAA", "BBB")
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
 
-        throw Exception("Not implemented")
+            it.addCountries(countries)
+            giveUnorderedCoverageSetAndDataWithDuplicatesToScenario(it, addCountries = false)
+            it.addExpectations(responsibilityId, countries = countries)
+
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
+            assertLongCoverageRowListEqualWithCoverageTolerance(result.toList(),
+                    listOf(
+                            LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), BigDecimal(0.63)),
+                            LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1500), BigDecimal(0.21)),
+                            LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+                    ),
+                    0.001)
+        }
+
     }
 
 
@@ -429,14 +452,17 @@ class GetScenarioTests : TouchstoneRepositoryTests()
 
     }
 
-    private fun giveUnorderedCoverageSetAndDataWithDuplicatesToScenario(db: JooqContext)
+    private fun giveUnorderedCoverageSetAndDataWithDuplicatesToScenario(db: JooqContext, addCountries: Boolean = true)
     {
         db.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = setA)
         db.addCoverageSet(touchstoneVersionId, "Second", "BF", "without", "campaign", id = setB)
         db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
         db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setB, 1)
 
-        db.addCountries(listOf("AAA", "BBB"))
+        if (addCountries)
+        {
+            db.addCountries(listOf("AAA", "BBB"))
+        }
 
         db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal(0.2))
         db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), BigDecimal(0.6))
