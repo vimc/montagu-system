@@ -198,7 +198,17 @@ class JooqTouchstoneRepository(
     {
         return dsl
                 .select(COVERAGE_SET.fieldsAsList())
-                .select(COVERAGE.fieldsAsList())
+                .select(COVERAGE.ID,
+                        COVERAGE.COVERAGE_SET,
+                        COVERAGE.YEAR,
+                        COVERAGE.COUNTRY,
+                        COVERAGE.AGE_FROM,
+                        COVERAGE.AGE_TO,
+                        COVERAGE.AGE_RANGE_VERBATIM,
+                        sum(COVERAGE.TARGET.mul(COVERAGE.COVERAGE_)).div(sum(COVERAGE.TARGET)).`as`("coverage"), //aggregated coverage
+                        sum(COVERAGE.TARGET).`as`("target"), //aggregated target
+                        COVERAGE.GAVI_SUPPORT,
+                        COVERAGE.GENDER)
                 .select(COUNTRY.NAME)
                 .fromJoinPath(TOUCHSTONE, SCENARIO)
                 // We don't mind if there are no coverage sets, so do a left join
@@ -207,6 +217,22 @@ class JooqTouchstoneRepository(
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
+                .groupBy(COVERAGE_SET.ID,
+                        COVERAGE_SET.NAME,
+                        COVERAGE_SET.TOUCHSTONE,
+                        COVERAGE_SET.VACCINE,
+                        COVERAGE_SET.GAVI_SUPPORT_LEVEL,
+                        COVERAGE_SET.ACTIVITY_TYPE,
+                        COUNTRY.NAME,
+                        COVERAGE.ID,
+                        COVERAGE.COVERAGE_SET,
+                        COVERAGE.YEAR,
+                        COVERAGE.COUNTRY,
+                        COVERAGE.AGE_FROM,
+                        COVERAGE.AGE_TO,
+                        COVERAGE.AGE_RANGE_VERBATIM,
+                        COVERAGE.GAVI_SUPPORT,
+                        COVERAGE.GENDER)
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
                         COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO).fetch()
 
