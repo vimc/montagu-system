@@ -156,6 +156,7 @@ class JooqTouchstoneRepository(
 
         return coverageRecords
                 .filter { it[COVERAGE.ID] != null }
+                .filter{ it[COUNTRY.NAME] != null }
                 .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
     }
 
@@ -191,24 +192,41 @@ class JooqTouchstoneRepository(
         return records.map { mapCoverageSet(it) }
     }
 
+    private fun coverageDimensions() : Array<Field<*>>
+    {
+        //The columns in the Coverage table which the target and coverage values are grouped by
+        return arrayOf(COVERAGE.COVERAGE_SET,
+                COVERAGE.YEAR,
+                COVERAGE.COUNTRY,
+                COVERAGE.AGE_FROM,
+                COVERAGE.AGE_TO,
+                COVERAGE.AGE_RANGE_VERBATIM,
+                COVERAGE.GAVI_SUPPORT,
+                COVERAGE.GENDER)
+    }
+
+    private fun aggregatedCoverageValues() : List<Field<*>>
+    {
+        return arrayOf(
+                //Aggregated coverage - the sum of each row's coverage * target (to get total no of fvp's across campaign)
+                //divided by the the total target population
+                //This is rounded to 2 dec places
+                round(sum(COVERAGE.TARGET.mul(COVERAGE.COVERAGE_)).div(sum(COVERAGE.TARGET)),2).`as`("coverage"),
+                //Aggregated target
+                sum(COVERAGE.TARGET).`as`("target")
+        ).toList()
+    }
+
     private fun getCoverageRowsForScenario(
             touchstoneVersionId: String,
             scenarioDescriptionId: String)
             : Result<Record>
     {
-        return dsl
+        //This query is now grouped to support sub-national campaigns
+        val result = dsl
                 .select(COVERAGE_SET.fieldsAsList())
-                .select(COVERAGE.ID,
-                        COVERAGE.COVERAGE_SET,
-                        COVERAGE.YEAR,
-                        COVERAGE.COUNTRY,
-                        COVERAGE.AGE_FROM,
-                        COVERAGE.AGE_TO,
-                        COVERAGE.AGE_RANGE_VERBATIM,
-                        sum(COVERAGE.TARGET.mul(COVERAGE.COVERAGE_)).div(sum(COVERAGE.TARGET)).`as`("coverage"), //aggregated coverage
-                        sum(COVERAGE.TARGET).`as`("target"), //aggregated target
-                        COVERAGE.GAVI_SUPPORT,
-                        COVERAGE.GENDER)
+                .select(coverageDimensions().toList())
+                .select(aggregatedCoverageValues())
                 .select(COUNTRY.NAME)
                 .fromJoinPath(TOUCHSTONE, SCENARIO)
                 // We don't mind if there are no coverage sets, so do a left join
@@ -217,24 +235,13 @@ class JooqTouchstoneRepository(
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
-                .groupBy(COVERAGE_SET.ID,
-                        COVERAGE_SET.NAME,
-                        COVERAGE_SET.TOUCHSTONE,
-                        COVERAGE_SET.VACCINE,
-                        COVERAGE_SET.GAVI_SUPPORT_LEVEL,
-                        COVERAGE_SET.ACTIVITY_TYPE,
-                        COUNTRY.NAME,
-                        COVERAGE.ID,
-                        COVERAGE.COVERAGE_SET,
-                        COVERAGE.YEAR,
-                        COVERAGE.COUNTRY,
-                        COVERAGE.AGE_FROM,
-                        COVERAGE.AGE_TO,
-                        COVERAGE.AGE_RANGE_VERBATIM,
-                        COVERAGE.GAVI_SUPPORT,
-                        COVERAGE.GENDER)
+                .groupBy(*COVERAGE_SET.fields(),
+                        *coverageDimensions(),
+                        COUNTRY.NAME)
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
                         COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO).fetch()
+
+        return result;
 
     }
 

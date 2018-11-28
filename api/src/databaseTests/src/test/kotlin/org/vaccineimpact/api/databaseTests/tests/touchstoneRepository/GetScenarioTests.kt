@@ -3,6 +3,7 @@ package org.vaccineimpact.api.databaseTests.tests.touchstoneRepository
 import java.math.BigDecimal
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.within
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.JooqContext
@@ -224,14 +225,16 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             giveUnorderedCoverageSetAndDataWithDuplicatesToScenario(it)
         } check {
             val result = it.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
-            assertThat(result.toList()).containsExactlyElementsOf(listOf(
+            assertLongCoverageRowListEqualWithCoverageTolerance(result.toList(),
+                    listOf(
                     LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), BigDecimal(0.63333)),
+                            "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), BigDecimal(0.63)),
                     LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1500), BigDecimal(0.213333)),
-                    LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1500), BigDecimal(0.21)),
+                    LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
                             "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
-            ))
+                    ),
+                    0.001)
         }
     }
 
@@ -430,6 +433,8 @@ class GetScenarioTests : TouchstoneRepositoryTests()
     {
         db.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = setA)
         db.addCoverageSet(touchstoneVersionId, "Second", "BF", "without", "campaign", id = setB)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setB, 1)
 
         db.addCountries(listOf("AAA", "BBB"))
 
@@ -460,6 +465,34 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setC, 2)
         db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setD, 3)
         db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setE, 4)
+
+    }
+
+    private fun assertLongCoverageRowListEqualWithCoverageTolerance(actual: List<LongCoverageRow>,
+                                                                    expected: List<LongCoverageRow>,
+                                                                    tolerance: Double)
+    {
+        //Do an 'almost exact' list comparison on expected LongCoverageRows, allowing for tolerance on floating point
+        //coverage values
+        assertThat(actual.count()).isEqualTo(expected.count())
+        for (i in 0..expected.count()-1)
+        {
+            val e = expected[i]
+            val a = actual[i]
+
+            assertThat(a.scenario).isEqualTo(e.scenario)
+            assertThat(a.setName).isEqualTo(e.setName)
+            assertThat(a.vaccine).isEqualTo(e.vaccine)
+            assertThat(a.activityType).isEqualTo(e.activityType)
+            assertThat(a.countryCode).isEqualTo(e.countryCode)
+            assertThat(a.country).isEqualTo(e.country)
+            assertThat(a.year).isEqualTo(e.year)
+            assertThat(a.ageFirst).isEqualTo(e.ageFirst)
+            assertThat(a.ageLast).isEqualTo(e.ageLast)
+            assertThat(a.ageRangeVerbatim).isEqualTo(e.ageRangeVerbatim)
+            assertThat(a.target).isEqualTo(e.target)
+            assertThat(a.coverage).isCloseTo(e.coverage, within(BigDecimal(tolerance)))
+        }
 
     }
 }
