@@ -106,8 +106,8 @@ class GroupCoverageTests : CoverageTests()
         val requestHelper = RequestHelper()
 
         val testYear = 1980
-        val testTarget = BigDecimal(123.123)
-        val testCoverage = BigDecimal(456.456)
+        val testTarget = BigDecimal(123.12)
+        val testCoverage = BigDecimal(456.46)
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
