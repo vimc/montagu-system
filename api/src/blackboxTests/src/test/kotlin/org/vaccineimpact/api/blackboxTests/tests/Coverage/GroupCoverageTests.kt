@@ -10,6 +10,7 @@ import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.toDecimal
+import org.vaccineimpact.api.db.toDecimalOrNull
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.serialization.DataTableDeserializer
@@ -106,8 +107,8 @@ class GroupCoverageTests : CoverageTests()
         val requestHelper = RequestHelper()
 
         val testYear = 1980
-        val testTarget = BigDecimal(123.12)
-        val testCoverage = BigDecimal(456.46)
+        val testTarget = "123.12".toDecimalOrNull()!!
+        val testCoverage = "456.46".toDecimalOrNull()!!
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
