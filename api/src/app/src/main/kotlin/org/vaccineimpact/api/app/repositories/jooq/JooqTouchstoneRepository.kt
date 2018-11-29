@@ -229,7 +229,7 @@ class JooqTouchstoneRepository(
                 //divided by the the total target population
                 //This is rounded to 2 dec places
                 //Danger of divide by zero error here - treat as NULL!
-                round(sum(targetValid().mul(coverageValid())).div(nullif(sum(targetValid()),0.0))),2).`as`("coverage"),
+                round(sum(targetValid().mul(coverageValid())).div(nullif(sum(targetValid()),BigDecimal(0.0))),2).`as`("coverage"),
                 //Aggregated target
                 round(sum(targetValid()),2).`as`("target")
         ).toList()
