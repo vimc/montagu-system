@@ -206,15 +206,32 @@ class JooqTouchstoneRepository(
                 COVERAGE.GENDER)
     }
 
+    private fun targetValid() : Field<BigDecimal?>
+    {
+        //Coverage and target values only make sense if both are provided. Return the target value of a row providing
+        //coverage is not null, else return null
+        return `when`(COVERAGE.COVERAGE_.isNull(), COVERAGE.COVERAGE_) //This is actually the easiest way to get a known NULL here!
+                .otherwise(COVERAGE.TARGET)
+    }
+
+    private fun coverageValid() : Field<BigDecimal?>
+    {
+        //Coverage and target values only make sense if both are provided. Return the coverage value of a row providing
+        //target is not null, else return null
+        return `when`(COVERAGE.TARGET.isNull(), COVERAGE.TARGET) //This is actually the easiest way to get a known NULL here!
+                .otherwise(COVERAGE.COVERAGE_)
+    }
+
     private fun aggregatedCoverageValues() : List<Field<*>>
     {
         return arrayOf(
                 //Aggregated coverage - the sum of each row's coverage * target (to get total no of fvp's across campaign)
                 //divided by the the total target population
                 //This is rounded to 2 dec places
-                round(sum(COVERAGE.TARGET.mul(COVERAGE.COVERAGE_)).div(sum(COVERAGE.TARGET)),2).`as`("coverage"),
+                //Danger of divide by zero error here - treat as NULL!
+                round(sum(targetValid().mul(coverageValid())).div(nullif(sum(targetValid()),0.0))),2).`as`("coverage"),
                 //Aggregated target
-                round(sum(COVERAGE.TARGET),2).`as`("target")
+                round(sum(targetValid()),2).`as`("target")
         ).toList()
     }
 
