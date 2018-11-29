@@ -541,6 +541,254 @@ class GetScenarioTests : TouchstoneRepositoryTests()
 
     }
 
+    @Test
+    fun `can get expected grouped coverage data for responsibility where all group rows have target and coverage nulls`()
+    {
+        var responsibilityId = 0
+        given{
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+
+            addABCoverageSets(it)
+            addABCountries(it)
+            it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
+
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, null)
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, null)
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, null)
+
+            //Make sure other groups aren't affected
+            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
+
+            //Just check those expected nulls
+            assertThat(result.toList()[0].target).isNull()
+            assertThat(result.toList()[0].coverage).isNull()
+
+            assertThat(result.toList()).containsExactlyElementsOf(
+                    listOf(
+                            LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, null),
+                            LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000.00".toDecimalOrNull(), "0.50".toDecimalOrNull()))
+            )
+
+        }
+    }
+
+    @Test
+    fun `can get expected grouped coverage data for responsibility where one group row has null target and coverage`()
+    {
+        var responsibilityId = 0
+        given{
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+
+            addABCoverageSets(it)
+            addABCountries(it)
+            it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
+
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal(0.2))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), BigDecimal(0.6))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, null)
+
+            //Make sure other groups aren't affected
+            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
+
+            assertThat(result.toList()).containsExactlyElementsOf(
+                    listOf(
+                            LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2","300.00".toDecimalOrNull(), "0.47".toDecimalOrNull()),
+                            LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000.00".toDecimalOrNull(), "0.50".toDecimalOrNull()))
+            )
+
+        }
+    }
+
+    @Test
+    fun `can get expected grouped coverage data for responsibility where one group row has null target`()
+    {
+        var responsibilityId = 0
+        given{
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+
+            addABCoverageSets(it)
+            addABCountries(it)
+            it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
+
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal(0.2))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), BigDecimal(0.6))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, BigDecimal(0.8))
+
+            //Make sure other groups aren't affected
+            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
+
+            //Expect the coverage row which has coverage but no target to not contribute to either value in the aggregate
+            assertThat(result.toList()).containsExactlyElementsOf(
+                    listOf(
+                            LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2","300.00".toDecimalOrNull(), "0.47".toDecimalOrNull()),
+                            LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000.00".toDecimalOrNull(), "0.50".toDecimalOrNull()))
+            )
+
+        }
+    }
+
+    @Test
+    fun `can get expected grouped coverage data for responsibility where one group row has null coverage`()
+    {
+        var responsibilityId = 0
+        given{
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+
+            addABCoverageSets(it)
+            addABCountries(it)
+            it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
+
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal(0.2))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), BigDecimal(0.6))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(500), null)
+
+            //Make sure other groups aren't affected
+            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
+
+            //Expect the coverage row which has target but no coverage to not contribute to either value in the aggregate
+            assertThat(result.toList()).containsExactlyElementsOf(
+                    listOf(
+                            LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2","300.00".toDecimalOrNull(), "0.47".toDecimalOrNull()),
+                            LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000.00".toDecimalOrNull(), "0.50".toDecimalOrNull()))
+            )
+
+        }
+    }
+
+    @Test
+    fun `can get expected grouped coverage data for responsibility where one group row has null coverage and target, another has null target`()
+    {
+        var responsibilityId = 0
+        given{
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+
+            addABCoverageSets(it)
+            addABCountries(it)
+            it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
+
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal(0.2))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, null)
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, BigDecimal(5.2))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal(0.3))
+
+            //Make sure other groups aren't affected
+            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
+
+            //Expect only the coverage rows which have both target and coverage values to contirbute to the aggregate values
+            assertThat(result.toList()).containsExactlyElementsOf(
+                    listOf(
+                            LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2","200.00".toDecimalOrNull(), ("0.25").toDecimalOrNull()),
+                            LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000.00".toDecimalOrNull(), "0.50".toDecimalOrNull()))
+            )
+
+        }
+    }
+
+    @Test
+    fun `can get expected grouped coverage data for responsibility where group has zero target`()
+    {
+        var responsibilityId = 0
+        given{
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+
+            addABCoverageSets(it)
+            addABCountries(it)
+            it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
+
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(0), BigDecimal(0.2))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(0), BigDecimal(0.6))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(500), null) //This should get ignored
+
+            //Make sure other groups aren't affected
+            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
+
+            //Expect the coverage row which has aggregate target zero to have aggregate coverage of null
+            assertThat(result.toList()).containsExactlyElementsOf(
+                    listOf(
+                            LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2","0.00".toDecimalOrNull(), null),
+                            LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000.00".toDecimalOrNull(), "0.50".toDecimalOrNull()))
+            )
+
+        }
+    }
+
+    @Test
+    fun `can get expected grouped coverage data for responsibility where group has zero target, with another row with null coverage`()
+    {
+        var responsibilityId = 0
+        given{
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+
+            addABCoverageSets(it)
+            addABCountries(it)
+            it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
+
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(0), BigDecimal(0.2))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(0), BigDecimal(0.6))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(500), null) //This should get ignored because of null coverage
+
+            //Make sure other groups aren't affected
+            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
+
+            //Expect the coverage row which has aggregate target zero to have aggregate coverage of null
+            assertThat(result.toList()).containsExactlyElementsOf(
+                    listOf(
+                            LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2","0.00".toDecimalOrNull(), null),
+                            LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000.00".toDecimalOrNull(), "0.50".toDecimalOrNull()))
+            )
+
+        }
+    }
+
 
     @Test
     fun `get coverage data for responsibility only returns expectations countries`()

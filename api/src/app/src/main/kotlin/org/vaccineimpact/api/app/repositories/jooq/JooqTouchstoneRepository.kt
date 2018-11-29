@@ -241,7 +241,7 @@ class JooqTouchstoneRepository(
             : Result<Record>
     {
         //This query is now grouped to support sub-national campaigns
-        val result = dsl
+        return dsl
                 .select(COVERAGE_SET.fieldsAsList())
                 .select(coverageDimensions().toList())
                 .select(aggregatedCoverageValues())
@@ -259,7 +259,6 @@ class JooqTouchstoneRepository(
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
                         COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO).fetch()
 
-        return result;
 
     }
 
