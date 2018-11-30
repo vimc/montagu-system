@@ -45,14 +45,20 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other",
                 "use_resource", "html"];
             const reports = await (new ReportsService(this.store.dispatch, this.store.getState)).getAllReports();
+
             const names = reports.map((item: ReportVersion) => item.name);
             const versions = reports.filter((item: ReportVersion) => item.latest_version.length > 0);
-            const otherReport = reports.filter((item: ReportVersion) => item.name == "other");
 
             expectSameElements<string>(names, expectedNames);
-
-            expect(otherReport[0].display_name).to.equal("another report");
             expect(versions.length).to.equal(reports.length);
+
+            const otherReport_versions = reports.filter((item: ReportVersion) => item.name == "other");
+            expect(otherReport_versions[0].author).to.equal("Dr Serious");
+            expect(otherReport_versions[0].display_name).to.equal("another report");
+            expect(otherReport_versions[0].requester).to.equal("ACME");
+            expect(otherReport_versions[0].id).to.not.be.empty;
+            expect(otherReport_versions[0].latest_version).to.not.be.empty;
+            expect(otherReport_versions[0].date).to.not.be.empty;
         });
 
 
@@ -80,9 +86,23 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         });
 
         it("fetches report version details", async () => {
-            const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
-            const versionDetails = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails("minimal", versions[0]);
-            expect(versionDetails.name).is.equal("minimal");
+            const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("other");
+            const versionDetails = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails("other", versions[0]);
+
+            expect(versionDetails.name).is.equal("other");
+            expect(versionDetails.author).is.equal("Dr Serious");
+            expect(versionDetails.comment).is.equal("This is another comment");
+            expect(versionDetails.date).to.not.be.empty;
+            expect(versionDetails.displayname).is.equal("another report");
+            expect(versionDetails.hash_script).to.not.be.empty;
+            expect(versionDetails.id).to.not.be.empty;
+            expect(versionDetails.published).is.equal(true);
+            expect(versionDetails.script).is.equal("script.R");
+            expect(versionDetails.hash_data).to.not.be.null;
+            expect(versionDetails.data).to.not.be.null;
+            expect(versionDetails.parameters).to.not.be.null;
+            expect(versionDetails.resources).to.be.empty;
+            expect(versionDetails.artefacts).to.not.be.null;
         });
 
         it("fetches one time token", async () => {
