@@ -32,7 +32,8 @@ abstract class CoverageTests : DatabaseTest()
     protected fun addCoverageData(db: JooqContext, touchstoneStatus: String,
                                 testYear: Int = 1955,
                                 target: BigDecimal = BigDecimal(100.12),
-                                coverage: BigDecimal = BigDecimal(200.13))
+                                coverage: BigDecimal = BigDecimal(200.13),
+                                includeSubnationalCoverage: Boolean = false)
     {
         db.addGroup(groupId, "description")
         db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
@@ -45,7 +46,16 @@ abstract class CoverageTests : DatabaseTest()
         db.addCoverageSet(touchstoneVersionId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
                 addVaccine = true)
         db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, coverageSetId, 0)
+
         db.generateCoverageData(coverageSetId, countryCount = 2, yearRange = 1985..2000 step 5,
                 ageRange = 0..20 step 5, testYear = testYear, target = target, coverage = coverage)
+
+        if (includeSubnationalCoverage)
+        {
+            //Generate duplicate rows - same dimension values (year, age etc) with different target and coverage
+            db.generateCoverageData(coverageSetId, countryCount = 2, yearRange = 1985..2000 step 5,
+                    ageRange = 0..20 step 5, testYear = testYear, target = BigDecimal(target.toDouble()/2),
+                    coverage = BigDecimal(coverage.toDouble()/3) )
+        }
     }
 }
