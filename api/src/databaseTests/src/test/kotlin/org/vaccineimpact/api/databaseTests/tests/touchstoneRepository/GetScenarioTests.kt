@@ -867,6 +867,169 @@ class GetScenarioTests : TouchstoneRepositoryTests()
         }
     }
 
+    //This set of tests confirm that new SQL grouping logic in TouchstoneRepo does not interfere with cases where only
+    //a single row per group is present, and where target and coverage values for that row should be output unmolested
+    //whether or not they include zeroes or nulls
+    @Test
+    fun `can get expected coverage data for responsibility single row, target and coverage are zero`()
+    {
+        testSingleRowResponsibilityCoverageValuesAreUnchanged("0.00".toDecimalOrNull(), "0.00".toDecimalOrNull())
+    }
+
+    @Test
+    fun `can get expected coverage data for responsibility single row, target is zero, coverage is null`()
+    {
+        testSingleRowResponsibilityCoverageValuesAreUnchanged("0.00".toDecimalOrNull(), null)
+    }
+
+    @Test
+    fun `can get expected coverage data for responsibility single row, target is null, coverage is zero`()
+    {
+        testSingleRowResponsibilityCoverageValuesAreUnchanged(null, "0.00".toDecimalOrNull())
+    }
+
+    @Test
+    fun `can get expected coverage data for responsibility single row, target and coverage are null`()
+    {
+        testSingleRowResponsibilityCoverageValuesAreUnchanged(null, null)
+    }
+
+    @Test
+    fun `can get expected coverage data for responsibility single row, target is null`()
+    {
+        testSingleRowResponsibilityCoverageValuesAreUnchanged(null, "0.50".toDecimalOrNull())
+    }
+
+    @Test
+    fun `can get expected coverage data for responsibility single row, coverage is null`()
+    {
+        testSingleRowResponsibilityCoverageValuesAreUnchanged("50.00".toDecimalOrNull(), null)
+    }
+
+    @Test
+    fun `can get expected coverage data for responsibility single row, target is zero`()
+    {
+        testSingleRowResponsibilityCoverageValuesAreUnchanged("0.00".toDecimalOrNull(), "0.50".toDecimalOrNull())
+    }
+
+    @Test
+    fun `can get expected coverage data for responsibility single row, coverage is zero`()
+    {
+        testSingleRowResponsibilityCoverageValuesAreUnchanged("50.00".toDecimalOrNull(), "0.00".toDecimalOrNull())
+    }
+
+    @Test
+    fun `can get expected coverage data for responsibility single row, target and coverage are non-zero`()
+    {
+        testSingleRowResponsibilityCoverageValuesAreUnchanged("50.00".toDecimalOrNull(), "0.50".toDecimalOrNull())
+    }
+
+
+
+    @Test
+    fun `can get expected coverage data for scenario single row, target and coverage are zero`()
+    {
+        testSingleRowScenarioCoverageValuesAreUnchanged("0.00".toDecimalOrNull(), "0.00".toDecimalOrNull())
+    }
+
+    @Test
+    fun `can get expected coverage data for scenario single row, target is zero, coverage is null`()
+    {
+        testSingleRowScenarioCoverageValuesAreUnchanged("0.00".toDecimalOrNull(), null)
+    }
+
+    @Test
+    fun `can get expected coverage data for scenario single row, target is null, coverage is zero`()
+    {
+        testSingleRowScenarioCoverageValuesAreUnchanged(null, "0.00".toDecimalOrNull())
+    }
+
+    @Test
+    fun `can get expected coverage data for scenario single row, target and coverage are null`()
+    {
+        testSingleRowScenarioCoverageValuesAreUnchanged(null, null)
+    }
+
+    @Test
+    fun `can get expected coverage data for scenario single row, target is null`()
+    {
+        testSingleRowScenarioCoverageValuesAreUnchanged(null, "0.50".toDecimalOrNull())
+    }
+
+    @Test
+    fun `can get expected coverage data for scenario single row, coverage is null`()
+    {
+        testSingleRowScenarioCoverageValuesAreUnchanged("50.00".toDecimalOrNull(), null)
+    }
+
+    @Test
+    fun `can get expected coverage data for scenario single row, target is zero`()
+    {
+        testSingleRowScenarioCoverageValuesAreUnchanged("0.00".toDecimalOrNull(), "0.50".toDecimalOrNull())
+    }
+
+    @Test
+    fun `can get expected coverage data for scenario single row, coverage is zero`()
+    {
+        testSingleRowScenarioCoverageValuesAreUnchanged("50.00".toDecimalOrNull(), "0.00".toDecimalOrNull())
+    }
+
+    @Test
+    fun `can get expected coverage data for scenario single row, target and coverage are non-zero`()
+    {
+        testSingleRowScenarioCoverageValuesAreUnchanged("50.00".toDecimalOrNull(), "0.50".toDecimalOrNull())
+    }
+
+    private fun testSingleRowResponsibilityCoverageValuesAreUnchanged(target: BigDecimal?, coverage: BigDecimal?)
+    {
+        var responsibilityId = 0
+        given{
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+
+            addABCoverageSets(it)
+            addABCountries(it)
+            it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
+
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", target, coverage)
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
+
+            assertThat(result.toList()).containsExactlyElementsOf(
+                    listOf(
+                            LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", target, coverage)
+                    ))
+
+        }
+    }
+
+    private fun testSingleRowScenarioCoverageValuesAreUnchanged(target: BigDecimal?, coverage: BigDecimal?)
+    {
+        given{
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+
+            addABCoverageSets(it)
+            addABCountries(it)
+
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", target, coverage)
+
+        } check {
+            val result = it.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
+
+            //Expect the coverage row which has aggregate target zero to have aggregate coverage of null
+            assertThat(result.toList()).containsExactlyElementsOf(
+                    listOf(
+                            LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", target, coverage)
+
+            ))
+        }
+    }
+
 
     private fun checkScenarioIsAsExpected(result: ScenarioAndCoverageSets, extraTouchstones: List<String> = emptyList())
     {

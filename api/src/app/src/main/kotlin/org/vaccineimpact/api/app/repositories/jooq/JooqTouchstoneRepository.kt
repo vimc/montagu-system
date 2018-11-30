@@ -230,12 +230,18 @@ class JooqTouchstoneRepository(
                 //Danger of divide by zero error here - treat as NULL if summed target is 0
                 //This is rounded to 2 dec places
                 round(
-                        sum(targetValid().mul(coverageValid()))
-                                .div(nullif(sum(targetValid()),BigDecimal(0.0)))
+                        `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.COVERAGE_)) //If only one row in group
+                                .otherwise(  sum(targetValid().mul(coverageValid()))
+                                            .div(nullif(sum(targetValid()),BigDecimal(0.0)))
+                                )
                         ,2
                 ).`as`("coverage"),
                 //Aggregated target
-                round(sum(targetValid()),2).`as`("target")
+                round(
+                        `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.TARGET)) //If only one row in group
+                                .otherwise( sum(targetValid() )
+                                )
+                        ,2).`as`("target")
         ).toList()
     }
 
