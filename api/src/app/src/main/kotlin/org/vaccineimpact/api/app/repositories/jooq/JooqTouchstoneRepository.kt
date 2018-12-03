@@ -155,7 +155,6 @@ class JooqTouchstoneRepository(
                 .filter { it[COVERAGE_SET.ID] != null }
 
         return coverageRecords
-                .filter { it[COVERAGE.ID] != null }
                 .filter{ it[COUNTRY.NAME] != null }
                 .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
     }
@@ -170,7 +169,6 @@ class JooqTouchstoneRepository(
                 .filter { it[COVERAGE_SET.ID] != null }
 
         return coverageRecords
-                .filter { it[COVERAGE.ID] != null }
                 .filter{ it[COUNTRY.NAME] != null }
                 .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
     }
@@ -206,7 +204,7 @@ class JooqTouchstoneRepository(
                 COVERAGE.GENDER)
     }
 
-    private fun targetValid() : Field<BigDecimal?>
+    private fun validTargetOrNull() : Field<BigDecimal?>
     {
         //Coverage and target values only make sense if both are provided. Return the target value of a row providing
         //coverage is not null, else return null
@@ -214,7 +212,7 @@ class JooqTouchstoneRepository(
                 .otherwise(COVERAGE.TARGET)
     }
 
-    private fun coverageValid() : Field<BigDecimal?>
+    private fun validCoverageOrNull() : Field<BigDecimal?>
     {
         //Coverage and target values only make sense if both are provided. Return the coverage value of a row providing
         //target is not null, else return null
@@ -231,15 +229,15 @@ class JooqTouchstoneRepository(
                 //This is rounded to 2 dec places
                 round(
                         `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.COVERAGE_)) //If only one row in group
-                                .otherwise(  sum(targetValid().mul(coverageValid()))
-                                            .div(nullif(sum(targetValid()),BigDecimal(0.0)))
+                                .otherwise(  sum(validTargetOrNull().mul(validCoverageOrNull()))
+                                            .div(nullif(sum(validTargetOrNull()),BigDecimal(0.0)))
                                 )
                         ,2
                 ).`as`("coverage"),
                 //Aggregated target
                 round(
                         `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.TARGET)) //If only one row in group
-                                .otherwise( sum(targetValid() )
+                                .otherwise( sum(validTargetOrNull() )
                                 )
                         ,2).`as`("target")
         ).toList()

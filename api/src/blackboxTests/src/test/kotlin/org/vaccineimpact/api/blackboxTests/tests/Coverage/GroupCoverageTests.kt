@@ -76,6 +76,11 @@ class GroupCoverageTests : CoverageTests()
 
         Assertions.assertThat(firstRow[11].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[12].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
+
+        //Check not just the first row with values
+        val secondRow = csv.drop(2).first().toList()
+        Assertions.assertThat(secondRow[11].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(secondRow[12].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
     }
 
     @Test
@@ -154,6 +159,44 @@ class GroupCoverageTests : CoverageTests()
     }
 
     @Test
+    fun `coverage data for responsibility rows have expected target and coverage values`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        val testYear = 1980
+        val testTarget = BigDecimal(1000)
+        val testCoverage = "0.9".toDecimalOrNull()!!
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
+                    target = testTarget, coverage = testCoverage, uniformData=true)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first().toList()
+        val expectedHeaders = listOf("scenario", "set_name", "vaccine", "gavi_support", "activity_type",
+                "country_code", "country", "year", "age_first", "age_last", "age_range_verbatim", "target",
+                "coverage")
+        headers.forEachIndexed { index, h ->
+            Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
+        }
+
+        val firstRow = csv.drop(1).first().toList()
+        val expectedTarget = "1000.00".toBigDecimalOrNull()
+        val expectedCoverage = "0.90".toBigDecimalOrNull()
+
+        //test all target values
+        Assertions.assertThat(firstRow[11].toBigDecimalOrNull()).isEqualTo(expectedTarget)
+        Assertions.assertThat(firstRow[12].toBigDecimalOrNull()).isEqualTo(expectedCoverage)
+    }
+
+    @Test
     fun `wide coverage data for responsibility rows have expected target and coverage values`()
     {
         val userHelper = TestUserHelper()
@@ -165,7 +208,7 @@ class GroupCoverageTests : CoverageTests()
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
-                    target = testTarget, coverage = testCoverage)
+                    target = testTarget, coverage = testCoverage, uniformData=true)
             userHelper.setupTestUser(it)
         }
 
@@ -173,16 +216,6 @@ class GroupCoverageTests : CoverageTests()
 
         val csv = StringReader(response.text)
                 .use { CSVReader(it).readAll() }
-
-        val headers = csv.first().toList()
-        val expectedHeaders = listOf("scenario", "set_name", "vaccine", "gavi_support", "activity_type",
-                "country_code", "country", "age_first", "age_last", "age_range_verbatim", "coverage_$testYear",
-                "coverage_1985", "coverage_1990", "coverage_1995", "coverage_2000",
-                "target_$testYear",
-                "target_1985", "target_1990", "target_1995", "target_2000")
-        headers.forEachIndexed { index, h ->
-            Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
-        }
 
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
@@ -208,7 +241,6 @@ class GroupCoverageTests : CoverageTests()
         Assertions.assertThat(firstRow[13].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[14].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
 
-
     }
 
     @Test
@@ -223,7 +255,7 @@ class GroupCoverageTests : CoverageTests()
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
-                    target = testTarget, coverage = testCoverage, includeSubnationalCoverage=true)
+                    target = testTarget, coverage = testCoverage, includeSubnationalCoverage=true, uniformData=true)
             userHelper.setupTestUser(it)
         }
 
@@ -231,22 +263,6 @@ class GroupCoverageTests : CoverageTests()
 
         val csv = StringReader(response.text)
                 .use { CSVReader(it).readAll() }
-
-        val headers = csv.first().toList()
-        val expectedHeaders = listOf("scenario", "set_name", "vaccine", "gavi_support", "activity_type",
-                "country_code", "country", "age_first", "age_last", "age_range_verbatim", "coverage_$testYear",
-                "coverage_1985", "coverage_1990", "coverage_1995", "coverage_2000",
-                "target_$testYear",
-                "target_1985", "target_1990", "target_1995", "target_2000")
-        headers.forEachIndexed { index, h ->
-            Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
-        }
-
-        //Headers:
-        //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
-        //5: "country_code", 6: "country", 7: "age_first", 8: "age_last", 9: "age_range_verbatim", 10: "coverage_$testYear",
-        //11: "coverage_1985", 12: "coverage_1990", 13: "coverage_1995", 14: "coverage_2000",
-        //15: "target_$testYear", 16: "target_1985", 17: "target_1990", 18: "target_1995", 19: "target_2000"
 
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1500.00".toBigDecimalOrNull()

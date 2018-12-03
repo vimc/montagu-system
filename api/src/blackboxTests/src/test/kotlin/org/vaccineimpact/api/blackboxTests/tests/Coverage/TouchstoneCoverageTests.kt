@@ -88,7 +88,7 @@ class TouchstoneCoverageTests : CoverageTests()
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
-                    target = testTarget, coverage = testCoverage)
+                    target = testTarget, coverage = testCoverage, uniformData=true)
             userHelper.setupTestUser(it)
         }
 
@@ -96,16 +96,6 @@ class TouchstoneCoverageTests : CoverageTests()
 
         val csv = StringReader(response.text)
                 .use { CSVReader(it).readAll() }
-
-        val headers = csv.first().toList()
-        val expectedHeaders = listOf("scenario", "set_name", "vaccine", "gavi_support", "activity_type",
-                "country_code", "country", "age_first", "age_last", "age_range_verbatim", "coverage_$testYear",
-                "coverage_1985", "coverage_1990", "coverage_1995", "coverage_2000",
-                "target_$testYear",
-                "target_1985", "target_1990", "target_1995", "target_2000")
-        headers.forEachIndexed { index, h ->
-            Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
-        }
 
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
@@ -146,7 +136,8 @@ class TouchstoneCoverageTests : CoverageTests()
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
-                    target = testTarget, coverage = testCoverage, includeSubnationalCoverage=true)
+                    target = testTarget, coverage = testCoverage, includeSubnationalCoverage = true,
+                    uniformData = true)
             userHelper.setupTestUser(it)
         }
 
@@ -154,16 +145,6 @@ class TouchstoneCoverageTests : CoverageTests()
 
         val csv = StringReader(response.text)
                 .use { CSVReader(it).readAll() }
-
-        val headers = csv.first().toList()
-        val expectedHeaders = listOf("scenario", "set_name", "vaccine", "gavi_support", "activity_type",
-                "country_code", "country", "age_first", "age_last", "age_range_verbatim", "coverage_$testYear",
-                "coverage_1985", "coverage_1990", "coverage_1995", "coverage_2000",
-                "target_$testYear",
-                "target_1985", "target_1990", "target_1995", "target_2000")
-        headers.forEachIndexed { index, h ->
-            Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
-        }
 
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
