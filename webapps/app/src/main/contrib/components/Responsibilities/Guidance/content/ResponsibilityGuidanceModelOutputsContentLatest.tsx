@@ -162,7 +162,7 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
             <p>
                 We require 30 independent realisations in the stochastic estimates. The template
                 file only contains all rows for a single realisation, so you will need to generate
-                30 or 200 times as many rows.
+                30 times as many rows.
             </p>
             <p>
                 You will need to use the stochastic burden estimate template
