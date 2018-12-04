@@ -10,7 +10,7 @@ export interface ResponsibilityGuidanceContentProps
 }
 
 export const mapStateToGuidanceContentProps = (state: ContribAppState, props: Partial<ResponsibilityGuidanceContentProps>):
-    Partial<ResponsibilityGuidanceContentProps> => {
+    ResponsibilityGuidanceContentProps => {
     return {
         touchstoneVersion: state.touchstones.currentTouchstoneVersion,
     }
