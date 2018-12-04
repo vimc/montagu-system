@@ -220,9 +220,7 @@ class JooqTouchstoneRepository(
                 .otherwise(COVERAGE.COVERAGE_)
     }
 
-
-
-    private fun aggregatedCoverageValues() : List<Field<*>>
+    private fun aggregatedValues() : List<Field<*>>
     {
         return arrayOf(
                 //Aggregated coverage - the sum of each row's coverage * target (to get total no of fvp's across campaign)
@@ -241,7 +239,7 @@ class JooqTouchstoneRepository(
     {
         //Danger of divide by zero error here - treat as NULL if summed target is 0
         return `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.COVERAGE_)) //If only one row in group
-                .otherwise(  round(sum(validTargetOrNull().mul(validCoverageOrNull())) //Need to round here as well to avoid more trailing zeroes
+                .otherwise(round(sum(validTargetOrNull().mul(validCoverageOrNull())) //Need to round here as well to avoid more trailing zeroes
                         .div(nullif(sum(validTargetOrNull()),BigDecimal(0.0)) ), 2) )
 
     }
@@ -261,7 +259,7 @@ class JooqTouchstoneRepository(
         return dsl
                 .select(COVERAGE_SET.fieldsAsList())
                 .select(coverageDimensions().toList())
-                .select(aggregatedCoverageValues())
+                .select(aggregatedValues())
                 .select(COUNTRY.NAME)
                 .fromJoinPath(TOUCHSTONE, SCENARIO)
                 // We don't mind if there are no coverage sets, so do a left join
@@ -293,7 +291,7 @@ class JooqTouchstoneRepository(
         return dsl
                 .select(COVERAGE_SET.fieldsAsList())
                 .select(coverageDimensions().toList())
-                .select(aggregatedCoverageValues())
+                .select(aggregatedValues())
                 .select(COUNTRY.NAME)
                 .fromJoinPath(TOUCHSTONE, SCENARIO, RESPONSIBILITY)
                 // We don't mind if there are no coverage sets, so do a left join
