@@ -270,8 +270,8 @@ export class ResponsibilityGuidanceModelOutputsContent2017Component extends Reac
                 </li>
             </ol>
             If you have any questions, please contact&nbsp;
-            <a href={`mailto:${settings.supportContact}`}>{settings.supportContact}</a>
-            or use the #montagu-help channel on&nbsp;
+            <a href={`mailto:${settings.supportContact}`}>{settings.supportContact}</a> or
+            use the #montagu-help channel on&nbsp;
             <a href={settings.slackUrl} target="_blank">Slack</a>
 
             <div className="mb-3 mt-5 sectionTitle">Age groups</div>

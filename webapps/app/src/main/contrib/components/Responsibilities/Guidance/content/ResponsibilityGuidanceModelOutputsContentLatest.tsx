@@ -15,10 +15,7 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
 
         return <PageArticle title="Guidance on model outputs: how to generate and upload central and stochastic estimates">
             <div className="alert alert-primary">
-                <p>
-                Guidance for touchstone {this.props.touchstoneVersion.description}
-                </p>
-                <p><strong>NB The guidance on model outputs for the 2018 touchstone is still being finalised. Please check back soon for updates.</strong></p>
+               Guidance for touchstone {this.props.touchstoneVersion.description}
             </div>
             <div className="largeSectionTitle">
                 Required model outputs
@@ -64,7 +61,7 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
                 </tbody>
             </table>
             <p>
-                Please refer to the scope of work in your subcontract for details of your deliverables and deadlines.
+                Please refer to the scope of work in your subcontract and any subsequent emails for the latest deadlines.
             </p>
             <div className="mb-3 mt-5 sectionTitle">Countries</div>
             <ul>
@@ -98,7 +95,10 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
             <p>
                 Your scenarios are shown in the grey headings on the Responsibilities page. These generally include
                 the same scenarios you had in the 201710gavi touchstone, plus some synthetic scenarios which have
-                10% higher or lower coverage, or which show ‘best case coverage’ The coverage data for each scenario
+                10% higher or lower coverage, or which show ‘best case coverage’.
+            </p>
+            <p>
+                The coverage data for each scenario
                 may contain more than one coverage set. For instance, depending on the disease the campaign scenario
                 may contain both routine and campaign coverage to enable us to evaluate the incremental impact of
                 campaigns on top of routine vaccination. Details of the
@@ -153,17 +153,16 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
             </p>
             <p>
                 The format is almost identical to the central burden estimate
-                template, but there is one additional column ‘run_id’. This
+                template, but there is one additional column, ‘run_id’. This
                 column labels the particular run, and should link the run to
                 the parameter value detailed in the parameter set file.
                 Importantly, the runs across all scenarios with the same run
                 id should be based on the same parameter values.
             </p>
             <p>
-                We require multiple independent realisations in the stochastic
-                estimates (30 for the test runs and 200 for the full set of runs). The template file only
-                contains all rows for a single realisation, so you will
-                need to generate 30 or 200 times as many rows.
+                We require 30 independent realisations in the stochastic estimates. The template
+                file only contains all rows for a single realisation, so you will need to generate
+                30 or 200 times as many rows.
             </p>
             <p>
                 You will need to use the stochastic burden estimate template
@@ -228,14 +227,16 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
                 same ‘run id’ are based on the same parameter values.
             </p>
             <p>
-                Your parameters file should contain 30 rows (for the stochastic test runs) or 200 rows (for the full set of stochastic runs), i.e. in
-                addition to the row showing the column headings.
+                Your parameters file should contain 30 rows, i.e. in addition to the row showing the column headings.
             </p>
             <p>
                 The column headings in the template are labelled &lt;param_1&gt;
                 and &lt;param_2&gt; but you should rename these to the actual
                 parameters you are using, and add extra columns if necessary.
-                For models explicitly fitted to data, probabilistic outputs can be a sample from the posterior distribution, and each run should be recorded with assumed parameter values as well as the likelihood. If no explicit model fitting has taken place, input parameters should be sampled from reasonable ranges.
+                For models explicitly fitted to data, probabilistic outputs can be a sample from the posterior
+                distribution, and each run should be recorded with assumed parameter values as well as the
+                likelihood. If no explicit model fitting has taken place, input parameters should be sampled from
+                reasonable ranges.
             </p>
             <p>
                 If the model uses country-specific parameters, each
@@ -277,8 +278,8 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
                 </li>
             </ol>
             If you have any questions, please contact&nbsp;
-            <a href={`mailto:${settings.supportContact}`}>{settings.supportContact}</a>
-            or use the #montagu-help channel on&nbsp;
+            <a href={`mailto:${settings.supportContact}`}>{settings.supportContact}</a> or
+            use the #montagu-help channel on&nbsp;
             <a href={settings.slackUrl} target="_blank">Slack</a>
 
             <div className="mb-3 mt-5 sectionTitle">Age groups</div>
