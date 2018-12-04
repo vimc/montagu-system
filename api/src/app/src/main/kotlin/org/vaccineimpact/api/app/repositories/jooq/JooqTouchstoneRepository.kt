@@ -251,9 +251,9 @@ class JooqTouchstoneRepository(
     }
 
     private fun getCoverageRowsForScenario(
-    touchstoneVersionId: String,
-    scenarioDescriptionId: String)
-    : Result<Record>
+        touchstoneVersionId: String,
+        scenarioDescriptionId: String)
+        : Result<Record>
     {
         //This query is now grouped to support sub-national campaigns
         return dsl
