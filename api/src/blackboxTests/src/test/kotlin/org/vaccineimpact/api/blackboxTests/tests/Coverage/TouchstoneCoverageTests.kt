@@ -104,8 +104,8 @@ class TouchstoneCoverageTests : CoverageTests()
         //15: "target_$testYear", 16: "target_1985", 17: "target_1990", 18: "target_1995", 19: "target_2000"
 
         val firstRow = csv.drop(1).first().toList()
-        val expectedAggregatedTarget = "1000.00".toBigDecimalOrNull()
-        val expectedAggregatedCoverage = "0.90".toBigDecimalOrNull()
+        val expectedAggregatedTarget = "1000".toBigDecimalOrNull()
+        val expectedAggregatedCoverage = "0.9".toBigDecimalOrNull()
 
         //test all target values
         Assertions.assertThat(firstRow[15].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
@@ -153,7 +153,7 @@ class TouchstoneCoverageTests : CoverageTests()
         //15: "target_$testYear", 16: "target_1985", 17: "target_1990", 18: "target_1995", 19: "target_2000"
 
         val firstRow = csv.drop(1).first().toList()
-        val expectedAggregatedTarget = "1500.00".toBigDecimalOrNull()
+        val expectedAggregatedTarget = "1500".toBigDecimalOrNull()
         val expectedAggregatedCoverage = "0.70".toBigDecimalOrNull()
 
         //test all target values
@@ -241,7 +241,7 @@ class TouchstoneCoverageTests : CoverageTests()
         //5: "country_code", 6: "country", 7: "year" 8: "age_first", 9: "age_last", 10: "age_range_verbatim",
         //11: "target", 12: "coverage"
         val firstRow = csv.drop(1).first().toList()
-        val expectedAggregatedTarget = "1500.00".toBigDecimalOrNull()
+        val expectedAggregatedTarget = "1500".toBigDecimalOrNull()
         val expectedAggregatedCoverage = "0.70".toBigDecimalOrNull()
 
         Assertions.assertThat(firstRow[11].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)

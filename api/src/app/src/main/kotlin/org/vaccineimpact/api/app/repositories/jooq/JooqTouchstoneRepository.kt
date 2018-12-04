@@ -220,33 +220,42 @@ class JooqTouchstoneRepository(
                 .otherwise(COVERAGE.COVERAGE_)
     }
 
+
+
     private fun aggregatedCoverageValues() : List<Field<*>>
     {
         return arrayOf(
                 //Aggregated coverage - the sum of each row's coverage * target (to get total no of fvp's across campaign)
                 //divided by the the total target population
-                //Danger of divide by zero error here - treat as NULL if summed target is 0
-                //This is rounded to 2 dec places
-                round(
-                        `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.COVERAGE_)) //If only one row in group
-                                .otherwise(  sum(validTargetOrNull().mul(validCoverageOrNull()))
-                                            .div(nullif(sum(validTargetOrNull()),BigDecimal(0.0)))
-                                )
-                        ,2
-                ).`as`("coverage"),
+
+                //This is rounded to 2 dec places if required
+                `when`(trunc(aggregatedCoverage(),2).eq(aggregatedCoverage()), aggregatedCoverage())
+                        .otherwise(round(aggregatedCoverage(),2)).`as`("coverage"),
                 //Aggregated target
-                round(
-                        `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.TARGET)) //If only one row in group
-                                .otherwise( sum(validTargetOrNull() )
-                                )
-                        ,2).`as`("target")
+                `when`(trunc(aggregatedTarget(),2).eq(aggregatedTarget()), aggregatedTarget())
+                        .otherwise(round(aggregatedTarget(),2)).`as`("target")
         ).toList()
     }
 
+    private fun aggregatedCoverage() : Field<BigDecimal?>
+    {
+        //Danger of divide by zero error here - treat as NULL if summed target is 0
+        return `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.COVERAGE_)) //If only one row in group
+                .otherwise(  round(sum(validTargetOrNull().mul(validCoverageOrNull())) //Need to round here as well to avoid more trailing zeroes
+                        .div(nullif(sum(validTargetOrNull()),BigDecimal(0.0)) ), 2) )
+
+    }
+
+    private fun aggregatedTarget() : Field<BigDecimal?>
+    {
+        return `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.TARGET)) //If only one row in group
+                .otherwise( sum(validTargetOrNull() ))
+    }
+
     private fun getCoverageRowsForScenario(
-            touchstoneVersionId: String,
-            scenarioDescriptionId: String)
-            : Result<Record>
+    touchstoneVersionId: String,
+    scenarioDescriptionId: String)
+    : Result<Record>
     {
         //This query is now grouped to support sub-national campaigns
         return dsl
