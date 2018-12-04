@@ -22,6 +22,7 @@ import {ResponsibilityGuidanceMarshallIslandsPage} from "./Responsibilities/Guid
 import {ResponsibilityGuidanceOver80Page} from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceOver80Page";
 import {ResponsibilityGuidanceKosovoPage} from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceKosovoPage";
 import {ResponsibilityGuidanceTuvaluPage} from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceTuvaluPage";
+import {ResponsibilityGuidanceHasMovedPage} from "./Responsibilities/Guidance/ResponsibilityGuidanceHasMovedPage";
 import {ExpectationsPage} from "./Responsibilities/Expectations/ExpectationsPage";
 import {ForgottenPasswordPage} from "../../shared/components/ForgottenPasswordPage";
 
@@ -42,13 +43,15 @@ export const ContribRouter : React.StatelessComponent<ContribRouterProps> = (pro
         <Route exact path="/:groupId/responsibilities/:touchstoneId/parameters" component={ModelRunParametersPage}/>
         <Route exact path="/:groupId/responsibilities/:touchstoneId/templates/" component={ExpectationsPage} />
         <Route exact path="/help/touchstones/" component={TouchstoneHelpPage}/>
-        <Route exact path="/help/model-inputs/" component={ResponsibilityGuidanceModelInputsPage}/>
-        <Route exact path="/help/model-outputs/" component={ResponsibilityGuidanceModelOutputsPage}/>
+        <Route exact path="/help/model-inputs/:touchstoneId" component={ResponsibilityGuidanceModelInputsPage}/>
+        <Route exact path="/help/model-outputs/:touchstoneId" component={ResponsibilityGuidanceModelOutputsPage}/>
         <Route exact path="/help/neonatal-mortality/" component={ResponsibilityGuidanceNeonatalMortalityPage}/>
         <Route exact path="/help/marshall-islands/" component={ResponsibilityGuidanceMarshallIslandsPage}/>
         <Route exact path="/help/over80/" component={ResponsibilityGuidanceOver80Page}/>
         <Route exact path="/help/kosovo/" component={ResponsibilityGuidanceKosovoPage}/>
         <Route exact path="/help/tuvalu/" component={ResponsibilityGuidanceTuvaluPage}/>
+        <Route exact path="/help/model-inputs" component={ResponsibilityGuidanceHasMovedPage}/>
+        <Route exact path="/help/model-outputs" component={ResponsibilityGuidanceHasMovedPage}/>
         <Route component={ContribNoRouteFoundPage}/>
     </Switch>;
 

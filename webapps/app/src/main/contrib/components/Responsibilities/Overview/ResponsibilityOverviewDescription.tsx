@@ -2,12 +2,31 @@ import * as React from "react";
 
 import {settings} from "../../../../shared/Settings";
 import {InternalLink} from "../../../../shared/components/InternalLink";
+import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
+import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
+import {TouchstoneVersion} from "../../../../shared/models/Generated";
+import {ResponsibilityOverviewPageLocationProps} from "./ResponsibilityOverviewPage";
 
 interface ResponsibilityOverviewDescriptionProps {
     currentTouchstoneId: string;
+    groupId: string;
+    touchstoneStatus: string;
 }
 
 const outputGuide = require("./outputs-guide.pdf");
+
+
+const ContactDetails = () => {
+    return <div>
+        If you have any questions or anything is not as you expected, please email&nbsp;
+        <a href={`mailto:${settings.supportContact}`}>
+                        {settings.supportContact}
+                    </a>
+        &nbsp;or use the #montagu-help
+                    channel on&nbsp;
+        <a href={settings.slackUrl} target="_blank">Slack</a>.
+    </div>
+}
 
 const StochasticRfpTouchstone = (countries: String) => {
     return <div>
@@ -39,10 +58,7 @@ const StochasticRfpTouchstone = (countries: String) => {
                     target="_blank">Output specification guidance (PDF)</a>
             </li>
         </ul>
-        If you have any questions or anything is not as you expected, please email&nbsp;
-        <a href={`mailto:${settings.vimcEmail}`}>
-            {settings.vimcEmail}
-        </a>
+        <ContactDetails/>
     </div>;
 };
 
@@ -65,15 +81,19 @@ const JanuaryRfpTouchstone = () => {
         href="https://www.vaccineimpact.org/2017-12-19-request-for-proposals-yellow-fever-rubella-Japanese-encephalitis-closing-date-January-30/"
         target="_blank">
         https://www.vaccineimpact.org/2017-12-19-request-for-proposals-yellow-fever-rubella-Japanese-encephalitis-closing-date-January-30/</a>).
-
-        If you have any questions or anything is not as you expected, please email&nbsp;
-        <a href={`mailto:${settings.vimcEmail}`}>
-            {settings.vimcEmail}
-        </a>
+        <ContactDetails/>
     </div>;
 };
 
+
 export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewDescriptionProps) => {
+    if (props.touchstoneStatus !== "open"){
+        return  <div>
+            <div className="alert alert-danger">This touchstone is no longer open.</div>
+            <ContactDetails/>
+        </div>;
+    }
+
     if (settings.isApplicantTouchstone(props.currentTouchstoneId)) {
         if (settings.isStochasticTouchstone(props.currentTouchstoneId)) {
             return StochasticRfpTouchstone("Nigeria")
@@ -82,8 +102,8 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
             return JanuaryRfpTouchstone()
         }
     } else {
-        const guidanceInputsUrl = `/help/model-inputs/`;
-        const guidanceOutputsUrl = `/help/model-outputs/`;
+        const guidanceInputsUrl = `/help/model-inputs/${props.currentTouchstoneId}`;
+        const guidanceOutputsUrl = `/help/model-outputs/${props.currentTouchstoneId}`;
         return <div>
             On this page you can:
             <ul>
@@ -143,18 +163,7 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
                     </InternalLink>
                 </li>
             </ul>
-            <span>
-                    If you have any questions or anything is not as you expected,
-                    please email&nbsp;
-                <a href={`mailto:${settings.supportContact}`}>
-                        {settings.supportContact}
-                    </a>
-                &nbsp;or use the #montagu-help
-                    channel on&nbsp;
-                <a href={settings.slackUrl} target="_blank">
-                        Slack
-                    </a>.
-                </span>
+            <ContactDetails />
         </div>;
     }
 };

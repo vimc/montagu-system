@@ -8,6 +8,7 @@ export const settings: Settings = {
     teamcityServiceMessages: false,
     isApplicantTouchstone: (id: string) => id.indexOf("rfp-") > -1,
     isStochasticTouchstone: (id: string) => id.indexOf("201804rfp") > -1,
+    is2017Touchstone: (id: string) => id.indexOf("201710gavi-") === 0,
     showTouchstoneCreation: false,
     showOldTemplates: false,
     showNewTemplates: false,

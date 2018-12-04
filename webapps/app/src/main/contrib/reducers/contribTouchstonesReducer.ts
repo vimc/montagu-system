@@ -15,6 +15,8 @@ export const contribTouchstonesReducer = (state = touchstonesInitialState, actio
     switch (action.type) {
         case TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP:
             return {...state, touchstones: action.data ? action.data : [] };
+        case TouchstoneTypes.ALL_TOUCHSTONES_FETCHED:
+            return {...state, touchstones: action.data ? action.data : [] };
         case TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION:
             return {...state, currentTouchstoneVersion: action.data };
         default:
