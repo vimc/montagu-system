@@ -239,7 +239,8 @@ class JooqTouchstoneRepository(
     {
         //Danger of divide by zero error here - treat as NULL if summed target is 0
         return `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.COVERAGE_)) //If only one row in group
-                .otherwise(round(sum(validTargetOrNull().mul(validCoverageOrNull())) //Need to round here as well to avoid more trailing zeroes
+                //Need to round here as well to avoid more trailing zeroes
+                .otherwise(round(sum(validTargetOrNull().mul(validCoverageOrNull()))
                         .div(nullif(sum(validTargetOrNull()),BigDecimal(0.0)) ), 2) )
 
     }
