@@ -24,7 +24,7 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
                 Required model outputs
             </div>
             <p>
-                In this round of model runs you will need to provide the following:
+                For these small-scale estimates, you will need to provide the following:
             </p>
             <table>
                 <thead>
@@ -36,27 +36,23 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
                 </thead>
                 <tbody>
                 <tr>
-                    <td>Central estimates (multiple files)</td>
+                    <td>Central estimates for up to 5 countries (multiple files) </td>
                     <td>
-                        Download central burden estimate template from Montagu,
-                        use this to create one file per scenario
+                        Download central burden estimate template from Montagu, use this to create one file per scenario
                     </td>
                     <td>Montagu</td>
                 </tr>
                 <tr>
-                    <td>Stochastic estimates (multiple files)</td>
+                    <td>Stochastic estimates for up to 5 countries (multiple files)</td>
                     <td>
-                        Download stochastic burden estimate template from Montagu,
-                        use this to create as many files as
-                        you need.
+                        Download stochastic burden estimate template from Montagu, use this to create as many files as you need.
                     </td>
                     <td>Dropbox</td>
                 </tr>
                 <tr>
                     <td>Parameter set to accompany stochastic estimates (1 file per disease)</td>
                     <td>
-                        Download stochastic parameters template from Montagu,
-                        use this to create your parameter set.
+                        Download stochastic parameters template from Montagu, use this to create your parameter set.
                     </td>
                     <td>Montagu</td>
                 </tr>
@@ -70,15 +66,24 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
             <p>
                 Please refer to the scope of work in your subcontract for details of your deliverables and deadlines.
             </p>
+            <div className="mb-3 mt-5 sectionTitle">Countries</div>
+            <ul>
+                <li>JE groups: China, Pakistan, India</li>
+                <li>Men A & YF groups: Ethiopia, Nigeria</li>
+                <li>All other groups: China, Pakistan, India, Nigeria, Ethiopia</li>
+            </ul>
+            <div className="mb-3 mt-5 sectionTitle">Keeping model frozen</div>
+            <p>
+                Your model must be frozen in the state used for the latest full-country central estimates that you
+                uploaded to Montagu (in the 201710gavi touchstone). The only update should be coverage.
+            </p>
             <div className="mb-3 mt-5">
                 <span className="sectionTitle">Central estimates</span>
                 &nbsp;(previously known as deterministic estimates)
             </div>
             <p>
-                First, download your central burden estimate template from
-                the Responsibilities page
-                (listed under ‘Scenarios’). These templates are customised
-                for each model.
+                First, download your central burden estimate template from the Responsibilities page
+                (click ‘Download burden estimate templates’). These templates are customised for each model.
             </p>
             <p>
                 You will need to use this template to create one file for each
@@ -91,15 +96,12 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
                 any problems with this.
             </p>
             <p>
-                Your scenarios are shown in the grey headings on the
-                Responsibilities page.
-                Most modelling groups have three scenarios (routine, no
-                vaccination, campaign) but others have more or less. The
-                coverage data for each scenario may contain more than one
-                coverage set. For instance, depending on the disease the
-                campaign scenario may contain both routine and campaign
-                coverage to enable us to evaluate the incremental impact
-                of campaigns on top of routine vaccination. Details of the
+                Your scenarios are shown in the grey headings on the Responsibilities page. These generally include
+                the same scenarios you had in the 201710gavi touchstone, plus some synthetic scenarios which have
+                10% higher or lower coverage, or which show ‘best case coverage’ The coverage data for each scenario
+                may contain more than one coverage set. For instance, depending on the disease the campaign scenario
+                may contain both routine and campaign coverage to enable us to evaluate the incremental impact of
+                campaigns on top of routine vaccination. Details of the
                 coverage sets are shown after you click the ‘<strong>Download
                 coverage data</strong>’ buttons.
             </p>
@@ -147,7 +149,7 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
                 First, download your stochastic burden estimate template from
                 the Responsibilities page
                 (listed under ‘Scenarios’). This template is customised
-                for each model following the discussions after the test runs.
+                for each model.
             </p>
             <p>
                 The format is almost identical to the central burden estimate
