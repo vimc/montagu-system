@@ -37,8 +37,9 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
     render(): JSX.Element {
         const {estimateSet, canUpload} = this.props;
         const estimateText = CurrentEstimateSetSummary.getMessage(estimateSet, canUpload);
+        const alertType = (estimateSet && estimateSet.status == "invalid") ? "danger" : "warning";
 
-        return <div className={"mt-3 alert alert-warning"}>
+        return <div className={`mt-3 alert alert-${alertType}`}>
             {estimateText}
         </div>;
     }
