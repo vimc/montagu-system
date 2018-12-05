@@ -9,7 +9,6 @@ import {
 } from "../../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 import {BurdenEstimateSet} from "../../../../../../main/shared/models/Generated";
 import {mockBurdenEstimateSet} from "../../../../../mocks/mockModels";
-import {Alert} from "reactstrap";
 
 describe("CurrentEstimateSetSummary Component Tests", () => {
     const render = function(set: BurdenEstimateSet, canUpload: boolean): ShallowWrapper<any, any> {
