@@ -156,6 +156,8 @@ describe("UploadEstimatesForm", () => {
         const alert = rendered.find(Alert).first();
         expect(alert.prop("color")).to.eq("danger");
         expect(alert.childAt(0).text()).to.eql("error message");
+        expect(alert.childAt(0).hasClass("render-whitespace")).to.eq(true);
+        expect(alert.html().includes("Please correct the data and re-upload")).to.eq(true);
     });
 
     it("ingests query string and displays success message", () => {

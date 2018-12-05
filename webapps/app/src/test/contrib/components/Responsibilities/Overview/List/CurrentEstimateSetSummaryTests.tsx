@@ -9,6 +9,7 @@ import {
 } from "../../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 import {BurdenEstimateSet} from "../../../../../../main/shared/models/Generated";
 import {mockBurdenEstimateSet} from "../../../../../mocks/mockModels";
+import {Alert} from "reactstrap";
 
 describe("CurrentEstimateSetSummary Component Tests", () => {
     const render = function(set: BurdenEstimateSet, canUpload: boolean): ShallowWrapper<any, any> {
@@ -34,6 +35,9 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
             uploaded_on: "2017-07-13 13:55:29 +0100"
         }), true);
         expect(rendered.text()).to.contain("A complete estimate set was uploaded on Thu Jul 13");
+
+        const div = rendered.find("div").first();
+        expect(div.hasClass("alert-warning")).to.eq(true);
     });
 
     it("displays fallback message for unknown status", () => {
@@ -48,5 +52,17 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
     it("displays standard reviewed and approved message when uploads are not allowed", () => {
         const rendered = render(mockBurdenEstimateSet(), false);
         expect(rendered.find(ReviewedAndApprovedMessage)).to.have.length(1);
+    });
+
+    it("displays error alert when set is invalid", () => {
+        const rendered = render(mockBurdenEstimateSet({
+            status: "invalid",
+            uploaded_on: "2017-07-13 13:55:29 +0100"
+        }), true);
+        expect(rendered.text()).to.contain("You have an estimate set in status 'invalid'");
+        expect(rendered.text()).to.contain("Thu Jul 13");
+
+        const div = rendered.find("div").first();
+        expect(div.hasClass("alert-danger")).to.eq(true);
     });
 });

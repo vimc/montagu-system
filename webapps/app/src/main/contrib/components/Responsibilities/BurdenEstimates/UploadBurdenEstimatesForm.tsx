@@ -50,7 +50,7 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
 
         return <div>
             <Alert color="danger" isOpen={hasError} toggle={this.onDismiss.bind(this)}>
-                <p style={{"white-space":"pre-line"}}>
+                <p className="render-whitespace">
                     {this.state.errors[0] && this.state.errors[0].message}
                 </p>
                  Please correct the data and re-upload.
