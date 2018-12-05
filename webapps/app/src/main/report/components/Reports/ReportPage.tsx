@@ -6,6 +6,7 @@ import {ReportDetails} from "./ReportDetails";
 import {ReportsListPageComponent} from "../ReportsList/ReportsListPage";
 import {ReportTabEnum, Sidebar, sidebarHashToTab} from "../Sidebar/Sidebar";
 import {ReportDownloads} from "./ReportDownloads";
+import {ReportChangelog} from "./ReportChangelog";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageProperties";
 import {reportPageActionCreators} from "../../actionCreators/reportPageActionCreators";
 
@@ -56,6 +57,7 @@ export class ReportPageComponent extends React.Component<PageProperties<ReportPa
                     <div className={"col-12 col-md-8 pt-4 pt-md-1"}>
                         {activeTab == ReportTabEnum.REPORT && <ReportDetails />}
                         {activeTab == ReportTabEnum.DOWNLOAD && <ReportDownloads/>}
+                        {activeTab == ReportTabEnum.CHANGELOG && <ReportChangelog/>}
                     </div>
                 </div>
             </div>
