@@ -80,6 +80,9 @@ fun transformEnum(klass: KClass<*>, value: Any): String {
         GAVISupportLevel.NONE -> "no vaccine"
         GAVISupportLevel.WITHOUT -> "no gavi"
         GAVISupportLevel.WITH -> "total"
+        GAVISupportLevel.HIGH -> "high"
+        GAVISupportLevel.LOW -> "low"
+        GAVISupportLevel.BESTCASE -> "bestcase"
         else -> asString
     }
     return asString.toLowerCase().replace('_', '-')
