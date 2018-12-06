@@ -53,7 +53,7 @@ class GetScenariosTests : TouchstoneRepositoryTests()
             yfSet1 = it.addCoverageSet(touchstoneVersionId, "YF, No vacc", "YF", "none", "none")
             yfSet2 = it.addCoverageSet(touchstoneVersionId, "YF, Routine vacc", "YF", "without", "routine")
             yfSet3 = it.addCoverageSet(touchstoneVersionId, "YF, Routine GAVI vacc", "YF", "with", "routine")
-            measlesSet = it.addCoverageSet(touchstoneVersionId, "Measles, No vacc", "Measles", "none", "none")
+            measlesSet = it.addCoverageSet(touchstoneVersionId, "Measles, High vacc", "Measles", "high", "none")
             // We add them out of order, to check the ordering
             it.addCoverageSetToScenario(yf, yfSet2, 0)
             it.addCoverageSetToScenario(yf, yfSet3, 2)
@@ -64,7 +64,7 @@ class GetScenariosTests : TouchstoneRepositoryTests()
                     ScenarioAndCoverageSets(
                             Scenario("ms-1", "Measles 1", "Measles", listOf(touchstoneVersionId)),
                             listOf(
-                                    CoverageSet(measlesSet, touchstoneVersionId, "Measles, No vacc", "Measles", GAVISupportLevel.NONE, ActivityType.NONE)
+                                    CoverageSet(measlesSet, touchstoneVersionId, "Measles, High vacc", "Measles", GAVISupportLevel.HIGH, ActivityType.NONE)
                             )
                     ),
                     ScenarioAndCoverageSets(
