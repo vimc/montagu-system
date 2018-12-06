@@ -1,4 +1,4 @@
-import { ReportVersion } from "../../shared/models/Generated";
+import { Changelog, ReportVersion } from "../../shared/models/Generated";
 import {Version} from "../../shared/models/reports/Report";
 
 export enum ReportTypeKeys {
@@ -6,6 +6,7 @@ export enum ReportTypeKeys {
     REPORT_VERSIONS_FETCHED = "REPORT_VERSIONS_FETCHED",
     SET_CURRENT_REPORT = "SET_CURRENT_REPORT",
     REPORT_VERSION_DETAILS_FETCHED = "REPORT_VERSION_DETAILS_FETCHED",
+    REPORT_VERSION_CHANGELOG_FETCHED = "REPORT_CHANGELOG_FETCHED",
     REPORT_PUBLISHED = "REPORT_PUBLISHED",
     REPORT_UNPUBLISHED = "REPORT_UNPUBLISHED"
 }
@@ -30,6 +31,11 @@ export interface ReportVersionDetailssFetched {
     data: Version;
 }
 
+export interface ReportVersionChangelogFetched {
+    type: ReportTypeKeys.REPORT_VERSION_CHANGELOG_FETCHED;
+    data: Changelog[];
+}
+
 export interface ReportPublished {
     type: ReportTypeKeys.REPORT_PUBLISHED;
     data: BasicReport;
@@ -50,5 +56,6 @@ export type ReportsAction =
     | SetCurrentReport
     | ReportVersionsFetched
     | ReportVersionDetailssFetched
+    | ReportVersionChangelogFetched
     | ReportPublished
     | ReportUnpublished

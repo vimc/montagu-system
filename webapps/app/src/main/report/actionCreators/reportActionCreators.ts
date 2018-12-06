@@ -4,7 +4,8 @@ import { ReportsService } from "../services/ReportsService";
 import {
     ReportsAction, ReportsFetched, ReportTypeKeys,
     ReportVersionDetailssFetched,
-    ReportVersionsFetched
+    ReportVersionsFetched,
+    ReportVersionChangelogFetched
 } from "../actionTypes/ReportsActionsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
 import {ReportVersion} from "../../shared/models/Generated";
@@ -60,6 +61,16 @@ export const reportActionCreators = {
                 type: ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED,
                 data: versionDetails
             } as ReportVersionDetailssFetched );
+        }
+    },
+
+    getVersionChangelog(reportId: string, versionId: string) {
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            const versionChangelog = await (new ReportsService(dispatch, getState)).getVersionChangelog(reportId, versionId);
+            dispatch({
+                type: ReportTypeKeys.REPORT_VERSION_CHANGELOG_FETCHED,
+                data: versionChangelog
+            } as ReportVersionChangelogFetched );
         }
     }
 

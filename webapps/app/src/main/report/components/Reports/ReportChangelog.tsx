@@ -1,7 +1,7 @@
 import * as React from "react";
 import {connect} from 'react-redux';
 
-import {Version} from "../../../shared/models/reports/Report";
+import {Changelog} from "../../../shared/models/Generated";
 import {ParameterList} from "../Parameters/ParameterList";
 import {DataLinks} from "../Data/DataLinks";
 import {ResourceLinks} from "../Resources/ResourceLinks";
@@ -14,7 +14,7 @@ import {isNullOrUndefined} from "util";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
 
 export interface ReportChangelogProps {
-    versionDetails: Version;
+    versionChangelog: Changelog[];
     report: string;
 }
 
@@ -23,8 +23,15 @@ export const ReportChangelogComponent: React.SFC<ReportChangelogProps> = (props:
 
     const stringCheck = "Published version, which should be used from now on."
 
+    var status = "No changelog here"
+    if (props.versionChangelog !== null)
+    {
+        status = "We have changelog!"
+    }
+
     return <div>
         <h3 className="mb-3">Changelog</h3>
+        <div>{status}</div>
         <table>
             <thead className="changelog-header">
             <tr>
@@ -56,12 +63,12 @@ export const ReportChangelogComponent: React.SFC<ReportChangelogProps> = (props:
 
 export const mapStateToProps = (state: ReportAppState): ReportChangelogProps => {
     return {
-        versionDetails: state.reports.versionDetails,
+        versionChangelog: state.reports.versionChangelog,
         report: state.reports.currentReport
     }
 };
 
 export const ReportChangelog = compose(
     connect(mapStateToProps),
-    branch((p: ReportChangelogProps) => isNullOrUndefined(p.versionDetails), renderComponent(LoadingElement))
+    branch((p: ReportChangelogProps) => isNullOrUndefined(p.versionChangelog), renderComponent(LoadingElement))
 )(ReportChangelogComponent);

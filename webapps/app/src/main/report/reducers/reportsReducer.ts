@@ -4,7 +4,7 @@ import {
     ReportTypeKeys,
     ReportUnpublished
 } from "../actionTypes/ReportsActionsTypes";
-import {ReportVersion} from "../../shared/models/Generated";
+import {Changelog, ReportVersion} from "../../shared/models/Generated";
 import {Version} from "../../shared/models/reports/Report";
 
 export interface ReportsState {
@@ -12,13 +12,15 @@ export interface ReportsState {
     versions: string[];
     currentReport: string;
     versionDetails: Version;
+    versionChangelog: Changelog[];
 }
 
 export const reportsInitialState: ReportsState = {
     reports: null,
     versions: null,
     currentReport: null,
-    versionDetails: null
+    versionDetails: null,
+    versionChangelog: null
 };
 
 export const reportsReducer = (state = reportsInitialState, action: ReportsAction) : ReportsState => {
@@ -31,6 +33,8 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
             return { ...state, currentReport: action.data };
         case ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED:
             return {...state, versionDetails: action.data};
+        case ReportTypeKeys.REPORT_VERSION_CHANGELOG_FETCHED:
+            return {...state, versionChangelog: action.data};
         case ReportTypeKeys.REPORT_PUBLISHED:
             let report = (action as ReportPublished).data;
             // TODO actually update report status

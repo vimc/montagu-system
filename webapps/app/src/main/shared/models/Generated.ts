@@ -13,6 +13,13 @@ export interface AssociateUser {
     username: string;
 }
 
+export interface Changelog {
+    from_file: boolean;
+    label: string;
+    report_version: string;
+    value: string;
+}
+
 export interface CohortRestriction {
     maximum_birth_year: number | null;
     minimum_birth_year: number | null;
