@@ -19,43 +19,40 @@ export interface ReportChangelogProps {
 }
 
 export const ReportChangelogComponent: React.SFC<ReportChangelogProps> = (props: ReportChangelogProps) => {
-    //Returning dummy data for now
+    const header = <h3 className="mb-3">Changelog</h3>;
 
-    const stringCheck = "Published version, which should be used from now on."
-
-    var status = "No changelog here"
-    if (props.versionChangelog !== null)
+    if (!props.versionChangelog || props.versionChangelog.length == 0)
     {
-        status = "We have changelog!"
+        return <div>
+            {header}
+            <p>
+                There is no Changelog for this Report version yet.
+            </p>
+        </div>
     }
 
     return <div>
-        <h3 className="mb-3">Changelog</h3>
+        {header}
         <div>{status}</div>
         <table>
             <thead className="changelog-header">
             <tr>
-                <th>Date</th>
+                <th>Version</th>
                 <th>Label</th>
                 <th>Text</th>
             </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>05/12/2018 09:13:23</td>
-                    <td><span className="badge badge-published">public</span></td>
-                    <td>{stringCheck}</td>
-                </tr>
-                <tr>
-                    <td>04/12/2018 14:25:43</td>
-                    <td><span className="badge badge-internal">internal</span></td>
-                    <td>Several updates and corrections.</td>
-                </tr>
-                <tr>
-                    <td>04/12/2018 10:01:12</td>
-                    <td><span className="badge badge-internal">internal</span></td>
-                    <td>The first internal version of the report, some changes still to make.</td>
-                </tr>
+                { props.versionChangelog.map((changelog: Changelog) => {
+                    const badgeType = (changelog.label == "public") ? "published" : "internal";
+                    return <tr>
+                                <td>{changelog.report_version}</td>
+                                <td><span className={`badge badge-${badgeType}`}>{changelog.label}</span></td>
+                                <td>{changelog.value}</td>
+                            </tr>;
+                    }
+                    )
+                }
             </tbody>
         </table>
      </div>   ;
