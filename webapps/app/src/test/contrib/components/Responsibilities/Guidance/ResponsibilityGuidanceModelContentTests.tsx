@@ -88,7 +88,7 @@ describe("Guidance Content Component tests", () => {
         const props = rendered.props();
         expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
         const pageArticle = rendered.dive().find('PageArticle');
-        expect(pageArticle.props().title).is.equal("Guidance on model outputs: how to generate and upload central and stochastic estimates");
+        expect(pageArticle.props().title).is.equal("Guidance on model outputs: how to generate and upload central estimates");
 
         const alert = rendered.dive().find('.alert-primary');
         expect(alert.getElements().length).is.equal(1);
