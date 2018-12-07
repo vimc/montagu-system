@@ -6,6 +6,9 @@ import * as React from "react";
 import {expect} from "chai";
 import {FileDownloadButton} from "../../../../../main/shared/components/FileDownloadLink";
 import {CountriesList} from "../../../../../main/contrib/components/Responsibilities/Expectations/CountriesList";
+import {ModellingGroupsService} from "../../../../../main/shared/services/ModellingGroupsService";
+import {Sandbox} from "../../../../Sandbox";
+import {settings} from "../../../../../main/shared/Settings";
 
 describe("ExpectationsDescription", () => {
 
@@ -13,6 +16,10 @@ describe("ExpectationsDescription", () => {
         mockScenario({id: "a", description: "desc-a"}),
         mockScenario({id: "b", description: "desc-b"}),
         mockScenario({id: "c", description: "desc-c"})];
+
+    const sandbox = new Sandbox();
+
+    afterEach(() => sandbox.restore());
 
     it("renders description as title", () => {
 
@@ -173,7 +180,9 @@ describe("ExpectationsDescription", () => {
             .to.equal(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/`);
     });
 
-    it("renders FileDownloadButton for stochastic template", () => {
+    it("renders FileDownloadButton for stochastic template for 2017 touchstone", () => {
+        const stub = sandbox.setStubFunc(settings, "is2017Touchstone", () => true )
+
         const em = mockExpectationMapping({},[]);
         const rendered = shallow(<ExpectationsDescription
             expectationMapping={em}
@@ -181,7 +190,25 @@ describe("ExpectationsDescription", () => {
             allScenarios={mockScenarios}
             groupId="gId"
         />);
+        expect(stub.called).to.be.true;
         expect(rendered.find(FileDownloadButton).at(1).prop("href"))
             .to.equal(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/?type=stochastic`);
+    });
+
+    it("does not render FileDownloadButton for stochastic template for non-2017 touchstone", () => {
+        const stub = sandbox.setStubFunc(settings, "is2017Touchstone", () => false )
+
+        const em = mockExpectationMapping({},[]);
+        const rendered = shallow(<ExpectationsDescription
+            expectationMapping={em}
+            touchstoneVersionId="tId"
+            allScenarios={mockScenarios}
+            groupId="gId"
+        />);
+        expect(stub.called).to.be.true;
+        expect(rendered.find(FileDownloadButton).length).to.eq(1);
+        expect(rendered.find(FileDownloadButton).at(0).prop("href"))
+            .to.equal(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/`); //single button is for central
+
     });
 });
