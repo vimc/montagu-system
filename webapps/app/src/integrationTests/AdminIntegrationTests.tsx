@@ -1,21 +1,23 @@
 import * as React from "react";
 import {createMemoryHistory} from 'history';
 
-import {IntegrationTestSuite} from "./IntegrationTest";
+import {IntegrationTestSuite, addCoverageSetsForScenario, addCoverageData, TestService} from "./IntegrationTest";
 import {expect} from "chai";
+import {shallow} from "enzyme";
 import {Client, QueryResult} from "pg";
-import {ModellingGroup, ResponsibilitySetWithExpectations, RoleAssignment, User} from "../main/shared/models/Generated";
+import {Scenario, ModellingGroup, ResponsibilitySetWithExpectations,
+        RoleAssignment, User} from "../main/shared/models/Generated";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
 import {AuthService} from "../main/shared/services/AuthService";
 import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
 import {UsersService} from "../main/admin/services/UsersService";
 import {mockModellingGroupCreation} from "../test/mocks/mockModels";
 import {TouchstonesService} from "../main/shared/services/TouchstonesService";
+import {ScenarioGroupComponent} from "../main/admin/components/Touchstones/Scenarios/ScenarioGroup"
+import {FileDownloadButton} from "../main/shared/components/FileDownloadLink";
 
 const touchstoneVersionId = "test-1";
 const scenarioId = "yf-1";
-
-
 
 class AdminIntegrationTests extends IntegrationTestSuite {
     description() {
@@ -192,6 +194,73 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                 }
             ]);
         });
+
+        it("can download coverage data in long format", async () => {
+            const coverageSetId = await addCoverageSetsForScenario(this.db, scenarioId, touchstoneVersionId);
+            await addCoverageData(this.db, coverageSetId);
+
+            const scenarios: Scenario[] = [
+                {
+                    "description": "Yellow Fever scenario",
+                    "disease": "yf",
+                    "id": "yf-1",
+                    "touchstones": [
+                        "test-1"
+                    ]
+                }
+            ];
+
+            const rendered = shallow(<ScenarioGroupComponent
+                touchstoneVersionId={touchstoneVersionId}
+                disease={{id:"yf", name:"Yellow Fever"}}
+                canDownloadCoverage={true}
+                scenarios={scenarios}/>);
+
+            const href = rendered.find(FileDownloadButton).first().prop("href");
+
+            const response = await new TestService(this.store.dispatch, this.store.getState)
+                .getAnyUrl(href);
+
+            expect(response.status).to.equal(200);
+            const result = await response.text();
+
+            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage\n"
+                                        + "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1970,1,2,1-2,1000,1000\n")
+        });
+
+        it("can download coverage data in wide format", async () => {
+            const coverageSetId = await addCoverageSetsForScenario(this.db, scenarioId, touchstoneVersionId);
+            await addCoverageData(this.db, coverageSetId);
+
+            const scenarios: Scenario[] = [
+                {
+                    "description": "Yellow Fever scenario",
+                    "disease": "yf",
+                    "id": "yf-1",
+                    "touchstones": [
+                        "test-1"
+                    ]
+                }
+            ];
+
+            const rendered = shallow(<ScenarioGroupComponent
+                touchstoneVersionId={touchstoneVersionId}
+                disease={{id:"yf", name:"Yellow Fever"}}
+                canDownloadCoverage={true}
+                scenarios={scenarios}/>);
+
+            const href = rendered.find(FileDownloadButton).at(1).prop("href");
+
+            const response = await new TestService(this.store.dispatch, this.store.getState)
+                .getAnyUrl(href);
+
+            expect(response.status).to.equal(200);
+            const result = await response.text();
+
+            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,age_first,age_last,age_range_verbatim,coverage_1970,target_1970\n"
+                + "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1,2,1-2,1000,1000\n")
+        });
+
     }
 }
 

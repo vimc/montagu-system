@@ -33,9 +33,14 @@ describe("ScenarioGroup", () => {
         const rendered = shallow(<ScenarioGroupComponent {...props}/>);
         expect(rendered.find("h3").text()).to.equal("Chicken pox");
         const row = rendered.find("li").at(0);
-        const button = row.find(FileDownloadButton);
+        const buttons = row.find(FileDownloadButton);
 
-        expect(button.prop("href")).to.be.null;
+        expect(buttons).to.have.lengthOf(2);
+
+        buttons.forEach(button =>
+            { expect(button.prop("href")).to.be.null; }
+        );
+
         expect(row.find(UncontrolledTooltip)).to.have.lengthOf(1);
 
     });
@@ -50,9 +55,10 @@ describe("ScenarioGroup", () => {
         const rendered = shallow(<ScenarioGroupComponent {...props}/>);
         expect(rendered.find("h3").text()).to.equal("Chicken pox");
         const row = rendered.find("li").at(0);
-        const button = row.find(FileDownloadButton);
+        const buttons = row.find(FileDownloadButton);
 
-        expect(button.prop("href")).to.eq("/touchstones/t1/s1/coverage/csv/");
+        expect(buttons.at(0).prop("href")).to.eq("/touchstones/t1/s1/coverage/csv/?format=long");
+        expect(buttons.at(1).prop("href")).to.eq("/touchstones/t1/s1/coverage/csv/?format=wide");
         expect(row.find(UncontrolledTooltip)).to.have.lengthOf(0);
 
     });

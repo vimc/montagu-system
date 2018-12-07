@@ -32,17 +32,25 @@ export const ScenarioGroup =
     branch<ScenarioGroupProps>((props: ScenarioGroupProps) => props.scenarios.length == 0, renderNothing)(ScenarioGroupComponent);
 
 const ScenarioItem = (props: ScenarioGroupProps, scenario: Scenario) => {
-    let href = null;
+    let hrefLong = null;
+    let hrefWide = null;
     if (props.canDownloadCoverage) {
-        href = `/touchstones/${props.touchstoneVersionId}/${scenario.id}/coverage/csv/`
+        const href = `/touchstones/${props.touchstoneVersionId}/${scenario.id}/coverage/csv/?format=`
+        hrefLong = href + "long"
+        hrefWide = href + "wide"
     }
     return <li key={scenario.id} className="list-group-item">
         <div className="row align-items-center">
             <div className="col-4 text-left">{scenario.description}</div>
             <code className="col-4 text-center">{scenario.id}</code>
             <div className="col-4 text-right" id={`download-coverage-${scenario.id}`}>
-                <FileDownloadButton href={href}>
-                    Download coverage data</FileDownloadButton>
+                Download coverage data in
+                <FileDownloadButton href={hrefLong}>
+                    Long format
+                </FileDownloadButton>
+                <FileDownloadButton href={hrefWide}>
+                    Wide format
+                </FileDownloadButton>
                 {!props.canDownloadCoverage &&
                 <UncontrolledTooltip placement="bottom" target={`download-coverage-${scenario.id}`}>
                     You do not have permission to download coverage
