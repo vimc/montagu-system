@@ -20,7 +20,7 @@ export interface CohortRestriction {
 
 export type ActivityType = "none" | "routine" | "campaign" | "campaign-reactive";
 
-export type GAVISupportLevel = "no vaccine" | "no gavi" | "total" | "hold2010" | "bestminus";
+export type GAVISupportLevel = "no vaccine" | "no gavi" | "total" | "high" | "low" | "bestcase" | "hold2010" | "bestminus";
 
 export interface CoverageSet {
     activity_type: ActivityType;
