@@ -2,8 +2,7 @@ import * as models from "../../main/shared/models/Generated";
 import {
     ExpectationMapping,
     ModellingGroupCreation,
-    TouchstoneVersion,
-    ReportVersion
+    TouchstoneVersion
 } from "../../main/shared/models/Generated";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
 import {Version} from "../../main/shared/models/reports/Report";

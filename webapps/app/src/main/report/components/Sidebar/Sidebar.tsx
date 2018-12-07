@@ -36,14 +36,14 @@ export interface SidebarProps extends PublicProps{
     isReviewer: boolean;
 }
 
-const mapStateToProps = (state: ReportAppState): Partial<SidebarProps> => {
+export const mapStateToProps = (state: ReportAppState): Partial<SidebarProps> => {
 
     return {
         isReviewer: state.auth.isReportReviewer
     };
 };
 
-const SidebarComponent: React.StatelessComponent<SidebarProps> = (props: SidebarProps) => {
+export const SidebarComponent: React.StatelessComponent<SidebarProps> = (props: SidebarProps) => {
 
     const changelogLink = props.isReviewer
         ?

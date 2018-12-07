@@ -26,14 +26,13 @@ export const ReportChangelogComponent: React.SFC<ReportChangelogProps> = (props:
         return <div>
             {header}
             <p>
-                There is no Changelog for this Report version yet.
+                There is no Changelog for this Report version.
             </p>
         </div>
     }
 
     return <div>
         {header}
-        <div>{status}</div>
         <table>
             <thead className="changelog-header">
             <tr>

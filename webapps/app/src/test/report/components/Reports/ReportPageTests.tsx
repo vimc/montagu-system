@@ -41,9 +41,10 @@ describe("ReportPage", () => {
                 type: ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED,
                 data: null
             });
-            expect(actions[2].type).to.eql(BreadcrumbsTypes.BREADCRUMBS_RECEIVED);
-            expect(actions[3].type).to.eql(ReportTypeKeys.REPORT_VERSIONS_FETCHED);
-            expect(actions[4].type).to.eql(ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED);
+            expect(actions[2].type).to.eql(ReportTypeKeys.REPORT_VERSION_CHANGELOG_FETCHED);
+            expect(actions[3].type).to.eql(BreadcrumbsTypes.BREADCRUMBS_RECEIVED);
+            expect(actions[4].type).to.eql(ReportTypeKeys.REPORT_VERSIONS_FETCHED);
+            expect(actions[5].type).to.eql(ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED);
             expect(createBreadCrumbSpy.called).to.eq(true);
             done();
         });
