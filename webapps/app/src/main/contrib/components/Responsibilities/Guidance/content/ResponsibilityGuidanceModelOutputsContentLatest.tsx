@@ -13,9 +13,9 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
     render() :JSX.Element {
         const dalysPdf = require("./guidance-201710-DALYs.pdf");
 
-        return <PageArticle title="Guidance on model outputs: how to generate and upload central and stochastic estimates">
+        return <PageArticle title="Guidance on model outputs: how to generate and upload central estimates">
             <div className="alert alert-primary">
-               Guidance for touchstone {this.props.touchstoneVersion.description}
+                Guidance for touchstone {this.props.touchstoneVersion.description}
             </div>
             <div className="largeSectionTitle">
                 Required model outputs
@@ -38,25 +38,6 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
                         Download central burden estimate template from Montagu, use this to create one file per scenario
                     </td>
                     <td>Montagu</td>
-                </tr>
-                <tr>
-                    <td>Stochastic estimates for up to 5 countries (multiple files)</td>
-                    <td>
-                        Download stochastic burden estimate template from Montagu, use this to create as many files as you need.
-                    </td>
-                    <td>Dropbox</td>
-                </tr>
-                <tr>
-                    <td>Parameter set to accompany stochastic estimates (1 file per disease)</td>
-                    <td>
-                        Download stochastic parameters template from Montagu, use this to create your parameter set.
-                    </td>
-                    <td>Montagu</td>
-                </tr>
-                <tr>
-                    <td>Parameter certificate to accompany stochastic estimates (1 file per disease)</td>
-                    <td>You will be able to download this from Montagu once you have uploaded your parameter set.</td>
-                    <td>Dropbox</td>
                 </tr>
                 </tbody>
             </table>
@@ -126,161 +107,13 @@ export class ResponsibilityGuidanceModelOutputsContentLatestComponent extends Re
                 of your stochastic estimates. (If you are unsure how to answer
                 the second question, you can enter ‘N/A’.)
             </p>
-            <p>
-                If your answers to these questions change between uploading
-                your central estimates and your stochastic estimates, you
-                should complete this registration step again and re-upload
-                your central estimates to Montagu.
-            </p>
             <div className="mb-3 mt-5">
                 <span className="sectionTitle">Stochastic estimates</span>
                 &nbsp;(also known as probabilistic estimates)
             </div>
             <p>
-                We require multiple model runs for each scenario, each of which
-                is based on a random sample from the joint uncertainty
-                distribution (e.g. posterior distribution) of the input
-                parameters. As we want to compare the runs across scenarios
-                to calculate the impact, the same parameter samples should
-                be used across all scenarios, and the runs labelled to ensure
-                we can identify them.
+                Stochastic estimates are not required for this touchstone. Please provide central estimates only.
             </p>
-            <p>
-                First, download your stochastic burden estimate template from
-                the Responsibilities page
-                (listed under ‘Scenarios’). This template is customised
-                for each model.
-            </p>
-            <p>
-                The format is almost identical to the central burden estimate
-                template, but there is one additional column, ‘run_id’. This
-                column labels the particular run, and should link the run to
-                the parameter value detailed in the parameter set file.
-                Importantly, the runs across all scenarios with the same run
-                id should be based on the same parameter values.
-            </p>
-            <p>
-                We require 30 independent realisations in the stochastic estimates. The template
-                file only contains all rows for a single realisation, so you will need to generate
-                30 times as many rows.
-            </p>
-            <p>
-                You will need to use the stochastic burden estimate template
-                to create one or more files for each scenario, ensuring that
-                you fill in all required rows and columns. If you choose to
-                break the data up into multiple files it does not matter how
-                you distribute the rows among files (e.g. by country, by
-                run_id, by year or even randomly), as long as the data are
-                complete, and scenarios are kept separate. The scenarios are
-                the same as for your central estimates. Please contact us (
-                <a href={`mailto:${settings.supportContact}`}>
-                    {settings.supportContact}
-                </a>
-                ) or use the #montagu-help channel on&nbsp;
-                <a href={settings.slackUrl} target="_blank">
-                    Slack
-                </a>
-                &nbsp;if there are any problems with this.
-            </p>
-            <p>
-                Next, rename your stochastic estimate files.
-                The filename format should be, for example,&nbsp;
-                <strong><em>
-                    stochastic_burden_est_YF-IC-Garske_yf-routine-gavi_1.csv
-                </em></strong>
-                . The first part is from the template filename, the second part
-                is the scenario ID (as it appears in Montagu), the final
-                number is an arbitrary way to distinguish between
-                different files for the same scenario if you choose to split
-                the estimates across several files.
-            </p>
-            <p>
-                Once you have completed all files for each scenario, you
-                should upload each one to Dropbox, to the specific folder
-                that we email you. We will then use scripts to
-                automatically process the uploaded files and import them
-                into Montagu.
-            </p>
-            <p>
-                If your model changes between uploading your central
-                estimates and your stochastic estimates, please let us know
-                by emailing&nbsp;
-                <a href={`mailto:${settings.supportContact}`}>
-                    {settings.supportContact}
-                </a>
-                &nbsp;or using the #montagu-help channel on&nbsp;
-                <a href={settings.slackUrl} target="_blank">
-                    Slack
-                </a>.
-            </p>
-            <ScrollableAnchor id={'parameters'}>
-                <div className="mb-3 mt-5 sectionTitle">Parameter set file</div>
-            </ScrollableAnchor>
-            <p>
-                First, download your stochastic parameters template from
-                the Responsibilities page. You should use this template to
-                create one file (a parameter set) that will show us the
-                underlying parameter values of your stochastic runs.
-            </p>
-            <p>
-                It is essential that the runs across all scenarios with the
-                same ‘run id’ are based on the same parameter values.
-            </p>
-            <p>
-                Your parameters file should contain 30 rows, i.e. in addition to the row showing the column headings.
-            </p>
-            <p>
-                The column headings in the template are labelled &lt;param_1&gt;
-                and &lt;param_2&gt; but you should rename these to the actual
-                parameters you are using, and add extra columns if necessary.
-                For models explicitly fitted to data, probabilistic outputs can be a sample from the posterior
-                distribution, and each run should be recorded with assumed parameter values as well as the
-                likelihood. If no explicit model fitting has taken place, input parameters should be sampled from
-                reasonable ranges.
-            </p>
-            <p>
-                If the model uses country-specific parameters, each
-                country-specific parameter should be given in a separate
-                column, using the naming convention &lt;parameter_name&gt;:&lt;ISO&gt;,
-                where ISO is the 3-letter country code.
-            </p>
-            <p>
-                Once you have completed your parameter set file, you should
-                upload this file via Montagu.
-            </p>
-            <p>
-                Montagu will then give you a ‘parameter certificate’. After
-                you have downloaded this, please upload it to Dropbox, to
-                the specific folder that we email you. You do not
-                need to open or read this file.
-            </p>
-            <p>
-                You should only upload one parameter certificate to Dropbox.
-                This must correspond to the exact parameters that underlie your
-                stochastic estimates. Therefore, if you discover a mistake in
-                your stochastic files or parameter set after you have uploaded
-                these to Dropbox, please do all of the following:
-            </p>
-
-            <ol style={{listStyleType: "lower-alpha"}}>
-                <li>
-                    Contact us
-                    (<a href={`mailto:${settings.supportContact}`}>{settings.supportContact}</a>)
-                    to request a new Dropbox link
-                </li>
-                <li>
-                    Upload your amended parameter set to Montagu and get
-                    a new parameter certificate
-                </li>
-                <li>
-                    Upload your new parameter certificate and all stochastic
-                    estimate files to the new Dropbox link
-                </li>
-            </ol>
-            If you have any questions, please contact&nbsp;
-            <a href={`mailto:${settings.supportContact}`}>{settings.supportContact}</a> or
-            use the #montagu-help channel on&nbsp;
-            <a href={settings.slackUrl} target="_blank">Slack</a>
 
             <div className="mb-3 mt-5 sectionTitle">Age groups</div>
             <p>
