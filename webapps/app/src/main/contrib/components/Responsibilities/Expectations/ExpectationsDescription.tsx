@@ -2,6 +2,7 @@ import * as React from "react";
 import {ExpectationMapping, NumberRange, Scenario} from "../../../../shared/models/Generated";
 import {CountriesList} from "./CountriesList";
 import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
+import {settings} from "../../../../shared/Settings"
 
 interface ExpectationsDescriptionProps {
     expectationMapping: ExpectationMapping;
@@ -56,10 +57,13 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
                 <FileDownloadButton href={centralTemplateUrl} className={"mr-2"}>
                     Download central burden estimate template
                 </FileDownloadButton>
-
-                <FileDownloadButton href={stochasticTemplateUrl}>
-                    Download stochastic burden estimate template
-                </FileDownloadButton>
+                {
+                    //Don't include stochastic template for 2018 touchstone - no longer required
+                    settings.is2017Touchstone(touchstoneVersionId.toString()) &&
+                    <FileDownloadButton href={stochasticTemplateUrl}>
+                        Download stochastic burden estimate template
+                    </FileDownloadButton>
+                }
             </div>
         </div>
     }
