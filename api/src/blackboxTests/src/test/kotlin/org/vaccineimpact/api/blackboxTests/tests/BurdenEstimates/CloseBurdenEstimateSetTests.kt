@@ -109,8 +109,9 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
     {
         val requestHelper = RequestHelper()
 
-        val setId = JooqContext().use {
-            setUpWithBurdenEstimateSet(it)
+        val setId = 123
+        JooqContext().use {
+            setUpWithBurdenEstimateSet(it, setId)
         }
 
         val oneTimeURL = getPopulateOneTimeURL(setId, redirect = true, keepOpen = false)
