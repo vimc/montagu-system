@@ -50,6 +50,21 @@ Schema: [`Response.schema.json`](../schemas/Response.schema.json)
         ]
     }
 
+# Standard response codes
+The complete list of HTTP status codes returned by the API is:
+* 200
+* 201
+* 400
+* 404
+* 401
+* 403 
+* 409
+* 500 
+
+In particular, note that we use 400 liberally to indicate when submitted data
+does not conform to expected Montagu conventions, as well as for invalid operation
+ requests.
+
 # Index
 ## GET /
 The root of the API returns some simple data, which is mainly there to make it 
