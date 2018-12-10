@@ -28,40 +28,6 @@ const ContactDetails = () => {
     </div>
 }
 
-/*const StochasticRfpTouchstone = (countries: String) => {
-    return <div>
-        On this page you can:
-        <ul>
-            <li>
-                Download vaccination coverage for {countries}
-            </li>
-            <li>
-                Download demographic data for {countries}
-            </li>
-            <li>
-                Download csv templates for central and stochastic burden estimates, and for underlying
-                parameter values
-            </li>
-            <li>
-                Upload central burden estimates for each scenario, and review any problems the system has
-                detected in the uploaded data
-            </li>
-            <li>
-                Upload your parameters file
-            </li>
-        </ul>
-        Useful links:
-        <ul>
-            <li>
-                <a
-                    href={outputGuide}
-                    target="_blank">Output specification guidance (PDF)</a>
-            </li>
-        </ul>
-        <ContactDetails/>
-    </div>;
-};*/
-
 const JanuaryRfpTouchstone = () => {
     return <div>
         On this page you can:
@@ -95,12 +61,9 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
     }
 
     if (settings.isApplicantTouchstone(props.currentTouchstoneId)) {
-        //if (settings.isStochasticTouchstone(props.currentTouchstoneId)) {
-        //    return StochasticRfpTouchstone("Nigeria")
-       // }
-       // else {
-            return JanuaryRfpTouchstone()
-        //}
+
+        return JanuaryRfpTouchstone()
+
     } else {
         const guidanceInputsUrl = `/help/model-inputs/${props.currentTouchstoneId}`;
         const guidanceOutputsUrl = `/help/model-outputs/${props.currentTouchstoneId}`;

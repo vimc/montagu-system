@@ -126,4 +126,20 @@ describe("Responsibility Overview Content Component", () => {
         expect(rendered.find(ResponsibilityOverviewDescription).props().currentTouchstoneId)
             .is.equal(testTouchstone.id);
     })
+
+    it("renders parameters section when stochastic", function(){
+        const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => true );
+        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
+            .dive().dive().dive().dive();
+        expect(rendered.find("#params-section").length).is.equal(1);
+
+    })
+
+    it("does not render parameters section when not stochastic", function(){
+        const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => false);
+        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
+            .dive().dive().dive().dive();
+        expect(rendered.find("#params-section").length).is.equal(0);
+
+    })
 });

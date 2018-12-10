@@ -5,6 +5,7 @@ import { expect } from "chai";
 import "../../../../helper";
 import { Sandbox } from "../../../../Sandbox";
 import {ResponsibilityOverviewDescription} from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewDescription";
+import {settings} from "../../../../../main/shared/Settings";
 
 describe("Responsibility Overview Description Component", () => {
 
@@ -28,6 +29,23 @@ describe("Responsibility Overview Description Component", () => {
     it("renders component on touchstone is not open", () => {
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId2} groupId={testGroupId} touchstoneStatus="finished"/>);
         expect(rendered.text().indexOf("This touchstone is no longer open")).to.greaterThan(-1);
+    });
+
+    it("renders stochastic content when touchstone is stochastic", () => {
+        const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => true );
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId1} groupId={testGroupId} touchstoneStatus={touchstoneStatus}/>);
+        expect(rendered.text().indexOf("Download csv templates for central and stochastic burden estimates")).to.greaterThan(-1);
+        expect(rendered.text().indexOf("upload stochastic burden estimates for each scenario")).to.greaterThan(-1);
+        expect(rendered.text().indexOf("Upload your parameters file")).to.greaterThan(-1);
+    });
+
+    it("does not render stochastic content when touchstone is not stochastic", () => {
+        const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => false );
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId1} groupId={testGroupId} touchstoneStatus={touchstoneStatus}/>);
+        expect(rendered.text().indexOf("Download csv templates for central burden estimates")).to.greaterThan(-1);
+        expect(rendered.text().indexOf("Stochastic estimates are not required for this touchstone")).to.greaterThan(-1);
+        expect(rendered.text().indexOf("upload stochastic burden estimates for each scenario")).to.eq(-1);
+        expect(rendered.text().indexOf("Upload your parameters file")).to.eq(-1);
     });
 });
 
