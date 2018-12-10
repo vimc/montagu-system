@@ -22,6 +22,7 @@ export class ReportPageComponent extends React.Component<PageProperties<ReportPa
     }
 
     componentDidMount() {
+        console.warn("report page did mount")
         this.props.onLoad(this.props.match.params);
     }
 
