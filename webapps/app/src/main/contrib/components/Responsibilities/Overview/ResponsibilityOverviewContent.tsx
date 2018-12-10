@@ -25,7 +25,8 @@ export interface ResponsibilityOverviewContentProps {
 }
 
 function paramsSection(props: ResponsibilityOverviewContentProps) {
-    if (settings.isStochasticTouchstone(props.touchstoneId) || !settings.isApplicantTouchstone(props.touchstoneId)) {
+    if (settings.isVersionOfStochasticTouchstone(props.touchstoneId))
+    {
         const parametersUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/parameters/`;
         return <div id="params-section">
             <div className="largeSectionTitle">Parameters</div>

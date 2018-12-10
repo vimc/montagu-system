@@ -16,26 +16,11 @@ export interface TemplateLinkProps {
 const templatePath = "/contribution/templates/";
 
 const RfpTemplateLinks = (disease: Disease, touchstoneId: string) => {
-    if (settings.isStochasticTouchstone(touchstoneId)) {
-        return <div>
-            <div>
-                <a key={`central_burden_template_${disease.id}-generic.csv`}
-                   href={`${templatePath}central_burden_template_${disease.id}-generic.csv`}>{disease.name}
-                    - central</a>
-            </div>
-            <div>
-                <a key={`stochastic_burden_template_${disease.id}-generic.csv`}
-                   href={`${templatePath}stochastic_burden_template_${disease.id}-generic.csv`}>{disease.name}
-                    - stochastic</a>
-            </div>
-        </div>
-    }
-    else {
-        return <div>
-            <a key={`central_burden_template_${disease.id}-generic.csv`}
-               href={`${templatePath}central_burden_template_${disease.id}-generic.csv`}>{disease.name}</a>
-        </div>
-    }
+    return <div>
+        <a key={`central_burden_template_${disease.id}-generic.csv`}
+           href={`${templatePath}central_burden_template_${disease.id}-generic.csv`}>{disease.name}</a>
+    </div>
+
 };
 
 export class TemplateLinkComponent extends React.Component<TemplateLinkProps, undefined> {

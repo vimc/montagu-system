@@ -181,7 +181,7 @@ describe("ExpectationsDescription", () => {
     });
 
     it("renders FileDownloadButton for stochastic template for 2017 touchstone", () => {
-        const stub = sandbox.setStubFunc(settings, "is2017Touchstone", () => true )
+        const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => true )
 
         const em = mockExpectationMapping({},[]);
         const rendered = shallow(<ExpectationsDescription
@@ -196,7 +196,7 @@ describe("ExpectationsDescription", () => {
     });
 
     it("does not render FileDownloadButton for stochastic template for non-2017 touchstone", () => {
-        const stub = sandbox.setStubFunc(settings, "is2017Touchstone", () => false )
+        const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => false )
 
         const em = mockExpectationMapping({},[]);
         const rendered = shallow(<ExpectationsDescription
