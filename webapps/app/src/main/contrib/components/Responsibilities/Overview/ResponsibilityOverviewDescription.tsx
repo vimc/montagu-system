@@ -28,7 +28,7 @@ const ContactDetails = () => {
     </div>
 }
 
-const StochasticRfpTouchstone = (countries: String) => {
+/*const StochasticRfpTouchstone = (countries: String) => {
     return <div>
         On this page you can:
         <ul>
@@ -60,7 +60,7 @@ const StochasticRfpTouchstone = (countries: String) => {
         </ul>
         <ContactDetails/>
     </div>;
-};
+};*/
 
 const JanuaryRfpTouchstone = () => {
     return <div>
@@ -95,15 +95,38 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
     }
 
     if (settings.isApplicantTouchstone(props.currentTouchstoneId)) {
-        if (settings.isStochasticTouchstone(props.currentTouchstoneId)) {
-            return StochasticRfpTouchstone("Nigeria")
-        }
-        else {
+        //if (settings.isStochasticTouchstone(props.currentTouchstoneId)) {
+        //    return StochasticRfpTouchstone("Nigeria")
+       // }
+       // else {
             return JanuaryRfpTouchstone()
-        }
+        //}
     } else {
         const guidanceInputsUrl = `/help/model-inputs/${props.currentTouchstoneId}`;
         const guidanceOutputsUrl = `/help/model-outputs/${props.currentTouchstoneId}`;
+
+        let templatesInfo;
+        let outputGuidanceLinkText;
+        let stochasticEstimatesText;
+
+        if (settings.isVersionOfStochasticTouchstone(props.currentTouchstoneId))
+        {
+            templatesInfo = <li>
+                                Download csv templates for central and stochastic burden estimates,
+                                and for underlying parameter values.
+                            </li>;
+            outputGuidanceLinkText = "Guidance on model outputs: how to generate and upload central and stochastic estimates";
+            stochasticEstimatesText = "In the future, you will also be able to upload stochastic burden estimates for each scenario."
+        }
+        else
+        {
+            templatesInfo = <li>
+                                Download csv templates for central burden estimates.
+                            </li>;
+            outputGuidanceLinkText = "Guidance on model outputs: how to generate and upload central estimates";
+            stochasticEstimatesText = "Stochastic estimates are not required for this touchstone. Please provide central estimates only";
+        }
+
         return <div>
             On this page you can:
             <ul>
@@ -125,10 +148,7 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
                         More guidance here
                     </InternalLink>.
                 </li>
-                <li>
-                    Download csv templates for central and stochastic burden estimates,
-                    and for underlying parameter values.
-                </li>
+                {templatesInfo}
                 <li>
                     Upload central burden estimates for each scenario, and review any
                     problems the system has detected in the uploaded data.&nbsp;
@@ -136,17 +156,19 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
                         More guidance here
                     </InternalLink>.
                 </li>
-                <li>
-                    Upload your parameters file.&nbsp;
-                    <InternalLink href={guidanceOutputsUrl}>
-                        More guidance here
-                    </InternalLink>.
-                </li>
+                {
+                    settings.isVersionOfStochasticTouchstone(props.currentTouchstoneId) &&
+                    <li>
+                        Upload your parameters file.&nbsp;
+                        <InternalLink href={guidanceOutputsUrl}>
+                            More guidance here
+                        </InternalLink>.
+                    </li>
+                }
             </ul>
-            <p>
-                In the future, you will also be able to upload stochastic burden estimates for each
-                scenario.
-            </p>
+                <p>
+                    {stochasticEstimatesText}
+                </p>
             <span>
                     Useful links:
                 </span>
@@ -158,8 +180,7 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
                 </li>
                 <li>
                     <InternalLink href={guidanceOutputsUrl}>
-                        Guidance on model outputs: how to generate and upload central
-                        and stochastic estimates
+                        {outputGuidanceLinkText}
                     </InternalLink>
                 </li>
             </ul>

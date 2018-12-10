@@ -58,8 +58,7 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
                     Download central burden estimate template
                 </FileDownloadButton>
                 {
-                    //Don't include stochastic template for 2018 touchstone - no longer required
-                    settings.is2017Touchstone(touchstoneVersionId.toString()) &&
+                    settings.isVersionOfStochasticTouchstone(touchstoneVersionId.toString()) &&
                     <FileDownloadButton href={stochasticTemplateUrl}>
                         Download stochastic burden estimate template
                     </FileDownloadButton>
