@@ -8,10 +8,10 @@ export const settings: Settings = {
     teamcityServiceMessages: false,
     isApplicantTouchstone: (id: string) => id.indexOf("rfp-") > -1,
     is2017Touchstone: (id: string) => id.indexOf("201710gavi-") === 0,
+    nonStochasticTouchstones: ["201810synthetic"],
     isVersionOfStochasticTouchstone: function(touchstoneId: string){
         //is touchstone id NOT a version of any name in array of non-stochastic touchstones
-        const nonStochasticTouchstones = ["201810synthetic"];
-        return !nonStochasticTouchstones.some((ts: string) => touchstoneId.indexOf(ts) === 0);
+        return !this.nonStochasticTouchstones.some((ts: string) => touchstoneId.indexOf(ts) === 0);
     },
     showTouchstoneCreation: false,
     showOldTemplates: false,
