@@ -109,6 +109,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
     {
         val requestHelper = RequestHelper()
 
+        // use explicit set id to make sure we're querying the right set
         val setId = 123
         JooqContext().use {
             setUpWithBurdenEstimateSet(it, setId)

@@ -52,16 +52,18 @@ Schema: [`Response.schema.json`](../schemas/Response.schema.json)
 
 # Standard response codes
 The complete list of HTTP status codes returned by the API is:
-* 200
-* 201
-* 400
-* 404
-* 401
-* 403 
-* 409
-* 500 
+* 200 - OK
+* 201 - Object successfully created
+* 400 - Bad request*
+* 404 - Resource not found. This will be returned both when the url is not part of the spec,
+and when a requested resource does not exist (e.g. a non-existent modelling group is requested)
+* 401 - Unauthorized - User is not logged in
+* 403 - Forbidden - User does not have required permissions
+* 409 - Conflict. This will be returned when the user's request attempts to insert an object into
+the database with a primary key that already exists.
+* 500 - Internal server error - This generally indicates an unexpected error has occurred. 
 
-In particular, note that we use 400 liberally to indicate when submitted data
+*Note that we use 400 liberally to indicate when submitted data
 does not conform to expected Montagu conventions, as well as for invalid operation
  requests.
 
