@@ -5,7 +5,10 @@ import {responsibilitiesActionCreators} from "./responsibilitiesActionCreators";
 import {mapStateToPropsHelper} from "../helpers/mapStateToPropsHelper";
 import {ContribAppState} from "../reducers/contribAppReducers";
 import {CreateBurdenEstimateSet} from "../../shared/models/Generated";
-import {BurdenOutcome, EstimateTypes} from "../actionTypes/EstimateTypes";
+import {BurdenOutcome, Estimates, EstimateTypes} from "../actionTypes/EstimateTypes";
+import BurdenEstimatesFetched = Estimates.BurdenEstimatesFetched;
+import {ILookup} from "../../shared/models/Lookup";
+import {DataPoint} from "../reducers/estimatesReducer";
 
 export const estimatesActionCreators = {
     createBurden(data: CreateBurdenEstimateSet) {
@@ -27,8 +30,8 @@ export const estimatesActionCreators = {
 
             return dispatch({
                 type: EstimateTypes.BURDEN_ESTIMATES_FETCHED,
-                data: data
-            });
+                data: {burdens: data, type: outcome, setId: setId}
+            } as BurdenEstimatesFetched);
         }
     }
 };

@@ -23,32 +23,38 @@ describe("Estimates actions tests", () => {
     const testResponsibility = testExtResponsibilitySet.responsibilities[0];
 
     const createStore = () => {
-     return  createMockContribStore({
-         groups: { currentUserGroup: testGroup },
-         touchstones: { currentTouchstoneVersion: testTouchstoneVersion },
-         responsibilities: {
-             currentResponsibility: testResponsibility,
-             responsibilitiesSet: testExtResponsibilitySet
-         }
-     });
+        return createMockContribStore({
+            groups: {currentUserGroup: testGroup},
+            touchstones: {currentTouchstoneVersion: testTouchstoneVersion},
+            responsibilities: {
+                currentResponsibility: testResponsibility,
+                responsibilitiesSet: testExtResponsibilitySet
+            }
+        });
     };
 
     afterEach(() => {
         sandbox.restore();
     });
 
-    it("gets burden estimates", async () => {
+    it("gets burden estimates and dispatches action containing data, type and set id", async () => {
 
         const store = createStore();
-        const getEstimatesEndpoint = sandbox.setStubFunc(EstimatesService.prototype, "getEstimates", ()=>{
+        const getEstimatesEndpoint = sandbox.setStubFunc(EstimatesService.prototype, "getEstimates", () => {
             return Promise.resolve("TEST");
         });
 
-        await store.dispatch(estimatesActionCreators.getEstimates(BurdenOutcome.DEATHS, 1));
+        const setId = 11;
+        const outcome = BurdenOutcome.DEATHS;
+
+        await store.dispatch(estimatesActionCreators.getEstimates(outcome, setId));
 
         const actions = store.getActions();
         const expectedPayload = [
-            { type: EstimateTypes.BURDEN_ESTIMATES_FETCHED, data: "TEST"}
+            {
+                type: EstimateTypes.BURDEN_ESTIMATES_FETCHED,
+                data: {burdens: "TEST", type: outcome, setId: setId}
+            }
         ];
         expect(actions).to.eql(expectedPayload);
         expect(getEstimatesEndpoint.calledOnce).to.be.true;
@@ -57,16 +63,16 @@ describe("Estimates actions tests", () => {
 
     it("creates burden", (done) => {
         const store = createStore();
-        const createBurdenEndpoint = sandbox.setStubFunc(EstimatesService.prototype, "createBurden", ()=>{
+        const createBurdenEndpoint = sandbox.setStubFunc(EstimatesService.prototype, "createBurden", () => {
             return Promise.resolve();
         });
-        sandbox.setStubFunc(ResponsibilitiesService.prototype, "clearCacheForResponsibilities", ()=>{
+        sandbox.setStubFunc(ResponsibilitiesService.prototype, "clearCacheForResponsibilities", () => {
             return Promise.resolve();
         });
-        sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", ()=>{
+        sandbox.setStubFunc(ResponsibilitiesService.prototype, "getResponsibilities", () => {
             return Promise.resolve(testResponsibilitySet);
         });
-        sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", ()=>{
+        sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", () => {
             return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
         });
 
@@ -82,8 +88,8 @@ describe("Estimates actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = [
-                { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
-                { type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility}
+                {type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
+                {type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility}
             ];
             expect(actions).to.eql(expectedPayload);
             expect(createBurdenEndpoint.calledOnce).to.be.true;

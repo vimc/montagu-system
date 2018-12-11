@@ -15,7 +15,7 @@ export namespace Estimates {
 
     export interface BurdenEstimatesFetched {
         type: EstimateTypes.BURDEN_ESTIMATES_FETCHED;
-        data: {setId: number, burdens: ILookup<DataPoint[]>}
+        data: {setId: number, burdens: ILookup<DataPoint[]>, type: BurdenOutcome}
     }
 
 }
