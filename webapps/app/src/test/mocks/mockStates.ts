@@ -23,6 +23,7 @@ import {initialNotificationState} from "../../main/shared/reducers/notificationR
 import {demographicsInitialState} from "../../main/shared/reducers/demographicsReducer";
 import {scenarioInitialState} from "../../main/admin/reducers/scenarioReducer";
 import {diseasesInitialState} from "../../main/shared/reducers/diseasesReducer";
+import {estimatesInitialState} from "../../main/contrib/reducers/estimatesReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -91,7 +92,8 @@ export const mockContribState = (props?: RecursivePartial<ContribAppState>) :Con
         coverage: coverageInitialState,
         runParameters: runParametersInitialState,
         onetimeTokens: onetimeTokensInitialState,
-        notifications: initialNotificationState
+        notifications: initialNotificationState,
+        estimates: estimatesInitialState
     };
     return Object.assign(template, props);
 };
