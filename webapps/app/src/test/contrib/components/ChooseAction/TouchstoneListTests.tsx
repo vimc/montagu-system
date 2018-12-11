@@ -41,11 +41,11 @@ describe('TouchstoneListComponent renders', () => {
 
         // Check the first link in detail
         const first = children.at(0);
-        expect(first.key()).to.equal("touchstone-1");
-        expect(first.find(ButtonLink).prop("href")).to.eql("/gId/responsibilities/touchstone-1/");
+        expect(first.key()).to.equal("touchstone-2"); //Expect reverse alphabetical order
+        expect(first.find(ButtonLink).prop("href")).to.eql("/gId/responsibilities/touchstone-2/");
 
         // Also do a basic test on the other one, to make sure it's different
-        expect(children.at(1).key()).to.equal("touchstone-2");
+        expect(children.at(1).key()).to.equal("touchstone-1");
     });
 
     it("message when there is no open touchstone", () => {
@@ -66,10 +66,30 @@ describe('TouchstoneListComponent renders', () => {
 
         // Check the first link in detail
         const first = children.at(0);
-        expect(first.key()).to.equal("touchstone-1");
-        expect(first.find(ButtonLink).prop("href")).to.eql("/gId/responsibilities/touchstone-1/");
+        expect(first.key()).to.equal("touchstone-2"); //Expect reverse alphabetical order
+        expect(first.find(ButtonLink).prop("href")).to.eql("/gId/responsibilities/touchstone-2/");
 
         // Also do a basic test on the other one, to make sure it's different
-        expect(children.at(1).key()).to.equal("touchstone-2");
+        expect(children.at(1).key()).to.equal("touchstone-1");
+    });
+
+    it("open touchstones are in expected order", () => {
+        //Try with realisitic touchstones with YYYYMM prefix
+        const touchstones = [
+            mockTouchstoneVersion({ id: "201710gavi-1", description: "Description 1", status: "open" }),
+            mockTouchstoneVersion({ id: "201810synthetic-1", description: "Description 1", status: "open" }),
+            mockTouchstoneVersion({ id: "201710gavi-5", description: "Description 1", status: "open" }),
+            mockTouchstoneVersion({ id: "201810synthetic-2", description: "Description 1", status: "open" })
+        ];
+        const props = makeProps(touchstones);
+        const rendered = shallow(<TouchstoneList {...props} />);
+        const children = rendered.find(".openTouchstones").find("li");
+        expect(children).to.have.length(4);
+
+        expect(children.at(0).key()).to.equal("201810synthetic-2"); //Expect reverse alphabetical order
+        expect(children.at(1).key()).to.equal("201810synthetic-1");
+        expect(children.at(2).key()).to.equal("201710gavi-5");
+        expect(children.at(3).key()).to.equal("201710gavi-1");
+
     });
 });

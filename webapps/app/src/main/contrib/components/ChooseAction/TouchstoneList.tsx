@@ -18,8 +18,15 @@ export class TouchstoneList extends React.Component<TouchstoneListProps, undefin
         return <ul className="list-unstyled m-0 p-0">{ items }</ul>;
     }
 
+    touchstoneCompare(a: TouchstoneVersion, b: TouchstoneVersion) {
+        //We display each list of touchstones in reverse alphabetical order
+        if (b.id > a.id) return 1;
+        if (a.id > b.id) return -1;
+        return 0;
+    }
+
     renderFinished(content: TouchstoneListProps): JSX.Element {
-        const finished = content.touchstones.filter(x => x.status != "open");
+        const finished = content.touchstones.filter(x => x.status != "open").sort(this.touchstoneCompare);
         if (finished.length > 0) {
             return this.renderButtonList(finished);
         } else {
@@ -28,7 +35,7 @@ export class TouchstoneList extends React.Component<TouchstoneListProps, undefin
     }
 
     renderOpen(content: TouchstoneListProps): JSX.Element {
-        const open = content.touchstones.filter(x => x.status == "open");
+        const open = content.touchstones.filter(x => x.status == "open").sort(this.touchstoneCompare);
         if (open.length > 0) {
             return this.renderButtonList(open);
         } else {
