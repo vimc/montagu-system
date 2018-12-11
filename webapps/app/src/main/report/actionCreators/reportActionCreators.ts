@@ -5,7 +5,8 @@ import {
     ReportsAction, ReportsFetched, ReportTypeKeys,
     ReportVersionDetailssFetched,
     ReportVersionsFetched,
-    ReportVersionChangelogFetched
+    ReportVersionChangelogFetched,
+    ReportVersionChangelogReset
 } from "../actionTypes/ReportsActionsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
 import {ReportVersion} from "../../shared/models/Generated";
@@ -61,6 +62,15 @@ export const reportActionCreators = {
                 type: ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED,
                 data: versionDetails
             } as ReportVersionDetailssFetched );
+        }
+    },
+
+    resetVersionChangelog() {
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            //We'll load this when we need to
+            dispatch({
+                type: ReportTypeKeys.REPORT_VERSION_CHANGELOG_RESET
+            } as ReportVersionChangelogReset);
         }
     },
 

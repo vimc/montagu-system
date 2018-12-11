@@ -30,12 +30,13 @@ export interface ReportChangelogProps extends ReportChangelogPublicProps {
 
 export class ReportChangelogComponent extends React.Component<ReportChangelogProps> {
 
-    //componentDidMount() {
-    //    console.warn(`did mount - report: ${this.props.report}, version: ${this.props.version} `);
-    //    this.props.onLoad(this.props);
-    //}
-
     render(): JSX.Element {
+
+        //We kick of loading of Changelog ourselves if we don't have one yet
+        if (this.props.report && this.props.version && isNullOrUndefined(this.props.versionChangelog)){
+            this.props.onLoad(this.props);
+        }
+
 
         if (isNullOrUndefined(this.props.versionChangelog)){
             return <LoadingElement/>
@@ -82,33 +83,18 @@ export class ReportChangelogComponent extends React.Component<ReportChangelogPro
 
 }
 
-export const mapStateToProps = (state: ReportAppState, ownProps: ReportChangelogProps): Partial<ReportChangelogProps> => {
-    console.warn("mapping state to props");
+export const mapStateToProps = (state: ReportAppState): Partial<ReportChangelogProps> => {
 
     const result = {
             report:  state.reports.currentReport,
             version: state.reports.versionDetails && state.reports.versionDetails.id,
             versionChangelog: state.reports.versionChangelog,
-            onLoad: ownProps.onLoad
-    }
-
-    //Is it time for us to load the changelog? Need to wait for the page to load version
-    if (state.reports.versionDetails && !result.versionChangelog && ownProps.onLoad) {
-        console.warn("calling onLoad");
-        ownProps.onLoad(result);
-    }
-
-    if (state.reports.versionDetails && !result.versionChangelog && !ownProps.onLoad) {
-        console.warn("onLoad does not exist");
-        console.warn(ownProps);
     }
 
     return result;
 };
 
-//export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<PageProperties<ReportChangelogPublicProps>> => {
 export const mapDispatchToProps = (dispatch: Dispatch<Action>): Partial<ReportChangelogProps> => {
-    console.warn("mapping dispatch to props");
     return {
         onLoad: (props: ReportChangelogProps) => dispatch(reportVersionChangelogActionCreators.onLoad(props))
     }

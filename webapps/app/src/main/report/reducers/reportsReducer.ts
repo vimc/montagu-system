@@ -33,6 +33,8 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
             return { ...state, currentReport: action.data };
         case ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED:
             return {...state, versionDetails: action.data};
+        case ReportTypeKeys.REPORT_VERSION_CHANGELOG_RESET:
+            return {...state, versionChangelog: null};
         case ReportTypeKeys.REPORT_VERSION_CHANGELOG_FETCHED:
             return {...state, versionChangelog: action.data};
         case ReportTypeKeys.REPORT_PUBLISHED:

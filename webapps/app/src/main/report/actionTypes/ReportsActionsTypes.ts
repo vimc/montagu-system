@@ -7,6 +7,7 @@ export enum ReportTypeKeys {
     SET_CURRENT_REPORT = "SET_CURRENT_REPORT",
     REPORT_VERSION_DETAILS_FETCHED = "REPORT_VERSION_DETAILS_FETCHED",
     REPORT_VERSION_CHANGELOG_FETCHED = "REPORT_VERSION_CHANGELOG_FETCHED",
+    REPORT_VERSION_CHANGELOG_RESET = "REPORT_VERSION_CHANGELOG_RESET",
     REPORT_PUBLISHED = "REPORT_PUBLISHED",
     REPORT_UNPUBLISHED = "REPORT_UNPUBLISHED"
 }
@@ -29,6 +30,10 @@ export interface ReportVersionsFetched {
 export interface ReportVersionDetailssFetched {
     type: ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED;
     data: Version;
+}
+
+export interface ReportVersionChangelogReset {
+    type: ReportTypeKeys.REPORT_VERSION_CHANGELOG_RESET;
 }
 
 export interface ReportVersionChangelogFetched {
@@ -56,6 +61,7 @@ export type ReportsAction =
     | SetCurrentReport
     | ReportVersionsFetched
     | ReportVersionDetailssFetched
+    | ReportVersionChangelogReset
     | ReportVersionChangelogFetched
     | ReportPublished
     | ReportUnpublished
