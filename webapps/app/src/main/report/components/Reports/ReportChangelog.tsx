@@ -80,7 +80,7 @@ export class ReportChangelogComponent extends React.Component<ReportChangelogPro
             </table>
          </div>   ;
     };
-F
+
 }
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportChangelogProps> => {

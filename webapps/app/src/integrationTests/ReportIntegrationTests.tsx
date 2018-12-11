@@ -105,6 +105,19 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             expect(versionDetails.artefacts).to.not.be.null;
         });
 
+        it("fetches report changelog details", async () => {
+            const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("changelog");
+            const changelog = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionChangelog("changelog", versions[0]);
+
+            expect(changelog.length).is.greaterThan(0);
+
+            expect(changelog[0].report_version).is.eql(versions[0]);
+            expect(changelog[0].label).to.be.oneOf(["internal", "public"]);
+            expect(changelog[0].value).to.not.be.empty;
+            expect(changelog[0].from_file).to.not.be.null;
+
+        });
+
         it("fetches one time token", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState))
                 .getReportVersions("minimal");

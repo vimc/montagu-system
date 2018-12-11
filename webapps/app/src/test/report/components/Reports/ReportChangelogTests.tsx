@@ -36,11 +36,10 @@ describe("ReportChangelog", () => {
                 }
             });
 
-            const expected: ReportChangelogProps = {
+            const expected: Partial<ReportChangelogProps> = {
                 report: "reportname",
                 version: "v1",
-                versionChangelog: expectedChangelog,
-                onLoad: null
+                versionChangelog: expectedChangelog
             };
             expect(mapStateToProps(reportStateProps)).to.eql(expected);
         });
