@@ -66,6 +66,11 @@ class Endpoint(
                     return Endpoint("", "<Standard response format>",
                             isMetaBlock = true, contents = contents.toList())
                 }
+                else if (headingText == "Standard response codes")
+                {
+                    return Endpoint("", "<Standard response codes>",
+                            isMetaBlock = true, contents = contents.toList())
+                }
             }
             return null
         }
