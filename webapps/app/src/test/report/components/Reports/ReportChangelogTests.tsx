@@ -31,13 +31,16 @@ describe("ReportChangelog", () => {
                 reports: {
                     versionChangelog: expectedChangelog,
                     currentReport: "reportname",
+                    versionDetails: {id: "v1"},
                     versions: ["v1", "v2", "v3"],
                 }
             });
 
             const expected: ReportChangelogProps = {
                 report: "reportname",
+                version: "v1",
                 versionChangelog: expectedChangelog,
+                onLoad: null
             };
             expect(mapStateToProps(reportStateProps)).to.eql(expected);
         });
