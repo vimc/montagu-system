@@ -59,9 +59,7 @@ export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOve
             </div>
             {paramsSection(props)}
             <div className="largeSectionTitle">Scenarios</div>
-            {settings.showNewTemplates &&
             <ButtonLink href={templatesUrl}>Download burden estimate templates</ButtonLink>
-            }
             <ResponsibilityList
                 modellingGroup={props.modellingGroup}
                 responsibilitySet={props.responsibilitySet}

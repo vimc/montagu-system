@@ -4,7 +4,6 @@ import {DiseaseFilter} from "./DiseaseFilter";
 import {ResponsibilityScenario} from "./ResponsibilityScenario";
 import {IExtendedResponsibilitySet} from "../../../../models/ResponsibilitySet";
 import {ModellingGroup, Responsibility} from "../../../../../shared/models/Generated";
-import {TemplateLinks} from "./OldStyleTemplates/TemplateLinks";
 import {settings} from "../../../../../shared/Settings";
 
 export interface ResponsibilityListComponentProps {
@@ -43,12 +42,6 @@ export class ResponsibilityList extends React.Component<ResponsibilityListCompon
             return <div>
                 <div className="mb-4">
                     <DiseaseFilter/>
-                    {settings.showOldTemplates &&
-                    <TemplateLinks
-                        responsibilities={props.responsibilitySet.responsibilities}
-                        groupId={props.modellingGroup.id}
-                        touchstoneId={props.responsibilitySet.touchstone.id}
-                    />}
                 </div>
                 <ul className="responsibilities">{items}</ul>
             </div>;

@@ -14,8 +14,6 @@ export const settings: Settings = {
         return !this.nonStochasticTouchstones.some((ts: string) => touchstoneId.indexOf(ts) === 0);
     },
     showTouchstoneCreation: false,
-    showOldTemplates: false,
-    showNewTemplates: false,
     pinnedReports: ["other"],
     admin: {
         publicPath: "/admin",

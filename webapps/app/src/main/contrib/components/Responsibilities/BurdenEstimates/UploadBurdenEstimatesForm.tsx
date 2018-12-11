@@ -69,11 +69,12 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
             const {groupId, touchstoneId, scenarioId, estimateSet} = this.props;
             const redirectUrl = encodeURIComponent(helpers.getCurrentLocation());
             const url = `/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/estimate-sets/${estimateSet.id}/?redirectResultTo=${redirectUrl}`;
-            return <UploadFileForm href={url}
+            return <div className={"bg-light p-3"}>
+                <h5>Second step: upload a CSV containing your central estimates</h5><UploadFileForm href={url}
                                    enableSubmit={true}
                                    successMessage={this.uploadSuccessMessage}
                                    validatePath={checkFileExtensionIsCSV}
-            />
+            /></div>
         } else {
             return null;
         }

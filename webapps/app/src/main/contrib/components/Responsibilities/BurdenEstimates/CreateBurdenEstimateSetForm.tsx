@@ -117,8 +117,8 @@ export class CreateBurdenEstimateSetFormComponent extends React.Component<Create
 
     render(): JSX.Element {
 
-        return <div>
-            <h4>First step: register how these central estimates were calculated</h4>
+        return <div className={"bg-light p-3"}>
+            <h5>First step: register how these central estimates were calculated</h5>
             <form encType="multipart/form-data"
                   onSubmit={this.onSubmit}
                   className={this.state.validated ? "was-validated" : ""}
