@@ -7,7 +7,7 @@ export class EstimatesService extends AbstractLocalService {
     }
 
     getEstimates(groupId: string, touchstoneId: string, scenarioId: string, setId: number, outcome: string) {
-        return this.get(`/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/estimate-sets/${setId}/estimates/${outcome}/`);
+        return this.get(`/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/estimate-sets/${setId}/estimates/${outcome}/?groupBy=year`);
     }
 }
 

@@ -351,8 +351,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const value = 32156;
             await addBurdenEstimate(this.db, setId, value);
             const response: ILookup<DataPoint[]> = await (new EstimatesService(this.store.dispatch, this.store.getState))
-                .getEstimates(groupId, touchstoneVersionId, scenarioId, 1, "deaths");
-
+                .getEstimates(groupId, touchstoneVersionId, scenarioId, setId, "cases");
             expect(response).to.eql({"2000": [{"x": 1, "y": value}]});
         });
 
@@ -380,9 +379,11 @@ function addBurdenEstimateSet(db: Client, responsibilityId: number, modelVersion
 
 
 function addBurdenEstimate(db: Client, setId: number, value: number){
-    db.query(`INSERT INTO burden_estimate (burden_estimate_set, country, year, burden_outcome, value, age)
-        VALUES ('${setId}', 'AFG', 2000, 1, ${value}, 1);
-    `)
+    return db.query("INSERT INTO country (id, name, nid) VALUES ('XYZ', 'fake-country', 1111)")
+        .then(() => db.query("SELECT id from burden_outcome where code = 'cases'"))
+        .then(result => db.query(`INSERT INTO burden_estimate (burden_estimate_set, country, year, burden_outcome, value, age)
+        VALUES ('${setId}', 1111, 2000, ${result.rows[0].id}, ${value}, 1);
+    `))
 }
 
 function addDemographicDataSets(db: Client): Promise<QueryResult> {
