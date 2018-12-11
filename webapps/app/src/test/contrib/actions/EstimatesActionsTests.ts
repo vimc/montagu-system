@@ -47,7 +47,7 @@ describe("Estimates actions tests", () => {
         const setId = 11;
         const outcome = BurdenOutcome.DEATHS;
 
-        await store.dispatch(estimatesActionCreators.getEstimates(outcome, setId));
+        await store.dispatch(estimatesActionCreators.getEstimates(outcome, "YF-routine", setId));
 
         const actions = store.getActions();
         const expectedPayload = [
