@@ -1,3 +1,6 @@
+import {ILookup} from "../../shared/models/Lookup";
+import {DataPoint} from "../reducers/estimatesReducer";
+
 export enum EstimateTypes {
     BURDEN_ESTIMATES_FETCHED
 }
@@ -12,7 +15,7 @@ export namespace Estimates {
 
     export interface BurdenEstimatesFetched {
         type: EstimateTypes.BURDEN_ESTIMATES_FETCHED;
-        data: any[];
+        data: {setId: number, burdens: ILookup<DataPoint[]>}
     }
 
 }

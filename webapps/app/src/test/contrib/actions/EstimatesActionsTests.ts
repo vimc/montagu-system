@@ -39,7 +39,7 @@ describe("Estimates actions tests", () => {
 
     it("gets burden estimates", async () => {
 
-        const store = createStore()
+        const store = createStore();
         const getEstimatesEndpoint = sandbox.setStubFunc(EstimatesService.prototype, "getEstimates", ()=>{
             return Promise.resolve("TEST");
         });
@@ -56,7 +56,7 @@ describe("Estimates actions tests", () => {
     });
 
     it("creates burden", (done) => {
-        const store = createStore()
+        const store = createStore();
         const createBurdenEndpoint = sandbox.setStubFunc(EstimatesService.prototype, "createBurden", ()=>{
             return Promise.resolve();
         });
