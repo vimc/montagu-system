@@ -11,6 +11,9 @@ import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {isNullOrUndefined} from "util";
 import {settings} from "../../../../shared/Settings";
 import {InternalLink} from "../../../../shared/components/InternalLink";
+import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
+import {ScenarioChart} from "./ScenarioChart";
+import {DiagnosticSection, DiagnosticSectionComponent} from "./DiagnosticSection";
 
 export interface UploadBurdenEstimatesContentProps {
     touchstone: TouchstoneVersion;
@@ -55,18 +58,13 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
                             touchstoneId={this.props.touchstone.id}
                         />}
                         {settings.showNewTemplates &&
-                        <InternalLink href={newTemplatesUrl}>Download templates</InternalLink> }
+                        <InternalLink href={newTemplatesUrl}>Download templates</InternalLink>}
                     </td>
                 </tr>
                 </tbody>
             </table>
 
-            <div className="mt-3">
-                <CurrentEstimateSetSummary
-                    estimateSet={this.props.responsibility.current_estimate_set}
-                    canUpload={this.props.canCreate}
-                />
-
+            <div className="my-3">
                 <UploadBurdenEstimatesForm
                     canUpload={this.props.canUpload}
                     canCreate={this.props.canCreate}
@@ -76,6 +74,13 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
                     estimateSet={this.props.responsibility.current_estimate_set}
                 />
             </div>
+            <CurrentEstimateSetSummary
+                estimateSet={this.props.responsibility.current_estimate_set}
+                canUpload={this.props.canCreate}
+            />
+            {this.props.responsibility.current_estimate_set &&
+            <DiagnosticSection setId={this.props.responsibility.current_estimate_set.id}
+                               scenarioId={this.props.scenario.id}/>}
         </div>;
     }
 }
