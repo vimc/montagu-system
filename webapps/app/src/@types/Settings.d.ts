@@ -12,6 +12,7 @@ interface Settings {
     admin: AdminSettings;
     contrib: ContribSettings;
     report: ReportSettings;
+    test: AppSpecificSettings;
     showTouchstoneCreation: boolean;
     showNewTemplates: boolean;
     showOldTemplates: boolean;

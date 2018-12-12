@@ -24,5 +24,9 @@ export const settings: Settings = {
     report: {
         publicPath: "/reports",
         requiresModellingGroupMembership: false
+    },
+    test: {
+        publicPath: "/",
+        requiresModellingGroupMembership: false
     }
 };
