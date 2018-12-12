@@ -15,6 +15,7 @@ import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneT
 import {CommonState} from "../../shared/reducers/CommonState";
 import {notificationReducer} from "../../shared/reducers/notificationReducer";
 import {demographicsReducer, DemographicsState} from "../../shared/reducers/demographicsReducer";
+import {estimatesReducer, EstimatesState} from "./estimatesReducer";
 
 export interface ContribAppState extends CommonState {
     groups: ModellingGroupsState;
@@ -26,6 +27,7 @@ export interface ContribAppState extends CommonState {
     coverage: CoverageState;
     runParameters: RunParametersState;
     onetimeTokens: OneTimeTokenState;
+    estimates: EstimatesState;
 }
 
 const reducers = combineReducers({
@@ -42,7 +44,8 @@ const reducers = combineReducers({
     runParameters: runParametersReducer,
     router: routerReducer,
     onetimeTokens: onetimeTokenReducer,
-    notifications: notificationReducer
+    notifications: notificationReducer,
+    estimates: estimatesReducer
 });
 
 export default reducers;

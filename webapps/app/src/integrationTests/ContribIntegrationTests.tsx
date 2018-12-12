@@ -31,6 +31,8 @@ import {ResponsibilitiesService} from "../main/contrib/services/Responsibilities
 import {CoverageService} from "../main/contrib/services/CoverageService";
 import {DemographicService} from "../main/shared/services/DemographicService";
 import {EstimatesService} from "../main/contrib/services/EstimatesService";
+import {ILookup} from "../main/shared/models/Lookup";
+import {DataPoint} from "../main/contrib/reducers/estimatesReducer";
 
 enzyme.configure({adapter: new Adapter()});
 
@@ -339,7 +341,20 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 .getAnyUrl(href);
 
             expect(response.status).to.equal(200)
-        })
+        });
+
+        it("can get burden estimates", async () => {
+            const responsibilityIds = await addResponsibilities(this.db, scenarioId, touchstoneVersionId, groupId);
+            const modelVersionId = await addModel(this.db);
+            const setId = await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
+
+            const value = 32156;
+            await addBurdenEstimate(this.db, setId, value);
+            const response: ILookup<DataPoint[]> = await (new EstimatesService(this.store.dispatch, this.store.getState))
+                .getEstimates(groupId, touchstoneVersionId, scenarioId, setId, "cases");
+            expect(response).to.eql({"2000": [{"x": 1, "y": value}]});
+        });
+
     }
 }
 
@@ -360,6 +375,15 @@ function addBurdenEstimateSet(db: Client, responsibilityId: number, modelVersion
     `)
         .then(() => db.query(`SELECT id FROM burden_estimate_set;`))
         .then(result => result.rows[0].id);
+}
+
+
+function addBurdenEstimate(db: Client, setId: number, value: number){
+    return db.query("INSERT INTO country (id, name, nid) VALUES ('XYZ', 'fake-country', 1111)")
+        .then(() => db.query("SELECT id from burden_outcome where code = 'cases'"))
+        .then(result => db.query(`INSERT INTO burden_estimate (burden_estimate_set, country, year, burden_outcome, value, age)
+        VALUES ('${setId}', 1111, 2000, ${result.rows[0].id}, ${value}, 1);
+    `))
 }
 
 function addDemographicDataSets(db: Client): Promise<QueryResult> {
