@@ -114,6 +114,10 @@ class MontaguSerializerTests : MontaguTests()
         checkSerializedForm("\"no vaccine\"", GAVISupportLevel.NONE)
         checkSerializedForm("\"no gavi\"", GAVISupportLevel.WITHOUT)
         checkSerializedForm("\"total\"", GAVISupportLevel.WITH)
+
+        checkSerializedForm("\"high\"", GAVISupportLevel.HIGH)
+        checkSerializedForm("\"low\"", GAVISupportLevel.LOW)
+        checkSerializedForm("\"bestcase\"", GAVISupportLevel.BESTCASE)
     }
 
     @Test
