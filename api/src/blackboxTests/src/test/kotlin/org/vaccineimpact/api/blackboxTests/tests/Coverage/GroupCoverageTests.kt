@@ -224,22 +224,22 @@ class GroupCoverageTests : CoverageTests()
         //15: "target_$testYear", 16: "target_1985", 17: "target_1990", 18: "target_1995", 19: "target_2000"
 
         val firstRow = csv.drop(1).first().toList()
-        val expectedAggregatedTarget = "1000".toBigDecimalOrNull()
-        val expectedAggregatedCoverage = "0.9".toBigDecimalOrNull()
+        val expectedAggregatedTarget = "1000"
+        val expectedAggregatedCoverage = "0.9"
 
         //test all target values
-        Assertions.assertThat(firstRow[15].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[16].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[17].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[18].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[19].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[16]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[17]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[18]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[19]).isEqualTo(expectedAggregatedTarget)
 
         //test all coverage values
-        Assertions.assertThat(firstRow[10].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
-        Assertions.assertThat(firstRow[11].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
-        Assertions.assertThat(firstRow[12].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
-        Assertions.assertThat(firstRow[13].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
-        Assertions.assertThat(firstRow[14].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[10]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[11]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[12]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[13]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[14]).isEqualTo(expectedAggregatedCoverage)
 
     }
 
