@@ -22,6 +22,7 @@ import {mockArtefact} from "../test/mocks/mockModels";
 import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
 import {OneTimeTokenService} from "../main/shared/services/OneTimeTokenService";
 import {Provider} from "react-redux";
+import {authActionCreators} from "../main/shared/actions/authActionCreators";
 
 class ReportIntegrationTests extends IntegrationTestSuite {
     description() {
@@ -39,18 +40,21 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
         const sandbox = new Sandbox();
 
+        this.setUser("report.reviewer@example.com");
+
         afterEach(() => sandbox.restore());
 
         it("fetches reports", async () => {
+
             const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other",
-                "use_resource", "html"];
+                "use_resource", "html", "changelog", "global", "interactive"];
             const reports = await (new ReportsService(this.store.dispatch, this.store.getState)).getAllReports();
 
             const names = reports.map((item: ReportVersion) => item.name);
             const versions = reports.filter((item: ReportVersion) => item.latest_version.length > 0);
 
-            expectSameElements<string>(names, expectedNames);
-            expect(versions.length).to.equal(reports.length);
+            expect(names).to.include.members(expectedNames);
+            expect(versions.length).to.eql(reports.length);
 
             const otherReport_versions = reports.filter((item: ReportVersion) => item.name == "other");
             expect(otherReport_versions[0].author).to.equal("Dr Serious");
@@ -96,7 +100,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             expect(versionDetails.displayname).is.equal("another report");
             expect(versionDetails.hash_script).to.not.be.empty;
             expect(versionDetails.id).to.not.be.empty;
-            expect(versionDetails.published).is.equal(true);
+            expect(versionDetails.published).is.equal(false);
             expect(versionDetails.script).is.equal("script.R");
             expect(versionDetails.hash_data).to.not.be.null;
             expect(versionDetails.data).to.not.be.null;
@@ -106,6 +110,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         });
 
         it("fetches report changelog details", async () => {
+
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("changelog");
             const changelog = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionChangelog("changelog", versions[0]);
 

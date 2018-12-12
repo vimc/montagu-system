@@ -51,6 +51,8 @@ describe("ReportChangelog", () => {
         const rendered = shallow(<ReportChangelogComponent
             versionChangelog={empty}
             report="reportname"
+            version="v1"
+            onLoad={null}
         />);
         expect(rendered.find("h3").text()).to.eql("Changelog");
         expect(rendered.find("p").text()).to.eql("There is no Changelog for this Report version.");
@@ -74,6 +76,8 @@ describe("ReportChangelog", () => {
         const rendered = shallow(<ReportChangelogComponent
             versionChangelog={expectedChangelog}
             report="reportname"
+            version="v2"
+            onLoad={null}
         />);
         expect(rendered.find("h3").text()).to.eql("Changelog");
 
