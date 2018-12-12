@@ -22,7 +22,6 @@ import {mockArtefact} from "../test/mocks/mockModels";
 import {ReportDownloadsComponent} from "../main/report/components/Reports/ReportDownloads";
 import {OneTimeTokenService} from "../main/shared/services/OneTimeTokenService";
 import {Provider} from "react-redux";
-import {authActionCreators} from "../main/shared/actions/authActionCreators";
 
 class ReportIntegrationTests extends IntegrationTestSuite {
     description() {
@@ -54,7 +53,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const versions = reports.filter((item: ReportVersion) => item.latest_version.length > 0);
 
             expect(names).to.include.members(expectedNames);
-            expect(versions.length).to.eql(reports.length);
+            expect(versions.length).to.equal(reports.length);
 
             const otherReport_versions = reports.filter((item: ReportVersion) => item.name == "other");
             expect(otherReport_versions[0].author).to.equal("Dr Serious");

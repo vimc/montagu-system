@@ -25,5 +25,4 @@ $here/cli.sh addRole report.reviewer user-manager
 $here/cli.sh addRole report.reviewer admin
 $here/cli.sh addRole report.reviewer reports-reader report:html
 $here/cli.sh addRole report.reviewer member modelling-group:IC-Garske
-$here/cli.sh addRole report.reviewer uploader modelling-group:IC-Garske
-$here/cli.sh addRole report.reviewer uploader modelling-group:test-group
+

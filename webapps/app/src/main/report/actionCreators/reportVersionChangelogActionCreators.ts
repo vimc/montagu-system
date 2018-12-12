@@ -7,9 +7,6 @@ export const reportVersionChangelogActionCreators = {
 
     onLoad(props: ReportChangelogPublicProps) {
         return async (dispatch: Dispatch<any>) => {
-            //if (!(props.report && props.version)) {
-            //    await ()
-            //}
             dispatch(reportActionCreators.getVersionChangelog(props.report, props.version));
         }
 
