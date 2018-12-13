@@ -65,12 +65,9 @@ export const reportActionCreators = {
         }
     },
 
-    resetVersionChangelog() {
-        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            //We'll load this when we need to
-            dispatch({
-                type: ReportTypeKeys.REPORT_VERSION_CHANGELOG_RESET
-            } as ReportVersionChangelogReset);
+    resetVersionChangelog(): ReportVersionChangelogReset {
+        return {
+            type: ReportTypeKeys.REPORT_VERSION_CHANGELOG_RESET
         }
     },
 

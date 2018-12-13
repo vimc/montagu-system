@@ -52,7 +52,7 @@ describe("ReportChangelog", () => {
             versionChangelog={empty}
             report="reportname"
             version="v1"
-            onLoad={null}
+            fetchChangelog={null}
         />);
         expect(rendered.find("h3").text()).to.eql("Changelog");
         expect(rendered.find("p").text()).to.eql("There is no Changelog for this Report version.");
@@ -77,7 +77,7 @@ describe("ReportChangelog", () => {
             versionChangelog={expectedChangelog}
             report="reportname"
             version="v2"
-            onLoad={null}
+            fetchChangelog={null}
         />);
         expect(rendered.find("h3").text()).to.eql("Changelog");
 
