@@ -37,8 +37,6 @@ describe("ReportChangelog", () => {
             });
 
             const expected: Partial<ReportChangelogProps> = {
-                report: "reportname",
-                version: "v1",
                 versionChangelog: expectedChangelog
             };
             expect(mapStateToProps(reportStateProps)).to.eql(expected);
@@ -61,13 +59,13 @@ describe("ReportChangelog", () => {
     it("renders changelog", () => {
         const expectedChangelog =[
             {
-                report_version: "v2",
+                report_version: "20180123-155855-5d5b8238",
                 label:"public",
                 value:"public test changelog message",
                 from_file: true
             },
             {
-                report_version: "v1",
+                report_version: "20180104-082959-0544c986",
                 label:"internal",
                 value:"internal test changelog message",
                 from_file: false
@@ -82,20 +80,20 @@ describe("ReportChangelog", () => {
         expect(rendered.find("h3").text()).to.eql("Changelog");
 
         const tableHeaders = rendered.find("th");
-        expect(tableHeaders.at(0).text()).to.eql("Version");
+        expect(tableHeaders.at(0).text()).to.eql("Date");
         expect(tableHeaders.at(1).text()).to.eql("Label");
         expect(tableHeaders.at(2).text()).to.eql("Text");
 
         const firstRow = rendered.find("tbody tr").first();
         const firstRowCells = firstRow.find("td");
-        expect(firstRowCells.at(0).text()).to.eql("v2");
+        expect(firstRowCells.at(0).text()).to.eql("Tue Jan 23 2018, 15:58");
         expect(firstRowCells.at(1).text()).to.eql("public");
         expect(firstRowCells.at(1).find("span").hasClass("badge-published")).to.eql(true);
         expect(firstRowCells.at(2).text()).to.eql("public test changelog message");
 
         const secondRow = rendered.find("tbody tr").at(1);
         const secondRowCells = secondRow.find("td");
-        expect(secondRowCells.at(0).text()).to.eql("v1");
+        expect(secondRowCells.at(0).text()).to.eql("Thu Jan 04 2018, 08:29");
         expect(secondRowCells.at(1).text()).to.eql("internal");
         expect(secondRowCells.at(1).find("span").hasClass("badge-internal")).to.eql(true);
         expect(secondRowCells.at(2).text()).to.eql("internal test changelog message");

@@ -2,6 +2,8 @@ import * as React from "react";
 import {connect} from 'react-redux';
 
 import {Changelog} from "../../../shared/models/Generated";
+import {longTimestamp} from "../../../shared/Helpers";
+import {VersionIdentifier} from  "../../models/VersionIdentifier";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {branch, compose, renderComponent} from "recompose";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
@@ -39,7 +41,7 @@ export const ReportChangelogComponent = (props: ReportChangelogProps) => {
             <table>
                 <thead className="changelog-header">
                 <tr>
-                    <th>Version</th>
+                    <th className="datestring-column">Date</th>
                     <th>Label</th>
                     <th>Text</th>
                 </tr>
@@ -48,7 +50,7 @@ export const ReportChangelogComponent = (props: ReportChangelogProps) => {
                 {props.versionChangelog.map((changelog: Changelog) => {
                         const badgeType = (changelog.label == "public") ? "published" : "internal";
                         return <tr key={rowIdx++}>
-                            <td>{changelog.report_version}</td>
+                            <td>{longTimestamp(new VersionIdentifier(changelog.report_version).timestamp)}</td>
                             <td><span className={`badge badge-${badgeType}`}>{changelog.label}</span></td>
                             <td>{changelog.value}</td>
                         </tr>;
