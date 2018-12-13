@@ -104,22 +104,22 @@ class TouchstoneCoverageTests : CoverageTests()
         //15: "target_$testYear", 16: "target_1985", 17: "target_1990", 18: "target_1995", 19: "target_2000"
 
         val firstRow = csv.drop(1).first().toList()
-        val expectedAggregatedTarget = "1000".toBigDecimalOrNull()
-        val expectedAggregatedCoverage = "0.9".toBigDecimalOrNull()
+        val expectedAggregatedTarget = "1000"
+        val expectedAggregatedCoverage = "0.9"
 
         //test all target values
-        Assertions.assertThat(firstRow[15].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[16].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[17].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[18].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[19].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[16]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[17]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[18]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[19]).isEqualTo(expectedAggregatedTarget)
 
         //test all coverage values
-        Assertions.assertThat(firstRow[10].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
-        Assertions.assertThat(firstRow[11].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
-        Assertions.assertThat(firstRow[12].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
-        Assertions.assertThat(firstRow[13].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
-        Assertions.assertThat(firstRow[14].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[10]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[11]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[12]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[13]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[14]).isEqualTo(expectedAggregatedCoverage)
 
 
     }
@@ -153,22 +153,22 @@ class TouchstoneCoverageTests : CoverageTests()
         //15: "target_$testYear", 16: "target_1985", 17: "target_1990", 18: "target_1995", 19: "target_2000"
 
         val firstRow = csv.drop(1).first().toList()
-        val expectedAggregatedTarget = "1500".toBigDecimalOrNull()
-        val expectedAggregatedCoverage = "0.70".toBigDecimalOrNull()
+        val expectedAggregatedTarget = "1500"
+        val expectedAggregatedCoverage = "0.70"
 
         //test all target values
-        Assertions.assertThat(firstRow[15].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[16].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[17].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[18].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[19].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[16]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[17]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[18]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[19]).isEqualTo(expectedAggregatedTarget)
 
         //test all coverage values
-        Assertions.assertThat(firstRow[10].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
-        Assertions.assertThat(firstRow[11].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
-        Assertions.assertThat(firstRow[12].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
-        Assertions.assertThat(firstRow[13].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
-        Assertions.assertThat(firstRow[14].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[10]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[11]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[12]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[13]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[14]).isEqualTo(expectedAggregatedCoverage)
 
 
     }
@@ -222,8 +222,8 @@ class TouchstoneCoverageTests : CoverageTests()
         val requestHelper = RequestHelper()
 
         val testYear = 1980
-        val testTarget = "1000".toDecimalOrNull()!!
-        val testCoverage = "0.9".toDecimalOrNull()!!
+        val testTarget = "1000".toBigDecimalOrNull()!!
+        val testCoverage = "0.9".toBigDecimalOrNull()!!
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
@@ -241,11 +241,11 @@ class TouchstoneCoverageTests : CoverageTests()
         //5: "country_code", 6: "country", 7: "year" 8: "age_first", 9: "age_last", 10: "age_range_verbatim",
         //11: "target", 12: "coverage"
         val firstRow = csv.drop(1).first().toList()
-        val expectedAggregatedTarget = "1500".toBigDecimalOrNull()
-        val expectedAggregatedCoverage = "0.70".toBigDecimalOrNull()
+        val expectedAggregatedTarget = "1500"
+        val expectedAggregatedCoverage = "0.70"
 
-        Assertions.assertThat(firstRow[11].toBigDecimalOrNull()).isEqualTo(expectedAggregatedTarget)
-        Assertions.assertThat(firstRow[12].toBigDecimalOrNull()).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[11]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[12]).isEqualTo(expectedAggregatedCoverage)
     }
 
 }
