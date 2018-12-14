@@ -17,6 +17,7 @@ import {demographicActionCreators} from "../../../../main/shared/actions/demogra
 import {GenderControl} from "../../../../main/shared/components/Demographics/GenderControl";
 import {RadioButtonGroupProperties} from "react-radio-button-group";
 import {FormatControl} from "../../../../main/shared/components/FormatControl";
+import {UncontrolledTooltip} from "reactstrap";
 
 describe("DemographicOptions", () => {
 
@@ -138,6 +139,12 @@ describe("DemographicOptions", () => {
             { value: 'long', label: 'Long' },
             { value: 'wide', label: 'Wide' }
         ]);
+    });
+
+    it("renders on component level, renders format tooltip", () => {
+        const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
+        const tooltip = rendered.find(UncontrolledTooltip);
+        expect(tooltip.props().target).to.equal("format-tooltip");
     });
 
     it("renders on component level, on format selection, triggers actions", () => {

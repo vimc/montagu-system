@@ -4,6 +4,7 @@ import * as React from "react";
 import {connect} from "react-redux";
 import {ScenarioGroup} from "./ScenarioGroup";
 import {discardDispatch} from "../../../../shared/Helpers";
+import {UncontrolledTooltip} from "reactstrap";
 
 export interface ScenariosListProps {
     scenarios: Scenario[];

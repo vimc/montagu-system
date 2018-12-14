@@ -26,6 +26,7 @@ import {coverageActionCreators} from "../../../../../main/contrib/actions/covera
 import {ConfidentialityAgreementComponent} from "../../../../../main/contrib/components/Responsibilities/Overview/ConfidentialityAgreement";
 import {userActionCreators} from "../../../../../main/contrib/actions/userActionCreators";
 import {FileDownloadButton} from "../../../../../main/shared/components/FileDownloadLink";
+import {UncontrolledTooltip} from "reactstrap";
 
 describe("Download Coverage Content Component", () => {
 
@@ -112,6 +113,15 @@ describe("Download Coverage Content Component", () => {
         expect(rendered.find(CoverageSetList).props().coverageSets).to.eql([testCoverageSet]);
         expect(rendered.find(FormatControl).length).to.equal(1);
         expect(rendered.find(FormatControl).props().value).to.eql(testState.coverage.selectedFormat);
+    });
+
+    it("renders tooltips", () => {
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
+            .dive().dive().dive();
+        const tooltips = rendered.find(UncontrolledTooltip);
+        expect(tooltips.length).to.eql(2);
+        expect(tooltips.first().props().target).to.eql("format-tooltip");
+        expect(tooltips.at(1).props().target).to.eql("countries-tooltip");
     });
 
     it("can trigger mapped chose format", () => {

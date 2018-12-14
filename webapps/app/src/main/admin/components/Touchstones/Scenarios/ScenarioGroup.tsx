@@ -45,14 +45,28 @@ const ScenarioItem = (props: ScenarioGroupProps, scenario: Scenario) => {
             <code className="col-4 text-center">{scenario.id}</code>
             <div className="col-4 text-right" id={`download-coverage-${scenario.id}`}>
                 Download coverage data in
-                <FileDownloadButton href={hrefLong}>
-                    Long format
-                </FileDownloadButton>
-                <FileDownloadButton href={hrefWide}>
-                    Wide format
-                </FileDownloadButton>
+                <span id={`download-long-format-${scenario.id}`}>
+                    <FileDownloadButton href={hrefLong}>
+                        Long format
+                    </FileDownloadButton>
+                </span>
+                <span id={`download-wide-format-${scenario.id}`}>
+                    <FileDownloadButton href={hrefWide} className={``}>
+                        Wide format
+                    </FileDownloadButton>
+                </span>
+                {props.canDownloadCoverage &&
+                <span>
+                    <UncontrolledTooltip  target={`download-long-format-${scenario.id}`} className={"text-muted download-format-tooltip"}>
+                        Long format includes a row for each year.
+                    </UncontrolledTooltip>
+                    <UncontrolledTooltip  target={`download-wide-format-${scenario.id}`} className={"text-muted download-format-tooltip"}>
+                        Wide format includes coverage and target values for all years in a single row.
+                    </UncontrolledTooltip>
+                </span>}
+
                 {!props.canDownloadCoverage &&
-                <UncontrolledTooltip placement="bottom" target={`download-coverage-${scenario.id}`}>
+                <UncontrolledTooltip placement="bottom" target={`download-coverage-${scenario.id}`} className={"download-permission-tooltip"} >
                     You do not have permission to download coverage
                 </UncontrolledTooltip>}
             </div>
