@@ -10,6 +10,7 @@ import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneId
@@ -160,6 +161,22 @@ class MontaguSerializerTests : MontaguTests()
             )
         }
         assertThat(parse(actual)).isEqualTo(expected)
+    }
+
+    @Test
+    fun `serializes decimal for CSV with correct decimal places`()
+    {
+        assertThat(serializer.serializeValueForCSV(BigDecimal(123))).isEqualTo("123")
+        assertThat(serializer.serializeValueForCSV(BigDecimal(123.4))).isEqualTo("123.4")
+        assertThat(serializer.serializeValueForCSV(BigDecimal(123.45))).isEqualTo("123.45")
+        assertThat(serializer.serializeValueForCSV(BigDecimal(123.456))).isEqualTo("123.46")
+        assertThat(serializer.serializeValueForCSV(BigDecimal(123.5000000))).isEqualTo("123.5")
+    }
+
+    @Test
+    fun `serializes decimal for CSV with no grouping`()
+    {
+        assertThat(serializer.serializeValueForCSV((BigDecimal(123456.78)))).isEqualTo("123456.78")
     }
 
     fun checkSerializedForm(expected: JsonObject, actual: Any): Unit

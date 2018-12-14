@@ -155,7 +155,7 @@ class JooqTouchstoneRepository(
                 .filter { it[COVERAGE_SET.ID] != null }
 
         return coverageRecords
-                .filter { it[COVERAGE.ID] != null }
+                .filter{ it[COUNTRY.NAME] != null }
                 .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
     }
 
@@ -169,7 +169,7 @@ class JooqTouchstoneRepository(
                 .filter { it[COVERAGE_SET.ID] != null }
 
         return coverageRecords
-                .filter { it[COVERAGE.ID] != null }
+                .filter{ it[COUNTRY.NAME] != null }
                 .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
     }
 
@@ -191,14 +191,73 @@ class JooqTouchstoneRepository(
         return records.map { mapCoverageSet(it) }
     }
 
-    private fun getCoverageRowsForScenario(
-            touchstoneVersionId: String,
-            scenarioDescriptionId: String)
-            : Result<Record>
+    private fun coverageDimensions() : Array<Field<*>>
     {
+        //The columns in the Coverage table which the target and coverage values are grouped by
+        return arrayOf(COVERAGE.COVERAGE_SET,
+                COVERAGE.YEAR,
+                COVERAGE.COUNTRY,
+                COVERAGE.AGE_FROM,
+                COVERAGE.AGE_TO,
+                COVERAGE.AGE_RANGE_VERBATIM,
+                COVERAGE.GAVI_SUPPORT,
+                COVERAGE.GENDER)
+    }
+
+    private fun aggregatedValues() : List<Field<*>>
+    {
+        return arrayOf(
+                aggregatedCoverage().`as`("coverage"),
+                aggregatedTarget().`as`("target")
+        ).toList()
+    }
+
+
+    private fun aggregatedCoverage() : Field<BigDecimal?>
+    {
+        //Aggregated coverage - the sum of each row's coverage * target (to get total no of fvp's across campaign)
+        //divided by the the total target population
+        //If only one row in group, pass that row's value through unchanged
+        //Danger of divide by zero error here - treat as NULL if summed target is 0
+        return `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.COVERAGE_)) //If only one row in group
+                .otherwise(sum(validTargetOrNull().mul(validCoverageOrNull()))
+                        .div(nullif(sum(validTargetOrNull()),BigDecimal(0.0)) ) )
+
+    }
+
+    private fun aggregatedTarget() : Field<BigDecimal?>
+    {
+        //If only one row in group, pass that row's value through unchanged
+        return `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.TARGET)) //If only one row in group
+                .otherwise( sum(validTargetOrNull() ))
+    }
+
+    private fun validTargetOrNull() : Field<BigDecimal?>
+    {
+        //Coverage and target values only make sense if both are provided. Return the target value of a row providing
+        //coverage is not null, else return null
+        return `when`(COVERAGE.COVERAGE_.isNull(), COVERAGE.COVERAGE_) //This is actually the easiest way to get a known NULL here!
+                .otherwise(COVERAGE.TARGET)
+    }
+
+    private fun validCoverageOrNull() : Field<BigDecimal?>
+    {
+        //Coverage and target values only make sense if both are provided. Return the coverage value of a row providing
+        //target is not null, else return null
+        return `when`(COVERAGE.TARGET.isNull(), COVERAGE.TARGET) //This is actually the easiest way to get a known NULL here!
+                .otherwise(COVERAGE.COVERAGE_)
+    }
+
+    private fun getCoverageRowsForScenario(
+        touchstoneVersionId: String,
+        scenarioDescriptionId: String)
+        : Result<Record>
+    {
+        //This query is now grouped to support sub-national campaigns
         return dsl
                 .select(COVERAGE_SET.fieldsAsList())
-                .select(COVERAGE.fieldsAsList())
+                .select(coverageDimensions().toList())
+                .select(aggregatedValues())
                 .select(COUNTRY.NAME)
                 .fromJoinPath(TOUCHSTONE, SCENARIO)
                 // We don't mind if there are no coverage sets, so do a left join
@@ -207,8 +266,12 @@ class JooqTouchstoneRepository(
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
+                .groupBy(*COVERAGE_SET.fields(),
+                        *coverageDimensions(),
+                        COUNTRY.NAME)
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
                         COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO).fetch()
+
 
     }
 
@@ -222,9 +285,11 @@ class JooqTouchstoneRepository(
                         RESPONSIBILITY)
                 .where(RESPONSIBILITY.ID.eq(responsibilityId))
 
+        //This query is now grouped to support sub-national campaigns
         return dsl
                 .select(COVERAGE_SET.fieldsAsList())
-                .select(COVERAGE.fieldsAsList())
+                .select(coverageDimensions().toList())
+                .select(aggregatedValues())
                 .select(COUNTRY.NAME)
                 .fromJoinPath(TOUCHSTONE, SCENARIO, RESPONSIBILITY)
                 // We don't mind if there are no coverage sets, so do a left join
@@ -234,6 +299,9 @@ class JooqTouchstoneRepository(
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(RESPONSIBILITY.ID.eq(responsibilityId))
                 .and(COUNTRY.ID.isNull.or(COUNTRY.ID.`in`(expectedCountries)))
+                .groupBy(*COVERAGE_SET.fields(),
+                        *coverageDimensions(),
+                        COUNTRY.NAME)
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
                         COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO).fetch()
     }
