@@ -154,7 +154,7 @@ class TouchstoneCoverageTests : CoverageTests()
 
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1500"
-        val expectedAggregatedCoverage = "0.70"
+        val expectedAggregatedCoverage = "0.7"
 
         //test all target values
         Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedTarget)
@@ -242,7 +242,7 @@ class TouchstoneCoverageTests : CoverageTests()
         //11: "target", 12: "coverage"
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1500"
-        val expectedAggregatedCoverage = "0.70"
+        val expectedAggregatedCoverage = "0.7"
 
         Assertions.assertThat(firstRow[11]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[12]).isEqualTo(expectedAggregatedCoverage)

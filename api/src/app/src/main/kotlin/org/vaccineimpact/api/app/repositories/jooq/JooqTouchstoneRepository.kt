@@ -207,17 +207,17 @@ class JooqTouchstoneRepository(
     private fun aggregatedValues() : List<Field<*>>
     {
         return arrayOf(
-                roundValueIfRequired(::aggregatedCoverage).`as`("coverage"),
-                roundValueIfRequired(::aggregatedTarget).`as`("target")
+                aggregatedCoverage().`as`("coverage"),
+                aggregatedTarget().`as`("target")
         ).toList()
     }
 
-    private fun roundValueIfRequired(valueFun : () -> Field<BigDecimal?>) : Field<BigDecimal?>
+    /*private fun roundValueIfRequired(valueFun : () -> Field<BigDecimal?>) : Field<BigDecimal?>
     {
         //Round to 2 dec places if required
         return  `when`(trunc(valueFun(),2).eq(valueFun()), valueFun())
                 .otherwise(round(valueFun(),2))
-    }
+    }*/
 
     private fun aggregatedCoverage() : Field<BigDecimal?>
     {
@@ -226,9 +226,8 @@ class JooqTouchstoneRepository(
         //If only one row in group, pass that row's value through unchanged
         //Danger of divide by zero error here - treat as NULL if summed target is 0
         return `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.COVERAGE_)) //If only one row in group
-                //Need to round here as well to avoid more trailing zeroes
-                .otherwise(round(sum(validTargetOrNull().mul(validCoverageOrNull()))
-                        .div(nullif(sum(validTargetOrNull()),BigDecimal(0.0)) ), 2) )
+                .otherwise(sum(validTargetOrNull().mul(validCoverageOrNull()))
+                        .div(nullif(sum(validTargetOrNull()),BigDecimal(0.0)) ) )
 
     }
 

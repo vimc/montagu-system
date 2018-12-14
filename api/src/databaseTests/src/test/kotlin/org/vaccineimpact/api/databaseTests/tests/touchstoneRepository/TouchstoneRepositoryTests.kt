@@ -120,7 +120,7 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
 
     protected fun assertLongCoverageRowListEqualWithCoverageTolerance(actual: List<LongCoverageRow>,
                                                                     expected: List<LongCoverageRow>,
-                                                                    tolerance: Double)
+                                                                    tolerance: Double = 0.0001)
     {
         //Do an 'almost exact' list comparison on expected LongCoverageRows, allowing for tolerance on floating point
         //coverage values

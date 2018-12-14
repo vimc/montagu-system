@@ -140,14 +140,15 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
 
         } check {
             val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
-            assertLongCoverageRowListEqualWithCoverageTolerance(result.toList(),
+            assertLongCoverageRowListEqualWithCoverageTolerance(
+                    result.toList(),
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", "600".toDecimalOrNull(), "0.63".toDecimalOrNull()),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), BigDecimal(0.63333)),
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", "1500".toDecimalOrNull(), "0.21".toDecimalOrNull()),
+                                    "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1500), BigDecimal(0.21333)),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000".toDecimalOrNull(), "0.5".toDecimalOrNull())
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
                     ),
                     0.001)
         }
@@ -215,12 +216,13 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
         } check {
             val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
 
-            assertThat(result.toList()).containsExactlyElementsOf(
+            assertLongCoverageRowListEqualWithCoverageTolerance(
+                    result.toList(),
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2","300".toDecimalOrNull(), "0.47".toDecimalOrNull()),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2",BigDecimal(300), BigDecimal(0.46667)),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000".toDecimalOrNull(), "0.5".toDecimalOrNull()))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5)))
             )
 
         }
@@ -250,12 +252,13 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
             val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
 
             //Expect the coverage row which has coverage but no target to not contribute to either value in the aggregate
-            assertThat(result.toList()).containsExactlyElementsOf(
+            assertLongCoverageRowListEqualWithCoverageTolerance(
+                    result.toList(),
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2","300".toDecimalOrNull(), "0.47".toDecimalOrNull()),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2",BigDecimal(300), BigDecimal(0.46667)),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000".toDecimalOrNull(), "0.5".toDecimalOrNull()))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5)))
             )
 
         }
@@ -285,12 +288,13 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
             val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
 
             //Expect the coverage row which has target but no coverage to not contribute to either value in the aggregate
-            assertThat(result.toList()).containsExactlyElementsOf(
+            assertLongCoverageRowListEqualWithCoverageTolerance(
+                    result.toList(),
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2","300".toDecimalOrNull(), "0.47".toDecimalOrNull()),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2",BigDecimal(300), BigDecimal(0.46667)),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000".toDecimalOrNull(), "0.5".toDecimalOrNull()))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5)))
             )
 
         }
@@ -321,12 +325,13 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
             val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
 
             //Expect only the coverage rows which have both target and coverage values to contirbute to the aggregate values
-            assertThat(result.toList()).containsExactlyElementsOf(
+            assertLongCoverageRowListEqualWithCoverageTolerance(
+                    result.toList(),
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2","200".toDecimalOrNull(), "0.25".toDecimalOrNull()),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2",BigDecimal(200), BigDecimal(0.25)),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000".toDecimalOrNull(), "0.5".toDecimalOrNull()))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5)))
             )
 
         }

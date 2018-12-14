@@ -72,7 +72,7 @@ class GroupCoverageTests : CoverageTests()
         //11: "target", 12: "coverage"
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1500"
-        val expectedAggregatedCoverage = "0.70"
+        val expectedAggregatedCoverage = "0.7"
 
         Assertions.assertThat(firstRow[11]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[12]).isEqualTo(expectedAggregatedCoverage)
@@ -204,7 +204,7 @@ class GroupCoverageTests : CoverageTests()
 
         val testYear = 1980
         val testTarget = BigDecimal(1000)
-        val testCoverage = "0.9".toDecimalOrNull()!!
+        val testCoverage = BigDecimal(0.9)
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
@@ -266,7 +266,7 @@ class GroupCoverageTests : CoverageTests()
 
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1500"
-        val expectedAggregatedCoverage = "0.70"
+        val expectedAggregatedCoverage = "0.7"
 
         //test all target values
         Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedTarget)
@@ -292,8 +292,8 @@ class GroupCoverageTests : CoverageTests()
         val requestHelper = RequestHelper()
 
         val testYear = 1980
-        val testTarget = "123.12".toDecimalOrNull()!!
-        val testCoverage = "456.46".toDecimalOrNull()!!
+        val testTarget = "123.123".toDecimalOrNull()!!
+        val testCoverage = "456.461".toDecimalOrNull()!!
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
@@ -319,7 +319,7 @@ class GroupCoverageTests : CoverageTests()
             Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
         }
 
-        Assertions.assertThat(firstRow[10]).isEqualTo("456.46")
+        Assertions.assertThat(firstRow[10]).isEqualTo("456.46") //should have been rounded b
         Assertions.assertThat(firstRow[15]).isEqualTo("123.12")
 
     }
