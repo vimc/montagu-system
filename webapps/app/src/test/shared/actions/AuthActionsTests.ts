@@ -9,6 +9,7 @@ import {createMockStore} from "../../mocks/mockStore";
 import {localStorageHandler} from "../../../main/shared/services/localStorageHandler";
 import {signAndCompress} from "../helpers/TokenHelpers";
 import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
+import {appSettings} from "../../../main/shared/Settings";
 
 describe("AuthActions", () => {
     const sandbox = new Sandbox();
@@ -80,6 +81,7 @@ describe("AuthActions", () => {
     });
 
     it("dispatches authentication error action if user is not modeller", (done) => {
+        appSettings.requiresModellingGroupMembership = true;
         const testToken = signAndCompress(mockUsertokenNotModeller);
         sandbox.setStubFunc(AuthService.prototype, "logIn", () => {
             return Promise.resolve({access_token: testToken});
@@ -87,6 +89,7 @@ describe("AuthActions", () => {
         store.dispatch(authActionCreators.logIn('test', 'test'));
         setTimeout(() => {
             const actions = store.getActions();
+
             expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
             expect(actions[0].message).to.contain("Only members of modelling groups can log into the contribution portal");
             expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);

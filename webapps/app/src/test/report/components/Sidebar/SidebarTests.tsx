@@ -3,8 +3,10 @@ import {shallow, ShallowWrapper} from "enzyme";
 import {expect} from "chai";
 import {Sandbox} from "../../../Sandbox";
 import {
-    PublicProps, ReportTabEnum, Sidebar
+    SidebarProps, ReportTabEnum, SidebarComponent, mapStateToProps
 } from "../../../../main/report/components/Sidebar/Sidebar";
+import {ReportAppState} from "../../../../main/report/reducers/reportAppReducers"
+import {mockAuthState, mockReportAppState} from "../../../mocks/mockStates";
 
 describe("Sidebar", () => {
 
@@ -14,9 +16,10 @@ describe("Sidebar", () => {
         sandbox.restore();
     });
 
-    const defaultTabProps: PublicProps = {
+    const defaultTabProps: SidebarProps = {
         active: ReportTabEnum.REPORT,
-        onChangeVersion: () => {}
+        onChangeVersion: () => {},
+        isReviewer: true
     };
 
     const reportLink = (rendered: ShallowWrapper<any, any>): ShallowWrapper<any, any> => {
@@ -45,7 +48,7 @@ describe("Sidebar", () => {
         const props = defaultTabProps;
         props.active = ReportTabEnum.REPORT;
 
-        const rendered = shallow(<Sidebar {...props} />);
+        const rendered = shallow(<SidebarComponent {...props} />);
         const link = reportLink(rendered);
 
         expect(link).to.have.lengthOf(1);
@@ -58,7 +61,7 @@ describe("Sidebar", () => {
         const props = defaultTabProps;
         props.active = ReportTabEnum.DOWNLOAD;
 
-        const rendered = shallow(<Sidebar {...props} />);
+        const rendered = shallow(<SidebarComponent {...props} />);
         const link = downloadsLink(rendered);
 
         expect(link).to.have.lengthOf(1);
@@ -68,7 +71,7 @@ describe("Sidebar", () => {
 
     it("report link changes tab to #reports", () => {
 
-        const rendered = shallow(<Sidebar {...defaultTabProps} />);
+        const rendered = shallow(<SidebarComponent {...defaultTabProps} />);
 
         expect(reportLink(rendered).prop("href")).to.eq("#report");
 
@@ -76,18 +79,37 @@ describe("Sidebar", () => {
 
     it("downloads link changes tab to #downloads on click", () => {
 
-        const rendered = shallow(<Sidebar {...defaultTabProps} />);
+        const rendered = shallow(<SidebarComponent {...defaultTabProps} />);
 
         expect(downloadsLink(rendered).prop("href")).to.eq("#downloads");
 
     });
 
-    it("changelog link is disabled", () => {
+    it("changelog link is enabled", () => {
 
-        const rendered = shallow(<Sidebar {...defaultTabProps} />);
+        const rendered = shallow(<SidebarComponent {...defaultTabProps} />);
+
+        expect(changelogLink(rendered).prop("disabled")).to.be.undefined;
+
+    });
+
+    it("changelog link is disabled if user is not reviewer", () => {
+        defaultTabProps.isReviewer = false;
+
+        const rendered = shallow(<SidebarComponent {...defaultTabProps} />);
 
         expect(changelogLink(rendered).prop("disabled")).to.be.true;
 
+    });
+
+
+    it("maps state to props", () => {
+
+        const state = mockReportAppState({
+            auth: mockAuthState({isReportReviewer: true})
+        });
+
+        expect(mapStateToProps(state).isReviewer).to.eql(true);
     });
 
 });

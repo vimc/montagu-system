@@ -23,6 +23,13 @@ export class TestService extends AbstractLocalService {
 }
 
 export abstract class IntegrationTestSuite {
+
+    private user : string = "test.user@example.com";
+
+    protected setUser(user: string) {
+        this.user = user;
+    }
+
     abstract description(): string;
 
     abstract createStore(): any;
@@ -62,7 +69,7 @@ export abstract class IntegrationTestSuite {
                 // stores recording the user to some extent
 
                 this.store = this.createStore();
-                this.store.dispatch(authActionCreators.logIn("test.user@example.com", "password"));
+                this.store.dispatch(authActionCreators.logIn(this.user, "password"));
                 let unsubscribe = this.store.subscribe(handleChange);
                 let that = this;
 

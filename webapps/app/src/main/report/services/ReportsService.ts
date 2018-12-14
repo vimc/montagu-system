@@ -17,6 +17,11 @@ export class ReportsService extends AbstractLocalService {
             .get(`/reports/${reportId}/versions/${versionId}/`, "reporting");
     }
 
+    getVersionChangelog(reportId: string, versionId: string) {
+        return this.setOptions({cacheKey: ReportsCacheKeysEnum.versionChangelog})
+            .get(`/reports/${reportId}/versions/${versionId}/changelog`, "reporting");
+    }
+
     publishReport(name: string, version: string) {
         return this.post(`/reports/${name}/versions/${version}/publish/`, "reporting");
     }
@@ -29,5 +34,6 @@ export class ReportsService extends AbstractLocalService {
 export enum ReportsCacheKeysEnum {
     "reports" = "reports",
     "versions" = "versions",
-    "versionDetails" = "versionDetails"
+    "versionDetails" = "versionDetails",
+    "versionChangelog"="versionChangelog"
 }

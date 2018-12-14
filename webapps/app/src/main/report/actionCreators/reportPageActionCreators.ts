@@ -17,6 +17,7 @@ export const reportPageActionCreators = {
 
             dispatch(reportActionCreators.getReportVersions(props.report));
             dispatch(reportActionCreators.getVersionDetails(props.report, props.version));
+            dispatch(reportActionCreators.resetVersionChangelog());
             dispatch(breadcrumbsActionCreators.createBreadcrumbs(ReportPageComponent.breadcrumb(props)));
         }
     }

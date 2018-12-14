@@ -11,10 +11,12 @@ $montagu-header-bg-color: $gray-100;
 $montagu-header-color: $body-color;
 $montagu-breadcrumb-bg-color: $gray-100;
 $montagu-breadcrumb-color: $success;
+$montagu-table-border-color: $gray-300;
 
 @import "../shared/styles/common";
 @import "./styles/sidebar";
 @import "./styles/report-table";
+@import "./styles/report-page";
 
 .badge-published {
   background-color: $published-color;
@@ -30,4 +32,13 @@ $montagu-breadcrumb-color: $success;
   margin: 0 auto;
   width: 204px;
   display: block !important;
+}
+
+.datestring-column {
+  min-width: 10em;
+}
+
+td, th {
+  border-width: 1px!important;
+  border-color: $montagu-table-border-color!important;
 }

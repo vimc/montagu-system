@@ -6,8 +6,10 @@ import {ReportDetails} from "./ReportDetails";
 import {ReportsListPageComponent} from "../ReportsList/ReportsListPage";
 import {ReportTabEnum, Sidebar, sidebarHashToTab} from "../Sidebar/Sidebar";
 import {ReportDownloads} from "./ReportDownloads";
+import {ReportChangelog} from "./ReportChangelog";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageProperties";
 import {reportPageActionCreators} from "../../actionCreators/reportPageActionCreators";
+import {mockModelRunParameterSet} from "../../../../test/mocks/mockModels";
 
 export interface ReportPageLocationProps {
     report: string;
@@ -46,6 +48,7 @@ export class ReportPageComponent extends React.Component<PageProperties<ReportPa
 
     render(): JSX.Element {
         const activeTab = sidebarHashToTab(this.props.location.hash);
+        const params = this.props.match.params;
 
         return <div>
             <div className={"container-fluid pt-4 sm-pt-5"}>
@@ -56,6 +59,8 @@ export class ReportPageComponent extends React.Component<PageProperties<ReportPa
                     <div className={"col-12 col-md-8 pt-4 pt-md-1"}>
                         {activeTab == ReportTabEnum.REPORT && <ReportDetails />}
                         {activeTab == ReportTabEnum.DOWNLOAD && <ReportDownloads/>}
+                        {activeTab == ReportTabEnum.CHANGELOG && <ReportChangelog
+                            report={params.report} version={params.version}/>}
                     </div>
                 </div>
             </div>
