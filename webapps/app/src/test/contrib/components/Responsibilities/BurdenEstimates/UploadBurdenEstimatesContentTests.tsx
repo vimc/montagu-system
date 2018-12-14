@@ -92,19 +92,17 @@ describe("UploadBurdenEstimatesContent", () => {
         expect(rendered.find(LoadingElement).length).to.eql(1);
     });
 
-    it("renders on component level touchstone, scenario ", () => {
+    it("renders touchstone and scenario message", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-        const firstTable = rendered.find('table.specialColumn').at(0);
-        expect(firstTable.find('tr').at(0).find('td').at(1).text(), testTouchstone.description);
-        expect(firstTable.find('tr').at(1).find('td').at(1).text(), testScenario.description);
+        const subheading = rendered.find("h5").at(0);
+        expect(subheading.find('span').at(0).text(), testTouchstone.description);
+        expect(subheading.find('span').at(1).text(), testScenario.description);
     });
 
     it("renders link to template download page", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-        const firstTable = rendered.find('table.specialColumn').at(0);
-        const burdEstimatesTemplatesCell = firstTable.find('tr').at(2).find('td').at(1);
-        const link = burdEstimatesTemplatesCell.find(InternalLink);
-        expect(link.prop("href")).to.eql(`/${testGroup.id}/responsibilities/${testTouchstone.id}/templates/`);;
+        const link = rendered.find(InternalLink);
+        expect(link.prop("href")).to.eql(`/${testGroup.id}/responsibilities/${testTouchstone.id}/templates/`);
     });
 
     it("renders on component level, passes right params to CurrentEstimateSetSummary", () => {
