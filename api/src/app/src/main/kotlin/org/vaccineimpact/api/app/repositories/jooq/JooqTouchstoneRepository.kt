@@ -212,12 +212,6 @@ class JooqTouchstoneRepository(
         ).toList()
     }
 
-    /*private fun roundValueIfRequired(valueFun : () -> Field<BigDecimal?>) : Field<BigDecimal?>
-    {
-        //Round to 2 dec places if required
-        return  `when`(trunc(valueFun(),2).eq(valueFun()), valueFun())
-                .otherwise(round(valueFun(),2))
-    }*/
 
     private fun aggregatedCoverage() : Field<BigDecimal?>
     {
