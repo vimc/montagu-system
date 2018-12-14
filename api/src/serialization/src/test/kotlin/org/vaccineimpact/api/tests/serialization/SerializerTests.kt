@@ -102,7 +102,8 @@ class MontaguSerializerTests : MontaguTests()
     }
 
     @Test
-    fun `can serialize TouchstoneStatus`() {
+    fun `can serialize TouchstoneStatus`()
+    {
         val actual = TouchstoneStatus.IN_PREPARATION
         val expected = "\"in-preparation\""
         checkSerializedForm(expected, actual)
