@@ -14,8 +14,6 @@ interface Settings {
     contrib: ContribSettings;
     report: ReportSettings;
     showTouchstoneCreation: boolean;
-    showNewTemplates: boolean;
-    showOldTemplates: boolean;
     pinnedReports: string[];
 }
 

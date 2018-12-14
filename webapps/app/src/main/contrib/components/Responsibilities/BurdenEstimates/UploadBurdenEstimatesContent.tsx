@@ -3,17 +3,14 @@ import {branch, compose, renderComponent} from "recompose";
 import {connect} from 'react-redux';
 
 import {ModellingGroup, Responsibility, Scenario, TouchstoneVersion} from "../../../../shared/models/Generated";
-import {TemplateLink} from "../Overview/List/OldStyleTemplates/TemplateLink";
 import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {isNullOrUndefined} from "util";
-import {settings} from "../../../../shared/Settings";
 import {InternalLink} from "../../../../shared/components/InternalLink";
-import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
-import {ScenarioChart} from "./ScenarioChart";
-import {DiagnosticSection, DiagnosticSectionComponent} from "./DiagnosticSection";
+import {Col, Row} from "reactstrap";
+import {DiagnosticSection} from "./DiagnosticSection";
 
 export interface UploadBurdenEstimatesContentProps {
     touchstone: TouchstoneVersion;
@@ -27,57 +24,35 @@ export interface UploadBurdenEstimatesContentProps {
 
 export class UploadBurdenEstimatesContentComponent extends React.Component<UploadBurdenEstimatesContentProps> {
     render() {
-        const newTemplatesUrl = `/${this.props.group.id}/responsibilities/${this.props.touchstone.id}/templates/`;
+        const templatesUrl = `/${this.props.group.id}/responsibilities/${this.props.touchstone.id}/templates/`;
 
         return <div>
-            <p>
-                On this page you can upload burden estimates for the following scenario. We expect estimates which
-                cover 98 countries, 100 years, and 100 age bands to take around 1 minute to process. So don't worry if
-                it takes a little while!
+            <h5>You are uploading central estimates for
+                <span style={{fontWeight: "bold"}}>&nbsp;{this.props.touchstone.description}&nbsp;</span>
+                for the
+                <span style={{fontWeight: "bold"}}>&nbsp;{this.props.scenario.description}&nbsp;</span>
+                scenario</h5>
+            <InternalLink href={templatesUrl}>Download templates</InternalLink>
+            <p className="my-3">
+                Please note we expect estimates for 98 countries, 100 ages and 100 years to take over a minute to process.
+                So don't worry if it takes a little while!
             </p>
-            <p>Before uploading central burden estimates,
-                you will need to register how these were calculated.
-            </p>
-            <table className="specialColumn">
-                <tbody>
-                <tr>
-                    <td>Touchstone</td>
-                    <td>{this.props.touchstone.description}</td>
-                </tr>
-                <tr>
-                    <td>Scenario</td>
-                    <td>{this.props.scenario.description}</td>
-                </tr>
-                <tr>
-                    <td>Burden estimates template</td>
-                    <td>
-                        {settings.showOldTemplates &&
-                        <TemplateLink
-                            diseaseId={this.props.scenario.disease}
-                            groupId={this.props.group.id}
-                            touchstoneId={this.props.touchstone.id}
-                        />}
-                        {settings.showNewTemplates &&
-                        <InternalLink href={newTemplatesUrl}>Download templates</InternalLink>}
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <div className="my-3">
-                <UploadBurdenEstimatesForm
-                    canUpload={this.props.canUpload}
-                    canCreate={this.props.canCreate}
-                    groupId={this.props.group.id}
-                    touchstoneId={this.props.touchstone.id}
-                    scenarioId={this.props.scenario.id}
-                    estimateSet={this.props.responsibility.current_estimate_set}
-                />
-            </div>
-            <CurrentEstimateSetSummary
-                estimateSet={this.props.responsibility.current_estimate_set}
-                canUpload={this.props.canCreate}
-            />
+            <Row>
+                <Col>
+                    <CurrentEstimateSetSummary
+                        estimateSet={this.props.responsibility.current_estimate_set}
+                        canUpload={this.props.canCreate}
+                    />
+                    <UploadBurdenEstimatesForm
+                        canUpload={this.props.canUpload}
+                        canCreate={this.props.canCreate}
+                        groupId={this.props.group.id}
+                        touchstoneId={this.props.touchstone.id}
+                        scenarioId={this.props.scenario.id}
+                        estimateSet={this.props.responsibility.current_estimate_set}
+                    />
+                </Col>
+            </Row>
             {this.props.responsibility.current_estimate_set &&
             <DiagnosticSection setId={this.props.responsibility.current_estimate_set.id}
                                scenarioId={this.props.scenario.id}/>}

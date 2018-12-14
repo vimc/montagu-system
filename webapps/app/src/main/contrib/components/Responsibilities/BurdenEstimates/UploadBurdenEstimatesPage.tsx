@@ -15,7 +15,7 @@ export interface UploadBurdenEstimatesPageLocationProps {
 
 export class UploadBurdenEstimatesPageComponent extends React.Component<PageProperties<UploadBurdenEstimatesPageLocationProps>> {
     static title() {
-        return <ResponsibilitiesPageTitle title="Upload burden estimates"/>
+        return <ResponsibilitiesPageTitle title="Upload central burden estimates"/>
     }
 
     render(): JSX.Element {
