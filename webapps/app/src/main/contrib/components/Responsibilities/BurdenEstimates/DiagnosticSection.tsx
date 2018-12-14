@@ -27,6 +27,7 @@ export interface DiagnosticSectionProps {
     dalys: ILookup<DataPoint[]>;
     cases: ILookup<DataPoint[]>;
     ages: NumberRange;
+    years: NumberRange;
     scenarioId: string,
     setId: number
 }
@@ -63,13 +64,14 @@ export class DiagnosticSectionComponent extends React.Component<DiagnosticSectio
                 data = this.props.cases
         }
 
-        return <div className={"mt-2"}>
+        return <div className={"mt-5"}>
             <h2>Diagnostics</h2>
             <p>As a quick check on your most recently uploaded estimates for this scenario, the following graph shows
                 key outcomes aggregated across all countries, disaggregated by age.</p>
             <FormGroup>
                 <Label for="outcome">Burden outcome:</Label>
-                <Input type="select" name="outcome" id="outcome" defaultValue={"deaths"} onChange={this.onChangeOutcome.bind(this)}>
+                <Input type="select" name="outcome" id="outcome" style={{width: "100px"}}
+                       defaultValue={"deaths"} onChange={this.onChangeOutcome.bind(this)}>
                     <option value={"deaths"}>Deaths</option>
                     <option value={"cases"}>Cases</option>
                     <option value={"dalys"}>Dalys</option>
@@ -78,6 +80,7 @@ export class DiagnosticSectionComponent extends React.Component<DiagnosticSectio
             <ScenarioChart scenarioId={this.props.scenarioId}
                            setId={this.props.setId}
                            ages={this.props.ages}
+                           years={this.props.years}
                            data={data}
                            outcome={this.state.outcome}/>
         </div>
@@ -86,15 +89,18 @@ export class DiagnosticSectionComponent extends React.Component<DiagnosticSectio
 
 const mapStateToProps = (state: ContribAppState, props: DiagnosticSectionPublicProps): Partial<DiagnosticSectionProps> => {
 
+    const expectations = state.responsibilities.responsibilitiesSet &&
+        state.responsibilities.responsibilitiesSet.expectations
+            .find(e => e.applicable_scenarios.indexOf(props.scenarioId) > -1)
+            .expectation;
+
     return {
         scenarioId: props.scenarioId,
         dalys: state.estimates.dalys && state.estimates.dalys[props.setId],
         deaths: state.estimates.deaths && state.estimates.deaths[props.setId],
         cases: state.estimates.cases && state.estimates.cases[props.setId],
-        ages: state.responsibilities.responsibilitiesSet &&
-            state.responsibilities.responsibilitiesSet.expectations
-                .find(e => e.applicable_scenarios.indexOf(props.scenarioId) > -1)
-                .expectation.ages
+        ages: expectations && expectations.ages,
+        years: expectations && expectations.years
     };
 };
 
@@ -105,11 +111,6 @@ export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial
                   setId: number) => dispatch(estimatesActionCreators.getEstimates(outcome, scenarioId, setId))
     }
 };
-
-function notReady(props: DiagnosticSectionProps): boolean {
-    return isNullOrUndefined(props.ages)
-        || isNullOrUndefined(props.deaths);
-}
 
 const lifecyleProps: Partial<LifecycleMethods<DiagnosticSectionProps>> = {
     onDidMount(props: DiagnosticSectionProps) {
@@ -122,6 +123,5 @@ const lifecyleProps: Partial<LifecycleMethods<DiagnosticSectionProps>> = {
 
 export const DiagnosticSection = compose<DiagnosticSectionProps, DiagnosticSectionPublicProps>(
     connect(mapStateToProps, mapDispatchToProps),
-    withLifecycle(lifecyleProps),
-    branch(notReady, renderNothing)
+    withLifecycle(lifecyleProps)
 )(DiagnosticSectionComponent);

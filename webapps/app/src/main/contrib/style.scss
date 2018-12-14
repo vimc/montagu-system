@@ -2,3 +2,18 @@
 @import "../shared/styles/common";
 @import "./styles/responsibilities";
 @import "~react-vis/dist/style";
+
+.graph-wrapper {
+  width: 650px;
+
+  .rv-xy-plot {
+    margin: 0 auto;
+  }
+
+  .chart-title{
+    font-weight: bold;
+    width: 400px;
+    display: inline-block;
+  }
+
+}
