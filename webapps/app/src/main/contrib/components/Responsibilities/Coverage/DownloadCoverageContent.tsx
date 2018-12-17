@@ -98,7 +98,16 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
             </div>
             <div className="row mt-4">
                 <div className="col-12 col-md-6">
-                    <div className="smallTitle">Choose format</div>
+                    <div>
+                        <span className="smallTitle">
+                            Choose format
+                        </span>
+                        <a href={"#"} id={"format-tooltip"} className={"ml-1 small"} onClick={(e)=> {e.preventDefault()}}>What's this?</a>
+                        <UncontrolledTooltip target="format-tooltip" className={"text-muted"}>
+                            Wide format includes coverage and target values for all years in a single row. Long format
+                            includes a row for each year.
+                        </UncontrolledTooltip>
+                    </div>
                     <table className="options">
                         <tbody>
                         <tr className="specialColumn">
