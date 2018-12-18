@@ -61,6 +61,7 @@ class JooqBurdenEstimateRepository(
                 .where(BURDEN_ESTIMATE.BURDEN_ESTIMATE_SET.eq(setId))
                 .and(BURDEN_ESTIMATE.BURDEN_OUTCOME.`in`(outcomeIds))
                 .groupBy(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE)
+                .orderBy(BURDEN_ESTIMATE.YEAR, BURDEN_ESTIMATE.AGE)
                 .fetchInto(BurdenEstimateDataPoint::class.java)
                 .groupBy { if (burdenEstimateGrouping == BurdenEstimateGrouping.AGE) it.age else it.year }
 
