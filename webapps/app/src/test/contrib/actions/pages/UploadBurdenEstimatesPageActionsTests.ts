@@ -31,7 +31,7 @@ describe("Upload burden estimates page actions tests", () => {
     it("creates breadcrumb", () => {
 
         const result = uploadBurdenEstimatesPageActionCreators.createBreadcrumb(state);
-        expect(result.name).to.eq("Upload burden estimates for s1desc");
+        expect(result.name).to.eq("Upload central burden estimates for s1desc");
         expect(result.urlFragment).to.eq("burdens/s1/");
     });
 

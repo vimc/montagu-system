@@ -17,7 +17,7 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
 
     it("displays no estimates message if current estimate is null", () => {
         const rendered = render(null, true);
-        expect(rendered.text()).to.contain("No burden estimate sets have been uploaded");
+        expect(rendered.text()).to.contain("No central burden estimate sets have been uploaded");
     });
 
     it("displays empty set message if current estimate is empty", () => {
@@ -33,7 +33,7 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
             status: "complete",
             uploaded_on: "2017-07-13 13:55:29 +0100"
         }), true);
-        expect(rendered.text()).to.contain("A complete estimate set was uploaded on Thu Jul 13");
+        expect(rendered.text()).to.contain("A complete set of central estimates was uploaded on Thu Jul 13");
 
         const div = rendered.find("div").first();
         expect(div.hasClass("alert-warning")).to.eq(true);
@@ -44,7 +44,7 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
             status: "foo" as any,
             uploaded_on: "2017-07-13 13:55:29 +0100"
         }), true);
-        expect(rendered.text()).to.contain("You have an estimate set in status 'foo'");
+        expect(rendered.text()).to.contain("You have a central estimate set in status 'foo'");
         expect(rendered.text()).to.contain("Thu Jul 13");
     });
 
@@ -58,7 +58,7 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
             status: "invalid",
             uploaded_on: "2017-07-13 13:55:29 +0100"
         }), true);
-        expect(rendered.text()).to.contain("You have an estimate set in status 'invalid'");
+        expect(rendered.text()).to.contain("You uploaded an incomplete set of central estimates");
         expect(rendered.text()).to.contain("Thu Jul 13");
 
         const div = rendered.find("div").first();
