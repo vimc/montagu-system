@@ -54,6 +54,7 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
                 </Col>
             </Row>
             {this.props.responsibility.current_estimate_set &&
+            this.props.responsibility.current_estimate_set.status != "empty" &&
             <DiagnosticSection setId={this.props.responsibility.current_estimate_set.id}
                                scenarioId={this.props.scenario.id}/>}
         </div>;

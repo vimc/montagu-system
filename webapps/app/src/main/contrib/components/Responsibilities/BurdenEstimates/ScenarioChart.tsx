@@ -17,7 +17,7 @@ import {NumberRange} from "../../../../shared/models/Generated";
 import {interpolatePlasma} from "d3-scale-chromatic";
 import {DataPoint} from "../../../reducers/estimatesReducer";
 import {isNullOrUndefined} from "util";
-import {branch, compose, renderComponent} from "recompose";
+import {branch, renderComponent} from "recompose";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 
 export interface ChartProps {
@@ -43,8 +43,8 @@ class ScenarioChartComponent extends React.Component<ChartProps> {
             const data = this.props.data[x.toString()];
             if (data) {
                 children.push(<VerticalBarSeries key={x}
-                                                 color={interpolatePlasma((x - ages.minimum_inclusive) / numChildren)}
-                                                 data={this.props.data[x.toString()]}/>)
+                                                 color={interpolatePlasma((x - ages.minimum_inclusive + 1) / numChildren)}
+                                                 data={data}/>)
             }
         }
 
@@ -69,20 +69,19 @@ class ScenarioChartComponent extends React.Component<ChartProps> {
 
     render() {
         const title = `Yearly ${this.props.outcome} across all countries, disaggregated by age`;
-        const yearRange= [this.props.years.minimum_inclusive, this.props.years.maximum_inclusive];
         return (
-            <div className={"bg-light p-3 border border-secondary graph-wrapper"}>
+            <div className={"bg-light p-3 mb-5 border border-secondary graph-wrapper"}>
                 <div className={"m-2 chart-title"}>{title}</div>
                 {this.renderKey()}
-                <XYPlot height={300} width={600} stackBy="y">
-                    <VerticalGridLines/>
-                    <HorizontalGridLines/>
-                    <XAxis xDomain={yearRange} tickFormat={(tick: any) => {
+                <XYPlot height={300} width={600} stackBy="y" margin={{left: 57}}>
+                   <HorizontalGridLines/>
+                    <XAxis tickFormat={(tick: any) => {
                         return tick.toString();
                     }}/>
                     <YAxis tickFormat={(tick: any) => {
                         return format('.2s')(tick);
                     }}/>
+                    <CustomAxisLabel title={this.props.outcome} yAxis/>
                     <CustomAxisLabel title={'Year'} xAxis/>
                     {this.renderBars()}
                 </XYPlot>
@@ -96,9 +95,7 @@ function notReady(props: ChartProps): boolean {
     return isNullOrUndefined(props.data);
 }
 
-export const ScenarioChart = compose<ChartProps, ChartProps>(
-    branch(notReady, renderComponent(LoadingElement))
-)(ScenarioChartComponent);
+export const ScenarioChart = branch(notReady, renderComponent(LoadingElement))(ScenarioChartComponent);
 
 const CustomAxisLabel: any = (props: {
     title: string,
@@ -124,7 +121,7 @@ const CustomAxisLabel: any = (props: {
 
     return (
         <g transform={transform}>
-            <text style={{fontSize: "80%"}}>{props.title}</text>
+            <text className="rv-xy-plot__axis__tick__text">{props.title}</text>
         </g>
     );
 };
