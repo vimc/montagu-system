@@ -14,7 +14,7 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
             return <ReviewedAndApprovedMessage />;
         } else {
             if (set == null) {
-                return <span>No burden estimate sets have been uploaded.</span>;
+                return <span>No central burden estimate sets have been uploaded.</span>;
             } else {
                 const timestamp = longTimestamp(new Date(set.uploaded_on));
                 if (set.status == "empty") {
@@ -23,11 +23,17 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
                     </span>;
                 } else if (set.status == "complete") {
                     return <span>
-                        A complete estimate set was uploaded on {timestamp}.
+                        A complete set of central estimates was uploaded on {timestamp}.
                     </span>;
-                } else {
+                }
+                else if (set.status == "invalid") {
                     return <span>
-                        You have an estimate set in status '{set.status}', which was created on {timestamp}
+                        You uploaded an incomplete set of central estimates on {timestamp}.
+                    </span>;
+                }
+                else {
+                    return <span>
+                        You have a central estimate set in status '{set.status}', which was created on {timestamp}
                     </span>;
                 }
             }

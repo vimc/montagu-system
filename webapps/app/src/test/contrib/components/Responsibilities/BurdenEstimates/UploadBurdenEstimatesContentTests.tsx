@@ -30,7 +30,6 @@ import {
     UploadBurdenEstimatesForm,
     UploadBurdenEstimatesFormComponentProps
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
-import {TemplateLink} from "../../../../../main/contrib/components/Responsibilities/Overview/List/OldStyleTemplates/TemplateLink";
 import {RecursivePartial} from "../../../../mocks/mockStates";
 import {settings} from "../../../../../main/shared/Settings";
 import {InternalLink} from "../../../../../main/shared/components/InternalLink";
@@ -93,35 +92,18 @@ describe("UploadBurdenEstimatesContent", () => {
         expect(rendered.find(LoadingElement).length).to.eql(1);
     });
 
-    it("renders on component level touchstone, scenario ", () => {
+    it("renders touchstone and scenario message", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-        const firstTable = rendered.find('table.specialColumn').at(0);
-        expect(firstTable.find('tr').at(0).find('td').at(1).text(), testTouchstone.description);
-        expect(firstTable.find('tr').at(1).find('td').at(1).text(), testScenario.description);
+        const subheading = rendered.find("h5").at(0);
+        expect(subheading.find('span').at(0).text(), testTouchstone.description);
+        expect(subheading.find('span').at(1).text(), testScenario.description);
     });
 
-    if (settings.showOldTemplates) {
-        it("renders on component level, passes props to TemplateLink component", () => {
-            const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-            const firstTable = rendered.find('table.specialColumn').at(0);
-            const burdEstimatesTemplatesCell = firstTable.find('tr').at(2).find('td').at(1);
-            const burdenEstimatesTemplates = burdEstimatesTemplatesCell.find(TemplateLink);
-            const burdenEstimatesTemplatesProps = burdenEstimatesTemplates.props();
-            expect(burdenEstimatesTemplatesProps.diseaseId).to.eql(testDisease.id);
-            expect(burdenEstimatesTemplatesProps.groupId).to.eql(testGroup.id);
-            expect(burdenEstimatesTemplatesProps.touchstoneId).to.eql(testTouchstone.id);
-        });
-    }
-
-    if (settings.showNewTemplates) {
-        it("renders link to template download page", () => {
-            const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-            const firstTable = rendered.find('table.specialColumn').at(0);
-            const burdEstimatesTemplatesCell = firstTable.find('tr').at(2).find('td').at(1);
-            const link = burdEstimatesTemplatesCell.find(InternalLink);
-            expect(link.prop("href")).to.eql(`/${testGroup.id}/responsibilities/${testTouchstone.id}/templates/`);;
-        });
-    }
+    it("renders link to template download page", () => {
+        const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
+        const link = rendered.find(InternalLink);
+        expect(link.prop("href")).to.eql(`/${testGroup.id}/responsibilities/${testTouchstone.id}/templates/`);
+    });
 
     it("renders on component level, passes right params to CurrentEstimateSetSummary", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
