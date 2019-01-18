@@ -57,5 +57,15 @@ describe('Estimates reducer tests', () => {
         expect(result.dalys[2]).to.eq(fakeBurdens);
         expect(result.deaths).to.be.null;
         expect(result.cases).to.be.null;
+    });
+
+    it('sets chart type', () => {
+
+        const result = estimatesReducer(estimatesInitialState, {
+            type: EstimateTypes.SET_CHART_TYPE,
+            data: BurdenOutcome.CASES
+        });
+
+        expect(result.chartType).to.eq(BurdenOutcome.CASES);
     })
 });

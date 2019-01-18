@@ -30,13 +30,13 @@ export interface ChartProps {
     outcome: string
 }
 
-const ScenarioChartKey = (props: { maxAge: number }) => {
+export const ScenarioChartKey = (props: { maxAge: number, ageRange: number }) => {
 
     const children = [];
-    const numChildren = this.ageRange();
+    const numChildren = props.ageRange;
     const fraction = (1 / numChildren);
     for (let x = 1; x <= numChildren; x++) {
-        children.push(<span key={x} style={{borderRight: `1px solid ${interpolatePlasma(fraction * x)}`}}/>)
+        children.push(<span key={x} className={"ageKey"} style={{borderRight: `1px solid ${interpolatePlasma(fraction * x)}`}}/>)
     }
 
     return <div className={"key float-right m-2"}>
@@ -74,7 +74,7 @@ class ScenarioChartComponent extends React.Component<ChartProps> {
         return (
             <div className={"bg-light p-3 mb-5 border border-secondary graph-wrapper"}>
                 <div className={"m-2 chart-title"}>{title}</div>
-                <ScenarioChartKey maxAge={this.props.ages.maximum_inclusive}/>
+                <ScenarioChartKey ageRange={this.ageRange()} maxAge={this.props.ages.maximum_inclusive}/>
                 <XYPlot height={300} width={600} stackBy="y" margin={{left: 57}}>
                     <HorizontalGridLines/>
                     <XAxis tickFormat={(tick: any) => {
@@ -100,7 +100,7 @@ function notReady(props: ChartProps): boolean {
 export const ScenarioChart = branch(notReady, renderComponent(LoadingElement))(ScenarioChartComponent);
 
 // Taken from https://github.com/uber/react-vis/issues/542#issuecomment-331724888
-const CustomAxisLabel: any = (props: {
+export const CustomAxisLabel: any = (props: {
     title: string,
     xAxis?: boolean,
     // note these next two are passed down from the parent XYPlot/Flexible*XYPlot
