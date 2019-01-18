@@ -40,7 +40,7 @@ export class ResponsibilityScenarioComponent extends React.Component<Responsibil
                     </div>
                     <div className="actions">
                         <ButtonLink href={downloadUrl}>Download coverage data</ButtonLink>
-                        <ButtonLink href={uploadUrl}>Upload burden estimates</ButtonLink>
+                        <ButtonLink href={uploadUrl}>Upload central burden estimates</ButtonLink>
                         <CurrentEstimateSetSummary
                             estimateSet={this.props.responsibility.current_estimate_set}
                             canUpload={canUpload}

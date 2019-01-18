@@ -10,6 +10,7 @@ import {ContribAppState} from "../../../contrib/reducers/contribAppReducers";
 import {AdminAppState} from "../../../admin/reducers/adminAppReducers";
 import {demographicActionCreators} from "../../actions/demographicActionCreators";
 import {LoadingElement} from "../../partials/LoadingElement/LoadingElement";
+import {UncontrolledTooltip} from "reactstrap";
 
 export interface DemographicOptionsProps {
     dataSets: DemographicDataset[];
@@ -70,6 +71,11 @@ export class DemographicOptionsComponent extends React.Component<DemographicOpti
                     <label className="col-form-label">
                         Format
                     </label>
+                    <a href={"#"} id={"format-tooltip"} className={"ml-1 small"} onClick={(e)=> {e.preventDefault()}}>What's this?</a>
+                    <UncontrolledTooltip target="format-tooltip" className={"text-muted"}>
+                        Wide format includes values for all years in a single row. Long format
+                        includes a row for each year.
+                    </UncontrolledTooltip>
                 </td>
                 <td><FormatControl
                     value={props.selectedFormat}

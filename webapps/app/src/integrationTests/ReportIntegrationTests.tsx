@@ -39,17 +39,20 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
         const sandbox = new Sandbox();
 
+        this.setUser("report.reviewer@example.com");
+
         afterEach(() => sandbox.restore());
 
         it("fetches reports", async () => {
+
             const expectedNames: string[] = ["minimal", "multi-artefact", "multifile-artefact", "other",
-                "use_resource", "html"];
+                "use_resource", "html", "changelog", "global", "interactive"];
             const reports = await (new ReportsService(this.store.dispatch, this.store.getState)).getAllReports();
 
             const names = reports.map((item: ReportVersion) => item.name);
             const versions = reports.filter((item: ReportVersion) => item.latest_version.length > 0);
 
-            expectSameElements<string>(names, expectedNames);
+            expect(names).to.include.members(expectedNames);
             expect(versions.length).to.equal(reports.length);
 
             const otherReport_versions = reports.filter((item: ReportVersion) => item.name == "other");
@@ -96,13 +99,27 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             expect(versionDetails.displayname).is.equal("another report");
             expect(versionDetails.hash_script).to.not.be.empty;
             expect(versionDetails.id).to.not.be.empty;
-            expect(versionDetails.published).is.equal(true);
+            expect(versionDetails.published).is.equal(false);
             expect(versionDetails.script).is.equal("script.R");
             expect(versionDetails.hash_data).to.not.be.null;
             expect(versionDetails.data).to.not.be.null;
             expect(versionDetails.parameters).to.not.be.null;
             expect(versionDetails.resources).to.be.empty;
             expect(versionDetails.artefacts).to.not.be.null;
+        });
+
+        it("fetches report changelog details", async () => {
+
+            const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("changelog");
+            const changelog = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionChangelog("changelog", versions[0]);
+
+            expect(changelog.length).is.greaterThan(0);
+
+            expect(changelog[0].report_version).is.eql(versions[0]);
+            expect(changelog[0].label).to.be.oneOf(["internal", "public"]);
+            expect(changelog[0].value).to.not.be.empty;
+            expect(changelog[0].from_file).to.not.be.null;
+
         });
 
         it("fetches one time token", async () => {
