@@ -11,12 +11,14 @@ export interface EstimatesState {
     deaths: ILookup<ILookup<DataPoint[]>>
     dalys: ILookup<ILookup<DataPoint[]>>
     cases: ILookup<ILookup<DataPoint[]>>
+    chartType: BurdenOutcome
 }
 
 export const estimatesInitialState: EstimatesState = {
     deaths: null,
     dalys: null,
-    cases: null
+    cases: null,
+    chartType: BurdenOutcome.DEATHS
 };
 
 export const estimatesReducer = (state = estimatesInitialState, action: EstimatesAction): EstimatesState => {
@@ -44,6 +46,8 @@ export const estimatesReducer = (state = estimatesInitialState, action: Estimate
                     break;
             }
             return newState;
+        case EstimateTypes.SET_CHART_TYPE:
+            return {...state, chartType: action.data};
         default:
             return state;
     }

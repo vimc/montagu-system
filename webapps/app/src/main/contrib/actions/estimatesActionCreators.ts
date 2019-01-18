@@ -31,5 +31,11 @@ export const estimatesActionCreators = {
                 data: {burdens: data, type: outcome, setId: setId}
             } as BurdenEstimatesFetched);
         }
+    },
+    setChartType(outcome: BurdenOutcome) {
+        return {
+            type: EstimateTypes.SET_CHART_TYPE,
+            data: outcome
+        }
     }
 };

@@ -1,12 +1,11 @@
 import * as React from "react";
 import {ChangeEvent} from "react";
-import {branch, compose, renderNothing} from "recompose";
+import {compose} from "recompose";
 import {connect} from 'react-redux';
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {Dispatch} from "redux";
 import {BurdenOutcome} from "../../../actionTypes/EstimateTypes";
 import {estimatesActionCreators} from "../../../actions/estimatesActionCreators";
-import {isNullOrUndefined} from "util";
 import {ScenarioChart} from "./ScenarioChart";
 import withLifecycle, {LifecycleMethods} from "@hocs/with-lifecycle";
 import {FormGroup, Input, Label} from "reactstrap";
@@ -20,49 +19,25 @@ export interface DiagnosticSectionPublicProps {
 }
 
 export interface DiagnosticSectionProps {
+    setChartType: (outcome: BurdenOutcome) => void;
     getData: (outcome: BurdenOutcome,
               scenarioId: string,
               setId: number) => void;
-    deaths: ILookup<DataPoint[]>;
-    dalys: ILookup<DataPoint[]>;
-    cases: ILookup<DataPoint[]>;
+    data: ILookup<DataPoint[]>;
     ages: NumberRange;
     years: NumberRange;
-    scenarioId: string,
-    setId: number
-}
-
-interface DiagnosticSectionState {
+    scenarioId: string;
+    setId: number;
     outcome: BurdenOutcome
 }
 
-export class DiagnosticSectionComponent extends React.Component<DiagnosticSectionProps, DiagnosticSectionState> {
-
-    constructor(){
-        super();
-        this.state = {
-            outcome: BurdenOutcome.DEATHS
-        }
-    }
+export class DiagnosticSectionComponent extends React.Component<DiagnosticSectionProps> {
 
     onChangeOutcome(e: ChangeEvent<HTMLInputElement>){
-        this.setState({
-            outcome : e.target.value as BurdenOutcome
-        });
+        this.props.setChartType(e.target.value as BurdenOutcome);
     }
 
     render() {
-        let data = null;
-        switch(this.state.outcome){
-            case BurdenOutcome.DEATHS:
-                data = this.props.deaths;
-                break;
-            case BurdenOutcome.DALYS:
-                data = this.props.dalys;
-                break;
-            case BurdenOutcome.CASES:
-                data = this.props.cases
-        }
 
         return <div className={"mt-5"}>
             <h2>Diagnostics</h2>
@@ -81,8 +56,8 @@ export class DiagnosticSectionComponent extends React.Component<DiagnosticSectio
                            setId={this.props.setId}
                            ages={this.props.ages}
                            years={this.props.years}
-                           data={data}
-                           outcome={this.state.outcome}/>
+                           data={this.props.data}
+                           outcome={this.props.outcome}/>
         </div>
     }
 }
@@ -94,11 +69,22 @@ const mapStateToProps = (state: ContribAppState, props: DiagnosticSectionPublicP
             .find(e => e.applicable_scenarios.indexOf(props.scenarioId) > -1)
             .expectation;
 
+    let data = null;
+    switch(state.estimates.chartType) {
+        case BurdenOutcome.DEATHS:
+            data = state.estimates.deaths && state.estimates.deaths[props.setId];
+            break;
+        case BurdenOutcome.DALYS:
+            data = state.estimates.dalys && state.estimates.dalys[props.setId];
+            break;
+        case BurdenOutcome.CASES:
+            data = state.estimates.cases && state.estimates.cases[props.setId];
+            break
+    }
     return {
+        outcome: state.estimates.chartType,
         scenarioId: props.scenarioId,
-        dalys: state.estimates.dalys && state.estimates.dalys[props.setId],
-        deaths: state.estimates.deaths && state.estimates.deaths[props.setId],
-        cases: state.estimates.cases && state.estimates.cases[props.setId],
+        data: data,
         ages: expectations && expectations.ages,
         years: expectations && expectations.years
     };
@@ -106,6 +92,7 @@ const mapStateToProps = (state: ContribAppState, props: DiagnosticSectionPublicP
 
 export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<DiagnosticSectionProps> => {
     return {
+        setChartType: (outcome: BurdenOutcome) => dispatch(estimatesActionCreators.setChartType(outcome)),
         getData: (outcome: BurdenOutcome,
                   scenarioId: string,
                   setId: number) => dispatch(estimatesActionCreators.getEstimates(outcome, scenarioId, setId))

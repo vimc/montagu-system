@@ -2,16 +2,16 @@ import * as React from "react";
 import {ILookup} from "../../../../shared/models/Lookup";
 import {format} from "d3-format";
 import {
-    HorizontalGridLines,
-    XYPlot,
-    VerticalBarSeries,
+    ChartLabel,
+    FlexibleWidthXYPlot,
     Hint,
+    HorizontalGridLines,
+    VerticalBarSeries,
     VerticalBarSeriesCanvas,
     VerticalGridLines,
     XAxis,
-    FlexibleWidthXYPlot,
-    YAxis,
-    ChartLabel
+    XYPlot,
+    YAxis
 } from 'react-vis';
 import {NumberRange} from "../../../../shared/models/Generated";
 import {interpolatePlasma} from "d3-scale-chromatic";
@@ -19,6 +19,7 @@ import {DataPoint} from "../../../reducers/estimatesReducer";
 import {isNullOrUndefined} from "util";
 import {branch, renderComponent} from "recompose";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {titleCase} from "../../../../shared/Helpers";
 
 export interface ChartProps {
     data: ILookup<DataPoint[]>;
@@ -28,6 +29,23 @@ export interface ChartProps {
     setId: number
     outcome: string
 }
+
+const ScenarioChartKey = (props: { maxAge: number }) => {
+
+    const children = [];
+    const numChildren = this.ageRange();
+    const fraction = (1 / numChildren);
+    for (let x = 1; x <= numChildren; x++) {
+        children.push(<span key={x} style={{borderRight: `1px solid ${interpolatePlasma(fraction * x)}`}}/>)
+    }
+
+    return <div className={"key float-right m-2"}>
+        <span>ages:</span>
+        <div>0 <span className="float-right">{props.maxAge}</span></div>
+        {children}
+    </div>
+
+};
 
 class ScenarioChartComponent extends React.Component<ChartProps> {
 
@@ -51,37 +69,21 @@ class ScenarioChartComponent extends React.Component<ChartProps> {
         return children
     }
 
-    renderKey() {
-
-        const children = [];
-        const numChildren = this.ageRange();
-        const fraction = (1 / numChildren);
-        for (let x = 1; x <= numChildren; x++) {
-            children.push(<span key={x} style={{borderRight: `1px solid ${interpolatePlasma(fraction * x)}`}}/>)
-        }
-
-        return <div className={"key float-right m-2"}>
-            <span>ages:</span>
-            <div>0 <span className="float-right">{this.props.ages.maximum_inclusive}</span></div>
-            {children}
-        </div>
-    }
-
     render() {
         const title = `Yearly ${this.props.outcome} across all countries, disaggregated by age`;
         return (
             <div className={"bg-light p-3 mb-5 border border-secondary graph-wrapper"}>
                 <div className={"m-2 chart-title"}>{title}</div>
-                {this.renderKey()}
+                <ScenarioChartKey maxAge={this.props.ages.maximum_inclusive}/>
                 <XYPlot height={300} width={600} stackBy="y" margin={{left: 57}}>
-                   <HorizontalGridLines/>
+                    <HorizontalGridLines/>
                     <XAxis tickFormat={(tick: any) => {
                         return tick.toString();
                     }}/>
                     <YAxis tickFormat={(tick: any) => {
                         return format('.2s')(tick);
                     }}/>
-                    <CustomAxisLabel title={this.props.outcome} yAxis/>
+                    <CustomAxisLabel title={titleCase(this.props.outcome)} yAxis/>
                     <CustomAxisLabel title={'Year'} xAxis/>
                     {this.renderBars()}
                 </XYPlot>
@@ -97,6 +99,7 @@ function notReady(props: ChartProps): boolean {
 
 export const ScenarioChart = branch(notReady, renderComponent(LoadingElement))(ScenarioChartComponent);
 
+// Taken from https://github.com/uber/react-vis/issues/542#issuecomment-331724888
 const CustomAxisLabel: any = (props: {
     title: string,
     xAxis?: boolean,
