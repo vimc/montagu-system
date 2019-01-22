@@ -19,7 +19,8 @@ import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppRe
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {
     UploadBurdenEstimatesContent,
-    UploadBurdenEstimatesContentComponent, UploadBurdenEstimatesContentProps
+    UploadBurdenEstimatesContentComponent,
+    UploadBurdenEstimatesContentProps
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesContent";
 
 import {
@@ -31,8 +32,8 @@ import {
     UploadBurdenEstimatesFormComponentProps
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {RecursivePartial} from "../../../../mocks/mockStates";
-import {settings} from "../../../../../main/shared/Settings";
 import {InternalLink} from "../../../../../main/shared/components/InternalLink";
+import {DiagnosticSection} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/DiagnosticSection";
 
 describe("UploadBurdenEstimatesContent", () => {
 
@@ -103,6 +104,44 @@ describe("UploadBurdenEstimatesContent", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const link = rendered.find(InternalLink);
         expect(link.prop("href")).to.eql(`/${testGroup.id}/responsibilities/${testTouchstone.id}/templates/`);
+    });
+
+    it("renders diagnostic section if latest burden estimate set exists and is populated", () => {
+        const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
+        const section = rendered.find(DiagnosticSection);
+        expect(section).to.have.lengthOf(1);
+    });
+
+    it("does not render diagnostic section if no latest burden estimate set", () => {
+        store = createMockContribStore({
+            ...testState,
+            responsibilities: {
+                ...testState.responsibilities, currentResponsibility: {
+                    ...testResponsibility,
+                    current_estimate_set: null
+                }
+            }
+        });
+
+        const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
+        const section = rendered.find(DiagnosticSection);
+        expect(section).to.have.lengthOf(0);
+    });
+
+    it("does not render diagnostic section if latest burden estimate set is empty", () => {
+        store = createMockContribStore({
+            ...testState,
+            responsibilities: {
+                ...testState.responsibilities, currentResponsibility: {
+                    ...testResponsibility,
+                    current_estimate_set: {...testResponsibility.current_estimate_set, status: "empty"}
+                }
+            }
+        });
+
+        const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
+        const section = rendered.find(DiagnosticSection);
+        expect(section).to.have.lengthOf(0);
     });
 
     it("renders on component level, passes right params to CurrentEstimateSetSummary", () => {

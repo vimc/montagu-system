@@ -30,11 +30,11 @@ import {UncontrolledTooltip} from "reactstrap";
 
 describe("Download Coverage Content Component", () => {
 
-    const testGroup = mockModellingGroup();
+    const testGroup = mockModellingGroup({id: "group-186"});
     const testDisease = mockDisease();
-    const testTouchstone = mockTouchstoneVersion();
+    const testTouchstone = mockTouchstoneVersion({id: "touchstone-188"});
     const rfpTouchstone = mockTouchstoneVersion({id: "rfp-1"});
-    const testScenario = mockScenario({disease: testDisease.id, touchstones: [testTouchstone.id]});
+    const testScenario = mockScenario({id: "scenario-190", disease: testDisease.id, touchstones: [testTouchstone.id]});
     const testResponsibility = mockResponsibility({scenario: testScenario});
     const testCoverageSet = mockCoverageSet({touchstone_version: testTouchstone.id});
 
@@ -67,11 +67,8 @@ describe("Download Coverage Content Component", () => {
 
     it("renders on branch level, passes", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive();
-        // rendered.props() as DownloadCoverageContentProps;
-        // console.log(rendered.debug())
         expect(rendered.find('Connect').length).to.eql(1);
     });
-
 
     it("renders on branch level, not passes", () => {
         store = createMockContribStore({

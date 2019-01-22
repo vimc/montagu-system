@@ -9,7 +9,7 @@ export class EstimatesService extends AbstractLocalService {
     }
 
     getEstimates(groupId: string, touchstoneId: string, scenarioId: string, setId: number, outcome: string): Promise<ILookup<DataPoint[]>> {
-        return this.get(`/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/estimate-sets/${setId}/estimates/${outcome}/?groupBy=year`);
+        return this.get(`/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/estimate-sets/${setId}/estimates/${outcome}/`);
     }
 }
 

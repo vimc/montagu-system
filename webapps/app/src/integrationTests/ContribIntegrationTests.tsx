@@ -352,7 +352,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             await addBurdenEstimate(this.db, setId, value);
             const response: ILookup<DataPoint[]> = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .getEstimates(groupId, touchstoneVersionId, scenarioId, setId, "cases");
-            expect(response).to.eql({"2000": [{"x": 1, "y": value}]});
+            expect(response).to.eql({"1": [{"x": 2000, "y": value}]});
         });
 
     }

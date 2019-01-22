@@ -37,6 +37,21 @@ describe("Estimates actions tests", () => {
         sandbox.restore();
     });
 
+    it("creates set chart type action", async () => {
+        const store = createStore();
+
+        await store.dispatch(estimatesActionCreators.setChartType(BurdenOutcome.CASES));
+
+        const actions = store.getActions();
+        const expectedPayload = [
+            {
+                type: EstimateTypes.SET_CHART_TYPE,
+                data: BurdenOutcome.CASES
+            }
+        ];
+        expect(actions).to.eql(expectedPayload);
+    });
+
     it("gets burden estimates and dispatches action containing data, type and set id", async () => {
 
         const store = createStore();
