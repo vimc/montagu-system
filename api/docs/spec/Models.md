@@ -27,32 +27,15 @@ Returns a model and all its versions.
 
 Required permissions: `models.read`
 
-Schema: [`ModelDetails.schema.json`](../schemas/ModelDetails.schema.json)
+Schema: [`ModelDetails.schema.json`](../schemas/Model.schema.json)
 
 ### Example
-    {
-        "metadata": {
-            "id": "IC-YF-WithoutHerd",
-            "description": "YF burden estimate - without herd effect",
-            "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
-            "modelling_group": "IC-YellowFever"
-        },
-        "versions": [
-            { 
-                "model": "IC-YF-WithoutHerd",
-                "version": "1.0.0",
-                "note": "Some notes",
-                "fingerprint": null
-            },
-            { 
-                "model": "IC-YF-WithoutHerd",
-                "version": "1.1.0",
-                "note": "Some notes about 1.1 release",
-                "fingerprint": "4b0bef9edfb15ac02e7410b21d8ed3398fa52982"
-            }
-        ]
+    { 
+        "id": "IC-YF-WithoutHerd",
+        "description": "YF burden estimate - without herd effect",
+        "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
+        "modelling_group": "IC-YellowFever"
     }
-
 ## POST /models/
 **NOT IMPLEMENTED**
 Creates a new model.
