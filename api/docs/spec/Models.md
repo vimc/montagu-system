@@ -27,7 +27,7 @@ Returns a model and all its versions.
 
 Required permissions: `models.read`
 
-Schema: [`ModelDetails.schema.json`](../schemas/Model.schema.json)
+Schema: [`Model.schema.json`](../schemas/Model.schema.json)
 
 ### Example
     { 
