@@ -17,7 +17,6 @@ import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
 
-@Ignore
 class CloseBurdenEstimateSetTests : BurdenEstimateTests()
 {
     private val setId = 1
@@ -106,6 +105,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
         assertSetHasStatus("invalid", setId)
     }
 
+    @Ignore
     @Test
     fun `can populate and close burden estimate with onetime token and redirect`()
     {
@@ -124,6 +124,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
         assertSetHasStatus("complete", setId)
     }
 
+    @Ignore
     @Test
     fun `missing rows error comes through with redirect`()
     {
