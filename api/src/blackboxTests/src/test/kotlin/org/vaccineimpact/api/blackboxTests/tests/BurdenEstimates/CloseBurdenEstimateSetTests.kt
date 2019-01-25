@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
@@ -16,6 +17,7 @@ import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
 
+@Ignore
 class CloseBurdenEstimateSetTests : BurdenEstimateTests()
 {
     private val setId = 1
