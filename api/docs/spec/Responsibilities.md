@@ -184,9 +184,28 @@ Schema: [`ResponsibilityDetails.schema.json`](../schemas/ResponsibilityDetails.s
     }
 
 ## GET /modelling-groups/{modelling-group-id}/expectations/{touchstone-id}/{expectation-id}/
-Returns the burden estimate template for the requested expectations of this modelling group in the given touchstone.
+Returns the burden estimate template for the requested expectations of this modelling group in the given touchstone. Note that
+this call returns *text/csv*, so you must indicate that in the accept-header when making the request, otherwise you will get a
+`Error: Unknown resource. Please check the URL` even though your URL may be correct.
 
 Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read`. 
+
+### Example CSV
+ 
+CSV data in this format, comma-separated, 
+
+      disease, year, age, country, country_name, cohort_size, deaths, cases, dalys
+           YF, 2000,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+           YF, 2001,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+           YF, 2002,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+           YF, 2003,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+           YF, 2004,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+           YF, 2005,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+           YF, 2006,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+           YF, 2007,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+           YF, 2008,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+
+Country names are quoted where necessary, for example `"Congo, the Democratic Republic of the"` is quoted, since it contains a comma.
 
 ### Query parameters:
 
