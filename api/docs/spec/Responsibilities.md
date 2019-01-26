@@ -190,9 +190,15 @@ this call returns *text/csv*, so you must indicate that in the accept-header whe
 
 Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read`. 
 
+### Query parameters:
+
+#### type
+Optional. The type of template to return, either `central` or `stochastic`. Defaults to `central`.
+Schema: [`BurdenEstimate.csvschema.json`](../schemas/BurdenEstimate.csvschema.json)
+
 ### Example CSV
  
-CSV data in this format, comma-separated, 
+CSV data in this format, comma-separated, for the central estimates
 
       disease, year, age, country, country_name, cohort_size, deaths, cases, dalys
            YF, 2000,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
@@ -200,19 +206,17 @@ CSV data in this format, comma-separated,
            YF, 2002,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
            YF, 2003,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
            YF, 2004,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
-           YF, 2005,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
-           YF, 2006,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
-           YF, 2007,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
-           YF, 2008,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+
+and for the stochastic estimate template:
+
+      disease, run_id, year, age, country, country_name, cohort_size, deaths, cases, dalys
+           YF,     NA, 2000,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+           YF,     NA, 2001,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+           YF,     NA, 2002,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+           YF,     NA, 2003,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
+           YF,     NA, 2004,   0,     AGO,       Angola,          NA,     NA,    NA,    NA
 
 Country names are quoted where necessary, for example `"Congo, the Democratic Republic of the"` is quoted, since it contains a comma.
-
-### Query parameters:
-
-#### type
-Optional. The type of template to return, either `central` or `stochastic`. Defaults to `central`.
-Schema: [`BurdenEstimate.csvschema.json`](../schemas/BurdenEstimate.csvschema.json)
-
 
 ## PATCH /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/
 **NOT IMPLEMENTED**
