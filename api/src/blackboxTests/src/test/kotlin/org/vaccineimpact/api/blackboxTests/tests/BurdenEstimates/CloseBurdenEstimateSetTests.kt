@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
@@ -104,6 +105,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
         assertSetHasStatus("invalid", setId)
     }
 
+    @Ignore
     @Test
     fun `can populate and close burden estimate with onetime token and redirect`()
     {
@@ -122,6 +124,7 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
         assertSetHasStatus("complete", setId)
     }
 
+    @Ignore
     @Test
     fun `missing rows error comes through with redirect`()
     {
