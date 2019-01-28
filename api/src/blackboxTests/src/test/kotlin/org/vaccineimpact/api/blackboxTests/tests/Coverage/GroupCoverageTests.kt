@@ -410,7 +410,6 @@ class GroupCoverageTests : CoverageTests()
         Assertions.assertThat(range2Row[12]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range2Row[13]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range2Row[14]).isEqualTo(expectedAggregatedCoverage)
-
     }
 
     @Test

@@ -54,8 +54,6 @@ class CoverageLogicTests : MontaguTests()
             CoverageSet(1, "tId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
     )
 
-
-
     private fun touchstoneRepo(
             //provide these parameters to generate data
             testYear: Int = 1970,
@@ -76,8 +74,6 @@ class CoverageLogicTests : MontaguTests()
             on { getCoverageDataForScenario(fakeTouchstoneVersion.id, fakeScenario.id) } doReturn fakeRows.asSequence()
         }
     }
-
-
 
     @Test
     fun `can getCoverageDataForGroup`()
@@ -138,8 +134,6 @@ class CoverageLogicTests : MontaguTests()
         sut.getCoverageDataForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id, format = null, allCountries = true)
         verify(repo).getResponsibility(groupId, fakeTouchstoneVersion.id, fakeScenario.id)
     }
-
-
 
     @Test
     fun `can getCoverageData`()

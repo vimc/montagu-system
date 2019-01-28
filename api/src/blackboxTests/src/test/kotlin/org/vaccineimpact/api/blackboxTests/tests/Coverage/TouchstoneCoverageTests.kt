@@ -178,7 +178,6 @@ class TouchstoneCoverageTests : CoverageTests()
     @Test
     fun `wide coverage data for scenario with subnational rows with different age_range_verbatim keeps rows separate`()
     {
-
         val userHelper = TestUserHelper()
         val requestHelper = RequestHelper()
 
@@ -250,7 +249,6 @@ class TouchstoneCoverageTests : CoverageTests()
         Assertions.assertThat(range2Row[12]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range2Row[13]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range2Row[14]).isEqualTo(expectedAggregatedCoverage)
-
     }
 
     @Test
