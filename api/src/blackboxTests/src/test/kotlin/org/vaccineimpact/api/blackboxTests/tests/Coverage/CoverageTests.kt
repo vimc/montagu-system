@@ -34,30 +34,38 @@ abstract class CoverageTests : DatabaseTest()
                                 target: BigDecimal = BigDecimal(100.12),
                                 coverage: BigDecimal = BigDecimal(200.13),
                                 includeSubnationalCoverage: Boolean = false,
-                                uniformData: Boolean = false /*Make all target and coverage values the same*/)
+                                uniformData: Boolean = false, /*Make all target and coverage values the same*/
+                                ageRangeVerbatim: String? = null,
+                                useExistingCoverageSetId: Boolean = false)
     {
-        db.addGroup(groupId, "description")
-        db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
-        db.addTouchstoneVersion("touchstone", 1, "description", touchstoneStatus, addTouchstone = true)
-        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "submitted")
-        val responsibilityId = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
+        if (!useExistingCoverageSetId)
+        {
+            //We need to set up the coverage set
+            db.addGroup(groupId, "description")
+            db.addScenarioDescription(scenarioId, "description 1", "disease-1", addDisease = true)
+            db.addTouchstoneVersion("touchstone", 1, "description", touchstoneStatus, addTouchstone = true)
+            val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "submitted")
+            val responsibilityId = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
 
-        db.addExpectationsForAllCountries(responsibilityId)
+            db.addExpectationsForAllCountries(responsibilityId)
 
-        db.addCoverageSet(touchstoneVersionId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
-                addVaccine = true)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, coverageSetId, 0)
+            db.addCoverageSet(touchstoneVersionId, "coverage set name", "vaccine-1", "without", "routine", coverageSetId,
+                    addVaccine = true)
+            db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, coverageSetId, 0)
+
+        }
 
         db.generateCoverageData(coverageSetId, countryCount = 2, yearRange = 1985..2000 step 5,
                 ageRange = 0..20 step 5, testYear = testYear, target = target, coverage = coverage,
-                uniformData = uniformData)
+                uniformData = uniformData, ageRangeVerbatim = ageRangeVerbatim)
 
         if (includeSubnationalCoverage)
         {
             //Generate duplicate rows - same dimension values (year, age etc) with different target and coverage
             db.generateCoverageData(coverageSetId, countryCount = 2, yearRange = 1985..2000 step 5,
                     ageRange = 0..20 step 5, testYear = testYear, target = BigDecimal(target.toDouble()/2),
-                    coverage = BigDecimal(coverage.toDouble()/3), uniformData = uniformData )
+                    coverage = BigDecimal(coverage.toDouble()/3), uniformData = uniformData,
+                    ageRangeVerbatim = ageRangeVerbatim )
         }
     }
 }

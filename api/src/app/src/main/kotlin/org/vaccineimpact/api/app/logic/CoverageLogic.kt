@@ -114,7 +114,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                 .groupBy {
                     hashSetOf(
                             it.countryCode, it.setName,
-                            it.ageFirst, it.ageLast,
+                            it.ageFirst, it.ageLast, it.ageRangeVerbatim,
                             it.vaccine, it.gaviSupport, it.activityType
                     )
                 }

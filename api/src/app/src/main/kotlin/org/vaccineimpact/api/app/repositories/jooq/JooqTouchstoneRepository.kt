@@ -270,7 +270,8 @@ class JooqTouchstoneRepository(
                         *coverageDimensions(),
                         COUNTRY.NAME)
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
-                        COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO).fetch()
+                        COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO,
+                        COVERAGE.AGE_RANGE_VERBATIM).fetch()
 
 
     }
@@ -303,7 +304,8 @@ class JooqTouchstoneRepository(
                         *coverageDimensions(),
                         COUNTRY.NAME)
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
-                        COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO).fetch()
+                        COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO,
+                        COVERAGE.AGE_RANGE_VERBATIM).fetch()
     }
 
     private val TOUCHSTONE_SOURCES = "touchstoneSources"
