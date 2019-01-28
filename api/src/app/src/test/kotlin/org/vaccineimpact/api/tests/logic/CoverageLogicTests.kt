@@ -54,13 +54,18 @@ class CoverageLogicTests : MontaguTests()
             CoverageSet(1, "tId", "name", "vaccine", GAVISupportLevel.WITH, ActivityType.CAMPAIGN)
     )
 
+
+
     private fun touchstoneRepo(
+            //provide these parameters to generate data
             testYear: Int = 1970,
             target: BigDecimal = BigDecimal(123.123),
-            coverage: BigDecimal = BigDecimal(456.456)): TouchstoneRepository
+            coverage: BigDecimal = BigDecimal(456.456),
+            //provide this parameter to roll your own data
+            coverageRows: List<LongCoverageRow>? = null ): TouchstoneRepository
     {
         val coverageSets = mockCoverageSetsData()
-        val fakeRows = generateCoverageRows(testYear, target, coverage)
+        val fakeRows = coverageRows ?: generateCoverageRows(testYear, target, coverage)
         val data = SplitData(coverageSets, DataTable.new(fakeRows.asSequence()))
         return mock {
             on { getScenarioAndCoverageData(fakeTouchstoneVersion.id, fakeScenario.id) } doReturn data
@@ -71,6 +76,8 @@ class CoverageLogicTests : MontaguTests()
             on { getCoverageDataForScenario(fakeTouchstoneVersion.id, fakeScenario.id) } doReturn fakeRows.asSequence()
         }
     }
+
+
 
     @Test
     fun `can getCoverageDataForGroup`()
@@ -132,11 +139,75 @@ class CoverageLogicTests : MontaguTests()
         verify(repo).getResponsibility(groupId, fakeTouchstoneVersion.id, fakeScenario.id)
     }
 
+
+
     @Test
     fun `can getCoverageData`()
     {
         val sut = RepositoriesCoverageLogic(mock(), responsibilityRepo(), touchstoneRepo(), scenarioRepo())
         sut.getCoverageData(fakeTouchstoneVersion.id, fakeScenario.id, null)
+    }
+
+    @Test
+    fun `getCoverageData does not combine rows whose age range verbatim values differ`()
+    {
+        val sut = RepositoriesCoverageLogic(mock(), responsibilityRepo(),
+                touchstoneRepo(coverageRows=coverageRowsWithDifferentAgeRangeVerbatim),
+                scenarioRepo())
+        val data = sut.getCoverageData(fakeTouchstoneVersion.id, fakeScenario.id, format = null).data
+
+        Assertions.assertThat(data.count()).isEqualTo(2)
+        val firstRow = (data.first() as LongCoverageRow)
+        Assertions.assertThat(firstRow.ageRangeVerbatim).isEqualTo("age_range_1")
+        val secondRow = (data.elementAt(1) as LongCoverageRow)
+        Assertions.assertThat(secondRow.ageRangeVerbatim).isEqualTo("age_range_2")
+    }
+
+    @Test
+    fun `getCoverageData does not combine rows whose age range verbatim values differ if format=wide`()
+    {
+        val sut = RepositoriesCoverageLogic(mock(), responsibilityRepo(),
+                touchstoneRepo(coverageRows=coverageRowsWithDifferentAgeRangeVerbatim),
+                scenarioRepo())
+        val data = sut.getCoverageData(fakeTouchstoneVersion.id, fakeScenario.id, format = "wide").data
+
+        Assertions.assertThat(data.count()).isEqualTo(2)
+        val firstRow = (data.first() as WideCoverageRow)
+        Assertions.assertThat(firstRow.ageRangeVerbatim).isEqualTo("age_range_1")
+        val secondRow = (data.elementAt(1) as WideCoverageRow)
+        Assertions.assertThat(secondRow.ageRangeVerbatim).isEqualTo("age_range_2")
+    }
+
+    @Test
+    fun `getCoverageDataForGroup does not combine rows whose age range verbatim values differ`()
+    {
+        val sut = RepositoriesCoverageLogic(mock(), responsibilityRepo(),
+                touchstoneRepo(coverageRows=coverageRowsWithDifferentAgeRangeVerbatim),
+                scenarioRepo())
+        val data = sut.getCoverageDataForGroup(groupId,
+                fakeTouchstoneVersion.id, fakeScenario.id, format = null, allCountries = true).data
+
+        Assertions.assertThat(data.count()).isEqualTo(2)
+        val firstRow = (data.first() as LongCoverageRow)
+        Assertions.assertThat(firstRow.ageRangeVerbatim).isEqualTo("age_range_1")
+        val secondRow = (data.elementAt(1) as LongCoverageRow)
+        Assertions.assertThat(secondRow.ageRangeVerbatim).isEqualTo("age_range_2")
+    }
+
+    @Test
+    fun `getCoverageDataForGroup does not combine rows whose age range verbatim values differ if format=wide`()
+    {
+        val sut = RepositoriesCoverageLogic(mock(), responsibilityRepo(),
+                                            touchstoneRepo(coverageRows=coverageRowsWithDifferentAgeRangeVerbatim),
+                                            scenarioRepo())
+        val data = sut.getCoverageDataForGroup(groupId,
+                fakeTouchstoneVersion.id, fakeScenario.id, format = "wide", allCountries = true).data
+
+        Assertions.assertThat(data.count()).isEqualTo(2)
+        val firstRow = (data.first() as WideCoverageRow)
+        Assertions.assertThat(firstRow.ageRangeVerbatim).isEqualTo("age_range_1")
+        val secondRow = (data.elementAt(1) as WideCoverageRow)
+        Assertions.assertThat(secondRow.ageRangeVerbatim).isEqualTo("age_range_2")
     }
 
     @Test
@@ -206,6 +277,17 @@ class CoverageLogicTests : MontaguTests()
     private val years = listOf(1985, 1990, 1995, 2000)
 
     private val random = Random(0)
+
+    private val coverageRowsWithDifferentAgeRangeVerbatim = listOf(
+            LongCoverageRow("sId", "set1", "vaccine1", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                    "ABC", "ABC-Name", 2000, BigDecimal(0), BigDecimal(5), "age_range_1",
+                    random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
+                    random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2)),
+            LongCoverageRow("sId", "set1", "vaccine1", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                    "ABC", "ABC-Name", 2000, BigDecimal(0), BigDecimal(5), "age_range_2",
+                    random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
+                    random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2))
+    )
 
     private fun generateCoverageRows(testYear: Int, target: BigDecimal, coverage: BigDecimal): List<LongCoverageRow>
     {

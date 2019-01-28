@@ -314,6 +314,34 @@ class GetCoverageDataForScenarioTests : TouchstoneRepositoryTests()
         }
     }
 
+    @Test
+    fun `coverage data for scenario is not aggregated for rows with different age range verbatim`()
+    {
+        given{
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+
+            addABCoverageSets(it)
+            addABCountries(it)
+
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1), BigDecimal(0.2))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "one-two", BigDecimal(2), BigDecimal(0.6))
+
+        } check {
+            val result = it.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
+
+            assertLongCoverageRowListEqualWithCoverageTolerance(
+            result.toList(),
+            listOf(
+                    LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2","1".toDecimalOrNull(), "0.2".toDecimalOrNull()),
+                    LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "one-two","2".toDecimalOrNull(), "0.6".toDecimalOrNull())
+            ))
+
+        }
+    }
+
     //This set of tests confirm that new SQL grouping logic in TouchstoneRepo does not interfere with cases where only
     //a single row per group is present, and where target and coverage values for that row should be output unmolested
     //whether or not they include zeroes or nulls
