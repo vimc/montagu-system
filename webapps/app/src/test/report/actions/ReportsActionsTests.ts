@@ -54,7 +54,7 @@ describe("Report actions tests", () => {
         });
     });
 
-    it("dispatches reports version detials fetched action if get report version details action is dispatched", (done) => {
+    it("dispatches reports version details fetched action if get report version details action is dispatched", (done) => {
         sandbox.setStubFunc(ReportsService.prototype, "getVersionDetails", () => {
             return Promise.resolve({});
         });
@@ -63,6 +63,32 @@ describe("Report actions tests", () => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED);
             expect(actions[0].data).to.eql({});
+            done();
+        });
+    });
+
+    it("dispatches publish action if report version is published", (done) => {
+        sandbox.setStubFunc(ReportsService.prototype, "publishReport", () => {
+            return Promise.resolve({});
+        });
+        store.dispatch(reportActionCreators.publishReport('test', 'v1'));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_PUBLISHED);
+            expect(actions[0].data).to.eql({"name": "test", "version": "v1"});
+            done();
+        });
+    });
+
+    it("dispatches unpublish action if report version is unpublished", (done) => {
+        sandbox.setStubFunc(ReportsService.prototype, "unPublishReport", () => {
+            return Promise.resolve({});
+        });
+        store.dispatch(reportActionCreators.unPublishReport('test', 'v1'));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_UNPUBLISHED);
+            expect(actions[0].data).to.eql({"name": "test", "version": "v1"});
             done();
         });
     });
