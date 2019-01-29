@@ -6,7 +6,9 @@ import {
     ReportVersionDetailssFetched,
     ReportVersionsFetched,
     ReportVersionChangelogFetched,
-    ReportVersionChangelogReset
+    ReportVersionChangelogReset,
+    ReportPublished,
+    ReportUnpublished
 } from "../actionTypes/ReportsActionsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
 import {ReportVersion} from "../../shared/models/Generated";
@@ -30,18 +32,21 @@ export const reportActionCreators = {
         }
     },
     publishReport(name: string, version: string) {
-        //TODO actually publish report
-        return {
-            type: ReportTypeKeys.REPORT_PUBLISHED,
-            data: {report: name, version: version}
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            const result = await (new ReportsService(dispatch, getState)).publishReport(name, version);
+            dispatch({
+                type: ReportTypeKeys.REPORT_PUBLISHED,
+                data: {name: name, version: version}
+            } as ReportPublished );
         }
     },
-
     unPublishReport(name: string, version: string) {
-        //TODO actually publish report
-        return {
-            type: ReportTypeKeys.REPORT_UNPUBLISHED,
-            data: {report: name, version: version}
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            const result = await (new ReportsService(dispatch, getState)).unPublishReport(name, version);
+            dispatch({
+                type: ReportTypeKeys.REPORT_UNPUBLISHED,
+                data: {name: name, version: version}
+            } as ReportUnpublished );
         }
     },
 
