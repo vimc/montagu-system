@@ -32,12 +32,12 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
 
         //Update current version if it's this one
         const versionDetails = state.versionDetails;
-        if (versionDetails.name == name && versionDetails.id == version) {
+        if (versionDetails && versionDetails.name == name && versionDetails.id == version) {
             versionDetails.published = published;
         }
 
         //Update version in array
-        const arrayVersion = state.reports.find( e => e.name == name && e.id == version);
+        const arrayVersion = state.reports && state.reports.find( e => e.name == name && e.id == version);
         arrayVersion && (arrayVersion.published = published);
 
         return {...state, versionDetails: versionDetails, reports: state.reports};
