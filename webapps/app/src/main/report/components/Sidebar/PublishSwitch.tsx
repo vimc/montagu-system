@@ -12,12 +12,12 @@ export interface PublicProps {
     published: boolean;
 }
 
-export interface PublishSwitchProps extends PublicProps {
+export interface Props extends PublicProps {
     publish: (name: string, version: string) => void;
     unpublish: (name: string, version: string) => void;
 }
 
-export class PublishSwitchComponent extends React.Component<PublishSwitchProps, undefined> {
+export class PublishSwitchComponent extends React.Component<Props, undefined> {
 
     constructor() {
         super();
@@ -49,7 +49,7 @@ export class PublishSwitchComponent extends React.Component<PublishSwitchProps, 
     }
 }
 
-const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<PublishSwitchProps> => {
+const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<Props> => {
     return {
         name: props.name,
         version: props.version,
@@ -57,7 +57,7 @@ const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<Pub
     };
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<PublishSwitchProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<Props> => {
     return {
         publish: (name: string, version: string) => dispatch(reportActionCreators.publishReport(name, version)),
         unpublish: (name: string, version: string) => dispatch(reportActionCreators.unPublishReport(name, version))
