@@ -6,6 +6,7 @@ import {
 } from "../actionTypes/ReportsActionsTypes";
 import {Changelog, ReportVersion} from "../../shared/models/Generated";
 import {Version} from "../../shared/models/reports/Report";
+import {BasicReport} from "../actionTypes/ReportsActionsTypes";
 
 export interface ReportsState {
     reports: ReportVersion[];
@@ -24,6 +25,24 @@ export const reportsInitialState: ReportsState = {
 };
 
 export const reportsReducer = (state = reportsInitialState, action: ReportsAction) : ReportsState => {
+
+    function getUpdatePublishedState(report: BasicReport, published: boolean) {
+        const name  = report.name;
+        const version = report.version;
+
+        //Update current version if it's this one
+        const versionDetails = state.versionDetails;
+        if (versionDetails.name == name && versionDetails.id == version) {
+            versionDetails.published = published;
+        }
+
+        //Update version in array
+        const arrayVersion = state.reports.find( e => e.name == name && e.id == version);
+        arrayVersion && (arrayVersion.published = published);
+
+        return {...state, versionDetails: versionDetails, reports: state.reports};
+    }
+
     switch (action.type) {
         case ReportTypeKeys.REPORTS_FETCHED:
             return { ...state, reports: action.data };
@@ -39,12 +58,10 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
             return {...state, versionChangelog: action.data};
         case ReportTypeKeys.REPORT_PUBLISHED:
             let report = (action as ReportPublished).data;
-            // TODO actually update report status
-            return {...state};
+            return getUpdatePublishedState(report, true);
         case ReportTypeKeys.REPORT_UNPUBLISHED:
             report = (action as ReportUnpublished).data;
-            // TODO actually update report status
-            return {...state};
+            return getUpdatePublishedState(report, false)
         default:
             return state;
     }

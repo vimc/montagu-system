@@ -33,7 +33,7 @@ export const reportActionCreators = {
     },
     publishReport(name: string, version: string) {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            const result = await (new ReportsService(dispatch, getState)).publishReport(name, version);
+            await (new ReportsService(dispatch, getState)).publishReport(name, version);
             dispatch({
                 type: ReportTypeKeys.REPORT_PUBLISHED,
                 data: {name: name, version: version}
@@ -42,7 +42,7 @@ export const reportActionCreators = {
     },
     unPublishReport(name: string, version: string) {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            const result = await (new ReportsService(dispatch, getState)).unPublishReport(name, version);
+            await (new ReportsService(dispatch, getState)).unPublishReport(name, version);
             dispatch({
                 type: ReportTypeKeys.REPORT_UNPUBLISHED,
                 data: {name: name, version: version}
