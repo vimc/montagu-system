@@ -1,10 +1,8 @@
 import * as React from "react";
 import Toggle from 'react-bootstrap-toggle';
 import {connect, Dispatch} from "react-redux";
-import * as ReactDOM from "react-dom";
 
 import {ReportAppState} from "../../reducers/reportAppReducers";
-import {UncontrolledTooltip} from "reactstrap";
 import {reportActionCreators} from "../../actionCreators/reportActionCreators";
 
 export interface PublicProps {
@@ -60,29 +58,13 @@ export class PublishSwitchComponent extends React.Component<PublishSwitchProps, 
         }
     }
 
-    Modal = (props: PublishSwitchModalProps) => {
-        const displayClassName = props.show ? "modal-background modal-show" : "modal-background modal-hide";
-        return (
-            <div className={displayClassName}>
-                <div className="modal-main px-3 py-3">
-                    <div className={"mb-2 font-weight-bold"}>{`Confirm ${props.publishVerb}`}</div>
-                    <div className={"mb-2"}>{`Are you sure you want to ${props.publishVerb} this report version?`}</div>
-                    <div className={"modal-buttons"}>
-                        <button className={"btn btn-primary mr-3"} onClick={props.onConfirm}>Yes</button>
-                        <button className={"btn btn-default"} onClick={props.onClose}>No</button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
     getPublishVerb(){
-        return this.props.published ? 'unpublish' : 'publish'
+        return this.props.published ? 'unpublish' : 'publish';
     }
 
     render() {
         return <div className="pt-3" id={"publish"}>
-                <this.Modal show={this.state.showModal} publishVerb={this.getPublishVerb()} onClose={this.hideModal}
+                <PublishSwitchModal show={this.state.showModal} publishVerb={this.getPublishVerb()} onClose={this.hideModal}
                     onConfirm={this.onConfirm}/>
                 <Toggle
                     onClick={this.onToggle}
@@ -91,10 +73,30 @@ export class PublishSwitchComponent extends React.Component<PublishSwitchProps, 
                     offstyle="internal"
                     onstyle={"published"}
                     active={this.props.published}/>
-                <UncontrolledTooltip target={"publish"}>
-                    Click here to publish or unpublish this report version.
-                </UncontrolledTooltip>
             </div>
+    }
+}
+
+export class PublishSwitchModal extends React.Component<PublishSwitchModalProps, undefined> {
+
+    render() {
+        const displayClassName = this.props.show ? "modal-background modal-show" : "modal-background modal-hide";
+
+        return (
+            <div className={displayClassName}>
+                <div className="modal-main px-3 py-3">
+                    <div className={"mb-2 font-weight-bold"}>{`Confirm ${this.props.publishVerb}`}</div>
+                    <div className={"mb-2"}>{`Are you sure you want to ${this.props.publishVerb} this report version?`}</div>
+                    <div className={"modal-buttons"}>
+                        <button id="confirm-publish-btn" className={"btn btn-primary mr-3"}
+                                onClick={this.props.onConfirm}>Yes
+                        </button>
+                        <button id="cancel-publish-btn" className={"btn btn-default"} onClick={this.props.onClose}>No
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     }
 }
 
