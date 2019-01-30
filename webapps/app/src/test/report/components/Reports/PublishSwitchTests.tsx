@@ -98,7 +98,7 @@ describe("Publish Switch component tests", () => {
 
         const rendered = shallow(<PublishSwitchComponent {...props} />);
         expect(rendered.find(PublishSwitchModal).prop("show")).to.be.false;
-    };
+    });
 
     it("clicking toggle shows modal", () => {
         const props: PublishSwitchProps = {
@@ -116,7 +116,7 @@ describe("Publish Switch component tests", () => {
 
         rendered.update();
         expect(rendered.find(PublishSwitchModal).prop("show")).to.be.true;
-    };
+    });
 
     it("unpublishes on confirm from modal if report is published", () => {
 
