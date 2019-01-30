@@ -13,6 +13,10 @@
 * When a POST results in the creation of a new object, the API returns a 
   response in the standard format (see below) with the 'data' field being the 
   URL that identifies the new resource.
+* You must include the correct accept-header for each request: `application/json` for 
+  json endpoints and `text/csv` for csv endpoints. If your accept-header is incorrectly 
+  set for the endpoint you are accessing, you may get a `Error: Unknown resource. 
+  Please check the URL` even though your URL may be correct.
 
 # Security
 Permissions are listed for each endpoint. All endpoints are assumed to require a
