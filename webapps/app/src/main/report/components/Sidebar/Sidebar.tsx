@@ -45,19 +45,6 @@ export const mapStateToProps = (state: ReportAppState): Partial<SidebarProps> =>
 
 export const SidebarComponent: React.StatelessComponent<SidebarProps> = (props: SidebarProps) => {
 
-    const changelogLink = props.isReviewer
-        ?
-        <NavItem>
-            <NavLink href="#changelog" id={"changelog"}>Changelog</NavLink>
-        </NavItem>
-        :
-        <NavItem>
-            <NavLink href="#changelog" disabled id={"changelog"}>Changelog</NavLink>
-            <UncontrolledTooltip placement="bottom" target="changelog">
-                Coming soon
-            </UncontrolledTooltip>
-        </NavItem>;
-
     return <div className={"sidebar pb-4 pb-md-0"}>
         <NavbarCollapsedOnMobile light className={"pl-0 pr-0 pr-md-4"}>
             <ul className={"list-unstyled mb-0"}>
@@ -69,7 +56,9 @@ export const SidebarComponent: React.StatelessComponent<SidebarProps> = (props: 
                     <NavLink href="#downloads"
                              active={props.active == ReportTabEnum.DOWNLOAD}>Downloads</NavLink>
                 </NavItem>
-                {changelogLink}
+                <NavItem>
+                    <NavLink href="#changelog" id={"changelog"}>Changelog</NavLink>
+                </NavItem>
             </ul>
             <hr/>
             <div className={"pl-3"}>

@@ -20,6 +20,7 @@ export interface ReportChangelogPublicProps {
 export interface ReportChangelogProps extends ReportChangelogPublicProps {
     versionChangelog: Changelog[];
     fetchChangelog: (props: ReportChangelogPublicProps) => void;
+    isReviewer: boolean;
 }
 
 export const ReportChangelogComponent = (props: ReportChangelogProps) => {
@@ -42,7 +43,7 @@ export const ReportChangelogComponent = (props: ReportChangelogProps) => {
                 <thead className="changelog-header">
                 <tr>
                     <th className="datestring-column">Date</th>
-                    <th>Label</th>
+                    { props.isReviewer ? <th>Label</th> : ''}
                     <th>Text</th>
                 </tr>
                 </thead>
@@ -51,7 +52,7 @@ export const ReportChangelogComponent = (props: ReportChangelogProps) => {
                         const badgeType = (changelog.label == "public") ? "published" : "internal";
                         return <tr key={rowIdx++}>
                             <td>{longTimestamp(new VersionIdentifier(changelog.report_version).timestamp)}</td>
-                            <td><span className={`badge badge-${badgeType}`}>{changelog.label}</span></td>
+                            { props.isReviewer ? <td><span className={`badge badge-${badgeType}`}>{changelog.label}</span></td> : ''}
                             <td>{changelog.value}</td>
                         </tr>;
                     }
@@ -64,7 +65,8 @@ export const ReportChangelogComponent = (props: ReportChangelogProps) => {
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportChangelogProps> => {
     return {
-        versionChangelog: state.reports.versionChangelog
+        versionChangelog: state.reports.versionChangelog,
+        isReviewer: state.auth.isReportReviewer
     }
 };
 
