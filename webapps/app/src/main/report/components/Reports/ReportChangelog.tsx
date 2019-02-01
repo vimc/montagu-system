@@ -5,7 +5,7 @@ import {Changelog} from "../../../shared/models/Generated";
 import {longTimestamp} from "../../../shared/Helpers";
 import {VersionIdentifier} from  "../../models/VersionIdentifier";
 import {ReportAppState} from "../../reducers/reportAppReducers";
-import {branch, compose, renderComponent} from "recompose";
+import {compose} from "recompose";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
 import {Dispatch} from "redux";
 import {reportActionCreators} from "../../actionCreators/reportActionCreators";
@@ -22,11 +22,17 @@ export interface ReportChangelogProps extends ReportChangelogPublicProps {
     fetchChangelog: (props: ReportChangelogPublicProps) => void;
 }
 
-export const ReportChangelogComponent = (props: ReportChangelogProps) => {
+export class ReportChangelogComponent extends React.Component<ReportChangelogProps> {
+
+    render() {
+
+        if (this.props.versionChangelog == null) {
+            return <LoadingElement/>
+        }
 
         const header = <h3 className="mb-3">Changelog</h3>;
 
-        if (props.versionChangelog.length == 0) {
+        if (this.props.versionChangelog.length == 0) {
             return <div>
                 {header}
                 <p>
@@ -47,7 +53,7 @@ export const ReportChangelogComponent = (props: ReportChangelogProps) => {
                 </tr>
                 </thead>
                 <tbody>
-                {props.versionChangelog.map((changelog: Changelog) => {
+                {this.props.versionChangelog.map((changelog: Changelog) => {
                         const badgeType = (changelog.label == "public") ? "published" : "internal";
                         return <tr key={rowIdx++}>
                             <td>{longTimestamp(new VersionIdentifier(changelog.report_version).timestamp)}</td>
@@ -61,6 +67,15 @@ export const ReportChangelogComponent = (props: ReportChangelogProps) => {
             </table>
         </div>
     };
+
+    componentDidUpdate() {
+        //Do this here as well as in didMount as we also need to fetch when already mounted when report changes from
+        //sidebar dropdown. Can't only do it here as componentDidUpdate is not called on initial render.
+        if (this.props.versionChangelog == null) {
+            this.props.fetchChangelog(this.props);
+        }
+    }
+}
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportChangelogProps> => {
     return {
@@ -78,8 +93,7 @@ export const ReportChangelog = compose<ReportChangelogProps, ReportChangelogPubl
     connect(mapStateToProps, mapDispatchToProps),
     withLifecycle({
         onDidMount: (props: ReportChangelogProps) => {
-            props.fetchChangelog(props)
+            props.fetchChangelog(props);
         }
-    }),
-    branch((props: ReportChangelogProps) => props.versionChangelog == null, renderComponent(LoadingElement)),
+    })
 )(ReportChangelogComponent);
