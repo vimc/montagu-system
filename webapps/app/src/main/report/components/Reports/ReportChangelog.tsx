@@ -93,7 +93,7 @@ export const ReportChangelog = compose<ReportChangelogProps, ReportChangelogPubl
     connect(mapStateToProps, mapDispatchToProps),
     withLifecycle({
         onDidMount: (props: ReportChangelogProps) => {
-            props.fetchChangelog(props);
+            props.fetchChangelog(props)
         }
     })
 )(ReportChangelogComponent);
