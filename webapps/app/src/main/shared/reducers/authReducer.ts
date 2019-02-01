@@ -12,6 +12,7 @@ export interface AuthState {
     isModeller: boolean;
     errorMessage?: string;
     isReportReviewer: boolean;
+    isReportRunner: boolean;
 }
 
 export const initialAuthState: AuthState = {
@@ -22,7 +23,8 @@ export const initialAuthState: AuthState = {
     permissions: [],
     isAccountActive: false,
     isModeller: false,
-    isReportReviewer: false
+    isReportReviewer: false,
+    isReportRunner: false
 };
 
 export const authReducer = (state = initialAuthState, action: AuthActionsTypes) => {

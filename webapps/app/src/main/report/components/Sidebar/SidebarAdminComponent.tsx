@@ -3,6 +3,7 @@ import {User} from "../../../shared/models/Generated";
 import {ReportVersionSwitcher} from "../Reports/ReportVersionSwitcher";
 import {PublishSwitch} from "./PublishSwitch";
 import {ReportReadersList} from "./ReportReadersList";
+import {RunReport} from "./RunReport";
 import {SidebarAdminPublicProps} from "./SidebarAdmin";
 
 export interface SidebarAdminProps extends SidebarAdminPublicProps {
@@ -14,6 +15,7 @@ export interface SidebarAdminProps extends SidebarAdminPublicProps {
     allVersions: string[];
     reportReaders: User[];
     isAdmin: boolean;
+    isReportRunner: boolean;
     getReportReaders: (reportName: string) => void;
     removeReportReader: (username: string, reportName: string) => void;
     addReportReader: (username: string, reportName: string) => void;
@@ -37,6 +39,11 @@ export const SidebarAdminComponent: React.StatelessComponent<SidebarAdminProps> 
                                    props.removeReportReader(props.report, username)}
                                addReportReader={(username: string) =>
                                    props.addReportReader(props.report, username)}/>
+        </div>}
+        {props.isReportRunner &&
+        <div className="mt-5">
+            <label className={"font-weight-bold"}>Run report</label>
+            <RunReport name={props.report}/>
         </div>}
     </div>
 };

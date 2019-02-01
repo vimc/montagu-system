@@ -67,7 +67,8 @@ export const jwtTokenAuth = {
             username: decoded.sub,
             permissions,
             modellingGroups,
-            isReportReviewer: permissions.indexOf("*/reports.review") > -1
+            isReportReviewer: permissions.indexOf("*/reports.review") > -1,
+            isReportRunner: permissions.indexOf("*/reports.run") > -1,
         }
     },
 

@@ -29,6 +29,10 @@ export class ReportsService extends AbstractLocalService {
     unPublishReport(name: string, version: string) {
         return this.post(`/reports/${name}/versions/${version}/publish/?value=false`, "reporting");
     }
+
+    runReport(name: string) {
+        return this.post(`/reports/${name}/run/`, "{}", "reporting");
+    }
 }
 
 export enum ReportsCacheKeysEnum {

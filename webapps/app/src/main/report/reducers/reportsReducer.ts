@@ -45,6 +45,9 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
             report = (action as ReportUnpublished).data;
             // TODO actually update report status
             return {...state};
+        case ReportTypeKeys.REPORT_RUN_STARTED:
+            //TODO start logging for status
+            return {...state};
         default:
             return state;
     }

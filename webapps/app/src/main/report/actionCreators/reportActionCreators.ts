@@ -6,7 +6,8 @@ import {
     ReportVersionDetailssFetched,
     ReportVersionsFetched,
     ReportVersionChangelogFetched,
-    ReportVersionChangelogReset
+    ReportVersionChangelogReset,
+    ReportRunStarted
 } from "../actionTypes/ReportsActionsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
 import {ReportVersion} from "../../shared/models/Generated";
@@ -42,6 +43,16 @@ export const reportActionCreators = {
         return {
             type: ReportTypeKeys.REPORT_UNPUBLISHED,
             data: {report: name, version: version}
+        }
+    },
+
+    runReport(name: string) {
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            const runningReportDetails = await (new ReportsService(dispatch, getState)).runReport(name);
+            dispatch({
+                type: ReportTypeKeys.REPORT_RUN_STARTED,
+                data: runningReportDetails
+            } as ReportRunStarted );
         }
     },
 

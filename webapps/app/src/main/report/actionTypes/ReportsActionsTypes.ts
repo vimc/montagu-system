@@ -5,11 +5,12 @@ export enum ReportTypeKeys {
     REPORTS_FETCHED = "REPORTS_FETCHED",
     REPORT_VERSIONS_FETCHED = "REPORT_VERSIONS_FETCHED",
     SET_CURRENT_REPORT = "SET_CURRENT_REPORT",
+    REPORT_RUN_STARTED = "REPORT_RUN_STARTED",
     REPORT_VERSION_DETAILS_FETCHED = "REPORT_VERSION_DETAILS_FETCHED",
     REPORT_VERSION_CHANGELOG_FETCHED = "REPORT_VERSION_CHANGELOG_FETCHED",
     REPORT_VERSION_CHANGELOG_RESET = "REPORT_VERSION_CHANGELOG_RESET",
     REPORT_PUBLISHED = "REPORT_PUBLISHED",
-    REPORT_UNPUBLISHED = "REPORT_UNPUBLISHED"
+    REPORT_UNPUBLISHED = "REPORT_UNPUBLISHED",
 }
 
 export interface ReportsFetched {
@@ -20,6 +21,11 @@ export interface ReportsFetched {
 export interface SetCurrentReport {
     type: ReportTypeKeys.SET_CURRENT_REPORT;
     data: string;
+}
+
+export interface ReportRunStarted {
+    type: ReportTypeKeys.REPORT_RUN_STARTED;
+    data: string; //TODO: we need a report run status class with report name, key and status fields
 }
 
 export interface ReportVersionsFetched {
@@ -65,3 +71,4 @@ export type ReportsAction =
     | ReportVersionChangelogFetched
     | ReportPublished
     | ReportUnpublished
+    | ReportRunStarted
