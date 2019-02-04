@@ -6,6 +6,7 @@ import {
 } from "../actionTypes/ReportsActionsTypes";
 import {Changelog, ReportVersion} from "../../shared/models/Generated";
 import {Version} from "../../shared/models/reports/Report";
+import {RunningReportStatus} from "../models/RunningReportStatus";
 
 export interface ReportsState {
     reports: ReportVersion[];
@@ -13,6 +14,7 @@ export interface ReportsState {
     currentReport: string;
     versionDetails: Version;
     versionChangelog: Changelog[];
+    runningReports: RunningReportStatus[];
 }
 
 export const reportsInitialState: ReportsState = {
@@ -20,7 +22,8 @@ export const reportsInitialState: ReportsState = {
     versions: null,
     currentReport: null,
     versionDetails: null,
-    versionChangelog: null
+    versionChangelog: null,
+    runningReports: []
 };
 
 export const reportsReducer = (state = reportsInitialState, action: ReportsAction) : ReportsState => {
@@ -46,8 +49,16 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
             // TODO actually update report status
             return {...state};
         case ReportTypeKeys.REPORT_RUN_STARTED:
-            //TODO start logging for status
-            return {...state};
+            //TODO start polling for status
+            const runningReports = state.runningReports.filter(r => r.name != action.data.name);
+            runningReports.push({
+                name: action.data.name,
+                key: action.data.key,
+                status: "started",
+                version: null,
+                output: null
+            });
+            return {...state, runningReports: runningReports};
         default:
             return state;
     }

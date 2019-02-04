@@ -9,6 +9,7 @@ export interface PublicProps{
 
 export interface RunReportProps extends PublicProps {
     run: (name: string) => void;
+    runStatus: string;
 }
 
 export class RunReportComponent extends React.Component<RunReportProps, undefined> {
@@ -27,13 +28,16 @@ export class RunReportComponent extends React.Component<RunReportProps, undefine
         return <div>
                 <div>Run this report to create new version.</div>
                 <button className={"btn"} type={"submit"} onClick={this.onClickRun}>Run report</button>
+                <div>{this.props.runStatus}</div>
             </div>
     }
 }
 
 const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<RunReportProps> => {
+    const runningReport = state.reports.runningReports.find((r) => r.name == props.name);
     return {
-        name: props.name
+        name: props.name,
+        runStatus: (runningReport && ("Report run " + runningReport.key + " " + runningReport.status))//temporary!
     }
 }
 

@@ -1,5 +1,6 @@
 import { Changelog, ReportVersion } from "../../shared/models/Generated";
 import {Version} from "../../shared/models/reports/Report";
+import {RunningReportStatus} from "../models/RunningReportStatus";
 
 export enum ReportTypeKeys {
     REPORTS_FETCHED = "REPORTS_FETCHED",
@@ -25,7 +26,7 @@ export interface SetCurrentReport {
 
 export interface ReportRunStarted {
     type: ReportTypeKeys.REPORT_RUN_STARTED;
-    data: string; //TODO: we need a report run status class with report name, key and status fields
+    data: RunningReportStatus;
 }
 
 export interface ReportVersionsFetched {
