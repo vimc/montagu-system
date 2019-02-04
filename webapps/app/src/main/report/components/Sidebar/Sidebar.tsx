@@ -48,12 +48,13 @@ export const SidebarComponent: React.StatelessComponent<SidebarProps> = (props: 
     const changelogLink = props.isReviewer
         ?
         <NavItem>
-            <NavLink href="#changelog" id={"changelog"}>Changelog</NavLink>
+            <NavLink href="#changelog"
+                     active={props.active == ReportTabEnum.CHANGELOG}>Changelog</NavLink>
         </NavItem>
         :
         <NavItem>
-            <NavLink href="#changelog" disabled id={"changelog"}>Changelog</NavLink>
-            <UncontrolledTooltip placement="bottom" target="changelog">
+            <NavLink href="#changelog" id={"changelog-link"} disabled>Changelog</NavLink>
+            <UncontrolledTooltip placement="bottom" target="changelog-link">
                 Coming soon
             </UncontrolledTooltip>
         </NavItem>;
