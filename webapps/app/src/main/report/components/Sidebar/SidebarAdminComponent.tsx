@@ -26,7 +26,9 @@ export const SidebarAdminComponent: React.StatelessComponent<SidebarAdminProps> 
             currentVersion={props.version}
             versions={props.allVersions}
             onChangeVersion={props.onChangeVersion}
-        /> {props.isReviewer && <PublishSwitch name={props.report}
+        />
+        {props.isReviewer &&
+        <PublishSwitch name={props.report}
                                                version={props.version}
                                                published={props.published}/>}
         {props.isAdmin &&

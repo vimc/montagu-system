@@ -5,6 +5,7 @@ export MONTAGU_API_VERSION=$(<config/api_version)
 export MONTAGU_REPORTING_API_VERSION=$(<config/reporting_api_version)
 export MONTAGU_DB_VERSION=$(<config/db_version)
 export ORDERLY_VERSION=$(<config/orderly_version)
+export MONTAGU_ORDERLY_VERSION=$(<config/montagu_orderly_version)
 export TOKEN_KEY_PATH=$PWD/token_key
 cert_tool_version=master
 registry=docker.montagu.dide.ic.ac.uk:5000
@@ -36,6 +37,7 @@ docker exec montagu_api_1 mkdir -p /etc/montagu/api/
 docker exec montagu_api_1 touch /etc/montagu/api/go_signal
 docker exec montagu_reporting_api_1 mkdir -p /etc/montagu/reports_api
 docker exec montagu_reporting_api_1 touch /etc/montagu/reports_api/go_signal
+docker exec montagu_orderly_1 touch /orderly_go
 
 # Wait for the database
 docker exec montagu_db_1 montagu-wait.sh
