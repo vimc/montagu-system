@@ -85,6 +85,20 @@ class WebTokenHelperTests : MontaguTests()
     }
 
     @Test
+    fun `can generate model review token for user with no models to review`()
+    {
+        val token = sut.generateModelReviewToken(InternalUser(properties.copy(username = "some.user"),
+                roles, permissions))
+        val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
+
+        assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
+        assertThat(claims["token_type"]).isEqualTo("MODEL_REVIEW")
+        assertThat(claims["sub"]).isEqualTo("some.user")
+        assertThat(claims["exp"]).isInstanceOf(Date::class.java)
+        assertThat(claims["test-group"]).isNull()
+    }
+
+    @Test
     fun `token fails validation when issuer is wrong`()
     {
         val claims = sut.claims(InternalUser(properties, roles, permissions))
