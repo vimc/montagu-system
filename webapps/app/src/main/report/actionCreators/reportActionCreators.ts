@@ -7,10 +7,12 @@ import {
     ReportVersionsFetched,
     ReportVersionChangelogFetched,
     ReportVersionChangelogReset,
-    ReportRunStarted
+    ReportRunStarted,
+    ReportRunStatusFetched
 } from "../actionTypes/ReportsActionsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
 import {ReportVersion} from "../../shared/models/Generated";
+
 
 export const reportActionCreators = {
 
@@ -53,6 +55,17 @@ export const reportActionCreators = {
                 type: ReportTypeKeys.REPORT_RUN_STARTED,
                 data: runningReportDetails
             } as ReportRunStarted );
+
+        }
+    },
+
+    pollRunStatus(key: string) {
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            const runningReportStatus = await (new ReportsService(dispatch, getState)).getReportRunStatus(key);
+            dispatch({
+                type: ReportTypeKeys.REPORT_RUN_STATUS_FETCHED,
+                data: runningReportStatus
+            } as ReportRunStatusFetched );
         }
     },
 

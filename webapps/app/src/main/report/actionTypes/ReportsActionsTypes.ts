@@ -1,12 +1,13 @@
 import { Changelog, ReportVersion } from "../../shared/models/Generated";
 import {Version} from "../../shared/models/reports/Report";
-import {RunningReportStatus} from "../models/RunningReportStatus";
+import {RunningReportStatus, RunningReportStatusUpdate} from "../models/RunningReportStatus";
 
 export enum ReportTypeKeys {
     REPORTS_FETCHED = "REPORTS_FETCHED",
     REPORT_VERSIONS_FETCHED = "REPORT_VERSIONS_FETCHED",
     SET_CURRENT_REPORT = "SET_CURRENT_REPORT",
     REPORT_RUN_STARTED = "REPORT_RUN_STARTED",
+    REPORT_RUN_STATUS_FETCHED = "REPORT_RUN_STATUS_FETCHED",
     REPORT_VERSION_DETAILS_FETCHED = "REPORT_VERSION_DETAILS_FETCHED",
     REPORT_VERSION_CHANGELOG_FETCHED = "REPORT_VERSION_CHANGELOG_FETCHED",
     REPORT_VERSION_CHANGELOG_RESET = "REPORT_VERSION_CHANGELOG_RESET",
@@ -27,6 +28,11 @@ export interface SetCurrentReport {
 export interface ReportRunStarted {
     type: ReportTypeKeys.REPORT_RUN_STARTED;
     data: RunningReportStatus;
+}
+
+export interface ReportRunStatusFetched {
+    type: ReportTypeKeys.REPORT_RUN_STATUS_FETCHED;
+    data: RunningReportStatusUpdate;
 }
 
 export interface ReportVersionsFetched {
@@ -73,3 +79,4 @@ export type ReportsAction =
     | ReportPublished
     | ReportUnpublished
     | ReportRunStarted
+    | ReportRunStatusFetched

@@ -33,6 +33,10 @@ export class ReportsService extends AbstractLocalService {
     runReport(name: string) {
         return this.post(`/reports/${name}/run/`, "{}", "reporting");
     }
+
+    getReportRunStatus(key: string) {
+        return this.get(`/reports/${key}/status/`, "reporting");
+    }
 }
 
 export enum ReportsCacheKeysEnum {

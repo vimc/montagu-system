@@ -10,6 +10,7 @@ import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneT
 import {CommonState} from "../../shared/reducers/CommonState";
 import {notificationReducer} from "../../shared/reducers/notificationReducer";
 import {diseasesReducer} from "../../shared/reducers/diseasesReducer";
+import { reduxPollingNamespace, reduxPollingReducer } from 'redux-polling';
 
 export interface ReportAppState extends CommonState {
     reports: ReportsState;
@@ -28,6 +29,7 @@ const reducers = combineReducers({
     onetimeTokens: onetimeTokenReducer,
     notifications: notificationReducer,
     diseases: diseasesReducer,
+    [reduxPollingNamespace]: reduxPollingReducer,
 });
 
 export default reducers;
