@@ -66,7 +66,7 @@ class AuthenticationTests : DatabaseTest()
 
         val shinyToken = checkCookieAndGetValue(response, "jwt_token")
         val shinyClaims = JWT.decode(shinyToken)
-        val allowedShiny = shinyClaims.getClaim("IC-Garske")
+        val allowedShiny = shinyClaims.getClaim("test-user")
         assertThat(allowedShiny.asString()).isEqualTo("true")
     }
 

@@ -81,7 +81,7 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["token_type"]).isEqualTo("MODEL_REVIEW")
         assertThat(claims["sub"]).isEqualTo("test.user")
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
-        assertThat(claims["IC-Garske"]).isEqualTo("true")
+        assertThat(claims["test-group"]).isEqualTo("true")
     }
 
     @Test

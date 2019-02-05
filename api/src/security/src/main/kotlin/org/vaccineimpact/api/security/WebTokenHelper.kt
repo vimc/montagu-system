@@ -5,8 +5,6 @@ import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.Result
-import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import java.security.KeyPair
@@ -42,7 +40,7 @@ open class WebTokenHelper(
                 "iss" to issuer,
                 "token_type" to TokenType.ONETIME,
                 "sub" to username,
-                "exp" to Date.from(Instant.now().plus(duration?: oneTimeLinkLifeSpan)),
+                "exp" to Date.from(Instant.now().plus(duration ?: oneTimeLinkLifeSpan)),
                 "permissions" to permissions,
                 "roles" to roles,
                 "url" to url,
@@ -74,7 +72,10 @@ open class WebTokenHelper(
 
     private fun modelReviewClaims(user: InternalUser): Map<String, Any>
     {
-        val modelsToReview = mapOf("IC-Garske" to "true")
+        val modelsToReview = getReviewersMap()[user.username]?.
+                map{ it to "true"}
+                ?.toMap()?: mapOf()
+
         return mapOf(
                 "iss" to issuer,
                 "token_type" to TokenType.MODEL_REVIEW,
