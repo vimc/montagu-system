@@ -88,7 +88,7 @@ export class PublishSwitchModal extends React.Component<PublishSwitchModalProps,
                     <div className={"mb-2 font-weight-bold"}>{`Confirm ${this.props.publishVerb}`}</div>
                     <div className={"mb-2"}>{`Are you sure you want to ${this.props.publishVerb} this report version?`}</div>
                     <div className={"modal-buttons"}>
-                        <button id="confirm-publish-btn" className={"btn btn-primary mr-3"}
+                        <button id="confirm-publish-btn" className={"btn submit mr-3"}
                                 onClick={this.props.onConfirm}>Yes
                         </button>
                         <button id="cancel-publish-btn" className={"btn btn-default"} onClick={this.props.onClose}>No

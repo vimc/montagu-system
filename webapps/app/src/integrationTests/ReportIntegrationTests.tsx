@@ -124,10 +124,13 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
         it("publishes a report version", async () => {
 
-            //Expect both versions of the changelog report to be unpublished
+            //Expect all demo versions of the changelog report to be unpublished
             const versionName = "changelog"
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions(versionName);
             const versionId = versions[0];
+
+            const unpublishedVersion = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails(versionName, versionId);
+            expect(unpublishedVersion.published).to.be.false;
 
             await (new ReportsService(this.store.dispatch, this.store.getState)).publishReport(versionName, versionId);
 
