@@ -129,7 +129,9 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions(versionName);
             const versionId = versions[0];
 
-            const unpublishedVersion = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails(versionName, versionId);
+            //check initial state is as expected - use raw get because getVersionDetails is cached
+            const unpublishedVersion = await (new ReportsService(this.store.dispatch, this.store.getState))
+                .get(`/reports/${versionName}/versions/${versionId}/`, "reporting");
             expect(unpublishedVersion.published).to.be.false;
 
             await (new ReportsService(this.store.dispatch, this.store.getState)).publishReport(versionName, versionId);
