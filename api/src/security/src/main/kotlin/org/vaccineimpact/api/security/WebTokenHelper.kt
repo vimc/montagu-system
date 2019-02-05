@@ -74,7 +74,7 @@ open class WebTokenHelper(
 
     private fun modelReviewClaims(user: InternalUser): Map<String, Any>
     {
-        val modelsToReview = mapOf("IC-Garske" to true)
+        val modelsToReview = mapOf("IC-Garske" to "true")
         return mapOf(
                 "iss" to issuer,
                 "token_type" to TokenType.MODEL_REVIEW,
