@@ -82,6 +82,8 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["sub"]).isEqualTo("test.user")
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
         assertThat(claims["test-group"]).isEqualTo("true")
+        assertThat(claims["url"]).isEqualTo("*")
+        assertThat(claims.keys.count()).isEqualTo(6)
     }
 
     @Test
@@ -95,7 +97,8 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["token_type"]).isEqualTo("MODEL_REVIEW")
         assertThat(claims["sub"]).isEqualTo("some.user")
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
-        assertThat(claims["test-group"]).isNull()
+        assertThat(claims["url"]).isEqualTo("*")
+        assertThat(claims.keys.count()).isEqualTo(5)
     }
 
     @Test
