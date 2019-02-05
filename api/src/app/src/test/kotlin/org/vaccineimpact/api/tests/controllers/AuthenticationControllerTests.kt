@@ -86,13 +86,13 @@ class AuthenticationControllerTests : MontaguTests()
         }
         val fakeTokenHelper = mock<WebTokenHelper> {
             on { generateToken(fakeUser) } doReturn "MAIN_TOKEN"
-            on { generateShinyToken(fakeUser) } doReturn "SHINY_TOKEN"
+            on { generateModelReviewToken(fakeUser) } doReturn "SHINY_TOKEN"
         }
         val sut = AuthenticationController(fakeContext, fakeUserLogic, mock(), fakeTokenHelper)
 
         sut.setCookies()
         verify(fakeContext).setCookie(eq(CookieName.Main), eq("MAIN_TOKEN".deflated()), any())
-        verify(fakeContext).setCookie(eq(CookieName.Shiny), eq("SHINY_TOKEN"), any())
+        verify(fakeContext).setCookie(eq(CookieName.ModelReview), eq("SHINY_TOKEN"), any())
     }
 
     @Test
@@ -102,6 +102,6 @@ class AuthenticationControllerTests : MontaguTests()
         val sut = AuthenticationController(fakeContext, mock(), mock(), mock())
         sut.logOut()
         verify(fakeContext).setCookie(eq(CookieName.Main), eq(""), any())
-        verify(fakeContext).setCookie(eq(CookieName.Shiny), eq(""), any())
+        verify(fakeContext).setCookie(eq(CookieName.ModelReview), eq(""), any())
     }
 }

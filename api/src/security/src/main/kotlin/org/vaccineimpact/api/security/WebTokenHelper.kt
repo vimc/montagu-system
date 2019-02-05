@@ -72,16 +72,15 @@ open class WebTokenHelper(
         )
     }
 
-    private fun shinyClaims(user: InternalUser): Map<String, Any>
+    private fun modelReviewClaims(user: InternalUser): Map<String, Any>
     {
-        val allowedShiny = user.permissions.contains(ReifiedPermission("reports.review", Scope.Global()))
+        val modelsToReview = mapOf("IC-Garske" to true)
         return mapOf(
                 "iss" to issuer,
-                "token_type" to TokenType.SHINY,
+                "token_type" to TokenType.MODEL_REVIEW,
                 "sub" to user.username,
-                "exp" to Date.from(Instant.now().plus(defaultLifespan)),
-                "allowed_shiny" to allowedShiny.toString()
-        )
+                "exp" to Date.from(Instant.now().plus(defaultLifespan))
+        ) + modelsToReview
     }
 
     open fun verify(compressedToken: String, expectedType: TokenType,
@@ -108,8 +107,8 @@ open class WebTokenHelper(
         val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
     }
 
-    open fun generateShinyToken(internalUser: InternalUser): String
+    open fun generateModelReviewToken(internalUser: InternalUser): String
     {
-        return generator.generate(shinyClaims(internalUser))
+        return generator.generate(modelReviewClaims(internalUser))
     }
 }

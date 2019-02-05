@@ -72,32 +72,16 @@ class WebTokenHelperTests : MontaguTests()
     }
 
     @Test
-    fun `can generate shiny token for non report reviewer`()
+    fun `can generate model review token`()
     {
-        val token = sut.generateShinyToken(InternalUser(properties, roles, permissions))
-        val claims = sut.verify(token.deflated(), TokenType.SHINY, mock())
+        val token = sut.generateModelReviewToken(InternalUser(properties, roles, permissions))
+        val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
-        assertThat(claims["token_type"]).isEqualTo("SHINY")
+        assertThat(claims["token_type"]).isEqualTo("MODEL_REVIEW")
         assertThat(claims["sub"]).isEqualTo("test.user")
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
-        assertThat(claims["allowed_shiny"]).isEqualTo("false")
-    }
-
-    @Test
-    fun `can generate shiny token for report reviewer`()
-    {
-        val permissions = listOf(
-                ReifiedPermission("reports.review", Scope.Global())
-        )
-        val token = sut.generateShinyToken(InternalUser(properties, roles, permissions))
-        val claims = sut.verify(token.deflated(), TokenType.SHINY, mock())
-
-        assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
-        assertThat(claims["token_type"]).isEqualTo("SHINY")
-        assertThat(claims["sub"]).isEqualTo("test.user")
-        assertThat(claims["exp"]).isInstanceOf(Date::class.java)
-        assertThat(claims["allowed_shiny"]).isEqualTo("true")
+        assertThat(claims["IC-Garske"]).isEqualTo("true")
     }
 
     @Test

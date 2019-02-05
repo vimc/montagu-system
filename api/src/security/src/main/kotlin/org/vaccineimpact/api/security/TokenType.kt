@@ -5,6 +5,6 @@ enum class TokenType
     BEARER,
     LEGACY_ONETIME,
     ONETIME,
-    SHINY,
+    MODEL_REVIEW,
     API_RESPONSE
 }
