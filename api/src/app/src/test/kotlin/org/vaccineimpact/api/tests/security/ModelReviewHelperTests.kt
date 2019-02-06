@@ -13,5 +13,8 @@ class ModelReviewHelperTests : MontaguTests()
         val result = getReviewersMap()
         assertThat(result["petra.klepac"]).containsExactly("CDA-Razavi",
                 "IC-Hallett", "Cambridge-Trotter", "KPW-Jackson")
+        assertThat(result.keys.count()).isEqualTo(18)
+        assertThat(result.filterNot { listOf("petra.klepac", "test.user").contains(it.key) }
+                .all { it.value.count() == 2 }).isTrue()
     }
 }
