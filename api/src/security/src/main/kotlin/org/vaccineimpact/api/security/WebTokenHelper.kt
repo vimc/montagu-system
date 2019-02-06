@@ -5,6 +5,8 @@ import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.Result
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import java.security.KeyPair
@@ -72,15 +74,25 @@ open class WebTokenHelper(
 
     private fun modelReviewClaims(user: InternalUser): Map<String, Any>
     {
-        val modelsToReview = getReviewersMap()[user.username]?.
-                map{ it to "true"}
-                ?.toMap()?: mapOf()
+        val modelsToReview = getReviewersMap()[user.username]?.map { it to "true" }
+                ?.toMap() ?: mapOf()
+
+        val adminRoles = listOf("admin", "funder", "developer").map { ReifiedRole(it, Scope.Global()) }
+        val access = if (user.roles.intersect(adminRoles).any())
+        {
+            "admin"
+        }
+        else
+        {
+            "user"
+        }
 
         return mapOf(
                 "iss" to issuer,
                 "token_type" to TokenType.MODEL_REVIEW,
                 "sub" to user.username,
-                "exp" to Date.from(Instant.now().plus(defaultLifespan))
+                "exp" to Date.from(Instant.now().plus(defaultLifespan)),
+                "access_level" to access
         ) + modelsToReview
     }
 
