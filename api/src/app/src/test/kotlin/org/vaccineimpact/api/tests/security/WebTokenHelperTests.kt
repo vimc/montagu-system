@@ -110,7 +110,7 @@ class WebTokenHelperTests : MontaguTests()
                 roles + ReifiedRole("funder", Scope.Global()), permissions))
         val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
 
-        assertThat(claims["access_level"]).isEqualTo("admin")
+        assertThat(claims["access_level"]).isEqualTo("user")
     }
 
     @Test
