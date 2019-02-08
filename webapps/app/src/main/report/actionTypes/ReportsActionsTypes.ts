@@ -8,6 +8,7 @@ export enum ReportTypeKeys {
     SET_CURRENT_REPORT = "SET_CURRENT_REPORT",
     REPORT_RUN_STARTED = "REPORT_RUN_STARTED",
     REPORT_RUN_STATUS_FETCHED = "REPORT_RUN_STATUS_FETCHED",
+    REPORT_RUN_STATUS_REMOVED = "REPORT_RUN_STATUS_REMOVED",
     REPORT_VERSION_DETAILS_FETCHED = "REPORT_VERSION_DETAILS_FETCHED",
     REPORT_VERSION_CHANGELOG_FETCHED = "REPORT_VERSION_CHANGELOG_FETCHED",
     REPORT_VERSION_CHANGELOG_RESET = "REPORT_VERSION_CHANGELOG_RESET",
@@ -33,6 +34,11 @@ export interface ReportRunStarted {
 export interface ReportRunStatusFetched {
     type: ReportTypeKeys.REPORT_RUN_STATUS_FETCHED;
     data: RunningReportStatusUpdate;
+}
+
+export interface ReportRunStatusRemoved {
+    type: ReportTypeKeys.REPORT_RUN_STATUS_REMOVED;
+    data: string;
 }
 
 export interface ReportVersionsFetched {
@@ -80,3 +86,4 @@ export type ReportsAction =
     | ReportUnpublished
     | ReportRunStarted
     | ReportRunStatusFetched
+    | ReportRunStatusRemoved

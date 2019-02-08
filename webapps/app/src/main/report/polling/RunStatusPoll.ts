@@ -14,3 +14,6 @@ async function doPoll(dispatch: Dispatch<ReportAppState>, runningKey: string){
 }
 
 export const RunStatusPoll = createPollingActions('runStatusPolling', doPoll, pollingInterval, historyLength);
+export function isRunStatusPollingActive(state: ReportAppState) {
+    return getPollingState(state, 'runStatusPolling').isActive;
+}

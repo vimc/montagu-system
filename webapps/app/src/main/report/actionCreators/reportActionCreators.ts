@@ -8,7 +8,8 @@ import {
     ReportVersionChangelogFetched,
     ReportVersionChangelogReset,
     ReportRunStarted,
-    ReportRunStatusFetched
+    ReportRunStatusFetched,
+    ReportRunStatusRemoved
 } from "../actionTypes/ReportsActionsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
 import {ReportVersion} from "../../shared/models/Generated";
@@ -66,6 +67,15 @@ export const reportActionCreators = {
                 type: ReportTypeKeys.REPORT_RUN_STATUS_FETCHED,
                 data: runningReportStatus
             } as ReportRunStatusFetched );
+        }
+    },
+
+    reportRunStatusRemoved(reportId: string) {
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            dispatch({
+                type: ReportTypeKeys.REPORT_RUN_STATUS_REMOVED,
+                data: reportId
+            } as ReportRunStatusRemoved);
         }
     },
 

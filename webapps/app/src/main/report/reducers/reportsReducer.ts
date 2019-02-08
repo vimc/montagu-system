@@ -68,6 +68,9 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
                 runningReport.version = action.data.version;
             }
             return {...state, runningReports: runningReports}
+        case ReportTypeKeys.REPORT_RUN_STATUS_REMOVED:
+            runningReports = state.runningReports.filter(r => r.name != action.data)
+            return {...state, runningReports: runningReports}
         default:
             return state;
     }
