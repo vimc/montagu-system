@@ -5,7 +5,7 @@ import {Changelog} from "../../../shared/models/Generated";
 import {longTimestamp} from "../../../shared/Helpers";
 import {VersionIdentifier} from  "../../models/VersionIdentifier";
 import {ReportAppState} from "../../reducers/reportAppReducers";
-import {compose} from "recompose";
+import {branch, compose, renderComponent} from "recompose";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
 import {Dispatch} from "redux";
 import {reportActionCreators} from "../../actionCreators/reportActionCreators";
@@ -25,10 +25,6 @@ export interface ReportChangelogProps extends ReportChangelogPublicProps {
 export class ReportChangelogComponent extends React.Component<ReportChangelogProps> {
 
     render() {
-
-        if (this.props.versionChangelog == null) {
-            return <LoadingElement/>
-        }
 
         const header = <h3 className="mb-3">Changelog</h3>;
 
@@ -67,14 +63,6 @@ export class ReportChangelogComponent extends React.Component<ReportChangelogPro
             </table>
         </div>
     };
-
-    componentDidUpdate() {
-        //Do this here as well as in didMount as we also need to fetch when already mounted when report changes from
-        //sidebar dropdown. Can't only do it here as componentDidUpdate is not called on initial render.
-        if (this.props.versionChangelog == null) {
-            this.props.fetchChangelog(this.props);
-        }
-    }
 }
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportChangelogProps> => {
@@ -94,6 +82,12 @@ export const ReportChangelog = compose<ReportChangelogProps, ReportChangelogPubl
     withLifecycle({
         onDidMount: (props: ReportChangelogProps) => {
             props.fetchChangelog(props)
+        },
+        onDidUpdate: (prevProps: ReportChangelogProps, props: ReportChangelogProps) => {
+            if (props.versionChangelog == null) {
+                props.fetchChangelog(props)
+            }
         }
-    })
+    }),
+    branch((props: ReportChangelogProps) => props.versionChangelog == null, renderComponent(LoadingElement)),
 )(ReportChangelogComponent);
