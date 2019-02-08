@@ -6,10 +6,13 @@ import {Sandbox} from "../../../Sandbox";
 import {
     mapStateToProps,
     ReportChangelogComponent,
-    ReportChangelogProps
+    ReportChangelogProps,
+    ReportChangelog
 } from "../../../../main/report/components/Reports/ReportChangelog";
 import {mockReportAppState} from "../../../mocks/mockStates";
+import {createMockStore} from "../../../mocks/mockStore";
 import {Changelog} from "../../../../main/shared/models/Generated"
+import {reportActionCreators} from "../../../../main/report/actionCreators/reportActionCreators";
 
 describe("ReportChangelog", () => {
     const sandbox = new Sandbox();
@@ -98,4 +101,53 @@ describe("ReportChangelog", () => {
         expect(secondRowCells.at(1).find("span").hasClass("badge-internal")).to.eql(true);
         expect(secondRowCells.at(2).text()).to.eql("internal test changelog message");
     });
+
+    it("fetches changelog when updates with null current changelog", () => {
+        const store = createMockStore(mockReportAppState({reports: {versionChangelog: null}}));
+        const fetchChangelogStub = sandbox.setStubReduxAction(reportActionCreators, "getVersionChangelog");
+
+        //Render..
+        const rendered = shallow(<ReportChangelog
+            report="reportname"
+            version="v2"
+        />, {context: {store}}).dive();
+
+        //Fetch on mount
+        expect(fetchChangelogStub.calledOnce).to.be.true;
+
+        //..then update
+        rendered.instance().forceUpdate();
+
+        //Expect changelog to have been fetched twice, once on mount, and once on update
+        expect(fetchChangelogStub.calledTwice).to.be.true;
+
+    });
+
+    it("does not fetch changelog when updates with non-null current changelog", () => {
+        const changelog = [{
+                    report_version: "20180123-155855-5d5b8238",
+                    label:"public",
+                    value:"public test changelog message",
+                    from_file: true
+                }];
+        const store = createMockStore(mockReportAppState({reports: {versionChangelog: changelog}}));
+        const fetchChangelogStub = sandbox.setStubReduxAction(reportActionCreators, "getVersionChangelog");
+
+        //Render..
+        const rendered = shallow(<ReportChangelog
+            report="reportname"
+            version="v2"
+        />, {context: {store}}).dive();
+
+        //Fetch on mount
+        expect(fetchChangelogStub.calledOnce).to.be.true;
+
+        //..then update
+        rendered.instance().forceUpdate();
+
+        //Changelog should not have been re-fetched
+        expect(fetchChangelogStub.calledTwice).to.be.false;
+
+    });
+
 });
