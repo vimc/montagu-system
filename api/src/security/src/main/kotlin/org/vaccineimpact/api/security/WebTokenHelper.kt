@@ -6,7 +6,7 @@ import org.pac4j.jwt.profile.JwtGenerator
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
 import java.security.KeyPair
@@ -42,7 +42,7 @@ open class WebTokenHelper(
                 "iss" to issuer,
                 "token_type" to TokenType.ONETIME,
                 "sub" to username,
-                "exp" to Date.from(Instant.now().plus(duration?: oneTimeLinkLifeSpan)),
+                "exp" to Date.from(Instant.now().plus(duration ?: oneTimeLinkLifeSpan)),
                 "permissions" to permissions,
                 "roles" to roles,
                 "url" to url,
@@ -72,16 +72,28 @@ open class WebTokenHelper(
         )
     }
 
-    private fun shinyClaims(user: InternalUser): Map<String, Any>
+    private fun modelReviewClaims(user: InternalUser): Map<String, Any>
     {
-        val allowedShiny = user.permissions.contains(ReifiedPermission("reports.review", Scope.Global()))
+        val modelsToReview = getReviewersMap()[user.username]?.map { it to "true" }
+                ?.toMap() ?: mapOf()
+
+        val adminRoles = listOf("admin", "funder", "developer").map { ReifiedRole(it, Scope.Global()) }
+        val access = if (user.roles.intersect(adminRoles).any())
+        {
+            "admin"
+        }
+        else
+        {
+            "user"
+        }
+
         return mapOf(
                 "iss" to issuer,
-                "token_type" to TokenType.SHINY,
+                "token_type" to TokenType.MODEL_REVIEW,
                 "sub" to user.username,
                 "exp" to Date.from(Instant.now().plus(defaultLifespan)),
-                "allowed_shiny" to allowedShiny.toString()
-        )
+                "access_level" to access
+        ) + modelsToReview
     }
 
     open fun verify(compressedToken: String, expectedType: TokenType,
@@ -108,8 +120,8 @@ open class WebTokenHelper(
         val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
     }
 
-    open fun generateShinyToken(internalUser: InternalUser): String
+    open fun generateModelReviewToken(internalUser: InternalUser): String
     {
-        return generator.generate(shinyClaims(internalUser))
+        return generator.generate(modelReviewClaims(internalUser))
     }
 }

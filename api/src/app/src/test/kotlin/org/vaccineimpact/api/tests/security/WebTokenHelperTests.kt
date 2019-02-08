@@ -72,32 +72,65 @@ class WebTokenHelperTests : MontaguTests()
     }
 
     @Test
-    fun `can generate shiny token for non report reviewer`()
+    fun `can generate model review token`()
     {
-        val token = sut.generateShinyToken(InternalUser(properties, roles, permissions))
-        val claims = sut.verify(token.deflated(), TokenType.SHINY, mock())
+        val token = sut.generateModelReviewToken(InternalUser(properties, roles, permissions))
+        val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
-        assertThat(claims["token_type"]).isEqualTo("SHINY")
+        assertThat(claims["token_type"]).isEqualTo("MODEL_REVIEW")
         assertThat(claims["sub"]).isEqualTo("test.user")
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
-        assertThat(claims["allowed_shiny"]).isEqualTo("false")
+        assertThat(claims["test-group"]).isEqualTo("true")
+        assertThat(claims["url"]).isEqualTo("*")
+        assertThat(claims["access_level"]).isEqualTo("user")
+        assertThat(claims.keys.count()).isEqualTo(7)
     }
 
     @Test
-    fun `can generate shiny token for report reviewer`()
+    fun `can generate model review token for user with no models to review`()
     {
-        val permissions = listOf(
-                ReifiedPermission("reports.review", Scope.Global())
-        )
-        val token = sut.generateShinyToken(InternalUser(properties, roles, permissions))
-        val claims = sut.verify(token.deflated(), TokenType.SHINY, mock())
+        val token = sut.generateModelReviewToken(InternalUser(properties.copy(username = "some.user"),
+                roles, permissions))
+        val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
-        assertThat(claims["token_type"]).isEqualTo("SHINY")
-        assertThat(claims["sub"]).isEqualTo("test.user")
+        assertThat(claims["token_type"]).isEqualTo("MODEL_REVIEW")
+        assertThat(claims["sub"]).isEqualTo("some.user")
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
-        assertThat(claims["allowed_shiny"]).isEqualTo("true")
+        assertThat(claims["url"]).isEqualTo("*")
+        assertThat(claims["access_level"]).isEqualTo("user")
+        assertThat(claims.keys.count()).isEqualTo(6)
+    }
+
+    @Test
+    fun `can generate model review token for funder`()
+    {
+        val token = sut.generateModelReviewToken(InternalUser(properties,
+                roles + ReifiedRole("funder", Scope.Global()), permissions))
+        val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
+
+        assertThat(claims["access_level"]).isEqualTo("admin")
+    }
+
+    @Test
+    fun `can generate model review token for admin`()
+    {
+        val token = sut.generateModelReviewToken(InternalUser(properties,
+                roles + ReifiedRole("admin", Scope.Global()), permissions))
+        val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
+
+        assertThat(claims["access_level"]).isEqualTo("admin")
+    }
+
+    @Test
+    fun `can generate model review token for developer`()
+    {
+        val token = sut.generateModelReviewToken(InternalUser(properties,
+                roles + ReifiedRole("developer", Scope.Global()), permissions))
+        val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
+
+        assertThat(claims["access_level"]).isEqualTo("admin")
     }
 
     @Test

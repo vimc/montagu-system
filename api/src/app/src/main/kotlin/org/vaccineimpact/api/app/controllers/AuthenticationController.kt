@@ -51,8 +51,8 @@ class AuthenticationController(context: ActionContext,
         val token = tokenHelper.generateToken(internalUser).deflated()
         context.setCookie(CookieName.Main, token)
 
-        val shinyToken = tokenHelper.generateShinyToken(internalUser)
-        context.setCookie(CookieName.Shiny, shinyToken)
+        val modelReviewToken = tokenHelper.generateModelReviewToken(internalUser)
+        context.setCookie(CookieName.ModelReview, modelReviewToken)
 
         return okayResponse()
     }
@@ -60,7 +60,7 @@ class AuthenticationController(context: ActionContext,
     fun logOut(): String
     {
         context.setCookie(CookieName.Main, "")
-        context.setCookie(CookieName.Shiny, "")
+        context.setCookie(CookieName.ModelReview, "")
         return okayResponse()
     }
 }

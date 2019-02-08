@@ -64,10 +64,9 @@ class AuthenticationTests : DatabaseTest()
         val tokenType = mainClaims.getClaim("token_type")
         assertThat(tokenType.asString()).isEqualTo("BEARER")
 
-        val shinyToken = checkCookieAndGetValue(response, "jwt_token")
-        val shinyClaims = JWT.decode(shinyToken)
-        val allowedShiny = shinyClaims.getClaim("allowed_shiny")
-        assertThat(allowedShiny.asString()).isEqualTo("true")
+        val modelReviewToken = checkCookieAndGetValue(response, "jwt_token")
+        val modelReviewClaims = JWT.decode(modelReviewToken)
+        assertThat(modelReviewClaims.getClaim("test-group").asString()).isEqualTo("true")
     }
 
     @Test
@@ -78,8 +77,8 @@ class AuthenticationTests : DatabaseTest()
 
         val mainToken = checkCookieAndGetValue(response, "montagu_jwt_token")
         assertThat(mainToken.isEmpty()).isTrue()
-        val shinyToken = checkCookieAndGetValue(response, "jwt_token")
-        assertThat(shinyToken.isEmpty()).isTrue()
+        val modelReviewToken = checkCookieAndGetValue(response, "jwt_token")
+        assertThat(modelReviewToken.isEmpty()).isTrue()
     }
 
     @Test

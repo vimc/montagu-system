@@ -163,7 +163,7 @@ class DirectActionContextTests : MontaguTests()
             on { it.sparkResponse } doReturn mockResponse
         }
         val sut = DirectActionContext(webContext)
-        sut.setCookie(CookieName.Shiny, "TOKEN", config)
+        sut.setCookie(CookieName.ModelReview, "TOKEN", config)
         verify(mockResponse).header(eq("Set-Cookie"), eq("jwt_token=TOKEN; Path=/; HttpOnly; SameSite=Strict"))
     }
 
