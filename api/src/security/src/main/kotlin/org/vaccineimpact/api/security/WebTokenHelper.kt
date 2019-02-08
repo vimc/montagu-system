@@ -77,7 +77,7 @@ open class WebTokenHelper(
         val modelsToReview = getReviewersMap()[user.username]?.map { it to "true" }
                 ?.toMap() ?: mapOf()
 
-        val adminRoles = listOf("admin", "funder", "developer").map { ReifiedRole(it, Scope.Global()) }
+        val adminRoles = listOf("admin", "developer").map { ReifiedRole(it, Scope.Global()) }
         val access = if (user.roles.intersect(adminRoles).any())
         {
             "admin"
