@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 import {Changelog} from "../../../shared/models/Generated";
 import {longTimestamp} from "../../../shared/Helpers";
-import {VersionIdentifier} from  "../../models/VersionIdentifier";
+import {VersionIdentifier} from "../../models/VersionIdentifier";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {branch, compose, renderComponent} from "recompose";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
@@ -11,6 +11,8 @@ import {Dispatch} from "redux";
 import {reportActionCreators} from "../../actionCreators/reportActionCreators";
 import {ContribAppState} from "../../../contrib/reducers/contribAppReducers";
 import withLifecycle from "@hocs/with-lifecycle";
+import * as _ from "lodash";
+import {Card, Col} from "reactstrap";
 
 export interface ReportChangelogPublicProps {
     report: string;
@@ -40,30 +42,33 @@ export class ReportChangelogComponent extends React.Component<ReportChangelogPro
         let rowIdx = 0;
         return <div>
             {header}
-            <table>
-                <thead className="changelog-header">
-                <tr>
-                    <th className="datestring-column">Date</th>
-                    <th>Label</th>
-                    <th>Text</th>
-                </tr>
-                </thead>
-                <tbody>
-                {this.props.versionChangelog.map((changelog: Changelog) => {
-                        const badgeType = (changelog.label == "public") ? "published" : "internal";
-                        return <tr key={rowIdx++}>
-                            <td>{longTimestamp(new VersionIdentifier(changelog.report_version).timestamp)}</td>
-                            <td><span className={`badge badge-${badgeType}`}>{changelog.label}</span></td>
-                            <td>{changelog.value}</td>
-                        </tr>;
-                    }
-                )
-                }
-                </tbody>
-            </table>
+            {_.chain(this.props.versionChangelog)
+                .groupBy("report_version")
+                .map((value: Changelog[], version: string) => {
+                    console.log(value, version);
+                    return <ChangelogItem key={version} version={version} reportName={this.props.report}
+                                          changelog={value}/>
+                })
+            }
         </div>
     };
 }
+
+export const ChangelogItem = (props: { reportName: string, version: string, changelog: Changelog[] }) => {
+    
+    return <Card className={"rounded-0"}>
+        <Col>
+            {longTimestamp(new VersionIdentifier(props.version).timestamp)}
+        </Col>
+        <Col>
+            {props.changelog.map((item) => {
+                const badgeType = (item.label == "public") ? "published" : "internal";
+                return [<span className={`badge badge-${badgeType}`}>{item.label}</span>, <span>{item.value}</span>]
+            })}
+        </Col>
+    </Card>
+
+};
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportChangelogProps> => {
     return {
