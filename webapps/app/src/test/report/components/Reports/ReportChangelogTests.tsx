@@ -6,14 +6,15 @@ import * as _ from "lodash";
 import {Sandbox} from "../../../Sandbox";
 import {
     mapStateToProps,
+    ReportChangelog,
     ReportChangelogComponent,
-    ReportChangelogProps,
-    ReportChangelog
+    ReportChangelogProps
 } from "../../../../main/report/components/Reports/ReportChangelog";
 import {mockReportAppState} from "../../../mocks/mockStates";
 import {createMockStore} from "../../../mocks/mockStore";
 import {Changelog} from "../../../../main/shared/models/Generated"
 import {reportActionCreators} from "../../../../main/report/actionCreators/reportActionCreators";
+import {InternalLink} from "../../../../main/shared/components/InternalLink";
 
 describe("ReportChangelog", () => {
     const sandbox = new Sandbox();
@@ -21,14 +22,14 @@ describe("ReportChangelog", () => {
 
     describe("getPropsFromStores", () => {
 
-        const expectedChangelog =[
+        const expectedChangelog = [
             {
                 report_version: "v1",
-                label:"internal",
-                value:"test changelog message",
+                label: "internal",
+                value: "test changelog message",
                 from_file: true
             }
-            ];
+        ];
 
         it("checks props mappings", () => {
             const reportStateProps = mockReportAppState({
@@ -49,7 +50,7 @@ describe("ReportChangelog", () => {
     });
 
     it("renders empty changelog", () => {
-        const empty : Changelog[] = [];
+        const empty: Changelog[] = [];
         const rendered = shallow(<ReportChangelogComponent
             versionChangelog={empty}
             report="reportname"
@@ -60,23 +61,25 @@ describe("ReportChangelog", () => {
         expect(rendered.find("p").text()).to.eql("There is no Changelog for this Report version.");
     });
 
+    const mockChangelog = [
+        {
+            report_version: "20180123-155855-5d5b8238",
+            label: "public",
+            value: "public test changelog message",
+            from_file: true
+        },
+        {
+            report_version: "20180104-082959-0544c986",
+            label: "internal",
+            value: "internal test changelog message",
+            from_file: false
+        }
+    ];
+
     it("renders changelog", () => {
-        const expectedChangelog =[
-            {
-                report_version: "20180123-155855-5d5b8238",
-                label:"public",
-                value:"public test changelog message",
-                from_file: true
-            },
-            {
-                report_version: "20180104-082959-0544c986",
-                label:"internal",
-                value:"internal test changelog message",
-                from_file: false
-            }
-        ];
+
         const rendered = shallow(<ReportChangelogComponent
-            versionChangelog={expectedChangelog}
+            versionChangelog={mockChangelog}
             report="reportname"
             version="v2"
             fetchChangelog={null}
@@ -90,17 +93,35 @@ describe("ReportChangelog", () => {
 
         const firstRow = rendered.find("tbody tr").first();
         const firstRowCells = firstRow.find("td");
-        expect(firstRowCells.at(0).text()).to.eql("Tue Jan 23 2018, 15:58");
         expect(firstRowCells.at(1).text()).to.eql("public");
         expect(firstRowCells.at(1).find("span").hasClass("badge-published")).to.eql(true);
         expect(firstRowCells.at(2).text()).to.eql("public test changelog message");
 
         const secondRow = rendered.find("tbody tr").at(1);
         const secondRowCells = secondRow.find("td");
-        expect(secondRowCells.at(0).text()).to.eql("Thu Jan 04 2018, 08:29");
         expect(secondRowCells.at(1).text()).to.eql("internal");
         expect(secondRowCells.at(1).find("span").hasClass("badge-internal")).to.eql(true);
         expect(secondRowCells.at(2).text()).to.eql("internal test changelog message");
+    });
+
+    it("renders links to report versions", () => {
+
+        const rendered = shallow(<ReportChangelogComponent
+            versionChangelog={mockChangelog}
+            report="reportname"
+            version="v2"
+            fetchChangelog={null}
+        />);
+
+        const body = rendered.find("tbody tr");
+        const firstRowVersionCell = body.first().find("td").at(0);
+        expect(firstRowVersionCell.find(InternalLink).childAt(0).text()).to.eql("Jan 23 2018, 15:58");
+        expect(firstRowVersionCell.find(InternalLink).prop("href")).to.eql("/reportname/20180123-155855-5d5b8238/");
+
+        const secondRowVersionCell = body.at(1).find("td").at(0);
+        expect(secondRowVersionCell.find(InternalLink).childAt(0).text()).to.eql("Jan 04 2018, 08:29");
+        expect(secondRowVersionCell.find(InternalLink).prop("href")).to.eql("/reportname/20180104-082959-0544c986/");
+
     });
 
     it("fetches changelog when updates with null current changelog", () => {
@@ -126,11 +147,11 @@ describe("ReportChangelog", () => {
 
     it("does not fetch changelog when updates with non-null current changelog", () => {
         const changelog = [{
-                    report_version: "20180123-155855-5d5b8238",
-                    label:"public",
-                    value:"public test changelog message",
-                    from_file: true
-                }];
+            report_version: "20180123-155855-5d5b8238",
+            label: "public",
+            value: "public test changelog message",
+            from_file: true
+        }];
         const store = createMockStore(mockReportAppState({reports: {versionChangelog: changelog}}));
         const fetchChangelogStub = sandbox.setStubReduxAction(reportActionCreators, "getVersionChangelog");
 

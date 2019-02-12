@@ -2,7 +2,7 @@ import * as React from "react";
 import {connect} from 'react-redux';
 
 import {Changelog} from "../../../shared/models/Generated";
-import {longTimestamp} from "../../../shared/Helpers";
+import {shortTimestamp} from "../../../shared/Helpers";
 import {VersionIdentifier} from "../../models/VersionIdentifier";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {branch, compose, renderComponent} from "recompose";
@@ -11,8 +11,11 @@ import {Dispatch} from "redux";
 import {reportActionCreators} from "../../actionCreators/reportActionCreators";
 import {ContribAppState} from "../../../contrib/reducers/contribAppReducers";
 import withLifecycle from "@hocs/with-lifecycle";
-import * as _ from "lodash";
+
 import {Card, Col} from "reactstrap";
+import {InternalLink} from "../../../shared/components/InternalLink";
+import groupBy from "lodash/groupBy"
+import map from "lodash/map"
 
 export interface ReportChangelogPublicProps {
     report: string;
@@ -39,12 +42,10 @@ export class ReportChangelogComponent extends React.Component<ReportChangelogPro
             </div>
         }
 
-        let rowIdx = 0;
         return <div>
             {header}
-            {_.chain(this.props.versionChangelog)
-                .groupBy("report_version")
-                .map((value: Changelog[], version: string) => {
+            {map(groupBy(this.props.versionChangelog, "report_version"),
+                (value: Changelog[], version: string) => {
                     console.log(value, version);
                     return <ChangelogItem key={version} version={version} reportName={this.props.report}
                                           changelog={value}/>
@@ -55,10 +56,12 @@ export class ReportChangelogComponent extends React.Component<ReportChangelogPro
 }
 
 export const ChangelogItem = (props: { reportName: string, version: string, changelog: Changelog[] }) => {
-    
+
     return <Card className={"rounded-0"}>
         <Col>
-            {longTimestamp(new VersionIdentifier(props.version).timestamp)}
+            <InternalLink href={`/${props.reportName}/${props.version}/`}>
+                {shortTimestamp(new VersionIdentifier(props.version).timestamp)}
+            </InternalLink>
         </Col>
         <Col>
             {props.changelog.map((item) => {
