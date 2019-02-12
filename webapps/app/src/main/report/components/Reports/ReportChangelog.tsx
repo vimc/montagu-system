@@ -11,8 +11,6 @@ import {Dispatch} from "redux";
 import {reportActionCreators} from "../../actionCreators/reportActionCreators";
 import {ContribAppState} from "../../../contrib/reducers/contribAppReducers";
 import withLifecycle from "@hocs/with-lifecycle";
-
-import {Card, CardBody, Col, ListGroup, ListGroupItem, Row} from "reactstrap";
 import {InternalLink} from "../../../shared/components/InternalLink";
 import {groupBy, map} from "lodash";
 
@@ -26,39 +24,36 @@ export interface ReportChangelogProps extends ReportChangelogPublicProps {
     fetchChangelog: (props: ReportChangelogPublicProps) => void;
 }
 
-export class ReportChangelogComponent extends React.Component<ReportChangelogProps> {
+export const ReportChangelogComponent = (props: ReportChangelogProps) => {
 
+    const header = <h3 className="mb-3">Changelog</h3>;
 
-    render() {
-
-        const header = <h3 className="mb-3">Changelog</h3>;
-
-        if (this.props.versionChangelog.length == 0) {
-            return <div>
-                {header}
-                <p>
-                    There is no Changelog for this Report version.
-                </p>
-            </div>
-        }
-
-        const versionChangelogs = groupBy(this.props.versionChangelog, "report_version");
-
+    if (props.versionChangelog.length == 0) {
         return <div>
             {header}
-            <table>
-                <tbody>
-                {map(versionChangelogs,
-                    (value: Changelog[], version: string) => {
-                        return <ChangelogRow key={version} version={version} reportName={this.props.report}
-                                             changelog={value}/>
-                    })
-                }
-                </tbody>
-            </table>
+            <p>
+                There is no Changelog for this Report version.
+            </p>
         </div>
-    };
-}
+    }
+
+    const versionChangelogs = groupBy(props.versionChangelog, "report_version");
+
+    return <div>
+        {header}
+        <table>
+            <tbody>
+            {map(versionChangelogs,
+                (value: Changelog[], version: string) => {
+                    return <ChangelogRow key={version} version={version} reportName={props.report}
+                                         changelog={value}/>
+                })
+            }
+            </tbody>
+        </table>
+    </div>
+
+};
 
 export const ChangelogRow = (props: { reportName: string, version: string, changelog: Changelog[] }) => {
 
