@@ -172,25 +172,4 @@ describe("ReportChangelog", () => {
 
     });
 
-    it("test", () => {
-
-        const expectedChangelog =[
-            {
-                report_version: "20180123-155855-5d5b8238",
-                label:"public",
-                value:"public test changelog message",
-                from_file: true
-            },
-            {
-                report_version: "20180104-082959-0544c986",
-                label:"internal",
-                value:"internal test changelog message",
-                from_file: false
-            }
-        ];
-
-        console.log("---------------------------------------")
-        console.log(_.groupBy(expectedChangelog, "report_version"))
-    })
-
 });

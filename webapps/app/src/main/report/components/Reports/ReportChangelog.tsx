@@ -12,10 +12,9 @@ import {reportActionCreators} from "../../actionCreators/reportActionCreators";
 import {ContribAppState} from "../../../contrib/reducers/contribAppReducers";
 import withLifecycle from "@hocs/with-lifecycle";
 
-import {Card, Col} from "reactstrap";
+import {Card, CardBody, Col, ListGroup, ListGroupItem, Row} from "reactstrap";
 import {InternalLink} from "../../../shared/components/InternalLink";
-import groupBy from "lodash/groupBy"
-import map from "lodash/map"
+import {groupBy, map} from "lodash";
 
 export interface ReportChangelogPublicProps {
     report: string;
@@ -28,6 +27,7 @@ export interface ReportChangelogProps extends ReportChangelogPublicProps {
 }
 
 export class ReportChangelogComponent extends React.Component<ReportChangelogProps> {
+
 
     render() {
 
@@ -42,34 +42,40 @@ export class ReportChangelogComponent extends React.Component<ReportChangelogPro
             </div>
         }
 
+        const versionChangelogs = groupBy(this.props.versionChangelog, "report_version");
+
         return <div>
             {header}
-            {map(groupBy(this.props.versionChangelog, "report_version"),
-                (value: Changelog[], version: string) => {
-                    console.log(value, version);
-                    return <ChangelogItem key={version} version={version} reportName={this.props.report}
-                                          changelog={value}/>
-                })
-            }
+            <table>
+                <tbody>
+                {map(versionChangelogs,
+                    (value: Changelog[], version: string) => {
+                        return <ChangelogRow key={version} version={version} reportName={this.props.report}
+                                             changelog={value}/>
+                    })
+                }
+                </tbody>
+            </table>
         </div>
     };
 }
 
-export const ChangelogItem = (props: { reportName: string, version: string, changelog: Changelog[] }) => {
+export const ChangelogRow = (props: { reportName: string, version: string, changelog: Changelog[] }) => {
 
-    return <Card className={"rounded-0"}>
-        <Col>
+    return <tr>
+        <td className={"changelog-date"}>
             <InternalLink href={`/${props.reportName}/${props.version}/`}>
                 {shortTimestamp(new VersionIdentifier(props.version).timestamp)}
             </InternalLink>
-        </Col>
-        <Col>
+        </td>
+        <td>
             {props.changelog.map((item) => {
                 const badgeType = (item.label == "public") ? "published" : "internal";
-                return [<span className={`badge badge-${badgeType}`}>{item.label}</span>, <span>{item.value}</span>]
+                return [<div className={`badge changelog-label badge-${badgeType}`}>{item.label}</div>,
+                    <div className={"changelog-item " + badgeType}>{item.value}</div>]
             })}
-        </Col>
-    </Card>
+        </td>
+    </tr>
 
 };
 
