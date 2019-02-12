@@ -5,6 +5,11 @@ import {reportActionCreators} from "../../actionCreators/reportActionCreators";
 import {RunStatusPoll, isRunStatusPollingActive} from "../../polling/RunStatusPoll";
 import {RunningReportStatusValues} from "../../models/RunningReportStatus";
 import {InternalLink} from "../../../shared/components/InternalLink";
+import {compose} from "recompose";
+import withLifecycle from "@hocs/with-lifecycle";
+import {ConfirmModal} from "../../../shared/components/ConfirmModal";
+import {longTimestamp} from "../../../shared/Helpers";
+import {VersionIdentifier} from "../../models/VersionIdentifier";
 
 export interface PublicProps{
     name: string;
@@ -23,45 +28,34 @@ export interface RunReportProps extends PublicProps {
     isPollingActive: boolean;
 }
 
-export class RunReportComponent extends React.Component<RunReportProps, undefined> {
+interface RunReportModalState {
+    showModal: boolean
+}
+
+export class RunReportComponent extends React.Component<RunReportProps, RunReportModalState> {
 
     constructor() {
         super();
+        this.state = { showModal: false };
         this.onClickRun = this.onClickRun.bind(this);
         this.onClickDismiss = this.onClickDismiss.bind(this);
+        this.onConfirm = this.onConfirm.bind(this);
     }
 
-    componentDidMount() {
-        this.updatePolling();
+    showModal() {
+        this.setState({ showModal: true });
     }
 
-    componentDidUpdate() {
-        this.updatePolling();
-    }
-
-    runIsFinished(){
-        return this.props.runningStatus == RunningReportStatusValues.RUNNING_REPORT_STATUS_SUCCESS ||
-            this.props.runningStatus == RunningReportStatusValues.RUNNING_REPORT_STATUS_ERROR
-    }
-
-    updatePolling(){
-        //Keep this simple - if we've had any sort of update, restart polling if we need to keep polling
-        if (this.props.isPollingActive) {
-            this.props.stopPoll();
-
-            //if polling was active and the run has just completed, refresh version details to put new version in drop-down
-            if (this.runIsFinished()) {
-                this.props.refreshVersions(this.props.name);
-            }
-
-        }
-        if (this.props.runningKey && !this.runIsFinished()){
-            this.props.startPoll(this.props.runningKey);
-        }
-    }
+    hideModal = () => {
+        this.setState({ showModal: false });
+    };
 
     onClickRun() {
-        //TODO: show modal confirm dialog
+        this.showModal();
+    }
+
+    onConfirm() {
+        this.hideModal();
         this.props.run(this.props.name);
     }
 
@@ -72,15 +66,24 @@ export class RunReportComponent extends React.Component<RunReportProps, undefine
     render() {
         return <div>
                 <div>Run this report to create a new version.</div>
+                <ConfirmModal show={this.state.showModal} title={`Confirm run report`}
+                              text={`Are you sure you want to run this report?`}
+                              onClose={this.hideModal}
+                              onConfirm={this.onConfirm}/>
                 <button className={"btn mt-2"} type={"submit"} onClick={this.onClickRun}>Run report</button>
                 {this.props.runningStatus &&
-                    <div className={"text-secondary"}>
-                        {"Running status: " + this.props.runningStatus}
-                        {this.props.newVersionFromRun &&
-                        <div >New version:
-                            <InternalLink href={`/${this.props.name}/${this.props.newVersionFromRun}/`}>{this.props.newVersionFromRun}</InternalLink>
-                        </div>}
-                        <div className={"btn btn-link"} onClick={this.onClickDismiss}>Dismiss</div>
+                    <div>
+                        <div className={"text-secondary mt-2"}>
+                            {"Running status: " + this.props.runningStatus}
+                            {this.props.newVersionFromRun &&
+                            <div>
+                                New version: <InternalLink
+                                    href={`/${this.props.name}/${this.props.newVersionFromRun}/`}>
+                                        {longTimestamp(new VersionIdentifier(this.props.newVersionFromRun).timestamp)}
+                                        </InternalLink>
+                            </div>}
+                        </div>
+                        <div className={"btn btn-link p-0"} onClick={this.onClickDismiss}>Dismiss</div>
                     </div>}
             </div>
     }
@@ -94,7 +97,7 @@ const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<Run
         runningKey: runningReportStatus ? runningReportStatus.key : null,
         runningStatus: runningReportStatus ? runningReportStatus.status : null,
         newVersionFromRun: runningReportStatus ? runningReportStatus.version : null,
-        isPollingActive: isRunStatusPollingActive(state)
+        isPollingActive: isRunStatusPollingActive(state),
     }
 }
 
@@ -109,4 +112,35 @@ export const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<
     }
 }
 
-export const RunReport = connect(mapStateToProps, mapDispatchToProps)(RunReportComponent)
+const updatePolling = (props: RunReportProps) => {
+    //Keep this simple - if we've had any sort of update, restart polling if we need to keep polling
+    if (props.isPollingActive) {
+        props.stopPoll();
+
+        //if polling was active and the run has just completed, refresh version details to put new version in drop-down
+        if (runIsFinished(props)) {
+            props.refreshVersions(props.name);
+        }
+
+    }
+    if (props.runningKey && !runIsFinished(props)){
+        props.startPoll(props.runningKey);
+    }
+}
+
+const runIsFinished = (props: RunReportProps) => {
+    return props.runningStatus == RunningReportStatusValues.RUNNING_REPORT_STATUS_SUCCESS ||
+        props.runningStatus == RunningReportStatusValues.RUNNING_REPORT_STATUS_ERROR
+}
+
+export const RunReport = compose<RunReportProps, PublicProps>(
+    connect(mapStateToProps, mapDispatchToProps),
+    withLifecycle({
+        onDidMount: (props: RunReportProps) => {
+            updatePolling(props);
+        },
+        onDidUpdate: (prevProps: RunReportProps, props: RunReportProps) => {
+            updatePolling(props);
+        }
+    })
+)(RunReportComponent)
