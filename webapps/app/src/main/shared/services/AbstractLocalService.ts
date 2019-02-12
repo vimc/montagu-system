@@ -208,8 +208,10 @@ export abstract class AbstractLocalService {
     }
 
     notifyOnErrors(error: any) {
-        this.initOptions();
-        notificationActionCreators.notify(error.toString(), "error")(this.dispatch, null);
+        if (this.options.notificationOnError) {
+            this.initOptions();
+            notificationActionCreators.notify(error.toString(), "error")(this.dispatch, null);
+        }
     }
 
     protected logOut() {

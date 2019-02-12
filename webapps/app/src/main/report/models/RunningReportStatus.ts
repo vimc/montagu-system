@@ -15,5 +15,6 @@ export interface RunningReportStatus extends RunningReportStatusUpdate {
 export enum RunningReportStatusValues  {
     RUNNING_REPORT_STATUS_STARTED = "started",
     RUNNING_REPORT_STATUS_SUCCESS = "success",
-    RUNNING_REPORT_STATUS_ERROR = "error"
+    RUNNING_REPORT_STATUS_ERROR = "error",
+    RUNNING_REPORT_STATUS_SERVER_ERROR = "error contacting server"
 }

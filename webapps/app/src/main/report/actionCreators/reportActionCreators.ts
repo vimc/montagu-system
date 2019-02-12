@@ -13,6 +13,7 @@ import {
 } from "../actionTypes/ReportsActionsTypes";
 import {GlobalState} from "../../shared/reducers/GlobalState";
 import {ReportVersion} from "../../shared/models/Generated";
+import {RunningReportStatusUpdate, RunningReportStatusValues} from "../models/RunningReportStatus";
 
 
 export const reportActionCreators = {
@@ -62,7 +63,21 @@ export const reportActionCreators = {
 
     pollRunStatus(key: string) {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            const runningReportStatus = await (new ReportsService(dispatch, getState)).getReportRunStatus(key);
+            let runningReportStatus : RunningReportStatusUpdate;
+            runningReportStatus = await (new ReportsService(dispatch, getState))
+                                    .setOptions({notificationOnError: false})
+                                    .getReportRunStatus(key);
+
+            //We've forced the service not to notify on error so the user doesn't see an expanding popup, but
+            //if status was not set then something went wrong
+            if (!runningReportStatus) {
+                runningReportStatus = {
+                    key: key,
+                    status: RunningReportStatusValues.RUNNING_REPORT_STATUS_SERVER_ERROR,
+                    version: null,
+                    output: null
+                }
+            }
             dispatch({
                 type: ReportTypeKeys.REPORT_RUN_STATUS_FETCHED,
                 data: runningReportStatus

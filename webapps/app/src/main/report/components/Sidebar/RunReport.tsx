@@ -4,11 +4,11 @@ import {ReportAppState} from "../../reducers/reportAppReducers";
 import {reportActionCreators} from "../../actionCreators/reportActionCreators";
 import {RunStatusPoll, isRunStatusPollingActive} from "../../polling/RunStatusPoll";
 import {RunningReportStatusValues} from "../../models/RunningReportStatus";
+import {InternalLink} from "../../../shared/components/InternalLink";
 
 export interface PublicProps{
     name: string;
     version: string;
-    onChangeVersion: (version: string) => void;
 }
 
 export interface RunReportProps extends PublicProps {
@@ -29,7 +29,6 @@ export class RunReportComponent extends React.Component<RunReportProps, undefine
         super();
         this.onClickRun = this.onClickRun.bind(this);
         this.onClickDismiss = this.onClickDismiss.bind(this);
-        this.onClickNewVersion = this.onClickNewVersion.bind(this);
     }
 
     componentDidMount() {
@@ -70,10 +69,6 @@ export class RunReportComponent extends React.Component<RunReportProps, undefine
         this.props.dismissRunStatus(this.props.name);
     }
 
-    onClickNewVersion() {
-        this.props.onChangeVersion(this.props.newVersionFromRun);
-    }
-
     render() {
         return <div>
                 <div>Run this report to create a new version.</div>
@@ -83,7 +78,7 @@ export class RunReportComponent extends React.Component<RunReportProps, undefine
                         {"Running status: " + this.props.runningStatus}
                         {this.props.newVersionFromRun &&
                         <div >New version:
-                            <div className={"btn btn-link"} onClick={this.onClickNewVersion}>{this.props.newVersionFromRun}</div>
+                            <InternalLink href={`/${this.props.name}/${this.props.newVersionFromRun}/`}>{this.props.newVersionFromRun}</InternalLink>
                         </div>}
                         <div className={"btn btn-link"} onClick={this.onClickDismiss}>Dismiss</div>
                     </div>}
