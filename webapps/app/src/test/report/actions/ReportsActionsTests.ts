@@ -92,4 +92,53 @@ describe("Report actions tests", () => {
             done();
         });
     });
+
+    it("dispatches run report action", (done) => {
+        sandbox.setStubFunc(ReportsService.prototype, "runReport", () => {
+            return Promise.resolve({key: "desperate_pangolin"});
+        });
+        store.dispatch(reportActionCreators.runReport('test'));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_RUN_STARTED);
+            expect(actions[0].data).to.eql({key: "desperate_pangolin"});
+            done();
+        });
+    });
+
+    it("dispatches report run status fetched action", (done) => {
+        sandbox.setStubFunc(ReportsService.prototype, "getReportRunStatus", () => {
+            return Promise.resolve({key: "desperate_pangolin", status: "running"});
+        });
+        store.dispatch(reportActionCreators.pollRunStatus('desperate_pangolin'));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_RUN_STATUS_FETCHED);
+            expect(actions[0].data).to.eql({key: "desperate_pangolin", status: "running"});
+            done();
+        });
+    });
+
+    it("dispatches report run status fetched action when no server response", (done) => {
+        sandbox.setStubFunc(ReportsService.prototype, "getReportRunStatus", () => {
+            return Promise.resolve(undefined);
+        });
+        store.dispatch(reportActionCreators.pollRunStatus('desperate_pangolin'));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_RUN_STATUS_FETCHED);
+            expect(actions[0].data).to.eql({key: "desperate_pangolin", status: "error contacting server", version: null, output: null});
+            done();
+        });
+    });
+
+    it("dispatches report run status removed action", (done) => {
+        store.dispatch(reportActionCreators.reportRunStatusRemoved('test'));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_RUN_STATUS_REMOVED);
+            expect(actions[0].data).to.eql("test");
+            done();
+        });
+    });
 });

@@ -11,7 +11,8 @@ const testAuthData: AuthState = {
     permissions: [],
     isAccountActive: true,
     isModeller: false,
-    isReportReviewer: false
+    isReportReviewer: false,
+    isReportRunner: false
 };
 
 describe('Modelling groups reducer tests', () => {

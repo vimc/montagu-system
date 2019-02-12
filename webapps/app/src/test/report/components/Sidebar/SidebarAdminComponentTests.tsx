@@ -20,6 +20,7 @@ describe("SidebarAdminComponent", () => {
         published: true,
         isReviewer: true,
         isAdmin: true,
+        isReportRunner: true,
         ready: true,
         report: "name",
         version: "v1",
