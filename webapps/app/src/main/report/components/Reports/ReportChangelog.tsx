@@ -2,8 +2,8 @@ import * as React from "react";
 import {connect} from 'react-redux';
 
 import {Changelog} from "../../../shared/models/Generated";
-import {longTimestamp} from "../../../shared/Helpers";
-import {VersionIdentifier} from  "../../models/VersionIdentifier";
+import {shortTimestamp} from "../../../shared/Helpers";
+import {VersionIdentifier} from "../../models/VersionIdentifier";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {branch, compose, renderComponent} from "recompose";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
@@ -11,6 +11,7 @@ import {Dispatch} from "redux";
 import {reportActionCreators} from "../../actionCreators/reportActionCreators";
 import {ContribAppState} from "../../../contrib/reducers/contribAppReducers";
 import withLifecycle from "@hocs/with-lifecycle";
+import {InternalLink} from "../../../shared/components/InternalLink";
 
 export interface ReportChangelogPublicProps {
     report: string;
@@ -52,7 +53,11 @@ export class ReportChangelogComponent extends React.Component<ReportChangelogPro
                 {this.props.versionChangelog.map((changelog: Changelog) => {
                         const badgeType = (changelog.label == "public") ? "published" : "internal";
                         return <tr key={rowIdx++}>
-                            <td>{longTimestamp(new VersionIdentifier(changelog.report_version).timestamp)}</td>
+                            <td style={{fontSize: "90%"}}>
+                                <InternalLink href={`/${this.props.report}/${changelog.report_version}/`}>
+                                    {shortTimestamp(new VersionIdentifier(changelog.report_version).timestamp)}
+                                </InternalLink>
+                            </td>
                             <td><span className={`badge badge-${badgeType}`}>{changelog.label}</span></td>
                             <td>{changelog.value}</td>
                         </tr>;
