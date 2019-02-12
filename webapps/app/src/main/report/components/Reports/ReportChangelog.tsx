@@ -24,6 +24,12 @@ export interface ReportChangelogProps extends ReportChangelogPublicProps {
     fetchChangelog: (props: ReportChangelogPublicProps) => void;
 }
 
+interface ChangelogRowProps {
+    reportName: string,
+    version: string,
+    changelog: Changelog[]
+}
+
 export const ReportChangelogComponent = (props: ReportChangelogProps) => {
 
     const header = <h3 className="mb-3">Changelog</h3>;
@@ -55,7 +61,7 @@ export const ReportChangelogComponent = (props: ReportChangelogProps) => {
 
 };
 
-export const ChangelogRow = (props: { reportName: string, version: string, changelog: Changelog[] }) => {
+export const ChangelogRow = (props: ChangelogRowProps) => {
 
     return <tr>
         <td className={"changelog-date"}>
