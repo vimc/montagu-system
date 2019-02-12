@@ -22,11 +22,11 @@ export class ReportsService extends AbstractLocalService {
     }
 
     publishReport(name: string, version: string) {
-        return this.post(`/reports/${name}/versions/${version}/publish/`, "reporting");
+        return this.post(`/reports/${name}/versions/${version}/publish/`, "{}", "reporting");
     }
 
     unPublishReport(name: string, version: string) {
-        return this.post(`/reports/${name}/versions/${version}/publish/?value=false`, "reporting");
+        return this.post(`/reports/${name}/versions/${version}/publish/?value=false`, "{}", "reporting");
     }
 
     runReport(name: string) {

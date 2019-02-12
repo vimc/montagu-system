@@ -22,11 +22,13 @@ export interface ReportChangelogProps extends ReportChangelogPublicProps {
     fetchChangelog: (props: ReportChangelogPublicProps) => void;
 }
 
-export const ReportChangelogComponent = (props: ReportChangelogProps) => {
+export class ReportChangelogComponent extends React.Component<ReportChangelogProps> {
+
+    render() {
 
         const header = <h3 className="mb-3">Changelog</h3>;
 
-        if (props.versionChangelog.length == 0) {
+        if (this.props.versionChangelog.length == 0) {
             return <div>
                 {header}
                 <p>
@@ -47,7 +49,7 @@ export const ReportChangelogComponent = (props: ReportChangelogProps) => {
                 </tr>
                 </thead>
                 <tbody>
-                {props.versionChangelog.map((changelog: Changelog) => {
+                {this.props.versionChangelog.map((changelog: Changelog) => {
                         const badgeType = (changelog.label == "public") ? "published" : "internal";
                         return <tr key={rowIdx++}>
                             <td>{longTimestamp(new VersionIdentifier(changelog.report_version).timestamp)}</td>
@@ -61,6 +63,7 @@ export const ReportChangelogComponent = (props: ReportChangelogProps) => {
             </table>
         </div>
     };
+}
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportChangelogProps> => {
     return {
@@ -78,7 +81,12 @@ export const ReportChangelog = compose<ReportChangelogProps, ReportChangelogPubl
     connect(mapStateToProps, mapDispatchToProps),
     withLifecycle({
         onDidMount: (props: ReportChangelogProps) => {
-            props.fetchChangelog(props)
+            props.fetchChangelog(props);
+        },
+        onDidUpdate: (prevProps: ReportChangelogProps, props: ReportChangelogProps) => {
+            if (props.versionChangelog == null) {
+                props.fetchChangelog(props);
+            }
         }
     }),
     branch((props: ReportChangelogProps) => props.versionChangelog == null, renderComponent(LoadingElement)),

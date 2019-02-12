@@ -6,12 +6,11 @@ import {expect} from "chai";
 
 describe('Reports reducer tests', () => {
 
-    // TODO for now this should pass through state unchanged bc publish button is not connected
-    it('should pass through state unchanged when report published', () => {
+    it('sets published to true when report published', () => {
 
         const originalState = mockReportsState({
-            reports: [mockReportVersion({name: "r1"})],
-            versionDetails: mockVersion({name: "r1", id: "v1"})
+            reports: [mockReportVersion({name: "r1", id: "v1", published: false})],
+            versionDetails: mockVersion({name: "r1", id: "v1", published: false})
         });
 
         const mutatedState = reportsReducer(originalState, {
@@ -19,15 +18,15 @@ describe('Reports reducer tests', () => {
             data: {name: "r1", version: "v1"}
         });
 
-        expect(mutatedState).to.deep.eq(originalState);
+        expect(mutatedState.versionDetails.published).to.eql(true);
+        expect(mutatedState.reports[0].published).to.eql(true);
     });
 
-    // TODO for now this should pass through state unchanged bc publish button is not connected
-    it('should pass through state unchanged when report unpublished', () => {
+    it('sets published to false when report unpublished', () => {
 
         const originalState = mockReportsState({
-            reports: [mockReportVersion({name: "r1"})],
-            versionDetails: mockVersion({name: "r1", id: "v1"})
+            reports: [mockReportVersion({name: "r1", id: "v1", published: true})],
+            versionDetails: mockVersion({name: "r1", id: "v1", published: true})
         });
 
         const mutatedState = reportsReducer(originalState, {
@@ -35,7 +34,8 @@ describe('Reports reducer tests', () => {
             data: {name: "r1", version: "v1"}
         });
 
-        expect(mutatedState).to.deep.eq(originalState);
+        expect(mutatedState.versionDetails.published).to.eql(false);
+        expect(mutatedState.reports[0].published).to.eql(false);
     });
 
     it('sets fetched reports list', () => {
