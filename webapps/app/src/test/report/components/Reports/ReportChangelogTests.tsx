@@ -2,7 +2,6 @@ import * as React from "react";
 import {shallow} from "enzyme";
 
 import {expect} from "chai";
-import * as _ from "lodash";
 import {Sandbox} from "../../../Sandbox";
 import {
     ChangelogRow,
