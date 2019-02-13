@@ -279,7 +279,7 @@ class TouchstoneCoverageTests : CoverageTests()
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get("${url}csv", minimumPermissions, acceptsContentType = "text/csv")
+        val response = requestHelper.get("${url}csv", minimumPermissions, acceptsContentType = "*/*")
         schema.validate(response.text)
     }
 
