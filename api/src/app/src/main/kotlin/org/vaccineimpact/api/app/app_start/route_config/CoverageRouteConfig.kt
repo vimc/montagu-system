@@ -25,8 +25,11 @@ object CoverageRouteConfig : RouteConfig
                     .csv().streamed()
                     .secure(permissions),
 
+            //This route is purely for use through the portal, since different browsers will potentially send different
+            //Accept headers (typically a list of formats, or just */*) which may unpredictably match either of the
+            //above two routes.
             Endpoint("$baseUrl/coverage/csv/", controller, "getCoverageDataForTouchstoneVersion")
-                    .streamed()
+                    .csv().streamed()
                     .secure(permissions)
     )
 
