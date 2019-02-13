@@ -72,7 +72,7 @@ class WebTokenHelperTests : MontaguTests()
     }
 
     @Test
-    fun `can generate model review token with no group membership`()
+    fun `can generate model review token`()
     {
         val roles = roles + listOf(ReifiedRole("member", Scope.Specific("modelling-group",
                 "membership-group")))
