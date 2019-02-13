@@ -141,57 +141,6 @@ Example wide format:
 ### all-countries
 Optional. By default we only serve coverage data for those countries that we expect burden estimates for. Passing 
 `all-countries=true` returns coverage data for all countries.
-
-## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/coverage/csv/
-Returns the amalgamated coverage data of all the coverage sets associated with this responsibility in csv format. 
-By default we only return coverage data for countries that we expect this group to provide burden estimates for, 
-but this can be overriden by setting the query parameter `all-countries=true`.
-
-Required permissions: Global scope: `scenarios.read`. Scoped to modelling group: `responsibilities.read` and `coverage.read`.  Additionally, to view coverage data for an `in-preparation` touchstone, the user needs the `touchstones.prepare` permission.
-
-If the touchstone is `in-preparation`, and the user does not have permission to see touchstones 
-before they are made `open`, then this returns an error 404.
-
-### Example
-CSV data in this format:
-
-       "scenario",                       "set_name", "vaccine", "gavi_support", "activity_type", country",    "year","age_first","age_last",  "age_range_verbatim", "target", coverage"
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      2006,          0,         2,                    NA,       NA,        NA
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      2007,          0,         2,                    NA,       NA,      64.0
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",      2008,          0,         2,                    NA,       NA,      63.0
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      2006,          0,         1,                    NA,       NA,       0.0
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      2007,          0,         1,"school aged children",  1465824,      83.0
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AGO",      2008,          0,         1,                    NA,       NA,      81.0
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      2006,          0,         2,                    NA,       NA,        NA
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      2007,          0,         2,                    NA,       NA,      80.0
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",      2008,          0,         2,                    NA,       NA,      80.0
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      2006,          0,         1,                    NA,       NA,      20.0
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      2007,          0,         1,                    NA,       NA,      90.0
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AGO",      2008,          0,         1,                    NA,       NA,      95.0
-
-The coverage sets are de-normalized and merged into this single table. You can 
-identify which coverage set a line is from using `scenario` plus `vaccine`, 
-`gavi_support` and `activity_type`. Note that we don't expect the modellers to
-need to know which coverage set the data is from.
-
-### Query parameters:
-
-#### format
-Optional. A format to return the CSV in, either `wide` or `long`. Defaults to `long`.
-
-Example wide format:
-
-       "scenario",                       "set_name", "vaccine", "gavi_support", "activity_type", country",    "age_first","age_last",  "age_range_verbatim", "target_2006", "coverage_2006", "target_2007", "coverage_2007"
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",    0,         2,                    NA,                      NA,            83.1,          80.0,            79.1
-    "menA-novacc", "Menigitis without GAVI support",    "MenA",      "no gavi",       "routine",    "AFG",    0,         1,                    NA,                      NA,            86.5,          88.3             82.2
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",    0,         2,                    NA,                      NA,            84.5,          89.4             82.4
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "routine",    "AFG",    0,         1,                    NA,                      NA,            86.5,          90.6             91.7
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "campaign",   "AFG",    0,         2,                    NA,                      NA,            87.5,          93.4             98.2
-    "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "campign",    "AFG",    0,         1,                    NA,                      NA,            88.5,          90.6             98.1
-    
-### all-countries
-Optional. By default we only return coverage data for countries that we expect this group to provide
- burden estimates for. Passing `all-countries=true` returns coverage data for all countries.
         
 ## GET /touchstones/{touchstone-id}/{scenario-id}/coverage/
 Returns the amalgamated coverage data of all the coverage sets associated with this scenario.

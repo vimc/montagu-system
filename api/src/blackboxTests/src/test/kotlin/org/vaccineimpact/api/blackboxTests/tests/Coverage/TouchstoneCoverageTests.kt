@@ -268,7 +268,7 @@ class TouchstoneCoverageTests : CoverageTests()
     }
 
     @Test
-    fun `can get pure CSV coverage data via csv endpoint`()
+    fun `can get pure CSV coverage data via csv endpoint with Accept * header`()
     {
         val schema = CSVSchema("MergedCoverageData")
         val userHelper = TestUserHelper()
@@ -279,7 +279,23 @@ class TouchstoneCoverageTests : CoverageTests()
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get("${url}csv", minimumPermissions)
+        val response = requestHelper.get("${url}csv", minimumPermissions, acceptsContentType = "text/csv")
+        schema.validate(response.text)
+    }
+
+    @Test
+    fun `can get pure CSV coverage data via csv endpoint with Accept csv header`()
+    {
+        val schema = CSVSchema("MergedCoverageData")
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("${url}csv", minimumPermissions, acceptsContentType = "text/csv")
         schema.validate(response.text)
     }
 
