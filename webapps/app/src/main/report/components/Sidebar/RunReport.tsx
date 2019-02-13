@@ -2,7 +2,7 @@ import * as React from "react";
 import {connect, Dispatch} from "react-redux";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {reportActionCreators} from "../../actionCreators/reportActionCreators";
-import {RunStatusPoll, isRunStatusPollingActive} from "../../polling/RunStatusPoll";
+import {RunStatusPoll, RunStatusPollingActive} from "../../polling/RunStatusPoll";
 import {RunningReportStatusValues} from "../../models/RunningReportStatus";
 import {InternalLink} from "../../../shared/components/InternalLink";
 import {compose} from "recompose";
@@ -83,7 +83,7 @@ export class RunReportComponent extends React.Component<RunReportProps, RunRepor
                                         </InternalLink>
                             </div>}
                         </div>
-                        <div className={"btn btn-link p-0"} onClick={this.onClickDismiss}>Dismiss</div>
+                        <div className={"dismiss-link btn btn-link p-0"} onClick={this.onClickDismiss}>Dismiss</div>
                     </div>}
             </div>
     }
@@ -97,7 +97,7 @@ const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<Run
         runningKey: runningReportStatus ? runningReportStatus.key : null,
         runningStatus: runningReportStatus ? runningReportStatus.status : null,
         newVersionFromRun: runningReportStatus ? runningReportStatus.version : null,
-        isPollingActive: isRunStatusPollingActive(state),
+        isPollingActive: RunStatusPollingActive.isActive(state),
     }
 }
 
