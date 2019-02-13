@@ -13,7 +13,6 @@ import {VersionIdentifier} from "../../models/VersionIdentifier";
 
 export interface PublicProps{
     name: string;
-    version: string;
 }
 
 export interface RunReportProps extends PublicProps {

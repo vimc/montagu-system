@@ -23,8 +23,7 @@ import {InternalLink} from "../../../../main/shared/components/InternalLink";
 describe("RunReport connected component tests", () => {
 
     const testingProps = {
-        name: "report-name",
-        version: "v1"
+        name: "report-name"
     };
 
     let store : Store<ReportAppState>;
@@ -40,7 +39,6 @@ describe("RunReport connected component tests", () => {
     it("renders on connect level", () => {
         const rendered = shallow(<RunReport {...testingProps}/>, {context: {store}});
         expect(rendered.props().name).to.eql(testingProps.name);
-        expect(rendered.props().version).to.eql(testingProps.version);
         expect(typeof rendered.props().run).to.eql("function");
         expect(typeof rendered.props().startPoll).to.eql("function");
         expect(typeof rendered.props().stopPoll).to.eql("function");
@@ -107,8 +105,7 @@ describe("RunReport component tests", () => {
 
     it("Button shown, status not shown if no running status", () => {
         const props = {
-            name: "report-name",
-            version: "v1"
+            name: "report-name"
         };
 
         store = createMockStore({reports: {runningReports: []}});
@@ -131,8 +128,7 @@ describe("RunReport component tests", () => {
 
     it("Button and status shown if running status exists", () => {
         const props = {
-            name: "report-name",
-            version: "v1"
+            name: "report-name"
         };
 
         store = createMockStore({reports: {runningReports: [
@@ -159,8 +155,7 @@ describe("RunReport component tests", () => {
 
     it("Link to new version not shown if newVersionFromRun does not exist", () => {
         const props = {
-            name: "report-name",
-            version: "v1"
+            name: "report-name"
         };
 
         store = createMockStore({reports: {runningReports: [
@@ -175,8 +170,7 @@ describe("RunReport component tests", () => {
 
     it("Link to new version shown if newVersionFromRun exists", () => {
         const props = {
-            name: "report-name",
-            version: "v1"
+            name: "report-name"
         };
 
         store = createMockStore({reports: {runningReports: [
@@ -194,8 +188,7 @@ describe("RunReport component tests", () => {
 
     it("initialises with modal not showing", () => {
         const props = {
-          name: "report-name",
-          version: "v1"
+          name: "report-name"
         };
 
         store = createMockStore({reports: {runningReports: [
@@ -209,8 +202,7 @@ describe("RunReport component tests", () => {
 
    it("clicking button shows modal", () => {
        const props = {
-           name: "report-name",
-           version: "v1"
+           name: "report-name"
        };
 
        store = createMockStore({reports: {runningReports: []}});
@@ -228,8 +220,7 @@ describe("RunReport component tests", () => {
     it("runs report on confirm from modal", () => {
 
         const props = {
-            name: "report-name",
-            version: "v1"
+            name: "report-name"
         };
 
         store = createMockStore({reports: {runningReports: []}});
@@ -251,8 +242,7 @@ describe("RunReport component tests", () => {
     it("does not run report if cancel from modal", () => {
 
         const props = {
-            name: "report-name",
-            version: "v1"
+            name: "report-name"
         };
 
         store = createMockStore({reports: {runningReports: []}});
@@ -272,8 +262,7 @@ describe("RunReport component tests", () => {
 
     it("clicking Dismiss removed run status", () => {
         const props = {
-            name: "report-name",
-            version: "v1"
+            name: "report-name"
         };
 
         store = createMockStore({reports: {runningReports: [
@@ -293,8 +282,7 @@ describe("RunReport component tests", () => {
 
     it("updates polling as expected when polling is active and run is finished", () => {
         const props = {
-            name: "report-name",
-            version: "v1"
+            name: "report-name"
         };
 
         store = createMockStore({reports: {runningReports: [
@@ -323,8 +311,7 @@ describe("RunReport component tests", () => {
 
     it("updates polling as expected when polling is active and run is not finished", () => {
         const props = {
-            name: "report-name",
-            version: "v1"
+            name: "report-name"
         };
 
         store = createMockStore({reports: {runningReports: [
@@ -353,8 +340,7 @@ describe("RunReport component tests", () => {
 
     it("updates polling as expected when polling is not active and run is finished", () => {
         const props = {
-            name: "report-name",
-            version: "v1"
+            name: "report-name"
         };
 
         store = createMockStore({reports: {runningReports: [
@@ -383,8 +369,7 @@ describe("RunReport component tests", () => {
 
     it("updates polling as expected when polling is not active and run is not finished", () => {
         const props = {
-            name: "report-name",
-            version: "v1"
+            name: "report-name"
         };
 
         store = createMockStore({reports: {runningReports: [

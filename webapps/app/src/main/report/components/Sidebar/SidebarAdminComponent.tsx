@@ -45,7 +45,7 @@ export const SidebarAdminComponent: React.StatelessComponent<SidebarAdminProps> 
         {props.isReportRunner &&
         <div className="mt-5">
             <label className={"font-weight-bold"}>Run</label>
-            <RunReport name={props.report} version={props.version}/>
+            <RunReport name={props.report}/>
         </div>}
     </div>
 };
