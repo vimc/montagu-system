@@ -12,6 +12,7 @@ import {reportActionCreators} from "../../actionCreators/reportActionCreators";
 import {ContribAppState} from "../../../contrib/reducers/contribAppReducers";
 import withLifecycle from "@hocs/with-lifecycle";
 import {InternalLink} from "../../../shared/components/InternalLink";
+import {groupBy, map} from "lodash";
 
 export interface ReportChangelogPublicProps {
     report: string;
@@ -23,52 +24,61 @@ export interface ReportChangelogProps extends ReportChangelogPublicProps {
     fetchChangelog: (props: ReportChangelogPublicProps) => void;
 }
 
-export class ReportChangelogComponent extends React.Component<ReportChangelogProps> {
+interface ChangelogRowProps {
+    reportName: string,
+    version: string,
+    changelog: Changelog[]
+}
 
-    render() {
+export const ReportChangelogComponent = (props: ReportChangelogProps) => {
 
-        const header = <h3 className="mb-3">Changelog</h3>;
+    const header = <h3 className="mb-3">Changelog</h3>;
 
-        if (this.props.versionChangelog.length == 0) {
-            return <div>
-                {header}
-                <p>
-                    There is no Changelog for this Report version.
-                </p>
-            </div>
-        }
-
-        let rowIdx = 0;
+    if (props.versionChangelog.length == 0) {
         return <div>
             {header}
-            <table>
-                <thead className="changelog-header">
-                <tr>
-                    <th className="datestring-column">Date</th>
-                    <th>Label</th>
-                    <th>Text</th>
-                </tr>
-                </thead>
-                <tbody>
-                {this.props.versionChangelog.map((changelog: Changelog) => {
-                        const badgeType = (changelog.label == "public") ? "published" : "internal";
-                        return <tr key={rowIdx++}>
-                            <td style={{fontSize: "90%"}}>
-                                <InternalLink href={`/${this.props.report}/${changelog.report_version}/`}>
-                                    {shortTimestamp(new VersionIdentifier(changelog.report_version).timestamp)}
-                                </InternalLink>
-                            </td>
-                            <td><span className={`badge badge-${badgeType}`}>{changelog.label}</span></td>
-                            <td>{changelog.value}</td>
-                        </tr>;
-                    }
-                )
-                }
-                </tbody>
-            </table>
+            <p>
+                There is no Changelog for this Report version.
+            </p>
         </div>
-    };
-}
+    }
+
+    const versionChangelogs = groupBy(props.versionChangelog, "report_version");
+
+    return <div>
+        {header}
+        <table>
+            <tbody>
+            {map(versionChangelogs,
+                (value: Changelog[], version: string) => {
+                    return <ChangelogRow key={version} version={version} reportName={props.report}
+                                         changelog={value}/>
+                })
+            }
+            </tbody>
+        </table>
+    </div>
+
+};
+
+export const ChangelogRow = (props: ChangelogRowProps) => {
+
+    return <tr>
+        <td className={"changelog-date"}>
+            <InternalLink href={`/${props.reportName}/${props.version}/`}>
+                {shortTimestamp(new VersionIdentifier(props.version).timestamp)}
+            </InternalLink>
+        </td>
+        <td>
+            {props.changelog.map((item) => {
+                const badgeType = (item.label == "public") ? "published" : "internal";
+                return [<div className={`badge changelog-label badge-${badgeType}`}>{item.label}</div>,
+                    <div className={"changelog-item " + badgeType}>{item.value}</div>]
+            })}
+        </td>
+    </tr>
+
+};
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportChangelogProps> => {
     return {
