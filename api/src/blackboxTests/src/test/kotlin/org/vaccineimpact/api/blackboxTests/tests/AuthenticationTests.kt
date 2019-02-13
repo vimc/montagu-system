@@ -50,6 +50,7 @@ class AuthenticationTests : DatabaseTest()
                     email = TestUserHelper.email, password = TestUserHelper.defaultPassword)
             it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("reports-reviewer", Scope.Global()))
             it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("user", Scope.Global()))
+            it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("member", Scope.Specific("modelling-group", "group-1")))
         }
 
         val token = TokenFetcher().getToken(TestUserHelper.email, TestUserHelper.defaultPassword)
@@ -67,6 +68,7 @@ class AuthenticationTests : DatabaseTest()
         val modelReviewToken = checkCookieAndGetValue(response, "jwt_token")
         val modelReviewClaims = JWT.decode(modelReviewToken)
         assertThat(modelReviewClaims.getClaim("test-group").asString()).isEqualTo("true")
+        assertThat(modelReviewClaims.getClaim("group-1").asString()).isEqualTo("true")
     }
 
     @Test
