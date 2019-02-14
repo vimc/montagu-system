@@ -189,6 +189,57 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
         }
     }
 
+
+    @Test
+    fun `does not get groups for wrong disease`()
+    {
+        val groupId = "g1"
+        val diseaseId = "d1"
+        withDatabase {
+            it.addGroup(groupId, "description")
+            it.addDisease(diseaseId)
+            it.addDisease("bad-disease-id")
+            it.addModel("m1", groupId, "bad-disease-id")
+        }
+
+        withRepo {
+            assertThat(it.getModellingGroupsForDisease(diseaseId).any()).isFalse()
+        }
+    }
+
+    @Test
+    fun `does not get duplicate groups for disease`()
+    {
+        val groupId = "g1"
+        val diseaseId = "d1"
+        withDatabase {
+            it.addGroup(groupId, "description")
+            it.addDisease(diseaseId)
+            it.addModel("m1", groupId, diseaseId)
+            it.addModel("m2", groupId, diseaseId, isCurrent = false)
+        }
+
+        withRepo {
+            assertThat(it.getModellingGroupsForDisease(diseaseId)).containsExactly(groupId)
+        }
+    }
+
+    @Test
+    fun `can get groups for disease`()
+    {
+        val groupId = "g1"
+        val diseaseId = "d1"
+        withDatabase {
+            it.addGroup(groupId, "description")
+            it.addDisease(diseaseId)
+            it.addModel("m1", groupId, diseaseId)
+        }
+
+        withRepo {
+            assertThat(it.getModellingGroupsForDisease(diseaseId)).containsExactly(groupId)
+        }
+    }
+
     @Test
     fun `exception is thrown for non-existent modelling group ID`()
     {
