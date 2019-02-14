@@ -65,14 +65,16 @@ class GroupModelRunParametersController(
         val path = ModelRunParametersSetPath(context)
         val touchstoneVersion = touchstoneRepository.touchstoneVersions.get(path.touchstoneVersionId)
         context.checkIsAllowedToSeeTouchstone(touchstoneVersion.id, touchstoneVersion.status)
-        return estimateRepository.getModelRunParameterSet(path.setId)
+        return estimateRepository.getModelRunParameterSet(path.groupId, path.touchstoneVersionId, path.setId)
     }
 
     // path parameters for model run parameters by set
-    data class ModelRunParametersSetPath(val touchstoneVersionId: String, val setId: Int)
+    data class ModelRunParametersSetPath(val touchstoneVersionId: String, val setId: Int, val groupId: String)
     {
         constructor(context: ActionContext)
-                : this(context.params(":touchstone-version-id"), context.params(":model-run-parameter-set-id").toInt())
+                : this(context.params(":touchstone-version-id"),
+                            context.params(":model-run-parameter-set-id").toInt(),
+                            context.params(":group-id"))
 
     }
 }

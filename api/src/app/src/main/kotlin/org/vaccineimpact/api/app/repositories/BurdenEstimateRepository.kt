@@ -27,7 +27,7 @@ interface BurdenEstimateRepository : Repository
 
     fun getModelRunParameterSets(groupId: String, touchstoneVersionId: String): List<ModelRunParameterSet>
 
-    fun getModelRunParameterSet(setId: Int): FlexibleDataTable<ModelRun>
+    fun getModelRunParameterSet(groupId: String, touchstoneVersionId: String, setId: Int): FlexibleDataTable<ModelRun>
     fun changeBurdenEstimateStatus(setId: Int, newStatus: BurdenEstimateSetStatus)
     fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetType)
     fun getEstimateWriter(set: BurdenEstimateSet): BurdenEstimateWriter
