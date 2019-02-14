@@ -74,8 +74,11 @@ open class WebTokenHelper(
 
     private fun modelReviewClaims(user: InternalUser): Map<String, Any>
     {
-        val modelsToReview = getReviewersMap()[user.username]?.map { it to "true" }
-                ?.toMap() ?: mapOf()
+        val modelsToReview = getReviewersMap()[user.username]?: listOf()
+        val groupPermissions = (user.roles.filter { it.name == "member" }
+                .map{ it.scope.databaseScopeId } + modelsToReview)
+                .associate { it to "true" }
+
 
         val adminRoles = listOf("admin", "developer").map { ReifiedRole(it, Scope.Global()) }
         val access = if (user.roles.intersect(adminRoles).any())
@@ -93,7 +96,7 @@ open class WebTokenHelper(
                 "sub" to user.username,
                 "exp" to Date.from(Instant.now().plus(defaultLifespan)),
                 "access_level" to access
-        ) + modelsToReview
+        ) + groupPermissions
     }
 
     open fun verify(compressedToken: String, expectedType: TokenType,
