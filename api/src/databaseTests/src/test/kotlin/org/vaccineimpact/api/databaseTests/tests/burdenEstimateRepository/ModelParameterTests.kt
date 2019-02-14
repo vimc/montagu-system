@@ -96,25 +96,28 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     @Test
     fun `cannot create model run parameter set if touchstone doesn't exist`()
     {
-        assertUnknownObjectError(work = { repo ->
-            repo.addModelRunParameterSet(groupId, "wrong-id", diseaseId,
-                     modelRuns, "test.user", timestamp)
+        assertUnknownObjectError(setup = {db -> setupDatabase(db)},
+                work = { repo ->
+                    repo.addModelRunParameterSet(groupId, "wrong-id", diseaseId,
+                             modelRuns, "test.user", timestamp)
         })
     }
 
     @Test
     fun `cannot create model run parameter set if group doesn't exist`()
     {
-        assertUnknownObjectError({ repo ->
-            repo.addModelRunParameterSet("wrong-id", touchstoneVersionId, diseaseId,
-                   modelRuns, "test.user", timestamp)
+        assertUnknownObjectError(setup = {db -> setupDatabase(db)},
+                work = { repo ->
+                    repo.addModelRunParameterSet("wrong-id", touchstoneVersionId, diseaseId,
+                        modelRuns, "test.user", timestamp)
         })
     }
 
-    private fun assertUnknownObjectError(work: (repo: BurdenEstimateRepository) -> Any)
+    private fun assertUnknownObjectError(setup: (db: JooqContext) -> Any,
+                                         work: (repo: BurdenEstimateRepository) -> Any)
     {
         JooqContext().use { db ->
-            setupDatabase(db)
+            setup(db)
             val repo = makeRepository(db)
             Assertions.assertThatThrownBy {
                 work(repo)
@@ -163,7 +166,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
         given { db ->
             setupDatabaseWithModelRunParameterSetValues(db)
         } makeTheseChanges { repo ->
-            val flexTableData = repo.getModelRunParameterSet(1)
+            val flexTableData = repo.getModelRunParameterSet(groupId, touchstoneVersionId, 1)
             records = flexTableData.data.toList()
             contentType = flexTableData.contentType
         } andCheck { _ ->
@@ -181,19 +184,49 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
+    fun `Unknown Object error if model run parameter set id does not exist`()
+    {
+        assertUnknownObjectError(setup = {db -> setupDatabase(db)},
+                work = { repo ->
+                    repo.getModelRunParameterSet(groupId, touchstoneVersionId, 1)
+                })
+    }
+
+    @Test
+    fun `Unknown Object error if model run parameter set does not belong to the group`()
+    {
+        assertUnknownObjectError(setup = {db -> setupDatabaseWithModelRunParameterSetValues(db)},
+                work = { repo ->
+                    repo.getModelRunParameterSet("group-2", touchstoneVersionId, 1)
+                })
+
+    }
+
+    @Test
+    fun `Unknown Object error if model run parameter set does not belong to the touchstone version`()
+    {
+        assertUnknownObjectError(setup = {db -> setupDatabaseWithModelRunParameterSetValues(db)},
+                work = { repo ->
+                    repo.getModelRunParameterSet(groupId, "touchstone-2", 1)
+        })
+    }
+
+    @Test
     fun `cannot get model run parameter sets if touchstone doesn't exist`()
     {
-        assertUnknownObjectError(work = { repo ->
-            repo.getModelRunParameterSets(groupId, "wrong-id")
-        })
+        assertUnknownObjectError(setup = {db -> setupDatabase(db)},
+                work = { repo ->
+                    repo.getModelRunParameterSets(groupId, "wrong-id")
+                })
     }
 
     @Test
     fun `cannot get model run parameter sets if group doesn't exist`()
     {
-        assertUnknownObjectError({ repo ->
-            repo.getModelRunParameterSets("wrong-id", touchstoneVersionId)
-        })
+        assertUnknownObjectError(setup = {db -> setupDatabase(db)},
+                work = { repo ->
+                    repo.getModelRunParameterSets("wrong-id", touchstoneVersionId)
+                })
     }
 
 }
