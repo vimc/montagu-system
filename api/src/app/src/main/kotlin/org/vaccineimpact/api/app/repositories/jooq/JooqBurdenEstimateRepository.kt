@@ -245,9 +245,7 @@ class JooqBurdenEstimateRepository(
     {
         //First check if this set id actually belongs to this group and touchstone version
         dsl.select(MODEL_RUN_PARAMETER_SET.ID)
-                .from(MODEL_RUN_PARAMETER_SET)
-                .join(RESPONSIBILITY_SET)
-                .on(RESPONSIBILITY_SET.ID.eq(MODEL_RUN_PARAMETER_SET.RESPONSIBILITY_SET))
+                .fromJoinPath(MODEL_RUN_PARAMETER_SET, RESPONSIBILITY_SET)
                 .where(MODEL_RUN_PARAMETER_SET.ID.eq(setId))
                 .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId))
                 .and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId))
