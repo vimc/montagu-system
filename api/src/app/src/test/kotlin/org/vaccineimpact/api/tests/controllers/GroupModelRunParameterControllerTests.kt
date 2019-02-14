@@ -147,7 +147,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
                 it.addModelRunParameterSet(eq("group-1"), eq("touchstone-1"), eq("disease-1"),
                         eq(modelRuns), eq("user.name"), any())
             } doReturn 11
-            on { it.getModelRunParameterSet(any()) } doReturn FlexibleDataTable.new(
+            on { it.getModelRunParameterSet(any(), any(), any()) } doReturn FlexibleDataTable.new(
                     sequenceOf(ModelRun("1", mapOf("<param_1>" to "aa", "<param_2>" to "bb"))),
                     listOf("<param_1>", "<param_2>")
             )
