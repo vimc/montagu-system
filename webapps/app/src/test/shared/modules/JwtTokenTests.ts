@@ -104,6 +104,28 @@ describe('JwtTokenAuth Module Tests', () => {
 
     });
 
+    it('sets isReportRunner', () => {
+        let testData = {
+            sub: "test.user",
+            permissions: "*/reports.run",
+            roles,
+            iss: "test.iss",
+            exp: Math.round(Date.now() / 1000) + 1000
+        };
+
+        let testToken = signAndCompress(testData, "secret");
+        let result = jwtTokenAuth.getDataFromCompressedToken(testToken);
+
+        expect(result.isReportRunner).to.be.true;
+
+        testData.permissions = "*/can-login";
+        testToken = signAndCompress(testData, "secret");
+        result = jwtTokenAuth.getDataFromCompressedToken(testToken);
+
+        expect(result.isReportRunner).to.be.false;
+
+    });
+
     it("can inflate token", () => {
         const token = {a: "a", b: 1};
         const signed = jwt.sign(token, "secret");
