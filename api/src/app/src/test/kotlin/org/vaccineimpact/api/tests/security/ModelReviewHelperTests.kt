@@ -22,6 +22,6 @@ class ModelReviewHelperTests : MontaguTests()
     {
         val result = getDiseaseReviewersMap()
         assertThat(result["petra.klepac"]).containsExactly("MenA","HepB")
-        assertThat(result.keys.count()).isEqualTo(18)
+        assertThat(result.keys.count()).isEqualTo(17)
     }
 }

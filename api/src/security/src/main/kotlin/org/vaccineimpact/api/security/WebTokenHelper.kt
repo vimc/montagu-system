@@ -74,7 +74,7 @@ open class WebTokenHelper(
 
     private fun modelReviewClaims(user: InternalUser, diseaseNames: List<String>): Map<String, Any>
     {
-        val modelsToReview = getDiseaseReviewersMap()[user.username]?: listOf()
+        val modelsToReview = getGroupReviewersMap()[user.username]?: listOf()
         val groupPermissions = (user.roles.filter { it.name == "member" }
                 .map{ it.scope.databaseScopeId } + modelsToReview + diseaseNames)
                 .associate { it to "true" }
