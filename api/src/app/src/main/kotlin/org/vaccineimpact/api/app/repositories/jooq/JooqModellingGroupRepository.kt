@@ -24,6 +24,15 @@ class JooqModellingGroupRepository(
         private val touchstoneRepository: TouchstoneRepository
 ) : JooqRepository(dsl), ModellingGroupRepository
 {
+    override fun getDiseasesForModellingGroup(id: String): List<String>
+    {
+        return dsl.select(MODEL.DISEASE)
+                .fromJoinPath(MODELLING_GROUP, MODEL)
+                .where(MODELLING_GROUP.ID.eq(id))
+                .and(MODEL.IS_CURRENT)
+                .fetchInto(String::class.java)
+    }
+
     override fun createModellingGroup(newGroup: ModellingGroupCreation)
     {
         dsl.newRecord(MODELLING_GROUP).apply {

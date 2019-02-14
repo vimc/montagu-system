@@ -17,6 +17,9 @@ import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TokenFetcher
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.APP_USER
+import org.vaccineimpact.api.db.direct.addDisease
+import org.vaccineimpact.api.db.direct.addGroup
+import org.vaccineimpact.api.db.direct.addModel
 import org.vaccineimpact.api.db.direct.addUserForTesting
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.ReifiedRole
@@ -51,6 +54,9 @@ class AuthenticationTests : DatabaseTest()
             it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("reports-reviewer", Scope.Global()))
             it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("user", Scope.Global()))
             it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("member", Scope.Specific("modelling-group", "group-1")))
+            it.addGroup("group-1")
+            it.addDisease("d1")
+            it.addModel("m1", "group-1", "d1")
         }
 
         val token = TokenFetcher().getToken(TestUserHelper.email, TestUserHelper.defaultPassword)
@@ -69,6 +75,7 @@ class AuthenticationTests : DatabaseTest()
         val modelReviewClaims = JWT.decode(modelReviewToken)
         assertThat(modelReviewClaims.getClaim("test-group").asString()).isEqualTo("true")
         assertThat(modelReviewClaims.getClaim("group-1").asString()).isEqualTo("true")
+        assertThat(modelReviewClaims.getClaim("d1").asString()).isEqualTo("true")
     }
 
     @Test

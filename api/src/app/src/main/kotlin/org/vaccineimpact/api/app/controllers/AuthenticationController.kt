@@ -25,7 +25,7 @@ class AuthenticationController(context: ActionContext,
 {
 
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, RepositoriesUserLogic(repositories.user, WebTokenHelper(KeyHelper.keyPair)))
+            : this(context, RepositoriesUserLogic(repositories.user, repositories.modellingGroup, WebTokenHelper(KeyHelper.keyPair)))
 
     fun authenticate(): AuthenticationResponse
     {
@@ -47,11 +47,12 @@ class AuthenticationController(context: ActionContext,
     fun setCookies(): String
     {
         val internalUser = userLogic.getUserByUsername(context.username!!)
+        val diseasesForUser = userLogic.getDiseasesForUser(internalUser)
 
         val token = tokenHelper.generateToken(internalUser).deflated()
         context.setCookie(CookieName.Main, token)
 
-        val modelReviewToken = tokenHelper.generateModelReviewToken(internalUser)
+        val modelReviewToken = tokenHelper.generateModelReviewToken(internalUser, diseasesForUser)
         context.setCookie(CookieName.ModelReview, modelReviewToken)
 
         return okayResponse()

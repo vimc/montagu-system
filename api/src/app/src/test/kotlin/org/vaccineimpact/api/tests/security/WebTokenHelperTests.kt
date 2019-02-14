@@ -76,7 +76,7 @@ class WebTokenHelperTests : MontaguTests()
     {
         val roles = roles + listOf(ReifiedRole("member", Scope.Specific("modelling-group",
                 "membership-group")))
-        val token = sut.generateModelReviewToken(InternalUser(properties, roles, permissions))
+        val token = sut.generateModelReviewToken(InternalUser(properties, roles, permissions), listOf("d1"))
         val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
@@ -84,10 +84,11 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["sub"]).isEqualTo("test.user")
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
         assertThat(claims["test-group"]).isEqualTo("true")
+        assertThat(claims["d1"]).isEqualTo("true")
         assertThat(claims["membership-group"]).isEqualTo("true")
         assertThat(claims["url"]).isEqualTo("*")
         assertThat(claims["access_level"]).isEqualTo("user")
-        assertThat(claims.keys.count()).isEqualTo(8)
+        assertThat(claims.keys.count()).isEqualTo(9)
     }
 
     @Test
@@ -95,7 +96,7 @@ class WebTokenHelperTests : MontaguTests()
     {
         val roles = listOf(ReifiedRole("member", Scope.Specific("modelling-group", "test-group")))
         val token = sut.generateModelReviewToken(InternalUser(properties.copy(username = "some.user"),
-                roles, permissions))
+                roles, permissions), listOf("d1"))
         val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
 
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
@@ -105,24 +106,15 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["url"]).isEqualTo("*")
         assertThat(claims["access_level"]).isEqualTo("user")
         assertThat(claims["test-group"]).isEqualTo("true")
-        assertThat(claims.keys.count()).isEqualTo(7)
-    }
-
-    @Test
-    fun `can generate model review token for funder`()
-    {
-        val token = sut.generateModelReviewToken(InternalUser(properties,
-                roles + ReifiedRole("funder", Scope.Global()), permissions))
-        val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
-
-        assertThat(claims["access_level"]).isEqualTo("user")
+        assertThat(claims["d1"]).isEqualTo("true")
+        assertThat(claims.keys.count()).isEqualTo(8)
     }
 
     @Test
     fun `can generate model review token for admin`()
     {
         val token = sut.generateModelReviewToken(InternalUser(properties,
-                roles + ReifiedRole("admin", Scope.Global()), permissions))
+                roles + ReifiedRole("admin", Scope.Global()), permissions), listOf("d1"))
         val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
 
         assertThat(claims["access_level"]).isEqualTo("admin")
@@ -132,7 +124,7 @@ class WebTokenHelperTests : MontaguTests()
     fun `can generate model review token for developer`()
     {
         val token = sut.generateModelReviewToken(InternalUser(properties,
-                roles + ReifiedRole("developer", Scope.Global()), permissions))
+                roles + ReifiedRole("developer", Scope.Global()), permissions), listOf("d1"))
         val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
 
         assertThat(claims["access_level"]).isEqualTo("admin")

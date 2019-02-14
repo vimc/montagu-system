@@ -72,13 +72,12 @@ open class WebTokenHelper(
         )
     }
 
-    private fun modelReviewClaims(user: InternalUser): Map<String, Any>
+    private fun modelReviewClaims(user: InternalUser, diseaseNames: List<String>): Map<String, Any>
     {
         val modelsToReview = getReviewersMap()[user.username]?: listOf()
         val groupPermissions = (user.roles.filter { it.name == "member" }
-                .map{ it.scope.databaseScopeId } + modelsToReview)
+                .map{ it.scope.databaseScopeId } + modelsToReview + diseaseNames)
                 .associate { it to "true" }
-
 
         val adminRoles = listOf("admin", "developer").map { ReifiedRole(it, Scope.Global()) }
         val access = if (user.roles.intersect(adminRoles).any())
@@ -123,8 +122,8 @@ open class WebTokenHelper(
         val oneTimeLinkLifeSpan: Duration = Duration.ofMinutes(10)
     }
 
-    open fun generateModelReviewToken(internalUser: InternalUser): String
+    open fun generateModelReviewToken(internalUser: InternalUser, diseaseNames: List<String>): String
     {
-        return generator.generate(modelReviewClaims(internalUser))
+        return generator.generate(modelReviewClaims(internalUser, diseaseNames))
     }
 }
