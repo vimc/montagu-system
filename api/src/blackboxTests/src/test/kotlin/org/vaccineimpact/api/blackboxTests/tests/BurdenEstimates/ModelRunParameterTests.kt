@@ -110,7 +110,6 @@ class ModelRunParameterTests : BurdenEstimateTests()
         }
     }
 
-
     @Test
     fun `download csv of model run parameters values`()
     {
@@ -237,6 +236,5 @@ class ModelRunParameterTests : BurdenEstimateTests()
 
         Assertions.assertThat(response.statusCode).isEqualTo(404)
     }
-
 
 }
