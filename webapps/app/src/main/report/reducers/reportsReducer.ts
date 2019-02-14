@@ -76,13 +76,17 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
             });
             return {...state, runningReports: runningReports};
         case ReportTypeKeys.REPORT_RUN_STATUS_FETCHED:
-            runningReports = state.runningReports;
-            const runningReport = runningReports.find(r => r.key == action.data.key);
-            //Update the object in the state
-            if (runningReport) {
-                runningReport.output = action.data.output;
-                runningReport.status = action.data.status;
-                runningReport.version = action.data.version;
+            const oldRunningReport = state.runningReports.find(r => r.key == action.data.key);
+            runningReports = state.runningReports.filter(r => r.key != action.data.key);
+            if (oldRunningReport) {
+                const newRunningReport = {
+                    name: oldRunningReport.name,
+                    key: action.data.key,
+                    output: action.data.output,
+                    status: action.data.status,
+                    version: action.data.version
+                }
+                runningReports.push(newRunningReport);
             }
             return {...state, runningReports: runningReports}
         case ReportTypeKeys.REPORT_RUN_STATUS_REMOVED:

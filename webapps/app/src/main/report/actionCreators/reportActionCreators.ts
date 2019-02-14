@@ -91,12 +91,10 @@ export const reportActionCreators = {
     },
 
     reportRunStatusRemoved(reportId: string) {
-        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            dispatch({
+        return {
                 type: ReportTypeKeys.REPORT_RUN_STATUS_REMOVED,
                 data: reportId
-            } as ReportRunStatusRemoved);
-        }
+            };
     },
 
     getReportVersions(reportId: string) {
