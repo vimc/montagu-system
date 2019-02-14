@@ -2,13 +2,10 @@ package org.vaccineimpact.api.blackboxTests.tests
 
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
-import org.json.JSONObject
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
-import org.vaccineimpact.api.blackboxTests.helpers.json
 import org.vaccineimpact.api.blackboxTests.helpers.validate
-import org.vaccineimpact.api.blackboxTests.schemas.JSONSchema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addDisease
 import org.vaccineimpact.api.db.direct.addGroup
