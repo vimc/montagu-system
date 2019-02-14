@@ -9,6 +9,10 @@ import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.direct.addGroup
+import org.vaccineimpact.api.db.direct.addResponsibility
+import org.vaccineimpact.api.db.direct.addResponsibilitySet
+import org.vaccineimpact.api.db.direct.addTouchstoneVersion
 import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.validateSchema.JSONValidator
@@ -106,6 +110,7 @@ class ModelRunParameterTests : BurdenEstimateTests()
         }
     }
 
+
     @Test
     fun `download csv of model run parameters values`()
     {
@@ -147,5 +152,91 @@ class ModelRunParameterTests : BurdenEstimateTests()
         Assertions.assertThat(secondRow[1]).isEqualTo("cc")
         Assertions.assertThat(secondRow[2]).isEqualTo("dd")
     }
+
+    @Test
+    fun `download csv of nonexistent model run parameters returns 404`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            setUp(it)  //create touchstone, group etc, but don't set up model run parameters
+            userHelper.setupTestUser(it)
+        }
+
+        val permissions = PermissionSet(
+                "*/can-login",
+                "$groupScope/estimates.write",
+                "$groupScope/responsibilities.read"
+        )
+
+        val response = requestHelper.get(modelRunParameterCsvUrl, permissions, acceptsContentType = "text/csv")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(404)
+    }
+
+    @Test
+    fun `download csv of model run parameters belonging to another group returns 404`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        val secondGroup = "group-2"
+        val secondGroupScope = "modelling-group:$secondGroup"
+
+        JooqContext().use {
+            setupDatabaseWithModelRunParameterSetValues(it)
+            userHelper.setupTestUser(it)
+
+            //Make a second group, with responsibility in this touchstone. We'll query for the model run parameter set
+            //created above for group-1 as if it belonged to group-2 - should get a 404 even if we set up the user to have
+            //permissions for both groups
+            it.addGroup(secondGroup, "another group")
+            val responsibilitySetId = it.addResponsibilitySet(secondGroup,touchstoneVersionId)
+            it.addResponsibility(responsibilitySetId, touchstoneVersionId, scenarioId)
+        }
+
+        val permissions = PermissionSet(
+                "*/can-login",
+                "$groupScope/estimates.write",
+                "$groupScope/responsibilities.read",
+                "$secondGroupScope/estimates.write",
+                "$secondGroupScope/responsibilities.read"
+        )
+
+        val url = "/modelling-groups/$secondGroup/model-run-parameters/$touchstoneVersionId/1/"
+
+        val response = requestHelper.get(url, permissions, acceptsContentType = "text/csv")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(404)
+    }
+
+    @Test
+    fun `download csv of model run parameters belonging to another touchstone version returns 404`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            setupDatabaseWithModelRunParameterSetValues(it)
+            userHelper.setupTestUser(it)
+
+            //add a second touchstone
+            it.addTouchstoneVersion("anothertouchstone", 1, "Another Touchstone", addTouchstone = true)
+        }
+
+        val permissions = PermissionSet(
+                "*/can-login",
+                "$groupScope/estimates.write",
+                "$groupScope/responsibilities.read"
+        )
+
+        //query for the model run parameter set as if it was in the other touchstone
+        val url = "/modelling-groups/$groupId/model-run-parameters/anothertouchstone-1/1/"
+        val response = requestHelper.get(url, permissions, acceptsContentType = "text/csv")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(404)
+    }
+
 
 }

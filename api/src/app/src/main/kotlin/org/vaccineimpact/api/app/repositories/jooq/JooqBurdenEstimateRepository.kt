@@ -241,8 +241,19 @@ class JooqBurdenEstimateRepository(
         return parameterSetId
     }
 
-    override fun getModelRunParameterSet(setId: Int): FlexibleDataTable<ModelRun>
+    override fun getModelRunParameterSet(groupId: String, touchstoneVersionId: String, setId: Int): FlexibleDataTable<ModelRun>
     {
+        //First check if this set id actually belongs to this group and touchstone version
+        dsl.select(MODEL_RUN_PARAMETER_SET.ID)
+                .from(MODEL_RUN_PARAMETER_SET)
+                .join(RESPONSIBILITY_SET)
+                .on(RESPONSIBILITY_SET.ID.eq(MODEL_RUN_PARAMETER_SET.RESPONSIBILITY_SET))
+                .where(MODEL_RUN_PARAMETER_SET.ID.eq(setId))
+                .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId))
+                .and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId))
+                .fetch()
+                .singleOrNull() ?: throw UnknownObjectError(setId, "model run parameter set")
+
         val sequence = getModelRunParametersSequence(setId)
         val headers = getModelRunParametersHeaders(setId)
 
@@ -369,7 +380,7 @@ class JooqBurdenEstimateRepository(
                     .from(MODEL_RUN_PARAMETER_SET)
                     .where(MODEL_RUN_PARAMETER_SET.ID.eq(modelRunParameterSetId))
                     .fetch()
-                    .singleOrNull() ?: throw UnknownObjectError(modelRunParameterSetId, "model run paramater set")
+                    .singleOrNull() ?: throw UnknownObjectError(modelRunParameterSetId, "model run parameter set")
         }
 
         val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
