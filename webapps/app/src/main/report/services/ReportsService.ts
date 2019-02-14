@@ -8,8 +8,7 @@ export class ReportsService extends AbstractLocalService {
     }
 
     getReportVersions(reportId: string) {
-        return this.setOptions({cacheKey: ReportsCacheKeysEnum.versions})
-            .get(`/reports/${reportId}/`, "reporting");
+        return this.get(`/reports/${reportId}/`, "reporting");
     }
 
     getVersionDetails(reportId: string, versionId: string) {
@@ -28,6 +27,14 @@ export class ReportsService extends AbstractLocalService {
 
     unPublishReport(name: string, version: string) {
         return this.post(`/reports/${name}/versions/${version}/publish/?value=false`, "{}", "reporting");
+    }
+
+    runReport(name: string) {
+        return this.post(`/reports/${name}/run/`, "{}", "reporting");
+    }
+
+    getReportRunStatus(key: string) {
+        return this.get(`/reports/${key}/status/`, "reporting");
     }
 }
 

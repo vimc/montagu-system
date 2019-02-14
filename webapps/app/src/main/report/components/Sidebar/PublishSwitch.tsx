@@ -4,6 +4,7 @@ import {connect, Dispatch} from "react-redux";
 
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {reportActionCreators} from "../../actionCreators/reportActionCreators";
+import {ConfirmModal} from "../../../shared/components/ConfirmModal";
 
 export interface PublicProps {
     name: string;
@@ -18,13 +19,6 @@ export interface PublishSwitchProps extends PublicProps {
 
 interface PublishSwitchState {
     showModal: boolean
-}
-
-export interface PublishSwitchModalProps {
-    show: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
-    publishVerb: string;
 }
 
 export class PublishSwitchComponent extends React.Component<PublishSwitchProps, PublishSwitchState> {
@@ -64,7 +58,9 @@ export class PublishSwitchComponent extends React.Component<PublishSwitchProps, 
 
     render() {
         return <div className="pt-3" id={"publish"}>
-                <PublishSwitchModal show={this.state.showModal} publishVerb={this.getPublishVerb()} onClose={this.hideModal}
+                <ConfirmModal show={this.state.showModal} title={`Confirm ${this.getPublishVerb()}`}
+                    text={`Are you sure you want to ${this.getPublishVerb()} this report version?`}
+                    onClose={this.hideModal}
                     onConfirm={this.onConfirm}/>
                 <Toggle
                     onClick={this.onToggle}
@@ -77,28 +73,7 @@ export class PublishSwitchComponent extends React.Component<PublishSwitchProps, 
     }
 }
 
-export class PublishSwitchModal extends React.Component<PublishSwitchModalProps, undefined> {
 
-    render() {
-        const displayClassName = this.props.show ? "modal-background modal-show" : "modal-background modal-hide";
-
-        return (
-            <div className={displayClassName}>
-                <div className="modal-main px-3 py-3">
-                    <div className={"mb-2 font-weight-bold"}>{`Confirm ${this.props.publishVerb}`}</div>
-                    <div className={"mb-2"}>{`Are you sure you want to ${this.props.publishVerb} this report version?`}</div>
-                    <div className={"modal-buttons"}>
-                        <button id="confirm-publish-btn" className={"btn submit mr-3"}
-                                onClick={this.props.onConfirm}>Yes
-                        </button>
-                        <button id="cancel-publish-btn" className={"btn btn-default"} onClick={this.props.onClose}>No
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
 
 const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<PublishSwitchProps> => {
     return {

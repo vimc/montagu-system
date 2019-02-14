@@ -155,6 +155,26 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
         });
 
+        it("runs a report", async () => {
+
+            const reportName = "connection"
+            const runResult = await (new ReportsService(this.store.dispatch, this.store.getState)).runReport(reportName);
+            const runningKey = runResult.key;
+            expect(runningKey).to.not.be.empty;
+
+        });
+
+        it("gets report run status", async () => {
+
+            const reportName = "connection"
+            const runResult = await (new ReportsService(this.store.dispatch, this.store.getState)).runReport(reportName);
+            const runningKey = runResult.key;
+
+            const statusResult = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportRunStatus(runningKey);
+            const status = statusResult.status;
+            expect(status).to.not.be.empty;
+        });
+
         it("fetches one time token", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState))
                 .getReportVersions("minimal");

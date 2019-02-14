@@ -8,9 +8,9 @@ import "../../../helper";
 import {
     PublishSwitchProps,
     PublishSwitchComponent,
-    PublishSwitch,
-    PublishSwitchModal
+    PublishSwitch
 } from "../../../../main/report/components/Sidebar/PublishSwitch";
+import {ConfirmModal} from "../../../../main/shared/components/ConfirmModal";
 import {Sandbox} from "../../../Sandbox";
 import {reportActionCreators} from "../../../../main/report/actionCreators/reportActionCreators";
 import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";
@@ -97,7 +97,7 @@ describe("Publish Switch component tests", () => {
         };
 
         const rendered = shallow(<PublishSwitchComponent {...props} />);
-        expect(rendered.find(PublishSwitchModal).prop("show")).to.be.false;
+        expect(rendered.find(ConfirmModal).prop("show")).to.be.false;
     });
 
     it("clicking toggle shows modal", () => {
@@ -115,7 +115,7 @@ describe("Publish Switch component tests", () => {
         toggle.simulate("click");
 
         rendered.update();
-        expect(rendered.find(PublishSwitchModal).prop("show")).to.be.true;
+        expect(rendered.find(ConfirmModal).prop("show")).to.be.true;
     });
 
     it("unpublishes on confirm from modal if report is published", () => {
@@ -132,7 +132,7 @@ describe("Publish Switch component tests", () => {
         const rendered = shallow(<PublishSwitchComponent {...props} />);
         rendered.setState({ showModal: true });
 
-        const modal = rendered.find(PublishSwitchModal).shallow();
+        const modal = rendered.find(ConfirmModal).shallow();
         const modalButton = modal.find("#confirm-publish-btn");
         modalButton.simulate("click");
 
@@ -154,7 +154,7 @@ describe("Publish Switch component tests", () => {
         const rendered = shallow(<PublishSwitchComponent {...props} />);
         rendered.setState({ showModal: true });
 
-        const modal = rendered.find(PublishSwitchModal).shallow();
+        const modal = rendered.find(ConfirmModal).shallow();
         const modalButton = modal.find("#confirm-publish-btn");
         modalButton.simulate("click");
 
@@ -176,7 +176,7 @@ describe("Publish Switch component tests", () => {
         const rendered = shallow(<PublishSwitchComponent {...props} />);
         rendered.setState({ showModal: true });
 
-        const modal = rendered.find(PublishSwitchModal).shallow();
+        const modal = rendered.find(ConfirmModal).shallow();
         const modalButton = modal.find("#cancel-publish-btn");
         modalButton.simulate("click");
 

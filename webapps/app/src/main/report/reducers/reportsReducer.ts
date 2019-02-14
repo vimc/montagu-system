@@ -6,6 +6,7 @@ import {
 } from "../actionTypes/ReportsActionsTypes";
 import {Changelog, ReportVersion} from "../../shared/models/Generated";
 import {Version} from "../../shared/models/reports/Report";
+import {RunningReportStatus, RunningReportStatusValues} from "../models/RunningReportStatus";
 import {BasicReport} from "../actionTypes/ReportsActionsTypes";
 
 export interface ReportsState {
@@ -14,6 +15,7 @@ export interface ReportsState {
     currentReport: string;
     versionDetails: Version;
     versionChangelog: Changelog[];
+    runningReports: RunningReportStatus[];
 }
 
 export const reportsInitialState: ReportsState = {
@@ -21,7 +23,8 @@ export const reportsInitialState: ReportsState = {
     versions: null,
     currentReport: null,
     versionDetails: null,
-    versionChangelog: null
+    versionChangelog: null,
+    runningReports: []
 };
 
 export const reportsReducer = (state = reportsInitialState, action: ReportsAction) : ReportsState => {
@@ -62,6 +65,34 @@ export const reportsReducer = (state = reportsInitialState, action: ReportsActio
         case ReportTypeKeys.REPORT_UNPUBLISHED:
             report = (action as ReportUnpublished).data;
             return getUpdatePublishedState(report, false)
+        case ReportTypeKeys.REPORT_RUN_STARTED:
+            let runningReports = state.runningReports.filter(r => r.name != action.data.name);
+            runningReports.push({
+                name: action.data.name,
+                key: action.data.key,
+                status: RunningReportStatusValues.RUNNING_REPORT_STATUS_STARTED,
+                version: null,
+                output: null
+            });
+            return {...state, runningReports: runningReports};
+        case ReportTypeKeys.REPORT_RUN_STATUS_FETCHED:
+            const oldRunningReport = state.runningReports.find(r => r.key == action.data.key);
+            runningReports = state.runningReports.filter(r => r.key != action.data.key);
+            if (oldRunningReport) {
+                const newRunningReport = {
+                    name: oldRunningReport.name,
+                    key: action.data.key,
+                    output: action.data.output,
+                    status: action.data.status,
+                    version: action.data.version
+                }
+                runningReports.push(newRunningReport);
+            }
+            return {...state, runningReports: runningReports}
+        case ReportTypeKeys.REPORT_RUN_STATUS_REMOVED:
+            runningReports = state.runningReports.filter(r => r.name != action.data)
+            return {...state, runningReports: runningReports}
+
         default:
             return state;
     }
