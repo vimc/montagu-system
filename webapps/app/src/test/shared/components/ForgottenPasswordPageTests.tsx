@@ -27,7 +27,7 @@ describe("ForgottenPasswordPage", () => {
         sandbox.setStubFunc(helpers, "queryStringAsObject", () => ({email: "test@example.com"}));
         const createBreadcrumbsStub = sandbox.setStubReduxAction(breadcrumbsActionCreators, "createBreadcrumbs");
         const rendered = shallow(<ForgottenPasswordPage/>, {context: {store}}).dive().dive();
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(createBreadcrumbsStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal("Forgotten your password?");
         const form = pageArticle.find(ForgottenPasswordForm);

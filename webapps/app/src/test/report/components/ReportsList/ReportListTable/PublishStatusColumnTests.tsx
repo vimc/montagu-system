@@ -34,12 +34,12 @@ describe("ReportListTable", () => {
 
         it("is not included if isReviewer is false", function () {
             const result = shallow(<ReportsListTable isReviewer={false} reports={[]}/>);
-            expect(result.find(ReactTable).prop("columns").some(c => c.Header == "Status")).to.be.false;
+            expect(result.find(ReactTable).prop("columns").some((c: Column) => c.Header == "Status")).to.be.false;
         });
 
         it("is included if isReviewer is true", function () {
             const result = shallow(<ReportsListTable isReviewer={true} reports={[]}/>);
-            expect(result.find(ReactTable).prop("columns").some(c => c.Header == "Status")).to.be.true;
+            expect(result.find(ReactTable).prop("columns").some((c: Column) => c.Header == "Status")).to.be.true;
         });
 
         it("renders published badge if status is published", function () {

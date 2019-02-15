@@ -11,6 +11,7 @@ import {
 import {mockMatch} from "../../../../mocks/mocks";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {modellingGroupsListPageActionCreators} from "../../../../../main/admin/actions/pages/ModellingGroupsListPageActionCreators";
+import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
 import {ModellingGroupsListContent} from "../../../../../main/admin/components/ModellingGroups/List/ModellingGroupsListContent";
 
 describe("Modelling Groups List Page Component Tests", () => {
@@ -31,7 +32,7 @@ describe("Modelling Groups List Page Component Tests", () => {
         const rendered = shallow(<ModellingGroupsListPage
             match={testMatch}
         />, {context: {store}}).dive();
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal(ModellingGroupsListPageComponent.title);
         expect(pageArticle.find(ModellingGroupsListContent).length).is.equal(1);

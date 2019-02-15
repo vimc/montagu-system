@@ -8,7 +8,7 @@ import {settings} from "../../../main/shared/Settings";
 import {AuthTypeKeys} from "../../../main/shared/actionTypes/AuthTypes";
 import {createMockContribStore, createMockStore} from "../../mocks/mockStore";
 import {SingletonVariableCache} from "../../../main/shared/modules/cache/singletonVariableCache";
-import {Dispatch} from "react-redux";
+import {Dispatch} from "redux";
 import {GlobalState} from "../../../main/shared/reducers/GlobalState";
 import {CacheInterface} from "../../../main/shared/modules/cache/CacheInterface";
 import {mockContribState} from "../../mocks/mockStates";

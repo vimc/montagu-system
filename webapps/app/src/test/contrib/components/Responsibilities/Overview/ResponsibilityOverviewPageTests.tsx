@@ -39,7 +39,7 @@ describe("Responsibility Overview Page Component", () => {
         const rendered = shallow(<ResponsibilityOverviewPage
             match={testMatch}
         />, {context: {store}}).dive().dive().dive();
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal(testResponsibilityOverviewPageTitle);
         expect(pageArticle.find(ResponsibilityOverviewContent).length).is.equal(1);

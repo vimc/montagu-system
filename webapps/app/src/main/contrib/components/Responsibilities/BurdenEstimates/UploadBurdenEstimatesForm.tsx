@@ -24,8 +24,8 @@ interface State {
 export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstimatesFormComponentProps, State> {
     private uploadSuccessMessage = "Success! You have uploaded a new set of burden estimates";
 
-    constructor() {
-        super();
+    constructor(props: UploadBurdenEstimatesFormComponentProps) {
+        super(props);
         const result = helpers.ingestQueryStringAndReturnResult();
         this.state = {
             hasUploadSuccess: result != null && (result as Result).status == "success",

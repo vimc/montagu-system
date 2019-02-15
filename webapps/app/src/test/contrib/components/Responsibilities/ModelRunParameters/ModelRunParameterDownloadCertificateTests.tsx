@@ -8,7 +8,7 @@ import {ModelRunParameterDownloadCertificate} from "../../../../../main/contrib/
 describe("ModelRunParameterDownloadCertificate", () => {
 
     it("creates signature data, signature and can be decoded back", () => {
-        const component = new ModelRunParameterDownloadCertificate();
+        const component = new ModelRunParameterDownloadCertificate({set: mockModelRunParameterSet()});
         const mockSet: any = mockModelRunParameterSet();
         const signatureData = component.makeSignatureContent(mockSet);
         const signatureInputMock = {

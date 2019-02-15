@@ -46,8 +46,8 @@ function makePortalConfig(name, urlPrefix) {
 
         plugins: [
             new CopyWebpackPlugin([
-                { from: 'node_modules/react/dist/react.js', to: 'react.js' },
-                { from: 'node_modules/react-dom/dist/react-dom.js', to: 'react-dom.js' },
+                { from: 'node_modules/react/umd/react.production.min.js', to: 'react.js' },
+                { from: 'node_modules/react-dom/umd/react-dom.production.min.js', to: 'react-dom.js' },
             ]),
             new HardSourceWebpackPlugin()
         ]

@@ -10,6 +10,7 @@ import {shallow} from "enzyme";
 import {UsersList} from "../../../../../main/admin/components/Users/List/UsersList";
 import {CreateUserSection} from "../../../../../main/admin/components/Users/Create/CreateUserSection";
 import {usersListPageActionCreators} from "../../../../../main/admin/actions/pages/UsersListPageActionCreators";
+import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
 
 describe("UserListPageTests", () => {
     const sandbox = new Sandbox();
@@ -23,7 +24,7 @@ describe("UserListPageTests", () => {
         const rendered = shallow(<UsersListPage location={null} router={null} history={null} match={match} />,
             {context: {store}}).dive();
 
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal(UsersListPageComponent.title);
         expect(pageArticle.find(UsersList).length).is.equal(1);

@@ -42,7 +42,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
                 groupId={"g-1"}
                 showDelete={true}
             />, {context: {store}}).dive();
-            const deleteLink = rendered.find("InternalLink.text-danger").dive();
+            const deleteLink = rendered.find(".text-danger").dive();
             const removeActionStub = sandbox.setStubReduxAction(modellingGroupsActionCreators, "removeUserFromGroup");
             deleteLink.simulate("click");
             expect(removeActionStub.called).to.be.true;
@@ -79,7 +79,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
                 user={testUser}
                 removeUserFromGroup={removeSpy}
             />);
-            const deleteInternalLink = rendered.find("InternalLink.text-danger");
+            const deleteInternalLink = rendered.find(".text-danger");
             expect(deleteInternalLink.dive().text()).to.eq("Remove member")
         });
 
@@ -90,7 +90,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
                 user={testUser}
                 removeUserFromGroup={removeSpy}
             />);
-            const deleteInternalLink = rendered.find("InternalLink.text-danger");
+            const deleteInternalLink = rendered.find(".text-danger");
             expect(deleteInternalLink.length).to.equal(0);
         });
 
@@ -101,7 +101,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
                 user={testUser}
                 removeUserFromGroup={removeSpy}
             />);
-            const deleteLink = rendered.find("InternalLink.text-danger").dive();
+            const deleteLink = rendered.find(".text-danger").dive();
             deleteLink.simulate("click");
             expect(removeSpy.called).to.be.true;
             expect(removeSpy.getCall(0).args[0]).to.equal("group1");

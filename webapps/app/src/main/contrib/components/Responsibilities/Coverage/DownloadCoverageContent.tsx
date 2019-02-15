@@ -28,8 +28,8 @@ interface DownloadCoverageState {
 }
 
 export class DownloadCoverageContentComponent extends React.Component<DownloadCoverageContentProps, DownloadCoverageState> {
-    constructor() {
-        super();
+    constructor(props: DownloadCoverageContentProps) {
+        super(props);
         this.state = {
             filterToExpectations: true
         };

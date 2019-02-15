@@ -66,8 +66,11 @@ describe("Download Coverage Content Component", () => {
     });
 
     it("renders on branch level, passes", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive();
-        expect(rendered.find('Connect').length).to.eql(1);
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}})
+            .dive()
+            .dive()
+            .dive();
+        expect(rendered.find(".row").length).to.eql(1);
     });
 
     it("renders on branch level, not passes", () => {

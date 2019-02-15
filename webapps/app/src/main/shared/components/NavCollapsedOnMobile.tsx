@@ -12,8 +12,8 @@ export interface NavProps{
 
 export class NavbarCollapsedOnMobile extends React.Component<NavProps, CollapseState> {
 
-    constructor() {
-        super();
+    constructor(props: NavProps) {
+        super(props);
 
         this.toggle = this.toggle.bind(this);
         this.state = {

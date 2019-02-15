@@ -26,7 +26,7 @@ describe("Choose Action Page", () => {
         const rendered = shallow(<ChooseActionPage
             match={testMatch}
         />, {context: {store}}).dive().dive();
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal("What do you want to do?");
         expect(pageArticle.find(ChooseActionContent).length).is.equal(1);

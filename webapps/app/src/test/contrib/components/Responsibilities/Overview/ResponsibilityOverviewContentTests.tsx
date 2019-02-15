@@ -58,12 +58,12 @@ describe("Responsibility Overview Content Component", () => {
     });
 
     it("renders on branch level, passes", () => {
-        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive();
+        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive().dive();
         const props = rendered.props() as ResponsibilityOverviewContentProps;
         expect(props.modellingGroup).to.eql(testCurrentGroup);
         expect(props.currentDiseaseId).to.eql(testDiseaseId);
         expect(props.responsibilitySet).to.eql(testResponsibilitiesSet);
-        expect(rendered.find('Connect').length).to.eql(1);
+        expect(rendered.find(ResponsibilityOverviewDescription).length).to.eql(1);
     });
 
     it("renders on branch level, not passes", () => {

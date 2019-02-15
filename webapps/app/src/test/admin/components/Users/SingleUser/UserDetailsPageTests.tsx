@@ -13,6 +13,7 @@ import {mockUser} from "../../../../mocks/mockModels";
 import {UserDetailsContent} from "../../../../../main/admin/components/Users/SingleUser/UserDetailsContent";
 import {AdminAppState} from "../../../../../main/admin/reducers/adminAppReducers";
 import {MockStore} from "redux-mock-store";
+import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
 
 describe("UserDetailsPage", () => {
     const sandbox = new Sandbox();
@@ -38,7 +39,7 @@ describe("UserDetailsPage", () => {
         const rendered = shallow(<UserDetailsPage location={null} router={null} history={null} match={match}/>,
             {context: {store}}).dive();
 
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal("Fake Name");
         expect(pageArticle.find(UserDetailsContent).length).is.equal(1);

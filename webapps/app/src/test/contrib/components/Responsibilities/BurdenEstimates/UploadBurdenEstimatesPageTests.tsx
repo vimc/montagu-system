@@ -47,7 +47,7 @@ describe("UploadBurdenEstimatesPage", () => {
 
         // Expectations
         expect(onLoadStub.called).is.equal(true);
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(pageArticle.find(UploadBurdenEstimatesContent)).to.have.length(1);
         const titleComponent = pageArticle.dive().find(ResponsibilitiesPageTitle);
         expect(titleComponent.props().title).is.equal("Upload central burden estimates");
