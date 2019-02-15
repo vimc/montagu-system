@@ -2,6 +2,7 @@ package org.vaccineimpact.api.databaseTests.tests
 
 import org.assertj.core.api.Assertions
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ModelRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqModelRepository
 import org.vaccineimpact.api.databaseTests.RepositoryTests
@@ -55,6 +56,23 @@ class ModelTests : RepositoryTests<ModelRepository>()
             Assertions.assertThat(model)
                     .isEqualTo(Model("fakeId", "some model", "Unknown citation","a"))
         }
+    }
+
+    @Test
+    fun `getting nonexistent model throws UnknownObjectError`()
+    {
+        given {
+            it.addGroup("a", "description a")
+            it.addDisease("d1")
+            it.addDisease("d2")
+            it.addModel("fakeId", "a", "d1", "some model")
+            it.addModel("fakeId2", "a", "d1", "another model", isCurrent = false)
+        }.check {
+            repo ->
+            Assertions.assertThatThrownBy { repo.get("fakeId3") }
+                    .isInstanceOf(UnknownObjectError::class.java)
+        }
+
     }
 
     override fun makeRepository(db: JooqContext) = JooqModelRepository(db.dsl)

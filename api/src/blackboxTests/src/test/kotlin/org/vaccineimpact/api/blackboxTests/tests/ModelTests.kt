@@ -3,7 +3,10 @@ package org.vaccineimpact.api.blackboxTests.tests
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.junit.Test
+import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
+import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.validate
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addDisease
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addModel
@@ -56,5 +59,19 @@ class ModelTests : DatabaseTest()
             })
 
         }
+    }
+
+    @Test
+    fun `get nonexistent model returns 404`()
+    {
+        val requestHelper = RequestHelper()
+        val userHelper = TestUserHelper()
+
+        JooqContext().use {
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("/models/nonexistentmodel/", PermissionSet("*/can-login","*/models.read"))
+        Assertions.assertThat(response.statusCode).isEqualTo(404)
     }
 }

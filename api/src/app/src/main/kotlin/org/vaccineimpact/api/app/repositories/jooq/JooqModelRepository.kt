@@ -22,7 +22,7 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 .where(MODEL.ID.eq(id))
                 .fetchAny()
 
-        return model.into(Model::class.java)
+        return model?.into(Model::class.java)
                 ?: throw UnknownObjectError(id, "model_id")
     }
 }
