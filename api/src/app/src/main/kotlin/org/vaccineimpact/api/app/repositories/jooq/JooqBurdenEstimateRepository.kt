@@ -28,7 +28,6 @@ import java.time.Instant
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
 
-
 data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
 constructor(val id: Int, val disease: String, val setStatus: String, val setId: Int)
@@ -160,6 +159,16 @@ class JooqBurdenEstimateRepository(
                 ?: throw UnknownObjectError(setId, "burden-estimate-set")
     }
 
+    override fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                      burdenEstimateSetId: Int): BurdenEstimateSet
+    {
+        //Get burden estimate set with validation
+        //Confirm that this burden estimate set belongs to this group, touchstone and scenario
+        checkBurdenEstimateSetPathParameters(groupId, touchstoneVersionId, scenarioId, burdenEstimateSetId)
+
+        return  getBurdenEstimateSet(burdenEstimateSetId);
+    }
+
     override fun getBurdenEstimateSet(setId: Int): BurdenEstimateSet
     {
         val table = BURDEN_ESTIMATE_SET
@@ -206,6 +215,23 @@ class JooqBurdenEstimateRepository(
                 .fetch()
 
         return mapper.mapBurdenEstimateSets(records)
+    }
+
+    private fun checkBurdenEstimateSetPathParameters(groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                                     burdenEstimateSetId: Int)
+    {
+        dsl.select(BURDEN_ESTIMATE_SET.ID)
+                .from(BURDEN_ESTIMATE_SET)
+                .join(RESPONSIBILITY)
+                .on(RESPONSIBILITY.ID.eq(BURDEN_ESTIMATE_SET.RESPONSIBILITY))
+                .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
+                .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET)
+                .where(BURDEN_ESTIMATE_SET.ID.eq(burdenEstimateSetId))
+                .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId))
+                .and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId))
+                .and(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
+                .fetch()
+                .singleOrNull() ?: throw UnknownObjectError(burdenEstimateSetId, "burden estimate set id")
     }
 
     override fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,

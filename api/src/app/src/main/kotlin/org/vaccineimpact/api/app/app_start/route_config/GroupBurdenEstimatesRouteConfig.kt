@@ -29,6 +29,10 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
                     .json()
                     .secure(writePermissions),
 
+            Endpoint("$baseUrl/:set-id/", controller, "getBurdenEstimateSet")
+                    .json()
+                    .secure(readPermissions),
+
             // Populate sets
             Endpoint("$baseUrl/:set-id/", controller, "populateBurdenEstimateSet", method = HttpMethod.post)
                     .json()
