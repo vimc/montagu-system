@@ -12,10 +12,7 @@ import org.vaccineimpact.api.app.security.internalUser
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
-import org.vaccineimpact.api.security.CookieName
-import org.vaccineimpact.api.security.KeyHelper
-import org.vaccineimpact.api.security.WebTokenHelper
-import org.vaccineimpact.api.security.deflated
+import org.vaccineimpact.api.security.*
 
 class AuthenticationController(context: ActionContext,
                                private val userLogic: UserLogic,
@@ -47,7 +44,8 @@ class AuthenticationController(context: ActionContext,
     fun setCookies(): String
     {
         val internalUser = userLogic.getUserByUsername(context.username!!)
-        val diseasesForUser = userLogic.getDiseasesForUser(internalUser)
+        val diseasesForUser = (getDiseaseReviewersMap()[context.username!!]
+                ?: listOf()) + userLogic.getDiseasesForUser(internalUser)
 
         val token = tokenHelper.generateToken(internalUser).deflated()
         context.setCookie(CookieName.Main, token)

@@ -73,9 +73,8 @@ class AuthenticationTests : DatabaseTest()
 
         val modelReviewToken = checkCookieAndGetValue(response, "jwt_token")
         val modelReviewClaims = JWT.decode(modelReviewToken)
-        assertThat(modelReviewClaims.getClaim("test-group").asString()).isEqualTo("true")
-        assertThat(modelReviewClaims.getClaim("group-1").asString()).isEqualTo("true")
         assertThat(modelReviewClaims.getClaim("d1").asString()).isEqualTo("true")
+        assertThat(modelReviewClaims.getClaim("test-disease").asString()).isEqualTo("true")
     }
 
     @Test

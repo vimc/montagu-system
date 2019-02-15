@@ -74,9 +74,7 @@ open class WebTokenHelper(
 
     private fun modelReviewClaims(user: InternalUser, diseaseNames: List<String>): Map<String, Any>
     {
-        val modelsToReview = getGroupReviewersMap()[user.username]?: listOf()
-        val groupPermissions = (user.roles.filter { it.name == "member" }
-                .map{ it.scope.databaseScopeId } + modelsToReview + diseaseNames)
+        val diseasePermissions = diseaseNames
                 .associate { it to "true" }
 
         val adminRoles = listOf("admin", "developer").map { ReifiedRole(it, Scope.Global()) }
@@ -95,7 +93,7 @@ open class WebTokenHelper(
                 "sub" to user.username,
                 "exp" to Date.from(Instant.now().plus(defaultLifespan)),
                 "access_level" to access
-        ) + groupPermissions
+        ) + diseasePermissions
     }
 
     open fun verify(compressedToken: String, expectedType: TokenType,

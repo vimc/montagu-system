@@ -72,27 +72,7 @@ class WebTokenHelperTests : MontaguTests()
     }
 
     @Test
-    fun `can generate model review token`()
-    {
-        val roles = roles + listOf(ReifiedRole("member", Scope.Specific("modelling-group",
-                "membership-group")))
-        val token = sut.generateModelReviewToken(InternalUser(properties, roles, permissions), listOf("d1"))
-        val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW, mock())
-
-        assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
-        assertThat(claims["token_type"]).isEqualTo("MODEL_REVIEW")
-        assertThat(claims["sub"]).isEqualTo("test.user")
-        assertThat(claims["exp"]).isInstanceOf(Date::class.java)
-        assertThat(claims["test-group"]).isEqualTo("true")
-        assertThat(claims["d1"]).isEqualTo("true")
-        assertThat(claims["membership-group"]).isEqualTo("true")
-        assertThat(claims["url"]).isEqualTo("*")
-        assertThat(claims["access_level"]).isEqualTo("user")
-        assertThat(claims.keys.count()).isEqualTo(9)
-    }
-
-    @Test
-    fun `can generate model review token for user with no models to review`()
+    fun `can generate model review token for user`()
     {
         val roles = listOf(ReifiedRole("member", Scope.Specific("modelling-group", "test-group")))
         val token = sut.generateModelReviewToken(InternalUser(properties.copy(username = "some.user"),
@@ -105,9 +85,8 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
         assertThat(claims["url"]).isEqualTo("*")
         assertThat(claims["access_level"]).isEqualTo("user")
-        assertThat(claims["test-group"]).isEqualTo("true")
         assertThat(claims["d1"]).isEqualTo("true")
-        assertThat(claims.keys.count()).isEqualTo(8)
+        assertThat(claims.keys.count()).isEqualTo(7)
     }
 
     @Test
