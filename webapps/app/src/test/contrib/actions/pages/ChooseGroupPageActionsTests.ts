@@ -19,7 +19,7 @@ describe("Choose Group Page actions tests", () => {
 
     it("gets all groups on load", (done: DoneCallback) => {
         const initialState = {
-            auth: {modellingGroups: testGroup.id}
+            auth: {modellingGroups: [testGroup.id]}
         };
         const store = createMockContribStore(initialState);
         const fakeData = [mockModellingGroup({id: testGroup.id})];

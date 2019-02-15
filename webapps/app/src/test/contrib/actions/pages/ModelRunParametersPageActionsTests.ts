@@ -35,7 +35,7 @@ describe("Model Run Parameters Page actions tests", () => {
             currentTouchstoneVersion: testTouchstoneVersion
         };
         const store = createMockContribStore(mockContribState({
-            auth: {modellingGroups: testGroup.id},
+            auth: {modellingGroups: [testGroup.id]},
             groups: {userGroups: [testGroup], currentUserGroup: testGroup},
             touchstones: touchstonesState
         }));

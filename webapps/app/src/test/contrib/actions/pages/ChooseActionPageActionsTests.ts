@@ -16,7 +16,7 @@ describe("Choose Action Page actions tests", () => {
     const testGroup = mockModellingGroup({description: "desc", id: "g1"});
     const testTouchstone = mockTouchstoneVersion({id: "touchstone-1"});
     const initialState = mockContribState({
-        auth: {modellingGroups: testGroup.id},
+        auth: {modellingGroups: [testGroup.id]},
         groups: {userGroups: [testGroup], currentUserGroup: testGroup}
     });
 
