@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
@@ -206,6 +207,19 @@ class JooqBurdenEstimateRepository(
                 .fetch()
 
         return mapper.mapBurdenEstimateSets(records)
+    }
+
+    override fun getBurdenEstimateOutcomes(groupId: String, touchstoneVersionId: String, scenarioId: String, burdenEstimateSetId: Int)
+            : Sequence<BurdenEstimateOutcome>
+    {
+        val result =  dsl.select(
+                    DISEASE.NAME,
+                    BURDEN_ESTIMATE.YEAR,
+                    BURDEN_ESTIMATE.AGE,
+                )
+                .fromJoinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE)
+                .joinPath(BURDEN_ESTIMATE_SET, SCENARIO, SCENARIO_DESCRIPTION, DISEASE)
+                .where(BURDEN_ESTIMATE_SET.ID.eq(burdenEstimateSetId))
     }
 
     override fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,
