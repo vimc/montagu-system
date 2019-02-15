@@ -162,32 +162,30 @@ class JooqBurdenEstimateRepository(
     override fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
                                       burdenEstimateSetId: Int): BurdenEstimateSet
     {
-        //Get burden estimate set with validation
-        //Confirm that this burden estimate set belongs to this group, touchstone and scenario
-        checkBurdenEstimateSetPathParameters(groupId, touchstoneVersionId, scenarioId, burdenEstimateSetId)
-
-        return  getBurdenEstimateSet(burdenEstimateSetId);
-    }
-
-    override fun getBurdenEstimateSet(setId: Int): BurdenEstimateSet
-    {
         val table = BURDEN_ESTIMATE_SET
         val records = dsl.select(
-                table.ID,
-                table.UPLOADED_ON,
-                table.UPLOADED_BY,
-                table.SET_TYPE,
-                table.SET_TYPE_DETAILS,
-                table.STATUS,
-                BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
-        )
+                    table.ID,
+                    table.UPLOADED_ON,
+                    table.UPLOADED_BY,
+                    table.SET_TYPE,
+                    table.SET_TYPE_DETAILS,
+                    table.STATUS,
+                    BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
+                 )
                 .from(table)
+                .join(RESPONSIBILITY)
+                .on(RESPONSIBILITY.ID.eq(table.RESPONSIBILITY))
+                .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
+                .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET)
                 .joinPath(table, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
-                .where(table.ID.eq(setId))
+                .where(table.ID.eq(burdenEstimateSetId))
+                .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId))
+                .and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId))
+                .and(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
                 .fetch()
 
-        return mapper.mapBurdenEstimateSets(records).singleOrNull()
-                ?: throw UnknownObjectError(setId, "burden-estimate-set")
+         return mapper.mapBurdenEstimateSets(records).singleOrNull()
+                 ?: throw UnknownObjectError(burdenEstimateSetId, BurdenEstimateSet::class)
     }
 
     override fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
@@ -217,22 +215,6 @@ class JooqBurdenEstimateRepository(
         return mapper.mapBurdenEstimateSets(records)
     }
 
-    private fun checkBurdenEstimateSetPathParameters(groupId: String, touchstoneVersionId: String, scenarioId: String,
-                                                     burdenEstimateSetId: Int)
-    {
-        dsl.select(BURDEN_ESTIMATE_SET.ID)
-                .from(BURDEN_ESTIMATE_SET)
-                .join(RESPONSIBILITY)
-                .on(RESPONSIBILITY.ID.eq(BURDEN_ESTIMATE_SET.RESPONSIBILITY))
-                .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
-                .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET)
-                .where(BURDEN_ESTIMATE_SET.ID.eq(burdenEstimateSetId))
-                .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId))
-                .and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId))
-                .and(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
-                .fetch()
-                .singleOrNull() ?: throw UnknownObjectError(burdenEstimateSetId, "burden estimate set id")
-    }
 
     override fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,
                                          modelRuns: List<ModelRun>,

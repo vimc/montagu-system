@@ -18,7 +18,6 @@ interface BurdenEstimateRepository : Repository
 
     fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
                              burdenEstimateSetId: Int): BurdenEstimateSet
-    fun getBurdenEstimateSet(setId: Int): BurdenEstimateSet
 
     fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
 

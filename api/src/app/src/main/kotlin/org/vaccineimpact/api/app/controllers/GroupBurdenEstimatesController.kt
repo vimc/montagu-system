@@ -74,7 +74,10 @@ open class GroupBurdenEstimatesController(
 
             // Next, get the metadata that will enable us to interpret the CSV
             val setId = context.params(":set-id").toInt()
-            val metadata = estimateRepository.getBurdenEstimateSet(setId)
+            val metadata = estimateRepository.getBurdenEstimateSet(path.groupId,
+                                                                                path.touchstoneVersionId,
+                                                                                path.scenarioId,
+                                                                                setId)
 
             // Then add the burden estimates
             val data = getBurdenEstimateDataFromCSV(metadata, source)
