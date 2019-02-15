@@ -396,7 +396,7 @@ class JooqBurdenEstimateRepository(
 
         // make sure set belongs to responsibility
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
-        val set = getBurdenEstimateSetForResponsibility(responsibilityInfo.id, setId)
+        val set = getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
 
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
