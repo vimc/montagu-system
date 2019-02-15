@@ -140,6 +140,56 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
     }
 
     @Test
+    fun `can get diseases for modelling group`()
+    {
+        val groupId = "g1"
+        val diseaseId = "d1"
+        withDatabase {
+            it.addGroup(groupId, "description")
+            it.addDisease(diseaseId)
+            it.addModel("m1", groupId, diseaseId)
+        }
+
+        withRepo {
+            assertThat(it.getDiseasesForModellingGroup(groupId)).containsExactly(diseaseId)
+        }
+    }
+
+    @Test
+    fun `does not get diseases for wrong modelling group`()
+    {
+        val groupId = "g1"
+        val diseaseId = "d1"
+        withDatabase {
+            it.addGroup(groupId, "description")
+            it.addGroup("badId", "description")
+            it.addDisease(diseaseId)
+            it.addModel("m1", "badId", diseaseId)
+        }
+
+        withRepo {
+            assertThat(it.getDiseasesForModellingGroup(groupId).any()).isFalse()
+        }
+    }
+
+    @Test
+    fun `does not get duplicate diseases`()
+    {
+        val groupId = "g1"
+        val diseaseId = "d1"
+        withDatabase {
+            it.addGroup(groupId, "description")
+            it.addDisease(diseaseId)
+            it.addModel("m1", groupId, diseaseId)
+            it.addModel("m2", groupId, diseaseId, isCurrent = false)
+        }
+
+        withRepo {
+            assertThat(it.getDiseasesForModellingGroup(groupId)).containsExactly(diseaseId)
+        }
+    }
+
+    @Test
     fun `exception is thrown for non-existent modelling group ID`()
     {
         givenABlankDatabase() check { repo ->

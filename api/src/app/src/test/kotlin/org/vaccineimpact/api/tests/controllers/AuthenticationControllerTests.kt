@@ -19,8 +19,8 @@ import java.time.Duration
 class AuthenticationControllerTests : MontaguTests()
 {
     private val fakeUser = InternalUser(UserProperties("testusername", "", "", "", null),
-        listOf(),
-        listOf())
+            listOf(),
+            listOf())
 
     @Test
     fun `successful authentication returns compressed token and issues cookie`()
@@ -82,11 +82,12 @@ class AuthenticationControllerTests : MontaguTests()
             on { username } doReturn "username"
         }
         val fakeUserLogic = mock<UserLogic> {
-            on { getUserByUsername("username")} doReturn fakeUser
+            on { getUserByUsername("username") } doReturn fakeUser
+            on { getDiseasesForUser(fakeUser) } doReturn listOf("d1")
         }
         val fakeTokenHelper = mock<WebTokenHelper> {
             on { generateToken(fakeUser) } doReturn "MAIN_TOKEN"
-            on { generateModelReviewToken(fakeUser) } doReturn "MODEL_REVIEW_TOKEN"
+            on { generateModelReviewToken(fakeUser, listOf("d1")) } doReturn "MODEL_REVIEW_TOKEN"
         }
         val sut = AuthenticationController(fakeContext, fakeUserLogic, mock(), fakeTokenHelper)
 

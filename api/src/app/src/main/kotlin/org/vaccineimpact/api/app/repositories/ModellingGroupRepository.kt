@@ -16,4 +16,6 @@ interface ModellingGroupRepository : Repository
     fun getTouchstonesByGroupId(groupId: String): List<Touchstone>
 
     fun createModellingGroup(newGroup: ModellingGroupCreation)
+
+    fun getDiseasesForModellingGroup(groupId: String): List<String>
 }

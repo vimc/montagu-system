@@ -12,10 +12,7 @@ import org.vaccineimpact.api.app.security.internalUser
 import org.vaccineimpact.api.models.AuthenticationResponse
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.models.SuccessfulAuthentication
-import org.vaccineimpact.api.security.CookieName
-import org.vaccineimpact.api.security.KeyHelper
-import org.vaccineimpact.api.security.WebTokenHelper
-import org.vaccineimpact.api.security.deflated
+import org.vaccineimpact.api.security.*
 
 class AuthenticationController(context: ActionContext,
                                private val userLogic: UserLogic,
@@ -25,7 +22,7 @@ class AuthenticationController(context: ActionContext,
 {
 
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, RepositoriesUserLogic(repositories.user, WebTokenHelper(KeyHelper.keyPair)))
+            : this(context, RepositoriesUserLogic(repositories.user, repositories.modellingGroup, WebTokenHelper(KeyHelper.keyPair)))
 
     fun authenticate(): AuthenticationResponse
     {
@@ -47,11 +44,13 @@ class AuthenticationController(context: ActionContext,
     fun setCookies(): String
     {
         val internalUser = userLogic.getUserByUsername(context.username!!)
+        val diseasesForUser = (getDiseaseReviewersMap()[context.username!!]
+                ?: listOf()) + userLogic.getDiseasesForUser(internalUser)
 
         val token = tokenHelper.generateToken(internalUser).deflated()
         context.setCookie(CookieName.Main, token)
 
-        val modelReviewToken = tokenHelper.generateModelReviewToken(internalUser)
+        val modelReviewToken = tokenHelper.generateModelReviewToken(internalUser, diseasesForUser)
         context.setCookie(CookieName.ModelReview, modelReviewToken)
 
         return okayResponse()
