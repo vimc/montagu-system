@@ -13,6 +13,7 @@ import org.vaccineimpact.api.models.BurdenEstimateGrouping
 import org.vaccineimpact.api.models.BurdenEstimateSet
 import org.vaccineimpact.api.models.BurdenEstimateSetType
 import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
+import spark.route.HttpMethod
 import java.time.Instant
 
 class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
@@ -332,6 +333,44 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
                 repo.getResponsibilityInfo(groupId, touchstoneVersionId, scenarioId)
             }.isInstanceOf(UnknownObjectError::class.java)
                     .hasMessageContaining("responsibility")
+        }
+    }
+
+    @Test
+    fun `can getBurdenEstimateOutcomesSequence`()
+    {
+        val setId = withDatabase { db ->
+            val ids = setupDatabase(db)
+            val modelVersionId = ids.modelVersion!!
+            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+        }
+        withDatabase{ db ->
+            db.addCountries(listOf("ABC", "DEF"))
+            db.addBurdenEstimate(setId, "DEF", 2001, 21, "cohort_size", 5f )
+            db.addBurdenEstimate(setId, "ABC", 2000, 20, "deaths", 10f )
+        }
+        withRepo { repo ->
+            val result = repo.getBurdenEstimateOutcomesSequence(groupId,
+                    touchstoneVersionId, scenarioId, setId).toList()
+
+            Assertions.assertThat(result.count()).isEqualTo(2);
+
+            Assertions.assertThat(result[0].disease).isEqualTo("Hib3")
+            Assertions.assertThat(result[0].year).isEqualTo(2000)
+            Assertions.assertThat(result[0].age).isEqualTo(20)
+            Assertions.assertThat(result[0].country).isEqualTo("ABC")
+            Assertions.assertThat(result[0].countryName).isEqualTo("ABC-Name")
+            Assertions.assertThat(result[0].burden_outcome_code).isEqualTo("deaths")
+            Assertions.assertThat(result[0].value).isEqualTo(10f)
+
+            Assertions.assertThat(result[1].disease).isEqualTo("Hib3")
+            Assertions.assertThat(result[1].year).isEqualTo(2001)
+            Assertions.assertThat(result[1].age).isEqualTo(21)
+            Assertions.assertThat(result[1].country).isEqualTo("DEF")
+            Assertions.assertThat(result[1].countryName).isEqualTo("DEF-Name")
+            Assertions.assertThat(result[1].burden_outcome_code).isEqualTo("cohort_size")
+            Assertions.assertThat(result[1].value).isEqualTo(5f)
+
         }
     }
 

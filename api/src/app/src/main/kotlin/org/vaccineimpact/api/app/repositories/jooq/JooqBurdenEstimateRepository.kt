@@ -28,6 +28,7 @@ import java.sql.Timestamp
 import java.time.Instant
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
+import java.lang.reflect.Type
 
 
 data class ResponsibilityInfo
@@ -209,17 +210,39 @@ class JooqBurdenEstimateRepository(
         return mapper.mapBurdenEstimateSets(records)
     }
 
-    override fun getBurdenEstimateOutcomes(groupId: String, touchstoneVersionId: String, scenarioId: String, burdenEstimateSetId: Int)
+    override fun getBurdenEstimateOutcomesSequence(groupId: String, touchstoneVersionId: String, scenarioId: String, burdenEstimateSetId: Int)
             : Sequence<BurdenEstimateOutcome>
     {
-        val result =  dsl.select(
-                    DISEASE.NAME,
+        //TODO: check that the burden estimate set exists in the group etc (use method from branch i2600)
+        //TODO: throw error if Burden Estimate set is stochasitc - not supported through the endpoint
+
+        return  dsl.select(
+                    DISEASE.ID,
                     BURDEN_ESTIMATE.YEAR,
                     BURDEN_ESTIMATE.AGE,
+                    COUNTRY.ID,
+                    COUNTRY.NAME,
+                    BURDEN_OUTCOME.CODE,
+                    BURDEN_ESTIMATE.VALUE
                 )
                 .fromJoinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE)
-                .joinPath(BURDEN_ESTIMATE_SET, SCENARIO, SCENARIO_DESCRIPTION, DISEASE)
+                .join(RESPONSIBILITY)
+                .on(BURDEN_ESTIMATE_SET.RESPONSIBILITY.eq(RESPONSIBILITY.ID))
+                .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION, DISEASE)
+                .join(COUNTRY)
+                .on(BURDEN_ESTIMATE.COUNTRY.eq(COUNTRY.NID))
+                .joinPath(BURDEN_ESTIMATE, BURDEN_OUTCOME)
                 .where(BURDEN_ESTIMATE_SET.ID.eq(burdenEstimateSetId))
+                .orderBy(
+                        DISEASE.ID,
+                        BURDEN_ESTIMATE.YEAR,
+                        BURDEN_ESTIMATE.AGE,
+                        COUNTRY.ID,
+                        COUNTRY.NAME,
+                        BURDEN_OUTCOME.CODE)
+                .fetchInto(BurdenEstimateOutcome::class.java)
+                .asSequence()
+
     }
 
     override fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,

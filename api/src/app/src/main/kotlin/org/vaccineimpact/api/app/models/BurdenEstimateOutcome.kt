@@ -10,6 +10,7 @@ data class BurdenEstimateOutcome (
         val age: Short,
         val country: String,
         val countryName: String,
-        val burden_outcom_code: String,
+        val burden_outcome_code: String,
         val value: Float
 )
+
