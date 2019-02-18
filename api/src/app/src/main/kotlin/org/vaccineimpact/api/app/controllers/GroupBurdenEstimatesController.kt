@@ -18,6 +18,7 @@ import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstoneV
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.serialization.StreamSerializable
 import java.time.Instant
 
 open class GroupBurdenEstimatesController(
@@ -118,6 +119,13 @@ open class GroupBurdenEstimatesController(
         return estimatesLogic.getEstimates(context.params(":set-id").toInt(),
                 path.groupId, path.touchstoneVersionId,
                 path.scenarioId, context.params(":outcome-code"), grouping)
+    }
+
+    fun getBurdenEstimateData(): StreamSerializable<BurdenEstimate>
+    {
+        val path = getValidResponsibilityPath(context, estimateRepository)
+        val setId = context.params(":set-id").toInt()
+        return estimatesLogic.getBurdenEstimateData(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
     }
 
     fun clearBurdenEstimateSet(): String

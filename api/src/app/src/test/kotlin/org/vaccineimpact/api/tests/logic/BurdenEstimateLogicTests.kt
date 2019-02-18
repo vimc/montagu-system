@@ -10,6 +10,7 @@ import org.vaccineimpact.api.app.errors.*
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
+import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
@@ -139,6 +140,86 @@ class BurdenEstimateLogicTests : MontaguTests()
 
         sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
         verify(repo).getEstimateWriter(defaultEstimateSet)
+    }
+
+    @Test
+    fun `gets burden estimate set data`()
+    {
+        val testOutcomeData = listOf(
+                BurdenEstimateOutcome("YF", 1990, 20, "ABC", "ABC-Name",
+                        "cohort_size", 100f),
+                BurdenEstimateOutcome("YF", 1990, 20, "ABC", "ABC-Name",
+                        "deaths", 1f),
+                BurdenEstimateOutcome("YF", 1990, 20, "ABC", "ABC-Name",
+                                        "dalys", 2f),
+
+                BurdenEstimateOutcome("YF", 1991, 20, "ABC", "ABC-Name",
+                "cohort_size", 101f),
+                BurdenEstimateOutcome("YF", 1991, 20, "ABC", "ABC-Name",
+                        "deaths", 3f),
+                BurdenEstimateOutcome("YF", 1991, 20, "ABC", "ABC-Name",
+                        "dalys", 4f),
+
+                BurdenEstimateOutcome("YF", 1990, 21, "ABC", "ABC-Name",
+                        "cohort_size", 102f),
+                BurdenEstimateOutcome("YF", 1990, 21, "ABC", "ABC-Name",
+                        "deaths", 5f),
+                BurdenEstimateOutcome("YF", 1990, 21, "ABC", "ABC-Name",
+                        "dalys", 6f),
+
+                BurdenEstimateOutcome("YF", 1990, 20, "DEF", "DEF-Name",
+                        "cohort_size", 103f),
+                BurdenEstimateOutcome("YF", 1990, 20, "DEF", "DEF-Name",
+                        "deaths", 7f),
+                BurdenEstimateOutcome("YF", 1990, 20, "DEF", "DEF-Name",
+                        "dalys", 8f)
+        ).asSequence()
+        val repo = mock<BurdenEstimateRepository> {
+            on{ getBurdenEstimateOutcomesSequence(any(), any(), any(), any()) } doReturn testOutcomeData
+        }
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+
+        val result = sut.getBurdenEstimateData(1, groupId,touchstoneVersionId, scenarioId)
+        Assertions.assertThat(result.data.toList().count()).isEqualTo(4)
+        var estimateObj = result.data.first()
+        Assertions.assertThat(estimateObj.disease).isEqualTo("YF")
+        Assertions.assertThat(estimateObj.year).isEqualTo(1990)
+        Assertions.assertThat(estimateObj.age).isEqualTo(20)
+        Assertions.assertThat(estimateObj.country).isEqualTo("ABC")
+        Assertions.assertThat(estimateObj.countryName).isEqualTo("ABC-Name")
+        Assertions.assertThat(estimateObj.cohortSize).isEqualTo(100f)
+        Assertions.assertThat(estimateObj.outcomes["deaths"]).isEqualTo(1f)
+        Assertions.assertThat(estimateObj.outcomes["dalys"]).isEqualTo(2f)
+
+        estimateObj = result.data.elementAt(1)
+        Assertions.assertThat(estimateObj.disease).isEqualTo("YF")
+        Assertions.assertThat(estimateObj.year).isEqualTo(1991)
+        Assertions.assertThat(estimateObj.age).isEqualTo(20)
+        Assertions.assertThat(estimateObj.country).isEqualTo("ABC")
+        Assertions.assertThat(estimateObj.countryName).isEqualTo("ABC-Name")
+        Assertions.assertThat(estimateObj.cohortSize).isEqualTo(101f)
+        Assertions.assertThat(estimateObj.outcomes["deaths"]).isEqualTo(3f)
+        Assertions.assertThat(estimateObj.outcomes["dalys"]).isEqualTo(4f)
+
+        estimateObj = result.data.elementAt(2)
+        Assertions.assertThat(estimateObj.disease).isEqualTo("YF")
+        Assertions.assertThat(estimateObj.year).isEqualTo(1990)
+        Assertions.assertThat(estimateObj.age).isEqualTo(21)
+        Assertions.assertThat(estimateObj.country).isEqualTo("ABC")
+        Assertions.assertThat(estimateObj.countryName).isEqualTo("ABC-Name")
+        Assertions.assertThat(estimateObj.cohortSize).isEqualTo(102f)
+        Assertions.assertThat(estimateObj.outcomes["deaths"]).isEqualTo(5f)
+        Assertions.assertThat(estimateObj.outcomes["dalys"]).isEqualTo(6f)
+
+        estimateObj = result.data.elementAt(3)
+        Assertions.assertThat(estimateObj.disease).isEqualTo("YF")
+        Assertions.assertThat(estimateObj.year).isEqualTo(1990)
+        Assertions.assertThat(estimateObj.age).isEqualTo(20)
+        Assertions.assertThat(estimateObj.country).isEqualTo("DEF")
+        Assertions.assertThat(estimateObj.countryName).isEqualTo("DEF-Name")
+        Assertions.assertThat(estimateObj.cohortSize).isEqualTo(103f)
+        Assertions.assertThat(estimateObj.outcomes["deaths"]).isEqualTo(7f)
+        Assertions.assertThat(estimateObj.outcomes["dalys"]).isEqualTo(8f)
     }
 
     @Test
