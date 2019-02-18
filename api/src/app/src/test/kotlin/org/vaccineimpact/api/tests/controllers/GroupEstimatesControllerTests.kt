@@ -341,7 +341,7 @@ class GroupEstimatesControllerTests : MontaguTests()
         val touchstoneRepo = mockTouchstoneRepository(touchstoneVersionSet)
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
-            on { getBurdenEstimateSet(any()) } doReturn existingBurdenEstimateSet
+            on { getBurdenEstimateSet(any(), any(), any(), any()) } doReturn existingBurdenEstimateSet
             on { createBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doReturn 1
         }
     }

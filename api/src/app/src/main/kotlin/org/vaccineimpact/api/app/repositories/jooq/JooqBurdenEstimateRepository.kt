@@ -28,7 +28,6 @@ import java.time.Instant
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
 
-
 data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
 constructor(val id: Int, val disease: String, val setStatus: String, val setId: Int)
@@ -160,25 +159,33 @@ class JooqBurdenEstimateRepository(
                 ?: throw UnknownObjectError(setId, "burden-estimate-set")
     }
 
-    override fun getBurdenEstimateSet(setId: Int): BurdenEstimateSet
+    override fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                      burdenEstimateSetId: Int): BurdenEstimateSet
     {
         val table = BURDEN_ESTIMATE_SET
         val records = dsl.select(
-                table.ID,
-                table.UPLOADED_ON,
-                table.UPLOADED_BY,
-                table.SET_TYPE,
-                table.SET_TYPE_DETAILS,
-                table.STATUS,
-                BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
-        )
+                    table.ID,
+                    table.UPLOADED_ON,
+                    table.UPLOADED_BY,
+                    table.SET_TYPE,
+                    table.SET_TYPE_DETAILS,
+                    table.STATUS,
+                    BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
+                 )
                 .from(table)
+                .join(RESPONSIBILITY)
+                .on(RESPONSIBILITY.ID.eq(table.RESPONSIBILITY))
+                .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
+                .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET)
                 .joinPath(table, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
-                .where(table.ID.eq(setId))
+                .where(table.ID.eq(burdenEstimateSetId))
+                .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId))
+                .and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId))
+                .and(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
                 .fetch()
 
-        return mapper.mapBurdenEstimateSets(records).singleOrNull()
-                ?: throw UnknownObjectError(setId, "burden-estimate-set")
+         return mapper.mapBurdenEstimateSets(records).singleOrNull()
+                 ?: throw UnknownObjectError(burdenEstimateSetId, BurdenEstimateSet::class)
     }
 
     override fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
@@ -207,6 +214,7 @@ class JooqBurdenEstimateRepository(
 
         return mapper.mapBurdenEstimateSets(records)
     }
+
 
     override fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,
                                          modelRuns: List<ModelRun>,

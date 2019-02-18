@@ -16,7 +16,9 @@ interface BurdenEstimateRepository : Repository
                                 properties: CreateBurdenEstimateSet,
                                 uploader: String, timestamp: Instant): Int
 
-    fun getBurdenEstimateSet(setId: Int): BurdenEstimateSet
+    fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
+                             burdenEstimateSetId: Int): BurdenEstimateSet
+
     fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
 
     fun clearBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)

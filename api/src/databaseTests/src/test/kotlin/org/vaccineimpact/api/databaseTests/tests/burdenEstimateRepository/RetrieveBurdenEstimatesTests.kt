@@ -271,9 +271,47 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
         }
         withRepo { repo ->
-            val set = repo.getBurdenEstimateSet(setId)
+            val set = repo.getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId,  setId)
             assertThat(set.uploadedBy).isEqualTo(username)
             assertThat(set.problems).isEmpty()
+        }
+    }
+
+    @Test
+    fun `getBurdenEstimateSet throws unknown object error if burden estimate set is in different touchstone`()
+    {
+        val touchstone2 = "touchstone-2"
+        val setId = withDatabase { db ->
+            val ids = setupDatabase(db)
+            val modelVersionId = ids.modelVersion!!
+            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+        }
+        withDatabase { db ->
+            db.addTouchstoneVersion("touchstone", 2)
+        }
+        withRepo { repo ->
+            Assertions.assertThatThrownBy {
+                repo.getBurdenEstimateSet(groupId, touchstone2, scenarioId,  setId)
+            }.isInstanceOf(UnknownObjectError::class.java)
+        }
+    }
+
+    @Test
+    fun `getBurdenEstimateSet throws unknown object error if burden estimate set is in different scenario`()
+    {
+        val scenario2 = "scenario-2"
+        val setId = withDatabase { db ->
+            val ids = setupDatabase(db)
+            val modelVersionId = ids.modelVersion!!
+            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+        }
+        withDatabase { db ->
+            db.addScenarioDescription(scenario2, "Test scenario 2", diseaseId, addDisease = false)
+        }
+        withRepo { repo ->
+            Assertions.assertThatThrownBy {
+                repo.getBurdenEstimateSet(groupId, touchstoneVersionId, scenario2,  setId)
+            }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
 

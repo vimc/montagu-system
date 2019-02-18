@@ -31,16 +31,8 @@ Schema: [`BurdenEstimates.schema.json`](../schemas/BurdenEstimates.schema.json)
     ]
 
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{estimate-id}/
-Returns the full burden estimate data.
+Returns metadata for a single burden estimate set, with the given id
 
-Required permissions: Scoped to modelling group: `estimates.read`, `responsibilities.read`. If the estimates belong to a touchstone that is `open` then they are only returned if the user has `estimates.read-unfinished` (again scoped to the modelling group)
-
-If the client sends an Accept header of `application/json` then it returns 
-multipart data with two sections, separated by a line of three dashes. The first
-section is JSON metadata; the second section is CSV data. If the client sends
-an Accept header of `text/csv` only the CSV data is returned.
-
-### JSON metadata
 Schema: [`BurdenEstimateSet.schema.json`](../schemas/BurdenEstimateSet.schema.json)
 
 ### Example
@@ -55,16 +47,6 @@ Schema: [`BurdenEstimateSet.schema.json`](../schemas/BurdenEstimateSet.schema.js
         "problems": [],
         "status": "empty"
     }
-
-### CSV data
-The last four columns will vary based on which outcomes are present in the 
-database. There may be more or fewer columns.
-
-    "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
-       "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
-       "Hib3",   1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
-       "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
-       "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
 
 ## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/
 Creates a new, empty burden estimate set.
