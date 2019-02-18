@@ -18,7 +18,7 @@ import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppRe
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {
     DownloadCoverageContent,
-    DownloadCoverageContentComponent,
+    DownloadCoverageContentComponent, DownloadCoverageContentProps,
 } from "../../../../../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
 import {CoverageSetList} from "../../../../../main/contrib/components/Responsibilities/Coverage/CoverageSetList";
 import {FormatControl} from "../../../../../main/shared/components/FormatControl";
@@ -65,15 +65,7 @@ describe("Download Coverage Content Component", () => {
         expect(typeof rendered.props().setFormat).to.eql("function");
     });
 
-    it("renders on branch level, passes", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}})
-            .dive()
-            .dive()
-            .dive();
-        expect(rendered.find(".row").length).to.eql(1);
-    });
-
-    it("renders on branch level, not passes", () => {
+    it("renders loading element if current touchstone is null", () => {
         store = createMockContribStore({
             groups: {currentUserGroup: mockModellingGroup()},
             touchstones: {currentTouchstoneVersion: null},
@@ -82,6 +74,11 @@ describe("Download Coverage Content Component", () => {
         });
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive();
         expect(rendered.find(LoadingElement).length).to.eql(1);
+    });
+
+    it("does not render loading element if touchstone and scenario are present", () => {
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive();
+        expect(rendered.find(LoadingElement).length).to.eql(0);
     });
 
     it("renders component on confidentiality level if not rfp touchstone", () => {
@@ -122,14 +119,6 @@ describe("Download Coverage Content Component", () => {
         expect(tooltips.length).to.eql(2);
         expect(tooltips.first().props().target).to.eql("format-tooltip");
         expect(tooltips.at(1).props().target).to.eql("countries-tooltip");
-    });
-
-    it("can trigger mapped chose format", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive().dive();
-        const downloadCoverageContentComponentInstance = rendered.instance() as DownloadCoverageContentComponent;
-        const onFormatSelectStub = sandbox.setStubReduxAction(coverageActionCreators, "setFormat");
-        downloadCoverageContentComponentInstance.props.setFormat("long");
-        expect(onFormatSelectStub.called).to.equal(true);
     });
 
     it("calling onSelectFormat triggers set format", () => {
