@@ -42,6 +42,13 @@ open class GroupBurdenEstimatesController(
         return estimateRepository.getBurdenEstimateSets(path.groupId, path.touchstoneVersionId, path.scenarioId)
     }
 
+    fun getBurdenEstimateSet(): BurdenEstimateSet
+    {
+        val path = getValidResponsibilityPath(context, estimateRepository)
+        val burdenEstimateSetId = context.params(":set-id").toInt()
+        return estimateRepository.getBurdenEstimateSet(path.groupId, path.touchstoneVersionId, path.scenarioId, burdenEstimateSetId)
+    }
+
     fun createBurdenEstimateSet(): String
     {
         // First check if we're allowed to see this touchstoneVersion
@@ -68,7 +75,10 @@ open class GroupBurdenEstimatesController(
 
             // Next, get the metadata that will enable us to interpret the CSV
             val setId = context.params(":set-id").toInt()
-            val metadata = estimateRepository.getBurdenEstimateSet(setId)
+            val metadata = estimateRepository.getBurdenEstimateSet(path.groupId,
+                                                                                path.touchstoneVersionId,
+                                                                                path.scenarioId,
+                                                                                setId)
 
             // Then add the burden estimates
             val data = getBurdenEstimateDataFromCSV(metadata, source)

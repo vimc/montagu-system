@@ -29,6 +29,11 @@ object GroupBurdenEstimatesRouteConfig : RouteConfig
                     .json()
                     .secure(writePermissions),
 
+            //Get set metadata
+            Endpoint("$baseUrl/:set-id/", controller, "getBurdenEstimateSet")
+                    .json()
+                    .secure(readPermissions),
+
             //Get set data
             Endpoint("$baseUrl/:set-id/estimates", controller, "getBurdenEstimateData")
                     .csv()

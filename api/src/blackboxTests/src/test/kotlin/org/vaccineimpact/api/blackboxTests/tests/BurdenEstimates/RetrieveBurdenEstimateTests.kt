@@ -2,12 +2,15 @@ package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
+import org.vaccineimpact.api.db.JooqContext
 
 
 class RetrieveBurdenEstimateTests : BurdenEstimateTests()
@@ -36,6 +39,50 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
                 obj("type" to "central-averaged", "details" to "mean")
             })
         }
+    }
+
+    @Test
+    fun `can get single burden estimate set`()
+    {
+        validate("${setUrl}1/") against "BurdenEstimateSet" given { db ->
+            val ids = setUp(db)
+            db.addUserForTesting("some.user")
+            val setId = db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId, "some.user",
+                    setType = "central-averaged", setTypeDetails = "mean")
+            db.addBurdenEstimateProblem("a problem", setId)
+        } requiringPermissions {
+            PermissionSet(
+                    "$groupScope/estimates.read",
+                    "$groupScope/responsibilities.read"
+            )
+        } andCheck { data ->
+            assertThat(data["uploaded_by"]).isEqualTo("some.user")
+            assertThat(data["problems"]).isEqualTo(json {
+                array("a problem")
+            })
+            assertThat(data["type"]).isEqualTo(json {
+                obj("type" to "central-averaged", "details" to "mean")
+            })
+        }
+    }
+
+    @Test
+    fun `getting nonexistent burden estimate set returns a 404`()
+    {
+        val url = "${setUrl}99/"
+        val permissions = PermissionSet(
+                "*/can-login",
+                "$groupScope/estimates.read",
+                "$groupScope/responsibilities.read"
+        )
+
+        JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+
+        val response = RequestHelper().get(url, permissions)
+
+        Assertions.assertThat(response.statusCode).isEqualTo(404)
     }
 
     @Test

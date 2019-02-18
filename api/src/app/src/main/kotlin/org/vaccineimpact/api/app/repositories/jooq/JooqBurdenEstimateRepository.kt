@@ -30,7 +30,6 @@ import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
 import java.lang.reflect.Type
 
-
 data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
 constructor(val id: Int, val disease: String, val setStatus: String, val setId: Int)
@@ -162,25 +161,33 @@ class JooqBurdenEstimateRepository(
                 ?: throw UnknownObjectError(setId, "burden-estimate-set")
     }
 
-    override fun getBurdenEstimateSet(setId: Int): BurdenEstimateSet
+    override fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                      burdenEstimateSetId: Int): BurdenEstimateSet
     {
         val table = BURDEN_ESTIMATE_SET
         val records = dsl.select(
-                table.ID,
-                table.UPLOADED_ON,
-                table.UPLOADED_BY,
-                table.SET_TYPE,
-                table.SET_TYPE_DETAILS,
-                table.STATUS,
-                BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
-        )
+                    table.ID,
+                    table.UPLOADED_ON,
+                    table.UPLOADED_BY,
+                    table.SET_TYPE,
+                    table.SET_TYPE_DETAILS,
+                    table.STATUS,
+                    BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
+                 )
                 .from(table)
+                .join(RESPONSIBILITY)
+                .on(RESPONSIBILITY.ID.eq(table.RESPONSIBILITY))
+                .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
+                .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET)
                 .joinPath(table, BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
-                .where(table.ID.eq(setId))
+                .where(table.ID.eq(burdenEstimateSetId))
+                .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId))
+                .and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId))
+                .and(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
                 .fetch()
 
-        return mapper.mapBurdenEstimateSets(records).singleOrNull()
-                ?: throw UnknownObjectError(setId, "burden-estimate-set")
+         return mapper.mapBurdenEstimateSets(records).singleOrNull()
+                 ?: throw UnknownObjectError(burdenEstimateSetId, BurdenEstimateSet::class)
     }
 
     override fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
@@ -213,8 +220,14 @@ class JooqBurdenEstimateRepository(
     override fun getBurdenEstimateOutcomesSequence(groupId: String, touchstoneVersionId: String, scenarioId: String, burdenEstimateSetId: Int)
             : Sequence<BurdenEstimateOutcome>
     {
-        //TODO: check that the burden estimate set exists in the group etc (use method from branch i2600)
-        //TODO: throw error if Burden Estimate set is stochasitc - not supported through the endpoint
+        //check that the burden estimate set exists in the group etc
+        val set = getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, burdenEstimateSetId)
+
+        //TODO: throw error if Burden Estimate set is stochastic - not supported through the endpoint. 404 or 400?
+        if (set.isStochastic())
+        {
+
+        }
 
         return  dsl.select(
                     DISEASE.ID,
@@ -433,7 +446,7 @@ class JooqBurdenEstimateRepository(
 
         // make sure set belongs to responsibility
         val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
-        val set = getBurdenEstimateSetForResponsibility(responsibilityInfo.id, setId)
+        val set = getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
 
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
