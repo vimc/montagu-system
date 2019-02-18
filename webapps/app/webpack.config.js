@@ -10,11 +10,11 @@ const production = {
     public_path_prefix: true
 };
 let settings = development;
-let reactPath = "development";
+let reactFileName = "development";
 
 if (process.env.MONTAGU_PORTAL_PROFILE == "docker") {
     settings = production;
-    reactPath = "production.min";
+    reactFileName = "production.min";
 }
 
 function makePortalConfig(name, urlPrefix) {
@@ -48,8 +48,8 @@ function makePortalConfig(name, urlPrefix) {
 
         plugins: [
             new CopyWebpackPlugin([
-                { from: `node_modules/react/umd/react.${reactPath}.js`, to: 'react.js' },
-                { from: `node_modules/react-dom/umd/react-dom.${reactPath}.js`, to: 'react-dom.js' },
+                { from: `node_modules/react/umd/react.${reactFileName}.js`, to: 'react.js' },
+                { from: `node_modules/react-dom/umd/react-dom.${reactFileName}.js`, to: 'react-dom.js' },
             ]),
             new HardSourceWebpackPlugin()
         ]
