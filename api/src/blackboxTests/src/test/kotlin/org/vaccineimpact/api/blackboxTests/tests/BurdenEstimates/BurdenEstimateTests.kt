@@ -39,7 +39,7 @@ abstract class BurdenEstimateTests : DatabaseTest()
     }
 
     protected fun setUpWithBurdenEstimateSet(db: JooqContext, setId: Int? = null, status: String = "empty",
-                                             expectedOutcomes: List<String> = listOf()): Int
+                                             expectedOutcomes: List<String> = listOf(), setType: String = "central-single-run"): Int
     {
         val returnedIds = setUp(db)
         TestUserHelper.setupTestUser()
@@ -51,7 +51,8 @@ abstract class BurdenEstimateTests : DatabaseTest()
                 returnedIds.modelVersionId,
                 TestUserHelper.username,
                 status = status,
-                setId = setId
+                setId = setId,
+                setType = setType
         )
     }
 

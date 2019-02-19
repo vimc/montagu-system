@@ -223,10 +223,9 @@ class JooqBurdenEstimateRepository(
         //check that the burden estimate set exists in the group etc
         val set = getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, burdenEstimateSetId)
 
-        //TODO: throw error if Burden Estimate set is stochastic - not supported through the endpoint. 404 or 400?
         if (set.isStochastic())
         {
-
+            throw InvalidOperationError("Cannot get burden estimate data for stochastic burden estimate sets")
         }
 
         return  dsl.select(

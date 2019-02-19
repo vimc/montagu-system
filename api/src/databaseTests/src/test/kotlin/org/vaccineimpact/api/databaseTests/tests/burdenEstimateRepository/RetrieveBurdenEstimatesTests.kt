@@ -269,12 +269,13 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         val setId = withDatabase { db ->
             val ids = setupDatabase(db)
             val modelVersionId = ids.modelVersion!!
-            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setType = "stochastic")
         }
         withRepo { repo ->
             val set = repo.getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId,  setId)
             assertThat(set.uploadedBy).isEqualTo(username)
             assertThat(set.problems).isEmpty()
+            assertThat(set.isStochastic()).isTrue()
         }
     }
 

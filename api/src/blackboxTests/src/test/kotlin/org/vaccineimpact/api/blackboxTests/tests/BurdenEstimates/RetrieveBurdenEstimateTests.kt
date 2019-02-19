@@ -108,6 +108,8 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
         )
         val response = RequestHelper().get(estimatesUrl, permissions, acceptsContentType = "text/csv")
 
+        Assertions.assertThat(response.headers["Content-Type"]).isEqualTo("text/csv");
+
         val csv = StringReader(response.text)
                 .use { CSVReader(it).readAll() }
 
@@ -353,9 +355,48 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
+    fun `getting data for stochastic burden estimate set returns a 400`()
+    {
+        JooqContext().use {
+
+            setUpWithBurdenEstimateSet(it, setType="stochastic")
+        }
+
+        val estimatesUrl ="${setUrl}1/estimates/"
+        val permissions = PermissionSet(
+                "*/can-login",
+                "$groupScope/estimates.read",
+                "$groupScope/responsibilities.read"
+        )
+
+        val response = RequestHelper().get(estimatesUrl, permissions, acceptsContentType = "text/csv")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(400)
+    }
+
+    @Test
     fun `getting nonexistent burden estimate set returns a 404`()
     {
         val url = "${setUrl}99/"
+        val permissions = PermissionSet(
+                "*/can-login",
+                "$groupScope/estimates.read",
+                "$groupScope/responsibilities.read"
+        )
+
+        JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+
+        val response = RequestHelper().get(url, permissions)
+
+        Assertions.assertThat(response.statusCode).isEqualTo(404)
+    }
+
+    @Test
+    fun `getting nonexistent burden estimate set data returns a 404`()
+    {
+        val url = "${setUrl}99/estimates/"
         val permissions = PermissionSet(
                 "*/can-login",
                 "$groupScope/estimates.read",
