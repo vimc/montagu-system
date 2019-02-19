@@ -301,8 +301,6 @@ class GroupEstimatesControllerTests : MontaguTests()
         verify(logic).getBurdenEstimateData(1, "group-1", "touchstone-1", "scenario-1")
     }
 
-
-
     private fun mockActionContext(keepOpen: String? = null): ActionContext
     {
         return mock {
