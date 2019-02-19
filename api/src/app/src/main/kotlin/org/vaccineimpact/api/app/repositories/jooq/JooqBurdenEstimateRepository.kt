@@ -258,6 +258,20 @@ class JooqBurdenEstimateRepository(
 
     }
 
+    override fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int) : List<String>
+    {
+        return dsl.select(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
+                .from(BURDEN_ESTIMATE_SET)
+                .join(RESPONSIBILITY)
+                .on(BURDEN_ESTIMATE_SET.RESPONSIBILITY.eq(RESPONSIBILITY.ID))
+                .joinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION, BURDEN_ESTIMATE_OUTCOME_EXPECTATION)
+                .where(BURDEN_ESTIMATE_SET.ID.eq(burdenEstimateSetId))
+                .groupBy(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
+                .orderBy(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
+                .fetch()
+                .getValues(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
+    }
+
     override fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,
                                          modelRuns: List<ModelRun>,
                                          uploader: String, timestamp: Instant): Int

@@ -412,6 +412,25 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         }
     }
 
+    @Test
+    fun `can getExpectedOutcomesForBurdenEstimateSet`()
+    {
+        val setId = withDatabase { db ->
+            val ids = setupDatabase(db)
+            val modelVersionId = ids.modelVersion!!
+            db.addExpectations(ids.responsibility, outcomes = listOf("cases", "deaths", "dalys"))
+            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
+        }
+        withRepo { repo ->
+            val result = repo.getExpectedOutcomesForBurdenEstimateSet(setId)
+
+            Assertions.assertThat(result.count()).isEqualTo(3)
+            Assertions.assertThat(result[0]).isEqualTo("cases")
+            Assertions.assertThat(result[1]).isEqualTo("dalys")
+            Assertions.assertThat(result[2]).isEqualTo("deaths")
+        }
+    }
+
     private fun checkSetHasExpectedType(sets: List<BurdenEstimateSet>, setId: Int, expectedType: BurdenEstimateSetType)
     {
         val set = sets.singleOrNull { it.id == setId }

@@ -62,24 +62,16 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                             it.country, it.countryName)
                 }
 
+        //get the expected outcomes for this burden estimate set
+        val expectedOutcomes = burdenEstimateRepository.getExpectedOutcomesForBurdenEstimateSet(setId)
+
         //next, map to BurdenEstimate objects, including extracting the cohort size outcome
         val rows = groupedRows.values
                 .map{
                     mapBurdenEstimate(it)
                 }
 
-        //start by getting the columns from first row
-        //TODO: get columns from expectations
-        val outcomes = if (rows.any())
-        {
-            rows.first().outcomes.keys.toList()
-        }
-        else
-        {
-            listOf()
-        }
-
-        return FlexibleDataTable.new(rows.asSequence(), outcomes.sorted())
+        return FlexibleDataTable.new(rows.asSequence(), expectedOutcomes)
 
     }
 

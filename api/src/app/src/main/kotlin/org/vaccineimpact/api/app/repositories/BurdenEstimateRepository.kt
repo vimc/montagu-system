@@ -49,4 +49,6 @@ interface BurdenEstimateRepository : Repository
 
     fun getBurdenEstimateOutcomesSequence(groupId: String, touchstoneVersionId: String, scenarioId: String, burdenEstimateSetId: Int)
             : Sequence<BurdenEstimateOutcome>
+
+    fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int) : List<String>
 }

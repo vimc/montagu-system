@@ -176,6 +176,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         ).asSequence()
         val repo = mock<BurdenEstimateRepository> {
             on{ getBurdenEstimateOutcomesSequence(any(), any(), any(), any()) } doReturn testOutcomeData
+            on{ getExpectedOutcomesForBurdenEstimateSet(any())} doReturn listOf("deaths", "dalys")
         }
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
 

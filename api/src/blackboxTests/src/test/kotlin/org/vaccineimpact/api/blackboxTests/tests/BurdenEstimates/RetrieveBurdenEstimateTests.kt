@@ -74,7 +74,7 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
     {
         JooqContext().use {
 
-            val setId = setUpWithBurdenEstimateSet(it)
+            val setId = setUpWithBurdenEstimateSet(it, expectedOutcomes = listOf("cases", "dalys", "deaths"))
             it.addCountries(listOf("ABC", "DEF"))
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "cohort_size", value = 100F)
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "cases", value = 40F)
@@ -172,6 +172,183 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
         Assertions.assertThat(dataRow[6]).isEqualTo("60.0")
         Assertions.assertThat(dataRow[7]).isEqualTo("30.5")
         Assertions.assertThat(dataRow[8]).isEqualTo("4.0")
+
+    }
+
+    @Test
+    fun `can get burden estimate data with some missing outcome values`()
+    {
+        JooqContext().use {
+
+            val setId = setUpWithBurdenEstimateSet(it, expectedOutcomes = listOf("cases", "dalys", "deaths", "cases_acute"))
+            it.addCountries(listOf("ABC", "DEF"))
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "cohort_size", value = 100F)
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "cases", value = 40F)
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "dalys", value = 25.5f)
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "deaths", value = 2F)
+
+            it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "cohort_size", value = 50F)
+
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "cohort_size", value = 200F)
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "cases", value = 80F)
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "deaths", value = 3F)
+
+            it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "cohort_size", value = 150F)
+            it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "deaths", value = 4F)
+
+
+        }
+
+        val estimatesUrl ="${setUrl}1/estimates/"
+
+        val permissions = PermissionSet(
+                "*/can-login",
+                "$groupScope/estimates.read",
+                "$groupScope/responsibilities.read"
+        )
+        val response = RequestHelper().get(estimatesUrl, permissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val firstRow = csv.first().toList() //headers
+
+        Assertions.assertThat(firstRow.count()).isEqualTo(10)
+        Assertions.assertThat(firstRow[0]).isEqualTo("disease")
+        Assertions.assertThat(firstRow[1]).isEqualTo("year")
+        Assertions.assertThat(firstRow[2]).isEqualTo("age")
+        Assertions.assertThat(firstRow[3]).isEqualTo("country")
+        Assertions.assertThat(firstRow[4]).isEqualTo("country_name")
+        Assertions.assertThat(firstRow[5]).isEqualTo("cohort_size")
+        Assertions.assertThat(firstRow[6]).isEqualTo("cases")
+        Assertions.assertThat(firstRow[7]).isEqualTo("cases_acute")
+        Assertions.assertThat(firstRow[8]).isEqualTo("dalys")
+        Assertions.assertThat(firstRow[9]).isEqualTo("deaths")
+
+
+
+        var dataRow = csv.drop(1).first().toList()
+        Assertions.assertThat(dataRow.count()).isEqualTo(10)
+        Assertions.assertThat(dataRow[0]).isEqualTo("Hib3")
+        Assertions.assertThat(dataRow[1]).isEqualTo("2000")
+        Assertions.assertThat(dataRow[2]).isEqualTo("20")
+        Assertions.assertThat(dataRow[3]).isEqualTo("ABC")
+        Assertions.assertThat(dataRow[4]).isEqualTo("ABC-Name")
+        Assertions.assertThat(dataRow[5]).isEqualTo("100.0")
+        Assertions.assertThat(dataRow[6]).isEqualTo("40.0")
+        Assertions.assertThat(dataRow[7]).isEqualTo("<NA>")  //missing burden outcomes should be emitted as NA
+        Assertions.assertThat(dataRow[8]).isEqualTo("25.5")
+        Assertions.assertThat(dataRow[9]).isEqualTo("2.0")
+
+
+        dataRow = csv.drop(2).first().toList()
+        Assertions.assertThat(dataRow.count()).isEqualTo(10)
+        Assertions.assertThat(dataRow[0]).isEqualTo("Hib3")
+        Assertions.assertThat(dataRow[1]).isEqualTo("2000")
+        Assertions.assertThat(dataRow[2]).isEqualTo("20")
+        Assertions.assertThat(dataRow[3]).isEqualTo("DEF")
+        Assertions.assertThat(dataRow[4]).isEqualTo("DEF-Name")
+        Assertions.assertThat(dataRow[5]).isEqualTo("50.0")
+        Assertions.assertThat(dataRow[6]).isEqualTo("<NA>")
+        Assertions.assertThat(dataRow[7]).isEqualTo("<NA>")
+        Assertions.assertThat(dataRow[8]).isEqualTo("<NA>")
+        Assertions.assertThat(dataRow[9]).isEqualTo("<NA>")
+
+
+        dataRow = csv.drop(3).first().toList()
+        Assertions.assertThat(dataRow.count()).isEqualTo(10)
+        Assertions.assertThat(dataRow[0]).isEqualTo("Hib3")
+        Assertions.assertThat(dataRow[1]).isEqualTo("2000")
+        Assertions.assertThat(dataRow[2]).isEqualTo("21")
+        Assertions.assertThat(dataRow[3]).isEqualTo("ABC")
+        Assertions.assertThat(dataRow[4]).isEqualTo("ABC-Name")
+        Assertions.assertThat(dataRow[5]).isEqualTo("200.0")
+        Assertions.assertThat(dataRow[6]).isEqualTo("80.0")
+        Assertions.assertThat(dataRow[7]).isEqualTo("<NA>")
+        Assertions.assertThat(dataRow[8]).isEqualTo("<NA>")
+        Assertions.assertThat(dataRow[9]).isEqualTo("3.0")
+
+
+        dataRow = csv.drop(4).first().toList()
+        Assertions.assertThat(dataRow.count()).isEqualTo(10)
+        Assertions.assertThat(dataRow[0]).isEqualTo("Hib3")
+        Assertions.assertThat(dataRow[1]).isEqualTo("2001")
+        Assertions.assertThat(dataRow[2]).isEqualTo("20")
+        Assertions.assertThat(dataRow[3]).isEqualTo("ABC")
+        Assertions.assertThat(dataRow[4]).isEqualTo("ABC-Name")
+        Assertions.assertThat(dataRow[5]).isEqualTo("150.0")
+        Assertions.assertThat(dataRow[6]).isEqualTo("<NA>")
+        Assertions.assertThat(dataRow[7]).isEqualTo("<NA>")
+        Assertions.assertThat(dataRow[8]).isEqualTo("<NA>")
+        Assertions.assertThat(dataRow[9]).isEqualTo("4.0")
+
+    }
+
+    @Test
+    fun `can get burden estimate data with missing cohort_size values`(){
+        JooqContext().use {
+
+            val setId = setUpWithBurdenEstimateSet(it, expectedOutcomes = listOf("cases", "dalys", "deaths"))
+            it.addCountries(listOf("ABC", "DEF"))
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "cases", value = 40F)
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "dalys", value = 25.5f)
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "deaths", value = 2F)
+
+            it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "cases", value = 10F)
+            it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "dalys", value = 5.5f)
+            it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "deaths", value = 1F)
+
+        }
+
+        val estimatesUrl ="${setUrl}1/estimates/"
+
+        val permissions = PermissionSet(
+                "*/can-login",
+                "$groupScope/estimates.read",
+                "$groupScope/responsibilities.read"
+        )
+        val response = RequestHelper().get(estimatesUrl, permissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val firstRow = csv.first().toList() //headers
+
+        Assertions.assertThat(firstRow.count()).isEqualTo(9)
+        Assertions.assertThat(firstRow[0]).isEqualTo("disease")
+        Assertions.assertThat(firstRow[1]).isEqualTo("year")
+        Assertions.assertThat(firstRow[2]).isEqualTo("age")
+        Assertions.assertThat(firstRow[3]).isEqualTo("country")
+        Assertions.assertThat(firstRow[4]).isEqualTo("country_name")
+        Assertions.assertThat(firstRow[5]).isEqualTo("cohort_size")
+        Assertions.assertThat(firstRow[6]).isEqualTo("cases")
+        Assertions.assertThat(firstRow[7]).isEqualTo("dalys")
+        Assertions.assertThat(firstRow[8]).isEqualTo("deaths")
+
+
+        var dataRow = csv.drop(1).first().toList()
+        Assertions.assertThat(dataRow.count()).isEqualTo(9)
+        Assertions.assertThat(dataRow[0]).isEqualTo("Hib3")
+        Assertions.assertThat(dataRow[1]).isEqualTo("2000")
+        Assertions.assertThat(dataRow[2]).isEqualTo("20")
+        Assertions.assertThat(dataRow[3]).isEqualTo("ABC")
+        Assertions.assertThat(dataRow[4]).isEqualTo("ABC-Name")
+        Assertions.assertThat(dataRow[5]).isEqualTo("0.0") //missing cohort size should be emitted as zero
+        Assertions.assertThat(dataRow[6]).isEqualTo("40.0")
+        Assertions.assertThat(dataRow[7]).isEqualTo("25.5")
+        Assertions.assertThat(dataRow[8]).isEqualTo("2.0")
+
+        dataRow = csv.drop(2).first().toList()
+        Assertions.assertThat(dataRow.count()).isEqualTo(9)
+        Assertions.assertThat(dataRow[0]).isEqualTo("Hib3")
+        Assertions.assertThat(dataRow[1]).isEqualTo("2000")
+        Assertions.assertThat(dataRow[2]).isEqualTo("20")
+        Assertions.assertThat(dataRow[3]).isEqualTo("DEF")
+        Assertions.assertThat(dataRow[4]).isEqualTo("DEF-Name")
+        Assertions.assertThat(dataRow[5]).isEqualTo("0.0") //missing cohort size should be emitted as zero
+        Assertions.assertThat(dataRow[6]).isEqualTo("10.0")
+        Assertions.assertThat(dataRow[7]).isEqualTo("5.5")
+        Assertions.assertThat(dataRow[8]).isEqualTo("1.0")
 
     }
 

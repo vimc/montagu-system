@@ -38,13 +38,14 @@ abstract class BurdenEstimateTests : DatabaseTest()
         return ReturnedIds(responsibilityId, modelVersionId, setId)
     }
 
-    protected fun setUpWithBurdenEstimateSet(db: JooqContext, setId: Int? = null, status: String = "empty"): Int
+    protected fun setUpWithBurdenEstimateSet(db: JooqContext, setId: Int? = null, status: String = "empty",
+                                             expectedOutcomes: List<String> = listOf()): Int
     {
         val returnedIds = setUp(db)
         TestUserHelper.setupTestUser()
 
         db.addExpectations(returnedIds.responsibilityId, yearMinInclusive = 1996, yearMaxInclusive = 1997,
-                ageMaxInclusive = 50, ageMinInclusive = 50, countries = listOf("AFG", "AGO"))
+                ageMaxInclusive = 50, ageMinInclusive = 50, countries = listOf("AFG", "AGO"), outcomes = expectedOutcomes)
         return db.addBurdenEstimateSet(
                 returnedIds.responsibilityId,
                 returnedIds.modelVersionId,
