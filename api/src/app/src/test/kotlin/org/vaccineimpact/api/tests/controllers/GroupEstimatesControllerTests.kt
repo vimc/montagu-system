@@ -286,6 +286,22 @@ class GroupEstimatesControllerTests : MontaguTests()
                 eq(BurdenEstimateGrouping.YEAR))
     }
 
+    @Test
+    fun `can get burden estimate set data`()
+    {
+        val logic = mockLogic()
+        val repo = mockRepository()
+        val mockContext = mock<ActionContext> {
+            on { params(":set-id") } doReturn "1"
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
+            on { params(":scenario-id") } doReturn "scenario-1"
+        }
+        GroupBurdenEstimatesController(mockContext, mockRepositories(repo), logic, repo).getBurdenEstimateSetData()
+        verify(logic).getBurdenEstimateData(1, "group-1", "touchstone-1", "scenario-1")
+    }
+
+
 
     private fun mockActionContext(keepOpen: String? = null): ActionContext
     {
