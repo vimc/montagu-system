@@ -27,6 +27,7 @@ import java.beans.ConstructorProperties
 import java.sql.Timestamp
 import java.time.Instant
 import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.fetchSequence
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
 import java.lang.reflect.Type
 
@@ -252,8 +253,8 @@ class JooqBurdenEstimateRepository(
                         COUNTRY.ID,
                         COUNTRY.NAME,
                         BURDEN_OUTCOME.CODE)
-                .fetchInto(BurdenEstimateOutcome::class.java)
-                .asSequence()
+                .fetchSequence()
+                .map{it.into(BurdenEstimateOutcome::class.java)}
 
     }
 
