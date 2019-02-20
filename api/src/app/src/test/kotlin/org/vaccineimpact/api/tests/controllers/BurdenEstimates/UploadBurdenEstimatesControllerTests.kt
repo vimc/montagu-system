@@ -31,7 +31,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
                 )),
                 BurdenEstimateWithRunId("yf", null, 1980, 30, "AGO", "Angola", 2000F, mapOf(
                         "deaths" to 20F,
-                        "dalys" to 73.6F
+                        "cases" to 73.6F
                 ))
         )
 
@@ -154,7 +154,9 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         verify(touchstoneVersionSet).get("touchstone-1")
         verify(logic).populateBurdenEstimateSet(eq(1),
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
-                argWhere { it.toSet() == expectedData.toSet() }
+                argWhere {
+                    it.toSet() == expectedData.toSet()
+                }
         )
     }
 
