@@ -28,8 +28,7 @@ Schema: [`BurdenEstimates.schema.json`](../schemas/BurdenEstimates.schema.json)
             "problems": [],
             "status": "complete"
         }
-    ]
-    
+    ]   
 
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{estimate-id}/
 Returns metadata for a single burden estimate set, with the given id
