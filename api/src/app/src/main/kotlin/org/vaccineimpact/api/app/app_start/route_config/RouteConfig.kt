@@ -13,7 +13,7 @@ object MontaguRouteConfig : RouteConfig
     override val endpoints: List<EndpointDefinition>
             = AuthenticationRouteConfig.endpoints +
             DiseaseRouteConfig.endpoints +
-            GroupBurdenEstimatesRouteConfig.endpoints +
+            BurdenEstimatesRouteConfig.endpoints +
             CoverageRouteConfig.endpoints +
             GroupCoverageRouteConfig.endpoints +
             GroupModelRunParametersRouteConfig.endpoints +
