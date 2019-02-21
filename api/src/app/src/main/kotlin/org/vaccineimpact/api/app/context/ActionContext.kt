@@ -28,6 +28,7 @@ interface ActionContext
     val redirectUrl: String?
 
     fun contentType(): String
+    val contentLength: Int
 
     fun queryParams(key: String): String?
     fun queryString(): String?

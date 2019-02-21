@@ -1,15 +1,13 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
-import com.github.fge.jsonschema.main.JsonValidator
+import khttp.responses.Response
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
-import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_STOCHASTIC
+import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
-import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
 
@@ -257,4 +255,105 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         JSONValidator().validateSuccess(response.text)
     }
 
+    @Test
+    fun `can upload file in 1 chunk`() {
+
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+
+        val fileName = "test.csv"
+        val size = csvData.toByteArray().size
+
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
+        val uploadToken = getUploadToken("$setUrl$setId", token)
+
+        val queryParams = mapOf("resumableChunkNumber" to 1,
+                "resumableTotalSize" to size,
+                "resumableChunkSize" to size,
+                "resumableIdentifier" to uploadToken,
+                "resumableFilename" to  fileName,
+                "resumableTotalChunks" to 1)
+                .map { "${it.key}=${it.value}" }
+                .joinToString("&")
+
+        val response = RequestHelper().postFile("$setUrl$setId/actions/upload/$uploadToken/?$queryParams", csvData, token = token)
+        JSONValidator().validateSuccess(response.text)
+    }
+
+    @Test
+    fun `can upload by multiple chunks`() {
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it, yearMinInclusive = 1996, yearMaxInclusive = 1999)
+        }
+
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
+        val uploadToken = getUploadToken("$setUrl$setId", token)
+        val chunkSize = 100
+        val data = longCsvData.chunked(chunkSize)
+        val numChunks = data.count()
+
+        for (i in 0 until numChunks)
+        {
+            val response = sendChunk(setId, i + 1, data[i], numChunks, uploadToken, token)
+            JSONValidator().validateSuccess(response.text)
+        }
+    }
+
+    @Test
+    fun `cannot reuse an upload token for a different file`() {
+
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+
+        val fileName = "test.csv"
+        val size = csvData.toByteArray().size
+
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
+        val uploadToken = getUploadToken("$setUrl$setId", token)
+
+        var response = sendChunk(setId, 1, csvData, 1, uploadToken, token)
+        JSONValidator().validateSuccess(response.text)
+
+        val newMetadata = mapOf("resumableChunkNumber" to 1,
+                "resumableTotalSize" to size,
+                "resumableChunkSize" to 1,
+                "resumableIdentifier" to uploadToken,
+                "resumableFilename" to  fileName,
+                "resumableTotalChunks" to 1)
+                .map { "${it.key}=${it.value}" }
+                .joinToString("&")
+
+        response = RequestHelper().postFile("$setUrl$setId/actions/upload/$uploadToken/?$newMetadata", csvData, token = token)
+        JSONValidator().validateError(response.text, "bad-request",
+                "The given token has already been used to upload a different file. Please request a fresh upload token.")
+    }
+
+    private fun getUploadToken(setUrl: String, token: TokenLiteral) : String {
+        val response = RequestHelper().get("$setUrl/actions/request-upload/", token = token)
+        val json = com.beust.klaxon.Parser().parse(StringBuilder(response.text)) as com.beust.klaxon.JsonObject
+        return json["data"] as String
+    }
+
+    private fun sendChunk(setId: Int,
+                          number: Int,
+                          chunk: String,
+                          total: Int,
+                          uploadToken: String,
+                          token: TokenLiteral): Response
+    {
+        val queryParams = mapOf("resumableChunkNumber" to number,
+                "resumableChunkSize" to 100,
+                "resumableTotalSize" to 1000,
+                "resumableIdentifier" to uploadToken,
+                "resumableFilename" to "test.csv",
+                "resumableTotalChunks" to total)
+                .map { "${it.key}=${it.value}" }
+                .joinToString("&")
+
+        val response = RequestHelper().postFile("$setUrl$setId/actions/upload/$token/?$queryParams", chunk, token = token)
+        JSONValidator().validateSuccess(response.text)
+        return response
+    }
 }

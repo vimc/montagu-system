@@ -1,9 +1,6 @@
 package org.vaccineimpact.api.app.controllers.BurdenEstimates
 
-import org.vaccineimpact.api.app.Cache
-import org.vaccineimpact.api.app.ChunkedFileCache
-import org.vaccineimpact.api.app.ResultRedirector
-import org.vaccineimpact.api.app.asResult
+import org.vaccineimpact.api.app.*
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.errors.BadRequest
@@ -11,7 +8,6 @@ import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.models.ChunkedFile
-import org.vaccineimpact.api.app.models.ChunkedFile.Companion.UPLOAD_DIR
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.requests.PostDataHelper
@@ -20,9 +16,6 @@ import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.TokenType
 import org.vaccineimpact.api.security.WebTokenHelper
-import java.io.File
-import java.io.RandomAccessFile
-import kotlin.system.measureTimeMillis
 
 class BurdenEstimateUploadController(context: ActionContext,
                                      private val repositories: Repositories,
@@ -30,7 +23,8 @@ class BurdenEstimateUploadController(context: ActionContext,
                                      private val estimateRepository: BurdenEstimateRepository,
                                      private val postDataHelper: PostDataHelper = PostDataHelper(),
                                      private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair),
-                                     private val chunkedFileCache: Cache<ChunkedFile> = ChunkedFileCache.instance)
+                                     private val chunkedFileCache: Cache<ChunkedFile> = ChunkedFileCache.instance,
+                                     private val chunkedFileManager: ChunkedFileManager = ChunkedFileManager())
     : BaseBurdenEstimateController(context, estimatesLogic)
 {
     constructor(context: ActionContext, repos: Repositories)
@@ -68,34 +62,16 @@ class BurdenEstimateUploadController(context: ActionContext,
         val resumableChunkNumber = context.queryParams("resumableChunkNumber")?.toInt()
                 ?: throw BadRequest("Missing required query parameter: resumableChunkNumber")
 
-        val info = getFileMetadata()
-        val raf = RandomAccessFile(info.filePath, "rw")
-
-        // Seek to position
-        raf.seek((resumableChunkNumber - 1) * info.chunkSize)
+        val metadata = getFileMetadata()
 
         // Get file from context (supports multi-part or octet stream)
         val source = RequestDataSource.fromContentType(context)
         val stream = source.getContent()
 
-        // Write to file
-        var readBytes: Long = 0
-        val length = context.request.raw().contentLength
-        val bytes = ByteArray(1024 * 100)
-        while (readBytes < length)
-        {
-            val r = stream.read(bytes)
-            if (r < 0)
-            {
-                break
-            }
-            raf.write(bytes, 0, r)
-            readBytes += r.toLong()
-        }
-        raf.close()
+        chunkedFileManager.writeChunk(stream, context.contentLength, metadata, resumableChunkNumber)
 
         //Mark as uploaded
-        info.uploadedChunks[resumableChunkNumber] = true
+        metadata.uploadedChunks[resumableChunkNumber] = true
         return okayResponse()
     }
 
@@ -159,20 +135,20 @@ class BurdenEstimateUploadController(context: ActionContext,
         }
 
         val uniqueIdentifier = claims["uid"].toString()
-        val info = chunkedFileCache[uniqueIdentifier]
-        val providedMetadata = ChunkedFile(totalChunks, chunkSize, totalSize, uniqueIdentifier, filename!!)
+        val cachedMetadata = chunkedFileCache[uniqueIdentifier]
+        val providedMetadata = ChunkedFile(totalChunks = totalChunks, chunkSize = chunkSize,
+                totalSize = totalSize, uniqueIdentifier = uniqueIdentifier, originalFileName = filename!!)
 
-        return if (info != null)
+        return if (cachedMetadata != null)
         {
-            if (!info.equals(providedMetadata)){
-                throw BadRequest("The given token has already been used upload a different file." +
+            if (cachedMetadata != providedMetadata){
+                throw BadRequest("The given token has already been used to upload a different file." +
                         " Please request a fresh upload token.")
             }
-            info
+            cachedMetadata
         }
         else
         {
-            File(UPLOAD_DIR).mkdir()
             chunkedFileCache.put(providedMetadata)
             providedMetadata
         }

@@ -5,7 +5,6 @@ import org.junit.Test
 import org.vaccineimpact.api.app.ChunkedFileCache
 import org.vaccineimpact.api.app.models.ChunkedFile
 import org.vaccineimpact.api.test_helpers.MontaguTests
-import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
@@ -109,7 +108,6 @@ class ChunkedFileCacheTests : MontaguTests()
 
         var result = false
         val threads = mutableListOf<Thread>()
-        File(testInfo.filePath).createNewFile()
         for (i in 1..10)
         {
             threads.add(
@@ -124,7 +122,6 @@ class ChunkedFileCacheTests : MontaguTests()
             // just wait for threads to finish
         }
 
-        File(testInfo.filePath).delete()
         assertThat(result).isTrue()
     }
 

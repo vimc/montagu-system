@@ -3,16 +3,16 @@ package org.vaccineimpact.api.tests.models
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Test
+import org.vaccineimpact.api.app.ChunkedFileManager
 import org.vaccineimpact.api.app.models.ChunkedFile
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.io.File
 
 class ChunkedFileTests : MontaguTests()
 {
-
     val uid = "uid"
-    val tempFileName = "${ChunkedFile.UPLOAD_DIR}/$uid.temp"
-    val finalFileName = "${ChunkedFile.UPLOAD_DIR}/$uid"
+    val tempFileName = "${ChunkedFileManager.UPLOAD_DIR}/$uid.temp"
+    val finalFileName = "${ChunkedFileManager.UPLOAD_DIR}/$uid"
 
     @After
     fun `clean up files`(){
@@ -25,7 +25,6 @@ class ChunkedFileTests : MontaguTests()
     {
         val sut = ChunkedFile(totalChunks = 10, totalSize = 1000, chunkSize = 100,
                 uniqueIdentifier = "uid", originalFileName = "file.csv")
-        File(sut.filePath).createNewFile()
         for (i in 1..10)
         {
             sut.uploadedChunks[i] = true
@@ -34,31 +33,8 @@ class ChunkedFileTests : MontaguTests()
     }
 
     @Test
-    fun `renames file if upload has finished`()
-    {
-        val tempFile = File("${ChunkedFile.UPLOAD_DIR}/uid.temp")
-        val finalFile = File("${ChunkedFile.UPLOAD_DIR}/uid")
-        tempFile.createNewFile()
-
-        val sut = ChunkedFile(totalChunks = 10, totalSize = 1000, chunkSize = 100, uniqueIdentifier = "uid",
-                originalFileName = "file.csv")
-        assertThat(sut.filePath).endsWith("uid.temp")
-
-        for (i in 1..10)
-        {
-            sut.uploadedChunks[i] = true
-        }
-
-        val result = sut.uploadFinished()
-        assertThat(result).isTrue()
-        assertThat(sut.filePath).endsWith("uid")
-        assertThat(tempFile.exists()).isFalse()
-        assertThat(finalFile.exists()).isTrue()
-    }
-
-    @Test
     fun `deletes file on cleanup`() {
-        val tempFile = File("${ChunkedFile.UPLOAD_DIR}/uid.temp")
+        val tempFile = File("${ChunkedFileManager.UPLOAD_DIR}/uid.temp")
         tempFile.createNewFile()
 
         val sut = ChunkedFile(totalChunks = 10, totalSize = 1000, chunkSize = 100, uniqueIdentifier = "uid",
