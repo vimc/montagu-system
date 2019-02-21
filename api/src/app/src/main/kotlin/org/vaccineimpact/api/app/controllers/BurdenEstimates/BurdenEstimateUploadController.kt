@@ -4,7 +4,7 @@ import org.vaccineimpact.api.app.ResultRedirector
 import org.vaccineimpact.api.app.asResult
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestDataSource
-import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
@@ -42,7 +42,7 @@ class BurdenEstimateUploadController(context: ActionContext,
 
         if (metadata.isStochastic())
         {
-            throw BadRequest("Stochastic estimate upload not supported")
+            throw InvalidOperationError("Stochastic estimate upload not supported")
         }
 
         return tokenHelper.generateUploadEstimatesToken(

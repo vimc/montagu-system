@@ -7,7 +7,7 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimateUploadController
-import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
@@ -49,7 +49,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
                 repo, mock(),
                 mockTokenHelper)
         assertThatThrownBy { sut.getUploadToken() }
-                .isInstanceOf(BadRequest::class.java)
+                .isInstanceOf(InvalidOperationError::class.java)
                 .hasMessageContaining("Stochastic estimate upload not supported")
 
     }
