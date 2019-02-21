@@ -1,11 +1,9 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
+import com.github.fge.jsonschema.main.JsonValidator
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
-import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
-import org.vaccineimpact.api.blackboxTests.helpers.getResultFromRedirect
-import org.vaccineimpact.api.blackboxTests.helpers.validate
+import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
@@ -246,6 +244,17 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
                     .fetch()
             assertThat(records).isEmpty()
         }
+    }
+
+    @Test
+    fun `can get token for burden estimate uploads`()
+    {
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
+        val response = RequestHelper().get("$setUrl$setId/actions/request-upload/", token = token)
+        JSONValidator().validateSuccess(response.text)
     }
 
 }

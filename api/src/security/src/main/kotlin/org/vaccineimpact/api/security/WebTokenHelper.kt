@@ -30,6 +30,26 @@ open class WebTokenHelper(
         return generator.generate(claims(user, lifeSpan))
     }
 
+    open fun generateUploadEstimatesToken(username: String,
+                                          groupId: String,
+                                          touchstoneVersionId: String,
+                                          scenarioId: String,
+                                          setId: Int): String
+    {
+        val claims = mapOf(
+                "iss" to issuer,
+                "token_type" to TokenType.UPLOAD,
+                "sub" to username,
+                "exp" to Date.from(Instant.now().plus(Duration.ofDays(1))),
+                "group-id" to groupId,
+                "scenario-id" to scenarioId,
+                "set-id" to setId,
+                "touchstone-id" to touchstoneVersionId,
+                "uid" to "$setId-${Instant.now()}")
+
+        return generator.generate(claims)
+    }
+
     open fun generateOnetimeActionToken(
             url: String,
             username: String,
@@ -96,14 +116,26 @@ open class WebTokenHelper(
         ) + diseasePermissions
     }
 
-    open fun verify(compressedToken: String, expectedType: TokenType,
-                    oneTimeTokenChecker: OneTimeTokenChecker): Map<String, Any>
+    open fun verify(compressedToken: String, expectedType: TokenType): Map<String, Any>
     {
         val authenticator = when (expectedType)
         {
-            TokenType.ONETIME -> OneTimeTokenAuthenticator(this, oneTimeTokenChecker)
+            TokenType.ONETIME -> throw UnsupportedOperationException("Please use verifyOneTimeToken")
             else -> MontaguTokenAuthenticator(this, expectedType)
         }
+        try
+        {
+            return authenticator.validateTokenAndGetClaims(compressedToken)
+        }
+        catch (e: NullPointerException)
+        {
+            throw TokenValidationException("Could not verify token")
+        }
+    }
+
+    open fun verifyOneTimeToken(compressedToken: String, oneTimeTokenChecker: OneTimeTokenChecker): Map<String, Any>
+    {
+        val authenticator = OneTimeTokenAuthenticator(this, oneTimeTokenChecker)
         return authenticator.validateTokenAndGetClaims(compressedToken)
     }
 

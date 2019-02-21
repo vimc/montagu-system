@@ -6,5 +6,6 @@ enum class TokenType
     LEGACY_ONETIME,
     ONETIME,
     MODEL_REVIEW,
-    API_RESPONSE
+    API_RESPONSE,
+    UPLOAD
 }
