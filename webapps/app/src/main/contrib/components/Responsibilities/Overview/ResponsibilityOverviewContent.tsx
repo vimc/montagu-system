@@ -40,7 +40,7 @@ function paramsSection(props: ResponsibilityOverviewContentProps) {
     }
 }
 
-export const ResponsibilityOverviewContentComponent: React.SFC<ResponsibilityOverviewContentProps> =
+export const ResponsibilityOverviewContentComponent: React.FunctionComponent<ResponsibilityOverviewContentProps> =
     (props: ResponsibilityOverviewContentProps) => {
 
         const demographyUrl = `/${props.modellingGroup.id}/responsibilities/${props.touchstoneId}/demographics/`;

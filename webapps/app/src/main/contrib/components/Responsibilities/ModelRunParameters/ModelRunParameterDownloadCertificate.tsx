@@ -8,7 +8,6 @@ interface Props {
 
 export class ModelRunParameterDownloadCertificate extends React.Component<Props, undefined> {
 
-
     makeSignatureContent(set: ModelRunParameterSet): Array<any> {
         const setData = {
             id: set.id,

@@ -15,7 +15,7 @@ export interface ReportDetailsProps {
     report: string;
 }
 
-export const ReportDetailsComponent: React.SFC<ReportDetailsProps> = (props: ReportDetailsProps) => {
+export const ReportDetailsComponent: React.FunctionComponent<ReportDetailsProps> = (props: ReportDetailsProps) => {
     const version = props.versionDetails.id;
     const artefactGroup = props.versionDetails.artefacts[0];
     const type = Object.getOwnPropertyNames(artefactGroup)[0];

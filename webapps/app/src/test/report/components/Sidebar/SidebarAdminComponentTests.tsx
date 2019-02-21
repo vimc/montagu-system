@@ -6,6 +6,7 @@ import {ReportVersionSwitcher} from "../../../../main/report/components/Reports/
 import {SidebarAdminComponent, SidebarAdminProps} from "../../../../main/report/components/Sidebar/SidebarAdminComponent";
 import {PublishSwitch} from "../../../../main/report/components/Sidebar/PublishSwitch";
 import {ReportReadersList} from "../../../../main/report/components/Sidebar/ReportReadersList";
+import {RunReport} from "../../../../main/report/components/Sidebar/RunReport";
 
 
 describe("SidebarAdminComponent", () => {
@@ -20,6 +21,7 @@ describe("SidebarAdminComponent", () => {
         published: true,
         isReviewer: true,
         isAdmin: true,
+        isReportRunner: true,
         ready: true,
         report: "name",
         version: "v1",
@@ -124,5 +126,27 @@ describe("SidebarAdminComponent", () => {
         const removeReportReader = rendered.find(ReportReadersList).prop("removeReportReader");
         removeReportReader("test.user");
         expect(stub.calledWith("reportname", "test.user")).to.be.true;
+    });
+
+    it("does not render RunReport component if user is not a report runner", () => {
+
+        const props = defaultSidebarProps;
+        props.isReportRunner = false;
+
+        const rendered = shallow(<SidebarAdminComponent {...props} />);
+        const runReportComponent = rendered.find(RunReport);
+        expect(runReportComponent).to.have.lengthOf(0);
+    });
+
+    it("renders RunReport component if user is a report runner", () => {
+
+        const props = defaultSidebarProps;
+        props.isReportRunner = true;
+        props.report = "test-report";
+
+        const rendered = shallow(<SidebarAdminComponent {...props} />);
+        const runReportComponent = rendered.find(RunReport);
+        expect(runReportComponent).to.have.lengthOf(1);
+        expect(runReportComponent.prop("name")).to.eq("test-report");
     });
 });

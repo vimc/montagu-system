@@ -1,13 +1,13 @@
 import * as React from "react";
 import {FilterGeneric, FilterProps, ReportRow, ReportRowRenderProps} from "../ReportListTable";
 
-export const PublishStatusCell: React.SFC<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
+export const PublishStatusCell: React.FunctionComponent<ReportRowRenderProps> = (props: ReportRowRenderProps) => {
     return props.value ?
         <span className="badge-published badge float-left">published</span> :
         <span className="badge-internal badge float-left">internal</span>
 };
 
-export const PublishStatusFilter: React.SFC<FilterProps<string>> = (props: FilterProps<string>) => {
+export const PublishStatusFilter: React.FunctionComponent<FilterProps<string>> = (props: FilterProps<string>) => {
     return <select className="form-control"
                    onChange={event => props.onChange(event.target.value)}
                    value={props.filter ? props.filter.value : "all"}>

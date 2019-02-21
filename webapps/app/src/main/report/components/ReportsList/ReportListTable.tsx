@@ -71,7 +71,7 @@ const getFirstOfAggregatedValues = (vals: any) => vals[0];
 export class ReportsListTable extends React.Component<ReportsListTableProps, any> {
 
     constructor(props: ReportsListTableProps) {
-        super();
+        super(props);
         const expanded = this.allCollapsed(props);
         this.state = {
             expanded: expanded

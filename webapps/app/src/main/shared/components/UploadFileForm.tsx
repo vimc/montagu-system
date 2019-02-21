@@ -21,8 +21,8 @@ export interface UploadFileState {
 }
 
 export class UploadFileForm extends React.Component<UploadFileProps, UploadFileState> {
-    constructor() {
-        super();
+    constructor(props: UploadFileProps) {
+        super(props);
 
         const result = helpers.ingestQueryStringAndReturnResult();
         this.state = {

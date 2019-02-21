@@ -3,6 +3,7 @@ const stringReplacePlugin = require("string-replace-webpack-plugin");
 
 function commonConfig(name, public_path) {
     return {
+        mode: process.env.MONTAGU_PORTAL_PROFILE == "docker" ? "production" : "development",    
         // Enable sourcemaps for debugging webpack's output.
         devtool: "source-map",
 

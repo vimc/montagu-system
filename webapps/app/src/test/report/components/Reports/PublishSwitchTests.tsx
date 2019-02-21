@@ -6,15 +6,16 @@ import { Store } from "redux";
 
 import "../../../helper";
 import {
-    // PublishSwitchProps,
-    Props,
+    PublishSwitchProps,
     PublishSwitchComponent,
     PublishSwitch
 } from "../../../../main/report/components/Sidebar/PublishSwitch";
+import {ConfirmModal} from "../../../../main/shared/components/ConfirmModal";
 import {Sandbox} from "../../../Sandbox";
 import {reportActionCreators} from "../../../../main/report/actionCreators/reportActionCreators";
 import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";
 import {createMockStore} from "../../../mocks/mockStore";
+import {Component} from "react";
 
 
 describe("Publish Switch connected component tests", () => {
@@ -73,8 +74,8 @@ describe("Publish Switch component tests", () => {
         sandbox.restore();
     });
 
-    it("is off if report is not published", () => {
-        const props: Props = {
+    it("toggle is off if report is not published", () => {
+        const props: PublishSwitchProps = {
             name: "report-name",
             version: "v1",
             published: false,
@@ -86,10 +87,41 @@ describe("Publish Switch component tests", () => {
         expect(rendered.find(Toggle).prop("active")).to.be.false
     });
 
-    it("unpublishes on toggle if report is published", () => {
+    it("initialises with modal not showing", () => {
+        const props: PublishSwitchProps = {
+            name: "report-name",
+            version: "v1",
+            published: false,
+            publish: sandbox.createSpy(),
+            unpublish: sandbox.createSpy()
+        };
+
+        const rendered = shallow(<PublishSwitchComponent {...props} />);
+        expect(rendered.find(ConfirmModal).prop("show")).to.be.false;
+    });
+
+    it("clicking toggle shows modal", () => {
+        const props: PublishSwitchProps = {
+            name: "report-name",
+            version: "v1",
+            published: false,
+            publish: sandbox.createSpy(),
+            unpublish: sandbox.createSpy()
+
+        };
+
+        const rendered = shallow(<PublishSwitchComponent {...props} />);
+        const toggle = rendered.find(Toggle);
+        toggle.simulate("click");
+
+        rendered.update();
+        expect(rendered.find(ConfirmModal).prop("show")).to.be.true;
+    });
+
+    it("unpublishes on confirm from modal if report is published", () => {
 
         const unpublishSpy = sandbox.createSpy();
-        const props: Props = {
+        const props: PublishSwitchProps = {
             name: "report-name",
             version: "v1",
             published: true,
@@ -98,17 +130,20 @@ describe("Publish Switch component tests", () => {
         };
 
         const rendered = shallow(<PublishSwitchComponent {...props} />);
-        const toggle = rendered.find(Toggle);
-        toggle.simulate("click");
+        rendered.setState({ showModal: true });
+
+        const modal = rendered.find(ConfirmModal).shallow();
+        const modalButton = modal.find("#confirm-publish-btn");
+        modalButton.simulate("click");
 
         expect(unpublishSpy.calledWith("report-name", "v1")).to.be.true;
 
     });
 
-    it("publishes on toggle if report is not published", () => {
+    it("publishes on confirm from modal if report is not published", () => {
 
         const publishSpy = sandbox.createSpy();
-        const props: Props = {
+        const props: PublishSwitchProps = {
             name: "report-name",
             version: "v1",
             published: false,
@@ -117,10 +152,35 @@ describe("Publish Switch component tests", () => {
         };
 
         const rendered = shallow(<PublishSwitchComponent {...props} />);
-        const toggle = rendered.find(Toggle);
-        toggle.simulate("click");
+        rendered.setState({ showModal: true });
+
+        const modal = rendered.find(ConfirmModal).shallow();
+        const modalButton = modal.find("#confirm-publish-btn");
+        modalButton.simulate("click");
 
         expect(publishSpy.calledWith("report-name", "v1")).to.be.true;
+
+    });
+
+    it("does not publish if cancel from dialog", () => {
+
+        const publishSpy = sandbox.createSpy();
+        const props: PublishSwitchProps = {
+            name: "report-name",
+            version: "v1",
+            published: false,
+            publish: publishSpy,
+            unpublish: sandbox.createSpy()
+        };
+
+        const rendered = shallow(<PublishSwitchComponent {...props} />);
+        rendered.setState({ showModal: true });
+
+        const modal = rendered.find(ConfirmModal).shallow();
+        const modalButton = modal.find("#cancel-publish-btn");
+        modalButton.simulate("click");
+
+        expect(publishSpy.calledWith("report-name", "v1")).to.be.false;
 
     });
 

@@ -13,7 +13,7 @@ interface ModellingGroupMembersListProps {
     isAdmin: boolean;
 }
 
-export const ModellingGroupMembersListComponent: React.SFC<ModellingGroupMembersListProps> = (props:ModellingGroupMembersListProps) => {
+export const ModellingGroupMembersListComponent: React.FunctionComponent<ModellingGroupMembersListProps> = (props:ModellingGroupMembersListProps) => {
     if (!props || !isNonEmptyArray(props.users)) {
         return <div>This group does not have any members.</div>;
     } else {

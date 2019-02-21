@@ -13,6 +13,7 @@ import {mockModellingGroup} from "../../../../../mocks/mockModels";
 import {createMockStore} from "../../../../../mocks/mockStore";
 import {modellingGroupMembersPageActionCreators} from "../../../../../../main/admin/actions/pages/ModellingGroupMembersPageActionCreators";
 import {ModellingGroupMembersContent} from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/ModellingGroupMembersContent";
+import {PageArticle} from "../../../../../../main/shared/components/PageWithHeader/PageArticle";
 
 describe("Modelling Group Members Page Component Tests", () => {
 
@@ -39,7 +40,7 @@ describe("Modelling Group Members Page Component Tests", () => {
         const rendered = shallow(<ModellingGroupMembersPage
             match={testMatch}
         />, {context: {store}}).dive();
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(onLoadStub.called).is.equal(true);
         expect(onLoadStub.getCall(0).args[0].groupId).is.equal(testGroup.id);
         expect(pageArticle.props().title).is.equal(`Manage membership for ${testGroup.description}`);

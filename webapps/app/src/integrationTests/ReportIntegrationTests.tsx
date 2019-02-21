@@ -122,6 +122,59 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
         });
 
+        it("publishes a report version", async () => {
+
+            //Expect all demo versions of the changelog report to be unpublished
+            const versionName = "changelog"
+            const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions(versionName);
+            const versionId = versions[0];
+
+            //check initial state is as expected - use raw get because getVersionDetails is cached
+            const unpublishedVersion = await (new ReportsService(this.store.dispatch, this.store.getState))
+                .get(`/reports/${versionName}/versions/${versionId}/`, "reporting");
+            expect(unpublishedVersion.published).to.be.false;
+
+            await (new ReportsService(this.store.dispatch, this.store.getState)).publishReport(versionName, versionId);
+
+            const publishedVersion = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails(versionName, versionId);
+            expect(publishedVersion.published).to.be.true;
+
+        });
+
+        it("unpublishes a report version", async () => {
+
+            //Expect the only version of the html report to be published
+            const versionName = "html"
+            const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions(versionName);
+            const versionId = versions[0];
+
+            await (new ReportsService(this.store.dispatch, this.store.getState)).unPublishReport(versionName, versionId);
+
+            const unpublishedVersion = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails(versionName, versionId);
+            expect(unpublishedVersion.published).to.be.false;
+
+        });
+
+        it("runs a report", async () => {
+
+            const reportName = "connection"
+            const runResult = await (new ReportsService(this.store.dispatch, this.store.getState)).runReport(reportName);
+            const runningKey = runResult.key;
+            expect(runningKey).to.not.be.empty;
+
+        });
+
+        it("gets report run status", async () => {
+
+            const reportName = "connection"
+            const runResult = await (new ReportsService(this.store.dispatch, this.store.getState)).runReport(reportName);
+            const runningKey = runResult.key;
+
+            const statusResult = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportRunStatus(runningKey);
+            const status = statusResult.status;
+            expect(status).to.not.be.empty;
+        });
+
         it("fetches one time token", async () => {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState))
                 .getReportVersions("minimal");

@@ -11,7 +11,7 @@ interface TouchstoneListProps {
     inactive: Touchstone[];
 }
 
-export const TouchstoneListComponent: React.SFC<TouchstoneListProps> = (props: TouchstoneListProps) => {
+export const TouchstoneListComponent: React.FunctionComponent<TouchstoneListProps> = (props: TouchstoneListProps) => {
     return <div>
         <div className="mb-5 row">
             <div className="col-12">

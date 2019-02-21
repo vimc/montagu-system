@@ -8,7 +8,7 @@ import {settings} from "../../../main/shared/Settings";
 import {AuthTypeKeys} from "../../../main/shared/actionTypes/AuthTypes";
 import {createMockContribStore, createMockStore} from "../../mocks/mockStore";
 import {SingletonVariableCache} from "../../../main/shared/modules/cache/singletonVariableCache";
-import {Dispatch} from "react-redux";
+import {Dispatch} from "redux";
 import {GlobalState} from "../../../main/shared/reducers/GlobalState";
 import {CacheInterface} from "../../../main/shared/modules/cache/CacheInterface";
 import {mockContribState} from "../../mocks/mockStates";
@@ -252,12 +252,11 @@ describe('LocalService', () => {
         it('clears individual cache item by key', async () => {
 
             const url = "/test/";
-            const fullyQualifiedKey = ["localService", "TestService", "test",
+            const fullyQualifiedKey = ["localService", testService.constructor.name, "test",
                 encodeURIComponent(settings.apiUrl() + url)].join(".");
 
             // first set the cache
             await testService.testWithCache();
-
             expect(cacheEngine.get(fullyQualifiedKey)).to.not.be.undefined;
 
             // now clear
@@ -295,7 +294,7 @@ describe('LocalService', () => {
             expect(doFetchStub.called).to.equal(false);
             expect(getCacheSpy.called).to.equal(true);
             expect(resultFromCache).to.equal("testData");
-            expect(cacheEngine.get(["localService", "TestService", "test",
+            expect(cacheEngine.get(["localService", testService.constructor.name, "test",
                 encodeURIComponent(settings.apiUrl() + "/test/")].join("."))).to.equal("testData");
         });
     });

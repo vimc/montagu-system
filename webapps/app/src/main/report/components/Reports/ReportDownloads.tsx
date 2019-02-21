@@ -18,7 +18,7 @@ export interface ReportDownloadsProps {
     report: string;
 }
 
-export const ReportDownloadsComponent: React.SFC<ReportDownloadsProps> = (props: ReportDownloadsProps) => {
+export const ReportDownloadsComponent: React.FunctionComponent<ReportDownloadsProps> = (props: ReportDownloadsProps) => {
     const bundleUrl = `/reports/${props.report}/versions/${props.versionDetails.id}/all/`;
     return <div className={"pl-3 pl-md-0 mb-5"}>
         <ReportTitle versionDetails={props.versionDetails}/>

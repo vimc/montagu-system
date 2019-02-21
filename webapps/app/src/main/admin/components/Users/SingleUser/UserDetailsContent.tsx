@@ -13,7 +13,7 @@ interface UserRolesProps {
     canWriteRoles: boolean;
 }
 
-export const UserRoles: React.SFC<UserRolesProps> = (props: UserRolesProps) => {
+export const UserRoles: React.FunctionComponent<UserRolesProps> = (props: UserRolesProps) => {
 
     const user = props.user;
     return <div className="mt-4">
@@ -41,7 +41,7 @@ export interface UserDetailsProps {
     canWriteRoles: boolean;
 }
 
-export const UserDetailsContentComponent: React.SFC<UserDetailsProps> = (props: UserDetailsProps) => {
+export const UserDetailsContentComponent: React.FunctionComponent<UserDetailsProps> = (props: UserDetailsProps) => {
     return <div className="col-xs-12 col-lg-8">
         <table className="specialColumn">
             <tbody>

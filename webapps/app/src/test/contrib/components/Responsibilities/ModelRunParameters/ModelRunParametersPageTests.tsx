@@ -42,7 +42,7 @@ describe("Model Run Parameters Page tests", () => {
             match={testMatch}
         /></Provider>);
 
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.find(ModelRunParametersContent).length).is.equal(1);
         const titleComponent = pageArticle.find(ResponsibilitiesPageTitle);

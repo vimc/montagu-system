@@ -2,6 +2,7 @@ import {jwtDecoder} from "./sources/JwtDecoder";
 import {Result} from "./models/Generated";
 import * as url from "url";
 import * as querystring from "querystring";
+import * as moment from "moment";
 
 export function doNothing() {
 
@@ -26,6 +27,12 @@ export function titleCase(str: string) {
 export function encodeFilename(filename: string) {
     const forwardSlashRegex = new RegExp("/", "g");
     return filename.replace(forwardSlashRegex, ":");
+}
+
+export function shortTimestamp(date: Date) {
+    const hours = padZero(date.getHours());
+    const minutes = padZero(date.getMinutes());
+    return `${moment(date).format("MMM DD YYYY")}, ${hours}:${minutes}`;
 }
 
 export function longTimestamp(date: Date) {

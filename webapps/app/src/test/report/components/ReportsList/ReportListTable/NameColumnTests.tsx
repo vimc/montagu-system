@@ -102,7 +102,7 @@ describe("ReportListTable", () => {
 
         it("renders display name if it exists", function () {
             const col = getNameColumn() as Column;
-            const Cell = col.PivotValue as React.SFC<Partial<RowInfo>>;
+            const Cell = col.PivotValue as React.FunctionComponent<Partial<RowInfo>>;
             const result = shallow(<Cell row={{name: "name", version: {version: "1232"}}}
                                          subRows={[{_original: {name: "name", display_name: "display name"}}]}
             />);
@@ -112,7 +112,7 @@ describe("ReportListTable", () => {
 
         it("renders just name if no display name", function () {
             const col = getNameColumn() as Column;
-            const Cell = col.PivotValue as React.SFC<Partial<RowInfo>>;
+            const Cell = col.PivotValue as React.FunctionComponent<Partial<RowInfo>>;
             const result = shallow(<Cell row={{name: "name", version: {version: "1232"}}}
                                          subRows={subRows}
             />);
@@ -122,7 +122,7 @@ describe("ReportListTable", () => {
 
         it("renders plural version count", function () {
             const col = getNameColumn() as Column;
-            const Cell = col.PivotValue as React.SFC<Partial<RowInfo>>;
+            const Cell = col.PivotValue as React.FunctionComponent<Partial<RowInfo>>;
 
             let result = shallow(<Cell row={{name: "name", version: {version: "1232"}}}
                                        subRows={subRows}/>);
@@ -132,7 +132,7 @@ describe("ReportListTable", () => {
 
         it("renders single version count", function () {
             const col = getNameColumn() as Column;
-            const Cell = col.PivotValue as React.SFC<Partial<RowInfo>>;
+            const Cell = col.PivotValue as React.FunctionComponent<Partial<RowInfo>>;
 
             let result = shallow(<Cell row={{name: "name", version: {version: "1232"}}}
                                        subRows={[subRows[0]]}/>);

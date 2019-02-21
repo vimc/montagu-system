@@ -27,8 +27,8 @@ export interface ModelRunParametersFormState {
 
 export class ModelRunParametersFormComponent extends React.Component<ModelRunParametersFormProps, ModelRunParametersFormState> {
 
-    constructor() {
-        super();
+    constructor(props: ModelRunParametersFormProps) {
+        super(props);
         this.state = {
             fileInputKey: new Date(),
             errors: [],

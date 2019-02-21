@@ -13,7 +13,7 @@ interface UsersListProps {
     users: User[]
 }
 
-export const UsersListComponent: React.SFC<UsersListProps> = (props: UsersListProps) => {
+export const UsersListComponent: React.FunctionComponent<UsersListProps> = (props: UsersListProps) => {
     return <table>
         <thead>
         <tr>

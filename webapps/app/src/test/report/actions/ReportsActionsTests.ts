@@ -54,7 +54,7 @@ describe("Report actions tests", () => {
         });
     });
 
-    it("dispatches reports version detials fetched action if get report version details action is dispatched", (done) => {
+    it("dispatches reports version details fetched action if get report version details action is dispatched", (done) => {
         sandbox.setStubFunc(ReportsService.prototype, "getVersionDetails", () => {
             return Promise.resolve({});
         });
@@ -63,6 +63,81 @@ describe("Report actions tests", () => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED);
             expect(actions[0].data).to.eql({});
+            done();
+        });
+    });
+
+    it("dispatches publish action if report version is published", (done) => {
+        sandbox.setStubFunc(ReportsService.prototype, "publishReport", () => {
+            return Promise.resolve({});
+        });
+        store.dispatch(reportActionCreators.publishReport('test', 'v1'));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_PUBLISHED);
+            expect(actions[0].data).to.eql({"name": "test", "version": "v1"});
+            done();
+        });
+    });
+
+    it("dispatches unpublish action if report version is unpublished", (done) => {
+        sandbox.setStubFunc(ReportsService.prototype, "unPublishReport", () => {
+            return Promise.resolve({});
+        });
+        store.dispatch(reportActionCreators.unPublishReport('test', 'v1'));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_UNPUBLISHED);
+            expect(actions[0].data).to.eql({"name": "test", "version": "v1"});
+            done();
+        });
+    });
+
+    it("dispatches run report action", (done) => {
+        sandbox.setStubFunc(ReportsService.prototype, "runReport", () => {
+            return Promise.resolve({key: "desperate_pangolin"});
+        });
+        store.dispatch(reportActionCreators.runReport('test'));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_RUN_STARTED);
+            expect(actions[0].data).to.eql({key: "desperate_pangolin"});
+            done();
+        });
+    });
+
+    it("dispatches report run status fetched action", (done) => {
+        sandbox.setStubFunc(ReportsService.prototype, "getReportRunStatus", () => {
+            return Promise.resolve({key: "desperate_pangolin", status: "running"});
+        });
+        store.dispatch(reportActionCreators.pollRunStatus('desperate_pangolin'));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_RUN_STATUS_FETCHED);
+            expect(actions[0].data).to.eql({key: "desperate_pangolin", status: "running"});
+            done();
+        });
+    });
+
+    it("dispatches report run status fetched action when no server response", (done) => {
+        sandbox.setStubFunc(ReportsService.prototype, "getReportRunStatus", () => {
+            return Promise.resolve(undefined);
+        });
+        store.dispatch(reportActionCreators.pollRunStatus('desperate_pangolin'));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_RUN_STATUS_FETCHED);
+            expect(actions[0].data).to.eql({key: "desperate_pangolin", status: "error contacting server", version: null, output: null});
+            done();
+        });
+    });
+
+    it("dispatches report run status removed action", (done) => {
+        store.dispatch(reportActionCreators.reportRunStatusRemoved('test'));
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(ReportTypeKeys.REPORT_RUN_STATUS_REMOVED);
+            expect(actions[0].data).to.eql("test");
             done();
         });
     });

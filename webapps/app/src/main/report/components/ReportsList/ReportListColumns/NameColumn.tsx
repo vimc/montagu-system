@@ -4,7 +4,7 @@ import {InternalLink} from "../../../../shared/components/InternalLink";
 import {RowInfo} from "react-table";
 import {ReportVersion} from "../../../../shared/models/Generated";
 
-export const NameCell: React.SFC<RowInfo> = (props: RowInfo) => {
+export const NameCell: React.FunctionComponent<RowInfo> = (props: RowInfo) => {
 
     const report = props.row;
     const latestReportVersion = props.subRows[0]._original;

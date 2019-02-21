@@ -29,8 +29,6 @@ describe("ExpectationsList", function () {
     const touchstones: Partial<TouchstonesState> = {currentTouchstoneVersion};
     const responsibilities: Partial<ResponsibilitiesState> = {responsibilitiesSet};
 
-    console.log("Hi");
-
     it("renders one ExpectationsDescription for each expectation mapping in the responsibility set", () => {
         const expectations: Array<ExpectationMapping> = [
             mockExpectationMapping(),

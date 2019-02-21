@@ -34,24 +34,24 @@ describe("ReportListTable", () => {
 
         it("is not included if isReviewer is false", function () {
             const result = shallow(<ReportsListTable isReviewer={false} reports={[]}/>);
-            expect(result.find(ReactTable).prop("columns").some(c => c.Header == "Status")).to.be.false;
+            expect(result.find(ReactTable).prop("columns").some((c: Column) => c.Header == "Status")).to.be.false;
         });
 
         it("is included if isReviewer is true", function () {
             const result = shallow(<ReportsListTable isReviewer={true} reports={[]}/>);
-            expect(result.find(ReactTable).prop("columns").some(c => c.Header == "Status")).to.be.true;
+            expect(result.find(ReactTable).prop("columns").some((c: Column) => c.Header == "Status")).to.be.true;
         });
 
         it("renders published badge if status is published", function () {
             const col = getPublishStatusColumn() as Column.CellProps;
-            const Cell = col.Cell as React.SFC<ReportRowRenderProps>;
+            const Cell = col.Cell as React.FunctionComponent<ReportRowRenderProps>;
             const result = shallow(<Cell original={mockReportVersion()} value={true}/>);
             expect(result.find(".badge-published")).to.have.lengthOf(1);
         });
 
         it("renders internal badge if status is unpublished", function () {
             const col = getPublishStatusColumn() as Column.CellProps;
-            const Cell = col.Cell as React.SFC<ReportRowRenderProps>;
+            const Cell = col.Cell as React.FunctionComponent<ReportRowRenderProps>;
             const result = shallow(<Cell original={mockReportVersion()} value={false}/>);
             expect(result.find(".badge-internal")).to.have.lengthOf(1);
         });
@@ -59,7 +59,7 @@ describe("ReportListTable", () => {
         it("renders options to filter by status", function () {
             const onChange = sandbox.sinon.stub();
             const col = getPublishStatusColumn() as Column.FilterProps;
-            const Filter = col.Filter as React.SFC<any>;
+            const Filter = col.Filter as React.FunctionComponent<any>;
             const result = shallow(<Filter onChange={onChange}/>);
             expect(result.find("option").map(o => o.prop("value"))).to.have.members(["all", "published", "internal"])
         });

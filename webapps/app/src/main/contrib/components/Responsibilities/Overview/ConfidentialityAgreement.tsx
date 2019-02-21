@@ -19,8 +19,8 @@ const fullConfidentialityAgreement = require('./rfp-applicants-confidentiality.p
 // higher order component below
 export class ConfidentialityAgreementComponent extends React.Component<ConfidentialityProps, ConfidentialityAgreementComponentState> {
 
-    constructor() {
-        super();
+    constructor(props: ConfidentialityProps) {
+        super(props);
         this.state = {checked: false};
         this.onChange = this.onChange.bind(this)
     }

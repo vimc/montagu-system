@@ -31,7 +31,7 @@ describe("Guidance Over 80 Page Component tests", () => {
         const createBreadcrumbsStub = sandbox.setStubReduxAction(breadcrumbsActionCreators, "createBreadcrumbs");
         const rendered = shallow(<ResponsibilityGuidanceOver80Page/>, {context: {store}}).dive().dive().dive();
         expect(createBreadcrumbsStub.called).is.equal(true);
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         const pageArticleProps = pageArticle.props() as PageArticleProps;
         expect(pageArticleProps.hideTitle).is.equal(true);
         expect(pageArticleProps.title).is.equal(undefined);

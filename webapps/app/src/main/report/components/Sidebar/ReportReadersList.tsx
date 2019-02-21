@@ -21,8 +21,8 @@ interface ReportReadersListState {
 
 export class ReportReadersList extends React.Component<ReportReadersListProps, ReportReadersListState> {
 
-    constructor() {
-        super();
+    constructor(props: ReportReadersListProps) {
+        super(props);
         this.state = {newReader: ""};
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
