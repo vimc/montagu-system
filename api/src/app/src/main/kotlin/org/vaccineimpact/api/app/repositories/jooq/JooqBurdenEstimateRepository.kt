@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
@@ -26,7 +27,9 @@ import java.beans.ConstructorProperties
 import java.sql.Timestamp
 import java.time.Instant
 import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.fetchSequence
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
+import java.lang.reflect.Type
 
 data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
@@ -215,6 +218,59 @@ class JooqBurdenEstimateRepository(
         return mapper.mapBurdenEstimateSets(records)
     }
 
+    override fun getBurdenEstimateOutcomesSequence(groupId: String, touchstoneVersionId: String, scenarioId: String, burdenEstimateSetId: Int)
+            : Sequence<BurdenEstimateOutcome>
+    {
+        //check that the burden estimate set exists in the group etc
+        val set = getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, burdenEstimateSetId)
+
+        if (set.isStochastic())
+        {
+            throw InvalidOperationError("Cannot get burden estimate data for stochastic burden estimate sets")
+        }
+
+        return  dsl.select(
+                    DISEASE.ID,
+                    BURDEN_ESTIMATE.YEAR,
+                    BURDEN_ESTIMATE.AGE,
+                    COUNTRY.ID,
+                    COUNTRY.NAME,
+                    BURDEN_OUTCOME.CODE,
+                    BURDEN_ESTIMATE.VALUE
+                )
+                .fromJoinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE)
+                .join(RESPONSIBILITY)
+                .on(BURDEN_ESTIMATE_SET.RESPONSIBILITY.eq(RESPONSIBILITY.ID))
+                .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION, DISEASE)
+                .join(COUNTRY)
+                .on(BURDEN_ESTIMATE.COUNTRY.eq(COUNTRY.NID))
+                .joinPath(BURDEN_ESTIMATE, BURDEN_OUTCOME)
+                .where(BURDEN_ESTIMATE_SET.ID.eq(burdenEstimateSetId))
+                .orderBy(
+                        DISEASE.ID,
+                        BURDEN_ESTIMATE.YEAR,
+                        BURDEN_ESTIMATE.AGE,
+                        COUNTRY.ID,
+                        COUNTRY.NAME,
+                        BURDEN_OUTCOME.CODE)
+                .fetchSequence()
+                .map{it.into(BurdenEstimateOutcome::class.java)}
+
+    }
+
+    override fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int) : List<String>
+    {
+        return dsl.select(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
+                .from(BURDEN_ESTIMATE_SET)
+                .join(RESPONSIBILITY)
+                .on(BURDEN_ESTIMATE_SET.RESPONSIBILITY.eq(RESPONSIBILITY.ID))
+                .joinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION, BURDEN_ESTIMATE_OUTCOME_EXPECTATION)
+                .where(BURDEN_ESTIMATE_SET.ID.eq(burdenEstimateSetId))
+                .groupBy(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
+                .orderBy(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
+                .fetch()
+                .getValues(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
+    }
 
     override fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,
                                          modelRuns: List<ModelRun>,

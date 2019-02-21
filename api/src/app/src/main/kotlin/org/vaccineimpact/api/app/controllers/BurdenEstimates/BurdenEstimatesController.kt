@@ -7,6 +7,7 @@ import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.StreamSerializable
 import java.time.Instant
 
 open class BurdenEstimatesController(
@@ -78,6 +79,13 @@ open class BurdenEstimatesController(
         val path = getValidResponsibilityPath(context, estimateRepository)
         val setId = context.params(":set-id").toInt()
         return closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
+    }
+
+    fun getBurdenEstimateSetData(): StreamSerializable<BurdenEstimate>
+    {
+        val path = getValidResponsibilityPath(context, estimateRepository)
+        val setId = context.params(":set-id").toInt()
+        return estimatesLogic.getBurdenEstimateData(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
     }
 
 }
