@@ -48,7 +48,7 @@ Schema: [`BurdenEstimateSet.schema.json`](../schemas/BurdenEstimateSet.schema.js
         "status": "empty"
     }
     
-## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{estimate-id}/estimates
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{estimate-id}/estimates/
 Returns csv data for a single burden estimate set, with the given id
 
 ### Example
