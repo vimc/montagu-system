@@ -57,14 +57,14 @@ describe("Responsibility Overview Content Component", () => {
         expect(rendered.props().responsibilitySet).to.eql(testResponsibilitiesSet);
     });
 
-    it("renders loading element if responsibiliesSet is null", () => {
+    it("renders loading element if responsibilitiesSet is null", () => {
         const anotherState = {...state, responsibilities: {responsibilitiesSet: null as any}};
         store = createMockStore(anotherState);
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive();
         expect(rendered.find(LoadingElement).length).to.eql(1);
     });
 
-    it("does not render loading element if responsibiliesSet is present", () => {
+    it("does not render loading element if responsibilitiesSet is present", () => {
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive();
         expect(rendered.find(LoadingElement).length).to.eql(0);
     });
