@@ -14,7 +14,7 @@ export interface AddGroupMembersProps {
     members: User[];
     groupId: string;
 }
-export const AddGroupMembersComponent: React.SFC<AddGroupMembersProps> = (props: AddGroupMembersProps) => {
+export const AddGroupMembersComponent: React.FunctionComponent<AddGroupMembersProps> = (props: AddGroupMembersProps) => {
     return props.canManageGroupMembers ?
         <div>
             <div className="sectionTitle">Add modelling group member</div>
@@ -30,7 +30,7 @@ export interface ModellingGroupMembersContentProps {
     groupId: string;
     canManageGroupMembers: boolean;
 }
-export const ModellingGroupMembersContentComponent: React.SFC<ModellingGroupMembersContentProps> = (props: ModellingGroupMembersContentProps) => {
+export const ModellingGroupMembersContentComponent: React.FunctionComponent<ModellingGroupMembersContentProps> = (props: ModellingGroupMembersContentProps) => {
     return <div>
         <div className="sectionTitle">Current group members</div>
         <ModellingGroupMembersList users={props.members} groupId={props.groupId}/>

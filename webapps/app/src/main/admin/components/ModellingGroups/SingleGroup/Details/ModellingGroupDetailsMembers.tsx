@@ -9,7 +9,7 @@ export interface ModellingGroupDetailsMembersProps {
     members: User[],
     canEdit: boolean
 }
-export const ModellingGroupDetailsMembers: React.SFC<ModellingGroupDetailsMembersProps> = (props: ModellingGroupDetailsMembersProps) => {
+export const ModellingGroupDetailsMembers: React.FunctionComponent<ModellingGroupDetailsMembersProps> = (props: ModellingGroupDetailsMembersProps) => {
     const url = `/modelling-groups/${props.group.id}/admin/`;
     if (!isNonEmptyArray(props.members)) {
         return <span>

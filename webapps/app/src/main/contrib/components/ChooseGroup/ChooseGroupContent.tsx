@@ -12,7 +12,7 @@ export interface ChooseGroupContentProps {
     groups: ModellingGroup[];
 }
 
-export const ChooseGroupContentComponent: React.SFC<ChooseGroupContentProps> = (props: ChooseGroupContentProps) => {
+export const ChooseGroupContentComponent: React.FunctionComponent<ChooseGroupContentProps> = (props: ChooseGroupContentProps) => {
     if (props.groups.length > 1) {
         return <div>
             <div>

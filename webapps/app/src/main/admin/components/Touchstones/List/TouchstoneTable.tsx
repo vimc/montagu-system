@@ -6,7 +6,7 @@ export interface TouchstoneTableProps {
     touchstones: Touchstone[];
 }
 
-export const TouchstoneTable: React.SFC<TouchstoneTableProps> = (props) => {
+export const TouchstoneTable: React.FunctionComponent<TouchstoneTableProps> = (props) => {
     return <table className="table">
         <thead>
         <tr>

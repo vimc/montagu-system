@@ -16,7 +16,7 @@ export class ResponsibilityListItem extends React.Component<Responsibility, unde
     }
 }
 
-export const ResponsibilityList: React.SFC<ResponsibilityListProps> = (props: ResponsibilityListProps) => {
+export const ResponsibilityList: React.FunctionComponent<ResponsibilityListProps> = (props: ResponsibilityListProps) => {
     return <table>
         <thead>
         <tr>

@@ -6,7 +6,7 @@ export interface PageArticleProps {
     children: any;
 }
 
-const PageArticle: React.SFC<PageArticleProps> = (props: PageArticleProps) => {
+const PageArticle: React.FunctionComponent<PageArticleProps> = (props: PageArticleProps) => {
     return <article className="page container">
         { !props.hideTitle &&
         <div className="page__title">{ props.title }</div>

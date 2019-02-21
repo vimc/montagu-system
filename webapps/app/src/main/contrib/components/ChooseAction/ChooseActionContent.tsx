@@ -14,7 +14,7 @@ export interface ChooseActionContentProps {
     group: ModellingGroup
 }
 
-export const ChooseActionContentComponent: React.SFC<ChooseActionContentProps> = (props: ChooseActionContentProps) => {
+export const ChooseActionContentComponent: React.FunctionComponent<ChooseActionContentProps> = (props: ChooseActionContentProps) => {
     return <div>
         <div className="sectionTitle">Your responsibilities</div>
         <p>
