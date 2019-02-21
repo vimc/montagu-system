@@ -24,7 +24,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
     fun `can get upload token`()
     {
         val mockTokenHelper = mock<WebTokenHelper> {
-            on { generateUploadEstimatesToken("username", "group-1", "touchstone-1", "scenario-1", 1, "file.csv") } doReturn "TOKEN"
+            on { generateUploadEstimatesToken("username", "group-1", "touchstone-1", "scenario-1", 1) } doReturn "TOKEN"
         }
 
         val repo = mockEstimatesRepository(mockTouchstones())
@@ -41,7 +41,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
     fun `can not get upload token for stochastic set`()
     {
         val mockTokenHelper = mock<WebTokenHelper> {
-            on { generateUploadEstimatesToken("username", "group-1", "touchstone-1", "scenario-1", 1, "file.csv") } doReturn "TOKEN"
+            on { generateUploadEstimatesToken("username", "group-1", "touchstone-1", "scenario-1", 1) } doReturn "TOKEN"
         }
 
         val repo = mockEstimatesRepository(mockTouchstones(), existingBurdenEstimateSet = defaultEstimateSet.copy(

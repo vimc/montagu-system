@@ -50,8 +50,7 @@ class BurdenEstimateUploadController(context: ActionContext,
                 path.groupId,
                 path.touchstoneVersionId,
                 path.scenarioId,
-                setId,
-                context.params(":file-name"))
+                setId)
     }
 
     fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestDataSource.fromContentType(context))

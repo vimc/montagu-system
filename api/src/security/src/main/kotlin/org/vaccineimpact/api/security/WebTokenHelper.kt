@@ -34,19 +34,17 @@ open class WebTokenHelper(
                                           groupId: String,
                                           touchstoneVersionId: String,
                                           scenarioId: String,
-                                          setId: Int,
-                                          fileName: String): String
+                                          setId: Int): String
     {
         val claims = mapOf(
                 "iss" to issuer,
                 "token_type" to TokenType.UPLOAD,
                 "sub" to username,
-                "exp" to Date.from(Instant.now().plus(defaultLifespan)),
+                "exp" to Date.from(Instant.now().plus(Duration.ofDays(1))),
                 "group-id" to groupId,
                 "scenario-id" to scenarioId,
                 "set-id" to setId,
                 "touchstone-id" to touchstoneVersionId,
-                "file-name" to fileName,
                 "uid" to "$setId-${Instant.now()}")
 
         return generator.generate(claims)

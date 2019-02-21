@@ -36,7 +36,7 @@ object BurdenEstimatesRouteConfig : RouteConfig
                     .secure(readPermissions),
 
             // Populate sets
-            Endpoint("$baseUrl/:set-id/actions/request-upload/:file-name/", uploadController, "getUploadToken", method = HttpMethod.get)
+            Endpoint("$baseUrl/:set-id/actions/request-upload/", uploadController, "getUploadToken", method = HttpMethod.get)
                     .json()
                     .secure(writePermissions),
 

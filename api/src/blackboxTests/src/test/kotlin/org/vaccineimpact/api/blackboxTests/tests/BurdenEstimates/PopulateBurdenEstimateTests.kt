@@ -252,10 +252,8 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
         }
-        val fileName = "test.csv"
-
         val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
-        val response = RequestHelper().get("$setUrl$setId/actions/request-upload/$fileName/", token = token)
+        val response = RequestHelper().get("$setUrl$setId/actions/request-upload/", token = token)
         JSONValidator().validateSuccess(response.text)
     }
 
