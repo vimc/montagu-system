@@ -1,11 +1,13 @@
 package org.vaccineimpact.api.tests.controllers.BurdenEstimates
 
 import com.nhaarman.mockito_kotlin.*
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.mockito.Mockito
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimateUploadController
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
@@ -13,10 +15,44 @@ import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.tests.mocks.mockCSVPostData
 
 class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
 {
+    @Test
+    fun `can get upload token`()
+    {
+        val mockTokenHelper = mock<WebTokenHelper> {
+            on { generateUploadEstimatesToken("username", "group-1", "touchstone-1", "scenario-1", 1, "file.csv") } doReturn "TOKEN"
+        }
+
+        val sut = BurdenEstimateUploadController(mockActionContext(), mock(), mockLogic(),
+                mockEstimatesRepository(mockTouchstones()), mock(),
+                mockTokenHelper)
+        val result = sut.getUploadToken()
+        assertThat(result).isEqualTo("TOKEN")
+    }
+
+
+    @Test
+    fun `can not get upload token for stochastic set`()
+    {
+        val mockTokenHelper = mock<WebTokenHelper> {
+            on { generateUploadEstimatesToken("username", "group-1", "touchstone-1", "scenario-1", 1, "file.csv") } doReturn "TOKEN"
+        }
+
+        val repo = mockEstimatesRepository(mockTouchstones(), existingBurdenEstimateSet = defaultEstimateSet.copy(
+                type = BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC)))
+
+        val sut = BurdenEstimateUploadController(mockActionContext(), mock(), mockLogic(),
+                repo, mock(),
+                mockTokenHelper)
+        assertThatThrownBy { sut.getUploadToken() }
+                .isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining("Stochastic estimate upload not supported")
+
+    }
 
     @Test
     fun `can populate central estimate set`()
@@ -105,7 +141,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         val mockPostData = mockCSVPostData(normalCSVData)
         val result = BurdenEstimateUploadController(mockContext, mockRepositories(repo), logic, repo,
                 postDataHelper = mockPostData).populateBurdenEstimateSet()
-        Assertions.assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
+        assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
     }
 
     private fun populateAndCheckIfSetIsClosed(keepOpen: String?, expectedClosed: Boolean)
@@ -126,6 +162,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         return mock {
             on { username } doReturn "username"
             on { contentType() } doReturn "text/csv"
+            on { params(":file-name") } doReturn "file.csv"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-version-id") } doReturn "touchstone-1"
