@@ -5,15 +5,15 @@ import java.io.IOException
 import java.util.concurrent.ConcurrentHashMap
 
 data class ChunkedFile(val totalChunks: Int,
+                       val totalSize: Long,
                        val chunkSize: Long,
                        val uniqueIdentifier: String,
-                       var filePath: String
+                       val originalFileName: String
 )
 {
-    constructor(totalChunks: Int, chunkSize: Long, uniqueIdentifier: String, file: File):
-            this(totalChunks, chunkSize, uniqueIdentifier, "${file.absolutePath}.temp")
 
     val uploadedChunks = ConcurrentHashMap<Int, Boolean>()
+    var filePath = "$UPLOAD_DIR/$uniqueIdentifier.temp"
 
     fun uploadFinished(): Boolean
     {
@@ -38,5 +38,10 @@ data class ChunkedFile(val totalChunks: Int,
 
     fun cleanUp() {
         File(filePath).delete()
+    }
+
+    companion object
+    {
+        const val UPLOAD_DIR = "upload_dir"
     }
 }

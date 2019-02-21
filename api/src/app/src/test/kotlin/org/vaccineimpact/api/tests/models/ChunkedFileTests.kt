@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.tests.models
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.After
 import org.junit.Test
 import org.vaccineimpact.api.app.models.ChunkedFile
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -9,28 +10,39 @@ import java.io.File
 class ChunkedFileTests : MontaguTests()
 {
 
+    val uid = "uid"
+    val tempFileName = "${ChunkedFile.UPLOAD_DIR}/$uid.temp"
+    val finalFileName = "${ChunkedFile.UPLOAD_DIR}/$uid"
+
+    @After
+    fun `clean up files`(){
+        File(tempFileName).delete()
+        File(finalFileName).delete()
+    }
+
     @Test
     fun `detects upload has finished when all chunks are present`()
     {
-        val sut = ChunkedFile(totalChunks = 10, chunkSize = 100, uniqueIdentifier = "uid", filePath = "file.csv")
+        val sut = ChunkedFile(totalChunks = 10, totalSize = 1000, chunkSize = 100,
+                uniqueIdentifier = "uid", originalFileName = "file.csv")
         File(sut.filePath).createNewFile()
         for (i in 1..10)
         {
             sut.uploadedChunks[i] = true
             assertThat(sut.uploadFinished()).isEqualTo(i == 10)
         }
-        File(sut.filePath).delete()
     }
 
     @Test
     fun `renames file if upload has finished`()
     {
-        val tempFile = File("file.csv.temp")
-        val finalFile = File("file.csv")
+        val tempFile = File("${ChunkedFile.UPLOAD_DIR}/uid.temp")
+        val finalFile = File("${ChunkedFile.UPLOAD_DIR}/uid")
         tempFile.createNewFile()
 
-        val sut = ChunkedFile(totalChunks = 10, chunkSize = 100, uniqueIdentifier = "uid", file = finalFile)
-        assertThat(sut.filePath).endsWith("file.csv.temp")
+        val sut = ChunkedFile(totalChunks = 10, totalSize = 1000, chunkSize = 100, uniqueIdentifier = "uid",
+                originalFileName = "file.csv")
+        assertThat(sut.filePath).endsWith("uid.temp")
 
         for (i in 1..10)
         {
@@ -39,24 +51,21 @@ class ChunkedFileTests : MontaguTests()
 
         val result = sut.uploadFinished()
         assertThat(result).isTrue()
-        assertThat(sut.filePath).endsWith("file.csv")
+        assertThat(sut.filePath).endsWith("uid")
         assertThat(tempFile.exists()).isFalse()
         assertThat(finalFile.exists()).isTrue()
-
-        finalFile.delete()
     }
 
     @Test
     fun `deletes file on cleanup`() {
-        val tempFile = File("file.csv.temp")
-        val finalFile = File("file.csv")
+        val tempFile = File("${ChunkedFile.UPLOAD_DIR}/uid.temp")
         tempFile.createNewFile()
 
-        val sut = ChunkedFile(totalChunks = 10, chunkSize = 100, uniqueIdentifier = "uid", file = finalFile)
-        sut.cleanUp()
+        val sut = ChunkedFile(totalChunks = 10, totalSize = 1000, chunkSize = 100, uniqueIdentifier = "uid",
+                originalFileName = "file.csv")
 
+        sut.cleanUp()
         assertThat(tempFile.exists()).isFalse()
-        assertThat(finalFile.exists()).isFalse()
     }
 
 }

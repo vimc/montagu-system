@@ -17,23 +17,23 @@ class RequestDataSourceTests : MontaguTests()
     @Test
     fun `can get content type from body source`()
     {
-        val reader = StringReader("Text")
+        val text = "Text".byteInputStream()
         val context = mock<ActionContext> {
-            on { requestReader() } doReturn reader
+            on { getInputStream() } doReturn text
             on { contentType() } doReturn "content/type"
         }
         val source = RequestBodySource(context)
-        assertThat(source.getContent()).isEqualTo(reader)
+        assertThat(source.getContent().reader().readText()).isEqualTo("Text")
     }
 
     @Test
     fun `can get content type from multipart stream source`()
     {
-        val file = StringReader("Text")
+        val file = "Text".byteInputStream()
         val context = mock<ActionContext> {
             on { getPart(eq("part1"), anyOrNull()) } doReturn file
         }
         val source = MultipartStreamSource("part1", context)
-        assertThat(source.getContent()).isEqualTo(file)
+        assertThat(source.getContent().reader().readText()).isEqualTo("Text")
     }
 }

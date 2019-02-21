@@ -134,7 +134,7 @@ class DirectActionContextTests : MontaguTests()
         }
         val context = DirectActionContext(mockWebContext())
         val actual = context.getPart("partB", mockData)
-        assertThat(actual.readText()).isEqualTo("Message B")
+        assertThat(actual.reader().readText()).isEqualTo("Message B")
     }
 
     @Test

@@ -1,26 +1,36 @@
 package org.vaccineimpact.api.app.controllers.BurdenEstimates
 
+import org.vaccineimpact.api.app.Cache
+import org.vaccineimpact.api.app.ChunkedFileCache
 import org.vaccineimpact.api.app.ResultRedirector
 import org.vaccineimpact.api.app.asResult
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestDataSource
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
+import org.vaccineimpact.api.app.models.ChunkedFile
+import org.vaccineimpact.api.app.models.ChunkedFile.Companion.UPLOAD_DIR
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.app.requests.csvData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.security.KeyHelper
+import org.vaccineimpact.api.security.TokenType
 import org.vaccineimpact.api.security.WebTokenHelper
+import java.io.File
+import java.io.RandomAccessFile
+import kotlin.system.measureTimeMillis
 
 class BurdenEstimateUploadController(context: ActionContext,
                                      private val repositories: Repositories,
                                      private val estimatesLogic: BurdenEstimateLogic,
                                      private val estimateRepository: BurdenEstimateRepository,
                                      private val postDataHelper: PostDataHelper = PostDataHelper(),
-                                     private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair))
+                                     private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair),
+                                     private val chunkedFileCache: Cache<ChunkedFile> = ChunkedFileCache.instance)
     : BaseBurdenEstimateController(context, estimatesLogic)
 {
     constructor(context: ActionContext, repos: Repositories)
@@ -51,6 +61,42 @@ class BurdenEstimateUploadController(context: ActionContext,
                 path.touchstoneVersionId,
                 path.scenarioId,
                 setId)
+    }
+
+    fun uploadBurdenEstimateFile(): String
+    {
+        val resumableChunkNumber = context.queryParams("resumableChunkNumber")?.toInt()
+                ?: throw BadRequest("Missing required query parameter: resumableChunkNumber")
+
+        val info = getFileMetadata()
+        val raf = RandomAccessFile(info.filePath, "rw")
+
+        // Seek to position
+        raf.seek((resumableChunkNumber - 1) * info.chunkSize)
+
+        // Get file from context (supports multi-part or octet stream)
+        val source = RequestDataSource.fromContentType(context)
+        val stream = source.getContent()
+
+        // Write to file
+        var readBytes: Long = 0
+        val length = context.request.raw().contentLength
+        val bytes = ByteArray(1024 * 100)
+        while (readBytes < length)
+        {
+            val r = stream.read(bytes)
+            if (r < 0)
+            {
+                break
+            }
+            raf.write(bytes, 0, r)
+            readBytes += r.toLong()
+        }
+        raf.close()
+
+        //Mark as uploaded
+        info.uploadedChunks[resumableChunkNumber] = true
+        return okayResponse()
     }
 
     fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestDataSource.fromContentType(context))
@@ -87,6 +133,48 @@ class BurdenEstimateUploadController(context: ActionContext,
             {
                 okayResponse().asResult()
             }
+        }
+    }
+
+    private fun getFileMetadata(): ChunkedFile
+    {
+        val totalChunks = context.queryParams("resumableTotalChunks")?.toInt()
+        val totalSize = context.queryParams("resumableTotalSize")?.toLong()
+        val chunkSize = context.queryParams("resumableChunkSize")?.toLong()
+        val uploadToken = context.queryParams("resumableIdentifier")
+        val filename = context.queryParams("resumableFilename")
+
+        if (totalChunks == null || totalSize == null || chunkSize == null ||
+                uploadToken.isNullOrEmpty() || filename.isNullOrEmpty())
+        {
+            throw BadRequest("You must include all resumablejs query parameters")
+        }
+
+        // Note expired tokens will throw an error during verification
+        val claims = tokenHelper.verify(uploadToken!!, TokenType.UPLOAD)
+
+        if (claims["sub"] != context.username!!)
+        {
+            throw BadRequest("The given token has not been issued for this user")
+        }
+
+        val uniqueIdentifier = claims["uid"].toString()
+        val info = chunkedFileCache[uniqueIdentifier]
+        val providedMetadata = ChunkedFile(totalChunks, chunkSize, totalSize, uniqueIdentifier, filename!!)
+
+        return if (info != null)
+        {
+            if (!info.equals(providedMetadata)){
+                throw BadRequest("The given token has already been used upload a different file." +
+                        " Please request a fresh upload token.")
+            }
+            info
+        }
+        else
+        {
+            File(UPLOAD_DIR).mkdir()
+            chunkedFileCache.put(providedMetadata)
+            providedMetadata
         }
     }
 

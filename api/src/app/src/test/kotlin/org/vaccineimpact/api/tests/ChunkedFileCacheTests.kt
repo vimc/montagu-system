@@ -15,7 +15,7 @@ class ChunkedFileCacheTests : MontaguTests()
     fun `can put and read object from cache multiple times`()
     {
         val sut = ChunkedFileCache()
-        val testInfo = ChunkedFile(10, 100, "uid", "file.csv")
+        val testInfo = ChunkedFile(10, 100, 1000, "uid", "file.csv")
         sut.put(testInfo)
 
         var result = sut["uid"]
@@ -29,7 +29,7 @@ class ChunkedFileCacheTests : MontaguTests()
     fun `can remove object from cache`()
     {
         val sut = ChunkedFileCache()
-        val testInfo = ChunkedFile(10, 100, "uid", "file.csv")
+        val testInfo = ChunkedFile(10, 100, 1000, "uid", "file.csv")
         sut.put(testInfo)
 
         var result = sut["uid"]
@@ -50,7 +50,7 @@ class ChunkedFileCacheTests : MontaguTests()
         val oldUID = "old"
         val freshUID = "fresh"
 
-        val oldInfo = ChunkedFile(10, 100, oldUID, "file.csv")
+        val oldInfo = ChunkedFile(10, 100, 1000, oldUID, "file.csv")
         sut.put(oldInfo)
 
         // first confirm that the object can be retrieved
@@ -61,7 +61,7 @@ class ChunkedFileCacheTests : MontaguTests()
         Thread.sleep(10)
 
         // make a fresh put request
-        val newInfo = ChunkedFile(10, 100, freshUID, "somefile.csv")
+        val newInfo = ChunkedFile(10, 100, 1000, freshUID, "somefile.csv")
         sut.put(newInfo)
 
         // the old object should have been flushed
@@ -83,7 +83,7 @@ class ChunkedFileCacheTests : MontaguTests()
         val flushInterval = TimeUnit.MILLISECONDS.toMillis(5)
         val sut = ChunkedFileCache(flushInterval)
 
-        val oldInfo = ChunkedFile(10, 100, oldUID, "file.csv")
+        val oldInfo = ChunkedFile(10, 100, 1000, oldUID, "file.csv")
         sut.put(oldInfo)
 
         // first confirm that the object can be retrieved
@@ -104,7 +104,7 @@ class ChunkedFileCacheTests : MontaguTests()
     fun `can update and read from ChunkedFile items in concurrent threads`()
     {
         val sut = ChunkedFileCache()
-        val testInfo = ChunkedFile(10, 100, "uid", "file.csv")
+        val testInfo = ChunkedFile(10, 100, 1000, "uid", "file.csv")
         sut.put(testInfo)
 
         var result = false

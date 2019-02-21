@@ -117,7 +117,7 @@ class GroupModelRunParameterControllerTests : MontaguTests()
     @Test
     fun `throws UnknownObjectError if touchstone is in preparation when adding model run params`()
     {
-        val uploaded = StringReader("disease-1")
+        val uploaded = "disease-1".byteInputStream()
         val mockContext = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-version-id") } doReturn "touchstone-bad"
