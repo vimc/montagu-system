@@ -22,6 +22,7 @@ import {estimatesActionCreators} from "../../../../../main/contrib/actions/estim
 import {BurdenOutcome, EstimateTypes} from "../../../../../main/contrib/actionTypes/EstimateTypes";
 import {estimatesInitialState} from "../../../../../main/contrib/reducers/estimatesReducer";
 import {MockStore} from "redux-mock-store";
+import {EstimatesService} from "../../../../../main/contrib/services/EstimatesService";
 
 describe("Diagnostic section", () => {
 
@@ -56,6 +57,9 @@ describe("Diagnostic section", () => {
 
     beforeEach(() => {
         store = createMockContribStore(testState);
+        sandbox.setStubFunc(EstimatesService.prototype, "getEstimates", () => {
+            return Promise.resolve("TEST");
+        });
     });
 
     afterEach(() => sandbox.restore());

@@ -74,73 +74,70 @@ describe("Admin Users actions tests", () => {
         });
     });
 
-    it("clears user list cache and fetches users if role added to user", (done) => {
+    it("clears user list cache and fetches users if role added to user", async () => {
 
         const cacheStub = sandbox.setStub(UsersService.prototype, "clearCache");
         setUpSuccessfulStubs();
 
-        store.dispatch(usersActionCreators.addGlobalRoleToUser("user", "role1"));
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = [{type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
-                {type: UsersTypes.SET_CURRENT_USER, data: "user"}];
-            expect(actions).to.eql(expectedPayload);
+        await store.dispatch(usersActionCreators.addGlobalRoleToUser("user", "role1"));
 
-            expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
-                .to.be.true;
+        const actions = store.getActions();
+        const expectedPayload = [{type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
+            {type: UsersTypes.SET_CURRENT_USER, data: "user"}];
+        expect(actions).to.eql(expectedPayload);
 
-            done();
-        });
+        expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
+            .to.be.true;
+
     });
 
-    it("clears user list cache and fetches users if role removed from user", (done) => {
+    it("clears user list cache and fetches users if role removed from user", async () => {
 
         const cacheStub = sandbox.setStub(UsersService.prototype, "clearCache");
         setUpSuccessfulStubs();
 
-        store.dispatch(usersActionCreators.removeRoleFromUser("user", "role1", "any", "any"));
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = [{type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
-                {type: UsersTypes.SET_CURRENT_USER, data: "user"}];
-            expect(actions).to.eql(expectedPayload);
+        await store.dispatch(usersActionCreators.removeRoleFromUser("user", "role1", "any", "any"));
+        const actions = store.getActions();
+        const expectedPayload = [{type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
+            {type: UsersTypes.SET_CURRENT_USER, data: "user"}];
+        expect(actions).to.eql(expectedPayload);
 
-            expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
-                .to.be.true;
+        expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
+            .to.be.true;
 
-            done();
-        });
     });
 
-    it("fetches all users after successful user creation", (done) => {
+    it("fetches all users after successful user creation", async () => {
 
         setUpSuccessfulStubs();
 
-        store.dispatch(usersActionCreators.createUser({name: "joe bloggs", email: "joe@email.com", username: "joe.b"}));
-        setTimeout(() => {
-            expect(createUserStub.calledWith("joe bloggs", "joe@email.com", "joe.b")).to.be.true;
-            const actions = store.getActions();
-            const expectedPayload = {type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]};
-            expect(actions).to.deep.include.members([expectedPayload]);
-            done();
-        });
+        await store.dispatch(usersActionCreators.createUser({
+            name: "joe bloggs",
+            email: "joe@email.com",
+            username: "joe.b"
+        }));
+
+        expect(createUserStub.calledWith("joe bloggs", "joe@email.com", "joe.b")).to.be.true;
+        const actions = store.getActions();
+        const expectedPayload = {type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]};
+        expect(actions).to.deep.include.members([expectedPayload]);
+
     });
 
-    it("dispatches error if user creation fails", (done) => {
+    it("dispatches error if user creation fails", async () => {
 
         sandbox.setStubFunc(UsersService.prototype, "createUser", () => {
             return Promise.resolve(mockResult(null, [{code: "e", message: "error message"}]));
         });
-        store.dispatch(usersActionCreators.createUser({name: "joe bloggs", email: "joe@email.com", username: "joe.b"}));
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = {
-                type: UsersTypes.SET_CREATE_USER_ERRORS,
-                errors: [{message: "error message", code: "e"}]
-            };
-            expect(actions).to.eql([expectedPayload]);
-            done();
-        });
+        await store.dispatch(usersActionCreators.createUser({name: "joe bloggs", email: "joe@email.com", username: "joe.b"}));
+
+        const actions = store.getActions();
+        const expectedPayload = {
+            type: UsersTypes.SET_CREATE_USER_ERRORS,
+            errors: [{message: "error message", code: "e"}]
+        };
+        expect(actions).to.eql([expectedPayload]);
+
     });
 
     it('should clear users cache when user is created', async () => {

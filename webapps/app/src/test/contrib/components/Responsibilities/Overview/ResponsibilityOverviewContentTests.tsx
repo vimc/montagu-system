@@ -57,20 +57,16 @@ describe("Responsibility Overview Content Component", () => {
         expect(rendered.props().responsibilitySet).to.eql(testResponsibilitiesSet);
     });
 
-    it("renders on branch level, passes", () => {
-        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive();
-        const props = rendered.props() as ResponsibilityOverviewContentProps;
-        expect(props.modellingGroup).to.eql(testCurrentGroup);
-        expect(props.currentDiseaseId).to.eql(testDiseaseId);
-        expect(props.responsibilitySet).to.eql(testResponsibilitiesSet);
-        expect(rendered.find('Connect').length).to.eql(1);
-    });
-
-    it("renders on branch level, not passes", () => {
+    it("renders loading element if responsibilitiesSet is null", () => {
         const anotherState = {...state, responsibilities: {responsibilitiesSet: null as any}};
         store = createMockStore(anotherState);
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive();
         expect(rendered.find(LoadingElement).length).to.eql(1);
+    });
+
+    it("does not render loading element if responsibilitiesSet is present", () => {
+        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive();
+        expect(rendered.find(LoadingElement).length).to.eql(0);
     });
 
     it("renders on confidentiality level, passes", () => {

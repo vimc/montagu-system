@@ -7,6 +7,7 @@ import { ChooseGroupPage, ChooseGroupPageComponent } from "../../../../main/cont
 import { Sandbox } from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
 import {ChooseGroupContent} from "../../../../main/contrib/components/ChooseGroup/ChooseGroupContent";
+import {PageArticle} from "../../../../main/shared/components/PageWithHeader/PageArticle";
 
 describe("Choose Group Page Component", () => {
 
@@ -22,7 +23,7 @@ describe("Choose Group Page Component", () => {
     it("renders title, description and ChooseGroupContent", () => {
         const rendered = shallow(<ChooseGroupPageComponent history={null} location={null} match={null}
                                                            router={null} title={"title"}/>);
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(pageArticle.props().title).is.equal("title");
         expect(pageArticle.find('p').length).is.equal(1);
         expect(pageArticle.find(ChooseGroupContent).length).is.equal(1);

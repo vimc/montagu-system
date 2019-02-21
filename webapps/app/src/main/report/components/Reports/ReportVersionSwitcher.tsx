@@ -10,8 +10,8 @@ interface Props {
 }
 
 export class ReportVersionSwitcher extends React.Component<Props, undefined> {
-    constructor() {
-        super();
+    constructor(props: Props) {
+        super(props);
         this.onSelect = this.onSelect.bind(this);
     }
 

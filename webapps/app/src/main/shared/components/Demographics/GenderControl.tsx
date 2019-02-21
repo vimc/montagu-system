@@ -9,9 +9,6 @@ interface Props {
 }
 
 export class GenderControl extends React.Component<Props, undefined> {
-    constructor() {
-        super();
-    }
 
     static genderApplicable(dataSet: DemographicDataset): boolean {
         return dataSet != null

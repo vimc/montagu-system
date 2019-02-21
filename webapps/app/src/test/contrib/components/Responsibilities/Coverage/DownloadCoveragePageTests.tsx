@@ -42,7 +42,7 @@ describe("Download Coverage Page Component tests", () => {
         const rendered = shallow(<DownloadCoveragePage
             match={testMatch}
         />, {context: {store}}).dive().dive();
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.find(DownloadCoverageContent).length).is.equal(1);
         const titleComponent = pageArticle.dive().find(ResponsibilitiesPageTitle);

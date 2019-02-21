@@ -24,8 +24,8 @@ interface DatePickerState {
 }
 
 export class DatePicker extends React.Component<DatePickerProps, DatePickerState> {
-    constructor() {
-        super();
+    constructor(props: DatePickerProps) {
+        super(props);
         this.state = {
             displayMonthDate: new Date()
         };

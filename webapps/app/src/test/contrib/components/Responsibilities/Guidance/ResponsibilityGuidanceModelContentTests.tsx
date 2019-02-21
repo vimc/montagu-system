@@ -17,6 +17,7 @@ import * as React from "react";
 import {match} from 'react-router';
 import { Store } from "redux";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
+import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
 
 describe("Guidance Content Component tests", () => {
 
@@ -42,7 +43,7 @@ describe("Guidance Content Component tests", () => {
 
         const props = rendered.props();
         expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
-        const pageArticle = rendered.dive().find('PageArticle');
+        const pageArticle = rendered.dive().find(PageArticle);
         expect(pageArticle.props().title).is.equal("Guidance on model inputs: coverage and demographic data");
 
         const alert = rendered.dive().find('.alert-primary');
@@ -57,7 +58,7 @@ describe("Guidance Content Component tests", () => {
 
         const props = rendered.props();
         expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
-        const pageArticle = rendered.dive().find('PageArticle');
+        const pageArticle = rendered.dive().find(PageArticle);
         expect(pageArticle.props().title).is.equal("Guidance on model inputs: coverage and demographic data");
 
         const alert = rendered.dive().find('.alert-primary');
@@ -72,7 +73,7 @@ describe("Guidance Content Component tests", () => {
 
         const props = rendered.props();
         expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
-        const pageArticle = rendered.dive().find('PageArticle');
+        const pageArticle = rendered.dive().find(PageArticle);
         expect(pageArticle.props().title).is.equal("Touchstone is not open");
 
         const alert = rendered.dive().find('.alert-danger');
@@ -87,7 +88,7 @@ describe("Guidance Content Component tests", () => {
 
         const props = rendered.props();
         expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
-        const pageArticle = rendered.dive().find('PageArticle');
+        const pageArticle = rendered.dive().find(PageArticle);
         expect(pageArticle.props().title).is.equal("Guidance on model outputs: how to generate and upload central estimates");
 
         const alert = rendered.dive().find('.alert-primary');
@@ -102,7 +103,7 @@ describe("Guidance Content Component tests", () => {
 
         const props = rendered.props();
         expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
-        const pageArticle = rendered.dive().find('PageArticle');
+        const pageArticle = rendered.dive().find(PageArticle);
         expect(pageArticle.props().title).is.equal("Guidance on model outputs: how to generate and upload central and stochastic estimates");
 
         const alert = rendered.dive().find('.alert-primary');

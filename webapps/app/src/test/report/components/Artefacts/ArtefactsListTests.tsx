@@ -3,6 +3,7 @@ import {shallow} from "enzyme";
 import {expect} from "chai";
 import {ArtefactsList} from "../../../../main/report/components/Artefacts/ArtefactsList";
 import {mockArtefact} from "../../../mocks/mockModels";
+import {ArtefactItem} from "../../../../main/report/components/Artefacts/ArtefactItem";
 
 describe("ArtefactsList", () => {
     it("renders list of ArtefactItems", () => {
@@ -21,8 +22,8 @@ describe("ArtefactsList", () => {
                                                 version="v1"
                                                 artefacts={fakeArtefactsArray}/>);
 
-        expect(rendered.find("ArtefactItem").length).to.eq(2);
-        expect(rendered.find("ArtefactItem").at(0).prop("artefact")).to.eql(staticGraph);
-        expect(rendered.find("ArtefactItem").at(1).prop("artefact")).to.eq(csv);
+        expect(rendered.find(ArtefactItem).length).to.eq(2);
+        expect(rendered.find(ArtefactItem).at(0).prop("artefact")).to.eql(staticGraph);
+        expect(rendered.find(ArtefactItem).at(1).prop("artefact")).to.eq(csv);
     });
 });

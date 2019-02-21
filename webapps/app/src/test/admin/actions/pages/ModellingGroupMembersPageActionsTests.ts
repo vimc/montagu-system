@@ -30,7 +30,7 @@ describe("Modelling Group Members Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("on load", (done) => {
+    it("on load", async () => {
         const initialState = {
             groups: {groups: [testGroup, testGroup2], currentGroupDetails: testGroupDetails, currentGroup: testGroup},
             users: {users: [testUser, testUser2]}
@@ -50,26 +50,23 @@ describe("Modelling Group Members Page actions tests", () => {
             return testBreadcrumbs;
         });
 
-        store.dispatch(modellingGroupMembersPageActionCreators.onLoad({groupId: testGroup.id}));
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = [
-                { type: ModellingGroupTypes.GROUPS_FETCHED, data: [testGroup] },
-                { type: ModellingGroupTypes.SET_CURRENT_GROUP, data: testGroup},
-                { type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
-                { type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails},
-                { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]},
-                { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs }
-            ];
-            expect(actions).to.eql(expectedPayload);
-            expect(getAllGroupsStub.called).to.be.true;
-            expect(getAllUsersStub.called).to.be.true;
-            expect(getGroupDetailsServiceStub.called).to.be.true;
-            expect(getGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
-            done();
-        });
+        await store.dispatch(modellingGroupMembersPageActionCreators.onLoad({groupId: testGroup.id}));
+
+        const actions = store.getActions();
+        const expectedPayload = [
+            { type: ModellingGroupTypes.GROUPS_FETCHED, data: [testGroup] },
+            { type: ModellingGroupTypes.SET_CURRENT_GROUP, data: testGroup},
+            { type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
+            { type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails},
+            { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]},
+            { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs }
+        ];
+        expect(actions).to.eql(expectedPayload);
+        expect(getAllGroupsStub.called).to.be.true;
+        expect(getAllUsersStub.called).to.be.true;
+        expect(getGroupDetailsServiceStub.called).to.be.true;
+        expect(getGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
+
     });
-
-
 
 });

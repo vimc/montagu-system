@@ -13,6 +13,7 @@ import {
 import {mockModellingGroup} from "../../../../../mocks/mockModels";
 import {modellingGroupDetailsPageActionCreators} from "../../../../../../main/admin/actions/pages/ModellingGroupDetailsPageActionCreators";
 import {ModellingGroupDetailsContent} from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Details/ModellingGroupDetailsContent";
+import {PageArticle} from "../../../../../../main/shared/components/PageWithHeader/PageArticle";
 
 describe("Modelling Group Details Page Component Tests", () => {
 
@@ -39,7 +40,7 @@ describe("Modelling Group Details Page Component Tests", () => {
         const rendered = shallow(<ModellingGroupDetailsPage
             match={testMatch}
         />, {context: {store}}).dive();
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal(testGroup.description);
         expect(pageArticle.find(ModellingGroupDetailsContent).length).is.equal(1);

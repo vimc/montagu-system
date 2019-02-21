@@ -27,7 +27,7 @@ describe("Contrib No Route Found Page Component tests", () => {
         let store = createMockStore();
         const createBreadcrumbsStub = sandbox.setStubReduxAction(breadcrumbsActionCreators, "createBreadcrumbs");
         const rendered = shallow(<ContribNoRouteFoundPage/>, {context: {store}}).dive().dive();
-        const pageArticle = rendered.find('PageArticle');
+        const pageArticle = rendered.find(PageArticle);
         expect(createBreadcrumbsStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal(NoRouteFound.title());
     });

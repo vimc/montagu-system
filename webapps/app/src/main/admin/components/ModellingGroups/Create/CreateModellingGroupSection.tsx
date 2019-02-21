@@ -1,10 +1,11 @@
 import * as React from "react";
 import {branch, compose, renderNothing} from "recompose";
-import {connect, Dispatch} from 'react-redux';
+import {connect} from 'react-redux';
 
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {CreateModellingGroupForm} from "./CreateModellingGroupForm";
 import {modellingGroupsActionCreators} from "../../../actions/modellingGroupsActionCreators";
+import {Dispatch} from "redux";
 
 interface CreateModellingGroupSectionProps {
     canCreateModellingGroups: boolean;

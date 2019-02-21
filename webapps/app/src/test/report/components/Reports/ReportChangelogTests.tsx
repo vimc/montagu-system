@@ -143,7 +143,7 @@ describe("ReportChangelog", () => {
         expect(fetchChangelogStub.calledOnce).to.be.true;
 
         //..then update
-        rendered.instance().forceUpdate();
+        rendered.setProps({version:"v3"});
 
         //Expect changelog to have been fetched twice, once on mount, and once on update
         expect(fetchChangelogStub.calledTwice).to.be.true;

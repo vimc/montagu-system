@@ -14,7 +14,7 @@ import {IntegrationTestSuite, TestService, ResponsibilityIds, addResponsibilitie
         addCoverageSetsForGroup, addCoverageData, addTouchstone} from "./IntegrationTest";
 import * as enzyme from "enzyme";
 import {shallow} from "enzyme";
-import * as Adapter from "enzyme-adapter-react-15";
+import * as Adapter from "enzyme-adapter-react-16";
 
 import {createContribStore} from "../main/contrib/createStore";
 import {Sandbox} from "../test/Sandbox";

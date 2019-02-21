@@ -1,9 +1,10 @@
 import * as React from "react";
-import {connect, Dispatch} from "react-redux";
+import {connect} from "react-redux";
 import {ReportAppState} from "../../report/reducers/reportAppReducers";
 import {oneTimeTokenActionCreators} from "../actions/oneTimeTokenActionCreators";
 import {APIService} from "../models/APIService";
 import {buildURL} from "../services/AbstractLocalService";
+import {Dispatch} from "redux";
 
 const url = require('url'),
     querystring = require("querystring");

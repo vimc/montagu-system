@@ -1,10 +1,11 @@
 import * as React from "react";
 import Toggle from 'react-bootstrap-toggle';
-import {connect, Dispatch} from "react-redux";
+import {connect} from "react-redux";
 
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {reportActionCreators} from "../../actionCreators/reportActionCreators";
 import {ConfirmModal} from "../../../shared/components/ConfirmModal";
+import {Dispatch} from "redux";
 
 export interface PublicProps {
     name: string;
@@ -23,8 +24,8 @@ interface PublishSwitchState {
 
 export class PublishSwitchComponent extends React.Component<PublishSwitchProps, PublishSwitchState> {
 
-    constructor() {
-        super();
+    constructor(props: PublishSwitchProps) {
+        super(props);
         this.state = { showModal: false };
         this.onToggle = this.onToggle.bind(this);
         this.onConfirm = this.onConfirm.bind(this);

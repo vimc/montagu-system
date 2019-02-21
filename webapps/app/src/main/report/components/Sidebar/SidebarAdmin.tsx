@@ -1,10 +1,11 @@
 import * as React from "react";
 import {ReportAppState} from "../../reducers/reportAppReducers";
-import {connect, Dispatch} from "react-redux";
+import {connect} from "react-redux";
 import {userActionCreators} from "../../actionCreators/userActionCreators";
 import {branch, compose, renderNothing} from "recompose";
 import withLifecycle, {LifecycleMethods} from "@hocs/with-lifecycle";
 import {SidebarAdminComponent, SidebarAdminProps} from "./SidebarAdminComponent";
+import {Dispatch} from "redux";
 
 export interface SidebarAdminPublicProps {
     onChangeVersion: (version: string) => any;

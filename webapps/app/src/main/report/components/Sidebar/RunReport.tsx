@@ -1,5 +1,6 @@
 import * as React from "react";
-import {connect, Dispatch} from "react-redux";
+import {connect} from "react-redux";
+import {Dispatch} from "redux";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {reportActionCreators} from "../../actionCreators/reportActionCreators";
 import {RunStatusPoll, RunStatusPollingActive} from "../../polling/RunStatusPoll";
@@ -33,8 +34,8 @@ interface RunReportModalState {
 
 export class RunReportComponent extends React.Component<RunReportProps, RunReportModalState> {
 
-    constructor() {
-        super();
+    constructor(props: RunReportProps) {
+        super(props);
         this.state = { showModal: false };
         this.onClickRun = this.onClickRun.bind(this);
         this.onClickDismiss = this.onClickDismiss.bind(this);

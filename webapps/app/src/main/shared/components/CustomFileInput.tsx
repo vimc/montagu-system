@@ -11,8 +11,8 @@ interface Props {
 
 export class CustomFileInput extends React.Component<Props, State> {
 
-    constructor() {
-        super();
+    constructor(props: Props) {
+        super(props);
         this.state = {
             fileSelected: false,
             fileName: ""
