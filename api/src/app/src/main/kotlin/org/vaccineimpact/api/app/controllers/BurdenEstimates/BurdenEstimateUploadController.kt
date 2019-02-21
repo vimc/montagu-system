@@ -59,8 +59,8 @@ class BurdenEstimateUploadController(context: ActionContext,
 
     fun uploadBurdenEstimateFile(): String
     {
-        val resumableChunkNumber = context.queryParams("resumableChunkNumber")?.toInt()
-                ?: throw BadRequest("Missing required query parameter: resumableChunkNumber")
+        val chunkNumber = context.queryParams("chunkNumber")?.toInt()
+                ?: throw BadRequest("Missing required query parameter: chunkNumber")
 
         val metadata = getFileMetadata()
 
@@ -68,10 +68,10 @@ class BurdenEstimateUploadController(context: ActionContext,
         val source = RequestDataSource.fromContentType(context)
         val stream = source.getContent()
 
-        chunkedFileManager.writeChunk(stream, context.contentLength, metadata, resumableChunkNumber)
+        chunkedFileManager.writeChunk(stream, context.contentLength(), metadata, chunkNumber)
 
         //Mark as uploaded
-        metadata.uploadedChunks[resumableChunkNumber] = true
+        metadata.uploadedChunks[chunkNumber] = true
         return okayResponse()
     }
 
@@ -114,20 +114,19 @@ class BurdenEstimateUploadController(context: ActionContext,
 
     private fun getFileMetadata(): ChunkedFile
     {
-        val totalChunks = context.queryParams("resumableTotalChunks")?.toInt()
-        val totalSize = context.queryParams("resumableTotalSize")?.toLong()
-        val chunkSize = context.queryParams("resumableChunkSize")?.toLong()
-        val uploadToken = context.queryParams("resumableIdentifier")
-        val filename = context.queryParams("resumableFilename")
+        val totalChunks = context.queryParams("totalChunks")?.toInt()
+                ?: throw BadRequest("Missing required query parameter: totalChunks.")
+        val totalSize = context.queryParams("totalSize")?.toLong()
+                ?: throw BadRequest("Missing required query parameter: totalSize.")
+        val chunkSize = context.queryParams("chunkSize")?.toLong()
+                ?: throw BadRequest("Missing required query parameter: chunkSize.")
+        val filename = context.queryParams("fileName")
+                ?: throw BadRequest("Missing required query parameter: fileName.")
 
-        if (totalChunks == null || totalSize == null || chunkSize == null ||
-                uploadToken.isNullOrEmpty() || filename.isNullOrEmpty())
-        {
-            throw BadRequest("You must include all resumablejs query parameters")
-        }
+        val uploadToken = context.params(":token")
 
         // Note expired tokens will throw an error during verification
-        val claims = tokenHelper.verify(uploadToken!!, TokenType.UPLOAD)
+        val claims = tokenHelper.verify(uploadToken, TokenType.UPLOAD)
 
         if (claims["sub"] != context.username!!)
         {
@@ -137,11 +136,12 @@ class BurdenEstimateUploadController(context: ActionContext,
         val uniqueIdentifier = claims["uid"].toString()
         val cachedMetadata = chunkedFileCache[uniqueIdentifier]
         val providedMetadata = ChunkedFile(totalChunks = totalChunks, chunkSize = chunkSize,
-                totalSize = totalSize, uniqueIdentifier = uniqueIdentifier, originalFileName = filename!!)
+                totalSize = totalSize, uniqueIdentifier = uniqueIdentifier, originalFileName = filename)
 
         return if (cachedMetadata != null)
         {
-            if (cachedMetadata != providedMetadata){
+            if (cachedMetadata != providedMetadata)
+            {
                 throw BadRequest("The given token has already been used to upload a different file." +
                         " Please request a fresh upload token.")
             }

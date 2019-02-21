@@ -23,7 +23,6 @@ import org.vaccineimpact.api.security.TokenType
 import org.vaccineimpact.api.security.TokenValidationException
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.tests.mocks.mockCSVPostData
-import java.io.File
 
 class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
 {
@@ -168,7 +167,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
     }
 
     @Test
-    fun `uploading file requires resumable query params`()
+    fun `uploading file requires chunkNumber query parameter`()
     {
         val mockContext = mockActionContext(user = "user.name")
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
@@ -177,15 +176,85 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
 
         assertThatThrownBy { sut.uploadBurdenEstimateFile() }
                 .isInstanceOf(BadRequest::class.java)
-                .hasMessageContaining("Missing required query parameter: resumableChunkNumber")
+                .hasMessageContaining("Missing required query parameter: chunkNumber")
+    }
 
+    @Test
+    fun `uploading file requires totalChunks query parameter`()
+    {
+        val mockContext = mock<ActionContext> {
+            on { queryParams("chunkNumber") } doReturn "1"
+        }
+
+        val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
+        val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(),
+                mock(), fakeCache)
+
+        assertThatThrownBy { sut.uploadBurdenEstimateFile() }
+                .isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining("Missing required query parameter: totalChunks")
+    }
+
+    @Test
+    fun `uploading file requires totalSize query parameter`()
+    {
+        val mockContext = mock<ActionContext> {
+            on { queryParams("chunkNumber") } doReturn "1"
+            on { queryParams("totalChunks") } doReturn "1"
+        }
+
+        val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
+        val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(),
+                mock(), fakeCache)
+
+        assertThatThrownBy { sut.uploadBurdenEstimateFile() }
+                .isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining("Missing required query parameter: totalSize")
+    }
+
+    @Test
+    fun `uploading file requires chunkSize query parameter`()
+    {
+        val mockContext = mock<ActionContext> {
+            on { queryParams("chunkNumber") } doReturn "1"
+            on { queryParams("totalChunks") } doReturn "1"
+            on { queryParams("totalSize") } doReturn "1"
+        }
+
+        val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
+        val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(),
+                mock(), fakeCache)
+
+        assertThatThrownBy { sut.uploadBurdenEstimateFile() }
+                .isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining("Missing required query parameter: chunkSize")
+    }
+
+
+    @Test
+    fun `uploading file requires fileName query parameter`()
+    {
+        val mockContext = mock<ActionContext> {
+            on { queryParams("chunkNumber") } doReturn "1"
+            on { queryParams("totalChunks") } doReturn "1"
+            on { queryParams("totalSize") } doReturn "1"
+            on { queryParams("chunkSize") } doReturn "1"
+        }
+
+        val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
+        val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(),
+                mock(), fakeCache)
+
+        assertThatThrownBy { sut.uploadBurdenEstimateFile() }
+                .isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining("Missing required query parameter: fileName")
     }
 
     @Test
     fun `uploading file requires token username to match the current username`()
     {
         val mockContext = mockResumableUploadActionContext("uid", fileName = "file.csv", user = "wrong.name")
-        val mockTokenHelper = getMockTokenHelper("user.name", "uid", "file.csv")
+        val mockTokenHelper = getMockTokenHelper("user.name", "uid")
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
         val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(), mockTokenHelper, fakeCache)
 
@@ -199,7 +268,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
     fun `uploading file fails when cached metadata does not match provided metadata`()
     {
         val mockContext = mockResumableUploadActionContext("uid", "wrong.file", "user.name")
-        val mockTokenHelper = getMockTokenHelper("user.name", "uid", "file.csv")
+        val mockTokenHelper = getMockTokenHelper("user.name", "uid")
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
         val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(),
                 mockTokenHelper, fakeCache)
@@ -215,7 +284,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
     fun `uploading file succeeds when cached and provided metadata match`()
     {
         val mockContext = mockResumableUploadActionContext("uid")
-        val mockTokenHelper = getMockTokenHelper("user.name", "uid", "file.csv")
+        val mockTokenHelper = getMockTokenHelper("user.name", "uid")
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = false)
         val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(),
                 mockTokenHelper, fakeCache, mock())
@@ -223,7 +292,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         sut.uploadBurdenEstimateFile()
     }
 
-    private fun getMockTokenHelper(username: String, uid: String, filename: String = "filename.csv"): WebTokenHelper
+    private fun getMockTokenHelper(username: String, uid: String): WebTokenHelper
     {
         return mock {
             on { verify(any(), eq(TokenType.UPLOAD)) } doReturn
@@ -277,20 +346,21 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         }
     }
 
-    private fun mockResumableUploadActionContext(uniqueIdentifier: String,
+    private fun mockResumableUploadActionContext(uploadToken: String,
                                                  fileName: String = "filename.csv",
                                                  user: String = "user.name"): ActionContext
     {
         return mock {
             on { username } doReturn user
             on { contentType() } doReturn "text/csv"
-            on { contentLength } doReturn 1000
-            on { queryParams("resumableTotalChunks") } doReturn "1"
-            on { queryParams("resumableTotalSize") } doReturn "1000"
-            on { queryParams("resumableChunkSize") } doReturn "100"
-            on { queryParams("resumableChunkNumber") } doReturn "1"
-            on { queryParams("resumableIdentifier") } doReturn uniqueIdentifier
-            on { queryParams("resumableFilename") } doReturn fileName
+            on { contentLength() } doReturn 1000
+            on { getInputStream() } doReturn "TEST".byteInputStream()
+            on { params(":token") } doReturn uploadToken
+            on { queryParams("totalChunks") } doReturn "1"
+            on { queryParams("totalSize") } doReturn "1000"
+            on { queryParams("chunkSize") } doReturn "100"
+            on { queryParams("chunkNumber") } doReturn "1"
+            on { queryParams("fileName") } doReturn fileName
         }
     }
 

@@ -268,12 +268,11 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
         val uploadToken = getUploadToken("$setUrl$setId", token)
 
-        val queryParams = mapOf("resumableChunkNumber" to 1,
-                "resumableTotalSize" to size,
-                "resumableChunkSize" to size,
-                "resumableIdentifier" to uploadToken,
-                "resumableFilename" to  fileName,
-                "resumableTotalChunks" to 1)
+        val queryParams = mapOf("chunkNumber" to 1,
+                "totalSize" to size,
+                "chunkSize" to size,
+                "fileName" to  fileName,
+                "totalChunks" to 1)
                 .map { "${it.key}=${it.value}" }
                 .joinToString("&")
 
@@ -316,12 +315,11 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         var response = sendChunk(setId, 1, csvData, 1, uploadToken, token)
         JSONValidator().validateSuccess(response.text)
 
-        val newMetadata = mapOf("resumableChunkNumber" to 1,
-                "resumableTotalSize" to size,
-                "resumableChunkSize" to 1,
-                "resumableIdentifier" to uploadToken,
-                "resumableFilename" to  fileName,
-                "resumableTotalChunks" to 1)
+        val newMetadata = mapOf("chunkNumber" to 1,
+                "totalSize" to size,
+                "chunkSize" to 1,
+                "fileName" to  fileName,
+                "totalChunks" to 1)
                 .map { "${it.key}=${it.value}" }
                 .joinToString("&")
 
@@ -343,16 +341,15 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
                           uploadToken: String,
                           token: TokenLiteral): Response
     {
-        val queryParams = mapOf("resumableChunkNumber" to number,
-                "resumableChunkSize" to 100,
-                "resumableTotalSize" to 1000,
-                "resumableIdentifier" to uploadToken,
-                "resumableFilename" to "test.csv",
-                "resumableTotalChunks" to total)
+        val queryParams = mapOf("chunkNumber" to number,
+                "chunkSize" to 100,
+                "totalSize" to 1000,
+                "fileName" to "test.csv",
+                "totalChunks" to total)
                 .map { "${it.key}=${it.value}" }
                 .joinToString("&")
 
-        val response = RequestHelper().postFile("$setUrl$setId/actions/upload/$token/?$queryParams", chunk, token = token)
+        val response = RequestHelper().postFile("$setUrl$setId/actions/upload/$uploadToken/?$queryParams", chunk, token = token)
         JSONValidator().validateSuccess(response.text)
         return response
     }

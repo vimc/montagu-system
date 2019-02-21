@@ -34,7 +34,7 @@ class DirectActionContext(private val context: SparkWebContext) : ActionContext
             : this(SparkWebContext(request, response))
 
     override fun contentType(): String = request.contentType()
-    override val contentLength = request.raw().contentLength
+    override fun contentLength() = request.raw().contentLength
     override fun queryParams(key: String): String? = request.queryParams(key)
     override fun queryString(): String? = request.queryString()
     override fun params(): Map<String, String> = request.params()
