@@ -13,7 +13,7 @@ interface ModellingGroupsProps {
     groups: ModellingGroup[]
 }
 
-export const ModellingGroupsListContentComponent: React.SFC<ModellingGroupsProps> = (props: ModellingGroupsProps) => {
+export const ModellingGroupsListContentComponent: React.FunctionComponent<ModellingGroupsProps> = (props: ModellingGroupsProps) => {
     if (props && isNonEmptyArray(props.groups)) {
         return <ul>
             {props.groups.map(g => <li key={g.id}><ModellingGroupListItem {...g} /></li>)}

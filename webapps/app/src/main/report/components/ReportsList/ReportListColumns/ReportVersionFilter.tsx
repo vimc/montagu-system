@@ -13,7 +13,7 @@ export interface VersionFilterValue {
     versionId: string
 }
 
-export const ReportVersionFilter: React.SFC<FilterProps<VersionFilterValue>> = (props: FilterProps<VersionFilterValue>) => {
+export const ReportVersionFilter: React.FunctionComponent<FilterProps<VersionFilterValue>> = (props: FilterProps<VersionFilterValue>) => {
 
     const value = props.filter ? props.filter.value : {
         start: startDate,

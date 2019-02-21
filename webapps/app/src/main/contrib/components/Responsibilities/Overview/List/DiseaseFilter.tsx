@@ -13,7 +13,7 @@ export interface DiseaseFilterProps {
     setCurrentDiseaseId: (diseaseId: string) => void;
 }
 
-export const DiseaseFilterComponent: React.SFC<DiseaseFilterProps> = (props: DiseaseFilterProps) => {
+export const DiseaseFilterComponent: React.FunctionComponent<DiseaseFilterProps> = (props: DiseaseFilterProps) => {
     return <div className="control">
         Filter by disease:&nbsp;
         <OptionSelector

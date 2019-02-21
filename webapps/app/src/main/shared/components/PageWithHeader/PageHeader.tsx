@@ -14,7 +14,7 @@ const defaultProps: Partial<HeaderProps> = {
     logo
 };
 
-const PageHeader: React.SFC<HeaderProps> = (props: HeaderProps) => {
+const PageHeader: React.FunctionComponent<HeaderProps> = (props: HeaderProps) => {
     return <div>
         <header className="header">
             <a href="/">

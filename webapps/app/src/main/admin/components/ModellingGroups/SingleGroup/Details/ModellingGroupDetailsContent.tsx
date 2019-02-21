@@ -14,7 +14,7 @@ interface ModellingGroupDetailsContentProps {
     canManageGroupMembers: boolean;
 }
 
-export const ModellingGroupDetailsContentComponent: React.SFC<ModellingGroupDetailsContentProps> = (props: ModellingGroupDetailsContentProps) => {
+export const ModellingGroupDetailsContentComponent: React.FunctionComponent<ModellingGroupDetailsContentProps> = (props: ModellingGroupDetailsContentProps) => {
     return <div className="col">
         <table className="specialColumn">
             <tbody>

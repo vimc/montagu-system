@@ -19,7 +19,7 @@ export const makeLink = (crumb: Breadcrumb): JSX.Element => {
     }
 };
 
-export const BreadcrumbsComponent: React.SFC<Props> = (props: Props) => {
+export const BreadcrumbsComponent: React.FunctionComponent<Props> = (props: Props) => {
     return (
         <div className="montagu-navbar">
             <div className={"pl-md-1"}></div>
