@@ -27,10 +27,12 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
             on { generateUploadEstimatesToken("username", "group-1", "touchstone-1", "scenario-1", 1, "file.csv") } doReturn "TOKEN"
         }
 
+        val repo = mockEstimatesRepository(mockTouchstones())
         val sut = BurdenEstimateUploadController(mockActionContext(), mock(), mockLogic(),
-                mockEstimatesRepository(mockTouchstones()), mock(),
+                repo, mock(),
                 mockTokenHelper)
         val result = sut.getUploadToken()
+        verify(repo).getBurdenEstimateSet("group-1", "touchstone-1", "scenario-1", 1)
         assertThat(result).isEqualTo("TOKEN")
     }
 
