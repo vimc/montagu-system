@@ -100,7 +100,6 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                 cohortSize ?: 0f,
                 burdenOutcomeValues
         )
-
     }
 
     override fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
