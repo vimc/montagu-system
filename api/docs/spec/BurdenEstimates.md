@@ -138,17 +138,14 @@ single chunk of a file it will be associated with that file and invalid for use 
 Schema: [`Token.schema.json`](../schemas/Token.schema.json)
 
 ### Example
-`eyJhbGciOiUzI1NiJ9.eyJhY2NlciIsInN1YiI6ImFsZXguaGlsbCIsImlzcyI6InIk1PREVMX1JFVklFVyIsIIjoidHJ1ZSJ9.e8pqOx1-EqLitPWom_wtb7ZYjsZhM9EXBymuGZX_FA_Ag2N2b2qvIBv25-7fVP4ui5icFYvKUY1CeoP6f-BU3-EfXSdMxR0wwY-N9-fJJelwAaYUrpB_lB0L5gCOAV-PajVRlHxP-iVAGa9jP-w8evxkOBkO5S1-KJZgdXyLRQzMeB99BH461Ey6w5D7DzAz5JbjWSQszJIZbk_qfzexC3-9XZvqurG3uD832`
+    "eyJhbGciOiUzI1NiJ9.eyJhY2NlciIsInN1YiI6ImFsZXguaGlsbCIsImlzcyI6InIk1PREVMX1JFVklFVyIsIIjoidHJ1ZSJ9.e8pqOx1-EqLitPWom_wtb7ZYjsZhM9EXBymuGZX_FA_Ag2N2b2qvIBv25-7fVP4ui5icFYvKUY1CeoP6f-BU3-EfXSdMxR0wwY-N9-fJJelwAaYUrpB_lB0L5gCOAV-PajVRlHxP-iVAGa9jP-w8evxkOBkO5S1-KJZgdXyLRQzMeB99BH461Ey6w5D7DzAz5JbjWSQszJIZbk_qfzexC3-9XZvqurG3uD832"
     
 Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
 
 ## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/upload/{token}/
 Upload a chunked CSV containing burden estimates, which can then be used to populate the given estimate
-set by making a further POST request to 
-`/modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/populate/` 
-(see below.) The token parameter must be an upload token obtained from a GET request to 
-`/modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/request-upload/` 
-(see above.) Once a token has been used to start uploading a file, it becomes associated with that file and 
+set by making a further POST request to `/actions/populate/` 
+(see below.) The token parameter must be an upload token obtained from a GET request to `/actions/request-upload` (see above.) Once a token has been used to start uploading a file, it becomes associated with that file and 
 cannot be re-used.
 
 ### Query parameters
