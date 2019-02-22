@@ -170,7 +170,8 @@ outcomes in the database.
 Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
 
 ## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/populate/{token}/
-Populates the given burden estimate set from a file previously uploaded using the given upload token.
+Populates the given burden estimate set from a file previously uploaded using the given upload token. It then
+closes the set and marks it as either `complete` if containing all expected rows, or `invalid` if missing rows.
 
 This can only be invoked if:
 
@@ -192,7 +193,7 @@ unchanged. This can only be invoked if:
 Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
 
 ## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/close/
-Marks a burden estimate set as `complete`. This can only be invoked if:
+Marks a burden estimate set as `complete` if containing all expected rows, or `invalid` if missing rows. This can only be invoked if:
 
 * The touchstone is `open`
 * The relevant responsibility set is `incomplete`
