@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.controllers.BurdenEstimates
 
 import org.vaccineimpact.api.app.*
+import org.vaccineimpact.api.app.ChunkedFileManager.Companion.UPLOAD_DIR
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.errors.BadRequest
@@ -16,6 +17,10 @@ import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.TokenType
 import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.serialization.DataTableDeserializer
+import org.vaccineimpact.api.serialization.MontaguSerializer
+import org.vaccineimpact.api.serialization.Serializer
+import java.io.File
 
 class BurdenEstimateUploadController(context: ActionContext,
                                      private val repositories: Repositories,
@@ -24,7 +29,8 @@ class BurdenEstimateUploadController(context: ActionContext,
                                      private val postDataHelper: PostDataHelper = PostDataHelper(),
                                      private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair),
                                      private val chunkedFileCache: Cache<ChunkedFile> = ChunkedFileCache.instance,
-                                     private val chunkedFileManager: ChunkedFileManager = ChunkedFileManager())
+                                     private val chunkedFileManager: ChunkedFileManager = ChunkedFileManager(),
+                                     private val serializer: Serializer = MontaguSerializer.instance)
     : BaseBurdenEstimateController(context, estimatesLogic)
 {
     constructor(context: ActionContext, repos: Repositories)
@@ -73,6 +79,43 @@ class BurdenEstimateUploadController(context: ActionContext,
         //Mark as uploaded
         metadata.uploadedChunks[chunkNumber] = true
         return okayResponse()
+    }
+
+    fun populateBurdenEstimateSetFromLocalFile(): String
+    {
+        val uploadToken = context.params(":token")
+        val path = UploadPath(tokenHelper.verify(uploadToken, TokenType.UPLOAD))
+
+        val file = chunkedFileCache[path.uniqueIdentifier]
+                ?: throw BadRequest("Unrecognised file identifier - has this token already been used?")
+
+        return if (file.uploadFinished())
+        {
+            chunkedFileManager.markFileAsComplete(file)
+
+            // Stream estimates from file
+            val data = DataTableDeserializer.deserialize(File("$UPLOAD_DIR/${file.uniqueIdentifier}").reader(),
+                    BurdenEstimate::class, serializer).map {
+                BurdenEstimateWithRunId(it, runId = null)
+            }
+
+            estimatesLogic.populateBurdenEstimateSet(
+                    path.setId,
+                    path.groupId,
+                    path.touchstoneVersionId,
+                    path.scenarioId,
+                    data
+            )
+
+            chunkedFileCache.remove(file.uniqueIdentifier)
+            estimatesLogic.closeBurdenEstimateSet(path.setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
+
+            okayResponse()
+        }
+        else
+        {
+            throw InvalidOperationError("This file has not been fully uploaded")
+        }
     }
 
     fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestDataSource.fromContentType(context))
@@ -171,6 +214,20 @@ class BurdenEstimateUploadController(context: ActionContext,
                 BurdenEstimateWithRunId(it, runId = null)
             }
         }
+    }
+
+    data class UploadPath(val uniqueIdentifier: String,
+                          val groupId: String,
+                          val touchstoneVersionId: String,
+                          val scenarioId: String,
+                          val setId: Int)
+    {
+        constructor(claims: Map<String, Any>) : this(
+                claims["uid"].toString(),
+                claims["group-id"].toString(),
+                claims["touchstone-id"].toString(),
+                claims["scenario-id"].toString(),
+                claims["set-id"].toString().toInt())
     }
 
 }

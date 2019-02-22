@@ -256,7 +256,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can upload file in 1 chunk`() {
+    fun `can upload file in 1 chunk and then populate set`() {
 
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
@@ -278,10 +278,20 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
 
         val response = RequestHelper().postFile("$setUrl$setId/actions/upload/$uploadToken/?$queryParams", csvData, token = token)
         JSONValidator().validateSuccess(response.text)
+
+        val populateResponse = populateFromFile(setId, 1, uploadToken, token)
+        JSONValidator().validateSuccess(populateResponse.text)
+
+        JooqContext().use { db ->
+            val records = db.dsl.select(BURDEN_ESTIMATE.fieldsAsList())
+                    .from(BURDEN_ESTIMATE)
+                    .fetch()
+            assertThat(records).isNotEmpty
+        }
     }
 
     @Test
-    fun `can upload by multiple chunks`() {
+    fun `can upload file by multiple chunks and then populate set`() {
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it, yearMinInclusive = 1996, yearMaxInclusive = 1999)
         }
@@ -296,6 +306,45 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         {
             val response = sendChunk(setId, i + 1, data[i], numChunks, uploadToken, token)
             JSONValidator().validateSuccess(response.text)
+        }
+
+        val response = populateFromFile(setId, numChunks, uploadToken, token)
+        JSONValidator().validateSuccess(response.text)
+
+        JooqContext().use { db ->
+            val records = db.dsl.select(BURDEN_ESTIMATE.fieldsAsList())
+                    .from(BURDEN_ESTIMATE)
+                    .fetch()
+            assertThat(records).isNotEmpty
+        }
+    }
+
+    @Test
+    fun `can upload file by multiple chunks and get validation error on set population`() {
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it)
+        }
+
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
+        val uploadToken = getUploadToken("$setUrl$setId", token)
+        val chunkSize = 100
+        val data = longCsvData.chunked(chunkSize)
+        val numChunks = data.count()
+
+        for (i in 0 until numChunks)
+        {
+            val response = sendChunk(setId, i + 1, data[i], numChunks, uploadToken, token)
+            JSONValidator().validateSuccess(response.text)
+        }
+
+        val response = populateFromFile(setId, numChunks, uploadToken, token)
+        assertThat(response.text).contains("We are not expecting data for age 50 and year 1998")
+
+        JooqContext().use { db ->
+            val records = db.dsl.select(BURDEN_ESTIMATE.fieldsAsList())
+                    .from(BURDEN_ESTIMATE)
+                    .fetch()
+            assertThat(records).isEmpty()
         }
     }
 
@@ -328,6 +377,27 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
                 "The given token has already been used to upload a different file. Please request a fresh upload token.")
     }
 
+    @Test
+    fun `populating set fails if file is not fully uploaded`()
+    {
+        val setId = JooqContext().use {
+            setUpWithBurdenEstimateSet(it, yearMinInclusive = 1996, yearMaxInclusive = 1999)
+        }
+
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
+        val uploadToken = getUploadToken("$setUrl$setId", token)
+
+        val chunkSize = 100
+        val data = longCsvData.chunked(chunkSize)
+        val numChunks = data.count()
+
+        sendChunk(setId, 1, data[0], numChunks, uploadToken, token)
+
+        val response = populateFromFile(setId, numChunks, uploadToken, token)
+        assertThat(response.text).contains("This file has not been fully uploaded")
+        assertThat(response.statusCode).isEqualTo(400)
+    }
+
     private fun getUploadToken(setUrl: String, token: TokenLiteral) : String {
         val response = RequestHelper().get("$setUrl/actions/request-upload/", token = token)
         val json = com.beust.klaxon.Parser().parse(StringBuilder(response.text)) as com.beust.klaxon.JsonObject
@@ -352,5 +422,13 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val response = RequestHelper().postFile("$setUrl$setId/actions/upload/$uploadToken/?$queryParams", chunk, token = token)
         JSONValidator().validateSuccess(response.text)
         return response
+    }
+
+    private fun populateFromFile(setId: Int,
+                                 total: Int,
+                                 uploadToken: String,
+                                 token: TokenLiteral): Response
+    {
+        return RequestHelper().post("$setUrl$setId/actions/populate/$uploadToken/", token = token)
     }
 }
