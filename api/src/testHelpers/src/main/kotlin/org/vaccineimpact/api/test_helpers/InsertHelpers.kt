@@ -32,7 +32,7 @@ fun JooqContext.addGroup(id: String, description: String = id, current: String? 
 fun JooqContext.addModel(
         id: String,
         groupId: String,
-        diseaseId: String,
+        diseaseId: String?,
         description: String = id,
         citation: String = "Unknown citation",
         isCurrent: Boolean = true,

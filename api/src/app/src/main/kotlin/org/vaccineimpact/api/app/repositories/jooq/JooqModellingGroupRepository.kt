@@ -1,23 +1,15 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.jooq.*
-import org.vaccineimpact.api.app.errors.BadRequest
+import org.jooq.DSLContext
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
-import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fetchInto
 import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.tables.records.ModellingGroupRecord
-import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.serialization.SplitData
 
 class JooqModellingGroupRepository(
         dsl: DSLContext,
@@ -30,7 +22,8 @@ class JooqModellingGroupRepository(
                 .fromJoinPath(MODELLING_GROUP, MODEL)
                 .where(MODELLING_GROUP.ID.eq(groupId))
                 .and(MODEL.IS_CURRENT)
-                .fetchInto(String::class.java)
+                .fetch()
+                .mapNotNull { it.into(String::class.java) }
     }
 
     override fun createModellingGroup(newGroup: ModellingGroupCreation)

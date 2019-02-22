@@ -173,6 +173,20 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
     }
 
     @Test
+    fun `does not get null diseases for modelling group`()
+    {
+        val groupId = "g1"
+        withDatabase {
+            it.addGroup(groupId, "description")
+            it.addModel("m1", groupId, null)
+        }
+
+        withRepo {
+            assertThat(it.getDiseasesForModellingGroup(groupId).any()).isFalse()
+        }
+    }
+
+    @Test
     fun `does not get duplicate diseases`()
     {
         val groupId = "g1"
