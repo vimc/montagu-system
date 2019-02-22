@@ -24,7 +24,7 @@ import org.vaccineimpact.api.security.TokenValidationException
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.tests.mocks.mockCSVPostData
 
-class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
+open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
 {
     @Test
     fun `can get upload token`()
@@ -292,7 +292,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         sut.uploadBurdenEstimateFile()
     }
 
-    private fun getMockTokenHelper(username: String, uid: String): WebTokenHelper
+    protected fun getMockTokenHelper(username: String, uid: String): WebTokenHelper
     {
         return mock {
             on { verify(any(), eq(TokenType.UPLOAD)) } doReturn
@@ -306,7 +306,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         }
     }
 
-    private fun makeFakeCacheWithChunkedFile(uid: String, uploadFinished: Boolean): Cache<ChunkedFile>
+    protected fun makeFakeCacheWithChunkedFile(uid: String, uploadFinished: Boolean): Cache<ChunkedFile>
     {
         val fakeInfo = ChunkedFile(totalChunks = 1, totalSize = 1000, chunkSize = 100,
                 uniqueIdentifier = uid, originalFileName = "filename.csv")
@@ -320,7 +320,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         return cache
     }
 
-    private fun populateAndCheckIfSetIsClosed(keepOpen: String?, expectedClosed: Boolean)
+    protected fun populateAndCheckIfSetIsClosed(keepOpen: String?, expectedClosed: Boolean)
     {
         val timesExpected = if (expectedClosed) times(1) else never()
 
@@ -333,7 +333,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
                 "group-1", "touchstone-1", "scenario-1")
     }
 
-    private fun mockActionContext(user: String = "username", keepOpen: String? = null): ActionContext
+    protected fun mockActionContext(user: String = "username", keepOpen: String? = null): ActionContext
     {
         return mock {
             on { username } doReturn user
@@ -346,7 +346,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         }
     }
 
-    private fun mockResumableUploadActionContext(uploadToken: String,
+    protected fun mockResumableUploadActionContext(uploadToken: String,
                                                  fileName: String = "filename.csv",
                                                  user: String = "user.name"): ActionContext
     {
@@ -364,7 +364,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         }
     }
 
-    private fun <T : Any> verifyLogicIsInvokedToPopulateSet(
+    protected fun <T : Any> verifyLogicIsInvokedToPopulateSet(
             actionContext: ActionContext,
             repo: BurdenEstimateRepository,
             logic: BurdenEstimateLogic,
@@ -390,7 +390,7 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         )
     }
 
-    private val normalCSVData = listOf(
+    protected val normalCSVData = listOf(
             BurdenEstimate("yf", 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
                     "deaths" to 10F,
                     "cases" to 100F
@@ -401,13 +401,13 @@ class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
             ))
     )
 
-    private val normalCSVDataString = """
+    protected val normalCSVDataString = """
 "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases"
    "yf",   2000,    50,     "AFG",  "Afghanistan",         1000,     10,    100
    "yf",   1980,    30,     "AGO",  "Angola",         2000,      20,    73.6
 """
 
-    private fun mockRepositories(repo: BurdenEstimateRepository) = mock<Repositories> {
+    protected fun mockRepositories(repo: BurdenEstimateRepository) = mock<Repositories> {
         on { burdenEstimates } doReturn repo
     }
 
