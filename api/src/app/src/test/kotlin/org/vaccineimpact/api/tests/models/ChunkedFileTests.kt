@@ -35,14 +35,17 @@ class ChunkedFileTests : MontaguTests()
     @Test
     fun `deletes file on cleanup`() {
         val tempFile = File("${ChunkedFileManager.UPLOAD_DIR}/uid.temp")
+        val finalFile = File("${ChunkedFileManager.UPLOAD_DIR}/uid")
         File(ChunkedFileManager.UPLOAD_DIR).mkdir()
         tempFile.createNewFile()
+        finalFile.createNewFile()
 
         val sut = ChunkedFile(totalChunks = 10, totalSize = 1000, chunkSize = 100, uniqueIdentifier = "uid",
                 originalFileName = "file.csv")
 
         sut.cleanUp()
         assertThat(tempFile.exists()).isFalse()
+        assertThat(finalFile.exists()).isFalse()
     }
 
 }

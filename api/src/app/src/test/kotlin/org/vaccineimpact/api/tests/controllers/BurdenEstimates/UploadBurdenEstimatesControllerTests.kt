@@ -1,12 +1,14 @@
 package org.vaccineimpact.api.tests.controllers.BurdenEstimates
 
 import com.nhaarman.mockito_kotlin.*
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.util.diff.Chunk
 import org.junit.Test
 import org.mockito.Mockito
 import org.vaccineimpact.api.app.Cache
 import org.vaccineimpact.api.app.ChunkedFileCache
+import org.vaccineimpact.api.app.ChunkedFileManager
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimateUploadController
 import org.vaccineimpact.api.app.errors.BadRequest
@@ -23,6 +25,7 @@ import org.vaccineimpact.api.security.TokenType
 import org.vaccineimpact.api.security.TokenValidationException
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.tests.mocks.mockCSVPostData
+import java.io.InputStream
 
 open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
 {
@@ -286,10 +289,26 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val mockContext = mockResumableUploadActionContext("uid")
         val mockTokenHelper = getMockTokenHelper("user.name", "uid")
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = false)
+
+        var chunkWritten = false
+
+        class MockFileManager: ChunkedFileManager() {
+            override fun writeChunk(inputStream: InputStream,
+                                    contentLength: Int,
+                                    metadata: ChunkedFile,
+                                    currentChunk: Int) {
+                if (metadata == fakeCache["uid"])
+                {
+                    chunkWritten = true
+                }
+            }
+        }
+
         val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(),
-                mockTokenHelper, fakeCache, mock())
+                mockTokenHelper, fakeCache, MockFileManager())
 
         sut.uploadBurdenEstimateFile()
+        assertThat(chunkWritten).isTrue()
     }
 
     protected fun getMockTokenHelper(username: String, uid: String): WebTokenHelper
@@ -409,6 +428,12 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
 
     protected fun mockRepositories(repo: BurdenEstimateRepository) = mock<Repositories> {
         on { burdenEstimates } doReturn repo
+    }
+
+    private val mockStream = mock<InputStream> {
+        on { it.read() } doReturn 1
+        on { it.read(any()) } doReturn 1
+        on { it.read(any(), any(), any()) } doReturn 1
     }
 
 }

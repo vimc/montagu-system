@@ -1,12 +1,13 @@
 package org.vaccineimpact.api.tests
 
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Test
 import org.vaccineimpact.api.app.ChunkedFileManager
 import org.vaccineimpact.api.app.models.ChunkedFile
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.io.File
+import kotlin.concurrent.thread
 
 class ChunkedFileUploadManagerTests : MontaguTests()
 {
@@ -50,11 +51,10 @@ class ChunkedFileUploadManagerTests : MontaguTests()
     {
         val sut = ChunkedFileManager()
 
-        val content = "TEST"
-        val chunked = "TEST".chunked(1)
+        val chunked = csv.chunked(1)
 
         val fakeFile = ChunkedFile(totalChunks = chunked.count(),
-                totalSize = content.toByteArray().count().toLong(),
+                totalSize = csv.toByteArray().count().toLong(),
                 chunkSize = 1,
                 uniqueIdentifier = uid,
                 originalFileName = "file.csv")
@@ -68,7 +68,48 @@ class ChunkedFileUploadManagerTests : MontaguTests()
 
         assertThat(File(tempFileName).exists()).isTrue()
         val result = File(tempFileName).readText()
-        assertThat(result).isEqualTo(content)
-
+        assertThat(result).isEqualTo(csv)
     }
+
+    @Test
+    fun `can write chunks to file asynchronously`()
+    {
+        val sut = ChunkedFileManager()
+
+        val chunked = csv.chunked(1)
+
+        val fakeFile = ChunkedFile(totalChunks = chunked.count(),
+                totalSize = csv.toByteArray().count().toLong(),
+                chunkSize = 1,
+                uniqueIdentifier = uid,
+                originalFileName = "file.csv")
+
+        val threads = mutableListOf<Thread>()
+
+        val randomChunks = (0 until chunked.count()).shuffled()
+        for (i in randomChunks)
+        {
+            threads.add(
+                    thread(start = true) {
+                        val stream = chunked[i].byteInputStream()
+                        val length = chunked[i].length
+                        sut.writeChunk(stream, length, fakeFile, i + 1)
+                    })
+        }
+
+        while (threads.any { it.isAlive })
+        {
+            // just wait for threads to finish
+        }
+
+        assertThat(File(tempFileName).exists()).isTrue()
+        val result = File(tempFileName).readText()
+        assertThat(result).isEqualTo(csv)
+    }
+
+    private val csv = """
+            disease,year,age,country,country_name,cohort_size,deaths,cases
+                 yf,2000, 50,    AFG, Afghanistan,       1000,    50,  100
+                 yf,2001, 50,    AFG, Afghanistan,       1000,  63.5,  120
+        """
 }
