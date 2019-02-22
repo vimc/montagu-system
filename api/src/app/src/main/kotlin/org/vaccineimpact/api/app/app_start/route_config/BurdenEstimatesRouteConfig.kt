@@ -47,6 +47,10 @@ object BurdenEstimatesRouteConfig : RouteConfig
                     .json()
                     .secure(writePermissions),
 
+            Endpoint("$baseUrl/:set-id/actions/upload/:token/", uploadController, "uploadBurdenEstimateFile", method = HttpMethod.post)
+                    .json()
+                    .secure(writePermissions),
+
             Endpoint("$baseUrl/:set-id/", uploadController, "populateBurdenEstimateSet", method = HttpMethod.post)
                     .json()
                     .secure(writePermissions),

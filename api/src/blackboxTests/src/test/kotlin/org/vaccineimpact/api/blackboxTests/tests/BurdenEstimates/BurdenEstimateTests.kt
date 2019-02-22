@@ -38,14 +38,22 @@ abstract class BurdenEstimateTests : DatabaseTest()
         return ReturnedIds(responsibilityId, modelVersionId, setId)
     }
 
-    protected fun setUpWithBurdenEstimateSet(db: JooqContext, setId: Int? = null, status: String = "empty",
-                                             expectedOutcomes: List<String> = listOf(), setType: String = "central-single-run"): Int
+    protected fun setUpWithBurdenEstimateSet(db: JooqContext,
+                                             setId: Int? = null,
+                                             status: String = "empty",
+                                             expectedOutcomes: List<String> = listOf(),
+                                             setType: String = "central-single-run",
+                                             yearMinInclusive: Short = 1996,
+                                             yearMaxInclusive: Short = 1997): Int
     {
         val returnedIds = setUp(db)
         TestUserHelper.setupTestUser()
 
-        db.addExpectations(returnedIds.responsibilityId, yearMinInclusive = 1996, yearMaxInclusive = 1997,
-                ageMaxInclusive = 50, ageMinInclusive = 50, countries = listOf("AFG", "AGO"), outcomes = expectedOutcomes)
+        db.addExpectations(returnedIds.responsibilityId,
+                ageMaxInclusive = 50, ageMinInclusive = 50,
+                yearMinInclusive = yearMinInclusive,
+                yearMaxInclusive = yearMaxInclusive,
+                countries = listOf("AFG", "AGO"), outcomes = expectedOutcomes)
         return db.addBurdenEstimateSet(
                 returnedIds.responsibilityId,
                 returnedIds.modelVersionId,
@@ -121,6 +129,19 @@ abstract class BurdenEstimateTests : DatabaseTest()
    "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
    "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
 """
+
+    val longCsvData = """
+"disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
+   "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
+   "Hib3",   1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
+   "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
+   "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
+   "Hib3",   1998,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
+   "Hib3",   1999,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
+   "Hib3",   1998,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
+   "Hib3",   1999,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
+"""
+
     val duplicateCsvData = """
 "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
    "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA

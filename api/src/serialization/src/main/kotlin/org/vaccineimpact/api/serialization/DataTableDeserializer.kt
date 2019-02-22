@@ -5,6 +5,7 @@ import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.helpers.AllColumnsRequired
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.serialization.validation.ValidationException
+import java.io.InputStream
 import java.io.Reader
 import java.io.StringReader
 import kotlin.reflect.KClass
@@ -178,6 +179,15 @@ open class DataTableDeserializer<out T>(
         ): Sequence<T>
         {
             return getDeserializer(type, serializer).deserialize(body)
+        }
+
+        fun <T : Any> deserialize(
+                body: InputStream,
+                type: KClass<T>,
+                serializer: Serializer = MontaguSerializer.instance
+        ): Sequence<T>
+        {
+            return getDeserializer(type, serializer).deserialize(body.reader())
         }
 
         fun <T : Any> deserialize(

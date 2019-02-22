@@ -19,10 +19,7 @@ import org.vaccineimpact.api.security.CookieName
 import org.vaccineimpact.api.serialization.ModelBinder
 import spark.Request
 import spark.Response
-import java.io.BufferedOutputStream
-import java.io.BufferedReader
-import java.io.OutputStream
-import java.io.Reader
+import java.io.*
 import java.util.zip.GZIPOutputStream
 
 
@@ -37,6 +34,7 @@ class DirectActionContext(private val context: SparkWebContext) : ActionContext
             : this(SparkWebContext(request, response))
 
     override fun contentType(): String = request.contentType()
+    override fun contentLength() = request.raw().contentLength
     override fun queryParams(key: String): String? = request.queryParams(key)
     override fun queryString(): String? = request.queryString()
     override fun params(): Map<String, String> = request.params()
@@ -44,13 +42,13 @@ class DirectActionContext(private val context: SparkWebContext) : ActionContext
     override fun <T : Any> postData(klass: Class<T>): T = ModelBinder().deserialize(request.body(), klass)
 
     // Return one part as a stream
-    override fun getPart(name: String, multipartData: MultipartData): Reader
+    override fun getPart(name: String, multipartData: MultipartData): InputStream
     {
         val parts = getPartsAsSequence(multipartData)
         val matchingPart = parts.firstOrNull { it.fieldName == name }
                 ?: throw MissingRequiredMultipartParameterError(name)
 
-        return matchingPart.openStream().bufferedReader()
+        return matchingPart.openStream()
     }
 
     // Pull all parts into memory and return them as a map
@@ -75,6 +73,7 @@ class DirectActionContext(private val context: SparkWebContext) : ActionContext
     }
 
     override fun requestReader(): BufferedReader = request.raw().inputStream.bufferedReader()
+    override fun getInputStream(): InputStream = request.raw().inputStream
 
     override fun setResponseStatus(status: Int)
     {

@@ -13,6 +13,7 @@ demo/build/*
 demo/out
 lib/
 spec/.idea/*
+src/app/upload_dir/*
 src/*/build/*
 src/*/out/
 src/.gradle
