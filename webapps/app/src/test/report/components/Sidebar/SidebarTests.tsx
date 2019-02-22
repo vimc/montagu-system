@@ -85,7 +85,7 @@ describe("Sidebar", () => {
 
     });
 
-    it("changelog link is enabled", () => {
+    it("changelog link is enabled is user is reviewer", () => {
 
         const rendered = shallow(<SidebarComponent {...defaultTabProps} />);
 
@@ -93,12 +93,12 @@ describe("Sidebar", () => {
 
     });
 
-    it("changelog link is disabled if user is not reviewer", () => {
+    it("changelog link is enabled if user is not reviewer", () => {
         defaultTabProps.isReviewer = false;
 
         const rendered = shallow(<SidebarComponent {...defaultTabProps} />);
 
-        expect(changelogLink(rendered).prop("disabled")).to.be.true;
+        expect(changelogLink(rendered).prop("disabled")).to.be.undefined;
 
     });
 

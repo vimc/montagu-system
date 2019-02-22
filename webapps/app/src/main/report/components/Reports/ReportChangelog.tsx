@@ -2,7 +2,7 @@ import * as React from "react";
 import {connect} from 'react-redux';
 
 import {Changelog} from "../../../shared/models/Generated";
-import {shortTimestamp} from "../../../shared/Helpers";
+import {longTimestamp, shortTimestamp} from "../../../shared/Helpers";
 import {VersionIdentifier} from "../../models/VersionIdentifier";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 import {branch, compose, renderComponent} from "recompose";
@@ -22,12 +22,14 @@ export interface ReportChangelogPublicProps {
 export interface ReportChangelogProps extends ReportChangelogPublicProps {
     versionChangelog: Changelog[];
     fetchChangelog: (props: ReportChangelogPublicProps) => void;
+    isReviewer: boolean;
 }
 
 interface ChangelogRowProps {
     reportName: string,
     version: string,
     changelog: Changelog[]
+    isReviewer: boolean
 }
 
 export const ReportChangelogComponent = (props: ReportChangelogProps) => {
@@ -52,7 +54,7 @@ export const ReportChangelogComponent = (props: ReportChangelogProps) => {
             {map(versionChangelogs,
                 (value: Changelog[], version: string) => {
                     return <ChangelogRow key={version} version={version} reportName={props.report}
-                                         changelog={value}/>
+                                         changelog={value} isReviewer={props.isReviewer} />
                 })
             }
             </tbody>
@@ -71,9 +73,13 @@ export const ChangelogRow = (props: ChangelogRowProps) => {
         </td>
         <td>
             {props.changelog.map((item) => {
-                const badgeType = (item.label == "public") ? "published" : "internal";
-                return [<div className={`badge changelog-label badge-${badgeType}`}>{item.label}</div>,
-                    <div className={"changelog-item " + badgeType}>{item.value}</div>]
+                if (props.isReviewer) {
+                    const badgeType = (item.label == "public") ? "published" : "internal";
+                    return [<div className={`badge changelog-label badge-${badgeType}`}>{item.label}</div>,
+                        <div className={"changelog-item " + badgeType}>{item.value}</div>]
+                } else {
+                    return <div className={"changelog-item no-badge"}>{item.value}</div>
+                }
             })}
         </td>
     </tr>
@@ -82,7 +88,8 @@ export const ChangelogRow = (props: ChangelogRowProps) => {
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportChangelogProps> => {
     return {
-        versionChangelog: state.reports.versionChangelog
+        versionChangelog: state.reports.versionChangelog,
+        isReviewer: state.auth.isReportReviewer
     }
 };
 
