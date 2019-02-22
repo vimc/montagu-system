@@ -322,7 +322,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     @Test
     fun `can upload by multiple chunks and get validation error on population`() {
         val setId = JooqContext().use {
-            setUpWithBurdenEstimateSet(it, yearMinInclusive = 1996, yearMaxInclusive = 1999)
+            setUpWithBurdenEstimateSet(it)
         }
 
         val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
