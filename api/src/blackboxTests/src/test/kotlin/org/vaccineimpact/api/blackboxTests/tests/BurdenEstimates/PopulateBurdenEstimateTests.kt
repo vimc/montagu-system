@@ -256,7 +256,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can upload file in 1 chunk and populate`() {
+    fun `can upload file in 1 chunk and then populate set`() {
 
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
@@ -291,7 +291,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can upload by multiple chunks and then populate`() {
+    fun `can upload file by multiple chunks and then populate set`() {
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it, yearMinInclusive = 1996, yearMaxInclusive = 1999)
         }
@@ -320,7 +320,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can upload by multiple chunks and get validation error on population`() {
+    fun `can upload file by multiple chunks and get validation error on set population`() {
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
         }
