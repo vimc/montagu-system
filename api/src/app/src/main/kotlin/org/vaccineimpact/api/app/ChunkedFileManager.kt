@@ -8,7 +8,7 @@ import java.io.RandomAccessFile
 open class ChunkedFileManager
 {
     // Note: currentChunk is 1-indexed
-    fun writeChunk(inputStream: InputStream, contentLength: Int, metadata: ChunkedFile, currentChunk: Int)
+    open fun writeChunk(inputStream: InputStream, contentLength: Int, metadata: ChunkedFile, currentChunk: Int)
     {
         File(UPLOAD_DIR).mkdir()
         val uploadPath = "$UPLOAD_DIR/${metadata.uniqueIdentifier}.temp"
