@@ -29,6 +29,7 @@ interface ChangelogRowProps {
     reportName: string,
     version: string,
     changelog: Changelog[]
+    isReviewer: boolean
 }
 
 export const ReportChangelogComponent = (props: ReportChangelogProps) => {
@@ -53,7 +54,7 @@ export const ReportChangelogComponent = (props: ReportChangelogProps) => {
             {map(versionChangelogs,
                 (value: Changelog[], version: string) => {
                     return <ChangelogRow key={version} version={version} reportName={props.report}
-                                         changelog={value}/>
+                                         changelog={value} isReviewer={props.isReviewer} />
                 })
             }
             </tbody>
@@ -72,9 +73,13 @@ export const ChangelogRow = (props: ChangelogRowProps) => {
         </td>
         <td>
             {props.changelog.map((item) => {
-                const badgeType = (item.label == "public") ? "published" : "internal";
-                return [<div className={`badge changelog-label badge-${badgeType}`}>{item.label}</div>,
-                    <div className={"changelog-item " + badgeType}>{item.value}</div>]
+                if (props.isReviewer) {
+                    const badgeType = (item.label == "public") ? "published" : "internal";
+                    return [<div className={`badge changelog-label badge-${badgeType}`}>{item.label}</div>,
+                        <div className={"changelog-item " + badgeType}>{item.value}</div>]
+                } else {
+                    return <div className={"changelog-item no-badge"}>{item.value}</div>
+                }
             })}
         </td>
     </tr>

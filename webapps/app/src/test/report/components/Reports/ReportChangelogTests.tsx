@@ -74,10 +74,10 @@ describe("ReportChangelog", () => {
 
     describe("ChangelogRow", () => {
 
-        it("renders changelog items", () => {
+        it("renders changelog items for reviewer", () => {
 
             const rendered = shallow(<ChangelogRow reportName={"name"} version={"20180123-155855-5d5b8238"}
-                                                   changelog={[mockChangelog[0], mockChangelog[1]]}/>);
+                                                   changelog={[mockChangelog[0], mockChangelog[1]]} isReviewer={true}/>);
 
             const cell = rendered.find("tr").find("td").at(1);
             const labels = cell.find(".changelog-label");
@@ -94,10 +94,42 @@ describe("ReportChangelog", () => {
             expect(items.at(1).hasClass("internal")).to.be.true;
         });
 
+        it("renders changelog items for reader", () => {
+
+            const mockPublishedChangelog = [
+                {
+                    report_version: "20180123-155855-5d5b8238",
+                    label: "public",
+                    value: "public v1 test changelog message",
+                    from_file: true
+                },
+                {
+                    report_version: "20180123-155855-5d5b8238",
+                    label: "public",
+                    value: "another public v1 test changelog message",
+                    from_file: true
+                }
+
+            ];
+            const rendered = shallow(<ChangelogRow reportName={"name"} version={"20180123-155855-5d5b8238"}
+                                                   changelog={mockPublishedChangelog} isReviewer={false}/>);
+
+            const cell = rendered.find("tr").find("td").at(1);
+            const labels = cell.find(".changelog-label");
+            const items = cell.find(".changelog-item");
+
+            expect(labels.length).to.eq(0);
+            expect(items.at(0).text()).to.eql("public v1 test changelog message");
+            expect(items.at(0).hasClass("no-badge")).to.be.true;
+
+            expect(items.at(1).text()).to.eql("another public v1 test changelog message");
+            expect(items.at(1).hasClass("no-badge")).to.be.true;
+        });
+
         it("renders link to report versions", () => {
 
             const rendered = shallow(<ChangelogRow reportName={"name"} version={"20180123-155855-5d5b8238"}
-                                                   changelog={[]}/>);
+                                                   changelog={[]} isReviewer={true}/>);
 
             const cell = rendered.find("td").at(0);
             expect(cell.find(InternalLink).childAt(0).text()).to.eql("Jan 23 2018, 15:58");
@@ -118,23 +150,6 @@ describe("ReportChangelog", () => {
         />);
         expect(rendered.find("h3").text()).to.eql("Changelog");
         expect(rendered.find("p").text()).to.eql("There is no Changelog for this Report version.");
-    });
-
-    it("renders changelog for reviewer", () => {
-        const expectedChangelog =[
-            {
-                report_version: "20180123-155855-5d5b8238",
-                label:"public",
-                value:"public test changelog message",
-                from_file: true
-            },
-            {
-                report_version: "20180104-082959-0544c986",
-                label:"internal",
-                value:"internal test changelog message",
-                from_file: false
-            }
-        ];
     });
 
     it("renders one changelog row per version", () => {
@@ -169,67 +184,6 @@ describe("ReportChangelog", () => {
         //Expect changelog to have been fetched twice, once on mount, and once on update
         expect(fetchChangelogStub.calledTwice).to.be.true;
 
-        //Do expect to find label column
-
-        const tableHeaders = rendered.find("th");
-        expect(tableHeaders.at(0).text()).to.eql("Date");
-        expect(tableHeaders.at(1).text()).to.eql("Label");
-        expect(tableHeaders.at(2).text()).to.eql("Text");
-
-        const firstRow = rendered.find("tbody tr").first();
-        const firstRowCells = firstRow.find("td");
-        expect(firstRowCells.at(0).text()).to.eql("Tue Jan 23 2018, 15:58");
-        expect(firstRowCells.at(1).text()).to.eql("public");
-        expect(firstRowCells.at(1).find("span").hasClass("badge-published")).to.eql(true);
-        expect(firstRowCells.at(2).text()).to.eql("public test changelog message");
-
-        const secondRow = rendered.find("tbody tr").at(1);
-        const secondRowCells = secondRow.find("td");
-        expect(secondRowCells.at(0).text()).to.eql("Thu Jan 04 2018, 08:29");
-        expect(secondRowCells.at(1).text()).to.eql("internal");
-        expect(secondRowCells.at(1).find("span").hasClass("badge-internal")).to.eql(true);
-        expect(secondRowCells.at(2).text()).to.eql("internal test changelog message");
-    });
-
-    it("renders changelog for reader", () => {
-        const expectedChangelog =[
-            {
-                report_version: "20180123-155855-5d5b8238",
-                label:"public",
-                value:"public test changelog message",
-                from_file: true
-            },
-            {
-                report_version: "20180104-082959-0544c986",
-                label:"internal",
-                value:"internal test changelog message",
-                from_file: false
-            }
-        ];
-        const rendered = shallow(<ReportChangelogComponent
-            versionChangelog={expectedChangelog}
-            report="reportname"
-            version="v2"
-            fetchChangelog={null}
-            isReviewer={false}
-        />);
-        expect(rendered.find("h3").text()).to.eql("Changelog");
-
-        //Don't expect to find label column
-
-        const tableHeaders = rendered.find("th");
-        expect(tableHeaders.at(0).text()).to.eql("Date");
-        expect(tableHeaders.at(1).text()).to.eql("Text");
-
-        const firstRow = rendered.find("tbody tr").first();
-        const firstRowCells = firstRow.find("td");
-        expect(firstRowCells.at(0).text()).to.eql("Tue Jan 23 2018, 15:58");
-        expect(firstRowCells.at(1).text()).to.eql("public test changelog message");
-
-        const secondRow = rendered.find("tbody tr").at(1);
-        const secondRowCells = secondRow.find("td");
-        expect(secondRowCells.at(0).text()).to.eql("Thu Jan 04 2018, 08:29");
-        expect(secondRowCells.at(1).text()).to.eql("internal test changelog message");
     });
 
     it("does not fetch changelog when updates with non-null current changelog", () => {
