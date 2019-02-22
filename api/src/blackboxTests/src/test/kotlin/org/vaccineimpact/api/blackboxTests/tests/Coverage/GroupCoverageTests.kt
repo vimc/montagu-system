@@ -533,6 +533,62 @@ class GroupCoverageTests : CoverageTests()
                 expectedProblem = ExpectedProblem("unknown-touchstone-version", touchstoneVersionId))
     }
 
+    @Test
+    fun `getting coverage data for nonexistent group with global permissions returns 404`()
+    {
+        JooqContext().use {
+
+            addCoverageData(it, touchstoneStatus = "open")
+            TestUserHelper().setupTestUser(it)
+        }
+
+        val coverageUrl ="/modelling-groups/bad-group-id/responsibilities/$touchstoneVersionId/$scenarioId/coverage/"
+
+        val globalPermissions = PermissionSet("*/can-login", "*/scenarios.read",
+                "*/responsibilities.read", "*/coverage.read")
+
+
+        val response = RequestHelper().get(coverageUrl, globalPermissions, acceptsContentType = "text/csv")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(404)
+    }
+
+    @Test
+    fun `getting coverage data for nonexistent group with group-scoped permission returns 403`()
+    {
+        JooqContext().use {
+
+            addCoverageData(it, touchstoneStatus = "open")
+            TestUserHelper().setupTestUser(it)
+        }
+
+        val coverageUrl ="/modelling-groups/bad-group-id/responsibilities/$touchstoneVersionId/$scenarioId/coverage/"
+
+        val response = RequestHelper().get(coverageUrl, minimumPermissions, acceptsContentType = "text/csv")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(403)
+    }
+
+    @Test
+    fun `getting coverage data for different group with group-scoped permission returns 403`()
+    {
+
+        JooqContext().use {
+
+            addCoverageData(it, touchstoneStatus = "open")
+            TestUserHelper().setupTestUser(it)
+
+            //create a second group which our user does not have access to
+            it.addGroup("group-2", "description")
+        }
+
+        val coverageUrl ="/modelling-groups/group-2/responsibilities/$touchstoneVersionId/$scenarioId/coverage/"
+
+        val response = RequestHelper().get(coverageUrl, minimumPermissions, acceptsContentType = "text/csv")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(403)
+    }
+
     private fun createUnorderedCoverageData(db: JooqContext)
     {
         db.addGroup(groupId, "description")
