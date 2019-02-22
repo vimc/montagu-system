@@ -125,6 +125,65 @@ In a future version of the API, burden estimate sets will always stay in the
 and all clients will have to explicitly mark the set as `complete` via another
 endpoint. Clients should begin following that scheme now.
 
+## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/request-upload/
+Request a signed upload token that will allow uploading of a chunked CSV containing burden estimates and then populating the
+given burden estimate set based on the data included.
+
+This can only be invoked for *central* burden estimate sets, and will return a 400 if a token is requested for a stochastic set.
+
+The token expires after 1 hour and will only be valid for use with one file. After it has been used to upload a
+single chunk of a file it will be associated with that file and invalid for use with any other.
+
+### JSON metadata
+Schema: [`Token.schema.json`](../schemas/Token.schema.json)
+
+### Example
+`eyJhbGciOiUzI1NiJ9.eyJhY2NlciIsInN1YiI6ImFsZXguaGlsbCIsImlzcyI6InIk1PREVMX1JFVklFVyIsIIjoidHJ1ZSJ9.e8pqOx1-EqLitPWom_wtb7ZYjsZhM9EXBymuGZX_FA_Ag2N2b2qvIBv25-7fVP4ui5icFYvKUY1CeoP6f-BU3-EfXSdMxR0wwY-N9-fJJelwAaYUrpB_lB0L5gCOAV-PajVRlHxP-iVAGa9jP-w8evxkOBkO5S1-KJZgdXyLRQzMeB99BH461Ey6w5D7DzAz5JbjWSQszJIZbk_qfzexC3-9XZvqurG3uD832`
+    
+Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
+
+## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/upload/{token}/
+Upload a chunked CSV containing burden estimates, which can then be used to populate the given estimate
+set by making a further POST request to 
+`/modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/populate/` 
+(see below.) The token parameter must be an upload token obtained from a GET request to 
+`/modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/request-upload/` 
+(see above.) Once a token has been used to start uploading a file, it becomes associated with that file and 
+cannot be re-used.
+
+### Query parameters
+Several query parameters are required. The spec for this is based on http://www.resumablejs.com/ 
+* chunkSize: the size of each chunk (the last chunk may be smaller or bigger than the provided size)
+* totalChunks: total number of chunks to be sent
+* totalSize: the total file size
+* chunkNumber: the number of the chunk in this request
+* fileName
+
+The file should be CSV data in the following format. Note that the last four columns are
+based on which outcomes you wish to upload values for. More or fewer columns
+are allowed so long as all the outcome columns correspond to allowed burden
+outcomes in the database.
+
+    "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
+       "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
+       "Hib3",   1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
+       "Hib3",   1996,    50,     "AGO",       "Angola",          5000,     1000,      NA,    5670
+       "Hib3",   1997,    50,     "AGO",       "Angola",          6000,     1200,      NA,    5870
+
+Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
+
+## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/populate/{token}/
+Populates the given burden estimate set from a file previously uploaded using the given upload token.
+
+This can only be invoked if:
+
+* The set status is `empty` or `partial`
+* The touchstone is `open`
+* The relevant responsibility set is `incomplete`
+* The token has been used to upload a file and has not expired.
+
+Required permissions: Scoped to modelling group: `estimates.write`, `responsibilities.read`.
+
 ## POST /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{set-id}/actions/clear/
 Deletes all burden estimates from an burden estimate set, leaving metadata
 unchanged. This can only be invoked if:
