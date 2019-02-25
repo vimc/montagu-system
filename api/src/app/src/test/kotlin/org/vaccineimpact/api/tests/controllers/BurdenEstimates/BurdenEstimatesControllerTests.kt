@@ -33,17 +33,18 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         )
         val touchstoneRepo = mockTouchstoneRepository()
         val repo = mock<BurdenEstimateRepository> {
-            on { getBurdenEstimateSets(any(), any(), any()) } doReturn data
             on { touchstoneRepository } doReturn touchstoneRepo
+        }
+        val logic = mock<BurdenEstimateLogic> {
+            on { getBurdenEstimateSets(any(), any(), any()) } doReturn data
         }
         val context = mock<ActionContext> {
             on { params(":group-id") } doReturn "group-1"
             on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
-        assertThat(BurdenEstimatesController(context, mock(), repo).getBurdenEstimates())
+        assertThat(BurdenEstimatesController(context, logic, repo).getBurdenEstimateSets())
                 .hasSameElementsAs(data.toList())
-        verify(repo).getBurdenEstimateSets("group-1", "touchstone-1", "scenario-1")
     }
 
     @Test

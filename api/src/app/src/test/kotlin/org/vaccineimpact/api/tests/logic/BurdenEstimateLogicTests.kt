@@ -3,25 +3,27 @@ package org.vaccineimpact.api.tests.logic
 import com.nhaarman.mockito_kotlin.*
 import com.opencsv.CSVReader
 import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.mockito.Mockito
-import org.vaccineimpact.api.app.errors.*
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
+import org.vaccineimpact.api.app.errors.MissingRowsError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
-import java.time.Instant
 import java.io.ByteArrayOutputStream
 import java.io.StringReader
+import java.time.Instant
 
 class BurdenEstimateLogicTests : MontaguTests()
 {
@@ -106,7 +108,7 @@ class BurdenEstimateLogicTests : MontaguTests()
                 )))
         val estimateWriter = mockWriter()
         val estimatesRepo = mockEstimatesRepository(estimateWriter)
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), estimatesRepo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), estimatesRepo, mockExpectationsRepository(), mock())
         Assertions.assertThatThrownBy {
             sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data)
         }.isInstanceOf(InconsistentDataError::class.java)
@@ -118,7 +120,7 @@ class BurdenEstimateLogicTests : MontaguTests()
     {
         val writer = mockWriter()
         val repo = mockEstimatesRepository(writer)
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
         sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
 
@@ -129,7 +131,7 @@ class BurdenEstimateLogicTests : MontaguTests()
     fun `set is marked as partial`()
     {
         val repo = mockEstimatesRepository()
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
         sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
         verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)
@@ -139,7 +141,7 @@ class BurdenEstimateLogicTests : MontaguTests()
     fun `gets estimate writer from repo`()
     {
         val repo = mockEstimatesRepository()
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
         sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
         verify(repo).getEstimateWriter(defaultEstimateSet)
@@ -154,10 +156,10 @@ class BurdenEstimateLogicTests : MontaguTests()
                 BurdenEstimateOutcome("YF", 1990, 20, "ABC", "ABC-Name",
                         "deaths", 1f),
                 BurdenEstimateOutcome("YF", 1990, 20, "ABC", "ABC-Name",
-                                        "dalys", 2f),
+                        "dalys", 2f),
 
                 BurdenEstimateOutcome("YF", 1991, 20, "ABC", "ABC-Name",
-                "cohort_size", 101f),
+                        "cohort_size", 101f),
                 BurdenEstimateOutcome("YF", 1991, 20, "ABC", "ABC-Name",
                         "deaths", 3f),
                 BurdenEstimateOutcome("YF", 1991, 20, "ABC", "ABC-Name",
@@ -178,12 +180,12 @@ class BurdenEstimateLogicTests : MontaguTests()
                         "dalys", 8f)
         ).asSequence()
         val repo = mock<BurdenEstimateRepository> {
-            on{ getBurdenEstimateOutcomesSequence(any(), any(), any(), any()) } doReturn testOutcomeData
-            on{ getExpectedOutcomesForBurdenEstimateSet(any())} doReturn listOf("dalys", "deaths")
+            on { getBurdenEstimateOutcomesSequence(any(), any(), any(), any()) } doReturn testOutcomeData
+            on { getExpectedOutcomesForBurdenEstimateSet(any()) } doReturn listOf("dalys", "deaths")
         }
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
-        val result = sut.getBurdenEstimateData(1, groupId,touchstoneVersionId, scenarioId)
+        val result = sut.getBurdenEstimateData(1, groupId, touchstoneVersionId, scenarioId)
 
         //Test data objects
         Assertions.assertThat(result.data.toList().count()).isEqualTo(4)
@@ -238,12 +240,12 @@ class BurdenEstimateLogicTests : MontaguTests()
         ).asSequence()
 
         val repo = mock<BurdenEstimateRepository> {
-            on{ getBurdenEstimateOutcomesSequence(any(), any(), any(), any()) } doReturn testOutcomeData
-            on{ getExpectedOutcomesForBurdenEstimateSet(any())} doReturn listOf("cases", "cases_acute", "dalys", "deaths")
+            on { getBurdenEstimateOutcomesSequence(any(), any(), any(), any()) } doReturn testOutcomeData
+            on { getExpectedOutcomesForBurdenEstimateSet(any()) } doReturn listOf("cases", "cases_acute", "dalys", "deaths")
         }
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
-        val result = sut.getBurdenEstimateData(1, groupId,touchstoneVersionId, scenarioId)
+        val result = sut.getBurdenEstimateData(1, groupId, touchstoneVersionId, scenarioId)
 
         //Test data objects
         Assertions.assertThat(result.data.toList().count()).isEqualTo(4)
@@ -343,7 +345,8 @@ class BurdenEstimateLogicTests : MontaguTests()
     }
 
     @Test
-    fun `can get burden estimate data with missing cohort_size values`(){
+    fun `can get burden estimate data with missing cohort_size values`()
+    {
         val testOutcomeData = listOf(
                 BurdenEstimateOutcome("YF", 2000, 20, "ABC", "ABC-Name",
                         "cases", 40f),
@@ -363,12 +366,12 @@ class BurdenEstimateLogicTests : MontaguTests()
         ).asSequence()
 
         val repo = mock<BurdenEstimateRepository> {
-            on{ getBurdenEstimateOutcomesSequence(any(), any(), any(), any()) } doReturn testOutcomeData
-            on{ getExpectedOutcomesForBurdenEstimateSet(any())} doReturn listOf("cases", "dalys", "deaths")
+            on { getBurdenEstimateOutcomesSequence(any(), any(), any(), any()) } doReturn testOutcomeData
+            on { getExpectedOutcomesForBurdenEstimateSet(any()) } doReturn listOf("cases", "dalys", "deaths")
         }
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
-        val result = sut.getBurdenEstimateData(1, groupId,touchstoneVersionId, scenarioId)
+        val result = sut.getBurdenEstimateData(1, groupId, touchstoneVersionId, scenarioId)
 
         //Test data objects
         Assertions.assertThat(result.data.toList().count()).isEqualTo(2)
@@ -428,7 +431,7 @@ class BurdenEstimateLogicTests : MontaguTests()
 
     }
 
-    private fun assertExpectedBurdenEstimate(estimateObj : BurdenEstimate, expectedDisease: String, expectedYear: Short,
+    private fun assertExpectedBurdenEstimate(estimateObj: BurdenEstimate, expectedDisease: String, expectedYear: Short,
                                              expectedAge: Short, expectedCountry: String, expectedCountryName: String,
                                              expectedCohortSize: Float, expectedOutcomes: Map<String, Float>)
     {
@@ -440,7 +443,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         Assertions.assertThat(estimateObj.cohortSize).isEqualTo(expectedCohortSize)
 
         Assertions.assertThat(estimateObj.outcomes.count()).isEqualTo(expectedOutcomes.count())
-        expectedOutcomes.forEach{(key, value) -> Assertions.assertThat(estimateObj.outcomes[key]).isEqualTo(value)}
+        expectedOutcomes.forEach { (key, value) -> Assertions.assertThat(estimateObj.outcomes[key]).isEqualTo(value) }
     }
 
 
@@ -455,7 +458,7 @@ class BurdenEstimateLogicTests : MontaguTests()
                     ResponsibilityInfo(responsibilityId, disease, "open", setId)
             on { getEstimateWriter(any()) } doReturn writer
         }
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
         sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
         verify(writer).addEstimatesToSet(eq(setId), any(), eq(disease))
@@ -470,7 +473,7 @@ class BurdenEstimateLogicTests : MontaguTests()
             on { getResponsibilityInfo(any(), any(), any()) } doReturn
                     ResponsibilityInfo(responsibilityId, disease, "open", setId)
         }
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
         Assertions.assertThatThrownBy {
             sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
@@ -486,7 +489,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
         val repo = mockEstimatesRepository(writer)
         val groupRepo = mockGroupRepository()
-        val sut = RepositoriesBurdenEstimateLogic(groupRepo, repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(groupRepo, repo, mockExpectationsRepository(), mock())
         sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
         verify(groupRepo).getModellingGroup(groupId)
     }
@@ -497,7 +500,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val writer = mockWriter()
         Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
         val repo = mockEstimatesRepository(writer)
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
         sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
         verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
     }
@@ -508,7 +511,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val writer = mockWriter()
         Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(true)
         val repo = mockEstimatesRepository(writer)
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
         assertThatThrownBy {
             sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
@@ -522,7 +525,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
         val repo = mockEstimatesRepository(writer)
         Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(fakeExpectations.expectedRowHashMap())
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
         assertThatThrownBy {
             sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
@@ -539,7 +542,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
         val repo = mockEstimatesRepository(writer)
         Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(expectations.expectedRowHashMap())
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
         assertThatThrownBy {
             sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
@@ -563,7 +566,7 @@ AFG, age 10, year 2000""")
                     UnknownObjectError(scenarioId, "responsibility")
             on { getEstimateWriter(defaultEstimateSet) } doReturn writer
         }
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
         Assertions.assertThatThrownBy {
             sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
@@ -578,16 +581,45 @@ AFG, age 10, year 2000""")
 
         val repo = mock<BurdenEstimateRepository> {
             on { getBurdenOutcomeIds("test-outcome") } doReturn listOf(1.toShort(), 2)
-            on { getEstimates(any(), any(),any(), any()) } doReturn
+            on { getEstimates(any(), any(), any(), any()) } doReturn
                     BurdenEstimateDataSeries(BurdenEstimateGrouping.AGE, fakeEstimates)
             on { getResponsibilityInfo(any(), any(), any()) } doReturn
                     ResponsibilityInfo(responsibilityId, disease, "open", setId)
         }
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
 
         val result = sut.getEstimates(1, groupId, touchstoneVersionId, scenarioId, "test-outcome")
         assertThat(result.data).containsAllEntriesOf(fakeEstimates)
         verify(repo).getBurdenOutcomeIds("test-outcome")
+    }
+
+    @Test
+    fun `checks that scenario exists when getting burden estimate sets`()
+    {
+        val repo = mock<ScenarioRepository> {
+            on { checkScenarioDescriptionExists("s1") } doThrow UnknownObjectError("TEST", "scenario-description")
+        }
+
+        val sut = RepositoriesBurdenEstimateLogic(mock(), mock(), mock(), repo)
+        assertThatThrownBy {
+            sut.getBurdenEstimateSets("g1", "t1", "s1")
+        }.isInstanceOf(UnknownObjectError::class.java)
+    }
+
+    @Test
+    fun `can get burden estimate sets`()
+    {
+        val fakeEstimateSets = listOf(BurdenEstimateSet(1, Instant.now(), "someone",
+                BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, ""),
+                BurdenEstimateSetStatus.COMPLETE, listOf()))
+
+        val repo = mock<BurdenEstimateRepository> {
+            on { getBurdenEstimateSets("g1", "t1", "s1") } doReturn fakeEstimateSets
+        }
+
+        val sut = RepositoriesBurdenEstimateLogic(mock(), repo, mock(), mock())
+        val result = sut.getBurdenEstimateSets("g1", "t1", "s1")
+        assertThat(result).hasSameElementsAs(fakeEstimateSets)
     }
 
 }

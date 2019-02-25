@@ -23,7 +23,7 @@ object BurdenEstimatesRouteConfig : RouteConfig
 
     override val endpoints = listOf(
             // Get and create sets
-            Endpoint("$baseUrl/", controller, "getBurdenEstimates")
+            Endpoint("$baseUrl/", controller, "getBurdenEstimateSets")
                     .json()
                     .secure(readPermissions),
 

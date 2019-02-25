@@ -6,6 +6,7 @@ import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.app.validateStochastic
@@ -28,14 +29,23 @@ interface BurdenEstimateLogic
                      burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):
             BurdenEstimateDataSeries
 
+    fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
+
     fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
                               scenarioId: String) : FlexibleDataTable<BurdenEstimate>
 }
 
 class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: ModellingGroupRepository,
                                       private val burdenEstimateRepository: BurdenEstimateRepository,
-                                      private val expectationsRepository: ExpectationsRepository) : BurdenEstimateLogic
+                                      private val expectationsRepository: ExpectationsRepository,
+                                      private val scenarioRepository: ScenarioRepository) : BurdenEstimateLogic
 {
+    override fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
+    {
+        scenarioRepository.checkScenarioDescriptionExists(scenarioId)
+        return burdenEstimateRepository.getBurdenEstimateSets(groupId, touchstoneVersionId, scenarioId)
+    }
+
     override fun getEstimates(setId: Int, groupId: String, touchstoneVersionId: String,
                               scenarioId: String,
                               outcome: String,

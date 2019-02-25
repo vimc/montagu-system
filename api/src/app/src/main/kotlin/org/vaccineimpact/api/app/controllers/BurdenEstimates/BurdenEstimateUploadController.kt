@@ -36,7 +36,7 @@ class BurdenEstimateUploadController(context: ActionContext,
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
             repos,
-            RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations),
+            RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario),
             repos.burdenEstimates)
 
     fun getUploadToken(): String
