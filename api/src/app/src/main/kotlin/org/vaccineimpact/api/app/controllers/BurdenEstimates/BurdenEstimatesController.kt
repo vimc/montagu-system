@@ -85,6 +85,8 @@ open class BurdenEstimatesController(
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
         val setId = context.params(":set-id").toInt()
+        val filename = "burden_estimates_${path.groupId}_${path.touchstoneVersionId}_${path.scenarioId}.csv"
+        context.addAttachmentHeader(filename)
         return estimatesLogic.getBurdenEstimateData(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
     }
 

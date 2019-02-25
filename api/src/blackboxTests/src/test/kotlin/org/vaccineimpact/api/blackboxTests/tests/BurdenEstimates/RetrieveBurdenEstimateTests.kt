@@ -109,6 +109,8 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
         val response = RequestHelper().get(estimatesUrl, permissions, acceptsContentType = "text/csv")
 
         Assertions.assertThat(response.headers["Content-Type"]).isEqualTo("text/csv");
+        Assertions.assertThat(response.headers["Content-Disposition"])
+                .isEqualTo("attachment; filename=\"burden_estimates_group-1_touchstone-1_scenario-1.csv\"");
 
         val csv = StringReader(response.text)
                 .use { CSVReader(it).readAll() }
