@@ -114,6 +114,7 @@
     "mock-browser": "^0.92.14",
     "moment": "^2.24.0",
     "pako": "^1.0.8",
+    "prop-types": "^15.7.2",
     "react": "^16.8.2",
     "react-bootstrap-toggle": "^2.2.6",
     "react-day-picker": "^7.2.4",
