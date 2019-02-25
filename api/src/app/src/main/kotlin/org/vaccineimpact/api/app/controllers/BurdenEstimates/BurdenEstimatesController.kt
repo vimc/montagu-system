@@ -21,7 +21,7 @@ open class BurdenEstimatesController(
             RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario),
             repos.burdenEstimates)
 
-    fun getBurdenEstimates(): List<BurdenEstimateSet>
+    fun getBurdenEstimateSets(): List<BurdenEstimateSet>
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
         return estimatesLogic.getBurdenEstimateSets(path.groupId, path.touchstoneVersionId, path.scenarioId)

@@ -10,7 +10,6 @@ import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimatesCont
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import java.time.Instant
@@ -42,7 +41,7 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
             on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
-        assertThat(BurdenEstimatesController(context, mock(), repo).getBurdenEstimates())
+        assertThat(BurdenEstimatesController(context, mock(), repo).getBurdenEstimateSets())
                 .hasSameElementsAs(data.toList())
         verify(repo).getBurdenEstimateSets("group-1", "touchstone-1", "scenario-1")
     }
