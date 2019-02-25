@@ -10,12 +10,7 @@ describe("ArtefactsList", () => {
         const staticGraph = mockArtefact();
         const csv = mockArtefact();
         const fakeArtefactsArray = [
-            {
-                staticgraph: staticGraph
-            },
-            {
-                csv: csv
-            }
+            staticGraph, csv
         ];
 
         const rendered = shallow(<ArtefactsList report="reportname"

@@ -17,7 +17,7 @@ describe("ArtefactItem", () => {
         "file1.txt",
         "subdir/file2.csv"
     ];
-    const artefact = mockArtefact({filenames: filenames, description: "a file"});
+    const artefact = mockArtefact({files: filenames, description: "a file"});
 
     it("renders links", () => {
 

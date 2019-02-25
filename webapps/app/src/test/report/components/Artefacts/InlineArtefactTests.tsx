@@ -7,7 +7,7 @@ import {expect} from "chai";
 describe("InlineArtefact", () => {
     it("ignores CSV file", () => {
         const artefact = mockArtefact({
-            filenames: ["mock.csv"]
+            files: ["mock.csv"]
         });
         const rendered = shallow(<InlineArtefact report="report" version="version" artefact={artefact}/>);
         expect(rendered.html()).to.be.null;
@@ -15,7 +15,7 @@ describe("InlineArtefact", () => {
 
     it("renders iframe for valid file", () => {
         const artefact = mockArtefact({
-            filenames: ["mock.png"]
+            files: ["mock.png"]
         });
         const expectedUrl = "http://localhost:8081/v1/reports/report/versions/version/artefacts/mock.png?inline=true";
         const rendered = shallow(<InlineArtefact report="report" version="version" artefact={artefact}/>);

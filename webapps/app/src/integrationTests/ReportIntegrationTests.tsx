@@ -94,16 +94,11 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
             expect(versionDetails.name).is.equal("other");
             expect(versionDetails.author).is.equal("Dr Serious");
-            expect(versionDetails.comment).is.equal("This is another comment");
             expect(versionDetails.date).to.not.be.empty;
-            expect(versionDetails.displayname).is.equal("another report");
-            expect(versionDetails.hash_script).to.not.be.empty;
+            expect(versionDetails.display_name).is.equal("another report");
             expect(versionDetails.id).to.not.be.empty;
             expect(versionDetails.published).is.equal(false);
-            expect(versionDetails.script).is.equal("script.R");
-            expect(versionDetails.hash_data).to.not.be.null;
-            expect(versionDetails.data).to.not.be.null;
-            expect(versionDetails.parameters).to.not.be.null;
+            expect(versionDetails.data_hashes).to.not.be.null;
             expect(versionDetails.resources).to.be.empty;
             expect(versionDetails.artefacts).to.not.be.null;
         });
@@ -185,7 +180,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
         });
 
         it("downloads artefact", async () => {
-            const artefact = mockArtefact({filenames: ["all.csv", "all.png"], description: "all things"});
+            const artefact = mockArtefact({files: ["all.csv", "all.png"], description: "all things"});
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("multi-artefact");
             const rendered = sandbox.mount(<Provider store={this.store}><ArtefactItem report={"multi-artefact"}
                                                                                       version={versions[0]}
@@ -207,7 +202,7 @@ class ReportIntegrationTests extends IntegrationTestSuite {
             const versions = await (new ReportsService(this.store.dispatch, this.store.getState)).getReportVersions("minimal");
             const versionDetails = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails("minimal", versions[0]);
             const rendered = sandbox.mount(<Provider
-                store={this.store}><DataLinks {...versionDetails.hash_data}/></Provider>);
+                store={this.store}><DataLinks {...versionDetails.data_hashes}/></Provider>);
             const response = await firstDownloadPromise(rendered);
             expect(response.status).to.equal(200)
         });

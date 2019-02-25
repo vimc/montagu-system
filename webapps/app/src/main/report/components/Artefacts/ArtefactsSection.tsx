@@ -1,10 +1,10 @@
 import * as React from "react";
 import {ArtefactsList} from "./ArtefactsList";
-import {Version} from "../../../shared/models/reports/Report";
+import {ReportVersionDetails} from "../../../shared/models/Generated";
 
 interface Props {
     report: string;
-    versionDetails: Version;
+    versionDetails: ReportVersionDetails;
 }
 
 export class ArtefactsSection extends React.Component<Props, undefined> {

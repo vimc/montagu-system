@@ -7,7 +7,7 @@ import {ArtefactFigure, InlineArtefactFigure} from "../../../../main/report/comp
 describe("InlineArtefactFigure", () => {
     it("ignores CSV file", () => {
         const artefact = mockArtefact({
-            filenames: ["mock.csv"]
+            files: ["mock.csv"]
         });
         const rendered = shallow(<InlineArtefactFigure report="report" version="version" artefact={artefact}/>);
         expect(rendered.html()).to.be.null;
@@ -15,7 +15,7 @@ describe("InlineArtefactFigure", () => {
 
     it("renders artefact figure for valid image file", () => {
         const artefact = mockArtefact({
-            filenames: ["mock.png"]
+            files: ["mock.png"]
         });
         const rendered = shallow(<InlineArtefactFigure report="report" version="version" artefact={artefact}/>);
         const figure = rendered.find(ArtefactFigure);

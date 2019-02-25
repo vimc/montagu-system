@@ -42,9 +42,8 @@ describe("ReportDownloads", () => {
     it("renders sub-components", () => {
         const details = mockVersion({
             id: "v1",
-            hash_data: {foo: "bar"},
-            resources: ["a", "b", "c"],
-            parameters: {a: "1", b: "2"}
+            data_hashes: {foo: "bar"},
+            resources: ["a", "b", "c"]
         });
         const rendered = shallow(<ReportDownloadsComponent
             versionDetails={details}
@@ -61,10 +60,6 @@ describe("ReportDownloads", () => {
             resources: ["a", "b", "c"],
             report: "reportname",
             version: "v1"
-        });
-        expect(rendered.find(ParameterList).props()).to.eql({
-            a: "1",
-            b: "2"
         });
 
     });

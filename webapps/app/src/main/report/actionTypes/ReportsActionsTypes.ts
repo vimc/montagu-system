@@ -1,5 +1,4 @@
-import { Changelog, ReportVersion } from "../../shared/models/Generated";
-import {Version} from "../../shared/models/reports/Report";
+import {Changelog, ReportVersion, ReportVersionDetails} from "../../shared/models/Generated";
 import {RunningReportStatus, RunningReportStatusUpdate} from "../models/RunningReportStatus";
 
 export enum ReportTypeKeys {
@@ -48,7 +47,7 @@ export interface ReportVersionsFetched {
 
 export interface ReportVersionDetailssFetched {
     type: ReportTypeKeys.REPORT_VERSION_DETAILS_FETCHED;
-    data: Version;
+    data: ReportVersionDetails;
 }
 
 export interface ReportVersionChangelogReset {

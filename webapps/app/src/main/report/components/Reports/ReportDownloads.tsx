@@ -1,8 +1,6 @@
 import * as React from "react";
 import {connect} from 'react-redux';
 
-import {Version} from "../../../shared/models/reports/Report";
-import {ParameterList} from "../Parameters/ParameterList";
 import {DataLinks} from "../Data/DataLinks";
 import {ResourceLinks} from "../Resources/ResourceLinks";
 import {ArtefactsSection} from "../Artefacts/ArtefactsSection";
@@ -12,9 +10,10 @@ import {FileDownloadButton} from "../../../shared/components/FileDownloadLink";
 import {branch, compose, renderComponent} from "recompose";
 import {isNullOrUndefined} from "util";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
+import {ReportVersionDetails} from "../../../shared/models/Generated";
 
 export interface ReportDownloadsProps {
-    versionDetails: Version;
+    versionDetails: ReportVersionDetails;
     report: string;
 }
 
@@ -23,10 +22,9 @@ export const ReportDownloadsComponent: React.FunctionComponent<ReportDownloadsPr
     return <div className={"pl-3 pl-md-0 mb-5"}>
         <ReportTitle versionDetails={props.versionDetails}/>
         <ArtefactsSection report={props.report} versionDetails={props.versionDetails}/>
-        <DataLinks {...props.versionDetails.hash_data} />
+        <DataLinks {...props.versionDetails.data_hashes} />
         <ResourceLinks resources={props.versionDetails.resources} report={props.report}
                        version={props.versionDetails.id}/>
-        <ParameterList {...props.versionDetails.parameters} />
         <div className="mb-5 mt-5">
             <FileDownloadButton href={bundleUrl} service="reporting">
                 {props.report}-{props.versionDetails.id}.zip

@@ -1,7 +1,7 @@
 import * as React from "react";
-import {Artefact} from "../../../shared/models/reports/Artefact";
 import {buildArtefactUrl} from "../../LinkHelpers";
 import {buildURL} from "../../../shared/services/AbstractLocalService";
+import {Artefact} from "../../../shared/models/Generated";
 
 interface Props {
     report: string;

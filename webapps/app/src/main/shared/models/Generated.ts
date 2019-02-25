@@ -78,7 +78,7 @@ export interface ModellingGroup {
 }
 
 export interface ResearchModel {
-    citation: string;
+    citation: string | null;
     description: string;
     id: string;
     modelling_group: string;
@@ -117,18 +117,26 @@ export interface ReportVersion {
     requester: string;
 }
 
+export type ArtefactFormat = "staticgraph" | "interactivegraph" | "data" | "report" | "interactivehtml";
+
+export interface Artefact {
+    description: string;
+    files: string[];
+    format: ArtefactFormat;
+}
+
 export interface ReportVersionDetails {
+    artefacts: Artefact[];
     author: string;
-    comment: string;
+    data_hashes: { [key: string]: string };
     date: string;
     description: string;
     display_name: string | null;
-    hash_script: string | null;
     id: string;
     name: string;
     published: boolean;
     requester: string;
-    script: string | null;
+    resources: string[];
 }
 
 export interface Expectations {

@@ -9,7 +9,7 @@ describe("ReportTitle", () => {
 
     it("renders display name and version id", () => {
 
-        const versionDetails = mockVersion({displayname: "displayname", name: "name", id: "v1"});
+        const versionDetails = mockVersion({display_name: "displayname", name: "name", id: "v1"});
 
         const rendered = shallow(<ReportTitle
             versionDetails={versionDetails}/>);
@@ -21,7 +21,7 @@ describe("ReportTitle", () => {
 
     it("renders name if display name not present", () => {
 
-        const versionDetails = mockVersion({displayname: null, name: "name"});
+        const versionDetails = mockVersion({display_name: null, name: "name"});
 
         const rendered = shallow(<ReportTitle
             versionDetails={versionDetails}/>);

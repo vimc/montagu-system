@@ -1,7 +1,6 @@
 import * as React from "react";
 import {connect} from 'react-redux';
 
-import {Version} from "../../../shared/models/reports/Report";
 import {LoadingElement} from "../../../shared/partials/LoadingElement/LoadingElement";
 import {ReportAppState} from "../../reducers/reportAppReducers";
 
@@ -9,17 +8,16 @@ import {InlineArtefact} from "../Artefacts/InlineArtefact";
 import {ReportTitle} from "./ReportTitle";
 import {branch, compose, renderComponent} from "recompose";
 import {isNullOrUndefined} from "util";
+import {ReportVersionDetails} from "../../../shared/models/Generated";
 
 export interface ReportDetailsProps {
-    versionDetails: Version;
+    versionDetails: ReportVersionDetails;
     report: string;
 }
 
 export const ReportDetailsComponent: React.FunctionComponent<ReportDetailsProps> = (props: ReportDetailsProps) => {
     const version = props.versionDetails.id;
-    const artefactGroup = props.versionDetails.artefacts[0];
-    const type = Object.getOwnPropertyNames(artefactGroup)[0];
-    const artefact = artefactGroup[type];
+    const artefact = props.versionDetails.artefacts[0];
     const report = props.report;
 
     return <div className={"pl-3 pl-md-0"}>
