@@ -153,6 +153,28 @@ class ScenarioTests : RepositoryTests<ScenarioRepository>()
         }
     }
 
+    @Test
+    fun `checkScenarioDescriptionExists throws unknown object error if scenario id does not exist`()
+    {
+        withRepo {
+            assertThatThrownBy {
+                it.checkScenarioDescriptionExists("fake-id")
+            }.isInstanceOf(UnknownObjectError::class.java)
+                    .hasMessageContaining("scenario")
+        }
+    }
+
+    @Test
+    fun `checkScenarioDescriptionExists does not throw error if scenario id does exist`()
+    {
+        withDatabase {
+            it.addScenarioDescription("scenario-1", "routine", "d1", addDisease = true)
+        }
+        withRepo {
+            it.checkScenarioDescriptionExists("scenario-1")
+        }
+    }
+
     private fun setUp(db: JooqContext)
     {
         db.addUserForTesting("model.user")

@@ -607,6 +607,19 @@ AFG, age 10, year 2000""")
     }
 
     @Test
+    fun `checks that scenario exists when getting burden estimate set`()
+    {
+        val repo = mock<ScenarioRepository> {
+            on { checkScenarioDescriptionExists("s1") } doThrow UnknownObjectError("TEST", "scenario-description")
+        }
+
+        val sut = RepositoriesBurdenEstimateLogic(mock(), mock(), mock(), repo)
+        assertThatThrownBy {
+            sut.getBurdenEstimateSet("g1", "t1", "s1", 1)
+        }.isInstanceOf(UnknownObjectError::class.java)
+    }
+
+    @Test
     fun `can get burden estimate sets`()
     {
         val fakeEstimateSets = listOf(BurdenEstimateSet(1, Instant.now(), "someone",

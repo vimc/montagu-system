@@ -31,6 +31,8 @@ interface BurdenEstimateLogic
 
     fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
 
+    fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String, setId: Int): BurdenEstimateSet
+
     fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
                               scenarioId: String) : FlexibleDataTable<BurdenEstimate>
 }
@@ -44,6 +46,12 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
     {
         scenarioRepository.checkScenarioDescriptionExists(scenarioId)
         return burdenEstimateRepository.getBurdenEstimateSets(groupId, touchstoneVersionId, scenarioId)
+    }
+
+    override fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String, setId: Int): BurdenEstimateSet
+    {
+        scenarioRepository.checkScenarioDescriptionExists(scenarioId)
+        return burdenEstimateRepository.getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, setId)
     }
 
     override fun getEstimates(setId: Int, groupId: String, touchstoneVersionId: String,

@@ -47,6 +47,32 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
                 .hasSameElementsAs(data.toList())
     }
 
+
+    @Test
+    fun `can get metadata for single burden estimate set`()
+    {
+        val data = BurdenEstimateSet(1, Instant.MIN, "ThePast",
+                        BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "Median"),
+                        BurdenEstimateSetStatus.COMPLETE,
+                        emptyList()
+                )
+        val touchstoneRepo = mockTouchstoneRepository()
+        val repo = mock<BurdenEstimateRepository> {
+            on { touchstoneRepository } doReturn touchstoneRepo
+        }
+        val logic = mock<BurdenEstimateLogic> {
+            on { getBurdenEstimateSet("group-1", "touchstone-1", "scenario-1", 1) } doReturn data
+        }
+        val context = mock<ActionContext> {
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":touchstone-version-id") } doReturn "touchstone-1"
+            on { params(":scenario-id") } doReturn "scenario-1"
+            on { params(":set-id") } doReturn "1"
+        }
+        assertThat(BurdenEstimatesController(context, logic, repo).getBurdenEstimateSet())
+                .isEqualTo(data)
+    }
+
     @Test
     fun `estimate set is created`()
     {
@@ -104,7 +130,7 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
             on { params(":touchstone-version-id") } doReturn "touchstone-1"
             on { params(":scenario-id") } doReturn "scenario-1"
         }
-        val result = BurdenEstimatesController(mockContext,logic, repo)
+        val result = BurdenEstimatesController(mockContext, logic, repo)
                 .closeBurdenEstimateSet()
         assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
     }
