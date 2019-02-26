@@ -131,7 +131,8 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
             await (new ReportsService(this.store.dispatch, this.store.getState)).publishReport(versionName, versionId);
 
-            const publishedVersion = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails(versionName, versionId);
+            const publishedVersion = await (new ReportsService(this.store.dispatch, this.store.getState))
+                .getVersionDetails(versionName, versionId);
             expect(publishedVersion.published).to.be.true;
 
         });
@@ -145,7 +146,8 @@ class ReportIntegrationTests extends IntegrationTestSuite {
 
             await (new ReportsService(this.store.dispatch, this.store.getState)).unPublishReport(versionName, versionId);
 
-            const unpublishedVersion = await (new ReportsService(this.store.dispatch, this.store.getState)).getVersionDetails(versionName, versionId);
+            const unpublishedVersion = await (new ReportsService(this.store.dispatch, this.store.getState))
+                .getVersionDetails(versionName, versionId);
             expect(unpublishedVersion.published).to.be.false;
 
         });
