@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link } from 'react-router-dom';
 import {Router} from 'react-router';
+import {object} from "prop-types";
 interface InternalLinkProps {
     href: string;
     onClick?: React.EventHandler<React.MouseEvent<HTMLAnchorElement>>;
@@ -23,3 +24,7 @@ const InternalLink : React.FunctionComponent<InternalLinkProps> = (props: Intern
 };
 
 export { InternalLink };
+
+InternalLink.contextTypes = {
+    router: object
+};
