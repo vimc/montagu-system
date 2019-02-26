@@ -31,7 +31,7 @@ open class BurdenEstimatesController(
     {
         val path = getValidResponsibilityPath(context, estimateRepository)
         val burdenEstimateSetId = context.params(":set-id").toInt()
-        return estimateRepository.getBurdenEstimateSet(path.groupId, path.touchstoneVersionId, path.scenarioId, burdenEstimateSetId)
+        return estimatesLogic.getBurdenEstimateSet(path.groupId, path.touchstoneVersionId, path.scenarioId, burdenEstimateSetId)
     }
 
     fun createBurdenEstimateSet(): String
