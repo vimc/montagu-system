@@ -1,12 +1,11 @@
 import * as models from "../../main/shared/models/Generated";
 import {
+    Artefact,
     ExpectationMapping,
-    ModellingGroupCreation,
+    ModellingGroupCreation, ReportVersionDetails,
     TouchstoneVersion
 } from "../../main/shared/models/Generated";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
-import {Version} from "../../main/shared/models/reports/Report";
-import {Artefact} from "../../main/shared/models/reports/Artefact";
 import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageProperties";
 import {ReportRow} from "../../main/report/components/ReportsList/ReportListTable";
 import {BasicVersionDetails} from "../../main/report/components/ReportsList/ReportListColumns/VersionColumn";
@@ -216,18 +215,19 @@ export function mockUser(properties?: any): models.User {
     }, properties);
 }
 
-export function mockVersion(properties?: Partial<Version>): Version {
+export function mockVersion(properties?: Partial<ReportVersionDetails>): ReportVersionDetails {
 
-    const template: Version = {
+    const template: ReportVersionDetails = {
         id: "vId",
         name: "testname",
-        displayname: "testdisplayname",
+        display_name: "testdisplayname",
+        description: "a very nice report",
+        author: "dr author",
+        requester: "ms requester",
         date: "2017-01-01",
-        data: {},
-        hash_data: {},
-        artefacts: [{}],
+        data_hashes: {},
+        artefacts: [mockArtefact()],
         resources: [],
-        parameters: {},
         published: true
     };
     return Object.assign(template, properties);
@@ -236,7 +236,8 @@ export function mockVersion(properties?: Partial<Version>): Version {
 export function mockArtefact(properties?: Partial<Artefact>): Artefact {
 
     const template: Artefact = {
-        filenames: ["filename1.csv", "filename2.html"],
+        format: "report",
+        files: ["filename1.csv", "filename2.html"],
         description: "description"
     };
 

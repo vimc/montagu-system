@@ -4,8 +4,7 @@ import {
     ReportTypeKeys,
     ReportUnpublished
 } from "../actionTypes/ReportsActionsTypes";
-import {Changelog, ReportVersion} from "../../shared/models/Generated";
-import {Version} from "../../shared/models/reports/Report";
+import {Changelog, ReportVersion, ReportVersionDetails} from "../../shared/models/Generated";
 import {RunningReportStatus, RunningReportStatusValues} from "../models/RunningReportStatus";
 import {BasicReport} from "../actionTypes/ReportsActionsTypes";
 
@@ -13,7 +12,7 @@ export interface ReportsState {
     reports: ReportVersion[];
     versions: string[];
     currentReport: string;
-    versionDetails: Version;
+    versionDetails: ReportVersionDetails;
     versionChangelog: Changelog[];
     runningReports: RunningReportStatus[];
 }

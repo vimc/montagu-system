@@ -1,4 +1,5 @@
 import {AbstractLocalService} from "../../shared/services/AbstractLocalService";
+import {ReportVersionDetails} from "../../shared/models/Generated";
 
 export class ReportsService extends AbstractLocalService {
 
@@ -11,7 +12,7 @@ export class ReportsService extends AbstractLocalService {
         return this.get(`/reports/${reportId}/`, "reporting");
     }
 
-    getVersionDetails(reportId: string, versionId: string) {
+    getVersionDetails(reportId: string, versionId: string): Promise<ReportVersionDetails> {
         return this.setOptions({cacheKey: ReportsCacheKeysEnum.versionDetails})
             .get(`/reports/${reportId}/versions/${versionId}/`, "reporting");
     }

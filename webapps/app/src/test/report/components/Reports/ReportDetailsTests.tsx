@@ -43,7 +43,7 @@ describe("ReportDetails", () => {
     it("renders inline artefact", () => {
         const artefact = mockArtefact();
         const rendered = shallow(<ReportDetailsComponent
-            versionDetails={mockVersion({id: "v1", artefacts: [{"a1": artefact}]})}
+            versionDetails={mockVersion({id: "v1", artefacts: [artefact]})}
             report="reportname"
         />);
         expect(rendered.find(InlineArtefact).props()).to.eql({

@@ -9,7 +9,6 @@ import {ReportDownloads} from "./ReportDownloads";
 import {ReportChangelog} from "./ReportChangelog";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageProperties";
 import {reportPageActionCreators} from "../../actionCreators/reportPageActionCreators";
-import {mockModelRunParameterSet} from "../../../../test/mocks/mockModels";
 
 export interface ReportPageLocationProps {
     report: string;

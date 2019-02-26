@@ -1,7 +1,7 @@
 import * as React from "react";
-import {Artefact} from "../../../shared/models/reports/Artefact";
 import {OneTimeLinkContext, OneTimeLinkProps} from "../../../shared/components/OneTimeLinkContext";
 import {buildArtefactUrl} from "../../LinkHelpers";
+import {Artefact} from "../../../shared/models/Generated";
 
 interface Props {
     report: string;
@@ -12,7 +12,7 @@ interface Props {
 export class InlineArtefactFigure extends React.Component<Props, undefined> {
     render(): JSX.Element {
         const {report, version, artefact} = this.props;
-        const filename = artefact.filenames[0];
+        const filename = artefact.files[0];
         const extension = filename.split('.').pop();
 
         if (InlineArtefactFigure.isImage(extension)) {

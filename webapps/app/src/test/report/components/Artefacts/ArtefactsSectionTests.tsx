@@ -9,8 +9,8 @@ describe("ArtefactsSection", () => {
 
     it("renders artefacts list", () => {
         const artefacts = [
-            { a: mockArtefact() },
-            { b: mockArtefact() }
+           mockArtefact(),
+            mockArtefact()
         ];
         const details = mockVersion({
             id: "v10",
