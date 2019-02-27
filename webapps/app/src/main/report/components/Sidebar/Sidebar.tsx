@@ -57,7 +57,7 @@ export const SidebarComponent: React.StatelessComponent<SidebarProps> = (props: 
                              active={props.active == ReportTabEnum.DOWNLOAD}>Downloads</NavLink>
                 </NavItem>
                 <NavItem>
-                    <NavLink href="#changelog" id={"changelog"}>Changelog</NavLink>
+                    <NavLink href="#changelog">Changelog</NavLink>
                 </NavItem>
             </ul>
             <hr/>
