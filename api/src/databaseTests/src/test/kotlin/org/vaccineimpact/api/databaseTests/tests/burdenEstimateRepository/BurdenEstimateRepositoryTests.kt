@@ -18,7 +18,8 @@ import java.time.ZoneOffset
 
 abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRepository>()
 {
-    protected data class ReturnedIds(val modelVersion: Int?, val responsibility: Int, val responsibilitySetId: Int)
+    protected data class ReturnedIds(val modelVersion: Int?, val responsibility: Int, val responsibilitySetId: Int,
+                                     val modelRunParameterSetId: Int? = null)
 
     override fun makeRepository(db: JooqContext): BurdenEstimateRepository
     {
@@ -110,9 +111,9 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
         val responsibilityId = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
         db.addUserForTesting(username)
 
-        db.addModelRunParameterSet(setId, modelVersionId, username)
+        val parameterSetId = db.addModelRunParameterSet(setId, modelVersionId, username)
 
-        return ReturnedIds(modelVersionId, responsibilityId, setId)
+        return ReturnedIds(modelVersionId, responsibilityId, setId, parameterSetId)
     }
 
     protected fun setupDatabaseWithModelRunParameterSetValues(db: JooqContext)
