@@ -10,7 +10,6 @@ import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimatesCont
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstoneVersion
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import java.time.Instant
