@@ -5,7 +5,9 @@ import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.StreamSerializable
 import java.time.Instant
@@ -13,23 +15,27 @@ import java.time.Instant
 open class BurdenEstimatesController(
         context: ActionContext,
         private val estimatesLogic: BurdenEstimateLogic,
-        private val estimateRepository: BurdenEstimateRepository
+        private val estimateRepository: BurdenEstimateRepository,
+        private val groupRepository: ModellingGroupRepository,
+        private val scenarioRepository: ScenarioRepository
 ) : BaseBurdenEstimateController(context, estimatesLogic)
 {
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
             RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario),
-            repos.burdenEstimates)
+            repos.burdenEstimates,
+            repos.modellingGroup,
+            repos.scenario)
 
     fun getBurdenEstimateSets(): List<BurdenEstimateSet>
     {
-        val path = getValidResponsibilityPath(context, estimateRepository)
+        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
         return estimatesLogic.getBurdenEstimateSets(path.groupId, path.touchstoneVersionId, path.scenarioId)
     }
 
     fun getBurdenEstimateSet(): BurdenEstimateSet
     {
-        val path = getValidResponsibilityPath(context, estimateRepository)
+        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
         val burdenEstimateSetId = context.params(":set-id").toInt()
         return estimatesLogic.getBurdenEstimateSet(path.groupId, path.touchstoneVersionId, path.scenarioId, burdenEstimateSetId)
     }
@@ -37,7 +43,7 @@ open class BurdenEstimatesController(
     fun createBurdenEstimateSet(): String
     {
         // First check if we're allowed to see this touchstoneVersion
-        val path = getValidResponsibilityPath(context, estimateRepository)
+        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
         val properties = context.postData<CreateBurdenEstimateSet>()
 
         val id = estimateRepository.createBurdenEstimateSet(path.groupId, path.touchstoneVersionId, path.scenarioId,
@@ -51,7 +57,7 @@ open class BurdenEstimatesController(
 
     fun getEstimatesForOutcome(): BurdenEstimateDataSeries
     {
-        val path = getValidResponsibilityPath(context, estimateRepository)
+        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
         val groupBy = context.queryParams("groupBy")
         val grouping = if (groupBy == "year")
         {
@@ -68,7 +74,7 @@ open class BurdenEstimatesController(
 
     fun clearBurdenEstimateSet(): String
     {
-        val path = getValidResponsibilityPath(context, estimateRepository)
+        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
         val setId = context.params(":set-id").toInt()
         estimateRepository.clearBurdenEstimateSet(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
         return okayResponse()
@@ -76,14 +82,14 @@ open class BurdenEstimatesController(
 
     fun closeBurdenEstimateSet(): Result
     {
-        val path = getValidResponsibilityPath(context, estimateRepository)
+        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
         val setId = context.params(":set-id").toInt()
         return closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
     }
 
     fun getBurdenEstimateSetData(): StreamSerializable<BurdenEstimate>
     {
-        val path = getValidResponsibilityPath(context, estimateRepository)
+        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
         val setId = context.params(":set-id").toInt()
         val filename = "burden_estimates_${path.groupId}_${path.touchstoneVersionId}_${path.scenarioId}.csv"
         context.addAttachmentHeader(filename)

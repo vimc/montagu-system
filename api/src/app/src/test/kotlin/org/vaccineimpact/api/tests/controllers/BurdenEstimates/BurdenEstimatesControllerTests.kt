@@ -10,6 +10,7 @@ import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimatesCont
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstoneVersion
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import java.time.Instant
@@ -39,12 +40,15 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
             on { getBurdenEstimateSets(any(), any(), any()) } doReturn data
         }
         val context = mock<ActionContext> {
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-version-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
+            on { params(":group-id") } doReturn groupId
+            on { params(":touchstone-version-id") } doReturn touchstoneVersionId
+            on { params(":scenario-id") } doReturn scenarioId
         }
-        assertThat(BurdenEstimatesController(context, logic, repo).getBurdenEstimateSets())
+        val groupRepo = mockModellingGroupRepository()
+        val scenarioRepo = mockScenarioRepository()
+        assertThat(BurdenEstimatesController(context, logic, repo, groupRepo, scenarioRepo).getBurdenEstimateSets())
                 .hasSameElementsAs(data.toList())
+        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
     }
 
 
@@ -61,16 +65,19 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
             on { touchstoneRepository } doReturn touchstoneRepo
         }
         val logic = mock<BurdenEstimateLogic> {
-            on { getBurdenEstimateSet("group-1", "touchstone-1", "scenario-1", 1) } doReturn data
+            on { getBurdenEstimateSet(groupId, touchstoneVersionId, "scenario-1", 1) } doReturn data
         }
         val context = mock<ActionContext> {
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-version-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
+            on { params(":group-id") } doReturn groupId
+            on { params(":touchstone-version-id") } doReturn touchstoneVersionId
+            on { params(":scenario-id") } doReturn scenarioId
             on { params(":set-id") } doReturn "1"
         }
-        assertThat(BurdenEstimatesController(context, logic, repo).getBurdenEstimateSet())
+        val groupRepo = mockModellingGroupRepository()
+        val scenarioRepo = mockScenarioRepository()
+        assertThat(BurdenEstimatesController(context, logic, repo, groupRepo, scenarioRepo).getBurdenEstimateSet())
                 .isEqualTo(data)
+        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
     }
 
     @Test
@@ -86,20 +93,23 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         )
         val mockContext = mock<ActionContext> {
             on { username } doReturn "username"
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-version-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
+            on { params(":group-id") } doReturn groupId
+            on { params(":touchstone-version-id") } doReturn touchstoneVersionId
+            on { params(":scenario-id") } doReturn scenarioId
             on { postData<CreateBurdenEstimateSet>() } doReturn properties
         }
-        val url = BurdenEstimatesController(mockContext, mock(), repo).createBurdenEstimateSet()
+        val groupRepo = mockModellingGroupRepository()
+        val scenarioRepo = mockScenarioRepository()
+        val url = BurdenEstimatesController(mockContext, mock(), repo, groupRepo, scenarioRepo).createBurdenEstimateSet()
         val after = Instant.now()
-        assertThat(url).endsWith("/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimate-sets/1/")
-        verify(touchstoneSet).get("touchstone-1")
+        assertThat(url).endsWith("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/estimate-sets/1/")
+        verify(touchstoneSet).get(touchstoneVersionId)
         verify(repo).createBurdenEstimateSet(
-                eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+                eq(groupId), eq(touchstoneVersionId), eq(scenarioId),
                 eq(properties),
                 eq("username"),
                 timestamp = check { it > before && it < after })
+        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
     }
 
     @Test
@@ -109,12 +119,15 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         val repo = mockEstimatesRepository()
         val mockContext = mock<ActionContext> {
             on { params(":set-id") } doReturn "1"
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-version-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
+            on { params(":group-id") } doReturn groupId
+            on { params(":touchstone-version-id") } doReturn touchstoneVersionId
+            on { params(":scenario-id") } doReturn scenarioId
         }
-        BurdenEstimatesController(mockContext, logic, repo).closeBurdenEstimateSet()
-        verify(logic).closeBurdenEstimateSet(1, "group-1", "touchstone-1", "scenario-1")
+        val groupRepo = mockModellingGroupRepository()
+        val scenarioRepo = mockScenarioRepository()
+        BurdenEstimatesController(mockContext, logic, repo, groupRepo, scenarioRepo).closeBurdenEstimateSet()
+        verify(logic).closeBurdenEstimateSet(1, groupId, touchstoneVersionId, scenarioId)
+        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
     }
 
     @Test
@@ -126,13 +139,16 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
                 .doThrow(MissingRowsError("message"))
         val mockContext = mock<ActionContext> {
             on { params(":set-id") } doReturn "1"
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-version-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
+            on { params(":group-id") } doReturn groupId
+            on { params(":touchstone-version-id") } doReturn touchstoneVersionId
+            on { params(":scenario-id") } doReturn scenarioId
         }
-        val result = BurdenEstimatesController(mockContext, logic, repo)
+        val groupRepo = mockModellingGroupRepository()
+        val scenarioRepo = mockScenarioRepository()
+        val result = BurdenEstimatesController(mockContext, logic, repo, groupRepo, scenarioRepo)
                 .closeBurdenEstimateSet()
         assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
+        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
     }
 
     @Test
@@ -160,9 +176,9 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
     fun `gets estimated outcome grouped by age`()
     {
         val context = mock<ActionContext> {
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-version-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
+            on { params(":group-id") } doReturn groupId
+            on { params(":touchstone-version-id") } doReturn touchstoneVersionId
+            on { params(":scenario-id") } doReturn scenarioId
             on { params(":outcome-code") } doReturn "test-outcome"
             on { params(":set-id") } doReturn "1"
         }
@@ -171,21 +187,24 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         val repo = mock<BurdenEstimateRepository> {
             on { touchstoneRepository } doReturn touchstones
         }
-        val sut = BurdenEstimatesController(context, logic, repo)
+        val groupRepo = mockModellingGroupRepository()
+        val scenarioRepo = mockScenarioRepository()
+        val sut = BurdenEstimatesController(context, logic, repo, groupRepo, scenarioRepo)
         sut.getEstimatesForOutcome()
 
-        verify(logic).getEstimates(eq(1), eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+        verify(logic).getEstimates(eq(1), eq(groupId), eq(touchstoneVersionId), eq(scenarioId),
                 eq("test-outcome"),
                 eq(BurdenEstimateGrouping.AGE))
+        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
     }
 
     @Test
     fun `gets estimated outcome grouped by year`()
     {
         val context = mock<ActionContext> {
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-version-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
+            on { params(":group-id") } doReturn groupId
+            on { params(":touchstone-version-id") } doReturn touchstoneVersionId
+            on { params(":scenario-id") } doReturn scenarioId
             on { params(":outcome-code") } doReturn "deaths"
             on { params(":set-id") } doReturn "1"
             on { queryParams("groupBy") } doReturn "year"
@@ -195,12 +214,15 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         val repo = mock<BurdenEstimateRepository> {
             on { touchstoneRepository } doReturn touchstones
         }
-        val sut = BurdenEstimatesController(context, logic, repo)
+        val groupRepo = mockModellingGroupRepository()
+        val scenarioRepo = mockScenarioRepository()
+        val sut = BurdenEstimatesController(context, logic, repo, groupRepo, scenarioRepo)
         sut.getEstimatesForOutcome()
 
-        verify(logic).getEstimates(eq(1), eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
+        verify(logic).getEstimates(eq(1), eq(groupId), eq(touchstoneVersionId), eq(scenarioId),
                 eq("deaths"),
                 eq(BurdenEstimateGrouping.YEAR))
+        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
     }
 
     @Test
@@ -210,12 +232,15 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         val repo = mockEstimatesRepository()
         val mockContext = mock<ActionContext> {
             on { params(":set-id") } doReturn "1"
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-version-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
+            on { params(":group-id") } doReturn groupId
+            on { params(":touchstone-version-id") } doReturn touchstoneVersionId
+            on { params(":scenario-id") } doReturn scenarioId
         }
-        BurdenEstimatesController(mockContext, logic, repo).getBurdenEstimateSetData()
-        verify(logic).getBurdenEstimateData(1, "group-1", "touchstone-1", "scenario-1")
+        val groupRepo = mockModellingGroupRepository()
+        val scenarioRepo = mockScenarioRepository()
+        BurdenEstimatesController(mockContext, logic, repo, groupRepo, scenarioRepo).getBurdenEstimateSetData()
+        verify(logic).getBurdenEstimateData(1, groupId, touchstoneVersionId, scenarioId)
+        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
     }
 
 }

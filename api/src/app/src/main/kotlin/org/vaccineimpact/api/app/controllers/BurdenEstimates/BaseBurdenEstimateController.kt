@@ -8,7 +8,9 @@ import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstoneVersion
 import org.vaccineimpact.api.models.Result
 
@@ -38,11 +40,18 @@ abstract class BaseBurdenEstimateController(context: ActionContext,
     protected fun getValidResponsibilityPath(
             context: ActionContext,
             estimateRepository: BurdenEstimateRepository,
+            groupRepository: ModellingGroupRepository,
+            scenarioRepository: ScenarioRepository,
             readEstimatesRequired: Boolean = false
     ): ResponsibilityPath
     {
         val path = ResponsibilityPath(context)
-        context.checkEstimatePermissionsForTouchstoneVersion(path.groupId, path.touchstoneVersionId, estimateRepository, readEstimatesRequired)
+        //Check that modelling group exists
+        groupRepository.getModellingGroup(path.groupId)
+        //Check that scenario exists
+        scenarioRepository.checkScenarioDescriptionExists(path.scenarioId)
+        context.checkEstimatePermissionsForTouchstoneVersion(path.groupId, path.touchstoneVersionId,
+                estimateRepository, readEstimatesRequired)
         return path
     }
 
