@@ -9,6 +9,8 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.direct.addGroup
+import org.vaccineimpact.api.db.direct.addTouchstoneVersion
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.ModelRun
 
@@ -227,6 +229,61 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
                 work = { repo ->
                     repo.getModelRunParameterSets("wrong-id", touchstoneVersionId)
                 })
+    }
+
+    @Test
+    fun `can check model run parameter set exists`()
+    {
+        var returnedIds: ReturnedIds? = null
+        given { db ->
+            returnedIds = setupDatabaseWithModelRunParameterSet(db)
+        } check { repo ->
+            repo.checkModelRunParameterSetExists(returnedIds!!.modelRunParameterSetId!!, groupId, touchstoneVersionId)
+        }
+    }
+
+    @Test
+    fun `check model run parameter set exists throws error when set does not exist`()
+    {
+        assertUnknownObjectError(setup = {db -> setupDatabase(db)},
+                work = { repo ->
+                    repo.checkModelRunParameterSetExists(99, groupId, touchstoneVersionId)
+                })
+    }
+
+    @Test
+    fun `check model run parameter set exists throws error when set belongs to a different group`()
+    {
+        var returnedIds: ReturnedIds? = null
+        withDatabase { db ->
+            returnedIds = setupDatabaseWithModelRunParameterSet(db)
+            db.addGroup("some other group", "another group" )
+        }
+        withRepo { repo ->
+            val modelRunParameterSetId = returnedIds!!.modelRunParameterSetId!!
+            Assertions.assertThatThrownBy {
+                repo.checkModelRunParameterSetExists(modelRunParameterSetId, "some other group",
+                        touchstoneVersionId)
+            }.isInstanceOf(UnknownObjectError::class.java)
+        }
+    }
+
+    @Test
+    fun `check model run parameter set exists throws error when set belongs to a different touchstone`()
+    {
+
+        var returnedIds: ReturnedIds? = null
+        withDatabase { db ->
+            returnedIds = setupDatabaseWithModelRunParameterSet(db)
+            db.addTouchstoneVersion("touchstone", 2)
+        }
+        withRepo { repo ->
+            val modelRunParameterSetId = returnedIds!!.modelRunParameterSetId!!
+            Assertions.assertThatThrownBy {
+                repo.checkModelRunParameterSetExists(modelRunParameterSetId, groupId,
+                        "touchstone-2")
+            }.isInstanceOf(UnknownObjectError::class.java)
+        }
     }
 
 }

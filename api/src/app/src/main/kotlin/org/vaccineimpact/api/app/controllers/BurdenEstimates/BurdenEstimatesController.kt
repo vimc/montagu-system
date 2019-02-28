@@ -40,6 +40,13 @@ open class BurdenEstimatesController(
         val path = getValidResponsibilityPath(context, estimateRepository)
         val properties = context.postData<CreateBurdenEstimateSet>()
 
+        //Also check if any specified model run parameter set belongs to this group and touchstone
+        if (properties.modelRunParameterSet != null)
+        {
+            estimateRepository.checkModelRunParameterSetExists(properties.modelRunParameterSet!!, path.groupId,
+                    path.touchstoneVersionId)
+        }
+
         val id = estimateRepository.createBurdenEstimateSet(path.groupId, path.touchstoneVersionId, path.scenarioId,
                 properties = properties,
                 uploader = context.username!!,

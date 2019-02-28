@@ -29,6 +29,7 @@ interface BurdenEstimateRepository : Repository
                                 uploader: String, timestamp: Instant): Int
 
     fun getModelRunParameterSets(groupId: String, touchstoneVersionId: String): List<ModelRunParameterSet>
+    fun checkModelRunParameterSetExists(modelRunParameterSetId: Int, groupId: String, touchstoneVersionId: String)
 
     fun getModelRunParameterSet(groupId: String, touchstoneVersionId: String, setId: Int): FlexibleDataTable<ModelRun>
     fun changeBurdenEstimateStatus(setId: Int, newStatus: BurdenEstimateSetStatus)

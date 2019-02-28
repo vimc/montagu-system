@@ -95,6 +95,7 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         val after = Instant.now()
         assertThat(url).endsWith("/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimate-sets/1/")
         verify(touchstoneSet).get("touchstone-1")
+        verify(repo).checkModelRunParameterSetExists(1, "group-1", "touchstone-1")
         verify(repo).createBurdenEstimateSet(
                 eq("group-1"), eq("touchstone-1"), eq("scenario-1"),
                 eq(properties),
