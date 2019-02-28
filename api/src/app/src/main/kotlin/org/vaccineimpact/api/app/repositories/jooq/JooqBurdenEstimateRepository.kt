@@ -140,6 +140,14 @@ class JooqBurdenEstimateRepository(
                 .fetchInto(ModelRunParameterSet::class.java)
     }
 
+    override fun checkModelRunParameterSetExists(modelRunParameterSetId: Int, groupId: String, touchstoneVersionId: String)
+    {
+        //Check that the parameter set exists and belongs to the specified group and touchstone
+        getModelRunParameterSets(groupId, touchstoneVersionId)
+                .filter{ s -> s.id == modelRunParameterSetId }
+                .firstOrNull() ?: throw UnknownObjectError(modelRunParameterSetId, ModelRunParameterSet::class)
+    }
+
     override fun getBurdenEstimateSetForResponsibility(setId: Int, responsibilityId: Int): BurdenEstimateSet
     {
         val table = BURDEN_ESTIMATE_SET

@@ -101,8 +101,11 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         val scenarioRepo = mockScenarioRepository()
         val url = BurdenEstimatesController(mockContext, mock(), repo, groupRepo, scenarioRepo).createBurdenEstimateSet()
         val after = Instant.now()
+
         assertThat(url).endsWith("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/estimate-sets/1/")
         verify(touchstoneSet).get(touchstoneVersionId)
+        verify(repo).checkModelRunParameterSetExists(1, groupId, touchstoneVersionId)
+
         verify(repo).createBurdenEstimateSet(
                 eq(groupId), eq(touchstoneVersionId), eq(scenarioId),
                 eq(properties),
