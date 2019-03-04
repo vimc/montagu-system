@@ -519,6 +519,22 @@ class BurdenEstimateLogicTests : MontaguTests()
     }
 
     @Test
+    fun `cannot close burden estimate set which is already complete`()
+    {
+        val repo = mock<BurdenEstimateRepository> {
+            on { getBurdenEstimateSetForResponsibility(any(), any()) } doReturn defaultEstimateSet
+                    .copy(status = BurdenEstimateSetStatus.COMPLETE)
+            on { getResponsibilityInfo(any(), any(), any()) } doReturn
+                    ResponsibilityInfo(responsibilityId, disease, "open", setId)
+        }
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
+
+        assertThatThrownBy {
+            sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
+        }.isInstanceOf(InvalidOperationError::class.java)
+    }
+
+    @Test
     fun `closing a burden estimate set with missing rows marks it as invalid`()
     {
         val writer = mockWriter()
