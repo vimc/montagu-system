@@ -7,16 +7,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.mockito.Mockito
+import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
-import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.ExpectationsRepository
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.ScenarioRepository
+import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.models.*
@@ -633,6 +631,65 @@ AFG, age 10, year 2000""")
         val sut = RepositoriesBurdenEstimateLogic(mock(), repo, mock(), mock(), mock())
         val result = sut.getBurdenEstimateSets("g1", "t1", "s1")
         assertThat(result).hasSameElementsAs(fakeEstimateSets)
+    }
+
+    @Test
+    fun `can validate Responsibility Path`()
+    {
+        val path = ResponsibilityPath(groupId, touchstoneVersionId, scenarioId)
+
+        val statusList = mutableListOf(TouchstoneStatus.OPEN, TouchstoneStatus.FINISHED)
+
+        val groupRepo = mock<ModellingGroupRepository>()
+
+        val touchstoneVersion = TouchstoneVersion(touchstoneVersionId, "touchstone", 1,
+                "description", TouchstoneStatus.OPEN)
+
+        val mockTouchstoneVersions = mock<SimpleDataSet<TouchstoneVersion, String>>{
+            on {get(touchstoneVersionId)} doReturn touchstoneVersion
+        }
+
+        val scenarioRepo = mock<ScenarioRepository>()
+
+        val touchstoneRepo = mock<TouchstoneRepository>{
+            on {touchstoneVersions} doReturn mockTouchstoneVersions
+        }
+
+        val sut = RepositoriesBurdenEstimateLogic(groupRepo, mock(), mock(), scenarioRepo, touchstoneRepo)
+
+        sut.validateResponsibilityPath(path, statusList)
+
+        verify(groupRepo).getModellingGroup(groupId)
+        verify(touchstoneRepo).touchstoneVersions
+        verify(mockTouchstoneVersions).get(touchstoneVersionId)
+        verify(scenarioRepo).checkScenarioDescriptionExists(scenarioId)
+    }
+
+    @Test
+    fun `throws UnknownObjectError when validating Responsibility Path if touchstone status is not in allowable list`()
+    {
+        val path = ResponsibilityPath(groupId, touchstoneVersionId, scenarioId)
+
+        val statusList = mutableListOf(TouchstoneStatus.OPEN, TouchstoneStatus.FINISHED)
+
+        val touchstoneVersion = TouchstoneVersion(touchstoneVersionId, "touchstone", 1,
+                "description", TouchstoneStatus.IN_PREPARATION)
+
+        val mockTouchstoneVersions = mock<SimpleDataSet<TouchstoneVersion, String>>{
+            on {get(touchstoneVersionId)} doReturn touchstoneVersion
+        }
+
+        val touchstoneRepo = mock<TouchstoneRepository>{
+            on {touchstoneVersions} doReturn mockTouchstoneVersions
+        }
+
+        val sut = RepositoriesBurdenEstimateLogic(mock(), mock(), mock(), mock(), touchstoneRepo)
+
+        assertThatThrownBy {
+            sut.validateResponsibilityPath(path, statusList)
+        }.isInstanceOf(UnknownObjectError::class.java).hasMessageContaining("Unknown touchstone-version with id 'touchstone-1'")
+
+
     }
 
 }
