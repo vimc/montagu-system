@@ -25,19 +25,21 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
     @Test
     fun `can close burden estimate set`()
     {
-        validate(closeUrl, method = HttpMethod.post) withRequestSchema {
-            EmptySchema
-        } given { db ->
-            setUpWithBurdenEstimateSet(db, setId = setId)
+        JooqContext().use { db ->
+            setUpWithBurdenEstimateSet(db, setId = setId, status = "partial")
 
             db.addBurdenEstimate(setId, "AFG", age = 50, year = 1996)
             db.addBurdenEstimate(setId, "AFG", age = 50, year = 1997)
             db.addBurdenEstimate(setId, "AGO", age = 50, year = 1996)
             db.addBurdenEstimate(setId, "AGO", age = 50, year = 1997)
+        }
 
-        } requiringPermissions {
-            requiredWritePermissions
-        } andCheckHasStatus 200..200
+        assertSetHasStatus("partial", setId)
+
+        val response = RequestHelper().post(closeUrl,
+                requiredWritePermissions + "*/can-login")
+
+        JSONValidator().validateSuccess(response.text)
 
         assertSetHasStatus("complete", setId)
     }

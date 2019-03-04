@@ -128,6 +128,13 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         // Check all the IDs match up
         val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
         val set = burdenEstimateRepository.getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
+
+        // Invalid Operation if this set is already closed
+        if (set.status == BurdenEstimateSetStatus.COMPLETE)
+        {
+            throw InvalidOperationError("This burden estimate set has already been closed.")
+        }
+
         if (burdenEstimateRepository.getEstimateWriter(set).isSetEmpty(setId))
         {
             throw InvalidOperationError("This burden estimate set does not have any burden estimate data. " +
