@@ -531,7 +531,7 @@ class BurdenEstimateLogicTests : MontaguTests()
 
         assertThatThrownBy {
             sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        }.isInstanceOf(InvalidOperationError::class.java)
+        }.isInstanceOf(InvalidOperationError::class.java).hasMessageContaining("This burden estimate set has already been closed")
     }
 
     @Test
