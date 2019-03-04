@@ -37,10 +37,11 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val repo = mockEstimatesRepository(mockTouchstones())
         val groupRepo = mockModellingGroupRepository()
         val scenarioRepo = mockScenarioRepository()
+        val logic = mockLogic()
         val context = mockActionContext()
         val sut = BurdenEstimateUploadController(context,
                 mock(),
-                mockLogic(),
+                logic,
                 repo,
                 groupRepo,
                 scenarioRepo,
@@ -49,7 +50,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val result = sut.getUploadToken()
         verify(repo).getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, 1)
         assertThat(result).isEqualTo("TOKEN")
-        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
+        verifyValidResponsibilityPathChecks(logic, context)
     }
 
 
@@ -64,8 +65,10 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 type = BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC)))
         val groupRepo = mockModellingGroupRepository()
         val scenarioRepo = mockScenarioRepository()
-        val sut = BurdenEstimateUploadController(mockActionContext(),
-                mock(), mockLogic(),
+        val context = mockActionContext()
+        val logic = mockLogic()
+        val sut = BurdenEstimateUploadController(context,
+                mock(), logic,
                 repo,
                 groupRepo,
                 scenarioRepo,
@@ -74,7 +77,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         assertThatThrownBy { sut.getUploadToken() }
                 .isInstanceOf(InvalidOperationError::class.java)
                 .hasMessageContaining("Stochastic estimate upload not supported")
-        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
+        verifyValidResponsibilityPathChecks(logic, context)
 
     }
 
@@ -171,7 +174,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 repo, groupRepo, scenarioRepo,
                 postDataHelper = mockPostData).populateBurdenEstimateSet()
         assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
-        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
+        verifyValidResponsibilityPathChecks(logic, mockContext)
     }
 
     @Test
@@ -376,7 +379,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 postDataHelper = mockPostData).populateBurdenEstimateSet()
         verify(logic, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
                 groupId, touchstoneVersionId, scenarioId)
-        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
+        verifyValidResponsibilityPathChecks(logic, mockContext)
     }
 
     protected fun mockActionContext(user: String = "username", keepOpen: String? = null): ActionContext
@@ -431,14 +434,13 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 postDataHelper = postDataHelper)
 
         sut.populateBurdenEstimateSet()
-        verify(touchstoneVersionSet).get(touchstoneVersionId)
         verify(logic).populateBurdenEstimateSet(eq(1),
                 eq(groupId), eq(touchstoneVersionId), eq(scenarioId),
                 argWhere {
                     it.toSet() == expectedData.toSet()
                 }
         )
-        verifyValidResponsibilityPathChecks(repo, groupRepo, scenarioRepo)
+        verifyValidResponsibilityPathChecks(logic, actionContext)
     }
 
     protected val normalCSVData = listOf(

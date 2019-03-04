@@ -1,13 +1,14 @@
 package org.vaccineimpact.api.app.logic
 
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
-import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.ExpectationsRepository
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.ScenarioRepository
+import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
+import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstoneVersion
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.app.validateStochastic
 import org.vaccineimpact.api.models.*
@@ -35,12 +36,15 @@ interface BurdenEstimateLogic
 
     fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
                               scenarioId: String) : FlexibleDataTable<BurdenEstimate>
+
+    fun validateResponsibilityPath(path: ResponsibilityPath, validTouchstoneStatusList: List<TouchstoneStatus>)
 }
 
 class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: ModellingGroupRepository,
                                       private val burdenEstimateRepository: BurdenEstimateRepository,
                                       private val expectationsRepository: ExpectationsRepository,
-                                      private val scenarioRepository: ScenarioRepository) : BurdenEstimateLogic
+                                      private val scenarioRepository: ScenarioRepository,
+                                      private val touchstoneRepository: TouchstoneRepository) : BurdenEstimateLogic
 {
     override fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
     {
@@ -146,6 +150,23 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
             }
             burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
         }
+    }
+
+    override fun validateResponsibilityPath(
+            path:  ResponsibilityPath,
+            validTouchstoneStatusList: List<TouchstoneStatus>
+    )
+    {
+        //Check that modelling group exists
+        modellingGroupRepository.getModellingGroup(path.groupId)
+        //Check touchstone and is accessible for this user
+        val touchstoneVersion = touchstoneRepository.touchstoneVersions.get(path.touchstoneVersionId)
+        if (!validTouchstoneStatusList.contains(touchstoneVersion.status))
+        {
+            throw UnknownObjectError(touchstoneVersion.id, TouchstoneVersion::class)
+        }
+        //Check that scenario exists
+        scenarioRepository.checkScenarioDescriptionExists(path.scenarioId)
     }
 
     private fun missingRows(countryMapEntry: Map.Entry<String, HashMap<Short, HashMap<Short, Boolean>>>): Boolean

@@ -34,6 +34,16 @@ fun List<Touchstone>.filterByPermission(context: ActionContext) = this
 private fun List<TouchstoneVersion>.filterByPermission(context: ActionContext) =
         this.filter { context.isAllowedToSeeTouchstoneVersion(it) }
 
+fun ActionContext.getAllowableTouchstoneStatusList(): List<TouchstoneStatus>
+{
+    val result =  mutableListOf<TouchstoneStatus>(TouchstoneStatus.FINISHED, TouchstoneStatus.OPEN)
+    if (this.hasPermission(ReifiedPermission("touchstones.prepare", Scope.Global())))
+    {
+        result.add(TouchstoneStatus.IN_PREPARATION)
+    }
+    return result
+}
+
 fun ActionContext.checkEstimatePermissionsForTouchstoneVersion(
         groupId: String,
         touchstoneVersionId: String,

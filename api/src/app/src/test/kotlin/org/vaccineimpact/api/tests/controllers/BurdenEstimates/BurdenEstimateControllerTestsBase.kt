@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.tests.controllers.BurdenEstimates
 
 import com.nhaarman.mockito_kotlin.*
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.models.*
@@ -57,14 +58,10 @@ abstract class BurdenEstimateControllerTestsBase: MontaguTests() {
         }
     }
 
-    protected fun verifyValidResponsibilityPathChecks(burdenEstimateRepo: BurdenEstimateRepository,
-                                                      modellingGroupRepo: ModellingGroupRepository,
-                                                      scenarioRepo: ScenarioRepository)
+    protected fun verifyValidResponsibilityPathChecks(burdenEstimatesLogic: BurdenEstimateLogic, context: ActionContext)
     {
-        verify(modellingGroupRepo).getModellingGroup(groupId)
-        verify(scenarioRepo).checkScenarioDescriptionExists(scenarioId)
-        verify(burdenEstimateRepo.touchstoneRepository).touchstoneVersions
-        verify(burdenEstimateRepo.touchstoneRepository.touchstoneVersions).get(touchstoneVersionId)
+        verify(burdenEstimatesLogic).validateResponsibilityPath(any(), any())
+        verify(context).hasPermission(any())
     }
 
     protected val defaultEstimateSet = BurdenEstimateSet(

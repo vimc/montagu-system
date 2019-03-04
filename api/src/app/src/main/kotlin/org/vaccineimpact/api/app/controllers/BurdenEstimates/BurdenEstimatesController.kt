@@ -22,20 +22,21 @@ open class BurdenEstimatesController(
 {
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
-            RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario),
+            RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario,
+                    repos.touchstone),
             repos.burdenEstimates,
             repos.modellingGroup,
             repos.scenario)
 
     fun getBurdenEstimateSets(): List<BurdenEstimateSet>
     {
-        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
+        val path = getValidResponsibilityPath()
         return estimatesLogic.getBurdenEstimateSets(path.groupId, path.touchstoneVersionId, path.scenarioId)
     }
 
     fun getBurdenEstimateSet(): BurdenEstimateSet
     {
-        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
+        val path = getValidResponsibilityPath()
         val burdenEstimateSetId = context.params(":set-id").toInt()
         return estimatesLogic.getBurdenEstimateSet(path.groupId, path.touchstoneVersionId, path.scenarioId, burdenEstimateSetId)
     }
@@ -43,7 +44,7 @@ open class BurdenEstimatesController(
     fun createBurdenEstimateSet(): String
     {
         // First check if we're allowed to see this touchstoneVersion
-        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
+        val path = getValidResponsibilityPath()
         val properties = context.postData<CreateBurdenEstimateSet>()
 
         //Also check if any specified model run parameter set belongs to this group and touchstone
@@ -64,7 +65,7 @@ open class BurdenEstimatesController(
 
     fun getEstimatesForOutcome(): BurdenEstimateDataSeries
     {
-        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
+        val path = getValidResponsibilityPath()
         val groupBy = context.queryParams("groupBy")
         val grouping = if (groupBy == "year")
         {
@@ -81,7 +82,7 @@ open class BurdenEstimatesController(
 
     fun clearBurdenEstimateSet(): String
     {
-        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
+        val path = getValidResponsibilityPath()
         val setId = context.params(":set-id").toInt()
         estimateRepository.clearBurdenEstimateSet(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
         return okayResponse()
@@ -89,14 +90,14 @@ open class BurdenEstimatesController(
 
     fun closeBurdenEstimateSet(): Result
     {
-        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
+        val path = getValidResponsibilityPath()
         val setId = context.params(":set-id").toInt()
         return closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
     }
 
     fun getBurdenEstimateSetData(): StreamSerializable<BurdenEstimate>
     {
-        val path = getValidResponsibilityPath(context, estimateRepository, groupRepository, scenarioRepository)
+        val path = getValidResponsibilityPath()
         val setId = context.params(":set-id").toInt()
         val filename = "burden_estimates_${path.groupId}_${path.touchstoneVersionId}_${path.scenarioId}.csv"
         context.addAttachmentHeader(filename)
