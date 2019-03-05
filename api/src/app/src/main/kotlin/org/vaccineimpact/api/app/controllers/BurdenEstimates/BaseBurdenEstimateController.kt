@@ -8,8 +8,11 @@ import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstoneVersion
+import org.vaccineimpact.api.app.security.getAllowableTouchstoneStatusList
 import org.vaccineimpact.api.models.Result
 
 abstract class BaseBurdenEstimateController(context: ActionContext,
@@ -18,7 +21,8 @@ abstract class BaseBurdenEstimateController(context: ActionContext,
 
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
-            RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario))
+            RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario,
+                                                repos.touchstone))
 
     protected fun closeEstimateSetAndReturnMissingRowError(setId: Int, groupId: String, touchstoneVersionId: String,
                                                            scenarioId: String): Result
@@ -35,15 +39,13 @@ abstract class BaseBurdenEstimateController(context: ActionContext,
         }
     }
 
-    protected fun getValidResponsibilityPath(
-            context: ActionContext,
-            estimateRepository: BurdenEstimateRepository,
-            readEstimatesRequired: Boolean = false
-    ): ResponsibilityPath
+    protected fun getValidResponsibilityPath(): ResponsibilityPath
     {
-        val path = ResponsibilityPath(context)
-        context.checkEstimatePermissionsForTouchstoneVersion(path.groupId, path.touchstoneVersionId, estimateRepository, readEstimatesRequired)
-        return path
+        val result = ResponsibilityPath(context)
+        estimatesLogic.validateResponsibilityPath(
+                result,
+                context.getAllowableTouchstoneStatusList())
+        return result
     }
 
 }

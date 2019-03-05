@@ -13,6 +13,7 @@ import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.tests.AuthenticationTests.Companion.url
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.validateSchema.JSONValidator
 import java.io.StringReader
 
 
@@ -180,24 +181,67 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `getting data for stochastic burden estimate set returns a 400`()
+    fun `getting burden estimate set for non-existent group returns a 404`()
     {
         JooqContext().use {
 
-            setUpWithBurdenEstimateSet(it, setType="stochastic")
+            setUpWithBurdenEstimateSet(it)
         }
 
-        val estimatesUrl ="${setUrl}1/estimates/"
+        val estimatesUrl ="/modelling-groups/NOTAGROUP/responsibilities/$touchstoneVersionId/$scenarioId/estimate-sets/1/"
+        val permissions = PermissionSet(
+                "*/can-login",
+                "*/estimates.read",
+                "*/responsibilities.read"
+        )
+
+        val response = RequestHelper().get(estimatesUrl, permissions)
+
+        Assertions.assertThat(response.statusCode).isEqualTo(404)
+        JSONValidator().validateError(response.text, "unknown-modelling-group")
+    }
+
+    @Test
+    fun `getting burden estimate set for non-existent group returns a 403 where group-scoped permissions`()
+    {
+        JooqContext().use {
+
+            setUpWithBurdenEstimateSet(it)
+        }
+
+        val estimatesUrl ="/modelling-groups/NOTAGROUP/responsibilities/$touchstoneVersionId/$scenarioId/estimate-sets/1/"
         val permissions = PermissionSet(
                 "*/can-login",
                 "$groupScope/estimates.read",
                 "$groupScope/responsibilities.read"
         )
 
-        val response = RequestHelper().get(estimatesUrl, permissions, acceptsContentType = "text/csv")
+        val response = RequestHelper().get(estimatesUrl, permissions)
 
-        Assertions.assertThat(response.statusCode).isEqualTo(400)
+        Assertions.assertThat(response.statusCode).isEqualTo(403)
     }
+
+    @Test
+    fun `getting burden estimate set for non-existent scenario returns a 404`()
+    {
+        JooqContext().use {
+
+            setUpWithBurdenEstimateSet(it)
+        }
+
+        val estimatesUrl ="/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/NOTASCENARIO/estimate-sets/1/"
+        val permissions = PermissionSet(
+                "*/can-login",
+                "*/estimates.read",
+                "*/responsibilities.read"
+        )
+
+        val response = RequestHelper().get(estimatesUrl, permissions)
+
+        Assertions.assertThat(response.statusCode).isEqualTo(404)
+        JSONValidator().validateError(response.text, "unknown-scenario-description")
+    }
+
 
     @Test
     fun `getting nonexistent burden estimate set returns a 404`()
@@ -216,6 +260,49 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
         val response = RequestHelper().get(url, permissions)
 
         Assertions.assertThat(response.statusCode).isEqualTo(404)
+        JSONValidator().validateError(response.text, "unknown-burden-estimate-set")
+    }
+
+    @Test
+    fun `getting burden estimate set data for non-existent scenario returns a 404`()
+    {
+        JooqContext().use {
+
+            setUpWithBurdenEstimateSet(it)
+        }
+
+        val estimatesUrl ="/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/NOTASCENARIO/estimate-sets/1/estimates/"
+        val permissions = PermissionSet(
+                "*/can-login",
+                "*/estimates.read",
+                "*/responsibilities.read"
+        )
+
+        val response = RequestHelper().get(estimatesUrl, permissions, acceptsContentType= "text/csv")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(404)
+        JSONValidator().validateError(response.text, "unknown-scenario-description")
+    }
+
+    @Test
+    fun `getting burden estimate set data for non-existent touchstone returns a 404`()
+    {
+        JooqContext().use {
+
+            setUpWithBurdenEstimateSet(it)
+        }
+
+        val estimatesUrl ="/modelling-groups/$groupId/responsibilities/NOTATOUCHSTONE/$scenarioId/estimate-sets/1/estimates/"
+        val permissions = PermissionSet(
+                "*/can-login",
+                "*/estimates.read",
+                "*/responsibilities.read"
+        )
+
+        val response = RequestHelper().get(estimatesUrl, permissions, acceptsContentType= "text/csv")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(404)
+        JSONValidator().validateError(response.text, "unknown-touchstone-version")
     }
 
     @Test
@@ -232,9 +319,30 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
             setUpWithBurdenEstimateSet(it)
         }
 
-        val response = RequestHelper().get(url, permissions)
+        val response = RequestHelper().get(url, permissions, acceptsContentType = "text/csv")
 
         Assertions.assertThat(response.statusCode).isEqualTo(404)
+        JSONValidator().validateError(response.text, "unknown-burden-estimate-set")
+    }
+
+    @Test
+    fun `getting data for stochastic burden estimate set returns a 400`()
+    {
+        JooqContext().use {
+
+            setUpWithBurdenEstimateSet(it, setType="stochastic")
+        }
+
+        val estimatesUrl ="${setUrl}1/estimates/"
+        val permissions = PermissionSet(
+                "*/can-login",
+                "$groupScope/estimates.read",
+                "$groupScope/responsibilities.read"
+        )
+
+        val response = RequestHelper().get(estimatesUrl, permissions, acceptsContentType = "text/csv")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(400)
     }
 
     @Test

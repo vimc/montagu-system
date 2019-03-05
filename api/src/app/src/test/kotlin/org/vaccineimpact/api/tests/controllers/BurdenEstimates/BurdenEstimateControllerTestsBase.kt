@@ -1,21 +1,21 @@
 package org.vaccineimpact.api.tests.controllers.BurdenEstimates
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doAnswer
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.*
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
-import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.SimpleDataSet
-import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Instant
 
 abstract class BurdenEstimateControllerTestsBase: MontaguTests() {
 
+    protected val groupId = "group-1"
+    protected val touchstoneVersionId = "touchstone-1"
+    protected val scenarioId = "scenario-1"
+
     protected fun mockTouchstones() = mock<SimpleDataSet<TouchstoneVersion, String>> {
-        on { get("touchstone-1") } doReturn TouchstoneVersion("touchstone-1", "touchstone", 1, "Description", TouchstoneStatus.OPEN)
+        on { get(touchstoneVersionId) } doReturn TouchstoneVersion(touchstoneVersionId, "touchstone", 1, "Description", TouchstoneStatus.OPEN)
         on { get("touchstone-bad") } doReturn TouchstoneVersion("touchstone-bad", "touchstone", 1, "not open", TouchstoneStatus.IN_PREPARATION)
     }
 
@@ -46,6 +46,12 @@ abstract class BurdenEstimateControllerTestsBase: MontaguTests() {
                 Unit
             }
         }
+    }
+
+    protected fun verifyValidResponsibilityPathChecks(burdenEstimatesLogic: BurdenEstimateLogic, context: ActionContext)
+    {
+        verify(burdenEstimatesLogic).validateResponsibilityPath(any(), any())
+        verify(context).hasPermission(any())
     }
 
     protected val defaultEstimateSet = BurdenEstimateSet(

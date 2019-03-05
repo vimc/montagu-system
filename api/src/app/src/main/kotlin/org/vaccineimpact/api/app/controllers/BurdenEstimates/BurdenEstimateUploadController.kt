@@ -36,12 +36,13 @@ class BurdenEstimateUploadController(context: ActionContext,
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
             repos,
-            RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario),
+            RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario,
+                    repos.touchstone),
             repos.burdenEstimates)
 
     fun getUploadToken(): String
     {
-        val path = getValidResponsibilityPath(context, estimateRepository)
+        val path = getValidResponsibilityPath()
         val setId = context.params(":set-id").toInt()
 
         // Check that this is a central estimate set
@@ -125,7 +126,7 @@ class BurdenEstimateUploadController(context: ActionContext,
             val estimateRepository = repos.burdenEstimates
 
             // First check if we're allowed to see this touchstoneVersion
-            val path = getValidResponsibilityPath(context, estimateRepository)
+            val path = getValidResponsibilityPath()
 
             // Next, get the metadata that will enable us to interpret the CSV
             val setId = context.params(":set-id").toInt()
