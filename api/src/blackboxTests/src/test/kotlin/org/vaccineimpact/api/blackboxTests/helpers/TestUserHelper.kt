@@ -4,8 +4,10 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.UserHelper
 import org.vaccineimpact.api.security.clearRolesForUser
+import org.vaccineimpact.api.security.ensureUserHasRole
 import org.vaccineimpact.api.security.givePermissionsToUserUsingTestRole
 
 class TestUserHelper(private val password: String = TestUserHelper.defaultPassword)
@@ -22,7 +24,8 @@ class TestUserHelper(private val password: String = TestUserHelper.defaultPasswo
 
     fun getTokenForTestUser(
             permissions: Set<ReifiedPermission> = emptySet(),
-            includeCanLogin: Boolean = false
+            includeCanLogin: Boolean = false,
+            roles: Set<ReifiedRole> = emptySet()
     ): TokenLiteral
     {
         val extraPermissions = if (includeCanLogin)
@@ -48,11 +51,18 @@ class TestUserHelper(private val password: String = TestUserHelper.defaultPasswo
             }
         }
         val token = tokenFetcher.getToken(email, password)
+        JooqContext().use {
+            for(role in roles)
+            {
+                it.ensureUserHasRole(username, role)
+            }
+        }
         return when (token)
         {
             is TokenFetcher.TokenResponse.Token -> token.token
             is TokenFetcher.TokenResponse.Error -> throw Exception("Unable to obtain auth token: '${token.message}'")
         }
+
     }
 
     companion object

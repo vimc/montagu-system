@@ -22,6 +22,9 @@ object ModellingGroupRouteConfig : RouteConfig
                     .json()
                     .post()
                     .secure(writePermissions),
+            Endpoint("$baseUrl/user/memberships/", controller, "getContextUserModellingGroups")
+                    .json()
+                    .secure(),
             Endpoint("$baseUrl/:group-id/", controller, "getModellingGroup")
                     .json()
                     .secure(readPermissions + setOf("*/models.read")),

@@ -9,6 +9,7 @@ import khttp.structures.files.FileLike
 import org.vaccineimpact.api.models.helpers.ContentTypes
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.security.CookieName
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import java.io.File

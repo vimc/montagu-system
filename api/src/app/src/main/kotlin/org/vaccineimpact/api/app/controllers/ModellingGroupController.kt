@@ -3,10 +3,13 @@ package org.vaccineimpact.api.app.controllers
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.security.internalUser
+import org.vaccineimpact.api.emails.RealEmailManager.Companion.username
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 
@@ -29,6 +32,20 @@ open class ModellingGroupController(
     {
         val groupId = groupId(context)
         return modellingGroupRepository.getModellingGroupDetails(groupId)
+    }
+
+    fun getContextUserModellingGroups() : List<ModellingGroup>
+    {
+        val userName = context.username!!
+        val requestUser = userRepo.getUserByUsername(userName)
+        val membershipRoles = requestUser.roles.filter{r -> r.name == "member"
+                && r.scope is Scope.Specific && (r.scope as Scope.Specific).databaseScopePrefix == "modelling-group"}
+
+        val modellingGroupIds = membershipRoles.map{r -> (r.scope as Scope.Specific).databaseScopeId}.distinct()
+        //TODO: Make a logic class for this
+        //TODO: put a proper sql query into the repo to do this
+        return modellingGroupRepository.getModellingGroups().filter{g -> g.id in modellingGroupIds}
+
     }
 
     fun modifyMembership(): String
