@@ -37,16 +37,6 @@ abstract class BurdenEstimateControllerTestsBase: MontaguTests() {
         }
     }
 
-    protected fun mockModellingGroupRepository(): ModellingGroupRepository
-    {
-        return mock()
-    }
-
-    protected fun mockScenarioRepository(): ScenarioRepository
-    {
-        return mock()
-    }
-
     protected fun mockLogic(): BurdenEstimateLogic
     {
         return mock {

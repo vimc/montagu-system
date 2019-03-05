@@ -5,9 +5,7 @@ import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.StreamSerializable
 import java.time.Instant
@@ -15,18 +13,14 @@ import java.time.Instant
 open class BurdenEstimatesController(
         context: ActionContext,
         private val estimatesLogic: BurdenEstimateLogic,
-        private val estimateRepository: BurdenEstimateRepository,
-        private val groupRepository: ModellingGroupRepository,
-        private val scenarioRepository: ScenarioRepository
+        private val estimateRepository: BurdenEstimateRepository
 ) : BaseBurdenEstimateController(context, estimatesLogic)
 {
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
             RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario,
                     repos.touchstone),
-            repos.burdenEstimates,
-            repos.modellingGroup,
-            repos.scenario)
+            repos.burdenEstimates)
 
     fun getBurdenEstimateSets(): List<BurdenEstimateSet>
     {

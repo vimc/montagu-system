@@ -10,9 +10,7 @@ import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.models.ChunkedFile
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.app.requests.csvData
 import org.vaccineimpact.api.models.*
@@ -28,8 +26,6 @@ class BurdenEstimateUploadController(context: ActionContext,
                                      private val repositories: Repositories,
                                      private val estimatesLogic: BurdenEstimateLogic,
                                      private val estimateRepository: BurdenEstimateRepository,
-                                     private val groupRepository: ModellingGroupRepository,
-                                     private val scenarioRepository: ScenarioRepository,
                                      private val postDataHelper: PostDataHelper = PostDataHelper(),
                                      private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair),
                                      private val chunkedFileCache: Cache<ChunkedFile> = ChunkedFileCache.instance,
@@ -42,9 +38,7 @@ class BurdenEstimateUploadController(context: ActionContext,
             repos,
             RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario,
                     repos.touchstone),
-            repos.burdenEstimates,
-            repos.modellingGroup,
-            repos.scenario)
+            repos.burdenEstimates)
 
     fun getUploadToken(): String
     {
