@@ -525,7 +525,7 @@ class BurdenEstimateLogicTests : MontaguTests()
             on { getResponsibilityInfo(any(), any(), any()) } doReturn
                     ResponsibilityInfo(responsibilityId, disease, "open", setId)
         }
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock())
 
         assertThatThrownBy {
             sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
