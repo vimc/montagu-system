@@ -43,8 +43,7 @@ open class ModellingGroupController(
 
         val modellingGroupIds = membershipRoles.map{r -> (r.scope as Scope.Specific).databaseScopeId}.distinct()
         //TODO: Make a logic class for this
-        //TODO: put a proper sql query into the repo to do this
-        return modellingGroupRepository.getModellingGroups().filter{g -> g.id in modellingGroupIds}
+        return modellingGroupRepository.getModellingGroups(modellingGroupIds.toTypedArray()).toList()
 
     }
 

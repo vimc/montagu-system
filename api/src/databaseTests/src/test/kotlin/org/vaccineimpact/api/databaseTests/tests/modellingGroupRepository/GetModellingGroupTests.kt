@@ -100,6 +100,37 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
     }
 
     @Test
+    fun `can get modelling groups by ids`()
+    {
+        val expected = listOf(
+                ModellingGroup("a", "description a"),
+                ModellingGroup("b", "description b")
+            )
+        given {
+            it.addGroup("a", "description a")
+            it.addGroup("b", "description b")
+            it.addGroup("c", "description c")
+        } check { repo ->
+            assertThat(repo.getModellingGroups(arrayOf("b","a"))).isEqualTo(expected)
+        }
+    }
+
+    @Test
+    fun `get modelling groups by ids does not return groups which have been replaced`()
+    {
+        val expected = listOf(
+                ModellingGroup("a", "description a")
+        )
+        given {
+            it.addGroup("a", "description a")
+            it.addGroup("c", "description c")
+            it.addGroup("b", "description b", "c")
+        } check { repo ->
+            assertThat(repo.getModellingGroups(arrayOf("b","a"))).isEqualTo(expected)
+        }
+    }
+
+    @Test
     fun `can get modelling group details`()
     {
         val expected = ModellingGroupDetails("new-id", "description", listOf(

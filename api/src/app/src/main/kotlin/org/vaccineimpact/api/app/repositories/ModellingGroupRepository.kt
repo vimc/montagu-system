@@ -7,6 +7,7 @@ import org.vaccineimpact.api.serialization.SplitData
 interface ModellingGroupRepository : Repository
 {
     fun getModellingGroups(): Iterable<ModellingGroup>
+    fun getModellingGroups(ids: Array<String>): Iterable<ModellingGroup>
     @Throws(UnknownObjectError::class)
     fun getModellingGroup(id: String): ModellingGroup
     fun getModellingGroupDetails(groupId: String): ModellingGroupDetails
