@@ -4,7 +4,6 @@ import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import com.github.fge.jackson.JsonLoader
-import com.fasterxml.jackson.databind.*
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper.Companion.setupTestUser
@@ -39,7 +38,7 @@ class ModellingGroupTests : DatabaseTest()
     }
 
     @Test
-    fun `can modelling group memberships for user`()
+    fun `can get modelling group memberships for user`()
     {
         JooqContext().use {
             it.addGroup("a", "description a")
@@ -74,7 +73,7 @@ class ModellingGroupTests : DatabaseTest()
     }
 
     @Test
-    fun `can empty modelling group memberships for user with no member roles`()
+    fun `can get empty modelling group memberships for user with no member roles`()
     {
         JooqContext().use {
             it.addGroup("a", "description a")
