@@ -77,13 +77,10 @@ class ModellingGroupControllersTests : MontaguTests()
             on(it.getUserModellingGroups("test-user")) doReturn expectedResult
         }
 
-
         val controller = ModellingGroupController(context, mock(), mock(), logic)
-
         val result = controller.getContextUserModellingGroups()
 
         verify(context).username
-
         assertThat(result).isEqualTo(expectedResult)
 
     }
