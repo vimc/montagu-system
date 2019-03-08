@@ -9,6 +9,7 @@ import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
+import org.vaccineimpact.api.app.logic.ModellingGroupLogic
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.models.ModellingGroup
@@ -30,7 +31,7 @@ class ModellingGroupControllersTests : MontaguTests()
             on(it.permissions) doReturn PermissionSet()
         }
         assertThatThrownBy {
-            ModellingGroupController(context, mock(), mock()).modifyMembership()
+            ModellingGroupController(context, mock(), mock(), mock()).modifyMembership()
         }.isInstanceOf(MissingRequiredPermissionError::class.java)
     }
 
@@ -43,7 +44,7 @@ class ModellingGroupControllersTests : MontaguTests()
                     setOf(ReifiedPermission("modelling-groups.manage-members",
                             Scope.Global())))
         }
-        val controller = ModellingGroupController(context, mock(), mock())
+        val controller = ModellingGroupController(context, mock(), mock(), mock())
         controller.modifyMembership()
     }
 
@@ -56,7 +57,7 @@ class ModellingGroupControllersTests : MontaguTests()
                     setOf(ReifiedPermission("modelling-groups.manage-members",
                             Scope.Specific("modelling-group", "gId"))))
         }
-        val controller = ModellingGroupController(context, mock(), mock())
+        val controller = ModellingGroupController(context, mock(), mock(), mock())
         controller.modifyMembership()
     }
 
@@ -67,35 +68,21 @@ class ModellingGroupControllersTests : MontaguTests()
             on(it.username) doReturn "test-user"
         }
 
-        val user = InternalUser(UserProperties("test-user", "Test User", "test@user.com",
-                                null, null),
-                listOf(
-                        ReifiedRole("member", Scope.Specific("modelling-group", "group-1")),
-                        ReifiedRole("member", Scope.Specific("modelling-group", "group-2")),
-                        ReifiedRole("some-other-role", Scope.Specific("modelling-group", "group-3")),
-                        ReifiedRole("member", Scope.Global())
-                ),
-                listOf()
-        )
-
-        val userRepo = mock<UserRepository>{
-            on (it.getUserByUsername("test-user")) doReturn user
-        }
-
         val expectedResult = listOf(
                 ModellingGroup("group-1", "first group"),
                 ModellingGroup("group2", "second group")
         )
-        val groupRepo = mock<ModellingGroupRepository>{
-            on (it.getModellingGroups(arrayOf("group-1", "group-2"))) doReturn expectedResult
+
+        val logic = mock<ModellingGroupLogic>{
+            on(it.getUserModellingGroups("test-user")) doReturn expectedResult
         }
 
-        val controller = ModellingGroupController(context, groupRepo, userRepo)
+
+        val controller = ModellingGroupController(context, mock(), mock(), logic)
 
         val result = controller.getContextUserModellingGroups()
 
         verify(context).username
-        verify(userRepo).getUserByUsername("test-user")
 
         assertThat(result).isEqualTo(expectedResult)
 

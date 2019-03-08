@@ -4,6 +4,8 @@ import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
+import org.vaccineimpact.api.app.logic.ModellingGroupLogic
+import org.vaccineimpact.api.app.logic.RepositoriesModellingGroupLogic
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
@@ -14,11 +16,13 @@ import org.vaccineimpact.api.models.permissions.PermissionSet
 open class ModellingGroupController(
         context: ActionContext,
         private val modellingGroupRepository: ModellingGroupRepository,
-        private val userRepo: UserRepository
+        private val userRepo: UserRepository,
+        private val groupLogic: ModellingGroupLogic
 ) : Controller(context)
 {
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, repositories.modellingGroup, repositories.user)
+            : this(context, repositories.modellingGroup, repositories.user,
+                    RepositoriesModellingGroupLogic(repositories.modellingGroup, repositories.user))
 
     fun getModellingGroups(): List<ModellingGroup>
     {
@@ -34,15 +38,7 @@ open class ModellingGroupController(
     fun getContextUserModellingGroups() : List<ModellingGroup>
     {
         val userName = context.username!!
-        val requestUser = userRepo.getUserByUsername(userName)
-
-        val membershipRoles = requestUser.roles.filter{r -> r.name == "member"
-                && r.scope is Scope.Specific && (r.scope as Scope.Specific).databaseScopePrefix == "modelling-group"}
-
-        val modellingGroupIds = membershipRoles.map{r -> (r.scope as Scope.Specific).databaseScopeId}.distinct()
-
-        return modellingGroupRepository.getModellingGroups(modellingGroupIds.toTypedArray()).toList()
-
+        return groupLogic.getUserModellingGroups(userName)
     }
 
     fun modifyMembership(): String
