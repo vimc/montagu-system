@@ -87,7 +87,7 @@ class ModellingGroupTests : DatabaseTest()
         )
 
         val token = TestUserHelper().getTokenForTestUser(permissions)
-        val response = RequestHelper().get("/modelling-groups/user-memberships/all/", token)
+        val response = RequestHelper().get("/modelling-groups/user/memberships/", token)
 
         val validator = JSONValidator()
         validator.validateSuccess(response.text)
