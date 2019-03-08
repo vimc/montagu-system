@@ -62,7 +62,6 @@ class TestUserHelper(private val password: String = TestUserHelper.defaultPasswo
             is TokenFetcher.TokenResponse.Token -> token.token
             is TokenFetcher.TokenResponse.Error -> throw Exception("Unable to obtain auth token: '${token.message}'")
         }
-
     }
 
     companion object
