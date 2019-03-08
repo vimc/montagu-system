@@ -38,11 +38,12 @@ open class ModellingGroupController(
     {
         val userName = context.username!!
         val requestUser = userRepo.getUserByUsername(userName)
+
         val membershipRoles = requestUser.roles.filter{r -> r.name == "member"
                 && r.scope is Scope.Specific && (r.scope as Scope.Specific).databaseScopePrefix == "modelling-group"}
 
         val modellingGroupIds = membershipRoles.map{r -> (r.scope as Scope.Specific).databaseScopeId}.distinct()
-        //TODO: Make a logic class for this
+
         return modellingGroupRepository.getModellingGroups(modellingGroupIds.toTypedArray()).toList()
 
     }
