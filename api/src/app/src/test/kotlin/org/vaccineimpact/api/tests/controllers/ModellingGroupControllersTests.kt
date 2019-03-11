@@ -69,7 +69,7 @@ class ModellingGroupControllersTests : MontaguTests()
         )
 
         val logic = mock<ModellingGroupLogic>{
-            on(it.getUserModellingGroups("test-user")) doReturn expectedResult
+            on(it.getModellingGroupsForUser("test-user")) doReturn expectedResult
         }
 
         val controller = ModellingGroupController(context, mock(), mock(), logic)

@@ -38,7 +38,7 @@ open class ModellingGroupController(
     fun getModellingGroupsForUser() : List<ModellingGroup>
     {
         val userName = context.username!!
-        return groupLogic.getUserModellingGroups(userName)
+        return groupLogic.getModellingGroupsForUser(userName)
     }
 
     fun modifyMembership(): String

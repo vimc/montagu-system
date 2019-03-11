@@ -7,13 +7,13 @@ import org.vaccineimpact.api.models.Scope
 
 interface ModellingGroupLogic
 {
-    fun getUserModellingGroups(userName: String): List<ModellingGroup>
+    fun getModellingGroupsForUser(userName: String): List<ModellingGroup>
 }
 
 class RepositoriesModellingGroupLogic(private val modellingGroupRepository: ModellingGroupRepository,
                                       private val userRepository: UserRepository) : ModellingGroupLogic
 {
-    override fun  getUserModellingGroups(userName: String): List<ModellingGroup>
+    override fun  getModellingGroupsForUser(userName: String): List<ModellingGroup>
     {
         val requestUser = userRepository.getUserByUsername(userName)
 

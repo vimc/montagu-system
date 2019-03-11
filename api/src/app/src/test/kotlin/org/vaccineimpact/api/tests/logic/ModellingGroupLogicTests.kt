@@ -45,7 +45,7 @@ class ModellingGroupLogicTests : MontaguTests()
 
         val sut = RepositoriesModellingGroupLogic(groupRepo, userRepo)
 
-        val result = sut.getUserModellingGroups("test-user")
+        val result = sut.getModellingGroupsForUser("test-user")
 
         verify(userRepo).getUserByUsername("test-user")
         Assertions.assertThat(result).isEqualTo(expectedResult)
@@ -72,7 +72,7 @@ class ModellingGroupLogicTests : MontaguTests()
 
         val sut = RepositoriesModellingGroupLogic(groupRepo, userRepo)
 
-        val result = sut.getUserModellingGroups("test-user")
+        val result = sut.getModellingGroupsForUser("test-user")
 
         verify(userRepo).getUserByUsername("test-user")
         Assertions.assertThat(result).isEqualTo(listOf<ModellingGroup>())
