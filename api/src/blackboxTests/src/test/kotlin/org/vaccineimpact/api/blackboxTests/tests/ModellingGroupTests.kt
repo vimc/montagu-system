@@ -40,61 +40,26 @@ class ModellingGroupTests : DatabaseTest()
     @Test
     fun `can get modelling group memberships for user`()
     {
-        validate("/modelling-groups/group/") against "ModellingGroupDetails" given {
-        JooqContext().use {
+        validate("/user/modelling-groups/") against "ModellingGroups" given {
             it.addGroup("a", "description a")
             it.addGroup("b", "description b")
             it.addGroup("c", "description c")
+        } requiringPermissions {
+            PermissionSet()
+        } withRoles {
+            setOf(
+                    ReifiedRole("member", Scope.Specific("modelling-group", "a")),
+                    ReifiedRole("member", Scope.Specific("modelling-group", "b"))
+            )
 
-            setupTestUser()
+        } andCheckArray {
+            assertThat(it).isEqualTo(json {
+                array(
+                        obj("id" to "a", "description" to "description a"),
+                        obj("id" to "b", "description" to "description b")
+                )
+            })
         }
-
-        val permissions = PermissionSet(
-                "*/can-login"
-        )
-        val roles = setOf(
-                ReifiedRole("member", Scope.Specific("modelling-group", "a")),
-                ReifiedRole("member", Scope.Specific("modelling-group", "b"))
-        )
-
-        val token = TestUserHelper().getTokenForTestUser(permissions, roles=roles)
-        val response = RequestHelper().get("/user/modelling-groups/", token)
-
-        val validator = JSONValidator()
-        validator.validateSuccess(response.text)
-        val groups  = JsonLoader.fromString(response.text)["data"]
-        assertThat(groups.isArray).isTrue()
-        assertThat((groups.count())).isEqualTo(2)
-
-        assertThat(groups[0]["id"].textValue()).isEqualTo("a")
-        assertThat(groups[0]["description"].textValue()).isEqualTo("description a")
-
-        assertThat(groups[1]["id"].textValue()).isEqualTo("b")
-        assertThat(groups[1]["description"].textValue()).isEqualTo("description b")
-    }
-
-    @Test
-    fun `can get empty modelling group memberships for user with no member roles`()
-    {
-        JooqContext().use {
-            it.addGroup("a", "description a")
-            it.addGroup("b", "description b")
-
-            setupTestUser()
-        }
-
-        val permissions = PermissionSet(
-                "*/can-login"
-        )
-
-        val token = TestUserHelper().getTokenForTestUser(permissions)
-        val response = RequestHelper().get("/user/modelling-groups/", token)
-
-        val validator = JSONValidator()
-        validator.validateSuccess(response.text)
-        val groups  = JsonLoader.fromString(response.text)["data"]
-        assertThat(groups.isArray).isTrue()
-        assertThat((groups.count())).isEqualTo(0)
     }
 
     @Test

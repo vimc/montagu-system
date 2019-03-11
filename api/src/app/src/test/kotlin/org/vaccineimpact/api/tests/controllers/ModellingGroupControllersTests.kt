@@ -57,7 +57,7 @@ class ModellingGroupControllersTests : MontaguTests()
     }
 
     @Test
-    fun `can get context user modelling groups`()
+    fun `can get user modelling groups`()
     {
         val context = mock<ActionContext>{
             on(it.username) doReturn "test-user"

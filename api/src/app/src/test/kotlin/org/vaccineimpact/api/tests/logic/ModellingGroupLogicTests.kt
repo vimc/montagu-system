@@ -50,4 +50,31 @@ class ModellingGroupLogicTests : MontaguTests()
         verify(userRepo).getUserByUsername("test-user")
         Assertions.assertThat(result).isEqualTo(expectedResult)
     }
+
+    @Test
+    fun `can get empty modelling groups for user with no member roles`()
+    {
+        val user = InternalUser(UserProperties("test-user", "Test User", "test@user.com",
+                null, null),
+                listOf(
+                        ReifiedRole("some-other-role", Scope.Specific("modelling-group", "group-3"))
+                ),
+                listOf()
+        )
+
+        val userRepo = mock<UserRepository>{
+            on (it.getUserByUsername("test-user")) doReturn user
+        }
+
+        val groupRepo = mock<ModellingGroupRepository>{
+            on (it.getModellingGroups(arrayOf())) doReturn listOf<ModellingGroup>()
+        }
+
+        val sut = RepositoriesModellingGroupLogic(groupRepo, userRepo)
+
+        val result = sut.getUserModellingGroups("test-user")
+
+        verify(userRepo).getUserByUsername("test-user")
+        Assertions.assertThat(result).isEqualTo(listOf<ModellingGroup>())
+    }
 }
