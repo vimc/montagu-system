@@ -45,6 +45,16 @@ class JooqModellingGroupRepository(
                 .map { mapModellingGroup(it) }
     }
 
+    override fun getModellingGroups(ids: Array<String>): Iterable<ModellingGroup>
+    {
+        return dsl.select(MODELLING_GROUP.fieldsAsList())
+                .from(MODELLING_GROUP)
+                .where(MODELLING_GROUP.ID.`in`(*ids))
+                .and(MODELLING_GROUP.REPLACED_BY.isNull)
+                .fetchInto<ModellingGroupRecord>()
+                .map { mapModellingGroup(it) }
+    }
+
     override fun getModellingGroup(id: String): ModellingGroup
     {
         // This is a little confusing.

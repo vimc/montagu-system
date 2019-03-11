@@ -3,17 +3,18 @@ package org.vaccineimpact.api.blackboxTests.tests
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import com.github.fge.jackson.JsonLoader
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.validate
-import org.vaccineimpact.api.db.direct.addDisease
-import org.vaccineimpact.api.db.direct.addGroup
-import org.vaccineimpact.api.db.direct.addModel
-import org.vaccineimpact.api.db.direct.addUserWithRoles
+import org.vaccineimpact.api.blackboxTests.helpers.*
+import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper.Companion.setupTestUser
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.test_helpers.DatabaseTest
+import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
 
 class ModellingGroupTests : DatabaseTest()
@@ -26,6 +27,31 @@ class ModellingGroupTests : DatabaseTest()
             it.addGroup("b", "description b")
         } requiringPermissions {
             PermissionSet("*/modelling-groups.read")
+        } andCheckArray {
+            assertThat(it).isEqualTo(json {
+                array(
+                        obj("id" to "a", "description" to "description a"),
+                        obj("id" to "b", "description" to "description b")
+                )
+            })
+        }
+    }
+
+    @Test
+    fun `can get modelling group memberships for user`()
+    {
+        validate("/user/modelling-groups/") against "ModellingGroups" given {
+            it.addGroup("a", "description a")
+            it.addGroup("b", "description b")
+            it.addGroup("c", "description c")
+        } requiringPermissions {
+            PermissionSet()
+        } withRoles {
+            setOf(
+                    ReifiedRole("member", Scope.Specific("modelling-group", "a")),
+                    ReifiedRole("member", Scope.Specific("modelling-group", "b"))
+            )
+
         } andCheckArray {
             assertThat(it).isEqualTo(json {
                 array(

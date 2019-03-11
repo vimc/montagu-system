@@ -4,6 +4,8 @@ import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
+import org.vaccineimpact.api.app.logic.ModellingGroupLogic
+import org.vaccineimpact.api.app.logic.RepositoriesModellingGroupLogic
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.repositories.UserRepository
@@ -14,11 +16,13 @@ import org.vaccineimpact.api.models.permissions.PermissionSet
 open class ModellingGroupController(
         context: ActionContext,
         private val modellingGroupRepository: ModellingGroupRepository,
-        private val userRepo: UserRepository
+        private val userRepo: UserRepository,
+        private val groupLogic: ModellingGroupLogic
 ) : Controller(context)
 {
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, repositories.modellingGroup, repositories.user)
+            : this(context, repositories.modellingGroup, repositories.user,
+                    RepositoriesModellingGroupLogic(repositories.modellingGroup, repositories.user))
 
     fun getModellingGroups(): List<ModellingGroup>
     {
@@ -29,6 +33,12 @@ open class ModellingGroupController(
     {
         val groupId = groupId(context)
         return modellingGroupRepository.getModellingGroupDetails(groupId)
+    }
+
+    fun getModellingGroupsForUser() : List<ModellingGroup>
+    {
+        val userName = context.username!!
+        return groupLogic.getModellingGroupsForUser(userName)
     }
 
     fun modifyMembership(): String

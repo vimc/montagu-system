@@ -10,6 +10,7 @@ import org.vaccineimpact.api.blackboxTests.schemas.Schema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.permissions.ReifiedRole
 import spark.route.HttpMethod
 
 fun validate(url: String, method: HttpMethod = HttpMethod.get)
@@ -23,6 +24,7 @@ data class FluentValidationConfig(
         val prepareDatabase: ((JooqContext) -> Unit)? = null,
         val checkRequiredPermissions: Set<ReifiedPermission>? = null,
         val ownedPermissions: Set<ReifiedPermission>? = null,
+        val ownedRoles: Set<ReifiedRole>? = null,
         val acceptsContentType: String? = null,
         val postData: String? = null
 )
@@ -37,6 +39,8 @@ data class FluentValidationConfig(
 
     infix fun withPermissions(ownedPermissions: () -> PermissionSet)
             = this.copy(ownedPermissions = PermissionSet("*/can-login") + ownedPermissions())
+
+    infix fun withRoles(ownedRoles: () -> Set<ReifiedRole>?) = this.copy(ownedRoles=ownedRoles())
 
     infix fun acceptingContentType(contentType: String) = this.copy(acceptsContentType = contentType)
 
@@ -110,6 +114,7 @@ class FluentValidation(config: FluentValidationConfig)
     val prepareDatabase = getDatabasePreparationScript(config)
     val requiredPermissions: Set<ReifiedPermission> = config.checkRequiredPermissions ?: PermissionSet("*/can-login")
     val ownedPermissions: Set<ReifiedPermission> = config.ownedPermissions ?: requiredPermissions
+    val ownedRoles: Set<ReifiedRole> = config.ownedRoles ?: emptySet()
     val allPermissions = requiredPermissions + ownedPermissions
     val acceptContentType = config.acceptsContentType ?: ContentTypes.json
     val postData: String? = config.postData
@@ -142,7 +147,7 @@ class FluentValidation(config: FluentValidationConfig)
         }
 
         // Check the actual response
-        val token = userHelper.getTokenForTestUser(ownedPermissions)
+        val token = userHelper.getTokenForTestUser(ownedPermissions, roles=ownedRoles)
         val response = makeRequest(acceptContentType, token)
         validate(response)
         return response
