@@ -67,4 +67,23 @@ Schema: [`ModellingGroupCreation.schema.json`](../schemas/ModellingGroupCreation
         "institution": "Imperial College",
         "pi": "Dr New Name"
     }
+    
+## GET /user/modelling-groups/
+Returns an enumeration of all modelling groups for the current user.
+
+Required permissions: None, but user needs to be authenticated
+
+Schema: [`ModellingGroups.schema.json`](../schemas/ModellingGroups.schema.json)
+
+### Example
+    [
+        {
+            "id": "IC-YellowFever",
+            "description": "Imperial College, Yellow Fever, PI: Tini Garske"
+        },
+        {
+            "id": "LSHTM-Measles",
+            "description": "London School of Hygiene and Tropical Medicine, PI: Mark Jit"
+        }
+    ]    
 

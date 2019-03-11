@@ -40,6 +40,7 @@ class ModellingGroupTests : DatabaseTest()
     @Test
     fun `can get modelling group memberships for user`()
     {
+        validate("/modelling-groups/group/") against "ModellingGroupDetails" given {
         JooqContext().use {
             it.addGroup("a", "description a")
             it.addGroup("b", "description b")
@@ -57,7 +58,7 @@ class ModellingGroupTests : DatabaseTest()
         )
 
         val token = TestUserHelper().getTokenForTestUser(permissions, roles=roles)
-        val response = RequestHelper().get("/modelling-groups/user/memberships/", token)
+        val response = RequestHelper().get("/user/modelling-groups/", token)
 
         val validator = JSONValidator()
         validator.validateSuccess(response.text)
@@ -87,7 +88,7 @@ class ModellingGroupTests : DatabaseTest()
         )
 
         val token = TestUserHelper().getTokenForTestUser(permissions)
-        val response = RequestHelper().get("/modelling-groups/user/memberships/", token)
+        val response = RequestHelper().get("/user/modelling-groups/", token)
 
         val validator = JSONValidator()
         validator.validateSuccess(response.text)

@@ -18,7 +18,7 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 class ModellingGroupLogicTests : MontaguTests()
 {
     @Test
-    fun `can get responsibility with expectations`()
+    fun `can get user modelling groups`()
     {
         val user = InternalUser(UserProperties("test-user", "Test User", "test@user.com",
                 null, null),

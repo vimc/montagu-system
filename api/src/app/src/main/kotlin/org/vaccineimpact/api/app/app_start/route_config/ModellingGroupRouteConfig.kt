@@ -9,6 +9,7 @@ import org.vaccineimpact.api.app.controllers.ModellingGroupController
 object ModellingGroupRouteConfig : RouteConfig
 {
     private val baseUrl = "/modelling-groups"
+    private val userUrl = "/user/modelling-groups"
     private val controller = ModellingGroupController::class
 
     private val readPermissions = setOf("*/modelling-groups.read")
@@ -22,7 +23,7 @@ object ModellingGroupRouteConfig : RouteConfig
                     .json()
                     .post()
                     .secure(writePermissions),
-            Endpoint("$baseUrl/user/memberships/", controller, "getContextUserModellingGroups")
+            Endpoint("$userUrl/", controller, "getModellingGroupsForUser")
                     .json()
                     .secure(),
             Endpoint("$baseUrl/:group-id/", controller, "getModellingGroup")

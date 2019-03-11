@@ -35,7 +35,7 @@ open class ModellingGroupController(
         return modellingGroupRepository.getModellingGroupDetails(groupId)
     }
 
-    fun getContextUserModellingGroups() : List<ModellingGroup>
+    fun getModellingGroupsForUser() : List<ModellingGroup>
     {
         val userName = context.username!!
         return groupLogic.getUserModellingGroups(userName)

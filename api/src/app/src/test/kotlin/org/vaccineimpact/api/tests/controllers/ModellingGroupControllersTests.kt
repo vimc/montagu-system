@@ -10,15 +10,10 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.ModellingGroupController
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.logic.ModellingGroupLogic
-import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
-import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.models.ModellingGroup
 import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.models.permissions.ReifiedRole
-import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class ModellingGroupControllersTests : MontaguTests()
@@ -78,7 +73,7 @@ class ModellingGroupControllersTests : MontaguTests()
         }
 
         val controller = ModellingGroupController(context, mock(), mock(), logic)
-        val result = controller.getContextUserModellingGroups()
+        val result = controller.getModellingGroupsForUser()
 
         verify(context).username
         assertThat(result).isEqualTo(expectedResult)
