@@ -29,6 +29,21 @@ describe('Modelling Groups service tests', () => {
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'groups' });
     });
 
+    it('fetches user groups',() => {
+        const groupsService = new ModellingGroupsService(store.dispatch, store.getState);
+
+        const setOptionsSpy = sandbox.setSpy(groupsService, "setOptions");
+        const getStub = sandbox.setStubFunc(groupsService, "get", ()=>{
+            return Promise.resolve();
+        });
+
+        groupsService.getUserGroups();
+
+        expect(getStub.getCall(0).args[0])
+            .to.equal("/user/modelling-groups/");
+        expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'userGroups' });
+    });
+
     it('fetches group details', () => {
         const groupsService = new ModellingGroupsService(store.dispatch, store.getState);
 
