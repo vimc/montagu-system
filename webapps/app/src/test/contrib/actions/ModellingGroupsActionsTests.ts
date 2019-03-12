@@ -20,7 +20,7 @@ describe("Modelling groups actions tests", () => {
             auth: {modellingGroups: "test1"}
         };
         const store = createMockStore(initialState);
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", ()=>{
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "getUserGroups", ()=>{
           return Promise.resolve([testGroup1]);
         });
         store.dispatch(modellingGroupsActionCreators.getUserGroups());

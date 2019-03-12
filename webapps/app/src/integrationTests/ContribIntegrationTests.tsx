@@ -102,7 +102,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
         });
 
-        it("fetches modelling groups", async () => {
+        it("fetches all modelling groups", async () => {
             await addGroups(this.db, groupId);
 
             const fetchedGroupsResult: ModellingGroup[] = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
@@ -111,6 +111,20 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             expect(fetchedGroupsResult).to.eql([
                 {id: groupId, description: "Group 1"},
                 {id: "Fake", description: "Group 2"}
+            ]);
+        });
+
+        it("fetches user modelling groups", async () => {
+            await addGroups(this.db, groupId);
+
+            await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
+                .addMember(groupId, "test.user");
+
+            const fetchedGroupsResult: ModellingGroup[] = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
+                .getUserGroups();
+
+            expect(fetchedGroupsResult).to.eql([
+                {id: groupId, description: "Group 1"}
             ]);
         });
 

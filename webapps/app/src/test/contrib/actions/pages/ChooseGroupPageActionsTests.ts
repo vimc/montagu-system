@@ -26,7 +26,7 @@ describe("Choose Group Page actions tests", () => {
         verifyActionThatCallsService(done, {
             store: store,
             mockServices: () => {
-                sandbox.stubService(ModellingGroupsService.prototype, "getAllGroups", fakeData)
+                sandbox.stubService(ModellingGroupsService.prototype, "getUserGroups", fakeData)
             },
             callActionCreator: () => chooseGroupPageActionCreators.loadData(),
             expectTheseActions: [{type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: fakeData}]
