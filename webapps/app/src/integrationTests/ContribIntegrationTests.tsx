@@ -396,8 +396,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             // this will error as not a real token, but that's fine, we just want to verify that we have the correct
             // endpoint here
-            expect(response.errors).to.have.members([{code: "unknown-upload-token",
-                message: "Unknown upload-token with id TOKEN"}]);
+            expect(response.errors[0].code).to.eq("unknown-upload-token");
         });
 
     }

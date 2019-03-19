@@ -23,11 +23,11 @@ export const estimatesInitialState: EstimatesState = {
     uploadToken: null,
     populateErrors: [],
     hasPopulateSuccess: false,
+    populatingInProgress: false,
     deaths: null,
     dalys: null,
     cases: null,
-    chartType: BurdenOutcome.DEATHS,
-    populatingInProgress: false
+    chartType: BurdenOutcome.DEATHS
 };
 
 export const estimatesReducer = (state = estimatesInitialState, action: EstimatesAction): EstimatesState => {
