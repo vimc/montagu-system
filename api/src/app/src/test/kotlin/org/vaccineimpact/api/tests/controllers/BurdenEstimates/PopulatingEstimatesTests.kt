@@ -11,6 +11,7 @@ import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimateUploa
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 import org.vaccineimpact.api.models.ErrorInfo
@@ -174,8 +175,8 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
                 fakeCache)
 
         assertThatThrownBy { sut.populateBurdenEstimateSetFromLocalFile() }
-                .isInstanceOf(TokenValidationException::class.java)
-                .hasMessageContaining("Could not verify token")
+                .isInstanceOf(UnknownObjectError::class.java)
+                .hasMessageContaining("upload-token")
 
     }
 

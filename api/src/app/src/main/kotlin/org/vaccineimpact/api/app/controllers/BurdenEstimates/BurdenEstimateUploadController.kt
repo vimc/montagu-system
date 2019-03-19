@@ -6,6 +6,7 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.models.ChunkedFile
@@ -16,6 +17,7 @@ import org.vaccineimpact.api.app.requests.csvData
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.TokenType
+import org.vaccineimpact.api.security.TokenValidationException
 import org.vaccineimpact.api.security.WebTokenHelper
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import org.vaccineimpact.api.serialization.MontaguSerializer
@@ -85,7 +87,16 @@ class BurdenEstimateUploadController(context: ActionContext,
     fun populateBurdenEstimateSetFromLocalFile(): Result
     {
         val uploadToken = context.params(":token")
-        val path = UploadPath(tokenHelper.verify(uploadToken, TokenType.UPLOAD))
+        val token = try
+        {
+            tokenHelper.verify(uploadToken, TokenType.UPLOAD)
+        }
+        catch (e: TokenValidationException)
+        {
+            throw UnknownObjectError(uploadToken, "upload-token")
+        }
+
+        val path = UploadPath(token)
 
         val file = chunkedFileCache[path.uniqueIdentifier]
                 ?: throw BadRequest("Unrecognised file identifier - has this token already been used?")
@@ -110,7 +121,7 @@ class BurdenEstimateUploadController(context: ActionContext,
 
             chunkedFileCache.remove(file.uniqueIdentifier)
 
-            return closeEstimateSetAndReturnMissingRowError(path.setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
+            closeEstimateSetAndReturnMissingRowError(path.setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
 
         }
         else
