@@ -12,7 +12,7 @@ export PGHOST=localhost
 
 function cleanup {
     set +e
-    $here/stop-apis.sh
+    #$here/stop-apis.sh
 }
 trap cleanup EXIT
 

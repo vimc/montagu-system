@@ -16,7 +16,8 @@ export class EstimatesService extends AbstractLocalService {
         return this.get(`/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/estimate-sets/${setId}/actions/request-upload/`);
     }
 
-    populateEstimatesFromFile(groupId: string, touchstoneId: string, scenarioId: string, setId: number, uploadToken: string): Promise<String> {
+    populateEstimatesFromFile(groupId: string, touchstoneId: string, scenarioId: string, setId: number, uploadToken: string):
+        Promise<String | Result> {
         return this.setOptions({notificationOnError: false})
             .post(`/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/estimate-sets/${setId}/actions/populate/${uploadToken}/`)
     }

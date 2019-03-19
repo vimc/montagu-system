@@ -5,7 +5,7 @@ import {createMemoryHistory} from 'history';
 
 import {
     CoverageSet, CreateBurdenEstimateSet, DemographicDataset,
-    Disease,
+    Disease, ErrorInfo,
     ModellingGroup, ModelRunParameterSet,
     ResponsibilitySetWithExpectations,
     Result, ScenarioTouchstoneAndCoverageSets, Touchstone,
@@ -367,6 +367,37 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const response: ILookup<DataPoint[]> = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .getEstimates(groupId, touchstoneVersionId, scenarioId, setId, "cases");
             expect(response).to.eql({"1": [{"x": 2000, "y": value}]});
+        });
+
+        it("can get burden estimate upload token", async () => {
+            const responsibilityIds = await addResponsibilities(this.db, scenarioId, touchstoneVersionId, groupId);
+            const modelVersionId = await addModel(this.db);
+            const setId = await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
+
+            const value = 32156;
+            await addBurdenEstimate(this.db, setId, value);
+
+            const response: String = await (new EstimatesService(this.store.dispatch, this.store.getState))
+                .getUploadToken(groupId, touchstoneVersionId, scenarioId, setId);
+
+            expect(response.length).to.be.greaterThan(1)
+        });
+
+        it("can populate estimates from file", async () => {
+            const responsibilityIds = await addResponsibilities(this.db, scenarioId, touchstoneVersionId, groupId);
+            const modelVersionId = await addModel(this.db);
+            const setId = await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
+
+            const value = 32156;
+            await addBurdenEstimate(this.db, setId, value);
+
+            const response = await (new EstimatesService(this.store.dispatch, this.store.getState))
+                .populateEstimatesFromFile(groupId, touchstoneVersionId, scenarioId, setId, "TOKEN") as Result;
+
+            // this will error as not a real token, but that's fine, we just want to verify that we have the correct
+            // endpoint here
+            expect(response.errors).to.have.members([{code: "unknown-upload-token",
+                message: "Unknown upload-token with id TOKEN"}]);
         });
 
     }
