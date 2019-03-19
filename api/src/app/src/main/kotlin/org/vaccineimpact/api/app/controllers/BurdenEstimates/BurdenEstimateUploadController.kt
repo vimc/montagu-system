@@ -82,7 +82,7 @@ class BurdenEstimateUploadController(context: ActionContext,
         return okayResponse()
     }
 
-    fun populateBurdenEstimateSetFromLocalFile(): String
+    fun populateBurdenEstimateSetFromLocalFile(): Result
     {
         val uploadToken = context.params(":token")
         val path = UploadPath(tokenHelper.verify(uploadToken, TokenType.UPLOAD))
@@ -109,9 +109,9 @@ class BurdenEstimateUploadController(context: ActionContext,
             )
 
             chunkedFileCache.remove(file.uniqueIdentifier)
-            estimatesLogic.closeBurdenEstimateSet(path.setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
 
-            okayResponse()
+            return closeEstimateSetAndReturnMissingRowError(path.setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
+
         }
         else
         {
