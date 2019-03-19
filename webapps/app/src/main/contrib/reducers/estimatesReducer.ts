@@ -1,5 +1,6 @@
 import {BurdenOutcome, EstimatesAction, EstimateTypes} from "../actionTypes/EstimateTypes";
 import {ILookup} from "../../shared/models/Lookup";
+import {ErrorInfo} from "../../shared/models/Generated";
 
 export interface DataPoint {
     x: number
@@ -7,6 +8,10 @@ export interface DataPoint {
 }
 
 export interface EstimatesState {
+    uploadToken: string;
+    populateErrors: ErrorInfo[];
+    hasPopulateSuccess: boolean;
+    populatingInProgress: boolean;
     // these are dictionaries with burden estimate set ids as keys
     deaths: ILookup<ILookup<DataPoint[]>>
     dalys: ILookup<ILookup<DataPoint[]>>
@@ -15,10 +20,14 @@ export interface EstimatesState {
 }
 
 export const estimatesInitialState: EstimatesState = {
+    uploadToken: null,
+    populateErrors: [],
+    hasPopulateSuccess: false,
     deaths: null,
     dalys: null,
     cases: null,
-    chartType: BurdenOutcome.DEATHS
+    chartType: BurdenOutcome.DEATHS,
+    populatingInProgress: false
 };
 
 export const estimatesReducer = (state = estimatesInitialState, action: EstimatesAction): EstimatesState => {
@@ -28,26 +37,46 @@ export const estimatesReducer = (state = estimatesInitialState, action: Estimate
             const data = action.data.burdens;
             const type = action.data.type;
             let newState = null;
-            switch(type){
+            switch (type) {
                 case BurdenOutcome.DEATHS:
-                const newDeaths = {...state.deaths};
+                    const newDeaths = {...state.deaths};
                     newDeaths[key] = data;
-                newState = {...state, deaths: newDeaths };
-                break;
+                    newState = {...state, deaths: newDeaths};
+                    break;
                 case BurdenOutcome.CASES:
                     const newCases = {...state.cases};
                     newCases[key] = data;
-                    newState = {...state, cases: newCases };
+                    newState = {...state, cases: newCases};
                     break;
                 case BurdenOutcome.DALYS:
                     const newDalys = {...state.dalys};
                     newDalys[key] = data;
-                    newState = {...state, dalys: newDalys };
+                    newState = {...state, dalys: newDalys};
                     break;
             }
             return newState;
         case EstimateTypes.SET_CHART_TYPE:
             return {...state, chartType: action.data};
+        case EstimateTypes.UPLOAD_TOKEN_FETCHED:
+            return {...state, uploadToken: action.data};
+        case EstimateTypes.RESET_POPULATE_STATE:
+            return {
+                ...state,
+                hasPopulateSuccess: false,
+                populateErrors: []
+            };
+        case EstimateTypes.POPULATING_ESTIMATES:
+            return {
+                ...state,
+                populatingInProgress: true
+            };
+        case EstimateTypes.ESTIMATE_SET_POPULATED:
+            return {
+                ...state,
+                populateErrors: action.data.errors,
+                hasPopulateSuccess: action.data.setStatus == "complete",
+                populatingInProgress: false
+            };
         default:
             return state;
     }

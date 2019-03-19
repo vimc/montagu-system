@@ -9,7 +9,7 @@ import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPro
 import {mockModellingGroup, mockResponsibilitySetWithExpectations, mockTouchstone} from "../../mocks/mockModels";
 import {ExtendedResponsibilitySet} from "../../../main/contrib/models/ResponsibilitySet";
 import {ResponsibilitiesTypes} from "../../../main/contrib/actionTypes/ResponsibilitiesTypes";
-import {CreateBurdenEstimateSet} from "../../../main/shared/models/Generated";
+import {CreateBurdenEstimateSet, ErrorInfo, Result, ResultStatus} from "../../../main/shared/models/Generated";
 import {BurdenOutcome, EstimateTypes} from "../../../main/contrib/actionTypes/EstimateTypes";
 
 describe("Estimates actions tests", () => {
@@ -76,7 +76,7 @@ describe("Estimates actions tests", () => {
 
     });
 
-    it("creates burden", (done) => {
+    it("creates burden", (done: DoneCallback) => {
         const store = createStore();
         const createBurdenEndpoint = sandbox.setStubFunc(EstimatesService.prototype, "createBurden", () => {
             return Promise.resolve();
@@ -100,6 +100,7 @@ describe("Estimates actions tests", () => {
         };
 
         store.dispatch(estimatesActionCreators.createBurden(data));
+
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = [
@@ -109,7 +110,119 @@ describe("Estimates actions tests", () => {
             expect(actions).to.eql(expectedPayload);
             expect(createBurdenEndpoint.calledOnce).to.be.true;
             done();
+        })
+
+    });
+
+    describe("populating estimate sets", () => {
+
+        it("setStatus is complete if estimates populated without error", async () => {
+            const store = createStore();
+
+            sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", () => {
+                return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
+            });
+
+            sandbox.setStubFunc(EstimatesService.prototype, "populateEstimatesFromFile", () => {
+                return Promise.resolve("OK");
+            });
+
+            await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
+
+            const actions = store.getActions();
+            const expectedPayload = [
+                {
+                    type: EstimateTypes.POPULATING_ESTIMATES,
+                    data: true
+                },
+                {
+                    type: EstimateTypes.ESTIMATE_SET_POPULATED,
+                    data: {setStatus: "complete", errors: [] as ErrorInfo[]}
+                }
+            ];
+            expect(actions).to.eql(expectedPayload);
         });
+
+        it("setStatus is invalid if there is a missing rows error", async () => {
+            const store = createStore();
+
+            sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", () => {
+                return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
+            });
+            sandbox.setStubFunc(EstimatesService.prototype, "populateEstimatesFromFile", () => {
+                return Promise.resolve({ status: "failure", errors: [{code: "missing-rows", message: "TEST"}]});
+            });
+
+            await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
+
+            const actions = store.getActions();
+            const expectedPayload = [
+                {
+                    type: EstimateTypes.POPULATING_ESTIMATES,
+                    data: true
+                },
+                {
+                    type: EstimateTypes.ESTIMATE_SET_POPULATED,
+                    data: {setStatus: "invalid", errors: [{code: "missing-rows", message: "TEST"}]}
+                }
+            ];
+            expect(actions).to.eql(expectedPayload);
+        });
+
+        it("setStatus is empty if there is an unexpected error", async () => {
+            const store = createStore();
+
+            sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", () => {
+                return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
+            });
+            sandbox.setStubFunc(EstimatesService.prototype, "populateEstimatesFromFile", () => {
+                return Promise.resolve({ status: "failure", errors: [{code: "e-code", message: "TEST"}]});
+            });
+
+            await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
+
+            const actions = store.getActions();
+            const expectedPayload = [
+                {
+                    type: EstimateTypes.POPULATING_ESTIMATES,
+                    data: true
+                },
+                {
+                    type: EstimateTypes.ESTIMATE_SET_POPULATED,
+                    data: {setStatus: "empty", errors: [{code: "e-code", message: "TEST"}]}
+                }
+            ];
+            expect(actions).to.eql(expectedPayload);
+        });
+
+        it("can reset PopulateState", () => {
+            const result = estimatesActionCreators.resetPopulateState();
+            expect(result.type).to.eq(EstimateTypes.RESET_POPULATE_STATE);
+            expect(result.data).to.be.true;
+        });
+
+        it("can get upload token", async () => {
+            const store = createStore();
+
+            sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", () => {
+                return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
+            });
+            sandbox.setStubFunc(EstimatesService.prototype, "getUploadToken", () => {
+                return Promise.resolve("TOKEN");
+            });
+
+            await store.dispatch(estimatesActionCreators.getUploadToken());
+
+            const actions = store.getActions();
+            const expectedPayload = [
+                {
+                    type: EstimateTypes.UPLOAD_TOKEN_FETCHED,
+                    data: "TOKEN"
+                }
+            ];
+            expect(actions).to.eql(expectedPayload);
+        })
+
     });
 
 });
