@@ -93,3 +93,12 @@ ul li {
     line-height: 1.5em;
     margin-bottom:10px;
 }
+
+.login-status {
+    float: right;
+}
+
+#logout-button:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
