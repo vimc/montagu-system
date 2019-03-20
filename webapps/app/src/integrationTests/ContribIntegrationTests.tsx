@@ -5,7 +5,7 @@ import {createMemoryHistory} from 'history';
 
 import {
     CoverageSet, CreateBurdenEstimateSet, DemographicDataset,
-    Disease, ErrorInfo,
+    Disease,
     ModellingGroup, ModelRunParameterSet,
     ResponsibilitySetWithExpectations,
     Result, ScenarioTouchstoneAndCoverageSets, Touchstone,
