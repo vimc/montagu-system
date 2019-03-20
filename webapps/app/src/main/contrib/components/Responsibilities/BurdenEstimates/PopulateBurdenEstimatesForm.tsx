@@ -13,7 +13,7 @@ import {LoadingElement} from "../../../../shared/partials/LoadingElement/Loading
 
 const FileUploadClient = require('resumablejs');
 
-interface UploadEstimatesState {
+export interface UploadEstimatesState {
     file: ResumableFile,
     progress: number,
     isUploading: boolean,
@@ -30,7 +30,7 @@ interface PopulateEstimatesPublicProps {
 
 interface PopulateEstimatesProps extends PopulateEstimatesPublicProps {
     createUploadClient: (settings: ConfigurationHash) => Resumable,
-    getUploadToken: (fileName: string) => void,
+    getUploadToken: () => void,
     populateEstimateSet: (token: string) => void,
     hasPopulateSuccess: boolean;
     populateErrors: ErrorInfo[]
@@ -95,7 +95,6 @@ export class PopulateEstimatesFormComponent extends React.Component<PopulateEsti
         };
 
         this.uploadClient = this.props.createUploadClient(settings);
-        console.log(this.uploadClient);
         this.uploadClient.assignBrowse(this.uploaderElement, false);
 
         this.uploadClient.on('fileAdded', (file: ResumableFile) => {
@@ -110,7 +109,7 @@ export class PopulateEstimatesFormComponent extends React.Component<PopulateEsti
             });
 
             if (validationResult.isValid) {
-                this.props.getUploadToken(file.fileName)
+                this.props.getUploadToken()
             }
         });
 
@@ -208,12 +207,12 @@ export class PopulateEstimatesFormComponent extends React.Component<PopulateEsti
     }
 }
 
-const SelectedFile: React.FunctionComponent<UploadEstimatesState> =
+export const SelectedFile: React.FunctionComponent<UploadEstimatesState> =
     (props: { file: ResumableFile, validationResult: CustomValidationResult }) => {
 
         if (props.file) {
             return <span>
-                File selected: {props.file.fileName}
+                <span>File selected: {props.file.fileName}</span>
                 <Alert color="danger" isOpen={!props.validationResult.isValid}
                        className="mt-3 pathProblems">
                     {props.validationResult.content}
@@ -225,7 +224,7 @@ const SelectedFile: React.FunctionComponent<UploadEstimatesState> =
 
     };
 
-const mapStateToProps: (state: ContribAppState, props: PopulateEstimatesPublicProps) => Partial<PopulateEstimatesProps>
+export const mapStateToProps: (state: ContribAppState, props: PopulateEstimatesPublicProps) => Partial<PopulateEstimatesProps>
     = (state: ContribAppState, props: PopulateEstimatesPublicProps) => {
     return {
         ...props,
@@ -239,7 +238,7 @@ const mapStateToProps: (state: ContribAppState, props: PopulateEstimatesPublicPr
     }
 };
 
-const mapDispatchToProps:
+export const mapDispatchToProps:
     (dispatch: Dispatch<ContribAppState>, props: Partial<PopulateEstimatesProps>) => Partial<PopulateEstimatesProps>
     = (dispatch, props) => {
     return {
