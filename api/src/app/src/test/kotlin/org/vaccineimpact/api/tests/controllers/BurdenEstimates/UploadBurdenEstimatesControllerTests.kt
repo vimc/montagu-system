@@ -91,7 +91,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         )
 
         val mockContext = mockActionContext()
-        verifyLogicIsInvokedToPopulateSet(mockContext, mockEstimatesRepository(touchstoneSet), logic, touchstoneSet,
+        verifyLogicIsInvokedToPopulateSet(mockContext, mockEstimatesRepository(touchstoneSet), logic,
                 normalCSVData.asSequence(), expectedData)
     }
 
@@ -125,7 +125,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val mockContext = mockActionContext()
         val repo = mockEstimatesRepository(touchstoneSet, existingBurdenEstimateSet = defaultEstimateSet.copy(
                 type = BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC)))
-        verifyLogicIsInvokedToPopulateSet(mockContext, repo, logic, touchstoneSet,
+        verifyLogicIsInvokedToPopulateSet(mockContext, repo, logic,
                 csvData.asSequence(), expectedData)
     }
 
@@ -405,7 +405,6 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
             actionContext: ActionContext,
             repo: BurdenEstimateRepository,
             logic: BurdenEstimateLogic,
-            touchstoneVersionSet: SimpleDataSet<TouchstoneVersion, String>,
             actualData: Sequence<T>,
             expectedData: List<BurdenEstimateWithRunId>
     )
@@ -451,12 +450,6 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         on { burdenEstimates } doReturn repo
         on { modellingGroup } doReturn groupRepo
         on { scenario } doReturn scenarioRepository
-    }
-
-    private val mockStream = mock<InputStream> {
-        on { it.read() } doReturn 1
-        on { it.read(any()) } doReturn 1
-        on { it.read(any(), any(), any()) } doReturn 1
     }
 
 }

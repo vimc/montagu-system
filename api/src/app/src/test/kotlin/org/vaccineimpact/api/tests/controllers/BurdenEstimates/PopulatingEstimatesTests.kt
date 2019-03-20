@@ -10,9 +10,16 @@ import org.vaccineimpact.api.app.ChunkedFileManager.Companion.UPLOAD_DIR
 import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimateUploadController
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
+import org.vaccineimpact.api.app.errors.MissingRowsError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
+import org.vaccineimpact.api.models.BurdenEstimateWithRunId
+import org.vaccineimpact.api.models.ErrorInfo
+import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.TokenValidationException
 import org.vaccineimpact.api.security.WebTokenHelper
+import java.lang.NullPointerException
 
 class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 {
@@ -35,9 +42,70 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
 
-        assertThat(result).isEqualTo("OK")
+        assertThat(result.status).isEqualTo(ResultStatus.SUCCESS)
+        assertThat(result.data).isEqualTo("OK")
         verify(logic).populateBurdenEstimateSet(eq(1), eq("g1"), eq("t1"), eq("s1"), any())
         verify(logic).closeBurdenEstimateSet(eq(1), eq("g1"), eq("t1"), eq("s1"))
+    }
+
+    @Test
+    fun `MissingRowsErrors are caught and returned as a Result`()
+    {
+        val touchstoneSet = mockTouchstones()
+        val logic = mock<BurdenEstimateLogic> {
+            on { populateBurdenEstimateSet(any(), any(), any(), any(), any()) } doAnswer { args ->
+                // Force evaluation of sequence
+                args.getArgument<Sequence<BurdenEstimateWithRunId>>(4).toList()
+                Unit
+            }
+            on { closeBurdenEstimateSet(any(), any(), any(), any()) } doThrow MissingRowsError("TEST")
+        }
+
+        val uid = "uid"
+
+        createTempCSVFile(uid)
+
+        val mockContext = mockPopulateFromLocalFileActionContext("user.name")
+        val repo = mockEstimatesRepository(touchstoneSet)
+        val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true)
+        val mockTokenHelper = getMockTokenHelper("user.name", uid)
+
+        val sut = BurdenEstimateUploadController(mockContext, mock(), logic, repo, mock(), mockTokenHelper, cache)
+
+        val result = sut.populateBurdenEstimateSetFromLocalFile()
+
+        assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
+        assertThat(result.errors[0]).isEqualTo(ErrorInfo("missing-rows", "TEST"))
+    }
+
+    @Test
+    fun `arbitrary errors are not caught but thrown as usual`()
+    {
+        val touchstoneSet = mockTouchstones()
+        val logic = mock<BurdenEstimateLogic> {
+            on { populateBurdenEstimateSet(any(), any(), any(), any(), any()) } doAnswer { args ->
+                // Force evaluation of sequence
+                args.getArgument<Sequence<BurdenEstimateWithRunId>>(4).toList()
+                Unit
+            }
+            on { closeBurdenEstimateSet(any(), any(), any(), any()) } doThrow NullPointerException("TEST")
+        }
+
+        val uid = "uid"
+
+        createTempCSVFile(uid)
+
+        val mockContext = mockPopulateFromLocalFileActionContext("user.name")
+        val repo = mockEstimatesRepository(touchstoneSet)
+        val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true)
+        val mockTokenHelper = getMockTokenHelper("user.name", uid)
+
+        val sut = BurdenEstimateUploadController(mockContext, mock(), logic, repo, mock(), mockTokenHelper, cache)
+
+        assertThatThrownBy {
+            sut.populateBurdenEstimateSetFromLocalFile()
+        }.isInstanceOf(NullPointerException::class.java)
+
     }
 
     @Test
@@ -59,7 +127,8 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
 
-        assertThat(result).isEqualTo("OK")
+        assertThat(result.status).isEqualTo(ResultStatus.SUCCESS)
+        assertThat(result.data).isEqualTo("OK")
         assertThat(cache[uid]).isNull()
         assertThat(tempFile.exists()).isFalse()
         assertThat(file.exists()).isFalse()
@@ -106,8 +175,8 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
                 fakeCache)
 
         assertThatThrownBy { sut.populateBurdenEstimateSetFromLocalFile() }
-                .isInstanceOf(TokenValidationException::class.java)
-                .hasMessageContaining("Could not verify token")
+                .isInstanceOf(UnknownObjectError::class.java)
+                .hasMessageContaining("upload-token")
 
     }
 
