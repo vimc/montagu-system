@@ -1,95 +1,137 @@
-const API_ROOT = "/api/v1/"
+const montaguLogin = ( function() {
 
-var montaguUserName;
+    const API_ROOT = "/api/v1/";
+    const TOKEN_KEY = "accessToken";
 
-function updateLoginView(loggedIn=false){
-    var statusHtml, formHtml
-    if (loggedIn) {
-        statusHtml =
-            `<span>Logged in as ${montaguUserName} |</span>
+    let montaguUserName;
+
+    function updateLoginView(loggedIn = false) {
+        let statusHtml, formHtml
+        if (loggedIn) {
+            statusHtml =
+                `<span>Logged in as ${montaguUserName} |</span>
              <span id="logout-button"> Log out</span>`
-        formHtml = '';
+            formHtml = '';
 
-    }
-    else {
-        formHtml = `
+        }
+        else {
+            formHtml = `
+        <div>You will need to log in to access the Portals or APIs.</div>
         <div>
             <input id="email-input" name="email" placeholder="Email address" type="text" value=""/>
             <input id="password-input" name="password" placeholder="Password" type="password" value="">
             <button id="login-button">Log in</button>
         </div>`
 
-        statusHtml = '';
+            statusHtml = '';
+        }
+
+        $(".login-status").html(statusHtml);
+        $(".login-form").html(formHtml);
+
+        $("#login-button").click(montaguLogin);
+        $("#logout-button").click(montaguLogout);
     }
 
-    $(".login-status").html(statusHtml);
-    $(".login-form").html(formHtml);
+    function montaguLogin() {
+        const email = $("#email-input").val();
+        const password = $("#password-input").val()
+        $.ajax({
+            type: "POST",
+            url: API_ROOT + "authenticate/",
+            data: "grant_type=client_credentials",
+            headers: {
+                "Authorization": "Basic " + btoa(`${email}:${password}`),
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            error: montaguApiError,
+            success: montaguLoginSuccess
+        });
+    }
 
-    $("#login-button").click(montaguLogin);
-    $("#logout-button").click(montaguLogout);
-}
+    function montaguLogout() {
+        writeTokenToLocalStorage('');
+        $.ajax({
+            type: "GET",
+            url: API_ROOT + "/logout/",
+            error: montaguApiError,
+            success: montaguLogoutSuccess
+        });
+    }
 
-function montaguLogin() {
-    const email = $("#email-input").val();
-    const password = $("#password-input").val()
-    $.ajax( {
-        type: "POST",
-        url: API_ROOT + "authenticate/",
-        data: "grant_type=client_credentials",
-        headers: {
-            "Authorization": "Basic " + btoa(`${email}:${password}`),
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        error: montaguApiError,
-        success: montaguLoginSuccess
-    });
-}
+    function montaguApiError() {
+        alert("api error");
+    }
 
-function montaguLogout() {
-    $.ajax({
-        type: "GET",
-        url: API_ROOT + "/logout/",
-        error: montaguApiError,
-        success: montaguLogoutSuccess
-    });
-}
+    function montaguLoginSuccess(data) {
 
-function montaguApiError() {
-    alert("api error");
-}
+        const token = data.access_token;
+        const decodedToken = decodeToken(token);
 
-function montaguLoginSuccess(data) {
+        montaguUserName = decodedToken.sub;
 
-    //inflate token
-    const token = data.access_token;
-    const decoded = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
-    const inflated = pako.inflate(decoded, {to: 'string'});
+        writeTokenToLocalStorage(token);
 
-    //jwt decode token
-    const jwtDecoded = jwt_decode(inflated);
-    montaguUserName = jwtDecoded.sub;
+        //Call set-cookies to complete login
+        $.ajax({
+            type: "GET",
+            url: API_ROOT + "set-cookies/",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            error: montaguApiError,
+            success: montaguSetCookiesSuccess
+        });
+    }
 
-    //Call set-cookies to complete login
-    $.ajax({
-        type: "GET",
-        url: API_ROOT + "set-cookies/",
-        headers: {
-            "Authorization": "Bearer " + token
-        },
-        error: montaguApiError,
-        success: montaguSetCookiesSuccess
-    });
-}
+    function decodeToken(token) {
+        const decoded = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
+        const inflated = pako.inflate(decoded, {to: 'string'});
 
-function montaguLogoutSuccess(data) {
-    updateLoginView(false);
-}
+        return jwt_decode(inflated);
+    }
 
-function montaguSetCookiesSuccess(data) {
-   updateLoginView(true);
-}
+    function montaguLogoutSuccess(data) {
+        updateLoginView(false);
+    }
+
+    function montaguSetCookiesSuccess(data) {
+        updateLoginView(true);
+    }
+
+    function writeTokenToLocalStorage(token) {
+        window.localStorage.setItem(TOKEN_KEY, token);
+    }
+
+    function readTokenFromLocalStorage() {
+        return window.localStorage.getItem(TOKEN_KEY);
+    }
+
+    return {
+        initialise: function () {
+            let loggedIn = false;
+
+            //Check if we are logged in
+            const token = readTokenFromLocalStorage();
+            if (token && token !== "null") {
+                const decodedToken = decodeToken(token);
+
+                //don't allow login if expiry is past
+                const expiry = decodedToken.exp;
+                const now = new Date().getTime() / 1000; //token exp doesn't include milliseconds
+
+                if (expiry > now) {
+                    loggedIn = true;
+                    montaguUserName = decodedToken.sub;
+                }
+            }
+
+            updateLoginView(loggedIn);
+        }
+    };
+
+})();
 
 $( document ).ready(function() {
-    //TODO: Check login status
-    updateLoginView();
+    montaguLogin.initialise();
 });
