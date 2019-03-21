@@ -1,10 +1,9 @@
 import * as React from "react";
-import {UploadFileForm} from "../../../../shared/components/UploadFileForm";
 import {helpers} from "../../../../shared/Helpers";
 import {Alert} from "reactstrap";
 import {BurdenEstimateSet, ErrorInfo, Result} from "../../../../shared/models/Generated";
 import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
-import {checkFileExtensionIsCSV} from "../../../../shared/validation/FileValidationHelpers";
+import {PopulateEstimatesForm} from "./PopulateBurdenEstimatesForm";
 
 export interface UploadBurdenEstimatesFormComponentProps {
     touchstoneId: string;
@@ -53,7 +52,7 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
                 <p className="render-whitespace">
                     {this.state.errors[0] && this.state.errors[0].message}
                 </p>
-                 Please correct the data and re-upload.
+                Please correct the data and re-upload.
             </Alert>
             <Alert color="success" isOpen={this.state.hasUploadSuccess}>
                 {this.uploadSuccessMessage}
@@ -67,14 +66,10 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
     renderUploadForm(): JSX.Element {
         if (this.props.canUpload) {
             const {groupId, touchstoneId, scenarioId, estimateSet} = this.props;
-            const redirectUrl = encodeURIComponent(helpers.getCurrentLocation());
-            const url = `/modelling-groups/${groupId}/responsibilities/${touchstoneId}/${scenarioId}/estimate-sets/${estimateSet.id}/?redirectResultTo=${redirectUrl}`;
             return <div className={"bg-light p-3"}>
-                <h5>Second step: upload a CSV containing your central estimates</h5><UploadFileForm href={url}
-                                   enableSubmit={true}
-                                   successMessage={this.uploadSuccessMessage}
-                                   validatePath={checkFileExtensionIsCSV}
-            /></div>
+                <h5>Second step: upload a CSV containing your central estimates</h5>
+                <PopulateEstimatesForm groupId={groupId} touchstoneId={touchstoneId} scenarioId={scenarioId} setId={estimateSet.id}/>
+            </div>
         } else {
             return null;
         }

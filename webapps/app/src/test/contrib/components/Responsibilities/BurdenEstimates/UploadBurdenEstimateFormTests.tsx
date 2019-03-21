@@ -4,7 +4,6 @@ import {shallow} from "enzyme";
 
 import "../../../../helper";
 import {Sandbox} from "../../../../Sandbox";
-import {UploadFileForm} from "../../../../../main/shared/components/UploadFileForm";
 import {CreateBurdenEstimateSetForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 import {
     UploadBurdenEstimatesForm,
@@ -13,6 +12,7 @@ import {
 import {helpers} from "../../../../../main/shared/Helpers";
 import {Alert} from "reactstrap"
 import {mockBurdenEstimateSet} from "../../../../mocks/mockModels";
+import {PopulateEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/PopulateBurdenEstimatesForm";
 
 describe("UploadEstimatesForm", () => {
     const sandbox = new Sandbox();
@@ -32,7 +32,7 @@ describe("UploadEstimatesForm", () => {
         const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
 
         expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(1);
-        expect(rendered.find(UploadFileForm)).to.have.lengthOf(0);
+        expect(rendered.find(PopulateEstimatesForm)).to.have.lengthOf(0);
     });
 
     it("renders upload form if canUpload", () => {
@@ -50,32 +50,13 @@ describe("UploadEstimatesForm", () => {
         const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
 
         expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0);
-        const form = rendered.find(UploadFileForm);
+        const form = rendered.find(PopulateEstimatesForm);
         expect(form).to.have.lengthOf(1);
-        expect(form.prop("href")).to.equal(
-            "/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimate-sets/123/?redirectResultTo=%2Fsome-url%2F"
-        );
-    });
+        expect(form.prop("groupId")).to.equal("group-1");
+        expect(form.prop("touchstoneId")).to.equal("touchstone-1");
+        expect(form.prop("scenarioId")).to.equal("scenario-1");
+        expect(form.prop("setId")).to.equal(set.id);
 
-
-    it("does not render forms after successful upload", () => {
-
-        const props: UploadBurdenEstimatesFormComponentProps = {
-            groupId: "group-1",
-            touchstoneId: "touchstone-1",
-            scenarioId: "scenario-1",
-            estimateSet: null,
-            canUpload: false,
-            canCreate: true,
-        };
-
-        sandbox.setStub(helpers, "ingestQueryStringAndReturnResult")
-            .returns({status: "success", data: null, errors: []});
-
-        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
-
-        expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0);
-        expect(rendered.find(UploadFileForm)).to.have.lengthOf(0);
     });
 
     it("does not render forms if can not upload or create", () => {
@@ -92,7 +73,7 @@ describe("UploadEstimatesForm", () => {
         const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
 
         expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0);
-        expect(rendered.find(UploadFileForm)).to.have.lengthOf(0);
+        expect(rendered.find(PopulateEstimatesForm)).to.have.lengthOf(0);
     });
 
     it("shows alert", () => {
@@ -109,7 +90,7 @@ describe("UploadEstimatesForm", () => {
         const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
 
         expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0);
-        expect(rendered.find(UploadFileForm)).to.have.lengthOf(0);
+        expect(rendered.find(PopulateEstimatesForm)).to.have.lengthOf(0);
     });
 
     it("does not show alert", () => {

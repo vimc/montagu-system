@@ -48,7 +48,8 @@ export const estimatesActionCreators = {
             const result = await (new EstimatesService(dispatch, getState))
                 .populateEstimatesFromFile(ids.groupId, ids.touchstoneId, ids.scenarioId, ids.estimateSetId, uploadToken);
 
-            dispatch(this._estimateSetPopulated(result))
+            dispatch(this._estimateSetPopulated(result));
+            dispatch(responsibilitiesActionCreators.refreshResponsibilities())
         }
     },
 
