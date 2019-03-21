@@ -28,6 +28,7 @@ body {
 h1 {
     font-size: 24pt;
     margin-bottom: 30px;
+    margin-top: 10px;
     border-bottom: 1px dashed;
 }
 
@@ -84,4 +85,9 @@ td.portal {
 #logout-button:hover {
     text-decoration: underline;
     cursor: pointer;
+}
+
+ul li {
+    line-height: 1.5em;
+    margin-bottom: 10px;
 }
