@@ -143,7 +143,7 @@ describe("Estimates actions tests", () => {
                     data: {setStatus: "complete", errors: [] as ErrorInfo[]}
                 },
                 {
-                    type: "TEST"
+                    type: "test"
                 }
             ];
             expect(actions).to.eql(expectedPayload);
@@ -174,7 +174,7 @@ describe("Estimates actions tests", () => {
                     data: {setStatus: "invalid", errors: [{code: "missing-rows", message: "TEST"}]}
                 },
                 {
-                    type: "TEST"
+                    type: "test"
                 }
             ];
             expect(actions).to.eql(expectedPayload);
@@ -205,7 +205,7 @@ describe("Estimates actions tests", () => {
                     data: {setStatus: "empty", errors: [{code: "e-code", message: "TEST"}]}
                 },
                 {
-                    type: "TEST"
+                    type: "test"
                 }
             ];
             expect(actions).to.eql(expectedPayload);
