@@ -128,7 +128,7 @@ describe("Estimates actions tests", () => {
                 return Promise.resolve("OK");
             });
 
-            sandbox.setStub(responsibilitiesActionCreators, "refreshResponsibilities");
+            sandbox.setStubReduxAction(responsibilitiesActionCreators, "refreshResponsibilities");
 
             await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
 
@@ -141,6 +141,9 @@ describe("Estimates actions tests", () => {
                 {
                     type: EstimateTypes.ESTIMATE_SET_POPULATED,
                     data: {setStatus: "complete", errors: [] as ErrorInfo[]}
+                },
+                {
+                    type: "TEST"
                 }
             ];
             expect(actions).to.eql(expectedPayload);
@@ -156,7 +159,7 @@ describe("Estimates actions tests", () => {
                 return Promise.resolve({ status: "failure", errors: [{code: "missing-rows", message: "TEST"}]});
             });
 
-            sandbox.setStub(responsibilitiesActionCreators, "refreshResponsibilities");
+            sandbox.setStubReduxAction(responsibilitiesActionCreators, "refreshResponsibilities");
 
             await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
 
@@ -169,6 +172,9 @@ describe("Estimates actions tests", () => {
                 {
                     type: EstimateTypes.ESTIMATE_SET_POPULATED,
                     data: {setStatus: "invalid", errors: [{code: "missing-rows", message: "TEST"}]}
+                },
+                {
+                    type: "TEST"
                 }
             ];
             expect(actions).to.eql(expectedPayload);
@@ -184,7 +190,7 @@ describe("Estimates actions tests", () => {
                 return Promise.resolve({ status: "failure", errors: [{code: "e-code", message: "TEST"}]});
             });
 
-            sandbox.setStub(responsibilitiesActionCreators, "refreshResponsibilities");
+            sandbox.setStubReduxAction(responsibilitiesActionCreators, "refreshResponsibilities");
 
             await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
 
@@ -197,6 +203,9 @@ describe("Estimates actions tests", () => {
                 {
                     type: EstimateTypes.ESTIMATE_SET_POPULATED,
                     data: {setStatus: "empty", errors: [{code: "e-code", message: "TEST"}]}
+                },
+                {
+                    type: "TEST"
                 }
             ];
             expect(actions).to.eql(expectedPayload);
@@ -212,7 +221,7 @@ describe("Estimates actions tests", () => {
                 return Promise.resolve({ status: "failure", errors: [{code: "e-code", message: "TEST"}]});
             });
 
-            const refreshResponsibilitiesStub = sandbox.setStub(responsibilitiesActionCreators, "refreshResponsibilities");
+            const refreshResponsibilitiesStub = sandbox.setStubReduxAction(responsibilitiesActionCreators, "refreshResponsibilities");
 
             await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
 
