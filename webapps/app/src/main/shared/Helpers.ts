@@ -58,6 +58,10 @@ export function padZero(number: number) {
     return ('0' + number).slice(-2);
 }
 
+export function roundToOneDecimalPlace(number: number) {
+    return Math.round(number * 10) / 10
+}
+
 export const helpers = {
     queryStringAsObject(): any {
         const obj = {} as any;

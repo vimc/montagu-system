@@ -11,6 +11,7 @@ import {ExtendedResponsibilitySet} from "../../../main/contrib/models/Responsibi
 import {ResponsibilitiesTypes} from "../../../main/contrib/actionTypes/ResponsibilitiesTypes";
 import {CreateBurdenEstimateSet, ErrorInfo, Result, ResultStatus} from "../../../main/shared/models/Generated";
 import {BurdenOutcome, EstimateTypes} from "../../../main/contrib/actionTypes/EstimateTypes";
+import {responsibilitiesActionCreators} from "../../../main/contrib/actions/responsibilitiesActionCreators";
 
 describe("Estimates actions tests", () => {
     const sandbox = new Sandbox();
@@ -127,6 +128,8 @@ describe("Estimates actions tests", () => {
                 return Promise.resolve("OK");
             });
 
+            sandbox.setStub(responsibilitiesActionCreators, "refreshResponsibilities");
+
             await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
 
             const actions = store.getActions();
@@ -152,6 +155,8 @@ describe("Estimates actions tests", () => {
             sandbox.setStubFunc(EstimatesService.prototype, "populateEstimatesFromFile", () => {
                 return Promise.resolve({ status: "failure", errors: [{code: "missing-rows", message: "TEST"}]});
             });
+
+            sandbox.setStub(responsibilitiesActionCreators, "refreshResponsibilities");
 
             await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
 
@@ -179,6 +184,8 @@ describe("Estimates actions tests", () => {
                 return Promise.resolve({ status: "failure", errors: [{code: "e-code", message: "TEST"}]});
             });
 
+            sandbox.setStub(responsibilitiesActionCreators, "refreshResponsibilities");
+
             await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
 
             const actions = store.getActions();
@@ -193,6 +200,23 @@ describe("Estimates actions tests", () => {
                 }
             ];
             expect(actions).to.eql(expectedPayload);
+        });
+
+        it("refreshes responsibilities after set population", async () => {
+            const store = createStore();
+
+            sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", () => {
+                return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
+            });
+            sandbox.setStubFunc(EstimatesService.prototype, "populateEstimatesFromFile", () => {
+                return Promise.resolve({ status: "failure", errors: [{code: "e-code", message: "TEST"}]});
+            });
+
+            const refreshResponsibilitiesStub = sandbox.setStub(responsibilitiesActionCreators, "refreshResponsibilities");
+
+            await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
+
+            expect(refreshResponsibilitiesStub.called).to.be.true;
         });
 
         it("can reset PopulateState", () => {

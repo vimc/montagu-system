@@ -57,7 +57,6 @@ class ScenarioChartComponent extends React.Component<ChartProps> {
         const children = [];
         const numChildren = this.ageRange();
         const ages = this.props.ages;
-        console.log(ages);
         for (let x = ages.minimum_inclusive; x <= ages.maximum_inclusive; x++) {
             const data = this.props.data[x.toString()];
             if (data) {

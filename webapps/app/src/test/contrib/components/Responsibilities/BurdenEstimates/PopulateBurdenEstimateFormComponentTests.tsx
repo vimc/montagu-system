@@ -183,7 +183,7 @@ describe("Populate Burden Estimates Form Component tests", () => {
         expect(result.state().isUploading).to.be.true;
         expect(result.find(".progress").first().props().style).to.have.property("display", "block");
         const progressBar = result.find(".progress-bar").first();
-        expect(progressBar.props().style).to.have.property("width", "30%");
+        expect(progressBar.props().style).to.have.property("width", "27%");
         expect(progressBar.props().className).to.eq("progress-bar bg-success");
 
         const uploadButton = result.find(".submit.start").first();

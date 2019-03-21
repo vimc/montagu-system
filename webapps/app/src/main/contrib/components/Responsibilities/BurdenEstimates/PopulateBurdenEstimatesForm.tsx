@@ -10,6 +10,7 @@ import {estimatesActionCreators} from "../../../actions/estimatesActionCreators"
 import {connect} from "react-redux";
 import {branch, compose, renderComponent} from "recompose";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {roundToOneDecimalPlace} from "../../../../shared/Helpers";
 
 const FileUploadClient = require('resumablejs');
 
@@ -52,7 +53,7 @@ const baseSettings: ConfigurationHash = {
     chunkSizeParameterName: "chunkSize"
 };
 
-export const  initialUploadState: UploadEstimatesState = {
+export const initialUploadState: UploadEstimatesState = {
     progress: 0,
     file: null,
     isUploading: false,
@@ -71,7 +72,8 @@ export class PopulateEstimatesFormComponent extends React.Component<PopulateEsti
     }
 
     resetUploadState = (removeFile: Boolean) => {
-        this.setState({...initialUploadState,
+        this.setState({
+            ...initialUploadState,
             file: removeFile ? null : this.state.file,
             validationResult: removeFile ? null : this.state.validationResult
         })
@@ -117,7 +119,7 @@ export class PopulateEstimatesFormComponent extends React.Component<PopulateEsti
 
             this.setState({
                 isUploading: true,
-                progress: Math.round(this.uploadClient.progress() * 10) / 10 * 100
+                progress: roundToOneDecimalPlace(this.uploadClient.progress() * 100)
             });
         });
 
@@ -133,7 +135,7 @@ export class PopulateEstimatesFormComponent extends React.Component<PopulateEsti
             try {
                 const result = JSON.parse(error) as Result;
                 uploadErrors = result.errors
-            } catch(e) {
+            } catch (e) {
                 uploadErrors.push({code: "error", message: "Error contacting server"})
             }
             this.setState({
@@ -188,7 +190,7 @@ export class PopulateEstimatesFormComponent extends React.Component<PopulateEsti
                        toggle={() => this.resetUploadState(false)}>
                     {this.state.uploadErrors.length > 0 && this.state.uploadErrors[0].message}
                 </Alert>
-                <Alert color="danger" id={"populate-errors"}  isOpen={this.props.populateErrors.length > 0}
+                <Alert color="danger" id={"populate-errors"} isOpen={this.props.populateErrors.length > 0}
                        toggle={this.props.resetPopulateState}>
                     {this.props.populateErrors.length > 0 && this.props.populateErrors[0].message}
                 </Alert>
