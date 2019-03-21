@@ -17,11 +17,12 @@ const montaguLogin = ( function() {
         else {
             formHtml = `
             <p>You will need to log in to access the Portals or APIs.</p>
-            <div class="fields">
+            <div>
                 <input id="email-input" name="email" placeholder="Email address" type="text" value=""/>
                 <input id="password-input" name="password" placeholder="Password" type="password" value="">
                 <button id="login-button" class="button" type="submit">Log in</button>
-            </div>`
+            </div>
+            <div id="login-error" class="text-danger"></div>`
 
             statusHtml = '';
         }
@@ -59,8 +60,14 @@ const montaguLogin = ( function() {
         });
     }
 
-    function montaguApiError() {
-        alert("api error");
+    function montaguApiError( jqXHR, textStatus, errorThrown ) {
+        let errorText;
+        if (jqXHR && jqXHR.status === 401) {
+            errorText = "Your email address or password is incorrect.";
+        } else {
+            errorText = "An error occurred.";
+        }
+        $("#login-error").html(errorText);
     }
 
     function montaguLoginSuccess(data) {
