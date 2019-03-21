@@ -67,5 +67,70 @@ describe('Estimates reducer tests', () => {
         });
 
         expect(result.chartType).to.eq(BurdenOutcome.CASES);
-    })
+    });
+
+    it("records that estimate set populating in progress", () => {
+        const result = estimatesReducer(estimatesInitialState, {
+            type: EstimateTypes.POPULATING_ESTIMATES,
+            data: true
+        });
+
+        expect(result.populatingInProgress).to.be.true;
+    });
+
+    it("sets populate state after set is populated with errors", () => {
+
+        const mockErrors =  [{code: "e", message: "e"}];
+        const mockState = {...estimatesInitialState, populatingInProgress: true};
+        const result = estimatesReducer(mockState, {
+            type: EstimateTypes.ESTIMATE_SET_POPULATED,
+            data: {setStatus: "invalid", errors: mockErrors}
+        });
+
+        expect(result.populateErrors).to.have.members(mockErrors);
+        expect(result.hasPopulateSuccess).to.be.false;
+        expect(result.populatingInProgress).to.be.false;
+    });
+
+    it("sets populate state after set is populated successfully", () => {
+
+        const mockState = {...estimatesInitialState, populatingInProgress: true};
+
+        const result = estimatesReducer(mockState, {
+            type: EstimateTypes.ESTIMATE_SET_POPULATED,
+            data: {setStatus: "complete", errors: []}
+        });
+
+        expect(result.populateErrors).to.have.lengthOf(0);
+        expect(result.hasPopulateSuccess).to.be.true;
+        expect(result.populatingInProgress).to.be.false;
+    });
+
+    it("resets populate state", () => {
+
+        const mockState = {
+            ...estimatesInitialState,
+            hasPopulateSuccess: true,
+            populateErrors: [{code: "e", message: ""}]
+        };
+
+        const result = estimatesReducer(mockState, {
+            type: EstimateTypes.RESET_POPULATE_STATE,
+            data: true
+        });
+
+        expect(result.hasPopulateSuccess).to.be.false;
+        expect(result.populateErrors).to.have.lengthOf(0);
+    });
+
+    it("sets upload token", () => {
+
+        const result = estimatesReducer(estimatesInitialState, {
+            type: EstimateTypes.UPLOAD_TOKEN_FETCHED,
+            data: "TOKEN"
+        });
+
+        expect(result.uploadToken).to.eq("TOKEN");
+    });
+
 });
