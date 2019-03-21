@@ -16,12 +16,12 @@ const montaguLogin = ( function() {
         }
         else {
             formHtml = `
-        <div>You will need to log in to access the Portals or APIs.</div>
-        <div>
-            <input id="email-input" name="email" placeholder="Email address" type="text" value=""/>
-            <input id="password-input" name="password" placeholder="Password" type="password" value="">
-            <button id="login-button">Log in</button>
-        </div>`
+            <p>You will need to log in to access the Portals or APIs.</p>
+            <div class="fields">
+                <input id="email-input" name="email" placeholder="Email address" type="text" value=""/>
+                <input id="password-input" name="password" placeholder="Password" type="password" value="">
+                <button id="login-button" class="button" type="submit">Log in</button>
+            </div>`
 
             statusHtml = '';
         }
@@ -132,6 +132,6 @@ const montaguLogin = ( function() {
 
 })();
 
-$( document ).ready(function() {
+$( document ).ready( function() {
     montaguLogin.initialise();
 });
