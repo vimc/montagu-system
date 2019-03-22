@@ -115,6 +115,7 @@ const montaguLogin = ( function() {
     }
 
     return {
+        test: 4,
         initialise: function () {
             let loggedIn = false;
 
@@ -139,6 +140,4 @@ const montaguLogin = ( function() {
 
 })();
 
-$( document ).ready( function() {
-    montaguLogin.initialise();
-});
+module.exports = montaguLogin;
