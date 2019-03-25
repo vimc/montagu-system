@@ -140,7 +140,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const roles: string[] = await (new UsersService(this.store.dispatch, this.store.getState))
                 .getGlobalRoles();
 
-            expect(roles).to.have.length(13)
+            expect(roles).to.have.length(12)
         });
 
         it("can create a user", async () => {
