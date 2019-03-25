@@ -1,11 +1,14 @@
 import * as React from "react";
-import {helpers} from "../../../../shared/Helpers";
 import {Alert} from "reactstrap";
-import {BurdenEstimateSet, ErrorInfo, Result} from "../../../../shared/models/Generated";
+import {BurdenEstimateSet, ErrorInfo} from "../../../../shared/models/Generated";
 import {CreateBurdenEstimateSetForm} from "./CreateBurdenEstimateSetForm";
 import {PopulateEstimatesForm} from "./PopulateBurdenEstimatesForm";
+import {Dispatch} from "redux";
+import {ContribAppState} from "../../../reducers/contribAppReducers";
+import {estimatesActionCreators} from "../../../actions/estimatesActionCreators";
+import {connect} from "react-redux";
 
-export interface UploadBurdenEstimatesFormComponentProps {
+export interface UploadBurdenEstimatesFormPublicProps {
     touchstoneId: string;
     scenarioId: string;
     groupId: string;
@@ -14,48 +17,32 @@ export interface UploadBurdenEstimatesFormComponentProps {
     canCreate: boolean;
 }
 
-interface State {
-    hasUploadSuccess: boolean;
-    errors: ErrorInfo[]
-
+export interface UploadBurdenEstimatesFormComponentProps extends UploadBurdenEstimatesFormPublicProps {
+    hasSuccess: boolean;
+    errors: ErrorInfo[];
+    resetPopulateState: () => void;
 }
 
-export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstimatesFormComponentProps, State> {
-    private uploadSuccessMessage = "Success! You have uploaded a new set of burden estimates";
-
-    constructor(props: UploadBurdenEstimatesFormComponentProps) {
-        super(props);
-        const result = helpers.ingestQueryStringAndReturnResult();
-        this.state = {
-            hasUploadSuccess: result != null && (result as Result).status == "success",
-            errors: result ? result.errors : []
-        }
-    }
-
-    onDismiss() {
-        this.setState({
-            errors: []
-        })
-    }
+export class UploadBurdenEstimatesFormComponent extends React.Component<UploadBurdenEstimatesFormComponentProps> {
 
     render() {
-        const hasError = this.state.errors.length > 0;
+        const hasError = this.props.errors && this.props.errors.length > 0;
 
-        const createForm = this.props.canCreate && !this.props.canUpload && !this.state.hasUploadSuccess ?
+        const createForm = this.props.canCreate && !this.props.canUpload && !this.props.hasSuccess ?
             <CreateBurdenEstimateSetForm groupId={this.props.groupId}
                                          touchstoneId={this.props.touchstoneId}
                                          scenarioId={this.props.scenarioId}/>
             : null;
 
         return <div>
-            <Alert color="danger" isOpen={hasError} toggle={this.onDismiss.bind(this)}>
+            <Alert color="danger" isOpen={hasError} toggle={this.props.resetPopulateState}>
                 <p className="render-whitespace">
-                    {this.state.errors[0] && this.state.errors[0].message}
+                    {hasError && this.props.errors[0].message}
                 </p>
                 Please correct the data and re-upload.
             </Alert>
-            <Alert color="success" isOpen={this.state.hasUploadSuccess}>
-                {this.uploadSuccessMessage}
+            <Alert color="success" isOpen={this.props.hasSuccess} toggle={this.props.resetPopulateState}>
+                Success! You have uploaded a new set of burden estimates
             </Alert>
 
             {createForm}
@@ -75,3 +62,25 @@ export class UploadBurdenEstimatesForm extends React.Component<UploadBurdenEstim
         }
     }
 }
+
+export const mapStateToProps: (state: ContribAppState, props: UploadBurdenEstimatesFormPublicProps)
+    => Partial<UploadBurdenEstimatesFormComponentProps>
+    = (state: ContribAppState, props: UploadBurdenEstimatesFormPublicProps) => {
+    return {
+        ...props,
+        errors: state.estimates.populateErrors,
+        hasSuccess: state.estimates.hasPopulateSuccess
+    }
+};
+
+export const mapDispatchToProps:
+    (dispatch: Dispatch<ContribAppState>, props: UploadBurdenEstimatesFormComponentProps)
+        => UploadBurdenEstimatesFormComponentProps
+    = (dispatch, props) => {
+    return {
+        ...props,
+        resetPopulateState: () => dispatch(estimatesActionCreators.resetPopulateState())
+    }
+};
+
+export const UploadBurdenEstimatesForm = connect(mapStateToProps, mapDispatchToProps)(UploadBurdenEstimatesFormComponent);

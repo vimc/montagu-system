@@ -190,13 +190,6 @@ export class PopulateEstimatesFormComponent extends React.Component<PopulateEsti
                        toggle={() => this.resetUploadState(false)}>
                     {this.state.uploadErrors.length > 0 && this.state.uploadErrors[0].message}
                 </Alert>
-                <Alert color="danger" id={"populate-errors"} isOpen={this.props.populateErrors.length > 0}
-                       toggle={this.props.resetPopulateState}>
-                    {this.props.populateErrors.length > 0 && this.props.populateErrors[0].message}
-                </Alert>
-                <Alert color="success" isOpen={this.props.hasPopulateSuccess} toggle={this.props.resetPopulateState}>
-                    Success! You have uploaded a new burden estimate set
-                </Alert>
                 <button disabled={this.uploadDisabled()}
                         className="submit start"
                         onClick={this.startUpload}>Upload
