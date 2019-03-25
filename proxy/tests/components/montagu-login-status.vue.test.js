@@ -30,7 +30,5 @@ test('emits logout event when link clicked', () => {
 
    expect(wrapper.emitted('logout')).toBeTruthy();
 
-   expect(1+2).toBe(4, "testing test failure worked!");
-
 });
 
