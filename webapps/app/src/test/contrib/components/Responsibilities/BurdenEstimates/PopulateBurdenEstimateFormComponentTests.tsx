@@ -213,15 +213,6 @@ describe("Populate Burden Estimates Form Component tests", () => {
         expect(newState.file.fileName).to.eq("test.csv")
     });
 
-    it("shows success message on file population success", () => {
-
-        const result = getComponent({hasPopulateSuccess: true});
-        fakeUploadClient.emit("fileSuccess");
-
-        const successAlert = result.find(Alert).filterWhere((alert) => alert.props().color == "success");
-        expect(successAlert.props().isOpen).to.be.true;
-    });
-
     it("populates estimates on file upload success", () => {
 
         const populateEstimateSet = sandbox.sinon.stub();

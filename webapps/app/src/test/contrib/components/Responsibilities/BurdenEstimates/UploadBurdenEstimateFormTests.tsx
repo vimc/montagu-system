@@ -1,18 +1,23 @@
 import * as React from "react";
 import {expect} from "chai";
-import {shallow} from "enzyme";
+import {mount, shallow} from "enzyme";
 
 import "../../../../helper";
 import {Sandbox} from "../../../../Sandbox";
 import {CreateBurdenEstimateSetForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/CreateBurdenEstimateSetForm";
 import {
+    mapDispatchToProps,
     UploadBurdenEstimatesForm,
-    UploadBurdenEstimatesFormComponentProps
+    UploadBurdenEstimatesFormComponent,
+    UploadBurdenEstimatesFormComponentProps, UploadBurdenEstimatesFormPublicProps
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {helpers} from "../../../../../main/shared/Helpers";
 import {Alert} from "reactstrap"
 import {mockBurdenEstimateSet} from "../../../../mocks/mockModels";
 import {PopulateEstimatesForm} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/PopulateBurdenEstimatesForm";
+import {mockContribState} from "../../../../mocks/mockStates";
+import {createMockContribStore} from "../../../../mocks/mockStore";
+import {estimatesActionCreators} from "../../../../../main/contrib/actions/estimatesActionCreators";
 
 describe("UploadEstimatesForm", () => {
     const sandbox = new Sandbox();
@@ -27,9 +32,13 @@ describe("UploadEstimatesForm", () => {
             estimateSet: null,
             canUpload: false,
             canCreate: true,
+            hasSuccess: false,
+            errors: [],
+            resetPopulateState: () => {
+            }
         };
 
-        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+        const rendered = shallow(<UploadBurdenEstimatesFormComponent {...props} />);
 
         expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(1);
         expect(rendered.find(PopulateEstimatesForm)).to.have.lengthOf(0);
@@ -45,9 +54,14 @@ describe("UploadEstimatesForm", () => {
             estimateSet: set,
             canUpload: true,
             canCreate: true,
+
+            hasSuccess: false,
+            errors: [],
+            resetPopulateState: () => {
+            }
         };
 
-        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+        const rendered = shallow(<UploadBurdenEstimatesFormComponent {...props} />);
 
         expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0);
         const form = rendered.find(PopulateEstimatesForm);
@@ -68,9 +82,13 @@ describe("UploadEstimatesForm", () => {
             estimateSet: null,
             canUpload: false,
             canCreate: false,
+            hasSuccess: false,
+            errors: [],
+            resetPopulateState: () => {
+            }
         };
 
-        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+        const rendered = shallow(<UploadBurdenEstimatesFormComponent {...props} />);
 
         expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0);
         expect(rendered.find(PopulateEstimatesForm)).to.have.lengthOf(0);
@@ -84,10 +102,14 @@ describe("UploadEstimatesForm", () => {
             scenarioId: "scenario-1",
             estimateSet: null,
             canUpload: false,
-            canCreate: false
+            canCreate: false,
+            hasSuccess: false,
+            errors: [],
+            resetPopulateState: () => {
+            }
         };
 
-        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+        const rendered = shallow(<UploadBurdenEstimatesFormComponent {...props} />);
 
         expect(rendered.find(CreateBurdenEstimateSetForm)).to.have.lengthOf(0);
         expect(rendered.find(PopulateEstimatesForm)).to.have.lengthOf(0);
@@ -104,9 +126,13 @@ describe("UploadEstimatesForm", () => {
             estimateSet: null,
             canUpload: false,
             canCreate: false,
+            hasSuccess: false,
+            errors: [],
+            resetPopulateState: () => {
+            }
         };
 
-        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+        const rendered = shallow(<UploadBurdenEstimatesFormComponent {...props} />);
 
         const alerts = rendered.find(Alert);
         expect(alerts).to.have.lengthOf(2);
@@ -115,41 +141,38 @@ describe("UploadEstimatesForm", () => {
 
     });
 
-    it("ingests query string and displays error", () => {
+    it("displays errors if present", () => {
 
-        sandbox.sinon.stub(helpers, "ingestQueryStringAndReturnResult").returns({
-            status: "failure",
-            errors: [{code: "code", message: "error message"}],
-            data: null
-        });
-
-        const props: UploadBurdenEstimatesFormComponentProps = {
+        const props: UploadBurdenEstimatesFormPublicProps = {
             groupId: "group-1",
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1",
             estimateSet: null,
             canUpload: false,
-            canCreate: false,
+            canCreate: false
         };
 
-        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+        const store = createMockContribStore(mockContribState({
+            estimates: {
+                populateErrors: [{
+                    code: "e",
+                    message: "error message"
+                }]
+            }
+        }));
+
+        const rendered = mount(<UploadBurdenEstimatesForm{...props} />, {context: {store}});
 
         const alert = rendered.find(Alert).first();
         expect(alert.prop("color")).to.eq("danger");
-        expect(alert.childAt(0).text()).to.eql("error message");
-        expect(alert.childAt(0).hasClass("render-whitespace")).to.eq(true);
-        expect(alert.html().includes("Please correct the data and re-upload")).to.eq(true);
+        expect(alert.find("p").hasClass("render-whitespace")).to.eq(true);
+        expect(alert.find("p").text()).to.eql("error message");
+        expect(alert.text()).to.contain("Please correct the data and re-upload");
     });
 
-    it("ingests query string and displays success message", () => {
+    it("displays success message if present", () => {
 
-        sandbox.sinon.stub(helpers, "ingestQueryStringAndReturnResult").returns({
-            status: "success",
-            errors: [],
-            data: "OK"
-        });
-
-        const props: UploadBurdenEstimatesFormComponentProps = {
+        const props: UploadBurdenEstimatesFormPublicProps = {
             groupId: "group-1",
             touchstoneId: "touchstone-1",
             scenarioId: "scenario-1",
@@ -158,10 +181,90 @@ describe("UploadEstimatesForm", () => {
             canCreate: false,
         };
 
-        const rendered = shallow(<UploadBurdenEstimatesForm {...props} />);
+        const store = createMockContribStore(mockContribState({estimates: {hasPopulateSuccess: true}}));
+
+        const rendered = mount(<UploadBurdenEstimatesForm {...props} />, {context: {store}});
 
         const alert = rendered.find(Alert).last();
-        expect(alert.prop("color")).to.eq("success");
-        expect(alert.childAt(0).text()).to.eql("Success! You have uploaded a new set of burden estimates");
+        expect(alert.props().color).to.eq("success");
+        expect(alert.childAt(0).text()).to.contain("Success! You have uploaded a new set of burden estimates");
     });
+
+
+    it("does not display success message if not presnet", () => {
+
+        const props: UploadBurdenEstimatesFormPublicProps = {
+            groupId: "group-1",
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            estimateSet: null,
+            canUpload: false,
+            canCreate: false,
+        };
+
+        const store = createMockContribStore(mockContribState());
+
+        const rendered = mount(<UploadBurdenEstimatesForm {...props} />, {context: {store}});
+
+        const alert = rendered.find(Alert).last();
+        expect(alert.props().color).to.eq("success");
+        expect(alert.props().isOpen).to.be.false;
+    });
+
+    it("resets populate state when error alert is closed", () => {
+
+        const resetStateStub = sandbox.sinon.stub();
+        const props: UploadBurdenEstimatesFormComponentProps = {
+            groupId: "group-1",
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            estimateSet: null,
+            canUpload: false,
+            canCreate: false,
+            hasSuccess: true,
+            errors: [],
+            resetPopulateState: resetStateStub
+        };
+
+        const rendered = mount(<UploadBurdenEstimatesFormComponent {...props} />);
+
+        const alert = rendered.find(Alert).first();
+        alert.props().toggle.call();
+
+        expect(resetStateStub.called).to.be.true;
+    });
+
+    it("resets populate state when success alert is closed", () => {
+
+        const resetStateStub = sandbox.sinon.stub();
+
+        const props: UploadBurdenEstimatesFormComponentProps = {
+            groupId: "group-1",
+            touchstoneId: "touchstone-1",
+            scenarioId: "scenario-1",
+            estimateSet: null,
+            canUpload: false,
+            canCreate: false,
+            hasSuccess: true,
+            errors: [],
+            resetPopulateState: resetStateStub
+        };
+
+        const rendered = mount(<UploadBurdenEstimatesFormComponent {...props} />);
+
+        const alert = rendered.find(Alert).last();
+        alert.props().toggle.call();
+
+        expect(resetStateStub.called).to.be.true;
+    });
+
+    it("can dispatch resetPopulateState", () => {
+        const dispatchStub = sandbox.sinon.stub();
+        sandbox.setStubFunc(estimatesActionCreators, "resetPopulateState", () => "TEST");
+
+        const result = mapDispatchToProps(dispatchStub, {} as any);
+        result.resetPopulateState();
+
+        expect(dispatchStub.calledWith("TEST")).to.be.true;
+    })
 });

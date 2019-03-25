@@ -159,7 +159,8 @@ describe("UploadBurdenEstimatesContent", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const uploadBurdenEstimatesForm = rendered.find(UploadBurdenEstimatesForm);
         expect(uploadBurdenEstimatesForm.length).to.equal(1);
-        const expected: UploadBurdenEstimatesFormComponentProps = {
+
+        const expected: Partial<UploadBurdenEstimatesFormComponentProps> = {
             canCreate: true,
             canUpload: false,
             estimateSet: testEstimateSet,
