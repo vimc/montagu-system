@@ -82,7 +82,12 @@
 </body>
 <script>
     const auth = new MontaguAuth();
-    const logic = new MontaguLogin(auth);
+    const logic = new MontaguLogin(
+                        auth,
+                        window.localStorage,
+                        jwt_decode,
+                        pako
+                );
     new Vue({
         el: "#app",
         data: {

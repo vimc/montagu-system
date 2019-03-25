@@ -1,9 +1,12 @@
 //Logic class for loggin in and out of Montagu
 class MontaguLogin {
 
-    constructor(montaguAuth) {
+    constructor(montaguAuth, localStorage, jwt_decode, pako) {
         this.TOKEN_KEY = "accessToken";
         this.montaguAuth = montaguAuth;
+        this.localStorage = localStorage;
+        this.jwt_decode = jwt_decode;
+        this.pako = pako;
     }
 
     initialise() {
@@ -11,8 +14,9 @@ class MontaguLogin {
 
         //Check if we are logged in
         const token = this.readTokenFromLocalStorage();
+
         if (token && token !== "null") {
-            const decodedToken = MontaguLogin.decodeToken(token);
+            const decodedToken = this.decodeToken(token);
 
             //don't allow login if expiry is past
             const expiry = decodedToken.exp;
@@ -27,11 +31,11 @@ class MontaguLogin {
     }
 
     writeTokenToLocalStorage(token) {
-        window.localStorage.setItem(this.TOKEN_KEY, token);
+        this.localStorage.setItem(this.TOKEN_KEY, token);
     }
 
     readTokenFromLocalStorage() {
-        return window.localStorage.getItem(this.TOKEN_KEY);
+        return this.localStorage.getItem(this.TOKEN_KEY);
     }
 
     login(email, password) {
@@ -50,14 +54,14 @@ class MontaguLogin {
     montaguLoginSuccess(data, resolve, reject) {
 
         const token = data.access_token;
-        const decodedToken = MontaguLogin.decodeToken(token);
+        const decodedToken = this.decodeToken(token);
 
         const montaguUserName = decodedToken.sub;
 
         this.writeTokenToLocalStorage(token);
 
         this.montaguAuth.setCookies(token).then(
-            () => { resolve(montaguUserName); },
+            () => {resolve(montaguUserName);},
             (jqXHR) => { MontaguLogin.montaguApiError(jqXHR, reject); }
         );
     }
@@ -74,20 +78,23 @@ class MontaguLogin {
         );
     }
 
+    decodeToken(token) {
+        const decoded = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
+        const inflated = this.pako.inflate(decoded, {to: 'string'});
+
+        return this.jwt_decode(inflated);
+    }
+
     static montaguApiError( jqXHR, reject ) {
         let errorText;
         if (jqXHR && jqXHR.status === 401) {
             errorText = "Your email address or password is incorrect.";
         } else {
-            errorText = "An error occurred.";
+            errorText = "An error occurred." +  jqXHR; //testing!!!!
         }
        reject(errorText);
     }
 
-    static decodeToken(token) {
-        const decoded = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
-        const inflated = pako.inflate(decoded, {to: 'string'});
-
-        return jwt_decode(inflated);
-    }
 }
+
+if (typeof module !== 'undefined') module.exports = MontaguLogin;
