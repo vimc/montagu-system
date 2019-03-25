@@ -12,6 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="resources/js/third_party/pako.min.js"></script>
     <script src="resources/js/third_party/jwt-decode-min.js"></script>
+    <script src="resources/js/montagu-login.js"></script>
+    <script src="resources/js/montagu-auth.js"></script>
     <script src="resources/js/components/montagu-login-status.vue.js"></script>
     <script src="resources/js/components/montagu-login-form.vue.js"></script>
 </head>
@@ -79,15 +81,23 @@
 </div>
 </body>
 <script>
-    const app = new Vue({
+    const auth = new MontaguAuth();
+    const logic = new MontaguLogin(auth);
+    new Vue({
         el: "#app",
         data: {
-            username: "",
-            loginError: "an error"
+            username: logic.initialise(),
+            loginError: ""
         },
         methods: {
-            logout: function(){ alert("logout"); },
-            login: function(){ alert("login"); }
+            logout: logic.logout,
+            login: function(email, password){
+                const data = this;
+                logic.login(email, password).then(
+                    (result) => { data.username = result; },
+                    (loginError) => {data.loginError = loginError; }
+                );
+            }
         },
         components: {
             'montagu-login-status': MontaguLoginStatus,

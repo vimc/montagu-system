@@ -1,11 +1,11 @@
 const montaguLogin = ( function() {
 
-    const API_ROOT = "/api/v1/";
-    const TOKEN_KEY = "accessToken";
+
+
 
     let montaguUserName;
 
-    function updateLoginView(loggedIn = false) {
+    /*function updateLoginView(loggedIn = false) {
         let statusHtml, formHtml
         if (loggedIn) {
             statusHtml =
@@ -32,9 +32,9 @@ const montaguLogin = ( function() {
 
         $("#login-button").click(montaguLogin);
         $("#logout-button").click(montaguLogout);
-    }
+    }*/
 
-    function montaguLogin() {
+    /*function montaguLogin() {
         const email = $("#email-input").val();
         const password = $("#password-input").val()
         $.ajax({
@@ -48,7 +48,7 @@ const montaguLogin = ( function() {
             error: montaguApiError,
             success: montaguLoginSuccess
         });
-    }
+    }*/
 
     function montaguLogout() {
         writeTokenToLocalStorage('');
@@ -60,7 +60,7 @@ const montaguLogin = ( function() {
         });
     }
 
-    function montaguApiError( jqXHR, textStatus, errorThrown ) {
+    /*function montaguApiError( jqXHR, textStatus, errorThrown ) {
         let errorText;
         if (jqXHR && jqXHR.status === 401) {
             errorText = "Your email address or password is incorrect.";
@@ -68,9 +68,9 @@ const montaguLogin = ( function() {
             errorText = "An error occurred.";
         }
         $("#login-error").html(errorText);
-    }
+    }*/
 
-    function montaguLoginSuccess(data) {
+    /*function montaguLoginSuccess(data) {
 
         const token = data.access_token;
         const decodedToken = decodeToken(token);
@@ -89,34 +89,18 @@ const montaguLogin = ( function() {
             error: montaguApiError,
             success: montaguSetCookiesSuccess
         });
-    }
-
-    function decodeToken(token) {
-        const decoded = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
-        const inflated = pako.inflate(decoded, {to: 'string'});
-
-        return jwt_decode(inflated);
-    }
+    }*/
 
     function montaguLogoutSuccess(data) {
         updateLoginView(false);
     }
 
-    function montaguSetCookiesSuccess(data) {
+    /*function montaguSetCookiesSuccess(data) {
         updateLoginView(true);
-    }
-
-    function writeTokenToLocalStorage(token) {
-        window.localStorage.setItem(TOKEN_KEY, token);
-    }
-
-    function readTokenFromLocalStorage() {
-        return window.localStorage.getItem(TOKEN_KEY);
-    }
+    }*/
 
     return {
-        test: 4,
-        initialise: function () {
+         /*initialise: function () {
             let loggedIn = false;
 
             //Check if we are logged in
@@ -135,9 +119,8 @@ const montaguLogin = ( function() {
             }
 
             updateLoginView(loggedIn);
-        }
+        }*/
     };
 
 })();
 
-module.exports = montaguLogin;

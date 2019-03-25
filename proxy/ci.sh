@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -ex
 
+#TODO Run tests in a node container
+
+
 git_id=$(git rev-parse --short=7 HEAD)
 git_branch=$(git symbolic-ref --short HEAD)
 
