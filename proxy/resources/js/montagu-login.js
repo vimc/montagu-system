@@ -1,3 +1,4 @@
+//Logic class for loggin in and out of Montagu
 class MontaguLogin {
 
     constructor(montaguAuth) {
@@ -11,7 +12,7 @@ class MontaguLogin {
         //Check if we are logged in
         const token = this.readTokenFromLocalStorage();
         if (token && token !== "null") {
-            const decodedToken = this.decodeToken(token);
+            const decodedToken = MontaguLogin.decodeToken(token);
 
             //don't allow login if expiry is past
             const expiry = decodedToken.exp;
@@ -33,13 +34,6 @@ class MontaguLogin {
         return window.localStorage.getItem(this.TOKEN_KEY);
     }
 
-    decodeToken(token) {
-        const decoded = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
-        const inflated = pako.inflate(decoded, {to: 'string'});
-
-        return jwt_decode(inflated);
-    }
-
     login(email, password) {
         return new Promise(
             ((resolve, reject) => {
@@ -56,7 +50,7 @@ class MontaguLogin {
     montaguLoginSuccess(data, resolve, reject) {
 
         const token = data.access_token;
-        const decodedToken = this.decodeToken(token);
+        const decodedToken = MontaguLogin.decodeToken(token);
 
         const montaguUserName = decodedToken.sub;
 
@@ -65,6 +59,18 @@ class MontaguLogin {
         this.montaguAuth.setCookies(token).then(
             () => { resolve(montaguUserName); },
             (jqXHR) => { MontaguLogin.montaguApiError(jqXHR, reject); }
+        );
+    }
+
+    logout() {
+        this.writeTokenToLocalStorage('');
+        return new Promise(
+            ((resolve, reject) =>
+                    this.montaguAuth.logout().then(
+                        () => { resolve(); },
+                        (jqXHR) => { MontaguLogin.montaguApiError(jqXHR, reject); }
+                    )
+            ).bind(this)
         );
     }
 
@@ -78,7 +84,10 @@ class MontaguLogin {
        reject(errorText);
     }
 
-    logout() {
-        alert("logic logout");
+    static decodeToken(token) {
+        const decoded = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
+        const inflated = pako.inflate(decoded, {to: 'string'});
+
+        return jwt_decode(inflated);
     }
 }

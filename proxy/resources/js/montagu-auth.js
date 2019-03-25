@@ -1,3 +1,4 @@
+//Class which makes the ajax calls for logging in and out of Montagu
 class MontaguAuth {
 
     constructor() {
@@ -26,6 +27,14 @@ class MontaguAuth {
             headers: {
                 "Authorization": "Bearer " + token
             }
+        });
+    }
+
+    logout() {
+        const logoutUrl = this.API_ROOT + "logout/";
+        return $.ajax({
+            type: "GET",
+            url: logoutUrl
         });
     }
 }

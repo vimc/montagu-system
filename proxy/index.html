@@ -90,12 +90,18 @@
             loginError: ""
         },
         methods: {
-            logout: logic.logout,
-            login: function(email, password){
+            logout: function() {
+                const data = this;
+                logic.logout().then(
+                    () => { data.username = ''; data.loginError = '' },
+                    (error) => { data.username = ''; data.loginError = error }
+                );
+            },
+            login: function(email, password) {
                 const data = this;
                 logic.login(email, password).then(
-                    (result) => { data.username = result; },
-                    (loginError) => {data.loginError = loginError; }
+                    (result) => { data.username = result; data.loginError = ''; },
+                    (error) => { data.username = ''; data.loginError = error; }
                 );
             }
         },

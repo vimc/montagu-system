@@ -50,7 +50,7 @@ const montaguLogin = ( function() {
         });
     }*/
 
-    function montaguLogout() {
+   /* function montaguLogout() {
         writeTokenToLocalStorage('');
         $.ajax({
             type: "GET",
@@ -58,7 +58,7 @@ const montaguLogin = ( function() {
             error: montaguApiError,
             success: montaguLogoutSuccess
         });
-    }
+    }*/
 
     /*function montaguApiError( jqXHR, textStatus, errorThrown ) {
         let errorText;

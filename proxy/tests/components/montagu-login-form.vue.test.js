@@ -35,3 +35,13 @@ test('renders nothing when username is set', () => {
 
     expect(wrapper.text()).toBe('');
 });
+
+test('emits login event when button clicked', () => {
+    const wrapper = VueTestUtils.shallowMount(MontaguLoginForm,
+        {propsData: {username: '', loginError: ''}});
+
+    wrapper.find("#login-button").trigger("click");
+
+    expect(wrapper.emitted('login')).toBeTruthy();
+
+});
