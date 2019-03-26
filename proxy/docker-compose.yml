@@ -1,0 +1,44 @@
+version: '2'
+services:
+  api:
+    image: docker.montagu.dide.ic.ac.uk:5000/montagu-api:master
+    ports:
+    - "8080:8080"
+    networks:
+    - proxy
+    depends_on:
+    - db
+    volumes:
+    - ${TOKEN_KEY_PATH}:/etc/montagu/api/token_key
+  reporting_api:
+    image: docker.montagu.dide.ic.ac.uk:5000/montagu-reporting-api:master
+    ports:
+    - "8081:8081"
+    networks:
+    - proxy
+    volumes:
+    - ${TOKEN_KEY_PATH}:/etc/montagu/reports_api/token_key
+    - orderly_volume:/orderly
+  db:
+    image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:master
+    ports:
+    - "5432:5432"
+    networks:
+    - proxy
+    command: /etc/montagu/postgresql.test.conf
+  db_annex:
+    image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:master
+    command: /etc/montagu/postgresql.test.conf
+    networks:
+    - proxy
+  orderly:
+    image: docker.montagu.dide.ic.ac.uk:5000/orderly.server:master
+    volumes:
+    - orderly_volume:/orderly
+    command: --port 8321 --go-signal /orderly_go /orderly
+    networks:
+    - proxy
+volumes:
+  orderly_volume:
+networks:
+  proxy:

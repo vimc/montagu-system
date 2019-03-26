@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
+export TOKEN_KEY_PATH=$PWD/token_key
+
 rm -rf workspace
+docker-compose --project-name montagu down
 docker stop reverse-proxy || true
 docker rm reverse-proxy || true
 docker stop montagu-metrics || true
 docker rm montagu-metrics || true
-docker network rm proxy-dev || true
+docker network rm montagu_proxy || true
 
 echo "Generating SSL keypair"
 mkdir workspace
@@ -15,18 +18,23 @@ docker run --rm \
     docker.montagu.dide.ic.ac.uk:5000/montagu-cert-tool:master \
     gen-self-signed /workspace > /dev/null 2> /dev/null
 
-docker network create proxy-dev
+#docker network create montagu_proxy
+
+# Run up all the APIs and Portals which are to be proxied
+docker volume rm montagu_orderly_volume -f
+docker-compose pull
+docker-compose --project-name montagu up -d
 
 docker build -t reverse-proxy .
 docker run -d \
 	-p "443:443" -p "80:80" \
 	--name reverse-proxy \
-	--network proxy-dev \
+	--network montagu_proxy\
 	reverse-proxy 443 localhost
 
 docker run -d \
     -p "9113:9113" \
-    --network proxy-dev \
+    --network montagu_proxy \
     --name montagu-metrics \
     --restart always \
     nginx/nginx-prometheus-exporter:0.2.0 \
