@@ -1,44 +1,78 @@
 version: '2'
+
+x-logging: &log-journald
+  driver: journald
+  options:
+    tag: montagu
+
 services:
   api:
-    image: docker.montagu.dide.ic.ac.uk:5000/montagu-api:master
+    image: ${REGISTRY}/montagu-api:master
     ports:
-    - "8080:8080"
+     - "8080:8080"
     networks:
-    - proxy
+     - proxy
     depends_on:
-    - db
+     - db
     volumes:
-    - ${TOKEN_KEY_PATH}:/etc/montagu/api/token_key
+     - ${TOKEN_KEY_PATH}:/etc/montagu/api/token_key
   reporting_api:
-    image: docker.montagu.dide.ic.ac.uk:5000/montagu-reporting-api:master
+    image: ${REGISTRY}/montagu-reporting-api:master
     ports:
-    - "8081:8081"
+     - "8081:8081"
     networks:
-    - proxy
+     - proxy
     volumes:
-    - ${TOKEN_KEY_PATH}:/etc/montagu/reports_api/token_key
-    - orderly_volume:/orderly
+     - ${TOKEN_KEY_PATH}:/etc/montagu/reports_api/token_key
+     - orderly_volume:/orderly
   db:
-    image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:master
+    image: ${REGISTRY}/montagu-db:master
     ports:
-    - "5432:5432"
-    networks:
-    - proxy
-    command: /etc/montagu/postgresql.test.conf
-  db_annex:
-    image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:master
+     - "5432:5432"
     command: /etc/montagu/postgresql.test.conf
     networks:
-    - proxy
+     - proxy
   orderly:
-    image: docker.montagu.dide.ic.ac.uk:5000/orderly.server:master
+    image: ${REGISTRY}/orderly.server:master
     volumes:
-    - orderly_volume:/orderly
+     - orderly_volume:/orderly
     command: --port 8321 --go-signal /orderly_go /orderly
     networks:
-    - proxy
+     - proxy
+  contrib:
+    image: ${REGISTRY}/montagu-contrib-portal:master
+    networks:
+     - proxy
+    depends_on:
+     - api
+    volumes:
+     - template_volume:/usr/share/nginx/html/templates
+     - guidance_volume:/usr/share/nginx/html/guidance
+  report:
+    image: ${REGISTRY}/montagu-report-portal:master
+    networks:
+     - proxy
+    depends_on:
+     - api
+     - reporting_api
+  admin:
+    image: ${REGISTRY}/montagu-admin-portal:master
+    networks:
+     - proxy
+    depends_on:
+     - api
+  static:
+    image: ${REGISTRY}/montagu-static:master
+    networks:
+     - proxy
+    volumes:
+    - static_volume:/www
+    - static_logs:/var/log/caddy
 volumes:
   orderly_volume:
+  template_volume:
+  guidance_volume:
+  static_logs:
+  static_volume:
 networks:
   proxy:
