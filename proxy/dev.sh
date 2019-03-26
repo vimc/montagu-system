@@ -83,4 +83,5 @@ rm -rf workspace
 
 sleep 2s
 docker logs reverse-proxy
-echo "Run 'docker stop reverse-proxy montagu-metrics' to stop"
+echo "Run 'docker stop reverse-proxy montagu-metrics' to stop proxy containers"
+echo "Run 'docker-compose --project-name montagu down' to stop dependencies"
