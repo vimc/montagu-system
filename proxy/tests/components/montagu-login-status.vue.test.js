@@ -1,6 +1,6 @@
 const VueTestUtils = require("@vue/test-utils");
 
-const Vue = require("../../resources/js/third_party/vue.js");
+const Vue = require("../../node_modules/vue/dist/vue.js");
 const MontaguLoginStatus = require("../../resources/js/components/montagu-login-status.vue.js");
 
 test('has expected properties', () => {
