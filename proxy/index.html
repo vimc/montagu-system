@@ -1,72 +1,117 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Vaccine Impact Modelling Consortium - Montagu</title>
-        <link rel="stylesheet" href="./resources/style.css" />
-    </head>
-    <body>
+<head>
+    <title>Vaccine Impact Modelling Consortium - Montagu</title>
+    <link rel="stylesheet" href="resources/css/third_party/bootstrap.min.css" />
+    <link rel="stylesheet" href="resources/css/montagu.css" />
 
-        <div id="content">
-            <table class="header">
+    <script src="resources/js/third_party/jquery.min.js"></script>
+    <script src="resources/js/third_party/jwt-decode.min.js"></script>
+    <script src="resources/js/third_party/vue.min.js"></script>
+    <script src="resources/js/third_party/pako.min.js"></script>
+
+    <script src="resources/js/montagu-login.js"></script>
+    <script src="resources/js/montagu-auth.js"></script>
+    <script src="resources/js/components/montagu-login-status.vue.js"></script>
+    <script src="resources/js/components/montagu-login-form.vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <header class="header">
+        <a href="https://vaccineimpact.org">
+                <img class="pl-md-1 logo" src="./resources/logo.png" alt="Vaccine Impact Modelling Consortium" />
+        </a>
+        <div class="siteTitle">Montagu</div>
+        <montagu-login-status v-bind:username="username" v-on:logout="logout" class="login-status"></montagu-login-status>
+    </header>
+    <div id="content" class="container mt-3">
+        <p>
+            Montagu is the VIMC's digital delivery platform. Authorised
+            users can access Montagu through user-facing portals, and
+            programmatically through REST APIs.
+        </p>
+        <p>
+            Click <a href="/resources/privacy.html">here</a> to view Montagu's privacy policy and terms.
+        </p>
+        <p>
+            Click <a href="https://vaccineimpact.org">here</a> to return to
+            VIMC home page.
+        </p>
+        <montagu-login-form v-bind:username="username" v-bind:login-error="loginError"
+                              v-on:login="login" class="login-form"></montagu-login-form>
+        <div class="portals">
+            <h1>Portals</h1>
+            <table>
                 <tr>
-                    <td class="vimc">
-                        <a href="https://vaccineimpact.org">
-                            <img src="./resources/logo.png" alt="Vaccine Impact Modelling Consortium" />
-                        </a>
+                    <td class="portal"><a class="button" href="/reports/">Reporting portal</a></td>
+                    <td>
+                        Access reports and figures summarising results, as well
+                        as the underlying data.
                     </td>
-                    <td class="montagu">Montagu</td>
+                </tr>
+                <tr>
+                    <td class="portal"><a class="button" href="/contribution/">Modellers' contribution portal</a></td>
+                    <td>
+                        Focused on modellers and modelling groups, this portal
+                        allows you to download coverage and demographic data,
+                        and to upload burden estimates.
+                    </td>
+                </tr>
+                <tr>
+                    <td class="portal"><a class="button" href="/admin/">Admin portal</a></td>
+                    <td>
+                        For internal use by the consortium admin staff.
+                    </td>
                 </tr>
             </table>
-
-            <p>
-                Montagu is the VIMC's digital delivery platform. Authorised 
-                users can access Montagu through user-facing portals, and 
-                programmatically through REST APIs.
-            </p>
-            <p>
-                Click <a href="/resources/privacy.html">here</a> to view Montagu's privacy policy and terms.
-            </p>
-            <p>
-                Click <a href="https://vaccineimpact.org">here</a> to return to 
-                VIMC home page.
-            </p>
-
-            <div class="portals">
-                <h1>Portals</h1>
-                <table>
-                    <tr>
-                        <td><a class="button" href="/reports/">Reporting portal</a></td>
-                        <td>
-                            Access reports and figures summarising results, as well
-                            as the underlying data.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><a class="button" href="/contribution/">Modellers' contribution portal</a></td>
-                        <td>
-                            Focused on modellers and modelling groups, this portal
-                            allows you to download coverage and demographic data,
-                            and to upload burden estimates.
-                        </td> 
-                    </tr>
-                    <tr>
-                        <td><a class="button" href="/admin/">Admin portal</a></td>
-                        <td>
-                            For internal use by the consortium admin staff.
-                        </td> 
-                    </tr>
-                </table>
-            </div>
-
-            <div class="apis">
-                <h1>APIs</h1>
-                <table>
-                    <tr>
-                        <td><a class="button" href="/api/">Montagu API</a></td>
-                        <td><a class="button" href="/reports/api/">Reports API</a></td>
-                    </tr>
-                </table>
-            </div>
         </div>
-    </body>
+
+        <div class="apis">
+            <h1>APIs</h1>
+            <table>
+                <tr>
+                    <td><a class="button" href="/api/">Montagu API</a></td>
+                    <td><a class="button" href="/reports/api/">Reports API</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    const auth = new MontaguAuth();
+    const logic = new MontaguLogin(
+                        auth,
+                        window.localStorage,
+                        jwt_decode,
+                        pako
+                );
+    new Vue({
+        el: "#app",
+        data: {
+            username: logic.initialise(),
+            loginError: ""
+        },
+        methods: {
+            logout: function() {
+                const data = this;
+                logic.logout().then(
+                    () => { data.username = ''; data.loginError = '' },
+                    (error) => { data.username = ''; data.loginError = error }
+                );
+            },
+            login: function(email, password) {
+                const data = this;
+                logic.login(email, password).then(
+                    (result) => { data.username = result; data.loginError = ''; },
+                    (error) => { data.username = ''; data.loginError = error; }
+                );
+            }
+        },
+        components: {
+            'montagu-login-status': MontaguLoginStatus,
+            'montagu-login-form': MontaguLoginForm
+        }
+    });
+</script>
 </html>
