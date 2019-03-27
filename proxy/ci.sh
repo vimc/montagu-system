@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-#Run tests in a node container
+#Run tests in a node container. This will also output node_modules as a volume which the proxy image requires
 ./ci_tests.sh
 
 git_id=$(git rev-parse --short=7 HEAD)

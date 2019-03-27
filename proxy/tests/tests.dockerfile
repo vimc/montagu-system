@@ -3,7 +3,7 @@ FROM node:8
 WORKDIR /workspace
 
 COPY package.json /workspace
-RUN npm install
+COPY tests/tests_docker.sh /workspace/tests_docker.sh
 
 COPY ./resources /workspace/resources
 COPY ./tests /workspace/tests
@@ -11,5 +11,5 @@ COPY ./tests /workspace/tests
 # This env var is needed for the custom reporter to log to teamcity
 ENV TEAMCITY_VERSION="teamcity"
 
-ENTRYPOINT ["npm"]
-CMD ["test"]
+ENTRYPOINT ["./tests_docker.sh"]
+
