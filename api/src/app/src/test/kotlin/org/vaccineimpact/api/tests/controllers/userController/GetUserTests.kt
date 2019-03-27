@@ -184,4 +184,33 @@ class GetUserTests : MontaguTests()
 
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
+
+    @Test
+    fun `getCurrentUser returns context user with no roles`()
+    {
+        val context = mock<ActionContext>{
+            on {  username } doReturn "test"
+        }
+
+        val roles = listOf(
+                ReifiedRole("user", Scope.Global()),
+                ReifiedRole("member", Scope.Specific("modelling-group", "IC-Garske"))
+        )
+        val testInternalUser = InternalUser(UserProperties("test", "test name", "test@test.com", null, null),
+                roles, listOf())
+
+
+        val repo = mock<UserRepository> {
+            on { this.getUserByUsername("test") } doReturn testInternalUser
+        }
+
+        val sut = UserController(context, repo, mock())
+
+        val result = sut.getCurrentUser();
+
+        Assertions.assertThat(result.username).isEqualTo("test")
+        Assertions.assertThat(result.email).isEqualTo("test@test.com")
+        Assertions.assertThat(result.name).isEqualTo("test name")
+        Assertions.assertThat(result.roles).isNull()
+    }
 }

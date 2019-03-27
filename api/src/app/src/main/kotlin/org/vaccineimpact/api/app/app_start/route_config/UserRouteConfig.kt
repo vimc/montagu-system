@@ -11,6 +11,7 @@ object UserRouteConfig : RouteConfig
 {
     private val controller = UserController::class
     private val urlBase = "/users/"
+    private val urlCurrentUser = "/user/"
 
     private val readRoles = setOf("*/roles.read")
     private val readUsers = setOf("*/users.read")
@@ -23,6 +24,9 @@ object UserRouteConfig : RouteConfig
             Endpoint("$urlBase:username/", controller, "getUser")
                     .json()
                     .secure(readUsers),
+            Endpoint(urlCurrentUser, controller, "getCurrentUser")
+                    .json()
+                    .secure(),
             Endpoint(urlBase, controller, "getUsers")
                     .json()
                     .secure(readUsers),
