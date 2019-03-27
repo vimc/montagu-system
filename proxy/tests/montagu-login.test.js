@@ -165,7 +165,51 @@ test('returns error message when authentication fails', (done) => {
             expect(mockLogin.mock.calls.length).toBe(1);
             expect(mockSetCookies.mock.calls.length).toBe(0);
 
-            //expect token written to local storage
+            //expect token not written to local storage
+            expect(mockSetItem.mock.calls.length).toBe(0);
+
+            done();
+        }
+    );
+
+});
+
+test('returns error message when setCookies fails', (done) => {
+
+    const encodedToken = getEncodedToken("test user name", new Date(now.getTime() + (60*60*1000)));
+    const mockSetItem = jest.fn();
+    const mockInflate = jest.fn(x => x);
+    const mockDecode = jest.fn(x => JSON.parse(x));
+    const mockLogin = jest.fn(x => new Promise((resolve, reject) => {
+        resolve({"access_token": encodedToken});
+    }));
+    const mockSetCookies = jest.fn(x => new Promise((resolve, reject) => {
+        reject({status: 502})
+    }));
+
+    const sut = new MontaguLogin({login: mockLogin, setCookies: mockSetCookies}, //mock auth
+        {setItem: mockSetItem}, //mock local storage
+        mockDecode, //mock jwt_decode
+        {inflate: mockInflate} //mock pako
+    );
+
+    //This returns a promise - invoking the promise will call auth login methods via further promises, here mocked to
+    //resolve immediately
+    sut.login("test email", "test password").then(
+        (result) => {
+            done.fail(`login should have failed`);
+        },
+        (error) => {
+            expect(error).toBe("An error occurred.");
+
+            //Expected mocks were called or not called
+            expect(mockInflate.mock.calls.length).toBe(0);
+            expect(mockDecode.mock.calls.length).toBe(0);
+
+            expect(mockLogin.mock.calls.length).toBe(1);
+            expect(mockSetCookies.mock.calls.length).toBe(1);
+
+            //expect token not written to local storage
             expect(mockSetItem.mock.calls.length).toBe(0);
 
             done();
