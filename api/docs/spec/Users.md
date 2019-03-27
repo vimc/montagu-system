@@ -95,6 +95,19 @@ Schema: [`User.schema.json`](../schemas/User.schema.json)
         ]
     }
 
+## GET /user/
+Returns details about the currently logged in user. The `roles` section is not included.
+
+Schema: [`User.schema.json`](../schemas/User.schema.json)
+
+### Example
+    {
+        "username": "tini",
+        "name": "Tini Garske",
+        "email": "example@imperial.ac.uk",
+        "last_logged_in": "2017-10-06T11:06:22Z"
+    }
+
 ## POST /users/
 Creates a new user.
 
