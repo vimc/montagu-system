@@ -9,7 +9,6 @@ function cleanup() {
     docker stop montagu-metrics || true
     docker rm montagu-metrics || true
     docker-compose --project-name montagu down || true
-    docker network rm montagu_proxy || true
 }
 
 export TOKEN_KEY_PATH=$PWD/token_key
@@ -17,7 +16,7 @@ export REGISTRY=docker.montagu.dide.ic.ac.uk:5000
 
 cleanup
 
-trap cleanup INT
+# This traps errors and Ctrl+C
 trap cleanup EXIT
 
 echo "Generating SSL keypair"
