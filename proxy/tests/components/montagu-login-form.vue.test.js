@@ -18,7 +18,7 @@ test('renders correctly without error message', () => {
     expect(wrapper.find('#login-error').text()).toBe('');
 });
 
-test('renders correctly without error message', () => {
+test('renders correctly with error message', () => {
     const wrapper = VueTestUtils.shallowMount(MontaguLoginForm,
         {propsData: {username: '', loginError: 'an error'}});
 
