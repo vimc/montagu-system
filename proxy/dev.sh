@@ -1,17 +1,24 @@
 #!/usr/bin/env bash
 set -e
 
+function cleanup() {
+    # Pull down old containers
+    rm -rf workspace || true
+    docker stop reverse-proxy || true
+    docker rm reverse-proxy || true
+    docker stop montagu-metrics || true
+    docker rm montagu-metrics || true
+    docker-compose --project-name montagu down || true
+    docker network rm montagu_proxy || true
+}
+
 export TOKEN_KEY_PATH=$PWD/token_key
 export REGISTRY=docker.montagu.dide.ic.ac.uk:5000
 
-# Pull down old containers
-rm -rf workspace || true
-docker stop reverse-proxy || true
-docker rm reverse-proxy || true
-docker stop montagu-metrics || true
-docker rm montagu-metrics || true
-docker-compose --project-name montagu down
-docker network rm montagu_proxy || true
+cleanup
+
+trap cleanup INT
+trap cleanup EXIT
 
 echo "Generating SSL keypair"
 mkdir workspace
@@ -83,5 +90,6 @@ rm -rf workspace
 
 sleep 2s
 docker logs reverse-proxy
-echo "Run 'docker stop reverse-proxy montagu-metrics' to stop proxy containers"
-echo "Run 'docker-compose --project-name montagu down' to stop dependencies"
+
+echo "Proxy and dependencies are running. Press Ctrl+C to teardown."
+sleep infinity
