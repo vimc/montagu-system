@@ -39,19 +39,14 @@ class MontaguLogin {
     }
 
     login(email, password) {
-        return new Promise(
-            ((resolve, reject) => {
-                this.montaguAuth.login(email, password).then(
-
-                    ((data) => { this.montaguLoginSuccess(data, resolve, reject); }).bind(this),
-
-                    (jqXHR) => { MontaguLogin.montaguApiError(jqXHR, reject); }
-                 );
-
-            }).bind(this));
+        return this.montaguAuth.login(email, password)
+            .then((data) => this.montaguLoginSuccess(data))
+            .catch((jqXHR) => {
+                throw MontaguLogin.montaguApiError(jqXHR)
+            })
     }
 
-    montaguLoginSuccess(data, resolve, reject) {
+    montaguLoginSuccess(data) {
 
         const token = data.access_token;
         const decodedToken = this.decodeToken(token);
@@ -60,22 +55,20 @@ class MontaguLogin {
 
         this.writeTokenToLocalStorage(token);
 
-        this.montaguAuth.setCookies(token).then(
-            () => {resolve(montaguUserName);},
-            (jqXHR) => { MontaguLogin.montaguApiError(jqXHR, reject); }
+        return this.montaguAuth.setCookies(token).then(
+            () => montaguUserName,
+            (jqXHR) => {
+                throw MontaguLogin.montaguApiError(jqXHR)
+            }
         );
     }
 
     logout() {
         this.writeTokenToLocalStorage('');
-        return new Promise(
-            ((resolve, reject) =>
-                    this.montaguAuth.logout().then(
-                        () => { resolve(); },
-                        (jqXHR) => { MontaguLogin.montaguApiError(jqXHR, reject); }
-                    )
-            ).bind(this)
-        );
+        return this.montaguAuth.logout()
+            .catch((jqXHR) => {
+                throw MontaguLogin.montaguApiError(jqXHR)
+            })
     }
 
     decodeToken(token) {
@@ -85,14 +78,14 @@ class MontaguLogin {
         return this.jwt_decode(inflated);
     }
 
-    static montaguApiError( jqXHR, reject ) {
+    static montaguApiError(jqXHR) {
         let errorText;
         if (jqXHR && jqXHR.status === 401) {
             errorText = "Your email address or password is incorrect.";
         } else {
-            errorText = "An error occurred." +  jqXHR; //testing!!!!
+            errorText = "An error occurred." + jqXHR; //testing!!!!
         }
-       reject(errorText);
+        return errorText;
     }
 
 }
