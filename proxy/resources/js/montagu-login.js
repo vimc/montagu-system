@@ -47,18 +47,15 @@ class MontaguLogin {
     }
 
     montaguLoginSuccess(data) {
-
         const token = data.access_token;
-        const decodedToken = this.decodeToken(token);
-
-        const montaguUserName = decodedToken.sub;
-
-        this.writeTokenToLocalStorage(token);
 
         return this.montaguAuth.setCookies(token).then(
-            () => montaguUserName,
-            (jqXHR) => {
-                throw MontaguLogin.montaguApiError(jqXHR)
+            () => {
+                const decodedToken = this.decodeToken(token);
+                const montaguUserName = decodedToken.sub;
+
+                this.writeTokenToLocalStorage(token);
+                return montaguUserName;
             }
         );
     }
@@ -83,7 +80,7 @@ class MontaguLogin {
         if (jqXHR && jqXHR.status === 401) {
             errorText = "Your email address or password is incorrect.";
         } else {
-            errorText = "An error occurred." + jqXHR; //testing!!!!
+            errorText = "An error occurred.";
         }
         return errorText;
     }
