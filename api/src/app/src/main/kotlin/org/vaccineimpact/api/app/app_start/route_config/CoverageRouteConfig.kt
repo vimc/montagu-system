@@ -10,7 +10,6 @@ object CoverageRouteConfig : RouteConfig
 
     private val permissions = setOf(
             "*/scenarios.read",
-            "*/responsibilities.read",
             "*/coverage.read"
     )
 
