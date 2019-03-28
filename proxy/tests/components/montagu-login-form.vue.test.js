@@ -44,3 +44,13 @@ test('emits login event when button clicked', () => {
     expect(wrapper.emitted('login')).toBeTruthy();
 
 });
+
+test('emits login event when enter pressed in password input', () => {
+    const wrapper = VueTestUtils.shallowMount(MontaguLoginForm,
+        {propsData: {username: '', loginError: ''}});
+
+    wrapper.find("#password-input").trigger("keyup.enter");
+
+    expect(wrapper.emitted('login')).toBeTruthy();
+
+});
