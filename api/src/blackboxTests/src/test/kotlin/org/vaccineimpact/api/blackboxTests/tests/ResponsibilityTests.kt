@@ -15,6 +15,7 @@ import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
+import org.vaccineimpact.api.validateSchema.JSONValidator
 import java.io.StringReader
 
 class ResponsibilityTests : DatabaseTest()
@@ -57,6 +58,76 @@ class ResponsibilityTests : DatabaseTest()
             assertThat(responsibility["problems"]).isEqualTo(json { array("problem") })
             assertThat(responsibility["current_estimate_set"]).isNotNull()
         }
+    }
+
+    @Test
+    fun `cannot getResponsibilities if not a member of modelling group, and does not have global group read permission`()
+    {
+        val permissions = PermissionSet(
+                "*/can-login",
+                "*/touchstones.read",
+                "$groupScope/responsibilities.read"
+        )
+
+        TestUserHelper.setupTestUser()
+
+
+        val otherGroupId = "other-group"
+        JooqContext().use {
+            //Create standard responsibilities for test user
+           addResponsibilities(it, touchstoneStatus = "open")
+
+            //Create another group with responsibilities, to which the test user does not belong
+            it.addGroup(otherGroupId, "another group")
+            addResponsibilities(it, touchstoneStatus = "open",
+                    includeUserGroupAndTouchstone = false,
+                    responsibilityGroupId = otherGroupId,
+                    responsibilityModelId = "other-model")
+        }
+
+        //sanity check that we can access our own group
+        val comparisonUrl = "/modelling-groups/$groupId/responsibilities/"
+
+        val comparisonResponse = RequestHelper().get(comparisonUrl, permissions)
+
+        Assertions.assertThat(comparisonResponse.statusCode).isEqualTo(200)
+
+        val url = "/modelling-groups/$otherGroupId/responsibilities/"
+
+        val response = RequestHelper().get(url, permissions)
+
+        Assertions.assertThat(response.statusCode).isEqualTo(403)
+    }
+
+    @Test
+    fun `can getResponsibilities if not a member of modelling group, and does have global group read permission`()
+    {
+        val permissions = PermissionSet(
+                "*/can-login",
+                "*/touchstones.read",
+                "*/responsibilities.read"
+        )
+
+        TestUserHelper.setupTestUser()
+
+        val otherGroupId = "other-group"
+        JooqContext().use {
+            //Create standard responsibilities for test user
+            addResponsibilities(it, touchstoneStatus = "open")
+
+            //Create another group with responsibilities, to which the test user does not belong
+            it.addGroup(otherGroupId, "another group")
+            addResponsibilities(it, touchstoneStatus = "open",
+                    includeUserGroupAndTouchstone = false,
+                    responsibilityGroupId = otherGroupId,
+                    responsibilityModelId = "other-model")
+        }
+
+        val url = "/modelling-groups/$otherGroupId/responsibilities/"
+
+        val response = RequestHelper().get(url, permissions)
+
+        Assertions.assertThat(response.statusCode).isEqualTo(200)
     }
 
     @Test
@@ -370,14 +441,20 @@ class ResponsibilityTests : DatabaseTest()
         db.addTouchstoneVersion("touchstone", 1, "version description", touchstoneStatus)
     }
 
-    private fun addResponsibilities(db: JooqContext, touchstoneStatus: String, includeExpectations: Boolean = true): Int
+    private fun addResponsibilities(db: JooqContext, touchstoneStatus: String,
+                                    includeExpectations: Boolean = true,
+                                    includeUserGroupAndTouchstone: Boolean = true,
+                                    responsibilityGroupId: String = groupId,
+                                    responsibilityModelId: String = modelId): Int
     {
-        addUserGroupAndTouchstone(db, touchstoneStatus)
-        val setId = db.addResponsibilitySet(groupId, touchstoneVersionId, "submitted")
+        if (includeUserGroupAndTouchstone) {
+            addUserGroupAndTouchstone(db, touchstoneStatus)
+        }
+        val setId = db.addResponsibilitySet(responsibilityGroupId, touchstoneVersionId, "submitted")
         val responsibilityId = db.addResponsibility(setId, touchstoneVersionId, scenarioId)
         db.addResponsibility(setId, touchstoneVersionId, "scenario-2")
-        db.addModel(modelId, groupId, "disease-1")
-        val version = db.addModelVersion(modelId, "version-1")
+        db.addModel(responsibilityModelId, responsibilityGroupId, "disease-1")
+        val version = db.addModelVersion(responsibilityModelId, "version-1")
         val burdenEstimateId = db.addBurdenEstimateSet(responsibilityId, version, "model.user")
         db.updateCurrentEstimate(responsibilityId, burdenEstimateId)
         db.addBurdenEstimateProblem("problem", burdenEstimateId)

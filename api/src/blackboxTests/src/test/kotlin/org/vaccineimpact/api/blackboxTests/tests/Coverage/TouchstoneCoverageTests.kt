@@ -15,7 +15,7 @@ import java.io.StringReader
 
 class TouchstoneCoverageTests : CoverageTests()
 {
-    val minimumPermissions = PermissionSet("*/can-login", "*/scenarios.read", "*/responsibilities.read", "*/coverage.read")
+    val minimumPermissions = PermissionSet("*/can-login", "*/scenarios.read", "*/coverage.read")
     val url = "/touchstones/$touchstoneVersionId/$scenarioId/coverage/"
 
     @Test
