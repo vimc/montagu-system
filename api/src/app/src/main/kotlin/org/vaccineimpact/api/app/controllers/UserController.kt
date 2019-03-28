@@ -103,6 +103,13 @@ class UserController(
         }
     }
 
+    fun getCurrentUser(): User
+    {
+        val userName = context.username!!
+        val internalUser = userRepository.getUserByUsername(userName)
+        return internalUser.toUser().copy(roles = null) //don't return any role information back to the current user
+    }
+
     fun getUsers(): List<User>
     {
         val roleReadingScopes = roleReadingScopes(context)

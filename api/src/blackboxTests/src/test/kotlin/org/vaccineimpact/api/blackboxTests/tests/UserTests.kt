@@ -287,4 +287,26 @@ class UserTests : DatabaseTest()
         }
     }
 
+    @Test
+    fun`can get current user`()
+    {
+        validate("/user/") against "User" given {
+        } requiringPermissions {
+            PermissionSet()
+        } withRoles {
+            setOf(
+                    ReifiedRole("member", Scope.Specific("modelling-group", "a")),
+                    ReifiedRole("member", Scope.Specific("modelling-group", "b"))
+            )
+
+        } andCheck {
+            //Expect that we've been logged in as the test user
+            Assertions.assertThat(it["username"]).isEqualTo("test.user")
+            Assertions.assertThat(it["name"]).isEqualTo("Test User")
+            Assertions.assertThat(it["email"]).isEqualTo("user@test.com")
+            Assertions.assertThat(it["last_logged_in"]).isNotNull()
+            Assertions.assertThat(it.containsKey("roles")).isFalse() //should not get roles returned
+        }
+    }
+
 }
