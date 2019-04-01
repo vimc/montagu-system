@@ -17,4 +17,4 @@ RUN npm install
 RUN npm test
 
 # Build, tag and publish docker image
-CMD ./build-image.sh $MONTAGU_GIT_BRANCH $MONTAGU_GIT_ID
+CMD ./scripts/build-image.sh $MONTAGU_GIT_BRANCH $MONTAGU_GIT_ID

@@ -114,7 +114,7 @@
                         const redirectLocation = MontaguLogin.redirectLocation(location.search);
                         if (redirectLocation) {
                             data.redirectMessage = `Redirecting you back to ${redirectLocation}.
-                            If you are not automatically redirected in a few seconds please click <a href="${redirectLocation}">here</a>`
+                            If you are not automatically redirected in a few seconds please click <a href="${redirectLocation}">here</a>`;
                             window.location.href=redirectLocation
                         }
                     },
