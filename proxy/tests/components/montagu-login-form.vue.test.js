@@ -3,9 +3,10 @@ require("../../node_modules/vue/dist/vue.js");
 const MontaguLoginForm = require("../../resources/js/components/montagu-login-form.vue.js");
 
 test('has expected properties', () => {
-    expect(MontaguLoginForm.props.length).toBe(2);
+    expect(MontaguLoginForm.props.length).toBe(3);
     expect(MontaguLoginForm.props[0]).toBe("username");
     expect(MontaguLoginForm.props[1]).toBe("loginError");
+    expect(MontaguLoginForm.props[2]).toBe("redirectMessage");
 });
 
 test('renders correctly without error message', () => {
@@ -26,6 +27,20 @@ test('renders correctly with error message', () => {
     expect(wrapper.find('#password-input').element.value).toBe('');
     expect(wrapper.find('#login-button').text()).toBe('Log in');
     expect(wrapper.find('#login-error').text()).toBe('an error');
+});
+
+test('renders with redirect message', () => {
+    const wrapper = VueTestUtils.shallowMount(MontaguLoginForm,
+        {propsData: {username: '', loginError: '', redirectMessage: 'redirect message'}});
+
+    expect(wrapper.find('#redirect-message').text()).toBe('redirect message');
+});
+
+test('renders without redirect message', () => {
+    const wrapper = VueTestUtils.shallowMount(MontaguLoginForm,
+        {propsData: {username: '', loginError: '', redirectMessage: ''}});
+
+    expect(wrapper.find('#redirect-message').exists()).toBe(false);
 });
 
 test('renders nothing when username is set', () => {
