@@ -598,7 +598,7 @@ class UserTests : RepositoryTests<UserRepository>()
                     UserProperties("user.name", "Full Name", "email@example.com", null, null))
             assertThat(user.roles).hasSameElementsAs(listOf(ReifiedRole("user", Scope.Global())))
             assertThat(user.permissions.joinToString(","))
-                    .isEqualTo("*/can-login,*/countries.read,*/demographics.read,*/models.read,*/responsibilities.read,*/scenarios.read,*/touchstones.read")
+                    .isEqualTo("*/can-login,*/countries.read,*/demographics.read,*/models.read,*/scenarios.read,*/touchstones.read")
 
         }
     }
