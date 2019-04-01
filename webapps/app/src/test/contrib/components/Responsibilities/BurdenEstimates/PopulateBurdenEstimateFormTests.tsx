@@ -13,6 +13,7 @@ import {Sandbox} from "../../../../Sandbox";
 import {estimatesActionCreators} from "../../../../../main/contrib/actions/estimatesActionCreators";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {createMockContribStore} from "../../../../mocks/mockStore";
+import {mockError} from "../../../../mocks/mockResult";
 
 describe("Populate Burden Estimates Form tests", () => {
 
@@ -42,7 +43,7 @@ describe("Populate Burden Estimates Form tests", () => {
             const mockState = mockContribState({
                 estimates: {
                     populatingInProgress: true,
-                    populateErrors: ["error"],
+                    populateErrors: "error" as any,
                     hasPopulateSuccess: true
                 }
             });
