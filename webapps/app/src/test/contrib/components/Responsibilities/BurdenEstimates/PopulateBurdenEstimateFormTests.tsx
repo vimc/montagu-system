@@ -43,7 +43,7 @@ describe("Populate Burden Estimates Form tests", () => {
             const mockState = mockContribState({
                 estimates: {
                     populatingInProgress: true,
-                    populateErrors: "error" as any,
+                    populateErrors: ["error" as any],
                     hasPopulateSuccess: true
                 }
             });
