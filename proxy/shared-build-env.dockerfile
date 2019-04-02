@@ -11,6 +11,6 @@ ENV TEAMCITY_VERSION="teamcity"
 
 WORKDIR /workspace
 
-COPY . /workspace
+COPY package-lock.json /workspace
 
 RUN npm install

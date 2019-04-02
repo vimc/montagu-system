@@ -4,6 +4,9 @@ const chrome = require('selenium-webdriver/chrome');
 const options = new chrome.Options();
 options.addArguments("--disable-dev-shm-usage");
 options.addArguments("--headless");
+options.addArguments("--no-sandbox");
+options.addArguments('--disable-gpu');
+options.addArguments("window-size=1024,768");
 
 const browser = new webDriver.Builder()
     .withCapabilities(webDriver.Capabilities.chrome())

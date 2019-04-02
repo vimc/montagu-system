@@ -54,5 +54,5 @@ rm -rf workspace
 sleep 2s
 
 docker run \
-	--network montagu_proxy \
+	--network host \
 	montagu-reverse-proxy-integration-tests
