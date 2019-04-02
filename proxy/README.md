@@ -28,6 +28,18 @@ Run `./scripts/dev.sh`. This runs up the proxy along with the apis and portals, 
 The test user with email `test.user@example.com` and password `password` is added by default.
 Optionally include 'data' parameter (`./scripts/dev.sh data`) to include generating Montagu/Orderly test data.
 
+## Testing
+Run unit tests with `npm run test`. Jest will pick up test in files with the `.test.js` extension.
+
+To run integration tests:
+ 
+1. First install chromedriver `./scripts/install-chromedriver.sh`
+1. Make sure you also have a compatible version of chrome (71-75)
+1. Run the proxy and dependencies with `./scripts/dev.sh`
+1. Then run tests with `npm run integration-test`
+
+Jest will pick up tests in files with the `.itest.js` extension.
+
 ## Teamcity
 1. `./scripts/make-build-env.sh`: makes a shared base image containing all npm dependencies, the main build env image
  which also runs the unit tests, and the integration tests image which contains all selenium test depenedencies
