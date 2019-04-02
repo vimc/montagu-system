@@ -30,7 +30,7 @@ test('can get error message on failed login', async () => {
         .click();
 
     const errorAlert = await browser.findElement(webDriver.By.id("login-error"));
-    
+
     await browser.wait(() => {
         return errorAlert.getText().then((text) => {
             return text === "Your email address or password is incorrect.";
