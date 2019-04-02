@@ -6,7 +6,6 @@ options.addArguments("--disable-dev-shm-usage");
 options.addArguments("--headless");
 options.addArguments("--no-sandbox");
 options.addArguments('--disable-gpu');
-options.addArguments("window-size=1024,768");
 
 const browser = new webDriver.Builder()
     .withCapabilities(webDriver.Capabilities.chrome())
@@ -15,7 +14,7 @@ const browser = new webDriver.Builder()
 
 beforeEach(async () => {
 
-    browser.get("https://localhost");
+    await browser.get("https://localhost");
 
     const logout = await browser.findElements(webDriver.By.id("logout-button"));
     if (logout.length > 0) {

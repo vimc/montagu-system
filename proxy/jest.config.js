@@ -1,5 +1,5 @@
 var config = {
-    testResultsProcessor: "jest-teamcity-reporter",
+    testResultsProcessor: "<rootdir>/node_modules/jest-teamcity-reporter",
     transform: {
         "^.+\\.jsx?$": "<rootDir>/node_modules/babel-jest"
     },
