@@ -47,4 +47,5 @@ RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
 
 RUN ./scripts/install-chromedriver.sh
 
+ENV TEAMCITY_VERSION=2018.1
 CMD npm run integration-test
