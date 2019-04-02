@@ -12,7 +12,6 @@ function cleanup() {
     docker-compose --project-name montagu down || true
 }
 
-export TOKEN_KEY_PATH=$PWD/token_key
 export REGISTRY=docker.montagu.dide.ic.ac.uk:5000
 
 cleanup

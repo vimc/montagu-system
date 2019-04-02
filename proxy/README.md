@@ -31,7 +31,7 @@ Optionally include 'data' parameter (`./scripts/dev.sh data`) to include generat
 ## Teamcity
 1. `./scripts/make-build-env.sh`: makes a shared base image containing all npm dependencies, the main build env image
  which also runs the unit tests, and the integration tests image which contains all selenium test depenedencies
-1. `./scripts/run-build.sh1`: runs the build env image from the previous step which dockerises and pushes the app image 
+1. `./scripts/run-build.sh`: runs the build env image from the previous step which dockerises and pushes the app image 
 to our registry
 1. `./scripts/run-integration-tests.sh`: runs the app image created in the previous step along with all dependencies and 
 then runs the integration tests image created in step 1.
