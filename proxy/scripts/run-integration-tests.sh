@@ -6,17 +6,17 @@ here=$(dirname $0)
 git_id=$(git rev-parse --short=7 HEAD)
 git_branch=$(git symbolic-ref --short HEAD)
 
-#function cleanup() {
-#    # Pull down old containers
-#    rm -rf workspace || true
-#    docker stop reverse-proxy || true
-#    docker rm reverse-proxy || true
-#    docker stop montagu-metrics || true
-#    docker rm montagu-metrics || true
-#    docker-compose --project-name montagu down || true
-#}
-#
-#trap cleanup EXIT
+function cleanup() {
+    # Pull down old containers
+    rm -rf workspace || true
+    docker stop reverse-proxy || true
+    docker rm reverse-proxy || true
+    docker stop montagu-metrics || true
+    docker rm montagu-metrics || true
+    docker-compose --project-name montagu down || true
+}
+
+trap cleanup EXIT
 
 $here/run-dependencies.sh
 
