@@ -9,6 +9,8 @@ ENV MONTAGU_GIT_BRANCH=$MONTAGU_GIT_BRANCH
 # This env var is needed for the custom reporter to log to teamcity
 ENV TEAMCITY_VERSION="teamcity"
 
-COPY . .
+WORKDIR /workspace
+
+COPY . /workspace
 
 RUN npm install
