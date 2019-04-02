@@ -32,7 +32,7 @@ migrate_image=$REGISTRY/montagu-migrate:master
 docker pull $migrate_image
 docker run --network=montagu_proxy $migrate_image
 
-# Generate test data, including test users and reports, if 'data' present as first param
+# Generate test data, including reports, if 'data' present as first param
 if [ "$1" = "data" ]; then
   test_data_image=$REGISTRY/montagu-generate-test-data:master
   docker pull $test_data_image

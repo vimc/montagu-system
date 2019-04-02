@@ -5,7 +5,6 @@ set -ex
 # i.e. /home/{user}/.docker/config.json
 docker_auth_path=${1:-/opt/teamcity-agent/.docker/config.json}
 
-# Run the main build
 docker run \
     -v $docker_auth_path:/root/.docker/config.json \
     -v /var/run/docker.sock:/var/run/docker.sock \

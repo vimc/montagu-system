@@ -1,7 +1,5 @@
 FROM montagu-reverse-proxy-shared-build-env
 
-COPY . /workspace
-
 RUN npm run test
 
 # Build, tag and publish docker image

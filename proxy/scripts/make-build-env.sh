@@ -11,7 +11,7 @@ docker build -f shared-build-env.dockerfile \
     --build-arg MONTAGU_GIT_BRANCH=$git_branch \
     .
 
-# The main build env which builds and tests in the next step
+# The main build env which tests and builds in the next step
 docker build -f build.dockerfile \
     -t montagu-reverse-proxy-build-env \
     --build-arg MONTAGU_GIT_ID=$git_id \

@@ -45,9 +45,6 @@ RUN apt-get update && apt-get install -yq \
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
 
-RUN ./scripts/install-chromedriver.sh
-
-COPY resources .
-COPY tests .
+RUN ./install-chromedriver.sh
 
 CMD npm run integration-test
