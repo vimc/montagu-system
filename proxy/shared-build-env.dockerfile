@@ -14,7 +14,3 @@ WORKDIR /workspace
 COPY . /workspace
 
 RUN npm install
-RUN npm test
-
-# Build, tag and publish docker image
-CMD ./scripts/build-image.sh $MONTAGU_GIT_BRANCH $MONTAGU_GIT_ID

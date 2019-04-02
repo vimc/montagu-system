@@ -1,24 +1,26 @@
 #!/usr/bin/env bash
 set -ex
+
 here=$(dirname $0)
 
-function cleanup() {
-    # Pull down old containers
-    rm -rf workspace || true
-    docker stop reverse-proxy || true
-    docker rm reverse-proxy || true
-    docker stop montagu-metrics || true
-    docker rm montagu-metrics || true
-    docker-compose --project-name montagu down || true
-}
+git_id=$(git rev-parse --short=7 HEAD)
+git_branch=$(git symbolic-ref --short HEAD)
 
-export TOKEN_KEY_PATH=$PWD/token_key
+#function cleanup() {
+#    # Pull down old containers
+#    rm -rf workspace || true
+#    docker stop reverse-proxy || true
+#    docker rm reverse-proxy || true
+#    docker stop montagu-metrics || true
+#    docker rm montagu-metrics || true
+#    docker-compose --project-name montagu down || true
+#}
+#
+#trap cleanup EXIT
+
+$here/run-dependencies.sh
+
 export REGISTRY=docker.montagu.dide.ic.ac.uk:5000
-
-cleanup
-
-# This traps errors and Ctrl+C
-trap cleanup EXIT
 
 echo "Generating SSL keypair"
 mkdir workspace
@@ -27,15 +29,11 @@ docker run --rm \
     $REGISTRY/montagu-cert-tool:master \
     gen-self-signed /workspace > /dev/null 2> /dev/null
 
-$here/run-dependencies.sh
-
-# Build and run the proxy and metrics containers
-docker build -t reverse-proxy .
 docker run -d \
 	-p "443:443" -p "80:80" \
 	--name reverse-proxy \
 	--network montagu_proxy\
-	reverse-proxy 443 localhost
+	$REGISTRY/montagu-reverse-proxy:$git_id 443 localhost
 
 docker run -d \
     -p "9113:9113" \
@@ -54,7 +52,7 @@ docker cp workspace/dhparam.pem reverse-proxy:/etc/montagu/proxy/
 rm -rf workspace
 
 sleep 2s
-docker logs reverse-proxy
 
-echo "Proxy and dependencies are running. Press Ctrl+C to teardown."
-sleep infinity
+docker run \
+	--network montagu_proxy \
+	montagu-reverse-proxy-integration-tests

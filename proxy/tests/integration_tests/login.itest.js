@@ -1,6 +1,14 @@
 const webDriver = require("selenium-webdriver");
+const chrome = require('selenium-webdriver/chrome');
 
-const browser = new webDriver.Builder().withCapabilities(webDriver.Capabilities.chrome()).build();
+const options = new chrome.Options();
+options.addArguments("--disable-dev-shm-usage");
+options.addArguments("--headless");
+
+const browser = new webDriver.Builder()
+    .withCapabilities(webDriver.Capabilities.chrome())
+    .setChromeOptions(options)
+    .build();
 
 
 test('can get error message on failed login', async () => {
