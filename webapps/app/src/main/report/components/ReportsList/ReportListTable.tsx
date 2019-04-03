@@ -182,7 +182,7 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
             </ButtonGroup>
             <ReactTable
                 pivotBy={["name"]}
-                defaultSorted={[{id: "version", desc: true}]}
+                defaultSorted={[{id: "version", asc: true}]}
                 defaultFilterMethod={(filter: Filter, row: ReportRow) =>
                     String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
                 filterable
