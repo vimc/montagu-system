@@ -15,7 +15,7 @@ services:
     depends_on:
      - db
     volumes:
-     - ${TOKEN_KEY_PATH}:/etc/montagu/api/token_key
+     - token_key_volume:/etc/montagu/api/token_key
   reporting_api:
     image: ${REGISTRY}/montagu-reporting-api:master
     ports:
@@ -23,7 +23,7 @@ services:
     networks:
      - proxy
     volumes:
-     - ${TOKEN_KEY_PATH}:/etc/montagu/reports_api/token_key
+     - token_key_volume:/etc/montagu/reports_api/token_key
      - orderly_volume:/orderly
   db:
     image: ${REGISTRY}/montagu-db:master
@@ -74,5 +74,6 @@ volumes:
   guidance_volume:
   static_logs:
   static_volume:
+  token_key_volume:
 networks:
   proxy:

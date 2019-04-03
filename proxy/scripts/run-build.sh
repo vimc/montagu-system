@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
 set -ex
-git_id=$(git rev-parse --short=7 HEAD)
-git_branch=$(git symbolic-ref --short HEAD)
-
-# The build env which builds and tests in the next step
-docker build -f ./tests/tests.dockerfile \
-    -t montagu-reverse-proxy-build-env \
-    --build-arg MONTAGU_GIT_ID=$git_id \
-    --build-arg MONTAGU_GIT_BRANCH=$git_branch \
-    .
 
 # This is the path for teamcity agents. If running locally, pass in your own docker config location
 # i.e. /home/{user}/.docker/config.json

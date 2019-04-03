@@ -10,7 +10,7 @@ class MontaguLogin {
     }
 
     initialise() {
-        let montaguUserName = ''
+        let montaguUserName = '';
 
         //Check if we are logged in
         const token = this.readTokenFromLocalStorage();
@@ -84,6 +84,26 @@ class MontaguLogin {
         }
         return errorText;
     }
+
+    static redirectLocation(queryString) {
+
+        if (!queryString) return null;
+
+        if (queryString[0] === "?") queryString = queryString.substring(1);
+
+        if (!queryString) return null;
+
+        return queryString
+            .split('&')
+            .map(function (keyValueString) {
+                return keyValueString.split('=')
+            })
+            .reduce(function (urlParams, [key, value]) {
+                urlParams[key] = decodeURI(value);
+                return urlParams;
+            }, {})["redirectTo"];
+    }
+
 
 }
 

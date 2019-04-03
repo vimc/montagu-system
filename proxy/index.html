@@ -38,6 +38,7 @@
             VIMC home page.
         </p>
         <montagu-login-form v-bind:username="username" v-bind:login-error="loginError"
+                            v-bind:redirect-message="redirectMessage"
                               v-on:login="login" class="login-form"></montagu-login-form>
         <div class="portals">
             <h1>Portals</h1>
@@ -90,20 +91,33 @@
         el: "#app",
         data: {
             username: logic.initialise(),
-            loginError: ""
+            loginError: "",
+            redirectMessage: ""
         },
         methods: {
             logout: function() {
                 const data = this;
                 logic.logout().then(
-                    () => { data.username = ''; data.loginError = '' },
+                    () => {
+                        data.username = '';
+                        data.loginError = '';
+                    },
                     (error) => { data.username = ''; data.loginError = error }
                 );
             },
             login: function(email, password) {
                 const data = this;
                 logic.login(email, password).then(
-                    (result) => { data.username = result; data.loginError = ''; },
+                    (result) => {
+                        data.username = result;
+                        data.loginError = '';
+                        const redirectLocation = MontaguLogin.redirectLocation(location.search);
+                        if (redirectLocation) {
+                            data.redirectMessage = `Redirecting you back to ${redirectLocation}.
+                            If you are not automatically redirected in a few seconds please click <a href="${redirectLocation}">here</a>`;
+                            window.location.href=redirectLocation
+                        }
+                    },
                     (error) => { data.username = ''; data.loginError = error; }
                 );
             }
