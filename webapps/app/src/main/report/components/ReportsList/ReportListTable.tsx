@@ -182,7 +182,8 @@ export class ReportsListTable extends React.Component<ReportsListTableProps, any
             </ButtonGroup>
             <ReactTable
                 pivotBy={["name"]}
-                defaultSorted={[{id: "version", desc: true}]}
+                defaultSorted={[{id: "version", desc: false}]} // the versionSortMethod already sorts by
+                // reportVersion.date descending, so setting `desc: true` here would actually invert that!
                 defaultFilterMethod={(filter: Filter, row: ReportRow) =>
                     String(row[filter.id]).toLowerCase().indexOf(filter.value.toLowerCase()) > -1}
                 filterable
