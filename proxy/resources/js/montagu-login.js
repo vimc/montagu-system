@@ -1,4 +1,4 @@
-//Logic class for loggin in and out of Montagu
+//Logic class for logging in and out of Montagu
 class MontaguLogin {
 
     constructor(montaguAuth, localStorage, jwt_decode, pako) {
@@ -84,26 +84,6 @@ class MontaguLogin {
         }
         return errorText;
     }
-
-    static redirectLocation(queryString) {
-
-        if (!queryString) return null;
-
-        if (queryString[0] === "?") queryString = queryString.substring(1);
-
-        if (!queryString) return null;
-
-        return queryString
-            .split('&')
-            .map(function (keyValueString) {
-                return keyValueString.split('=')
-            })
-            .reduce(function (urlParams, [key, value]) {
-                urlParams[key] = decodeURI(value);
-                return urlParams;
-            }, {})["redirectTo"];
-    }
-
 
 }
 
