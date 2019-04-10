@@ -18,16 +18,19 @@ class MontaguLogin {
         if (token && token !== "null") {
             const decodedToken = this.decodeToken(token);
 
-            //don't allow login if expiry is past
-            const expiry = decodedToken.exp;
-            const now = new Date().getTime() / 1000; //token exp doesn't include milliseconds
-
-            if (expiry > now) {
+            //don't allow login if token expiry is past
+            if (this.tokenHasNotExpired(decodedToken)) {
                 montaguUserName = decodedToken.sub;
             }
         }
 
         return montaguUserName;
+    }
+
+    tokenHasNotExpired(decodedToken) {
+       const expiry = decodedToken.exp;
+        const now = new Date().getTime() / 1000; //token exp doesn't include milliseconds
+        return expiry > now
     }
 
     writeTokenToLocalStorage(token) {
