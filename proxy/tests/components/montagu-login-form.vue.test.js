@@ -19,7 +19,7 @@ test('renders correctly without error message', () => {
     expect(wrapper.find('#login-error').text()).toBe('');
 
     expect(wrapper.find('#reset-password').text()).toBe('Forgotten your password? Click here');
-    expect(wrapper.find('#reset-password-link').attributes()["href"]).toBe('/resources/reset-password.html?email=');
+    expect(wrapper.find('#reset-password-link').attributes()["href"]).toBe('reset-password?email=');
 });
 
 test('renders correctly with error message', () => {
@@ -32,7 +32,7 @@ test('renders correctly with error message', () => {
     expect(wrapper.find('#login-error').text()).toBe('an error');
 
     expect(wrapper.find('#reset-password').text()).toBe('Forgotten your password? Click here');
-    expect(wrapper.find('#reset-password-link').attributes()["href"]).toBe('/resources/reset-password.html?email=');
+    expect(wrapper.find('#reset-password-link').attributes()["href"]).toBe('reset-password?email=');
 });
 
 test('renders reset password link correctly when username is changed', () => {
@@ -45,7 +45,7 @@ test('renders reset password link correctly when username is changed', () => {
     input.trigger('input'); //update model
 
     expect(wrapper.find('#reset-password').text()).toBe('Forgotten your password? Click here');
-    expect(wrapper.find('#reset-password-link').attributes()["href"]).toBe('/resources/reset-password.html?email=user@example.com');
+    expect(wrapper.find('#reset-password-link').attributes()["href"]).toBe('reset-password?email=user@example.com');
 });
 
 test('renders with redirect message', () => {

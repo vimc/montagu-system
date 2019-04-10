@@ -14,7 +14,7 @@ const MontaguLoginForm =  {
                     </div>
                     <div id="login-error" class="text-danger">{{loginError}}</div>
                     <div id="reset-password">
-                        Forgotten your password? <a id="reset-password-link" v-bind:href="'/resources/reset-password.html?email='+email">Click here</a>
+                        Forgotten your password? <a id="reset-password-link" v-bind:href="'reset-password?email='+email">Click here</a>
                     </div>
                  </div>
                  <div v-if="redirectMessage" id="redirect-message" v-html="redirectMessage" class="alert alert-warning rounded-0"></div>

@@ -24,7 +24,7 @@ const MontaguNewPassword =  {
                 This password reset link has expired. Please request a new one.  
             </div>
             <div>
-                <a href="reset-password.html" id="request-new-reset-link-button" class="button"">Request new reset password link</a>
+                <a href="reset-password" id="request-new-reset-link-button" class="button"">Request new reset password link</a>
             </div>
         </div>
 </div>`

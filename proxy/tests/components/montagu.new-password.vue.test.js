@@ -61,7 +61,7 @@ test('renders correctly when token is invalid', () => {
     expect(wrapper.find('#token-invalid').exists()).toBe(true);
     expect(wrapper.find('#token-invalid-text').text()).toBe("This password reset link has expired. Please request a new one.");
     expect(wrapper.find('#request-new-reset-link-button').text()).toBe("Request new reset password link");
-    expect(wrapper.find('#request-new-reset-link-button').attributes()["href"]).toBe('reset-password.html');
+    expect(wrapper.find('#request-new-reset-link-button').attributes()["href"]).toBe('reset-password');
 });
 
 test('emits update password event when form submitted', () => {
