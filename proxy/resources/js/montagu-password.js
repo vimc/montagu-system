@@ -12,4 +12,15 @@ class MontaguPassword {
             url: url
         });
     }
+
+    setPassword(password, access_token) {
+        const url = this.API_ROOT + "password/set/?access_token=" + encodeURI(access_token);
+        const data = { password: password };
+        return $.ajax({
+            type: "POST",
+            url: url,
+            contentType: "application/json",
+            data: JSON.stringify(data)
+        });
+    }
 }
