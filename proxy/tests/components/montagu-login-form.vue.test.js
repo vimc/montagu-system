@@ -42,7 +42,7 @@ test('renders reset password link correctly when username is changed', () => {
     const input = wrapper.find('#email-input');
     expect(input.element.value).toBe('');
     input.element.value = "user@example.com";
-    input.trigger('input') //update model
+    input.trigger('input'); //update model
 
     expect(wrapper.find('#reset-password').text()).toBe('Forgotten your password? Click here');
     expect(wrapper.find('#reset-password-link').attributes()["href"]).toBe('/resources/reset-password.html?email=user@example.com');

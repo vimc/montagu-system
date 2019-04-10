@@ -45,7 +45,7 @@ test('renders correctly showing reset password error', () => {
     expect(wrapper.find('#show-acknowledgement-text').exists()).toBe(false);
 });
 
-test('emits requestLink event when form submitted', () => {
+test('emits request link event when form submitted', () => {
     const wrapper = VueTestUtils.shallowMount(MontaguResetPassword,
         {propsData: {email: 'email@example.com', showAcknowledgement: false, resetPasswordError: ""}});
 

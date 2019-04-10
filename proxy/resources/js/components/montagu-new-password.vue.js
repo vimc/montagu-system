@@ -14,8 +14,8 @@ const MontaguNewPassword =  {
             </form>     
             <div id="set-password-error" class="text-danger">{{setPasswordError}}</div>     
         </div>     
-        <div v-if="setPasswordSuccess" id="set-password-sucess">
-            Thank you, your password has been updated. <a href="/">Click here</a> to return to Montagu.    
+        <div v-if="setPasswordSuccess" id="set-password-success">
+            Thank you, your password has been updated. <a id="set-password-success-link" href="/">Click here</a> to return to Montagu.    
         </div>
 </div>`
 }
