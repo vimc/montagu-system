@@ -12,10 +12,10 @@ const MontaguLoginForm =  {
                                 v-on:keyup.enter="$emit('login', email, password)"/>
                         <button id="login-button" class="button" type="submit" v-on:click="$emit('login', email, password)">Log in</button>
                     </div>
+                    <div id="login-error" class="text-danger">{{loginError}}</div>
                     <div id="reset-password">
                         Forgotten your password? <a id="reset-password-link" v-bind:href="'/resources/reset-password.html?email='+email">Click here</a>
                     </div>
-                    <div id="login-error" class="text-danger">{{loginError}}</div>
                  </div>
                  <div v-if="redirectMessage" id="redirect-message" v-html="redirectMessage" class="alert alert-warning rounded-0"></div>
              </div>`

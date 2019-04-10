@@ -31,11 +31,11 @@ test('renders correctly showing acknowledgement', () => {
     expect(wrapper.find('#show-acknowledgement-text').text()).toBe("Thank you. If we have an account registered for this email address you will receive a reset password link.");
 });
 
-test('emits requestLink event when button clicked', () => {
+test('emits requestLink event when form submitted', () => {
     const wrapper = VueTestUtils.shallowMount(MontaguResetPassword,
         {propsData: {email: 'email@example.com', showAcknowledgement: false}});
 
-    wrapper.find("#request-button").trigger("click");
+    wrapper.find("form").trigger("submit");
 
     expect(wrapper.emitted('request-reset-link')).toBeTruthy();
     expect(wrapper.emitted('request-reset-link')[0][0]).toBe('email@example.com');
