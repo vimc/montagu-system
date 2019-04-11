@@ -97,7 +97,7 @@ open class WebTokenHelper(
         val diseasePermissions = diseaseNames
                 .associate { it to "true" }
 
-        val adminRoles = listOf("admin", "developer").map { ReifiedRole(it, Scope.Global()) }
+        val adminRoles = listOf("admin", "developer", "funder").map { ReifiedRole(it, Scope.Global()) }
         val access = if (user.roles.intersect(adminRoles).any())
         {
             "admin"

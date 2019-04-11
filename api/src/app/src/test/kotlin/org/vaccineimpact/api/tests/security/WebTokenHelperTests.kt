@@ -129,6 +129,16 @@ class WebTokenHelperTests : MontaguTests()
     }
 
     @Test
+    fun `can generate model review token for funder`()
+    {
+        val token = sut.generateModelReviewToken(InternalUser(properties,
+                roles + ReifiedRole("funder", Scope.Global()), permissions), listOf())
+        val claims = sut.verify(token.deflated(), TokenType.MODEL_REVIEW)
+
+        assertThat(claims["access_level"]).isEqualTo("admin")
+    }
+
+    @Test
     fun `token fails validation when issuer is wrong`()
     {
         val claims = sut.claims(InternalUser(properties, roles, permissions))
