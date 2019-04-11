@@ -3,6 +3,13 @@ const TestHelper = require('./test-helper.js');
 
 const browser = TestHelper.getBrowser();
 
+
+beforeEach(async () => {
+
+    //avoid dir bloat
+    TestHelper.ensureEmptyMontaguEmailsDirExists();
+});
+
 test('can submit request reset password link', async () => {
 
     browser.get("https://localhost/reset-password?email=test.user@example.com");

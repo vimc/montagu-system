@@ -4,13 +4,7 @@ const TestHelper = require('./test-helper.js');
 const browser = TestHelper.getBrowser();
 
 beforeEach(async () => {
-
-    await browser.get("https://localhost");
-
-    const logout = await browser.findElements(webDriver.By.id("logout-button"));
-    if (logout.length > 0) {
-        await logout[0].click();
-    }
+    await TestHelper.ensureLoggedOut(browser);
 });
 
 test('can get error message on failed login', async () => {

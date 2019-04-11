@@ -58,3 +58,9 @@ $here/cli.sh add "Test User" test.user \
 
 $here/cli.sh addRole test.user user
 $here/cli.sh addRole test.user admin
+
+$here/cli.sh add "Password Reset Test User" passwordtest.user \
+    passwordtest.user@example.com password \
+    --if-not-exists
+
+$here/cli.sh addRole passwordtest.user user
