@@ -17,6 +17,8 @@ COPY node_modules/bootstrap/dist/css/bootstrap.min.css /usr/share/nginx/html/res
 
 RUN rm /etc/nginx/conf.d/default.conf
 
+COPY secrets /etc/montagu/proxy/.
+
 WORKDIR /app
 COPY entrypoint.sh .
 
