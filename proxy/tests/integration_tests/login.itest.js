@@ -1,16 +1,7 @@
 const webDriver = require("selenium-webdriver");
-const chrome = require('selenium-webdriver/chrome');
+const TestHelper = require('./test-helper.js');
 
-const options = new chrome.Options();
-options.addArguments("--disable-dev-shm-usage");
-options.addArguments("--headless");
-options.addArguments("--no-sandbox");
-options.addArguments('--disable-gpu');
-
-const browser = new webDriver.Builder()
-    .withCapabilities(webDriver.Capabilities.chrome())
-    .setChromeOptions(options)
-    .build();
+const browser = TestHelper.getBrowser();
 
 beforeEach(async () => {
 

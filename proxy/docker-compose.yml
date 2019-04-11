@@ -16,6 +16,7 @@ services:
      - db
     volumes:
      - token_key_volume:/etc/montagu/api/token_key
+     - test_emails_volume:/tmp/montagu_emails
   reporting_api:
     image: ${REGISTRY}/montagu-reporting-api:master
     ports:
@@ -75,5 +76,11 @@ volumes:
   static_logs:
   static_volume:
   token_key_volume:
+  test_emails_volume:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/tmp/montagu_emails'
 networks:
   proxy:
