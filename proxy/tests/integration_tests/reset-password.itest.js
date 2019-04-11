@@ -59,3 +59,8 @@ test('can prevent submit request reset password link invalid email value', async
     //Expect input validation to have failed
     await browser.findElement(webDriver.By.css("input:invalid"));
 });
+
+test('submit request for reset password link generates token and email from API', async () => {
+    const token = await TestHelper.submitResetPasswordRequestAndReadLinkToken(browser);
+    expect(token.length).toBeGreaterThan(0);
+});
