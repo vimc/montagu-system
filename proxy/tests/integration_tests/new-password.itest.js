@@ -3,7 +3,7 @@ const TestHelper = require('./test-helper.js');
 
 const browser = TestHelper.getBrowser();
 
-beforeEach(async () => {
+afterEach(async () => {
     //avoid dir bloat
     TestHelper.ensureEmptyMontaguEmailsDirExists();
 

@@ -9,6 +9,7 @@ git_branch=$(git symbolic-ref --short HEAD)
 function cleanup() {
     # Pull down old containers
     rm -rf workspace || true
+    rm -rf montagu_emails || true
     docker stop reverse-proxy || true
     docker rm reverse-proxy || true
     docker stop montagu-metrics || true
@@ -18,6 +19,7 @@ function cleanup() {
 
 trap cleanup EXIT
 
+mkdir montagu_emails
 $here/run-dependencies.sh
 
 export REGISTRY=docker.montagu.dide.ic.ac.uk:5000
@@ -55,4 +57,6 @@ sleep 2s
 
 docker run \
 	--network host \
+	-v ${PWD}/montagu_emails:/workspace/montagu_emails \
 	montagu-reverse-proxy-integration-tests
+

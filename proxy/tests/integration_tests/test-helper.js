@@ -3,7 +3,7 @@ const chrome = require('selenium-webdriver/chrome');
 const fs = require('fs');
 const path = require('path');
 
-const emailsDir = "/tmp/montagu_emails";
+const emailsDir = path.resolve(__dirname, "../../montagu_emails");
 
 const TestHelper =  {
     getBrowser: function() {
@@ -33,7 +33,6 @@ const TestHelper =  {
     submitResetPasswordRequestAndReadLinkToken: async function(browser) {
 
         const start  = Date.now();
-        //console.log(start);
 
         //Browse to the submit request link page and make a new request
         browser.get("https://localhost/reset-password?email=passwordtest.user@example.com");
@@ -46,24 +45,20 @@ const TestHelper =  {
         files.sort();
 
         const latestFile = files[files.length-1];
-        //console.log(latestFile);
-        //console.log(files.length);
 
         const fileWriteTime = Date.parse(latestFile);
-        //console.log(fileWriteTime);
 
         //Expect new file to have appeared
         expect(fileWriteTime > start).toBe(true);
 
         //Read the contents of the file
         const emailContent = fs.readFileSync(path.join(emailsDir, latestFile), 'utf-8');
-        //console.log(emailContent);
 
         //Extract the token from the email content
         const regex = /\?token=(.*)/; //gets the token in the link up, to the line terminator
         const match = emailContent.match(regex);
         const token = match[1];
-        //console.log(token);
+
         return token;
     },
 

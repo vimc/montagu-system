@@ -5,6 +5,7 @@ here=$(dirname $0)
 function cleanup() {
     # Pull down old containers
     rm -rf workspace || true
+    rm -rf montagu_emails|| true
     docker stop reverse-proxy || true
     docker rm reverse-proxy || true
     docker stop montagu-metrics || true
@@ -21,6 +22,7 @@ trap cleanup EXIT
 
 echo "Generating SSL keypair"
 mkdir workspace
+mkdir montagu_emails
 docker run --rm \
     -v $PWD/workspace:/workspace \
     $REGISTRY/montagu-cert-tool:master \
