@@ -1,12 +1,12 @@
 //Class which makes the ajax calls for logging in and out of Montagu
 class MontaguAuth {
 
-    constructor() {
-        this.API_ROOT = "/api/v1/";
+    constructor(apiRoot) {
+        this.apiRoot = apiRoot;
     }
 
     login(email, password) {
-        const loginUrl = this.API_ROOT + "authenticate/";
+        const loginUrl = this.apiRoot + "authenticate/";
         return $.ajax({
             type: "POST",
             url: loginUrl,
@@ -20,7 +20,7 @@ class MontaguAuth {
 
     setCookies(token) {
         //Call set-cookies to complete login
-        const setCookiesUrl = this.API_ROOT + "set-cookies/";
+        const setCookiesUrl = this.apiRoot + "set-cookies/";
         return $.ajax({
             type: "GET",
             url: setCookiesUrl,
@@ -31,7 +31,7 @@ class MontaguAuth {
     }
 
     logout() {
-        const logoutUrl = this.API_ROOT + "logout/";
+        const logoutUrl = this.apiRoot + "logout/";
         return $.ajax({
             type: "GET",
             url: logoutUrl

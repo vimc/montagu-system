@@ -1,25 +1,10 @@
 const webDriver = require("selenium-webdriver");
-const chrome = require('selenium-webdriver/chrome');
+const TestHelper = require('./test-helper.js');
 
-const options = new chrome.Options();
-options.addArguments("--disable-dev-shm-usage");
-options.addArguments("--headless");
-options.addArguments("--no-sandbox");
-options.addArguments('--disable-gpu');
-
-const browser = new webDriver.Builder()
-    .withCapabilities(webDriver.Capabilities.chrome())
-    .setChromeOptions(options)
-    .build();
+const browser = TestHelper.getBrowser();
 
 beforeEach(async () => {
-
-    await browser.get("https://localhost");
-
-    const logout = await browser.findElements(webDriver.By.id("logout-button"));
-    if (logout.length > 0) {
-        await logout[0].click();
-    }
+    await TestHelper.ensureLoggedOut(browser);
 });
 
 test('can get error message on failed login', async () => {

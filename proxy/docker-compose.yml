@@ -16,6 +16,7 @@ services:
      - db
     volumes:
      - token_key_volume:/etc/montagu/api/token_key
+     - ${PWD}/montagu_emails:/tmp/montagu_emails
   reporting_api:
     image: ${REGISTRY}/montagu-reporting-api:master
     ports:

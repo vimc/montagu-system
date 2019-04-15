@@ -17,6 +17,9 @@ test('renders correctly without error message', () => {
     expect(wrapper.find('#password-input').element.value).toBe('');
     expect(wrapper.find('#login-button').text()).toBe('Log in');
     expect(wrapper.find('#login-error').text()).toBe('');
+
+    expect(wrapper.find('#reset-password').text()).toBe('Forgotten your password? Click here');
+    expect(wrapper.find('#reset-password-link').attributes()["href"]).toBe('reset-password?email=');
 });
 
 test('renders correctly with error message', () => {
@@ -27,6 +30,22 @@ test('renders correctly with error message', () => {
     expect(wrapper.find('#password-input').element.value).toBe('');
     expect(wrapper.find('#login-button').text()).toBe('Log in');
     expect(wrapper.find('#login-error').text()).toBe('an error');
+
+    expect(wrapper.find('#reset-password').text()).toBe('Forgotten your password? Click here');
+    expect(wrapper.find('#reset-password-link').attributes()["href"]).toBe('reset-password?email=');
+});
+
+test('renders reset password link correctly when username is changed', () => {
+    const wrapper = VueTestUtils.shallowMount(MontaguLoginForm,
+        {propsData: {username: '', loginError: 'an error'}});
+
+    const input = wrapper.find('#email-input');
+    expect(input.element.value).toBe('');
+    input.element.value = "user@example.com";
+    input.trigger('input'); //update model
+
+    expect(wrapper.find('#reset-password').text()).toBe('Forgotten your password? Click here');
+    expect(wrapper.find('#reset-password-link').attributes()["href"]).toBe('reset-password?email=user@example.com');
 });
 
 test('renders with redirect message', () => {

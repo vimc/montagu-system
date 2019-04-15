@@ -12,6 +12,7 @@
 
     <script src="resources/js/montagu-login.js"></script>
     <script src="resources/js/montagu-auth.js"></script>
+    <script src="resources/js/montagu-utils.js"></script>
     <script src="resources/js/components/montagu-login-status.vue.js"></script>
     <script src="resources/js/components/montagu-login-form.vue.js"></script>
 </head>
@@ -80,13 +81,16 @@
 </div>
 </body>
 <script>
-    const auth = new MontaguAuth();
+    const utils = MontaguUtils;
+    const auth = new MontaguAuth(utils.API_ROOT);
     const logic = new MontaguLogin(
                         auth,
                         window.localStorage,
                         jwt_decode,
                         pako
                 );
+
+
     new Vue({
         el: "#app",
         data: {
@@ -111,7 +115,7 @@
                     (result) => {
                         data.username = result;
                         data.loginError = '';
-                        const redirectLocation = MontaguLogin.redirectLocation(location.search);
+                        const redirectLocation = utils.paramFromQueryString(location.search, "redirectTo");
                         if (redirectLocation) {
                             data.redirectMessage = `Redirecting you back to ${redirectLocation}.
                             If you are not automatically redirected in a few seconds please click <a href="${redirectLocation}">here</a>`;

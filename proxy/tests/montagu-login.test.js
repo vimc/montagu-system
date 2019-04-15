@@ -246,31 +246,3 @@ test('can logout', (done) => {
     );
 
 });
-
-test('can retrieve redirect query parameter', () => {
-
-    let result = MontaguLogin.redirectLocation("?redirectTo=somewhere");
-    expect(result).toBe("somewhere");
-
-    result = MontaguLogin.redirectLocation("?q1=whatever&redirectTo=somewhere");
-    expect(result).toBe("somewhere");
-
-    result = MontaguLogin.redirectLocation("?redirectTo=somewhere&q2=5678");
-    expect(result).toBe("somewhere");
-
-    result = MontaguLogin.redirectLocation("redirectTo=somewhere");
-    expect(result).toBe("somewhere");
-
-    result = MontaguLogin.redirectLocation("?random=somewhere");
-    expect(!result).toBe(true);
-
-    result = MontaguLogin.redirectLocation("?");
-    expect(!result).toBe(true);
-
-    result = MontaguLogin.redirectLocation("");
-    expect(!result).toBe(true);
-
-    result = MontaguLogin.redirectLocation(null);
-    expect(!result).toBe(true);
-
-});
