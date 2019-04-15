@@ -81,14 +81,15 @@
 </div>
 </body>
 <script>
-    const auth = new MontaguAuth();
+    const utils = MontaguUtils;
+    const auth = new MontaguAuth(utils.API_ROOT);
     const logic = new MontaguLogin(
                         auth,
                         window.localStorage,
                         jwt_decode,
                         pako
                 );
-    const utils = MontaguUtils;
+
 
     new Vue({
         el: "#app",

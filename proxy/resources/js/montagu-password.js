@@ -1,12 +1,12 @@
 //Class which makes the ajax calls for setting a new password in the Montagu API
 class MontaguPassword {
 
-    constructor() {
-        this.API_ROOT = "/api/v1/";
+    constructor(apiRoot) {
+        this.apiRoot = apiRoot;
     }
 
     requestResetLink(email) {
-        const url = this.API_ROOT + "password/request-link/?email=" + encodeURI(email);
+        const url = this.apiRoot + "password/request-link/?email=" + encodeURI(email);
         return $.ajax({
             type: "POST",
             url: url
@@ -14,7 +14,7 @@ class MontaguPassword {
     }
 
     setPassword(password, access_token) {
-        const url = this.API_ROOT + "password/set/?access_token=" + encodeURI(access_token);
+        const url = this.apiRoot + "password/set/?access_token=" + encodeURI(access_token);
         const data = { password: password };
         return $.ajax({
             type: "POST",
