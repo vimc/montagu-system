@@ -47,3 +47,5 @@ Jest will pick up tests in files with the `.itest.js` extension.
 to our registry
 1. `./scripts/run-integration-tests.sh`: runs the app image created in the previous step along with all dependencies and 
 then runs the integration tests image created in step 1.
+1. `./scripts/run-build-minimal.sh`: builds an image `montagu-reverse-proxy-minimal` that just provides login functionality.
+ This is used for testing OrderlyWeb login integration without having to run an entire Montagu deployment.
