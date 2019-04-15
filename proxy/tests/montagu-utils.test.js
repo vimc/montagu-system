@@ -27,4 +27,11 @@ test('can retrieve query parameter', () => {
     result = MontaguUtils.paramFromQueryString(null, paramName);
     expect(!result).toBe(true);
 
+    result = MontaguUtils.paramFromQueryString("redirectTo=someone@somewhere.com", paramName);
+    expect(result).toBe("someone@somewhere.com");
+
+    //test can uri decode
+    result = MontaguUtils.paramFromQueryString("redirectTo=h%40llo%26goodbye%2F", paramName);
+    expect(result).toBe("h@llo&goodbye/");
+
 });

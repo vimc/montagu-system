@@ -14,7 +14,7 @@ class MontaguUtils {
                 return keyValueString.split('=')
             })
             .reduce(function (urlParams, [key, value]) {
-                urlParams[key] = decodeURI(value);
+                urlParams[key] = decodeURIComponent(value);
                 return urlParams;
             }, {})[param];
     }
