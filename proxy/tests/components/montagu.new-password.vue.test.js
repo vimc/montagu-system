@@ -1,17 +1,17 @@
 const VueTestUtils = require("@vue/test-utils");
-require("../../node_modules/vue/dist/vue.js");
 const MontaguNewPassword = require("../../resources/js/components/montagu-new-password.vue.js");
 
-test('has expected properties', () => {
-    expect(MontaguNewPassword.props.length).toBe(3);
-    expect(MontaguNewPassword.props[0]).toBe("tokenIsValid");
-    expect(MontaguNewPassword.props[1]).toBe("setPasswordSuccess");
-    expect(MontaguNewPassword.props[2]).toBe("setPasswordError");
-});
 
 test('renders correctly when password has not been set', () => {
+    const mockUtils = { paramFromQueryString: jest.fn(() => "token") }
+    const mockPasswordApi = {};
+    const mockLoginLogic  = {
+        tokenHasNotExpired: jest.fn(() => true),
+        decodeToken: jest.fn(x => x)
+    };
+
     const wrapper = VueTestUtils.shallowMount(MontaguNewPassword,
-        {propsData: {tokenIsValid: true, setPasswordSuccess: false, setPasswordError: ''}});
+        {propsData: {utils: mockUtils, passwordApi: mockPasswordApi, loginLogic: mockLoginLogic }});
 
     expect(wrapper.find('#password-input').element.value).toBe('');
     expect(wrapper.find('#update-button').text()).toBe('Update');
@@ -22,36 +22,93 @@ test('renders correctly when password has not been set', () => {
 });
 
 
-test('renders correctly when password has been set successfuly', () => {
+test('renders correctly when password has been set successfuly', (done) => {
+    const mockUtils = { paramFromQueryString: jest.fn(() => "validtoken") }
+    const mockPasswordApi = {setPassword: jest.fn(() => new Promise(
+            function (resolve, reject){ resolve(); }
+        ))};
+    const mockLoginLogic  = {
+        tokenHasNotExpired: jest.fn(() => true),
+        decodeToken: jest.fn(x => x)
+    };
+
     const wrapper = VueTestUtils.shallowMount(MontaguNewPassword,
-        {propsData: {tokenIsValid: true, setPasswordSuccess: true, setPasswordError: ''}});
+        {propsData: {utils: mockUtils, passwordApi: mockPasswordApi, loginLogic: mockLoginLogic }});
 
-    expect(wrapper.find('#password-input').exists()).toBe(false);
-    expect(wrapper.find('#update-button').exists()).toBe(false);
-    expect(wrapper.find('#set-password-error').exists()).toBe(false);
+    //Fill in a new password
+    const input = wrapper.find('#password-input');
+    expect(input.element.value).toBe('');
+    input.element.value = "newpassword";
+    input.trigger('input'); //update model
 
-    expect(wrapper.find('#set-password-success').text()).toBe('Thank you, your password has been updated. Click here to return to Montagu.');
-    expect(wrapper.find('#set-password-success-link').attributes()["href"]).toBe('/');
+    //Mock press submit button and success response
+    wrapper.find("form").trigger("submit");
 
-    expect(wrapper.find('#token-invalid').exists()).toBe(false);
+    //Expect request to have been called with new password and token
+    expect(mockPasswordApi.setPassword.mock.calls.length).toBe(1);
+    expect(mockPasswordApi.setPassword.mock.calls[0][0]).toBe("newpassword");
+    expect(mockPasswordApi.setPassword.mock.calls[0][1]).toBe("validtoken");
+
+    wrapper.vm.$nextTick( () => {
+        expect(wrapper.find('#password-input').exists()).toBe(false);
+        expect(wrapper.find('#update-button').exists()).toBe(false);
+        expect(wrapper.find('#set-password-error').exists()).toBe(false);
+
+        expect(wrapper.find('#set-password-success').text()).toBe('Thank you, your password has been updated. Click here to return to Montagu.');
+        expect(wrapper.find('#set-password-success-link').attributes()["href"]).toBe('/');
+
+        expect(wrapper.find('#token-invalid').exists()).toBe(false);
+
+        done();
+    });
 });
 
-test('renders correctly with set password error', () => {
+test('renders correctly with set password error', (done) => {
+    const mockUtils = { paramFromQueryString: jest.fn(() => "validtoken") }
+    const mockPasswordApi = {setPassword: jest.fn(() => new Promise(
+            function (resolve, reject){ reject(); }
+        ))};
+    const mockLoginLogic  = {
+        tokenHasNotExpired: jest.fn(() => true),
+        decodeToken: jest.fn(x => x)
+    };
+
     const wrapper = VueTestUtils.shallowMount(MontaguNewPassword,
-        {propsData: {tokenIsValid: true, setPasswordSuccess: false, setPasswordError: 'An error occurred'}});
+        {propsData: {utils: mockUtils, passwordApi: mockPasswordApi, loginLogic: mockLoginLogic }});
 
-    expect(wrapper.find('#password-input').element.value).toBe('');
-    expect(wrapper.find('#update-button').text()).toBe('Update');
-    expect(wrapper.find('#set-password-error').text()).toBe('An error occurred');
+    //Fill in a new password
+    const input = wrapper.find('#password-input');
+    expect(input.element.value).toBe('');
+    input.element.value = "newpassword";
+    input.trigger('input'); //update model
 
-    expect(wrapper.find('#set-password-success').exists()).toBe(false);
+    //Mock press submit button and success response
+    wrapper.find("form").trigger("submit");
 
-    expect(wrapper.find('#token-invalid').exists()).toBe(false);
+    wrapper.vm.$nextTick( () => {
+
+        expect(wrapper.find('#password-input').element.value).toBe('newpassword');
+        expect(wrapper.find('#update-button').text()).toBe('Update');
+        expect(wrapper.find('#set-password-error').text()).toBe('An error occurred');
+
+        expect(wrapper.find('#set-password-success').exists()).toBe(false);
+
+        expect(wrapper.find('#token-invalid').exists()).toBe(false);
+
+        done();
+    });
 });
 
 test('renders correctly when token is invalid', () => {
+    const mockUtils = { paramFromQueryString: jest.fn(() => "invalidtoken") }
+    const mockPasswordApi = {};
+    const mockLoginLogic  = {
+        tokenHasNotExpired: jest.fn(() => false),
+        decodeToken: jest.fn(x => x)
+    };
+
     const wrapper = VueTestUtils.shallowMount(MontaguNewPassword,
-        {propsData: {tokenIsValid: false, setPasswordSuccess: false, setPasswordError: ''}});
+        {propsData: {utils: mockUtils, passwordApi: mockPasswordApi, loginLogic: mockLoginLogic }});
 
     expect(wrapper.find('#password-input').exists()).toBe(false);
     expect(wrapper.find('#update-button').exists()).toBe(false);
@@ -64,17 +121,4 @@ test('renders correctly when token is invalid', () => {
     expect(wrapper.find('#request-new-reset-link-button').attributes()["href"]).toBe('reset-password');
 });
 
-test('emits update password event when form submitted', () => {
-    const wrapper = VueTestUtils.shallowMount(MontaguNewPassword,
-        {propsData: {tokenIsValid: true, setPasswordSuccess: false, setPasswordError: ''}});
 
-    //set password value
-    const input = wrapper.find('#password-input');
-    input.element.value = "mypassword";
-    input.trigger('input'); //update model
-
-    wrapper.find("form").trigger("submit");
-
-    expect(wrapper.emitted('update-password')).toBeTruthy();
-    expect(wrapper.emitted('update-password')[0][0]).toBe('mypassword');
-});

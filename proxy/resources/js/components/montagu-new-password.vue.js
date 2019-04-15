@@ -1,12 +1,35 @@
-const MontaguNewPassword =  {
-    props: ['tokenIsValid', 'setPasswordSuccess', 'setPasswordError'],
-    data() {
-        return { password: ""}
+Vue = typeof(Vue) === 'undefined' ? require("vue/dist/vue.js") : Vue;
+
+const MontaguNewPasswordComponent =  Vue.extend( {
+    props: ['utils', 'passwordApi', 'loginLogic'],
+    data: function() {
+        const token = this.utils.paramFromQueryString(location.search, "token");
+        const tokenIsValid = this.loginLogic.tokenHasNotExpired(this.loginLogic.decodeToken(token));
+        return {
+            password: "",
+            token: token,
+            tokenIsValid: tokenIsValid,
+            setPasswordSuccess: false,
+            setPasswordError: ""
+        }
+    },
+    methods: {
+        updatePassword: function() {
+            this.passwordApi.setPassword(this.password, this.token).then(
+                () => {
+                    this.setPasswordSuccess= true;
+                },
+                (jqXHR) => {
+                    this.setPasswordSuccess = false;
+                    this.setPasswordError = "An error occurred";
+                }
+            );
+        }
     },
     template: `<div>
         <div v-if="tokenIsValid" id="token-valid">
             <div v-if="!setPasswordSuccess">
-                <form action="javascript:void(0);" v-on:submit="$emit('update-password', password)">
+                <form action="javascript:void(0);" v-on:submit="updatePassword">
                     <input id="password-input" name="password" placeholder="Password" type="password" v-model="password" 
                         minlength="8" required/>
                     <button id="update-button" class="button" type="submit">
@@ -28,6 +51,8 @@ const MontaguNewPassword =  {
             </div>
         </div>
 </div>`
-}
+});
 
-if (typeof module !== 'undefined') module.exports = MontaguNewPassword;
+Vue.component("montagu-new-password", MontaguNewPasswordComponent);
+
+if (typeof module !== 'undefined') module.exports = MontaguNewPasswordComponent;
