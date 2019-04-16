@@ -82,7 +82,7 @@
 </body>
 <script>
     const utils = MontaguUtils;
-    const auth = new MontaguAuth(utils.API_ROOT);
+    const auth = new MontaguAuth(utils.getApiRoot());
     const logic = new MontaguLogin(
                         auth,
                         window.localStorage,
