@@ -15,5 +15,5 @@ export const settings: Partial<Settings> = {
         publicPath: "/reports",
         requiresModellingGroupMembership: false
     },
-    pinnedReports: ["modup2-201807", "vaccine-impact-dataset"]
+    pinnedReports: ["modup2-201810", "vaccine-impact-dataset"]
 };
