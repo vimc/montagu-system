@@ -94,11 +94,17 @@
     new Vue({
         el: "#app",
         data: {
-            username: logic.initialise(),
+            username: '',
             loginError: "",
             redirectMessage: ""
         },
         methods: {
+            initialise: function() {
+                const data = this;
+                logic.getUserName().then(() => {
+                  data.username = ''
+              })
+            },
             logout: function() {
                 const data = this;
                 logic.logout().then(
@@ -130,6 +136,6 @@
             'montagu-login-status': MontaguLoginStatus,
             'montagu-login-form': MontaguLoginForm
         }
-    });
+    }).initialise();
 </script>
 </html>

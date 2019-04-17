@@ -69,6 +69,19 @@ const TestHelper =  {
         if (logout.length > 0) {
             await logout[0].click();
         }
+    },
+
+    ensureLoggedIn: async function(browser) {
+        const emailField = await browser.findElement(webDriver.By.id("email-input"));
+        const pwField = await browser.findElement(webDriver.By.id("password-input"));
+
+        await emailField.sendKeys("test.user@example.com");
+        await pwField.sendKeys("password");
+
+        await browser.findElement(webDriver.By.id("login-button"))
+            .click();
+
+        browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
     }
 };
 

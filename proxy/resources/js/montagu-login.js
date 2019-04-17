@@ -9,26 +9,21 @@ class MontaguLogin {
         this.pako = pako;
     }
 
-    initialise() {
-        let montaguUserName = '';
-
-        //Check if we are logged in
-        const token = this.readTokenFromLocalStorage();
-
-        if (token && token !== "null") {
-            const decodedToken = this.decodeToken(token);
-
-            //don't allow login if token expiry is past
-            if (this.tokenHasNotExpired(decodedToken)) {
-                montaguUserName = decodedToken.sub;
+    getUserName() {
+        return this.montaguAuth.getUserDetails().then((result) => {
+            if (result.status === "success") {
+                return result.data.username
             }
-        }
-
-        return montaguUserName;
+            else {
+                return ''
+            }
+        }).catch(() => {
+            return ''
+        })
     }
 
     tokenHasNotExpired(decodedToken) {
-       const expiry = decodedToken.exp;
+        const expiry = decodedToken.exp;
         const now = new Date().getTime() / 1000; //token exp doesn't include milliseconds
         return expiry > now
     }
