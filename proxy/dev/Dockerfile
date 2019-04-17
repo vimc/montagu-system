@@ -14,6 +14,7 @@ COPY node_modules/jquery/dist/jquery.min.js $THIRDPARTY_JS_PATH
 
 # Copy third party css from npm modules
 COPY node_modules/bootstrap/dist/css/bootstrap.min.css /usr/share/nginx/html/resources/css/third_party/
+COPY node_modules/bootstrap/dist/css/bootstrap.min.css.map /usr/share/nginx/html/resources/css/third_party/
 
 RUN rm /etc/nginx/conf.d/default.conf
 
