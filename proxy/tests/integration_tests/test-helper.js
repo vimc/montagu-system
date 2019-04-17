@@ -81,7 +81,7 @@ const TestHelper =  {
         await browser.findElement(webDriver.By.id("login-button"))
             .click();
 
-        browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
+        await browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
     }
 };
 

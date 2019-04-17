@@ -94,15 +94,15 @@
     new Vue({
         el: "#app",
         data: {
-            username: '',
+            username: "",
             loginError: "",
             redirectMessage: ""
         },
         methods: {
             initialise: function() {
                 const data = this;
-                logic.getUserName().then(() => {
-                  data.username = ''
+                logic.getUserName().then((result) => {
+                  data.username = result
               })
             },
             logout: function() {
