@@ -1,5 +1,9 @@
 class MontaguUtils {
-    static API_ROOT = "/api/v1/";
+
+    static getApiRoot() {
+        return "/api/v1/";
+    }
+
     static paramFromQueryString(queryString, param) {
 
         if (!queryString) return null;
