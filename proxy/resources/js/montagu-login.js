@@ -46,7 +46,12 @@ class MontaguLogin {
         return this.montaguAuth.setCookies(token).then(
             () => {
                 const decodedToken = this.decodeToken(token);
-                return decodedToken.sub;
+                const montaguUserName = decodedToken.sub;
+
+                // TODO remove once local storage deprecated in portals
+                // https://vimc.myjetbrains.com/youtrack/issue/VIMC-2865
+                this.writeTokenToLocalStorage(token);
+                return montaguUserName
             }
         );
     }

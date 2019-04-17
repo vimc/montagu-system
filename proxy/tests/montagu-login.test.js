@@ -35,7 +35,7 @@ test('can decode jwt token', () => {
     expect(result).toBe(expected);
 });
 
-test('can get user name from successful result', () => {
+test('can get user name from successful result', (done) => {
     const mockGetDetails = jest.fn(() => new Promise(resolve => resolve({
         data: {username: "test.user"},
         status: "success"
@@ -65,7 +65,7 @@ test('user name is empty from failed result', (done) => {
 
 });
 
-test('user name is empty if getUserDetails fails', () => {
+test('user name is empty if getUserDetails fails', (done) => {
     const mockGetDetails = jest.fn(() => new Promise((resolve, reject) => reject()));
 
     const sut = new MontaguLogin({getUserDetails: mockGetDetails}, null, null, null);
@@ -80,6 +80,7 @@ test('user name is empty if getUserDetails fails', () => {
 test('can login', (done) => {
     const encodedToken = getEncodedToken("test user name", new Date(now.getTime() + (60 * 60 * 1000)));
 
+    const mockSetItem = jest.fn();
     const mockInflate = jest.fn(x => x);
     const mockDecode = jest.fn(x => JSON.parse(x));
     const mockLogin = jest.fn(x => new Promise((resolve, reject) => {
@@ -90,7 +91,7 @@ test('can login', (done) => {
     }));
 
     const sut = new MontaguLogin({login: mockLogin, setCookies: mockSetCookies}, //mock auth
-        null, //mock local storage
+        {setItem: mockSetItem}, //mock local storage
         mockDecode, //mock jwt_decode
         {inflate: mockInflate} //mock pako
     );
@@ -107,6 +108,9 @@ test('can login', (done) => {
             expect(mockLogin.mock.calls.length).toBe(1);
             expect(mockSetCookies.mock.calls.length).toBe(1);
 
+            expect(mockSetItem.mock.calls.length).toBe(1);
+            expect(mockSetItem.mock.calls[0][0]).toBe("accessToken");
+            expect(mockSetItem.mock.calls[0][1]).toBe(encodedToken);
             done();
         },
         (error) => {
@@ -118,6 +122,7 @@ test('can login', (done) => {
 
 test('returns error message when authentication fails', (done) => {
 
+    const mockSetItem = jest.fn();
     const mockInflate = jest.fn();
     const mockDecode = jest.fn();
     const mockLogin = jest.fn(x => new Promise((resolve, reject) => {
@@ -128,7 +133,7 @@ test('returns error message when authentication fails', (done) => {
     }));
 
     const sut = new MontaguLogin({login: mockLogin, setCookies: mockSetCookies}, //mock auth
-        null, //mock local storage
+        {setItem: mockSetItem}, //mock local storage
         mockDecode, //mock jwt_decode
         {inflate: mockInflate} //mock pako
     );
@@ -149,6 +154,8 @@ test('returns error message when authentication fails', (done) => {
             expect(mockLogin.mock.calls.length).toBe(1);
             expect(mockSetCookies.mock.calls.length).toBe(0);
 
+            expect(mockSetItem.mock.calls.length).toBe(0);
+
             done();
         }
     );
@@ -159,6 +166,7 @@ test('returns error message when setCookies fails', (done) => {
 
     const encodedToken = getEncodedToken("test user name", new Date(now.getTime() + (60 * 60 * 1000)));
 
+    const mockSetItem = jest.fn();
     const mockInflate = jest.fn(x => x);
     const mockDecode = jest.fn(x => JSON.parse(x));
     const mockLogin = jest.fn(x => new Promise((resolve, reject) => {
@@ -169,7 +177,7 @@ test('returns error message when setCookies fails', (done) => {
     }));
 
     const sut = new MontaguLogin({login: mockLogin, setCookies: mockSetCookies}, //mock auth
-        null, //mock local storage
+        {setItem: mockSetItem}, //mock local storage
         mockDecode, //mock jwt_decode
         {inflate: mockInflate} //mock pako
     );
@@ -189,6 +197,8 @@ test('returns error message when setCookies fails', (done) => {
 
             expect(mockLogin.mock.calls.length).toBe(1);
             expect(mockSetCookies.mock.calls.length).toBe(1);
+
+            expect(mockSetItem.mock.calls.length).toBe(0);
 
             done();
         }

@@ -57,10 +57,9 @@ test('can prevent update password request if invalid password entered', async ()
 
 test('can submit and use new password', async () => {
 
-    //change password and then change it back again
     const token = await TestHelper.submitResetPasswordRequestAndReadLinkToken(browser);
     await changePasswordAndTestLogin(token, "newpassword");
-    
+
 });
 
 async function changePasswordAndTestLogin(token, password) {
