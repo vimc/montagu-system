@@ -3,11 +3,12 @@ const TestHelper = require('./test-helper.js');
 
 const browser = TestHelper.getBrowser();
 
-afterEach(async () => {
-    //avoid dir bloat
-    TestHelper.ensureEmptyMontaguEmailsDirExists();
-
+beforeEach(async () => {
     await TestHelper.ensureLoggedOut(browser);
+});
+
+afterEach(async () => {
+    TestHelper.ensureEmptyMontaguEmailsDirExists();
 });
 
 test('can display message when token is expired', async () => {
@@ -64,13 +65,13 @@ test('can submit and use new password', async () => {
 
     const newToken = await TestHelper.submitResetPasswordRequestAndReadLinkToken(browser);
     await changePasswordAndTestLogin(newToken, "password");
-
 });
 
 async function changePasswordAndTestLogin(token, password) {
     //set password
     browser.get("https://localhost/new-password?token=" + token);
-    const passwordInput = await browser.findElement(webDriver.By.id("password-input"));
+    await browser.wait(webDriver.until.elementLocated(webDriver.By.id('password-input')));
+    const passwordInput = browser.findElement(webDriver.By.id("password-input"));
     await passwordInput.sendKeys(password);
     await browser.findElement(webDriver.By.id("update-button"))
         .click();
@@ -79,6 +80,7 @@ async function changePasswordAndTestLogin(token, password) {
 
     //Now try logging in
     browser.get("https://localhost");
+    await browser.wait(webDriver.until.elementLocated(webDriver.By.id('password-input')));
     const emailField = await browser.findElement(webDriver.By.id("email-input"));
     const pwField = await browser.findElement(webDriver.By.id("password-input"));
 

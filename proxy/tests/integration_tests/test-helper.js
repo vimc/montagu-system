@@ -5,8 +5,8 @@ const path = require('path');
 
 const emailsDir = path.resolve(__dirname, "../../montagu_emails");
 
-const TestHelper =  {
-    getBrowser: function() {
+const TestHelper = {
+    getBrowser: function () {
         const options = new chrome.Options();
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--headless");
@@ -30,9 +30,9 @@ const TestHelper =  {
         }
     },
 
-    submitResetPasswordRequestAndReadLinkToken: async function(browser) {
+    submitResetPasswordRequestAndReadLinkToken: async function (browser) {
 
-        const start  = Date.now();
+        const start = Date.now();
 
         //Browse to the submit request link page and make a new request
         browser.get("https://localhost/reset-password?email=passwordtest.user@example.com");
@@ -44,7 +44,7 @@ const TestHelper =  {
         const files = fs.readdirSync(emailsDir);
         files.sort();
 
-        const latestFile = files[files.length-1];
+        const latestFile = files[files.length - 1];
 
         const fileWriteTime = Date.parse(latestFile);
 
@@ -62,13 +62,32 @@ const TestHelper =  {
         return token;
     },
 
-     ensureLoggedOut: async function(browser) {
+    ensureLoggedIn: async function (browser) {
+        const emailField = await browser.findElement(webDriver.By.id("email-input"));
+        const pwField = await browser.findElement(webDriver.By.id("password-input"));
+
+        await emailField.sendKeys("test.user@example.com");
+        await pwField.sendKeys("password");
+
+        await browser.findElement(webDriver.By.id("login-button"))
+            .click();
+
+        const loggedInBox = browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
+
+        const username = await loggedInBox.getText();
+        expect(username).not.toBe(null);
+    },
+
+    ensureLoggedOut: async function (browser) {
         await browser.get("https://localhost");
 
+        await browser.sleep(500);
         const logout = await browser.findElements(webDriver.By.id("logout-button"));
         if (logout.length > 0) {
             await logout[0].click();
         }
+
+        await browser.sleep(500);
     }
 };
 
