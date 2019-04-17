@@ -60,11 +60,7 @@ test('can submit and use new password', async () => {
     //change password and then change it back again
     const token = await TestHelper.submitResetPasswordRequestAndReadLinkToken(browser);
     await changePasswordAndTestLogin(token, "newpassword");
-
-    await TestHelper.ensureLoggedOut(browser);
-
-    const newToken = await TestHelper.submitResetPasswordRequestAndReadLinkToken(browser);
-    await changePasswordAndTestLogin(newToken, "password");
+    
 });
 
 async function changePasswordAndTestLogin(token, password) {
