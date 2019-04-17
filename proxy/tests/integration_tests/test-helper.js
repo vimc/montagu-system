@@ -81,7 +81,10 @@ const TestHelper =  {
         await browser.findElement(webDriver.By.id("login-button"))
             .click();
 
-        browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
+        const loggedInBox = browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
+
+        const username = await loggedInBox.getText();
+        expect(username).toBe("Logged in as test.user | Log out");
     }
 };
 
