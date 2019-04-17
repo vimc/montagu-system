@@ -32,10 +32,6 @@ class MontaguLogin {
         this.localStorage.setItem(this.TOKEN_KEY, token);
     }
 
-    readTokenFromLocalStorage() {
-        return this.localStorage.getItem(this.TOKEN_KEY);
-    }
-
     login(email, password) {
         return this.montaguAuth.login(email, password)
             .then((data) => this.montaguLoginSuccess(data))
@@ -50,15 +46,14 @@ class MontaguLogin {
         return this.montaguAuth.setCookies(token).then(
             () => {
                 const decodedToken = this.decodeToken(token);
-                const montaguUserName = decodedToken.sub;
-
-                this.writeTokenToLocalStorage(token);
-                return montaguUserName;
+                return decodedToken.sub;
             }
         );
     }
 
     logout() {
+        // TODO remove once local storage deprecated in portals
+        // https://vimc.myjetbrains.com/youtrack/issue/VIMC-2865
         this.writeTokenToLocalStorage('');
         return this.montaguAuth.logout()
             .catch((jqXHR) => {

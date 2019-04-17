@@ -23,17 +23,6 @@ test('can write token to local storage', () => {
     expect(mockSetItem.mock.calls[0][1]).toBe("testtoken");
 });
 
-test('can read token to local storage', () => {
-    const mockGetItem = jest.fn((x) => "testtoken");
-    const sut = new MontaguLogin(null, {getItem: mockGetItem});
-
-    const result = sut.readTokenFromLocalStorage();
-
-    expect(result).toBe("testtoken");
-    expect(mockGetItem.mock.calls.length).toBe(1);
-    expect(mockGetItem.mock.calls[0][0]).toBe("accessToken");
-});
-
 test('can decode jwt token', () => {
     const toDecode = "test_-";
     const mockInflate = jest.fn(x => x + "inflated");
@@ -90,7 +79,7 @@ test('user name is empty if getUserDetails fails', () => {
 
 test('can login', (done) => {
     const encodedToken = getEncodedToken("test user name", new Date(now.getTime() + (60 * 60 * 1000)));
-    const mockSetItem = jest.fn();
+
     const mockInflate = jest.fn(x => x);
     const mockDecode = jest.fn(x => JSON.parse(x));
     const mockLogin = jest.fn(x => new Promise((resolve, reject) => {
@@ -101,7 +90,7 @@ test('can login', (done) => {
     }));
 
     const sut = new MontaguLogin({login: mockLogin, setCookies: mockSetCookies}, //mock auth
-        {setItem: mockSetItem}, //mock local storage
+        null, //mock local storage
         mockDecode, //mock jwt_decode
         {inflate: mockInflate} //mock pako
     );
@@ -118,10 +107,6 @@ test('can login', (done) => {
             expect(mockLogin.mock.calls.length).toBe(1);
             expect(mockSetCookies.mock.calls.length).toBe(1);
 
-            //expect token written to local storage
-            expect(mockSetItem.mock.calls.length).toBe(1);
-            expect(mockSetItem.mock.calls[0][0]).toBe("accessToken");
-            expect(mockSetItem.mock.calls[0][1]).toBe(encodedToken);
             done();
         },
         (error) => {
@@ -133,7 +118,6 @@ test('can login', (done) => {
 
 test('returns error message when authentication fails', (done) => {
 
-    const mockSetItem = jest.fn();
     const mockInflate = jest.fn();
     const mockDecode = jest.fn();
     const mockLogin = jest.fn(x => new Promise((resolve, reject) => {
@@ -144,7 +128,7 @@ test('returns error message when authentication fails', (done) => {
     }));
 
     const sut = new MontaguLogin({login: mockLogin, setCookies: mockSetCookies}, //mock auth
-        {setItem: mockSetItem}, //mock local storage
+        null, //mock local storage
         mockDecode, //mock jwt_decode
         {inflate: mockInflate} //mock pako
     );
@@ -165,9 +149,6 @@ test('returns error message when authentication fails', (done) => {
             expect(mockLogin.mock.calls.length).toBe(1);
             expect(mockSetCookies.mock.calls.length).toBe(0);
 
-            //expect token not written to local storage
-            expect(mockSetItem.mock.calls.length).toBe(0);
-
             done();
         }
     );
@@ -177,7 +158,7 @@ test('returns error message when authentication fails', (done) => {
 test('returns error message when setCookies fails', (done) => {
 
     const encodedToken = getEncodedToken("test user name", new Date(now.getTime() + (60 * 60 * 1000)));
-    const mockSetItem = jest.fn();
+
     const mockInflate = jest.fn(x => x);
     const mockDecode = jest.fn(x => JSON.parse(x));
     const mockLogin = jest.fn(x => new Promise((resolve, reject) => {
@@ -188,7 +169,7 @@ test('returns error message when setCookies fails', (done) => {
     }));
 
     const sut = new MontaguLogin({login: mockLogin, setCookies: mockSetCookies}, //mock auth
-        {setItem: mockSetItem}, //mock local storage
+        null, //mock local storage
         mockDecode, //mock jwt_decode
         {inflate: mockInflate} //mock pako
     );
@@ -208,9 +189,6 @@ test('returns error message when setCookies fails', (done) => {
 
             expect(mockLogin.mock.calls.length).toBe(1);
             expect(mockSetCookies.mock.calls.length).toBe(1);
-
-            //expect token not written to local storage
-            expect(mockSetItem.mock.calls.length).toBe(0);
 
             done();
         }
