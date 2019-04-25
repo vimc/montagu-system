@@ -30,6 +30,17 @@ class MontaguAuth {
         });
     }
 
+    getUserDetails() {
+        const url = this.apiRoot + "user/";
+        return $.ajax({
+            type: "GET",
+            url: url,
+            xhrFields: {
+                withCredentials: true
+            }
+        });
+    }
+
     logout() {
         const logoutUrl = this.apiRoot + "logout/";
         return $.ajax({

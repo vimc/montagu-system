@@ -9,36 +9,27 @@ class MontaguLogin {
         this.pako = pako;
     }
 
-    initialise() {
-        let montaguUserName = '';
-
-        //Check if we are logged in
-        const token = this.readTokenFromLocalStorage();
-
-        if (token && token !== "null") {
-            const decodedToken = this.decodeToken(token);
-
-            //don't allow login if token expiry is past
-            if (this.tokenHasNotExpired(decodedToken)) {
-                montaguUserName = decodedToken.sub;
+    getUserName() {
+        return this.montaguAuth.getUserDetails().then((result) => {
+            if (result.status === "success") {
+                return result.data.username
             }
-        }
-
-        return montaguUserName;
+            else {
+                return ''
+            }
+        }).catch(() => {
+            return ''
+        })
     }
 
     tokenHasNotExpired(decodedToken) {
-       const expiry = decodedToken.exp;
+        const expiry = decodedToken.exp;
         const now = new Date().getTime() / 1000; //token exp doesn't include milliseconds
         return expiry > now
     }
 
     writeTokenToLocalStorage(token) {
         this.localStorage.setItem(this.TOKEN_KEY, token);
-    }
-
-    readTokenFromLocalStorage() {
-        return this.localStorage.getItem(this.TOKEN_KEY);
     }
 
     login(email, password) {
@@ -57,13 +48,17 @@ class MontaguLogin {
                 const decodedToken = this.decodeToken(token);
                 const montaguUserName = decodedToken.sub;
 
+                // TODO remove once local storage deprecated in portals
+                // https://vimc.myjetbrains.com/youtrack/issue/VIMC-2865
                 this.writeTokenToLocalStorage(token);
-                return montaguUserName;
+                return montaguUserName
             }
         );
     }
 
     logout() {
+        // TODO remove once local storage deprecated in portals
+        // https://vimc.myjetbrains.com/youtrack/issue/VIMC-2865
         this.writeTokenToLocalStorage('');
         return this.montaguAuth.logout()
             .catch((jqXHR) => {

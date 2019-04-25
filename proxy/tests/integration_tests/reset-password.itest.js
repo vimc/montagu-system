@@ -3,10 +3,11 @@ const TestHelper = require('./test-helper.js');
 
 const browser = TestHelper.getBrowser();
 
+beforeEach(async () => {
+    await TestHelper.ensureLoggedOut(browser);
+});
 
 afterEach(async () => {
-
-    //avoid dir bloat
     TestHelper.ensureEmptyMontaguEmailsDirExists();
 });
 

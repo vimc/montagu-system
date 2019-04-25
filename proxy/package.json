@@ -21,7 +21,7 @@
   },
   "scripts": {
     "test": "jest -c jest.config.js",
-    "integration-test": "jest -c jest.integration.config.js"
+    "integration-test": "jest -c jest.integration.config.js --runInBand"
   },
   "repository": {
     "type": "git",

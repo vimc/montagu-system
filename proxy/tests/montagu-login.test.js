@@ -2,7 +2,7 @@ const MontaguLogin = require("../resources/js/montagu-login.js");
 
 const now = new Date();
 
-function getEncodedToken(username, expiry){
+function getEncodedToken(username, expiry) {
     const timestamp = Math.round(expiry.getTime() / 1000);
     const token = JSON.stringify({sub: username, exp: timestamp});
     return btoa(token);
@@ -23,17 +23,6 @@ test('can write token to local storage', () => {
     expect(mockSetItem.mock.calls[0][1]).toBe("testtoken");
 });
 
-test('can read token to local storage', () => {
-    const mockGetItem = jest.fn((x) => "testtoken");
-    const sut = new MontaguLogin(null, {getItem: mockGetItem});
-
-    const result = sut.readTokenFromLocalStorage();
-
-    expect(result).toBe("testtoken");
-    expect(mockGetItem.mock.calls.length).toBe(1);
-    expect(mockGetItem.mock.calls[0][0]).toBe("accessToken");
-});
-
 test('can decode jwt token', () => {
     const toDecode = "test_-";
     const mockInflate = jest.fn(x => x + "inflated");
@@ -42,56 +31,55 @@ test('can decode jwt token', () => {
     const sut = new MontaguLogin(null, null, mockDecode, {inflate: mockInflate});
     const result = sut.decodeToken(toDecode);
 
-    const expected = atob("test/+") +"inflateddecoded";
+    const expected = atob("test/+") + "inflateddecoded";
     expect(result).toBe(expected);
 });
 
-test('can initialise, no saved token', () => {
-    const mockGetItem = jest.fn(() => '');
+test('can get user name from successful result', (done) => {
+    const mockGetDetails = jest.fn(() => new Promise(resolve => resolve({
+        data: {username: "test.user"},
+        status: "success"
+    })));
 
-    const sut = new MontaguLogin(null, {getItem: mockGetItem}, null, null);
-    const result = sut.initialise();
+    const sut = new MontaguLogin({getUserDetails: mockGetDetails}, null, null, null);
+    const result = sut.getUserName();
 
-    expect(result).toBe('');
+    sut.getUserName().then((result) => {
+        expect(result).toBe('test.user');
+        done();
+    });
 });
 
-test('can initialise, saved token has not expired', () => {
+test('user name is empty from failed result', (done) => {
+    const mockGetDetails = jest.fn(() => new Promise(resolve => resolve({
+        data: null,
+        status: "failure"
+    })));
 
-    const token = getEncodedToken("testuser", new Date(now.getTime() + (60*60*1000)));
-    const mockGetItem = jest.fn(() => token);
-    const mockInflate = jest.fn(x => x);
-    const mockDecode = jest.fn(x => JSON.parse(x));
+    const sut = new MontaguLogin({getUserDetails: mockGetDetails}, null, null, null);
 
-    const sut = new MontaguLogin(null,
-        {getItem: mockGetItem}, //mock local storage
-        mockDecode, //mock jwt_decode
-        {inflate: mockInflate} //mock pako
-    );
-    const result = sut.initialise();
+    sut.getUserName().then((result) => {
+        expect(result).toBe('');
+        done();
+    });
 
-    expect(result).toBe('testuser');
 });
 
+test('user name is empty if getUserDetails fails', (done) => {
+    const mockGetDetails = jest.fn(() => new Promise((resolve, reject) => reject()));
 
-test('can initialise, saved token has expired', () => {
+    const sut = new MontaguLogin({getUserDetails: mockGetDetails}, null, null, null);
+    const result = sut.getUserName();
 
-    const token = getEncodedToken("testuser", new Date(now.getTime() - (60*60*1000)));
-    const mockGetItem = jest.fn(() => token);
-    const mockInflate = jest.fn(x => x);
-    const mockDecode = jest.fn(x => JSON.parse(x));
-
-    const sut = new MontaguLogin(null,
-        {getItem: mockGetItem}, //mock local storage
-        mockDecode, //mock jwt_decode
-        {inflate: mockInflate} //mock pako
-    );
-    const result = sut.initialise();
-
-    expect(result).toBe('');
+    sut.getUserName().then((result) => {
+        expect(result).toBe('');
+        done();
+    });
 });
 
 test('can login', (done) => {
-    const encodedToken = getEncodedToken("test user name", new Date(now.getTime() + (60*60*1000)));
+    const encodedToken = getEncodedToken("test user name", new Date(now.getTime() + (60 * 60 * 1000)));
+
     const mockSetItem = jest.fn();
     const mockInflate = jest.fn(x => x);
     const mockDecode = jest.fn(x => JSON.parse(x));
@@ -120,13 +108,14 @@ test('can login', (done) => {
             expect(mockLogin.mock.calls.length).toBe(1);
             expect(mockSetCookies.mock.calls.length).toBe(1);
 
-            //expect token written to local storage
             expect(mockSetItem.mock.calls.length).toBe(1);
             expect(mockSetItem.mock.calls[0][0]).toBe("accessToken");
             expect(mockSetItem.mock.calls[0][1]).toBe(encodedToken);
             done();
-         },
-        (error) => { done.fail(`login failed: ${error}`); }
+        },
+        (error) => {
+            done.fail(`login failed: ${error}`);
+        }
     );
 
 });
@@ -165,7 +154,6 @@ test('returns error message when authentication fails', (done) => {
             expect(mockLogin.mock.calls.length).toBe(1);
             expect(mockSetCookies.mock.calls.length).toBe(0);
 
-            //expect token not written to local storage
             expect(mockSetItem.mock.calls.length).toBe(0);
 
             done();
@@ -176,7 +164,8 @@ test('returns error message when authentication fails', (done) => {
 
 test('returns error message when setCookies fails', (done) => {
 
-    const encodedToken = getEncodedToken("test user name", new Date(now.getTime() + (60*60*1000)));
+    const encodedToken = getEncodedToken("test user name", new Date(now.getTime() + (60 * 60 * 1000)));
+
     const mockSetItem = jest.fn();
     const mockInflate = jest.fn(x => x);
     const mockDecode = jest.fn(x => JSON.parse(x));
@@ -209,7 +198,6 @@ test('returns error message when setCookies fails', (done) => {
             expect(mockLogin.mock.calls.length).toBe(1);
             expect(mockSetCookies.mock.calls.length).toBe(1);
 
-            //expect token not written to local storage
             expect(mockSetItem.mock.calls.length).toBe(0);
 
             done();
@@ -242,7 +230,9 @@ test('can logout', (done) => {
             expect(mockSetItem.mock.calls[0][1]).toBe('');
             done();
         },
-        (error) => { done.fail(`logout failed: ${error}`); }
+        (error) => {
+            done.fail(`logout failed: ${error}`);
+        }
     );
 
 });
