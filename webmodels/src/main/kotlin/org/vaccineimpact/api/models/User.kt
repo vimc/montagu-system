@@ -11,7 +11,8 @@ data class User(
         val name: String,
         val email: String,
         val lastLoggedIn: Instant?,
-        @SerializationRule(Rule.EXCLUDE_IF_NULL) val roles: List<RoleAssignment>?
+        @SerializationRule(Rule.EXCLUDE_IF_NULL) val roles: List<RoleAssignment>?,
+        @SerializationRule(Rule.EXCLUDE_IF_NULL) val permissions: List<String>? = null
 )
 {
     // Exists to make it easier to map with jOOQ
