@@ -96,7 +96,8 @@ Schema: [`User.schema.json`](../schemas/User.schema.json)
     }
 
 ## GET /user/
-Returns details about the currently logged in user. The `roles` section is not included.
+Returns details about the currently logged in user. The `roles` section is not included. The permissions section may 
+optionally be included by passing the query string parameter `includePermissions=true`
 
 Schema: [`User.schema.json`](../schemas/User.schema.json)
 
@@ -105,7 +106,8 @@ Schema: [`User.schema.json`](../schemas/User.schema.json)
         "username": "tini",
         "name": "Tini Garske",
         "email": "example@imperial.ac.uk",
-        "last_logged_in": "2017-10-06T11:06:22Z"
+        "last_logged_in": "2017-10-06T11:06:22Z",
+        "permissions": ["*/can-login", "modelling-group:IC-Garske/coverage.read"]
     }
 
 ## POST /users/
