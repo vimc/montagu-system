@@ -45,10 +45,10 @@ export const authActionCreators = {
                 const allGroups: ModellingGroup[] = await (new ModellingGroupsService(dispatch, getState)).getUserGroups();
 
                 const user: AuthState = loadAuthState(
-                    userResponse.user,
+                    userResponse.username,
                     true, //received bearer token
                     true, //received cookies
-                    null, //bearerToken - shouldn't need this anyway since already logged in with cookies
+                    null, //bearerToken - shouldn't need this since already logged in with cookies if successful response
                     userResponse.permissions,
                     allGroups.map(x => x.id)
                 )

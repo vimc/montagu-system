@@ -45,6 +45,12 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             expect(result).to.be.eq("OK");
         });
 
+        it("can get current user details", async () => {
+            const result = await (new AuthService(this.store.dispatch, this.store.getState)).getCurrentUser();
+            expect(result.username).to.be.eq("test.user");
+            expect(result.permissions).to.include("*/can-login");
+        });
+
         it("can fetch groups", async () => {
             await addGroups(this.db);
             const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState)).getAllGroups();
