@@ -99,7 +99,7 @@ describe("AuthActions", () => {
 
     it("dispatches authenticated action if can get authenticated user data from API", (done) => {
         const testUser = {
-            username: "testuser",
+            username: "test-user",
             permissions: ["*/can-login"]
         };
 
