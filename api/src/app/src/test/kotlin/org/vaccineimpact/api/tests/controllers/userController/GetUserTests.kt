@@ -11,11 +11,13 @@ import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
 import org.vaccineimpact.api.models.Scope
 import org.vaccineimpact.api.models.User
 import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.permissions.ReifiedRole
 import org.vaccineimpact.api.models.permissions.RoleAssignment
 import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import spark.Request
 
 class GetUserTests : MontaguTests()
 {
@@ -188,16 +190,27 @@ class GetUserTests : MontaguTests()
     @Test
     fun `getCurrentUser returns context user with no roles`()
     {
+        val mockRequest = mock<Request> {
+            on { queryParamOrDefault("includePermissions", "false") } doReturn "false"
+        }
+
         val context = mock<ActionContext>{
-            on {  username } doReturn "test"
+            on { username } doReturn "test"
+            on { request } doReturn  mockRequest
         }
 
         val roles = listOf(
                 ReifiedRole("user", Scope.Global()),
                 ReifiedRole("member", Scope.Specific("modelling-group", "IC-Garske"))
         )
+
+        val permissions = listOf(
+                ReifiedPermission("can-login", Scope.Global()),
+                ReifiedPermission("coverage.read", Scope.Specific("modelling-group", "IC-Garske"))
+        )
+
         val testInternalUser = InternalUser(UserProperties("test", "test name", "test@test.com", null, null),
-                roles, listOf())
+                roles, permissions)
 
 
         val repo = mock<UserRepository> {
@@ -212,5 +225,50 @@ class GetUserTests : MontaguTests()
         Assertions.assertThat(result.email).isEqualTo("test@test.com")
         Assertions.assertThat(result.name).isEqualTo("test name")
         Assertions.assertThat(result.roles).isNull()
+        Assertions.assertThat(result.permissions).isNull()
+    }
+
+    @Test
+    fun `getCurrentUser returns context user with permissions if requested`()
+    {
+        val mockRequest = mock<Request> {
+            on { queryParamOrDefault("includePermissions", "false") } doReturn "true"
+        }
+
+        val context = mock<ActionContext>{
+            on { username } doReturn "test"
+            on { request } doReturn  mockRequest
+        }
+
+        val roles = listOf(
+                ReifiedRole("user", Scope.Global()),
+                ReifiedRole("member", Scope.Specific("modelling-group", "IC-Garske"))
+        )
+
+        val permissions = listOf(
+                ReifiedPermission("can-login", Scope.Global()),
+                ReifiedPermission("coverage.read", Scope.Specific("modelling-group", "IC-Garske"))
+        )
+
+        val testInternalUser = InternalUser(UserProperties("test", "test name", "test@test.com", null, null),
+                roles, permissions)
+
+        val repo = mock<UserRepository> {
+            on { this.getUserByUsername("test") } doReturn testInternalUser
+        }
+
+        val sut = UserController(context, repo, mock())
+
+        val result = sut.getCurrentUser();
+
+        Assertions.assertThat(result.username).isEqualTo("test")
+        Assertions.assertThat(result.email).isEqualTo("test@test.com")
+        Assertions.assertThat(result.name).isEqualTo("test name")
+        Assertions.assertThat(result.roles).isNull()
+
+        Assertions.assertThat(result.permissions).isNotNull()
+        Assertions.assertThat(result.permissions!!.count()).isEqualTo(2)
+        Assertions.assertThat(result.permissions!![0]).isEqualTo("*/can-login")
+        Assertions.assertThat(result.permissions!![1]).isEqualTo("modelling-group:IC-Garske/coverage.read")
     }
 }

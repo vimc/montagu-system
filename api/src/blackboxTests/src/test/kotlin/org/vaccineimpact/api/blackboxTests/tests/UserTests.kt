@@ -288,7 +288,7 @@ class UserTests : DatabaseTest()
     }
 
     @Test
-    fun`can get current user`()
+    fun `can get current user`()
     {
         validate("/user/") against "User" given {
         } requiringPermissions {
@@ -306,6 +306,25 @@ class UserTests : DatabaseTest()
             Assertions.assertThat(it["email"]).isEqualTo("user@test.com")
             Assertions.assertThat(it["last_logged_in"]).isNotNull()
             Assertions.assertThat(it.containsKey("roles")).isFalse() //should not get roles returned
+            Assertions.assertThat(it.containsKey("permissions")).isFalse() //should not get roles returned
+        }
+    }
+
+    @Test
+    fun `can get current user with permissions`()
+    {
+        validate("/user/?includePermissions=true") against "User" given {
+        } withPermissions {
+            PermissionSet("*/users.read", "modelling-group:group/coverage.read")
+        } andCheck {
+            //Expect that we've been logged in as the test user
+            Assertions.assertThat(it["username"]).isEqualTo("test.user")
+            Assertions.assertThat(it["name"]).isEqualTo("Test User")
+            Assertions.assertThat(it["email"]).isEqualTo("user@test.com")
+            Assertions.assertThat(it["last_logged_in"]).isNotNull()
+            Assertions.assertThat(it.containsKey("roles")).isFalse() //should not get roles returned
+            Assertions.assertThat(it["permissions"]).isEqualTo(
+                    json{ array("*/can-login", "*/users.read", "modelling-group:group/coverage.read") } )
         }
     }
 

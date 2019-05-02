@@ -106,8 +106,10 @@ class UserController(
     fun getCurrentUser(): User
     {
         val userName = context.username!!
+        val includePermissions =
+                context.request.queryParamOrDefault("includePermissions", "false") == "true"
         val internalUser = userRepository.getUserByUsername(userName)
-        return internalUser.toUser().copy(roles = null) //don't return any role information back to the current user
+        return internalUser.toUser(includePermissions).copy(roles = null) //don't return any role information back to the current user
     }
 
     fun getUsers(): List<User>

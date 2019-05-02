@@ -13,9 +13,11 @@ data class InternalUser(
         val permissions: List<ReifiedPermission>
 ) : UserPropertiesInterface by properties
 {
-    fun toUser(): User
+    fun toUser(includePermissions: Boolean = false): User
     {
-        return User(this.username, this.name, this.email, this.lastLoggedIn, this.roles.map { RoleAssignment(it) })
+        val userPerms = if (includePermissions) permissions.map{ it.toString() } else null;
+        return User(this.username, this.name, this.email, this.lastLoggedIn, this.roles.map { RoleAssignment(it) },
+                    userPerms)
     }
 }
 
