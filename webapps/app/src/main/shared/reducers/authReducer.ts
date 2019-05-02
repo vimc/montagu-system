@@ -27,6 +27,28 @@ export const initialAuthState: AuthState = {
     isReportRunner: false
 };
 
+export function loadAuthState(
+    username: string,
+    receivedBearerToken: boolean,
+    receivedCookies: boolean,
+    bearerToken: string,
+    permissions: string[],
+    modellingGroups: string[]): AuthState
+{
+    return {
+        receivedBearerToken: receivedBearerToken,
+        receivedCookies: receivedCookies,
+        bearerToken: bearerToken,
+        isAccountActive: permissions.some((x: string) => x == "*/can-login"),
+        isModeller: modellingGroups.length > 0,
+        username: username,
+        permissions: permissions,
+        modellingGroups: modellingGroups,
+        isReportReviewer: permissions.indexOf("*/reports.review") > -1,
+        isReportRunner: permissions.indexOf("*/reports.run") > -1,
+    }
+}
+
 export const authReducer = (state = initialAuthState, action: AuthActionsTypes) => {
     switch (action.type) {
         case AuthTypeKeys.AUTHENTICATED:

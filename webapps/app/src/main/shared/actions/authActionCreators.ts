@@ -4,8 +4,7 @@ import {jwtTokenAuth} from "../modules/jwtTokenAuth";
 import {AuthService} from "../services/AuthService";
 import {appSettings, settings} from "../Settings";
 import {appName} from 'appName';
-import {AuthState} from "../reducers/authReducer";
-import {localStorageHandler} from "../services/localStorageHandler";
+import {AuthState, loadAuthState} from "../reducers/authReducer";
 import {
     Authenticated,
     AuthenticationError,
@@ -15,6 +14,8 @@ import {
 } from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
 import {notificationActionCreators} from "./notificationActionCreators";
+import {ModellingGroup} from "../models/Generated";
+import {ModellingGroupsService} from "../services/ModellingGroupsService";
 
 export const authActionCreators = {
 
@@ -33,25 +34,39 @@ export const authActionCreators = {
         }
     },
 
-    loadSavedToken() {
-        return async (dispatch: Dispatch<any>) => {
-            const token = localStorageHandler.get("accessToken");
-            if (token) {
-                const inflated = jwtTokenAuth.inflateToken(token);
-                const decoded = inflated && jwtTokenAuth.decodeToken(inflated);
+    loadAuthenticatedUser() {
+        // fetch details of currently logged in user from API.
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            try {
+                const userResponse = await(new AuthService(dispatch, getState)).getCurrentUser();
+                //TODO: since we should always have the modelling groups for the current user, either from the API here
+                //or when loading from token on login, we shouldn't need the call that was added as part of
+                //https://github.com/vimc/montagu-webapps/pull/380
+                const allGroups: ModellingGroup[] = await (new ModellingGroupsService(dispatch, getState)).getAllGroups();
 
-                if (!decoded) {
-                    console.log("Invalid token. Logging out");
-                    dispatch(this.logOut());
-                }
-                else if (jwtTokenAuth.isExpired(decoded.exp)) {
-                    console.log("Token is expired");
-                    dispatch(this.logOut())
+                const user: AuthState = loadAuthState(
+                    userResponse.user,
+                    true, //received bearer token
+                    true, //received cookies
+                    null, //bearerToken - shouldn't need this anyway since already logged in with cookies
+                    userResponse.permissions,
+                    allGroups.map(x => x.id)
+                )
+
+                const error: string = this.validateAuthResult(user);
+                if (!error) {
+                    dispatch({
+                        type: AuthTypeKeys.AUTHENTICATED,
+                        data: user,
+                    } as Authenticated);
                 } else {
-                    console.log("Found unexpired access token in local storage, so we're already logged in");
-                    await dispatch(this.receivedCompressedToken(token));
+                    dispatch(notificationActionCreators.notify(error, "error"));
+                    dispatch(this.authenticationError(error));
                 }
 
+            } catch (error) {
+                console.log("Unable to load authenticated user details")
+                dispatch(this.logOut())
             }
         }
     },
@@ -75,8 +90,6 @@ export const authActionCreators = {
             const user: AuthState = jwtTokenAuth.getDataFromCompressedToken(token);
             const error: string = this.validateAuthResult(user);
             if (!error) {
-                // Save the compressed version of the token
-                localStorageHandler.set("accessToken", user.bearerToken);
                 dispatch({
                     type: AuthTypeKeys.AUTHENTICATED,
                     data: user,
@@ -107,7 +120,6 @@ export const authActionCreators = {
 
     logOut() {
         return (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            localStorageHandler.remove("accessToken");
             (new AuthService(dispatch, getState))
                 .clearAllCache()
                 .logOutOfAPI();
@@ -127,5 +139,7 @@ export const authActionCreators = {
                 ));
             }
         }
-    }
+    },
+
+
 };

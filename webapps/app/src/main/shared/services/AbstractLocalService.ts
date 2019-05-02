@@ -2,7 +2,6 @@ import {Dispatch, Action} from "redux";
 import {clone} from "lodash";
 
 import {settings} from "../Settings";
-import {localStorageHandler} from "./localStorageHandler";
 import {ErrorInfo, Result} from "../models/Generated";
 import {AuthTypeKeys} from "../actionTypes/AuthTypes";
 import {CacheInterface} from "../modules/cache/CacheInterface";
@@ -216,7 +215,6 @@ export abstract class AbstractLocalService {
 
     protected logOut() {
         return (dispatch: Dispatch<Action>) => {
-            localStorageHandler.remove("accessToken");
             this.clearAllCache();
             dispatch({
                 type: AuthTypeKeys.UNAUTHENTICATED

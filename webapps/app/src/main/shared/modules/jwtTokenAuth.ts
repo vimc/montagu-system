@@ -1,5 +1,5 @@
 import {parseRole, Role} from "../models/Roles";
-import {AuthState} from "../reducers/authReducer";
+import {AuthState, loadAuthState} from "../reducers/authReducer";
 import * as pako from "pako";
 
 const jwt_decode = require('jwt-decode');
@@ -58,18 +58,17 @@ export const jwtTokenAuth = {
         const decoded = this.decodeToken(inflated);
         const permissions = decoded.permissions.split(",").filter((x: string) => x.length > 0);
         const modellingGroups = this.parseModellingGroups(decoded.roles);
-        return {
-            receivedBearerToken: true,
-            receivedCookies: false,
-            bearerToken: token,
-            isAccountActive: permissions.some((x: string) => x == "*/can-login"),
-            isModeller: modellingGroups.length > 0,
-            username: decoded.sub,
+
+        const result = loadAuthState(
+            decoded.sub, //username
+            true, //receivedBearerToken
+            false, //receivedCookies
+            token, //bearerToken
             permissions,
-            modellingGroups,
-            isReportReviewer: permissions.indexOf("*/reports.review") > -1,
-            isReportRunner: permissions.indexOf("*/reports.run") > -1,
-        }
+            modellingGroups
+        );
+
+        return result;
     },
 
     isCompressedTokenValid(token: string): boolean {

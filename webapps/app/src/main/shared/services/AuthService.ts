@@ -24,4 +24,8 @@ export class AuthService extends AbstractLocalService {
     forgotPassword(email: string) {
         return this.post("/password/request-link/?email=" + encodeURI(email));
     }
+
+    getCurrentUser() {
+        return this.get("/user/?includePermissions=true");
+    }
 }
