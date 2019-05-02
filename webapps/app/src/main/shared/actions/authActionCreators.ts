@@ -42,7 +42,7 @@ export const authActionCreators = {
                 //TODO: since we should always have the modelling groups for the current user, either from the API here
                 //or when loading from token on login, we shouldn't need the call that was added as part of
                 //https://github.com/vimc/montagu-webapps/pull/380
-                const allGroups: ModellingGroup[] = await (new ModellingGroupsService(dispatch, getState)).getAllGroups();
+                const allGroups: ModellingGroup[] = await (new ModellingGroupsService(dispatch, getState)).getUserGroups();
 
                 const user: AuthState = loadAuthState(
                     userResponse.user,
