@@ -50,8 +50,6 @@ describe('Auth reducer tests', () => {
         const actual = authReducer(undefined, {type: AuthTypeKeys.RECEIVED_COOKIES});
         expect(actual).to.eql(expected)
     })
-
-
 });
 
 describe ('loadAuthState tests', () => {

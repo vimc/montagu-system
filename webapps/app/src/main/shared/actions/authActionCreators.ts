@@ -139,7 +139,5 @@ export const authActionCreators = {
                 ));
             }
         }
-    },
-
-
+    }
 };

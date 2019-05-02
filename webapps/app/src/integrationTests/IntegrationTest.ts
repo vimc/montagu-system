@@ -74,7 +74,6 @@ export abstract class IntegrationTestSuite {
 
                 function handleChange() {
                     const token = that.store.getState().auth.bearerToken;
-                    //sandbox.setStubFunc(localStorageHandler, 'get', () => token);
 
                     unsubscribe();
                     done();
