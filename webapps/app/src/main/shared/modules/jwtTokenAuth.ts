@@ -59,14 +59,14 @@ export const jwtTokenAuth = {
         const permissions = decoded.permissions.split(",").filter((x: string) => x.length > 0);
         const modellingGroups = this.parseModellingGroups(decoded.roles);
 
-        const result = loadAuthState(
-            decoded.sub, //username
-            true, //receivedBearerToken
-            false, //receivedCookies
-            token, //bearerToken
-            permissions,
-            modellingGroups
-        );
+        const result = loadAuthState( {
+            username: decoded.sub,
+            receivedBearerToken: true,
+            receivedCookies: false,
+            bearerToken: token,
+            permissions: permissions,
+            modellingGroups: modellingGroups
+        });
 
         return result;
     },

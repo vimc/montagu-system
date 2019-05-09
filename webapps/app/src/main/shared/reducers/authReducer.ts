@@ -27,25 +27,28 @@ export const initialAuthState: AuthState = {
     isReportRunner: false
 };
 
-export function loadAuthState(
+export interface AuthStateOptions {
     username: string,
     receivedBearerToken: boolean,
     receivedCookies: boolean,
     bearerToken: string,
     permissions: string[],
-    modellingGroups: string[]): AuthState
+    modellingGroups: string[]
+}
+
+export function loadAuthState(options: AuthStateOptions): AuthState
 {
     return {
-        receivedBearerToken: receivedBearerToken,
-        receivedCookies: receivedCookies,
-        bearerToken: bearerToken,
-        isAccountActive: permissions.some((x: string) => x == "*/can-login"),
-        isModeller: modellingGroups.length > 0,
-        username: username,
-        permissions: permissions,
-        modellingGroups: modellingGroups,
-        isReportReviewer: permissions.indexOf("*/reports.review") > -1,
-        isReportRunner: permissions.indexOf("*/reports.run") > -1,
+        receivedBearerToken: options.receivedBearerToken,
+        receivedCookies: options.receivedCookies,
+        bearerToken: options.bearerToken,
+        isAccountActive: options.permissions.some((x: string) => x == "*/can-login"),
+        isModeller: options.modellingGroups.length > 0,
+        username: options.username,
+        permissions: options.permissions,
+        modellingGroups: options.modellingGroups,
+        isReportReviewer: options.permissions.indexOf("*/reports.review") > -1,
+        isReportRunner: options.permissions.indexOf("*/reports.run") > -1,
     }
 }
 

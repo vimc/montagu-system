@@ -44,14 +44,14 @@ export const authActionCreators = {
                 //https://github.com/vimc/montagu-webapps/pull/380
                 const allGroups: ModellingGroup[] = await (new ModellingGroupsService(dispatch, getState)).getUserGroups();
 
-                const user: AuthState = loadAuthState(
-                    userResponse.username,
-                    true, //received bearer token
-                    true, //received cookies
-                    null, //bearerToken - shouldn't need this since already logged in with cookies if successful response
-                    userResponse.permissions,
-                    allGroups.map(x => x.id)
-                )
+                const user: AuthState = loadAuthState({
+                    username: userResponse.username,
+                    receivedBearerToken: true,
+                    receivedCookies: true,
+                    bearerToken: null, //bearerToken - shouldn't need this since already logged in with cookies if successful response
+                    permissions: userResponse.permissions,
+                    modellingGroups: allGroups.map(x => x.id)
+                })
 
                 const error: string = this.validateAuthResult(user);
                 if (!error) {

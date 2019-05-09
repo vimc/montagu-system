@@ -54,14 +54,14 @@ describe('Auth reducer tests', () => {
 
 describe ('loadAuthState tests', () => {
     it('loads basic param values' , () => {
-        const result = loadAuthState(
-            "testUser",
-            true,
-            true,
-            "testToken",
-            ["perm1", "perm2"],
-            ["group1", "group2"]
-        );
+        const result = loadAuthState({
+            username: "testUser",
+            receivedBearerToken: true,
+            receivedCookies: true,
+            bearerToken: "testToken",
+            permissions: ["perm1", "perm2"],
+            modellingGroups: ["group1", "group2"]
+            });
 
         expect(result.username).to.eql("testUser");
         expect(result.receivedBearerToken).to.eql(true);
@@ -72,25 +72,25 @@ describe ('loadAuthState tests', () => {
     });
 
     it('sets isAccountActive correctly' , () => {
-        const inactive = loadAuthState(
-            "testUser",
-            true,
-            true,
-            "testToken",
-            ["perm1", "perm2"],
-            ["group1", "group2"]
-        );
+        const inactive = loadAuthState({
+            username: "testUser",
+            receivedBearerToken: true,
+            receivedCookies: true,
+            bearerToken: "testToken",
+            permissions: ["perm1", "perm2"],
+            modellingGroups: ["group1", "group2"]
+        });
 
         expect(inactive.isAccountActive).to.eql(false)
 
-        const active = loadAuthState(
-            "testUser",
-            true,
-            true,
-            "testToken",
-            ["*/can-login", "perm1", "perm2"],
-            ["group1", "group2"]
-        );
+        const active = loadAuthState({
+            username: "testUser",
+            receivedBearerToken: true,
+            receivedCookies: true,
+            bearerToken: "testToken",
+            permissions: ["*/can-login", "perm1", "perm2"],
+            modellingGroups: ["group1", "group2"]
+        });
 
         expect(active.isAccountActive).to.eql(true)
     });
@@ -98,69 +98,69 @@ describe ('loadAuthState tests', () => {
 
     it('sets isModeller correctly' , () => {
 
-        const modeller = loadAuthState(
-            "testUser",
-            true,
-            true,
-            "testToken",
-            ["perm1", "perm2"],
-            ["group1", "group2"]
-        );
+        const modeller = loadAuthState({
+            username: "testUser",
+            receivedBearerToken: true,
+            receivedCookies: true,
+            bearerToken: "testToken",
+            permissions: ["perm1", "perm2"],
+            modellingGroups: ["group1", "group2"]
+        });
         expect(modeller.isModeller).to.eql(true);
 
-        const nonModeller = loadAuthState(
-            "testUser",
-            true,
-            true,
-            "testToken",
-            ["perm1", "perm2"],
-             [] as string[]
-        );
+        const nonModeller = loadAuthState({
+            username: "testUser",
+            receivedBearerToken: true,
+            receivedCookies: true,
+            bearerToken: "testToken",
+            permissions: ["perm1", "perm2"],
+            modellingGroups: [] as string[]
+        });
         expect(nonModeller.isModeller).to.eql(false);
     });
 
     it('sets isReportReviewer correctly' , () => {
-        const reviewer = loadAuthState(
-            "testUser",
-            true,
-            true,
-            "testToken",
-            ["perm1", "perm2", "*/reports.review"],
-            ["group1", "group2"]
-        );
+        const reviewer = loadAuthState({
+            username: "testUser",
+            receivedBearerToken: true,
+            receivedCookies: true,
+            bearerToken: "testToken",
+            permissions: ["perm1", "perm2", "*/reports.review"],
+            modellingGroups: ["group1", "group2"]
+        });
         expect(reviewer.isReportReviewer).to.eql(true);
 
-        const nonReviewer = loadAuthState(
-            "testUser",
-            true,
-            true,
-            "testToken",
-            ["perm1", "perm2"],
-            [] as string[]
-        );
+        const nonReviewer = loadAuthState({
+            username: "testUser",
+            receivedBearerToken: true,
+            receivedCookies: true,
+            bearerToken: "testToken",
+            permissions: ["perm1", "perm2"],
+            modellingGroups: [] as string[]
+        });
         expect(nonReviewer.isReportReviewer).to.eql(false);
 
     });
 
     it('sets isReportRunner correctly' , () => {
-        const runner = loadAuthState(
-            "testUser",
-            true,
-            true,
-            "testToken",
-            ["perm1", "perm2", "*/reports.run"],
-            ["group1", "group2"]
-        );
+        const runner = loadAuthState({
+            username: "testUser",
+            receivedBearerToken: true,
+            receivedCookies: true,
+            bearerToken: "testToken",
+            permissions: ["perm1", "perm2", "*/reports.run"],
+            modellingGroups: ["group1", "group2"]
+        });
         expect(runner.isReportRunner).to.eql(true);
 
-        const nonRunner = loadAuthState(
-            "testUser",
-            true,
-            true,
-            "testToken",
-            [ "*/reports.review", "perm1", "perm2"],
-            [] as string[]
-        );
+        const nonRunner = loadAuthState({
+            username: "testUser",
+            receivedBearerToken: true,
+            receivedCookies: true,
+            bearerToken: "testToken",
+            permissions: ["*/reports.review", "perm1", "perm2"],
+            modellingGroups: [] as string[]
+        });
         expect(nonRunner.isReportRunner).to.eql(false);
     });
 });
