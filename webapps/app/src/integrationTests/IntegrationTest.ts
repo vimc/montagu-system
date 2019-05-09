@@ -4,7 +4,6 @@ import {Sandbox} from "../test/Sandbox";
 
 import {authActionCreators} from "../main/shared/actions/authActionCreators";
 
-import {localStorageHandler} from "../main/shared/services/localStorageHandler";
 import {singletonVariableCache} from "../main/shared/modules/cache/singletonVariableCache";
 import {jwtTokenAuth} from "../main/shared/modules/jwtTokenAuth";
 import {ReactWrapper} from "enzyme";
@@ -75,7 +74,7 @@ export abstract class IntegrationTestSuite {
 
                 function handleChange() {
                     const token = that.store.getState().auth.bearerToken;
-                    sandbox.setStubFunc(localStorageHandler, 'get', () => token);
+
                     unsubscribe();
                     done();
                 }
