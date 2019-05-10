@@ -28,7 +28,7 @@ RUN curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-co
 RUN chmod 744 /usr/local/bin/docker-compose
 
 # Install webpack
-RUN npm install webpack@v3.10.0 --global
+RUN npm install webpack@v4.30.0 --global
 
 # Create workspace
 WORKDIR /workspace
