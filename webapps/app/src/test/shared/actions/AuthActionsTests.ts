@@ -6,10 +6,10 @@ import {AuthService} from "../../../main/shared/services/AuthService";
 import {AuthTypeKeys} from "../../../main/shared/actionTypes/AuthTypes";
 import {createMockStore} from "../../mocks/mockStore";
 
-import {localStorageHandler} from "../../../main/shared/services/localStorageHandler";
 import {signAndCompress} from "../helpers/TokenHelpers";
 import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 import {appSettings} from "../../../main/shared/Settings";
+import {ModellingGroupsService} from "../../../main/shared/services/ModellingGroupsService";
 
 describe("AuthActions", () => {
     const sandbox = new Sandbox();
@@ -97,24 +97,64 @@ describe("AuthActions", () => {
         });
     });
 
-    it("dispatches authenticated action if saved token can be loaded and not expired", (done) => {
-        const testToken = signAndCompress(mockUsertokenData);
-        sandbox.setStubFunc(localStorageHandler, "get", () => testToken);
-        sandbox.setStub(AuthService.prototype, "setCookies");
-        store.dispatch(authActionCreators.loadSavedToken());
+    it("dispatches authenticated action if can get authenticated user data from API", (done) => {
+        const testUser = {
+            username: "test-user",
+            permissions: ["*/can-login"]
+        };
+
+        const testModellingGroups = [{id: "group1"}]
+
+        sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
+            return Promise.resolve(testUser);
+        });
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "getUserGroups", () => {
+            return Promise.resolve(testModellingGroups);
+        });
+
+        store.dispatch(authActionCreators.loadAuthenticatedUser());
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
+            expect(actions[0].data.username).to.eql("test-user");
+            expect(actions[0].data.isAccountActive).to.eql(true);
+            expect(actions[0].data.isModeller).to.eql(true);
             done();
         });
     });
 
-    it("dispatches unauthenticated action if saved token can be loaded and expired", (done) => {
-        const mockUserTokenDataExpired = Object.assign(mockUsertokenData, {exp: Math.round(Date.now() / 1000)});
-        const testToken = signAndCompress(mockUserTokenDataExpired, "secret");
-        sandbox.setStubFunc(localStorageHandler, "get", () => testToken);
+    it("dispatches authentication error action if user cannot be validated", (done) => {
+        const testUser = {
+            username: "testuser",
+            permissions: [] as String[]
+        };
+
+        const testModellingGroups = [{id: "group1"}]
+
+        sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
+            return Promise.resolve(testUser);
+        });
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "getUserGroups", () => {
+            return Promise.resolve(testModellingGroups);
+        });
+
+        store.dispatch(authActionCreators.loadAuthenticatedUser());
+        setTimeout(() => {
+            const actions = store.getActions();
+            expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
+            expect(actions[0].message).to.contain("Your account has been deactivated");
+            expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+            done();
+        });
+    });
+
+    it("dispatches unauthenticated action if cannot get authenticated user data from API", (done) => {
+        sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
+            return Promise.reject("failed")
+        });
+
         sandbox.setStub(AuthService.prototype, "logOutOfAPI");
-        store.dispatch(authActionCreators.loadSavedToken());
+        store.dispatch(authActionCreators.loadAuthenticatedUser());
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
@@ -122,11 +162,21 @@ describe("AuthActions", () => {
         });
     });
 
-    it("dispatches unauthenticated action if saved token can't be inflated", (done) => {
-        const testToken = jwt.sign(mockUsertokenData, "secret");
-        sandbox.setStubFunc(localStorageHandler, "get", () => testToken);
+    it("dispatches unauthenticated action if cannot get modelling groups data from API", (done) => {
+        const testUser = {
+            user: "testuser",
+            permissions: "*/can-login"
+        }
+
+        sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
+            return Promise.resolve(testUser);
+        });
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "getUserGroups", () => {
+            return Promise.reject("failed");
+        })
+
         sandbox.setStub(AuthService.prototype, "logOutOfAPI");
-        store.dispatch(authActionCreators.loadSavedToken());
+        store.dispatch(authActionCreators.loadAuthenticatedUser());
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
