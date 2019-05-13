@@ -3,6 +3,7 @@ import {Result} from "./models/Generated";
 import * as url from "url";
 import * as querystring from "querystring";
 import * as moment from "moment";
+import {settings} from "./Settings";
 
 export function doNothing() {
 
@@ -76,26 +77,6 @@ export const helpers = {
         });
         return obj;
     },
-    ingestQueryStringAndReturnResult<TModel>(): Result | void {
-
-        const queryAsObject = this.queryStringAsObject();
-
-
-        if (!queryAsObject.result) {
-            return null
-        }
-
-        try {
-            const decoded = jwtDecoder.jwtDecode(queryAsObject.result);
-            helpers.removeQueryString();
-            return JSON.parse(decoded.result);
-        }
-        catch (e) {
-            // if the query string token is nonsense, just return null
-            helpers.removeQueryString();
-            return null;
-        }
-    },
     removeQueryString() {
         history.replaceState({}, document.title, helpers.urlWithoutQueryString(location.href));
     },
@@ -108,5 +89,8 @@ export const helpers = {
     },
     getCurrentLocation(): string {
         return window.location.href;
+    },
+    redirectToMontaguLogin() {
+        window.location.href = settings.montaguUrl() + `?redirectTo=${window.location.href}`;
     }
 };

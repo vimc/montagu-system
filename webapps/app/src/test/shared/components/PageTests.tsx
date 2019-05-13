@@ -54,7 +54,7 @@ describe('Page HOC', () => {
     afterEach(() => sandbox.restore());
 
     it("loads on mount", (done: DoneCallback) => {
-        const store = createMockAdminStore({auth: {receivedBearerToken: true}});
+        const store = createMockAdminStore({auth: {loggedIn: true}});
         shallow(<DummyPage match={mockMatch()}/>, {context: {store}})
             .dive().dive();
 
@@ -67,7 +67,7 @@ describe('Page HOC', () => {
     });
 
     it("populates title from state", () => {
-        const store = createMockAdminStore({auth: {receivedBearerToken: true, username: "test"}});
+        const store = createMockAdminStore({auth: {loggedIn: true, username: "test"}});
         const rendered = shallow(<DummyPage match={mockMatch()}/>, {context: {store}})
             .dive().dive();
 

@@ -6,17 +6,16 @@ import {History} from "history";
 // Pages
 import {ReportsListPage} from "./ReportsList/ReportsListPage";
 import {ReportingNoRouteFoundPage} from "./ReportingNoRouteFoundPage";
-import {ReportingLoginPage} from "./ReportingLoginPage";
 import {ReportPage} from "./Reports/ReportPage";
 import {ReportingPageHeader} from "./ReportingPageHeader";
-import {ForgottenPasswordPage} from "../../shared/components/ForgottenPasswordPage";
+import {LoginPage} from "../../shared/components/LoginPage";
 
 interface ReportRouterProps {
     loggedIn: boolean;
     history: History;
 }
 
-export const ReportingRouter : React.StatelessComponent<ReportRouterProps> = (props: ReportRouterProps) => {
+export const ReportingRouter : React.FunctionComponent<ReportRouterProps> = (props: ReportRouterProps) => {
 
     const loggedIn = <Switch>
         <Route exact path="/" component={ReportsListPage}/>
@@ -25,8 +24,7 @@ export const ReportingRouter : React.StatelessComponent<ReportRouterProps> = (pr
     </Switch>;
 
     const notLoggedIn = <Switch>
-        <Route exact path="/forgotten-password/" component={ForgottenPasswordPage} />
-        <Route component={ReportingLoginPage}/>
+        <Route component={LoginPage}/>
     </Switch>;
 
     const routes = props.loggedIn ?  loggedIn : notLoggedIn;

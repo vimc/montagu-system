@@ -7,7 +7,6 @@ import {History} from "history";
 import {ContribPageHeader} from "./ContribPageHeader";
 import {ChooseGroupPage} from "./ChooseGroup/ChooseGroupPage";
 import {ChooseActionPage} from "./ChooseAction/ChooseActionPage";
-import {ContribLoginPage} from "./Login/ContribLoginPage";
 import {ContribNoRouteFoundPage} from "./ContribNoRouteFoundPage";
 import {TouchstoneHelpPage} from "./TouchstoneHelpPage";
 import {ResponsibilityOverviewPage} from "./Responsibilities/Overview/ResponsibilityOverviewPage";
@@ -24,14 +23,14 @@ import {ResponsibilityGuidanceKosovoPage} from "./Responsibilities/Guidance/Demo
 import {ResponsibilityGuidanceTuvaluPage} from "./Responsibilities/Guidance/Demographics/ResponsibilityGuidanceTuvaluPage";
 import {ResponsibilityGuidanceHasMovedPage} from "./Responsibilities/Guidance/ResponsibilityGuidanceHasMovedPage";
 import {ExpectationsPage} from "./Responsibilities/Expectations/ExpectationsPage";
-import {ForgottenPasswordPage} from "../../shared/components/ForgottenPasswordPage";
+import {LoginPage} from "../../shared/components/LoginPage";
 
 interface ContribRouterProps {
     loggedIn: boolean;
     history: History;
 }
 
-export const ContribRouter : React.StatelessComponent<ContribRouterProps> = (props: ContribRouterProps) => {
+export const ContribRouter : React.FunctionComponent<ContribRouterProps> = (props: ContribRouterProps) => {
 
     const loggedIn = <Switch>
         <Route exact path="/" component={ChooseGroupPage}/>
@@ -56,8 +55,7 @@ export const ContribRouter : React.StatelessComponent<ContribRouterProps> = (pro
     </Switch>;
 
     const notLoggedIn = <Switch>
-        <Route exact path="/forgotten-password/" component={ForgottenPasswordPage} />
-        <Route component={ContribLoginPage}/>
+        <Route component={LoginPage}/>
     </Switch>;
 
     const routes = props.loggedIn ? loggedIn : notLoggedIn;

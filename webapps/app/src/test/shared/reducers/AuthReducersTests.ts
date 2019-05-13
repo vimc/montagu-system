@@ -2,10 +2,11 @@ import {expect} from "chai";
 
 import {authReducer, AuthState, initialAuthState, loadAuthState} from "../../../main/shared/reducers/authReducer";
 import {AuthTypeKeys} from "../../../main/shared/actionTypes/AuthTypes";
+import {Sandbox} from "../../Sandbox";
+import {helpers} from "../../../main/shared/Helpers";
 
 const testAuthData: AuthState = {
-    receivedBearerToken: true,
-    receivedCookies: false,
+    loggedIn: false,
     username: 'test.user',
     bearerToken: 'testtoken',
     permissions: [],
@@ -16,6 +17,12 @@ const testAuthData: AuthState = {
 };
 
 describe('Auth reducer tests', () => {
+    const sandbox = new Sandbox();
+
+    afterEach(() => {
+        sandbox.restore();
+    });
+
     it('sets logged in user data', () => {
         expect(authReducer(undefined, {
             type: AuthTypeKeys.AUTHENTICATED,
@@ -25,12 +32,14 @@ describe('Auth reducer tests', () => {
         )
     });
 
-    it('reverts state to initial after unauth action', () => {
+    it('reverts state to initial after unauth action and redirects to Montagu', () => {
+        const redirectStub = sandbox.setStub(helpers, "redirectToMontaguLogin");
         expect(authReducer(undefined, {
             type: AuthTypeKeys.UNAUTHENTICATED,
         })).to.eql(
             initialAuthState
-        )
+        );
+        expect(redirectStub.called).to.be.true;
     });
 
     it('sets error', () => {
@@ -42,10 +51,10 @@ describe('Auth reducer tests', () => {
         )
     });
 
-    it('sets hasCookies to true after receiving cookies', () => {
+    it('sets loggedIn to true after receiving cookies', () => {
         const expected: AuthState = {
             ...initialAuthState,
-            receivedCookies: true
+            loggedIn: true
         };
         const actual = authReducer(undefined, {type: AuthTypeKeys.RECEIVED_COOKIES});
         expect(actual).to.eql(expected)
@@ -56,16 +65,14 @@ describe ('loadAuthState tests', () => {
     it('loads basic param values' , () => {
         const result = loadAuthState({
             username: "testUser",
-            receivedBearerToken: true,
-            receivedCookies: true,
+            loggedIn: true,
             bearerToken: "testToken",
             permissions: ["perm1", "perm2"],
             modellingGroups: ["group1", "group2"]
             });
 
         expect(result.username).to.eql("testUser");
-        expect(result.receivedBearerToken).to.eql(true);
-        expect(result.receivedCookies).to.eql(true);
+        expect(result.loggedIn).to.eql(true);
         expect(result.bearerToken).to.eql("testToken");
         expect(result.permissions).to.eql(["perm1", "perm2"]);
         expect(result.modellingGroups).to.eql(["group1", "group2"]);
@@ -74,19 +81,17 @@ describe ('loadAuthState tests', () => {
     it('sets isAccountActive correctly' , () => {
         const inactive = loadAuthState({
             username: "testUser",
-            receivedBearerToken: true,
-            receivedCookies: true,
+            loggedIn: true,
             bearerToken: "testToken",
             permissions: ["perm1", "perm2"],
             modellingGroups: ["group1", "group2"]
         });
 
-        expect(inactive.isAccountActive).to.eql(false)
+        expect(inactive.isAccountActive).to.eql(false);
 
         const active = loadAuthState({
             username: "testUser",
-            receivedBearerToken: true,
-            receivedCookies: true,
+            loggedIn: true,
             bearerToken: "testToken",
             permissions: ["*/can-login", "perm1", "perm2"],
             modellingGroups: ["group1", "group2"]
@@ -100,8 +105,7 @@ describe ('loadAuthState tests', () => {
 
         const modeller = loadAuthState({
             username: "testUser",
-            receivedBearerToken: true,
-            receivedCookies: true,
+            loggedIn: true,
             bearerToken: "testToken",
             permissions: ["perm1", "perm2"],
             modellingGroups: ["group1", "group2"]
@@ -110,8 +114,7 @@ describe ('loadAuthState tests', () => {
 
         const nonModeller = loadAuthState({
             username: "testUser",
-            receivedBearerToken: true,
-            receivedCookies: true,
+            loggedIn: true,
             bearerToken: "testToken",
             permissions: ["perm1", "perm2"],
             modellingGroups: [] as string[]
@@ -122,8 +125,7 @@ describe ('loadAuthState tests', () => {
     it('sets isReportReviewer correctly' , () => {
         const reviewer = loadAuthState({
             username: "testUser",
-            receivedBearerToken: true,
-            receivedCookies: true,
+            loggedIn: true,
             bearerToken: "testToken",
             permissions: ["perm1", "perm2", "*/reports.review"],
             modellingGroups: ["group1", "group2"]
@@ -132,8 +134,7 @@ describe ('loadAuthState tests', () => {
 
         const nonReviewer = loadAuthState({
             username: "testUser",
-            receivedBearerToken: true,
-            receivedCookies: true,
+            loggedIn: true,
             bearerToken: "testToken",
             permissions: ["perm1", "perm2"],
             modellingGroups: [] as string[]
@@ -145,8 +146,7 @@ describe ('loadAuthState tests', () => {
     it('sets isReportRunner correctly' , () => {
         const runner = loadAuthState({
             username: "testUser",
-            receivedBearerToken: true,
-            receivedCookies: true,
+            loggedIn: true,
             bearerToken: "testToken",
             permissions: ["perm1", "perm2", "*/reports.run"],
             modellingGroups: ["group1", "group2"]
@@ -155,8 +155,7 @@ describe ('loadAuthState tests', () => {
 
         const nonRunner = loadAuthState({
             username: "testUser",
-            receivedBearerToken: true,
-            receivedCookies: true,
+            loggedIn: true,
             bearerToken: "testToken",
             permissions: ["*/reports.review", "perm1", "perm2"],
             modellingGroups: [] as string[]
