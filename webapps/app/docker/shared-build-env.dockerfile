@@ -46,6 +46,7 @@ RUN ./src/webmodels/gradlew
 
 # Install Node dependencies
 COPY package.json .
+COPY package-lock.json .
 RUN npm install --quiet 2>&1
 
 # Generate Typescript models from montagu-webmodels
