@@ -6,7 +6,6 @@ import * as logo from "../../shared/components/PageWithHeader/logo.png"
 import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
 
 // Pages
-import {AdminLoginPage} from "./AdminLoginPage";
 import {AdminNoRouteFoundPage} from "./AdminNoRouteFoundPage";
 import {ModellingGroupsListPage} from "./ModellingGroups/List/ModellingGroupsListPage";
 import {ModellingGroupDetailsPage} from "./ModellingGroups/SingleGroup/Details/ModellingGroupDetailsPage";
@@ -22,6 +21,7 @@ import {ForgottenPasswordPage} from "../../shared/components/ForgottenPasswordPa
 import {TouchstoneVersionPage} from "./Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
 import {DownloadDemographicsAdminPage} from "./Touchstones/Demography/DownloadDemographicsPage";
 import {ScenarioPage} from "./Touchstones/Scenarios/ScenarioPage";
+import {settings} from "../../shared/Settings";
 
 interface AdminRouterProps {
     loggedIn: boolean;
@@ -48,9 +48,10 @@ export const AdminRouter : React.StatelessComponent<AdminRouterProps> = (props: 
     </Switch>;
 
     const notLoggedIn = <Switch>
+        <Route exact path="/" component={() => {window.location.replace(settings.montaguUrl()); return null as any }} />
         <Route exact path="/forgotten-password/" component={ForgottenPasswordPage} />
         <Route exact path="/set-password/" component={SetPasswordPage} />
-        <Route component={AdminLoginPage}/>
+        <Route component={AdminNoRouteFoundPage}/>
     </Switch>;
 
     const routes = props.loggedIn ? loggedIn : notLoggedIn;
