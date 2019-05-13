@@ -9,7 +9,7 @@ export class LoginPageActionCreators extends AbstractPageActionCreators<CommonSt
     parent: AbstractPageActionCreators<CommonState, {}> = null;
 
     title () {
-        return "Admin Portal"
+        return "Logging in"
     }
 
     createBreadcrumb(state?: CommonState): PageBreadcrumb {
