@@ -26,7 +26,7 @@ describe("ContribRouter", () => {
     });
 
     it("attempts to log user in when user is logged out", () => {
-        const loginStub = sandbox.setStub(authActionCreators, "loadAuthenticatedUser");
+        const loginStub = sandbox.setStubReduxAction(authActionCreators, "loadAuthenticatedUser");
         const history = createMemoryHistory({initialEntries: ['/help/touchstones/']});
         const store = createContribStore(history);
         const rendered = mount(<Provider store={store}><ContribRouter loggedIn={false} history={history}/></Provider>);

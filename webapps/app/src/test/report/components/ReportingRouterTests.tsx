@@ -28,7 +28,7 @@ describe("ReportingRouter", () => {
 
     it("attempts to log user in when user is logged out", () => {
 
-        const loginStub = sandbox.setStub(authActionCreators, "loadAuthenticatedUser");
+        const loginStub = sandbox.setStubReduxAction(authActionCreators, "loadAuthenticatedUser");
 
         const history = createMemoryHistory({initialEntries: ['/some-url/']});
         const store = createReportStore(history);
