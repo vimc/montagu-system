@@ -28,7 +28,7 @@ RUN curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-co
 RUN chmod 744 /usr/local/bin/docker-compose
 
 # Install webpack
-RUN npm install webpack@v3.10.0 --global
+RUN npm install webpack@v4.30.0 webpack-cli --global
 
 # Create workspace
 WORKDIR /workspace
@@ -46,6 +46,7 @@ RUN ./src/webmodels/gradlew
 
 # Install Node dependencies
 COPY package.json .
+COPY package-lock.json .
 RUN npm install --quiet 2>&1
 
 # Generate Typescript models from montagu-webmodels
