@@ -6,7 +6,7 @@ export class MainMenuPageActionCreators extends AdminPageActionCreators<{}> {
 
     parent: AdminPageActionCreators<{}> = null;
 
-    title () {
+    title() {
         return "Main menu"
     }
 
@@ -19,7 +19,9 @@ export class MainMenuPageActionCreators extends AdminPageActionCreators<{}> {
     }
 
     loadData() {
-        return () => {}
+        return async () => {
+            await new Promise(resolve => setTimeout(resolve))
+        }
     }
 }
 

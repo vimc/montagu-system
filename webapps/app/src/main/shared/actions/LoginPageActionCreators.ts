@@ -9,13 +9,13 @@ export class LoginPageActionCreators extends AbstractPageActionCreators<CommonSt
     parent: AbstractPageActionCreators<CommonState, {}> = null;
 
     title () {
-        return "Logging in"
+        return ""
     }
 
     createBreadcrumb(state?: CommonState): PageBreadcrumb {
         return {
             name: this.title(),
-            urlFragment: "/",
+            urlFragment: null,
             parent: null
         }
     }

@@ -30,19 +30,11 @@ describe("ReportListComponent", () => {
         expect(props.ready).to.eql(true);
     });
 
-    it ("tests lifecycle, triggers get reports on component mount ", () => {
-        let store = createMockStore(mockReportAppState({reports: {reports: null}}));
-        const getReportsActionStub = sandbox.setStubReduxAction(reportActionCreators, 'getReports');
-        // 1 dive leads us to bypass first hoc, so we pass connect and stop on lifecycle
-        shallow(<ReportsList />, {context: {store}}).dive();
-        expect(getReportsActionStub.called).to.eq(true);
-    });
-
     it ("tests branch, doesn't branch rendering to component is loading is state is ready ", () => {
         let store = createMockStore(mockReportAppState({reports: {reports: [], reportsFilter: {}}}));
         sandbox.setStubReduxAction(reportActionCreators, 'getReports');
         // 2 dives leads us to branch
-        const rendered = shallow(<ReportsList />, {context: {store}}).dive().dive();
+        const rendered = shallow(<ReportsList />, {context: {store}}).dive();
         const branchedElement = rendered.find(ReportsListTable);
         expect(branchedElement.length).to.eq(1);
     });
@@ -51,7 +43,7 @@ describe("ReportListComponent", () => {
         let store = createMockStore(mockReportAppState({reports: {reports: null}}));
         sandbox.setStubReduxAction(reportActionCreators, 'getReports');
         // 2 dives leads us to branch, 3rd needed to pass renderComponent
-        const rendered = shallow(<ReportsList />, {context: {store}}).dive().dive().dive();
+        const rendered = shallow(<ReportsList />, {context: {store}}).dive().dive();
         const branchedElement = rendered.find(LoadingElement);
         expect(branchedElement.length).to.eq(1);
     });
