@@ -26,6 +26,7 @@ export class AuthService extends AbstractLocalService {
     }
 
     getCurrentUser() {
-        return this.get("/user/?includePermissions=true");
+        return this.setOptions({notificationOnError: false})
+            .get("/user/?includePermissions=true");
     }
 }

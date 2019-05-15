@@ -38,7 +38,9 @@ export const authActionCreators = {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             try {
                 const userResponse = await(new AuthService(dispatch, getState)).getCurrentUser();
-                const allGroups: ModellingGroup[] = await (new ModellingGroupsService(dispatch, getState)).getUserGroups();
+                const allGroups: ModellingGroup[] = await (new ModellingGroupsService(dispatch, getState))
+                    .setOptions({notificationOnError: false})
+                    .getUserGroups();
 
                 const user: AuthState = loadAuthState({
                     username: userResponse.username,

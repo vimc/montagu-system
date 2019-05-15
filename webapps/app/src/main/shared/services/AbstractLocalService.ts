@@ -165,8 +165,6 @@ export abstract class AbstractLocalService {
     expiredTokenAction() {
         console.log("Access token has expired or is otherwise invalid: Logging out.");
         this.dispatch(this.logOut());
-        notificationActionCreators.notify("Your session has expired. You will need to log in again", "info")(this.dispatch, null);
-        setTimeout(() => notificationActionCreators.clear("error")(this.dispatch, null));
     }
 
     handleErrorsWithNotifications(error: ErrorInfo) {
