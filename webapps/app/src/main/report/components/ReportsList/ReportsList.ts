@@ -10,15 +10,8 @@ import { LoadingElement } from "../../../shared/partials/LoadingElement/LoadingE
 import {ReportsListTable, ReportsListTableProps} from "./ReportListTable";
 
 export interface ReportsListContainerProps extends ReportsListTableProps {
-    getReports: () => void;
     ready: boolean;
 }
-
-const lifecyleProps: Partial<LifecycleMethods<ReportsListContainerProps>> = {
-    onDidMount(props: ReportsListContainerProps) {
-        props.getReports();
-    }
-};
 
 export const mapStateToProps = (state: ReportAppState): Partial<ReportsListContainerProps> => {
     return {
@@ -28,15 +21,9 @@ export const mapStateToProps = (state: ReportAppState): Partial<ReportsListConta
     }
 };
 
-export const mapDispatchToProps = (dispatch: Dispatch<ReportAppState>): Partial<ReportsListContainerProps> => {
-    return {
-        getReports: () => dispatch(reportActionCreators.getReports())
-    }
-};
 
 const enhance = compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    withLifecycle(lifecyleProps),
+    connect(mapStateToProps),
     branch((props: ReportsListContainerProps) => !props.ready, renderComponent(LoadingElement))
 );
 export const ReportsList = enhance(ReportsListTable);

@@ -14,8 +14,6 @@ import './style.scss';
 const history: History = createBrowserHistory({ basename: "/contribution"});
 const store = createContribStore(history);
 
-store.dispatch(authActionCreators.loadAuthenticatedUser());
-
 ReactDOM.render(
     <Provider store={store}>
         <ContribApp history={history} />

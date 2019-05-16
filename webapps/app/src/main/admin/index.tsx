@@ -14,8 +14,6 @@ import './style.scss';
 const history: History = createBrowserHistory({ basename: "/admin"});
 const store = createAdminStore(history);
 
-store.dispatch(authActionCreators.loadAuthenticatedUser());
-
 ReactDOM.render(
     <Provider store={store}>
         <AdminApp history={history}/>

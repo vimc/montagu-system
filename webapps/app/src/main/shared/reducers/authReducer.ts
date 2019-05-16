@@ -1,9 +1,8 @@
 import {AuthActionsTypes, AuthTypeKeys} from "../actionTypes/AuthTypes";
-import {inflate} from "pako";
+import {helpers} from "../Helpers";
 
 export interface AuthState {
-    receivedBearerToken: boolean;
-    receivedCookies: boolean;
+    loggedIn: boolean;
     username: string;
     bearerToken: string;
     permissions: string[];
@@ -16,8 +15,7 @@ export interface AuthState {
 }
 
 export const initialAuthState: AuthState = {
-    receivedBearerToken: false,
-    receivedCookies: false,
+    loggedIn: false,
     username: null,
     bearerToken: null,
     permissions: [],
@@ -29,18 +27,15 @@ export const initialAuthState: AuthState = {
 
 export interface AuthStateOptions {
     username: string,
-    receivedBearerToken: boolean,
-    receivedCookies: boolean,
+    loggedIn: boolean,
     bearerToken: string,
     permissions: string[],
     modellingGroups: string[]
 }
 
-export function loadAuthState(options: AuthStateOptions): AuthState
-{
+export function loadAuthState(options: AuthStateOptions): AuthState {
     return {
-        receivedBearerToken: options.receivedBearerToken,
-        receivedCookies: options.receivedCookies,
+        loggedIn: options.loggedIn,
         bearerToken: options.bearerToken,
         isAccountActive: options.permissions.some((x: string) => x == "*/can-login"),
         isModeller: options.modellingGroups.length > 0,
@@ -52,16 +47,17 @@ export function loadAuthState(options: AuthStateOptions): AuthState
     }
 }
 
-export const authReducer = (state = initialAuthState, action: AuthActionsTypes) => {
+export const authReducer = (state = initialAuthState, action: AuthActionsTypes): AuthState => {
     switch (action.type) {
         case AuthTypeKeys.AUTHENTICATED:
             return {...action.data};
         case AuthTypeKeys.UNAUTHENTICATED:
-            return initialAuthState;
+            helpers.redirectToMontaguLogin();
+            return {...initialAuthState, loggedIn: false};
         case AuthTypeKeys.AUTHENTICATION_ERROR:
-            return {...state, errorMessage: action.error};
+            return {...state, errorMessage: action.error, loggedIn:false};
         case AuthTypeKeys.RECEIVED_COOKIES:
-            return {...state, receivedCookies: true};
+            return {...state, loggedIn: true};
         default:
             return state;
     }

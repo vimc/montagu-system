@@ -18,21 +18,9 @@ describe('App', function () {
         expect(mapStateToAppProps(state as CommonState, {history})).to.eql(expected);
     });
 
-    it("loggedIn is false after auth", () => {
+    it("gets loggedIn from auth state", () => {
         const state: RecursivePartial<CommonState> = {
-            auth: {...initialAuthState, receivedBearerToken: true}
-        };
-        const history = mockHistory();
-        const expected: AppProps = {
-            loggedIn: false,
-            history
-        };
-        expect(mapStateToAppProps(state as CommonState, {history})).to.eql(expected);
-    });
-
-    it("loggedIn is true after auth and cookies", () => {
-        const state: RecursivePartial<CommonState> = {
-            auth: {...initialAuthState, receivedBearerToken: true, receivedCookies: true}
+            auth: {...initialAuthState, loggedIn: true}
         };
         const history = mockHistory();
         const expected: AppProps = {

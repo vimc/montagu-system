@@ -1,6 +1,6 @@
-import { expect } from "chai";
+import {expect} from "chai";
 
-import { Sandbox } from "../../../Sandbox";
+import {Sandbox} from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../../main/admin/actionTypes/ModellingGroupsTypes";
@@ -19,26 +19,24 @@ describe("Modelling Groups List Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("on load", (done) => {
+    it("on load", async () => {
         const store = createMockStore({});
 
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", ()=>{
+        sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", () => {
             return Promise.resolve([testGroup]);
         });
-        sandbox.setStubFunc(breadcrumbsModule, "initialize", ()=>{
+        sandbox.setStubFunc(breadcrumbsModule, "initialize", () => {
             return testBreadcrumbs;
         });
 
-        store.dispatch(modellingGroupsListPageActionCreators.onLoad());
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = [
-                { type: ModellingGroupTypes.GROUPS_FETCHED, data: [testGroup] },
-                { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs }
-            ];
-            expect(actions).to.eql(expectedPayload);
-            done();
-        });
+        await store.dispatch(modellingGroupsListPageActionCreators.onLoad());
+
+        const actions = store.getActions();
+        const expectedPayload = [
+            {type: ModellingGroupTypes.GROUPS_FETCHED, data: [testGroup]},
+            {type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs}
+        ];
+        expect(actions).to.eql(expectedPayload);
     });
 
 });

@@ -7,6 +7,7 @@ import {PageProperties} from "../../shared/components/PageWithHeader/PagePropert
 import {PageArticle} from "../../shared/components/PageWithHeader/PageArticle";
 import {BreadcrumbInitializer} from "../../shared/components/Breadcrumbs/BreadcrumbsInitializer";
 import {PageBreadcrumb} from "../../shared/components/PageWithHeader/PageProperties";
+import {reportListPageActionCreators} from "../actionCreators/pages/ReportListPageActionCreators";
 
 export class ReportingNoRouteFoundPageComponent extends React.Component<PageProperties<undefined>> {
     componentDidMount(){
@@ -17,7 +18,7 @@ export class ReportingNoRouteFoundPageComponent extends React.Component<PageProp
         return {
             name: NoRouteFound.title(),
             urlFragment: null,
-            parent: ReportsListPageComponent.breadcrumb()
+            parent: reportListPageActionCreators.createBreadcrumb()
         }
     }
 

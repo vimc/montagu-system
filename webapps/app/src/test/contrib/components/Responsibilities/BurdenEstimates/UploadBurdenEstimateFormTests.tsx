@@ -115,32 +115,6 @@ describe("UploadEstimatesForm", () => {
         expect(rendered.find(PopulateEstimatesForm)).to.have.lengthOf(0);
     });
 
-    it("does not show alert", () => {
-
-        sandbox.sinon.stub(helpers, "ingestQueryStringAndReturnResult").returns(null);
-
-        const props: UploadBurdenEstimatesFormComponentProps = {
-            groupId: "group-1",
-            touchstoneId: "touchstone-1",
-            scenarioId: "scenario-1",
-            estimateSet: null,
-            canUpload: false,
-            canCreate: false,
-            hasSuccess: false,
-            errors: [],
-            resetPopulateState: () => {
-            }
-        };
-
-        const rendered = shallow(<UploadBurdenEstimatesFormComponent {...props} />);
-
-        const alerts = rendered.find(Alert);
-        expect(alerts).to.have.lengthOf(2);
-        expect(alerts.first().prop("isOpen")).to.eq(false);
-        expect(alerts.last().prop("isOpen")).to.eq(false);
-
-    });
-
     it("displays errors if present", () => {
 
         const props: UploadBurdenEstimatesFormPublicProps = {

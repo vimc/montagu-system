@@ -30,8 +30,7 @@ export type RecursivePartial<T> = {
     };
 
 export const mockAuthStateObject: AuthState = {
-    receivedBearerToken: true,
-    receivedCookies: true,
+    loggedIn: true,
     username: 'test.user',
     bearerToken: 'TEST-TOKEN',
     permissions: [],

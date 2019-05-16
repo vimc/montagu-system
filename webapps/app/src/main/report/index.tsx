@@ -14,8 +14,6 @@ import './style.scss';
 const history: History = createBrowserHistory({ basename: "/reports"});
 const store = createReportStore(history);
 
-store.dispatch(authActionCreators.loadAuthenticatedUser());
-
 ReactDOM.render(
     <Provider store={store}>
         <ReportingApp history={history} />

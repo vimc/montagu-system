@@ -59,16 +59,13 @@ export const jwtTokenAuth = {
         const permissions = decoded.permissions.split(",").filter((x: string) => x.length > 0);
         const modellingGroups = this.parseModellingGroups(decoded.roles);
 
-        const result = loadAuthState( {
+        return loadAuthState( {
             username: decoded.sub,
-            receivedBearerToken: true,
-            receivedCookies: false,
+            loggedIn: false,
             bearerToken: token,
             permissions: permissions,
             modellingGroups: modellingGroups
         });
-
-        return result;
     },
 
     isCompressedTokenValid(token: string): boolean {

@@ -24,7 +24,7 @@ describe("LoggedInUserBoxComponent", () => {
 
     it("renders nothing when the user is not logged in", () => {
         const rendered = shallow(<LoggedInUserBoxComponent
-            loggedIn={initialAuthState.receivedBearerToken}
+            loggedIn={initialAuthState.loggedIn}
             username={initialAuthState.username}
             logOut={() => ({})}
         />);
@@ -42,14 +42,14 @@ describe("LoggedInUserBoxComponent", () => {
     });
 
     it("maps state to props", () => {
-        const contribStateMock = mockContribState({auth: {receivedBearerToken: true, username: "test.user"}});
+        const contribStateMock = mockContribState({auth: {loggedIn: true, username: "test.user"}});
         const props = mapStateToProps(contribStateMock);
         expect(props.username).to.eq("test.user");
         expect(props.loggedIn).to.eq(true);
     });
 
     it("clicking log out dispatches unauthenticated action", (done: DoneCallback) => {
-        const store = createMockContribStore({auth: {receivedBearerToken: true}});
+        const store = createMockContribStore({auth: {loggedIn: true}});
         sandbox.setStub(AuthService.prototype, "logOutOfAPI");
         const rendered = mount(<Provider store={store}><Router><LoggedInUserBox/></Router></Provider>);
         rendered.find(InternalLink).simulate("click");

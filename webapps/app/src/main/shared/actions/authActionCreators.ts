@@ -3,7 +3,6 @@ import {Dispatch} from "redux";
 import {jwtTokenAuth} from "../modules/jwtTokenAuth";
 import {AuthService} from "../services/AuthService";
 import {appSettings, settings} from "../Settings";
-import {appName} from 'appName';
 import {AuthState, loadAuthState} from "../reducers/authReducer";
 import {
     Authenticated,
@@ -39,19 +38,17 @@ export const authActionCreators = {
         return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
             try {
                 const userResponse = await(new AuthService(dispatch, getState)).getCurrentUser();
-                //TODO: since we should always have the modelling groups for the current user, either from the API here
-                //or when loading from token on login, we shouldn't need the call that was added as part of
-                //https://github.com/vimc/montagu-webapps/pull/380
-                const allGroups: ModellingGroup[] = await (new ModellingGroupsService(dispatch, getState)).getUserGroups();
+                const allGroups: ModellingGroup[] = await (new ModellingGroupsService(dispatch, getState))
+                    .setOptions({notificationOnError: false})
+                    .getUserGroups();
 
                 const user: AuthState = loadAuthState({
                     username: userResponse.username,
-                    receivedBearerToken: true,
-                    receivedCookies: true,
+                    loggedIn: true,
                     bearerToken: null, //bearerToken - shouldn't need this since already logged in with cookies if successful response
                     permissions: userResponse.permissions,
                     modellingGroups: allGroups.map(x => x.id)
-                })
+                });
 
                 const error: string = this.validateAuthResult(user);
                 if (!error) {
@@ -65,13 +62,13 @@ export const authActionCreators = {
                 }
 
             } catch (error) {
-                console.log("Unable to load authenticated user details")
+                console.log("Unable to load authenticated user details");
                 dispatch(this.logOut())
             }
         }
     },
 
-    validateAuthResult(user: any): string {
+    validateAuthResult(user: AuthState): string {
         if (!user.isAccountActive) {
             return this.makeErrorMessage("Your account has been deactivated");
         }

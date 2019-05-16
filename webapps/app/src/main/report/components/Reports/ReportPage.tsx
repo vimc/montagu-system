@@ -3,12 +3,12 @@ import {Action, Dispatch} from "redux";
 import {connect} from 'react-redux';
 
 import {ReportDetails} from "./ReportDetails";
-import {ReportsListPageComponent} from "../ReportsList/ReportsListPage";
 import {ReportTabEnum, Sidebar, sidebarHashToTab} from "../Sidebar/Sidebar";
 import {ReportDownloads} from "./ReportDownloads";
 import {ReportChangelog} from "./ReportChangelog";
 import {PageProperties} from "../../../shared/components/PageWithHeader/PageProperties";
 import {reportPageActionCreators} from "../../actionCreators/reportPageActionCreators";
+import {reportListPageActionCreators} from "../../actionCreators/pages/ReportListPageActionCreators";
 
 export interface ReportPageLocationProps {
     report: string;
@@ -41,7 +41,7 @@ export class ReportPageComponent extends React.Component<PageProperties<ReportPa
         return {
             name: `${params.report} (${params.version})`,
             urlFragment: `${params.report}/${params.version}/`,
-            parent: ReportsListPageComponent.breadcrumb()
+            parent: reportListPageActionCreators.createBreadcrumb()
         }
     }
 
