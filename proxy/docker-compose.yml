@@ -17,14 +17,13 @@ services:
     volumes:
      - token_key_volume:/etc/montagu/api/token_key
      - ${PWD}/montagu_emails:/tmp/montagu_emails
-  reporting_api:
-    image: ${REGISTRY}/montagu-reporting-api:master
+  orderly_web_web:
+    image: ${REGISTRY}/orderly-web:master
     ports:
-     - "8081:8081"
+     - "8888:8888"
     networks:
      - proxy
     volumes:
-     - token_key_volume:/etc/montagu/reports_api/token_key
      - orderly_volume:/orderly
   db:
     image: ${REGISTRY}/montagu-db:master
@@ -49,13 +48,6 @@ services:
     volumes:
      - template_volume:/usr/share/nginx/html/templates
      - guidance_volume:/usr/share/nginx/html/guidance
-  report:
-    image: ${REGISTRY}/montagu-report-portal:master
-    networks:
-     - proxy
-    depends_on:
-     - api
-     - reporting_api
   admin:
     image: ${REGISTRY}/montagu-admin-portal:master
     networks:
