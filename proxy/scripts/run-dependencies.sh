@@ -13,15 +13,15 @@ function cleanup() {
 trap cleanup ERR
 
 # Run up all the APIs and Portals which are to be proxied
-docker volume rm montagu_orderly_volume -f
+#docker volume rm montagu_orderly_volume -f
 docker-compose pull
 docker-compose --project-name montagu up -d
 
 # Start the APIs
 docker exec montagu_api_1 mkdir -p /etc/montagu/api/
 docker exec montagu_api_1 touch /etc/montagu/api/go_signal
-docker exec montagu_reporting_api_1 mkdir -p /etc/montagu/reports_api
-docker exec montagu_reporting_api_1 touch /etc/montagu/reports_api/go_signal
+docker exec montagu_orderly_web_web_1 mkdir -p /etc/orderly/web
+docker exec montagu_orderly_web_web_1 touch /etc/orderly/web/go_signal
 docker exec montagu_orderly_1 touch /orderly_go
 
 # Wait for the database
