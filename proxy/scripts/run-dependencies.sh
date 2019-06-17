@@ -21,6 +21,8 @@ docker-compose --project-name montagu up -d
 docker exec montagu_api_1 mkdir -p /etc/montagu/api/
 docker exec montagu_api_1 touch /etc/montagu/api/go_signal
 docker exec montagu_orderly_web_web_1 mkdir -p /etc/orderly/web
+docker cp $here/orderlywebconfig.properties montagu_orderly_web_web_1:/etc/orderly/web/config.properties
+docker exec montagu_orderly_web_web_1 touch /etc/orderly/web/go_signal
 docker exec montagu_orderly_web_web_1 touch /etc/orderly/web/go_signal
 docker exec montagu_orderly_1 touch /orderly_go
 

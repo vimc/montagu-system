@@ -18,9 +18,7 @@ services:
      - token_key_volume:/etc/montagu/api/token_key
      - ${PWD}/montagu_emails:/tmp/montagu_emails
   orderly_web_web:
-    image: ${REGISTRY}/orderly-web:master
-    ports:
-     - "8888:8888"
+    image: ${REGISTRY}/orderly-web:mrc-314
     networks:
      - proxy
     volumes:
