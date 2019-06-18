@@ -51,6 +51,13 @@ if [ "$1" = "data" ]; then
   docker exec montagu_reporting_api_1 sh -c 'cp /orderly/demo/. /orderly/ -r'
 fi
 
+# Migrate the orderlyweb tables
+ow_migrate_image=$REGISTRY/orderlyweb-migrate:master
+docker pull $ow_migrate_image
+docker run --network=montagu_proxy \
+    -v montagu_orderly_volume:/orderly \
+    $ow_migrate_image
+
 # Add test user
 export NETWORK=montagu_proxy
 
