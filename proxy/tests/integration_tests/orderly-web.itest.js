@@ -6,35 +6,35 @@ const browser = TestHelper.getBrowser();
 beforeEach(async () => {
     await TestHelper.ensureLoggedOut(browser);
 });
-//
-// test('can access orderly web', async () => {
-//
-//     browser.get("https://localhost/reports/");
-//
-//     await browser.wait(() => {
-//         return browser.getCurrentUrl().then((url) => {
-//             return url.indexOf("?redirectTo=") > -1;
-//         });
-//     });
-//
-//     const emailField = await browser.findElement(webDriver.By.id("email-input"));
-//     const pwField = await browser.findElement(webDriver.By.id("password-input"));
-//
-//     await emailField.sendKeys("test.user@example.com");
-//     await pwField.sendKeys("password");
-//
-//     await browser.findElement(webDriver.By.id("login-button"))
-//         .click();
-//
-//     await browser.wait(() => {
-//         return browser.getCurrentUrl().then((url) => {
-//             return url.indexOf("https://localhost/reports") > -1;
-//         });
-//     });
-//
-//     const title = await browser.findElement(webDriver.By.className("site-title"));
-//     expect(await title.getText()).toBe("Reporting portal")
-// });
+
+test('can access orderly web', async () => {
+
+    browser.get("https://localhost/reports/");
+
+    await browser.wait(() => {
+        return browser.getCurrentUrl().then((url) => {
+            return url.indexOf("?redirectTo=") > -1;
+        });
+    });
+
+    const emailField = await browser.findElement(webDriver.By.id("email-input"));
+    const pwField = await browser.findElement(webDriver.By.id("password-input"));
+
+    await emailField.sendKeys("test.user@example.com");
+    await pwField.sendKeys("password");
+
+    await browser.findElement(webDriver.By.id("login-button"))
+        .click();
+
+    await browser.wait(() => {
+        return browser.getCurrentUrl().then((url) => {
+            return url.indexOf("https://localhost/reports") > -1;
+        });
+    });
+
+    const title = await browser.findElement(webDriver.By.className("site-title"));
+    expect(await title.getText()).toBe("Reporting portal")
+});
 
 test('old report page urls are redirected', async () => {
 
