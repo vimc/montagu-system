@@ -9,7 +9,7 @@ const TestHelper = {
     getBrowser: function () {
         const options = new chrome.Options();
         options.addArguments("--disable-dev-shm-usage");
-     //   options.addArguments("--headless");
+        options.addArguments("--headless");
         options.addArguments("--no-sandbox");
         options.addArguments('--disable-gpu');
 
