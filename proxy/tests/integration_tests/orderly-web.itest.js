@@ -40,6 +40,7 @@ test('old report page urls are redirected', async () => {
 
     browser.get("https://localhost/reports/r1/20170516-134824-a16bab9d");
 
+    TestHelper.ensureLoggedIn(browser);
     await browser.wait(() => {
         return browser.getCurrentUrl().then((url) => {
             return url === "https://localhost/reports/report/r1/20170516-134824-a16bab9d";

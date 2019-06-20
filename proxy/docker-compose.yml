@@ -21,6 +21,8 @@ services:
     image: ${REGISTRY}/orderly-web:mrc-314
     networks:
      - proxy
+    depends_on:
+      - api
     volumes:
      - orderly_volume:/orderly
   db:
