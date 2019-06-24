@@ -48,8 +48,14 @@ if [ "$1" = "data" ]; then
       $REGISTRY/orderly:master \
     /orderly
 
-  docker exec montagu_reporting_api_1 sh -c 'cp /orderly/demo/. /orderly/ -r'
 fi
+
+# Migrate the orderlyweb tables
+ow_migrate_image=$REGISTRY/orderlyweb-migrate:master
+docker pull $ow_migrate_image
+docker run --rm --network=montagu_proxy \
+  -v montagu_orderly_volume:/orderly \
+  $ow_migrate_image
 
 # Add test user
 export NETWORK=montagu_proxy
@@ -66,3 +72,7 @@ $here/cli.sh add "Password Reset Test User" passwordtest.user \
     --if-not-exists
 
 $here/cli.sh addRole passwordtest.user user
+
+# Add user to orderly_web
+$here/orderly_web_cli.sh add-users test.user@example.com
+$here/orderly_web_cli.sh grant test.user@example.com */reports.read

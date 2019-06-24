@@ -63,8 +63,8 @@ const TestHelper = {
     },
 
     ensureLoggedIn: async function (browser) {
-        const emailField = await browser.findElement(webDriver.By.id("email-input"));
-        const pwField = await browser.findElement(webDriver.By.id("password-input"));
+        const emailField = browser.wait(webDriver.until.elementLocated(webDriver.By.id("email-input")));
+        const pwField = browser.wait(webDriver.until.elementLocated(webDriver.By.id("password-input")));
 
         await emailField.sendKeys("test.user@example.com");
         await pwField.sendKeys("password");
