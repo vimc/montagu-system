@@ -8,6 +8,10 @@ enum class GAVISupportLevel
     HIGH,
     LOW,
     BESTCASE,
+    STATUS_QUO,
+    CONTINUE,
+    GAVI_OPTIMISTIC,
+    INTENSIFIED,
 
     // Only used in legacy data
     HOLD2010,
