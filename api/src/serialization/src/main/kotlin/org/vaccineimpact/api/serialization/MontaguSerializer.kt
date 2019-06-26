@@ -149,6 +149,11 @@ open class MontaguSerializer : Serializer
             GAVISupportLevel.HIGH -> "high"
             GAVISupportLevel.LOW -> "low"
             GAVISupportLevel.BESTCASE -> "bestcase"
+
+            GAVISupportLevel.STATUS_QUO -> "status quo"
+            GAVISupportLevel.CONTINUE -> "continue"
+            GAVISupportLevel.GAVI_OPTIMISTIC -> "gavi optimistic"
+            GAVISupportLevel.INTENSIFIED -> "intensified"
         // Legacy values
             GAVISupportLevel.BESTMINUS -> "best minus"
             GAVISupportLevel.HOLD2010 -> "hold 2010"
