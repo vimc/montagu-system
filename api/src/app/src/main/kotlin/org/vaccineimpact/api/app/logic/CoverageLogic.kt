@@ -5,6 +5,7 @@ import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.serialization.DecimalRoundingSerializer
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 
@@ -27,6 +28,8 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                                 private val touchstoneRepository: TouchstoneRepository,
                                 private val scenarioRepository: ScenarioRepository) : CoverageLogic
 {
+    private val serializer = DecimalRoundingSerializer.instance
+
     override fun getCoverageSetsForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String):
             ScenarioTouchstoneAndCoverageSets
     {
@@ -73,7 +76,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                 responsibilityAndTouchstone.touchstoneVersion,
                 scenario,
                 coverageSets
-        ), DataTable.new(data))
+        ), DataTable.new(data), serializer)
 
         return getDatatable(splitData, format)
     }
@@ -87,7 +90,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                 touchstoneVersion,
                 scenarioAndData.structuredMetadata.scenario,
                 scenarioAndData.structuredMetadata.coverageSets
-        ), scenarioAndData.tableData)
+        ), scenarioAndData.tableData, serializer)
         return getDatatable(splitData, format)
     }
 
@@ -135,7 +138,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
             listOf()
         }
 
-        return FlexibleDataTable.new(rows.asSequence(), years.sorted())
+        return FlexibleDataTable.new(rows.asSequence(), years.sorted(), serializer = serializer)
 
     }
 

@@ -14,9 +14,7 @@ import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
-import org.vaccineimpact.api.serialization.FlexibleDataTable
-import org.vaccineimpact.api.serialization.SplitData
-import org.vaccineimpact.api.serialization.StreamSerializable
+import org.vaccineimpact.api.serialization.*
 
 class TouchstoneController(
         context: ActionContext,
@@ -91,21 +89,24 @@ class TouchstoneController(
         val gender = context.queryParams("gender")
         val format = context.queryParams("format")
 
-        val splitData = touchstoneRepo.getDemographicData(type, source, touchstoneVersion.id, gender ?: "both")
+        val serializer = getSerializer(touchstoneVersion)
+
+        val splitData =
+                touchstoneRepo.getDemographicData(type, source, touchstoneVersion.id, gender ?: "both")
 
         val tableData = when (format)
         {
 
-            "wide" -> getWideDemographicDatatable(splitData.tableData.data)
+            "wide" -> getWideDemographicDatatable(splitData.tableData.data, serializer)
             "long", null -> splitData.tableData
             else -> throw BadRequest("Format '$format' not a valid csv format. Available formats are 'long' " +
                     "and 'wide'.")
         }
 
-        return SplitData(splitData.structuredMetadata, tableData)
+        return SplitData(splitData.structuredMetadata, tableData, serializer)
     }
 
-    private fun getWideDemographicDatatable(data: Sequence<LongDemographicRow>):
+    private fun getWideDemographicDatatable(data: Sequence<LongDemographicRow>, serializer: Serializer):
             FlexibleDataTable<WideDemographicRow>
     {
         val groupedRows = data
@@ -119,7 +120,7 @@ class TouchstoneController(
         // all the rows should have the same number of years, so we just look at the first row
         val years = rows.first().valuesPerYear.keys.toList()
 
-        return FlexibleDataTable.new(rows.asSequence(), years)
+        return FlexibleDataTable.new(rows.asSequence(), years, serializer)
     }
 
     fun getDemographicData()
@@ -164,4 +165,19 @@ class TouchstoneController(
         }
         return touchstoneVersion
     }
+
+    private fun getSerializer(touchstoneVersion: TouchstoneVersion): Serializer = when(touchstoneVersion.name)
+    {
+        //rounding for known touchstones for which we have already returned rounded data
+        in arrayOf("201710gavi",
+                "201810synthetic",
+                "201810original",
+                "201810gavi",
+                "201810high",
+                "201810low",
+                "201810bestcase") -> DecimalRoundingSerializer.instance
+        else -> MontaguSerializer.instance
+    }
+
+
 }
