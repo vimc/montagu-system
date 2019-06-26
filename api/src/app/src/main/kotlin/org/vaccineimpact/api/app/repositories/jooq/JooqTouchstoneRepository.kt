@@ -18,6 +18,7 @@ import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.serialization.DecimalRoundingSerializer
 import org.vaccineimpact.api.serialization.SplitData
 import java.math.BigDecimal
 import kotlin.sequences.Sequence
@@ -143,7 +144,7 @@ class JooqTouchstoneRepository(
         val coverageData = getCoverageDataForScenario(touchstoneVersionId, scenarioDescId)
         val metadata = ScenarioAndCoverageSets(scenario, coverageSets)
 
-        return SplitData(metadata, DataTable.new(coverageData.asSequence()))
+        return SplitData(metadata, DataTable.new(coverageData.asSequence(), serializer = DecimalRoundingSerializer.instance))
     }
 
     override fun getCoverageDataForScenario(

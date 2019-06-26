@@ -76,7 +76,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                 responsibilityAndTouchstone.touchstoneVersion,
                 scenario,
                 coverageSets
-        ), DataTable.new(data), serializer)
+        ), DataTable.new(data, serializer = serializer))
 
         return getDatatable(splitData, format)
     }
@@ -107,7 +107,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                     "and 'wide'.")
         }
 
-        return SplitData(splitData.structuredMetadata, tableData)
+        return SplitData(splitData.structuredMetadata, tableData, serializer)
     }
 
     private fun getWideDatatable(data: Sequence<LongCoverageRow>):
@@ -138,7 +138,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
             listOf()
         }
 
-        return FlexibleDataTable.new(rows.asSequence(), years.sorted(), serializer = serializer)
+        return FlexibleDataTable.new(rows.asSequence(), years.sorted(), serializer)
 
     }
 
