@@ -15,7 +15,7 @@ fun Random.nextDecimal(min: Int = 0, max: Int = 1, numberOfDecimalPlaces: Int = 
     val range = max - min
     val factor = Math.pow(10.0, numberOfDecimalPlaces.toDouble()).toInt()
     val int = this.nextInt(range * factor)
-    return BigDecimal(int) / BigDecimal(factor)
+    return BigDecimal(int).divide(BigDecimal(factor), numberOfDecimalPlaces, BigDecimal.ROUND_HALF_UP)
 }
 
 fun Int.toDecimal(): BigDecimal = this.toLong().toDecimal()

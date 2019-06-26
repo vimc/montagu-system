@@ -247,4 +247,117 @@ class DemographicTests : DatabaseTest()
         Assertions.assertThat(body.count()).isEqualTo(expectedRows)
     }
 
+    @Test
+    fun `long demographic data for 2018 touchstone is rounded`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+
+            val data = DemographicDummyData(it, "201810gavi", touchstoneVersion)
+                    .withTouchstone()
+                    .withFertility(yearRange = 1950..1955 step 5, ageRange = 10..15 step 5)
+
+            userHelper.setupTestUser(it)
+        }
+
+        val schema = CSVSchema("DemographicData")
+        val response = requestHelper.get("/touchstones/201810gavi-1/demographics/unwpp2015/as-fert/csv/",
+                requiredPermissions)
+
+        val body = schema.validate(response.text)
+        assertLongDemographicValuesHaveDecimalPlaces(body, 2)
+    }
+
+    @Test
+    fun `wide demographic data for 2018 touchstone is rounded`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+
+            val data = DemographicDummyData(it, "201810gavi", touchstoneVersion)
+                    .withTouchstone()
+                    .withFertility(yearRange = 1950..1955 step 5, ageRange = 10..15 step 5)
+
+            userHelper.setupTestUser(it)
+        }
+
+        val schema = CSVSchema("WideDemographicData")
+        val response = requestHelper.get("/touchstones/201810gavi-1/demographics/unwpp2015/as-fert/csv/?format=wide",
+                requiredPermissions)
+
+        val body = schema.validate(response.text)
+        assertWideDemographicValuesHaveDecimalPlaces(body, 2)
+    }
+
+    @Test
+    fun `long demographic data for 2019 touchstone is not rounded`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+
+            val data = DemographicDummyData(it, "201910gavi", touchstoneVersion)
+                    .withTouchstone()
+                    .withFertility(yearRange = 1950..1955 step 5, ageRange = 10..15 step 5)
+
+            userHelper.setupTestUser(it)
+        }
+
+        val schema = CSVSchema("DemographicData")
+        val response = requestHelper.get("/touchstones/201910gavi-1/demographics/unwpp2015/as-fert/csv/",
+                requiredPermissions)
+
+        val body = schema.validate(response.text)
+        assertLongDemographicValuesHaveDecimalPlaces(body, 4)
+    }
+
+    @Test
+    fun `wide demographic data for 2019 touchstone is not rounded`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+
+            val data = DemographicDummyData(it, "201910gavi", touchstoneVersion)
+                    .withTouchstone()
+                    .withFertility(yearRange = 1950..1955 step 5, ageRange = 10..15 step 5)
+
+            userHelper.setupTestUser(it)
+        }
+
+        val schema = CSVSchema("WideDemographicData")
+        val response = requestHelper.get("/touchstones/201910gavi-1/demographics/unwpp2015/as-fert/csv/?format=wide",
+                requiredPermissions)
+
+        val body = schema.validate(response.text)
+        assertWideDemographicValuesHaveDecimalPlaces(body, 4)
+    }
+
+    private fun assertLongDemographicValuesHaveDecimalPlaces(csvData: Iterable<Array<String>>, decimalPlaces: Int)
+    {
+        csvData.forEach {
+            val demographicValue = it[7]
+            val numParts = demographicValue.split(".")
+            assertThat(numParts[1].count()).isEqualTo(decimalPlaces)
+        }
+    }
+
+    private fun assertWideDemographicValuesHaveDecimalPlaces(csvData: Iterable<Array<String>>, decimalPlaces: Int)
+    {
+        csvData.forEach{
+            for (i in 6..it.count()-1 )
+            {
+                val demographicValue = it[i]
+                val numParts = demographicValue.split(".")
+                assertThat(numParts[1].count()).isEqualTo(decimalPlaces)
+            }
+        }
+    }
+
 }
