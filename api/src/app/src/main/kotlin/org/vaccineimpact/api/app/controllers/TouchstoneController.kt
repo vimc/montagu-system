@@ -92,7 +92,7 @@ class TouchstoneController(
         val serializer = getSerializer(touchstoneVersion)
 
         val splitData =
-                touchstoneRepo.getDemographicData(type, source, touchstoneVersion.id, gender ?: "both")
+                touchstoneRepo.getDemographicData(type, source, touchstoneVersion.id, gender ?: "both", serializer)
 
         val tableData = when (format)
         {

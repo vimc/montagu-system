@@ -4,6 +4,7 @@ import org.jooq.Record
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.db.tables.Coverage
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.serialization.SplitData
 
 interface TouchstoneRepository : Repository
@@ -32,7 +33,10 @@ interface TouchstoneRepository : Repository
             : List<CoverageSet>
 
     fun getDemographicDatasets(touchstoneVersionId: String): List<DemographicDataset>
-    fun getDemographicData(statisticTypeCode: String, source: String, touchstoneVersionId: String, gender: String = "both"): SplitData<DemographicDataForTouchstone, LongDemographicRow>
+    fun getDemographicData(statisticTypeCode: String, source: String,
+                           touchstoneVersionId: String,
+                           gender: String = "both",
+                           serializer: Serializer): SplitData<DemographicDataForTouchstone, LongDemographicRow>
 
     fun mapTouchstone(records: List<Record>): Touchstone
     fun mapTouchstoneVersion(record: Record): TouchstoneVersion
