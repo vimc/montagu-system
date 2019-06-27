@@ -119,6 +119,10 @@ class MontaguSerializerTests : MontaguTests()
         checkSerializedForm("\"high\"", GAVISupportLevel.HIGH)
         checkSerializedForm("\"low\"", GAVISupportLevel.LOW)
         checkSerializedForm("\"bestcase\"", GAVISupportLevel.BESTCASE)
+        checkSerializedForm("\"status quo\"", GAVISupportLevel.STATUS_QUO)
+        checkSerializedForm("\"continue\"", GAVISupportLevel.CONTINUE)
+        checkSerializedForm("\"gavi optimistic\"", GAVISupportLevel.GAVI_OPTIMISTIC)
+        checkSerializedForm("\"intensified\"", GAVISupportLevel.INTENSIFIED)
     }
 
     @Test
