@@ -10,7 +10,7 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
 open class DataTable<T : Any>(override val data: Sequence<T>,
-                              var serializer: Serializer = MontaguSerializer.instance,
+                              protected val serializer: Serializer = MontaguSerializer.instance,
                               val type: KClass<T>
                               ) : StreamSerializable<T>
 {
