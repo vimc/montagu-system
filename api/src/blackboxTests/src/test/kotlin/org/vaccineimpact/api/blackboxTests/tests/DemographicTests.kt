@@ -267,7 +267,7 @@ class DemographicTests : DatabaseTest()
                 requiredPermissions)
 
         val body = schema.validate(response.text)
-        assertLongDemographicValuesHaveDecimalPlaces(body, 2)
+        assertLongDemographicValuesHaveDecimalPlaces(body, 2, exact=false)
     }
 
     @Test
@@ -290,7 +290,7 @@ class DemographicTests : DatabaseTest()
                 requiredPermissions)
 
         val body = schema.validate(response.text)
-        assertWideDemographicValuesHaveDecimalPlaces(body, 2)
+        assertWideDemographicValuesHaveDecimalPlaces(body, 2, exact=false)
     }
 
     @Test
@@ -339,24 +339,37 @@ class DemographicTests : DatabaseTest()
         assertWideDemographicValuesHaveDecimalPlaces(body, 4)
     }
 
-    private fun assertLongDemographicValuesHaveDecimalPlaces(csvData: Iterable<Array<String>>, decimalPlaces: Int)
+    private fun assertLongDemographicValuesHaveDecimalPlaces(csvData: Iterable<Array<String>>, decimalPlaces: Int,
+                                                             exact: Boolean = true)
     {
         csvData.forEach {
-            val demographicValue = it[7]
-            val numParts = demographicValue.split(".")
-            assertThat(numParts[1].count()).isEqualTo(decimalPlaces)
+            assertNumericStringHasDecimalPlaces(it[7], decimalPlaces, exact)
         }
     }
 
-    private fun assertWideDemographicValuesHaveDecimalPlaces(csvData: Iterable<Array<String>>, decimalPlaces: Int)
+    private fun assertWideDemographicValuesHaveDecimalPlaces(csvData: Iterable<Array<String>>, decimalPlaces: Int,
+                                                             exact: Boolean = true)
     {
         csvData.forEach{
             for (i in 6..it.count()-1 )
             {
-                val demographicValue = it[i]
-                val numParts = demographicValue.split(".")
-                assertThat(numParts[1].count()).isEqualTo(decimalPlaces)
+                assertNumericStringHasDecimalPlaces(it[i], decimalPlaces, exact)
             }
+        }
+    }
+
+    private fun assertNumericStringHasDecimalPlaces(value: String, decimalPlaces: Int, exact: Boolean)
+    {
+        val numParts = value.split(".")
+        if (exact)
+        {
+            assertThat(numParts[1].count()).isEqualTo(decimalPlaces)
+        }
+        else
+        {
+            //can be less, including none
+            if (numParts.count() != 1)
+                assertThat(numParts[1].count()).isLessThanOrEqualTo(decimalPlaces)
         }
     }
 
