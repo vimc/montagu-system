@@ -2,15 +2,12 @@ package org.vaccineimpact.api.serialization
 
 import com.github.salomonbrys.kotson.jsonSerializer
 import com.github.salomonbrys.kotson.registerTypeAdapter
-import com.github.salomonbrys.kotson.registerTypeHierarchyAdapter
 import com.google.gson.*
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
-import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
-import java.text.DecimalFormat
 
 interface Serializer
 {
@@ -124,18 +121,10 @@ open class MontaguSerializer : Serializer
 
     override val serializeNullsTo = "<NA>"
 
-    private val decimalFormat = DecimalFormat("###.##")
-
-    private fun serializeBigDecimal(value: BigDecimal) : String
-    {
-        return decimalFormat.format(value)
-    }
-
     override fun serializeValueForCSV(value: Any?) = when (value)
     {
         null -> serializeNullsTo
         is Enum<*> -> serializeEnum(value)
-        is BigDecimal -> serializeBigDecimal(value)
         else -> value.toString()
     }
 

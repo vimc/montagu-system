@@ -16,6 +16,7 @@ import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.test_helpers.exampleResponsibilitySetWithExpectations
@@ -191,7 +192,7 @@ class TouchstoneControllerTests : MontaguTests()
                 DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
 
         val repo = mock<TouchstoneRepository> {
-            on { getDemographicData(type, source, openTouchstoneVersion.id) } doReturn
+            on { getDemographicData(type, source, openTouchstoneVersion.id, serializer = MontaguSerializer.instance) } doReturn
                     SplitData(demographicMetadata, DataTable.new(emptySequence()))
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
         }
@@ -290,7 +291,7 @@ class TouchstoneControllerTests : MontaguTests()
         )
 
         return mock<TouchstoneRepository> {
-            on { getDemographicData(type, source, openTouchstoneVersion.id) } doReturn
+            on { getDemographicData(type, source, openTouchstoneVersion.id, serializer = MontaguSerializer.instance) } doReturn
                     SplitData(demographicMetadata, DataTable.new(fakeRows))
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
         }
