@@ -52,7 +52,7 @@ describe("Upload burden estimates page actions tests", () => {
 
         const expectedPayload = [
             {type: "test-responsibility-type", props: "s1"},
-            {type: "test-reset-estimate", props: ""}
+            {type: "test-reset-estimate", props: undefined}
         ];
         expect(actions).to.eql(expectedPayload);
 
