@@ -6,6 +6,7 @@ import {responsibilitiesActionCreators} from "../responsibilitiesActionCreators"
 import {ContribAppState} from "../../reducers/contribAppReducers";
 import {ContribPageActionCreators} from "./ContribPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
+import {estimatesActionCreators} from "../estimatesActionCreators";
 
 class UploadBurdenEstimatesPageActionCreators extends ContribPageActionCreators<UploadBurdenEstimatesPageLocationProps> {
     parent = responsibilityOverviewPageActionCreators;
@@ -20,6 +21,7 @@ class UploadBurdenEstimatesPageActionCreators extends ContribPageActionCreators<
     loadData(params: UploadBurdenEstimatesPageLocationProps) {
         return async (dispatch: Dispatch<ContribAppState>) => {
             dispatch(responsibilitiesActionCreators.setCurrentResponsibility(params.scenarioId));
+            dispatch(estimatesActionCreators.resetPopulateState());
         }
     }
 }
