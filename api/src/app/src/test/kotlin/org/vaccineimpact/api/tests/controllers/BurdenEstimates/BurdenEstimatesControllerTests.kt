@@ -2,6 +2,7 @@ package org.vaccineimpact.api.tests.controllers.BurdenEstimates
 
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.mockito.Mockito
 import org.vaccineimpact.api.app.context.ActionContext
@@ -127,7 +128,7 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
     }
 
     @Test
-    fun `catches error and returns result when closing burden estimate set`()
+    fun `throws error when closing burden estimate set`()
     {
         val logic = mockLogic()
         val repo = mockEstimatesRepository()
@@ -139,10 +140,9 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
             on { params(":touchstone-version-id") } doReturn touchstoneVersionId
             on { params(":scenario-id") } doReturn scenarioId
         }
-        val result = BurdenEstimatesController(mockContext, logic, repo)
-                .closeBurdenEstimateSet()
-        assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
-        verifyValidResponsibilityPathChecks(logic, mockContext)
+
+        assertThatThrownBy { BurdenEstimatesController(mockContext, logic, repo)
+                .closeBurdenEstimateSet() }
     }
 
     @Test
