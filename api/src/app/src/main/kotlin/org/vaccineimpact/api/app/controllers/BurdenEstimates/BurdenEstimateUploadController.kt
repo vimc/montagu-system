@@ -4,6 +4,7 @@ import org.vaccineimpact.api.app.Cache
 import org.vaccineimpact.api.app.ChunkedFileCache
 import org.vaccineimpact.api.app.ChunkedFileManager
 import org.vaccineimpact.api.app.ChunkedFileManager.Companion.UPLOAD_DIR
+import org.vaccineimpact.api.app.asResult
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.errors.BadRequest
@@ -86,7 +87,7 @@ class BurdenEstimateUploadController(context: ActionContext,
         return okayResponse()
     }
 
-    fun populateBurdenEstimateSetFromLocalFile(): String
+    fun populateBurdenEstimateSetFromLocalFile(): Result
     {
         val uploadToken = context.params(":token")
         val token = try
@@ -123,8 +124,7 @@ class BurdenEstimateUploadController(context: ActionContext,
 
             chunkedFileCache.remove(file.uniqueIdentifier)
 
-            estimatesLogic.closeBurdenEstimateSet(path.setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
-            okayResponse()
+            closeEstimateSetAndReturnMissingRowError(path.setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
         }
         else
         {
@@ -134,7 +134,7 @@ class BurdenEstimateUploadController(context: ActionContext,
 
     fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestDataSource.fromContentType(context))
 
-    private fun populateBurdenEstimateSet(source: RequestDataSource): String
+    private fun populateBurdenEstimateSet(source: RequestDataSource): Result
     {
         // First check if we're allowed to see this touchstoneVersion
         val path = getValidResponsibilityPath()
@@ -156,12 +156,14 @@ class BurdenEstimateUploadController(context: ActionContext,
 
         // Then, maybe close the burden estimate set
         val keepOpen = context.queryParams("keepOpen")?.toBoolean() ?: false
-        if (!keepOpen)
+        return if (!keepOpen)
         {
-            estimatesLogic.closeBurdenEstimateSet(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
+            closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
         }
-
-        return okayResponse()
+        else
+        {
+            okayResponse().asResult()
+        }
     }
 
     private fun getFileMetadata(): ChunkedFile

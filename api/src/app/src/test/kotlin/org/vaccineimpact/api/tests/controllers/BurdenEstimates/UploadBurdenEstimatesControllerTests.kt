@@ -152,7 +152,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
     }
 
     @Test
-    fun `populate burden estimate set throws missing row error`()
+    fun `populate burden estimate set catches missing row error and returns result`()
     {
         val logic = mockLogic()
         Mockito.`when`(logic.closeBurdenEstimateSet(any(), any(), any(), any()))
@@ -161,14 +161,13 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val mockContext = mockActionContext()
         val mockPostData = mockCSVPostData(normalCSVData)
 
-        assertThatThrownBy {
-            BurdenEstimateUploadController(mockContext,
+       val result = BurdenEstimateUploadController(mockContext,
                     mockRepositories(repo, mock(), mock()),
                     logic,
                     repo,
                     postDataHelper = mockPostData).populateBurdenEstimateSet()
-        }
-                .isInstanceOf(MissingRowsError::class.java)
+
+        assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
         verifyValidResponsibilityPathChecks(logic, mockContext)
     }
 

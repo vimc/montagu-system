@@ -2,7 +2,6 @@ package org.vaccineimpact.api.tests.controllers.BurdenEstimates
 
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.mockito.Mockito
 import org.vaccineimpact.api.app.context.ActionContext
@@ -54,10 +53,10 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
     fun `can get metadata for single burden estimate set`()
     {
         val data = BurdenEstimateSet(1, Instant.MIN, "ThePast",
-                        BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "Median"),
-                        BurdenEstimateSetStatus.COMPLETE,
-                        emptyList()
-                )
+                BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "Median"),
+                BurdenEstimateSetStatus.COMPLETE,
+                emptyList()
+        )
         val touchstoneRepo = mockTouchstoneRepository()
         val repo = mock<BurdenEstimateRepository> {
             on { touchstoneRepository } doReturn touchstoneRepo
@@ -128,7 +127,7 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
     }
 
     @Test
-    fun `throws error when closing burden estimate set`()
+    fun `catches error and returns result when closing burden estimate set`()
     {
         val logic = mockLogic()
         val repo = mockEstimatesRepository()
@@ -140,9 +139,10 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
             on { params(":touchstone-version-id") } doReturn touchstoneVersionId
             on { params(":scenario-id") } doReturn scenarioId
         }
-
-        assertThatThrownBy { BurdenEstimatesController(mockContext, logic, repo)
-                .closeBurdenEstimateSet() }
+        val result = BurdenEstimatesController(mockContext, logic, repo)
+                .closeBurdenEstimateSet()
+        assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
+        verifyValidResponsibilityPathChecks(logic, mockContext)
     }
 
     @Test

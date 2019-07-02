@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.app
 
+import org.vaccineimpact.api.models.Result
+import org.vaccineimpact.api.models.ResultStatus
 import spark.Request
 
 // Use this to make sure we have finished consuming the request
@@ -19,3 +21,5 @@ fun Request.consumeRemainder()
         }
     }
 }
+
+fun Any?.asResult() = if (this is Result) this else Result(ResultStatus.SUCCESS, this, emptyList())

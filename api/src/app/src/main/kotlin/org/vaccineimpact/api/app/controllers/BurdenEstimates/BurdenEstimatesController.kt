@@ -82,12 +82,11 @@ open class BurdenEstimatesController(
         return okayResponse()
     }
 
-    fun closeBurdenEstimateSet(): String
+    fun closeBurdenEstimateSet(): Result
     {
         val path = getValidResponsibilityPath()
         val setId = context.params(":set-id").toInt()
-        estimatesLogic.closeBurdenEstimateSet(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
-        return okayResponse()
+        return closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
     }
 
     fun getBurdenEstimateSetData(): StreamSerializable<BurdenEstimate>

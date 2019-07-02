@@ -42,7 +42,8 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
 
-        assertThat(result).isEqualTo("OK")
+        assertThat(result.status).isEqualTo(ResultStatus.SUCCESS)
+        assertThat(result.data).isEqualTo("OK")
         verify(logic).populateBurdenEstimateSet(eq(1), eq("g1"), eq("t1"), eq("s1"), any())
         verify(logic).closeBurdenEstimateSet(eq(1), eq("g1"), eq("t1"), eq("s1"))
     }
@@ -71,9 +72,9 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 
         val sut = BurdenEstimateUploadController(mockContext, mock(), logic, repo, mock(), mockTokenHelper, cache)
 
-        assertThatThrownBy {
-            sut.populateBurdenEstimateSetFromLocalFile()
-        }.isInstanceOf(MissingRowsError::class.java)
+        val result = sut.populateBurdenEstimateSetFromLocalFile()
+        assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
+        assertThat(result.errors[0]).isEqualTo(ErrorInfo("missing-rows", "TEST"))
     }
 
     @Test
@@ -125,7 +126,8 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
 
-        assertThat(result).isEqualTo("OK")
+        assertThat(result.status).isEqualTo(ResultStatus.SUCCESS)
+        assertThat(result.data).isEqualTo("OK")
         assertThat(cache[uid]).isNull()
         assertThat(tempFile.exists()).isFalse()
         assertThat(file.exists()).isFalse()
