@@ -1,14 +1,11 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
-import org.vaccineimpact.api.blackboxTests.helpers.getResultFromRedirect
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
-import org.vaccineimpact.api.blackboxTests.schemas.EmptySchema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
@@ -104,42 +101,6 @@ class CloseBurdenEstimateSetTests : BurdenEstimateTests()
         val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
         val response = RequestHelper().postFile("$setUrl$setId/", partialCSVData, token = token)
         JSONValidator().validateError(response.text, expectedErrorCode = "missing-rows")
-        assertSetHasStatus("invalid", setId)
-    }
-
-    @Ignore
-    @Test
-    fun `can populate and close burden estimate with onetime token and redirect`()
-    {
-        val requestHelper = RequestHelper()
-
-        // use explicit set id to make sure we're querying the right set
-        val setId = 123
-        JooqContext().use {
-            setUpWithBurdenEstimateSet(it, setId)
-        }
-
-        val oneTimeURL = getPopulateOneTimeURL(setId, redirect = true, keepOpen = false)
-        val response = requestHelper.postFile(oneTimeURL, csvData)
-        val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-        JSONValidator().validateSuccess(resultAsString)
-        assertSetHasStatus("complete", setId)
-    }
-
-    @Ignore
-    @Test
-    fun `missing rows error comes through with redirect`()
-    {
-        val requestHelper = RequestHelper()
-
-        val setId = JooqContext().use {
-            setUpWithBurdenEstimateSet(it)
-        }
-
-        val oneTimeURL = getPopulateOneTimeURL(setId, redirect = true, keepOpen = false)
-        val response = requestHelper.postFile(oneTimeURL, partialCSVData)
-        val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-        JSONValidator().validateError(resultAsString, expectedErrorCode = "missing-rows")
         assertSetHasStatus("invalid", setId)
     }
 

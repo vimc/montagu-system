@@ -73,7 +73,6 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         val sut = BurdenEstimateUploadController(mockContext, mock(), logic, repo, mock(), mockTokenHelper, cache)
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
-
         assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
         assertThat(result.errors[0]).isEqualTo(ErrorInfo("missing-rows", "TEST"))
     }

@@ -1,7 +1,10 @@
 package org.vaccineimpact.api.app.controllers.BurdenEstimates
 
-import org.vaccineimpact.api.app.*
+import org.vaccineimpact.api.app.Cache
+import org.vaccineimpact.api.app.ChunkedFileCache
+import org.vaccineimpact.api.app.ChunkedFileManager
 import org.vaccineimpact.api.app.ChunkedFileManager.Companion.UPLOAD_DIR
+import org.vaccineimpact.api.app.asResult
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.errors.BadRequest
@@ -122,7 +125,6 @@ class BurdenEstimateUploadController(context: ActionContext,
             chunkedFileCache.remove(file.uniqueIdentifier)
 
             closeEstimateSetAndReturnMissingRowError(path.setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
-
         }
         else
         {
@@ -131,39 +133,36 @@ class BurdenEstimateUploadController(context: ActionContext,
     }
 
     fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestDataSource.fromContentType(context))
-    fun populateBurdenEstimateSet(source: RequestDataSource): Result
+
+    private fun populateBurdenEstimateSet(source: RequestDataSource): Result
     {
-        return ResultRedirector(tokenHelper, repositories).redirectIfRequested(context, "".asResult()) { repos ->
-            val estimateRepository = repos.burdenEstimates
+        // First check if we're allowed to see this touchstoneVersion
+        val path = getValidResponsibilityPath()
 
-            // First check if we're allowed to see this touchstoneVersion
-            val path = getValidResponsibilityPath()
+        // Next, get the metadata that will enable us to interpret the CSV
+        val setId = context.params(":set-id").toInt()
+        val metadata = estimateRepository.getBurdenEstimateSet(path.groupId,
+                path.touchstoneVersionId,
+                path.scenarioId,
+                setId)
 
-            // Next, get the metadata that will enable us to interpret the CSV
-            val setId = context.params(":set-id").toInt()
-            val metadata = estimateRepository.getBurdenEstimateSet(path.groupId,
-                    path.touchstoneVersionId,
-                    path.scenarioId,
-                    setId)
+        // Then add the burden estimates
+        val data = getBurdenEstimateDataFromCSV(metadata, source)
+        estimatesLogic.populateBurdenEstimateSet(
+                setId,
+                path.groupId, path.touchstoneVersionId, path.scenarioId,
+                data
+        )
 
-            // Then add the burden estimates
-            val data = getBurdenEstimateDataFromCSV(metadata, source)
-            estimatesLogic.populateBurdenEstimateSet(
-                    setId,
-                    path.groupId, path.touchstoneVersionId, path.scenarioId,
-                    data
-            )
-
-            // Then, maybe close the burden estimate set
-            val keepOpen = context.queryParams("keepOpen")?.toBoolean() ?: false
-            if (!keepOpen)
-            {
-                closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
-            }
-            else
-            {
-                okayResponse().asResult()
-            }
+        // Then, maybe close the burden estimate set
+        val keepOpen = context.queryParams("keepOpen")?.toBoolean() ?: false
+        return if (!keepOpen)
+        {
+            closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
+        }
+        else
+        {
+            okayResponse().asResult()
         }
     }
 

@@ -49,18 +49,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can populate burden estimate and redirect`()
-    {
-        val setId = JooqContext().use {
-            setUpWithBurdenEstimateSet(it)
-        }
-        val token = TestUserHelper.setupTestUserAndGetToken(requiredWritePermissions, includeCanLogin = true)
-        val response = RequestHelper().post("$setUrl$setId/?keepOpen=true&redirectResultTo=http://localhost", csvData, token)
-        val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-        JSONValidator().validateSuccess(resultAsString)
-    }
-
-    @Test
     fun `cannot provide stochastic data for central estimates`()
     {
         val setId = JooqContext().use {
@@ -152,37 +140,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can populate burden estimate with onetime token and redirect`()
-    {
-        val requestHelper = RequestHelper()
-
-        val setId = JooqContext().use {
-            setUpWithBurdenEstimateSet(it)
-        }
-
-        val oneTimeURL = getPopulateOneTimeURL(setId, redirect = true)
-        val response = requestHelper.postFile(oneTimeURL, csvData)
-        val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-        JSONValidator().validateSuccess(resultAsString)
-    }
-
-    @Test
-    fun `bad CSV headers results in ValidationError in redirect`()
-    {
-        val requestHelper = RequestHelper()
-
-        val setId = JooqContext().use {
-            setUpWithBurdenEstimateSet(it)
-        }
-
-        val oneTimeURL = getPopulateOneTimeURL(setId, redirect = true)
-        val response = requestHelper.postFile(oneTimeURL, "bad_header,year,age,country,country_name,cohort_size")
-        val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-        JSONValidator().validateError(resultAsString, expectedErrorCode = "csv-unexpected-header")
-
-    }
-
-    @Test
     fun `cannot populate central burden estimate set if duplicate rows`()
     {
         TestUserHelper.setupTestUser()
@@ -219,26 +176,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
             val records = it.dsl
                     .select(BURDEN_ESTIMATE_STOCHASTIC.fieldsAsList())
                     .from(BURDEN_ESTIMATE_STOCHASTIC)
-                    .fetch()
-            assertThat(records).isEmpty()
-        }
-    }
-
-    @Test
-    fun `data in invalid file is not committed when using onetime token with redirect`()
-    {
-        TestUserHelper.setupTestUser()
-        val setId = JooqContext().use {
-            setUpWithBurdenEstimateSet(it)
-        }
-        val oneTimeURL = getPopulateOneTimeURL(setId, redirect = true)
-        val response = RequestHelper().postFile(oneTimeURL, wrongOutcomeCSVData)
-        val resultAsString = response.getResultFromRedirect(checkRedirectTarget = "http://localhost")
-        JSONValidator().validateError(resultAsString)
-
-        JooqContext().use { db ->
-            val records = db.dsl.select(BURDEN_ESTIMATE.fieldsAsList())
-                    .from(BURDEN_ESTIMATE)
                     .fetch()
             assertThat(records).isEmpty()
         }

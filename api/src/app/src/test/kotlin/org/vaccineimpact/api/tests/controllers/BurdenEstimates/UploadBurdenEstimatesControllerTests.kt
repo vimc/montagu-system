@@ -3,7 +3,6 @@ package org.vaccineimpact.api.tests.controllers.BurdenEstimates
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.assertj.core.util.diff.Chunk
 import org.junit.Test
 import org.mockito.Mockito
 import org.vaccineimpact.api.app.Cache
@@ -16,7 +15,10 @@ import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.models.ChunkedFile
-import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.security.TokenType
@@ -158,11 +160,13 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val repo = mockEstimatesRepository()
         val mockContext = mockActionContext()
         val mockPostData = mockCSVPostData(normalCSVData)
-        val result = BurdenEstimateUploadController(mockContext,
-                mockRepositories(repo, mock(), mock()),
-                logic,
-                repo,
-                postDataHelper = mockPostData).populateBurdenEstimateSet()
+
+       val result = BurdenEstimateUploadController(mockContext,
+                    mockRepositories(repo, mock(), mock()),
+                    logic,
+                    repo,
+                    postDataHelper = mockPostData).populateBurdenEstimateSet()
+
         assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
         verifyValidResponsibilityPathChecks(logic, mockContext)
     }
@@ -305,11 +309,13 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
 
         var chunkWritten = false
 
-        class MockFileManager: ChunkedFileManager() {
+        class MockFileManager : ChunkedFileManager()
+        {
             override fun writeChunk(inputStream: InputStream,
                                     contentLength: Int,
                                     metadata: ChunkedFile,
-                                    currentChunk: Int) {
+                                    currentChunk: Int)
+            {
                 if (metadata == fakeCache["uid"])
                 {
                     chunkWritten = true
@@ -384,8 +390,8 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
     }
 
     protected fun mockResumableUploadActionContext(uploadToken: String,
-                                                 fileName: String = "filename.csv",
-                                                 user: String = "user.name"): ActionContext
+                                                   fileName: String = "filename.csv",
+                                                   user: String = "user.name"): ActionContext
     {
         return mock {
             on { username } doReturn user

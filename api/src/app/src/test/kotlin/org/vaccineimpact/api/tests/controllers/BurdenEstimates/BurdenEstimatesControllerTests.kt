@@ -53,10 +53,10 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
     fun `can get metadata for single burden estimate set`()
     {
         val data = BurdenEstimateSet(1, Instant.MIN, "ThePast",
-                        BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "Median"),
-                        BurdenEstimateSetStatus.COMPLETE,
-                        emptyList()
-                )
+                BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "Median"),
+                BurdenEstimateSetStatus.COMPLETE,
+                emptyList()
+        )
         val touchstoneRepo = mockTouchstoneRepository()
         val repo = mock<BurdenEstimateRepository> {
             on { touchstoneRepository } doReturn touchstoneRepo
