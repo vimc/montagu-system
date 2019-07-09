@@ -24,7 +24,7 @@ class ModelTests : DatabaseTest()
             it.addDisease("d1")
             it.addModel("modelId", "groupId", "d1", "description1")
             it.addModel("modelId2", "groupId", "d1", isCurrent = false)
-            it.addModelVersion("modelId", "v1", setCurrentVersion = true)
+            it.addModelVersion("modelId", "v1", setCurrent = true)
         } requiringPermissions {
             PermissionSet("*/models.read")
         } andCheckArray {
@@ -59,7 +59,7 @@ class ModelTests : DatabaseTest()
             it.addDisease("d1")
             it.addModel("modelId", "groupId", "d1", "description1")
             it.addModel("modelId2", "groupId", "d1", isCurrent = false)
-            it.addModelVersion("modelId", "v1", setCurrentVersion = true)
+            it.addModelVersion("modelId", "v1", setCurrent = true)
         } requiringPermissions {
             PermissionSet("*/models.read")
         } andCheck {
