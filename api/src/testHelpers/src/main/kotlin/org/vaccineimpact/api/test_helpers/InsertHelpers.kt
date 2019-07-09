@@ -41,12 +41,13 @@ fun JooqContext.addModel(
         versions: List<String> = emptyList()
 ): Int
 {
-    val genderCode = dsl.select(GENDER.ID)
-            .from(GENDER)
-            .where(GENDER.CODE.eq(gender))
-            .fetch()
-            .single()
-            .into(Int::class.java)
+    val genderCode = if (gender == null) null else
+        dsl.select(GENDER.ID)
+                .from(GENDER)
+                .where(GENDER.CODE.eq(gender))
+                .fetch()
+                .single()
+                .into(Int::class.java)
 
     this.dsl.newRecord(MODEL).apply {
         this.id = id

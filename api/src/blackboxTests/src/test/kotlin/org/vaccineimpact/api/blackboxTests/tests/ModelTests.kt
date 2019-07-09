@@ -38,13 +38,14 @@ class ModelTests : DatabaseTest()
                         "gender_specific" to false,
                         "gender" to "both",
                         "current_version" to obj(
-                                "id" to "1",
+                                "id" to 1,
                                 "version" to "v1",
                                 "note" to "Some note",
                                 "fingerprint" to "Some fingerprint",
                                 "is_dynamic" to true,
                                 "code" to "R",
-                                "max_countries" to 100
+                                "max_countries" to 100,
+                                "model" to "modelId"
                         )
                 )
             })
@@ -72,14 +73,41 @@ class ModelTests : DatabaseTest()
                         "gender_specific" to false,
                         "gender" to "both",
                         "current_version" to obj(
-                                "id" to "1",
+                                "id" to 1,
                                 "version" to "v1",
                                 "note" to "Some note",
                                 "fingerprint" to "Some fingerprint",
                                 "is_dynamic" to true,
                                 "code" to "R",
-                                "max_countries" to 100
+                                "max_countries" to 100,
+                                "model" to "modelId"
                         )
+                )
+            })
+
+        }
+    }
+
+
+    @Test
+    fun `can get model without current version`()
+    {
+        validate("/models/modelId/") against "Model" given {
+            it.addGroup("groupId")
+            it.addDisease("d1")
+            it.addModel("modelId", "groupId", "d1", "description1")
+        } requiringPermissions {
+            PermissionSet("*/models.read")
+        } andCheck {
+            Assertions.assertThat(it).isEqualTo(json {
+                obj(
+                        "id" to "modelId",
+                        "description" to "description1",
+                        "citation" to "Unknown citation",
+                        "modelling_group" to "groupId",
+                        "gender_specific" to false,
+                        "gender" to "both",
+                        "current_version" to null
                 )
             })
 

@@ -2,11 +2,15 @@
     "id": "ModelVersion",
     "type": "object",
     "properties": {
+        "id": { "type": "integer" },
         "model": { "$ref": "StandardIdentifier.schema.json" },
         "version": { "type": "string" },
         "note": { "type": "string" },
-        "fingerprint": { "type": [ "string", "null" ] }
+        "fingerprint": { "type": [ "string", "null" ] },
+        "code": { "type": ["string", "null"] },
+        "is_dynamic": { "type": ["boolean", "null"] },
+        "max_countries": { "type": ["integer", "null"] }
     },
     "additionalProperties": false,
-    "required": [ "model", "version", "note", "fingerprint" ]
+    "required": [ "id", "model", "version", "note", "fingerprint" ]
 }

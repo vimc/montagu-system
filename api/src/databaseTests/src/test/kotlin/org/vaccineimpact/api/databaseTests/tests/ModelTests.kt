@@ -36,7 +36,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
             it.addModel("fakeId2", "a", "d1", "another model",
                     genderSpecific = false, gender = null, isCurrent = false)
 
-            it.addModelVersion("fakeId", "v1")
+            it.addModelVersion("fakeId", "v1", setCurrent = true)
 
         }.check {
             repo ->

@@ -1,20 +1,34 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.jooq.Configuration
-import org.jooq.DSLContext
+import org.jooq.*
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ModelRepository
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.Tables.MODEL
-import org.vaccineimpact.api.db.Tables.MODEL_VERSION
+import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.models.Model
 import org.vaccineimpact.api.models.ModelVersion
 
 class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepository
 {
+
+    private fun modelQuery(): SelectJoinStep<*>
+    {
+        return dsl.select(
+                MODEL.ID,
+                MODEL.DESCRIPTION,
+                MODEL.CITATION,
+                MODEL.MODELLING_GROUP,
+                MODEL.GENDER_SPECIFIC,
+                GENDER.CODE.`as`("gender"),
+                MODEL.CURRENT_VERSION)
+                .fromJoinPath(MODEL, GENDER, joinType = JoinType.LEFT_OUTER_JOIN)
+
+    }
+
     override fun all(): List<Model>
     {
-        val modelRecords =  dsl.fetch(MODEL)
+        val modelRecords =  modelQuery()
 
         val currentVersions = dsl.select(*MODEL_VERSION.fields())
                 .from(MODEL_VERSION)
@@ -32,8 +46,7 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
 
     override fun get(id: String): Model
     {
-        val modelRecord = dsl.select()
-                .from(MODEL)
+        val modelRecord = modelQuery()
                 .where(MODEL.ID.eq(id))
                 .singleOrNull()
                 ?: throw UnknownObjectError(id, "model_id")

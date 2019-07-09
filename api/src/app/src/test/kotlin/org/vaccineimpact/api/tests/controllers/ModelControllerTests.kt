@@ -23,7 +23,7 @@ class ModelControllerTests : MontaguTests()
                 "",
                 false,
                 "both",
-                ModelVersion("testVersion", "test", "v1", "note", "fingerprint",
+                ModelVersion(1, "test", "v1", "note", "fingerprint",
                         true, "R", 100)))
 
         val modelRepo = mock<ModelRepository> {
