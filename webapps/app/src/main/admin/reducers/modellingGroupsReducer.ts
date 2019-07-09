@@ -1,7 +1,6 @@
 import { ModellingGroupsAction, ModellingGroupTypes } from "../actionTypes/ModellingGroupsTypes";
 import {ErrorInfo, ModellingGroup, ModellingGroupDetails, ResearchModel, User} from "../../shared/models/Generated";
 import {isNonEmptyArray} from "../../shared/ArrayHelpers";
-import {act} from "react-dom/test-utils";
 
 export interface ModellingGroupsState {
     groups: ModellingGroup[];
