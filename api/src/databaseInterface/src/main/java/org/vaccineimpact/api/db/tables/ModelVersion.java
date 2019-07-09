@@ -39,7 +39,7 @@ import org.vaccineimpact.api.db.tables.records.ModelVersionRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ModelVersion extends TableImpl<ModelVersionRecord> {
 
-    private static final long serialVersionUID = -1940163754;
+    private static final long serialVersionUID = -533979481;
 
     /**
      * The reference instance of <code>public.model_version</code>
@@ -78,6 +78,21 @@ public class ModelVersion extends TableImpl<ModelVersionRecord> {
      * The column <code>public.model_version.fingerprint</code>.
      */
     public final TableField<ModelVersionRecord, String> FINGERPRINT = createField("fingerprint", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.model_version.code</code>.
+     */
+    public final TableField<ModelVersionRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.model_version.is_dynamic</code>.
+     */
+    public final TableField<ModelVersionRecord, Boolean> IS_DYNAMIC = createField("is_dynamic", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.model_version.max_countries</code>.
+     */
+    public final TableField<ModelVersionRecord, Integer> MAX_COUNTRIES = createField("max_countries", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.model_version</code> table reference

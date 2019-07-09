@@ -49,6 +49,21 @@ public class Sequences {
     public static final Sequence<Integer> BURDEN_OUTCOME_ID_SEQ = new SequenceImpl<Integer>("burden_outcome_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
 
     /**
+     * The sequence <code>public.country_cofinance_id_seq</code>
+     */
+    public static final Sequence<Integer> COUNTRY_COFINANCE_ID_SEQ = new SequenceImpl<Integer>("country_cofinance_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
+     * The sequence <code>public.country_disease_endemic_id_seq</code>
+     */
+    public static final Sequence<Integer> COUNTRY_DISEASE_ENDEMIC_ID_SEQ = new SequenceImpl<Integer>("country_disease_endemic_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
+     * The sequence <code>public.country_fragility_id_seq</code>
+     */
+    public static final Sequence<Integer> COUNTRY_FRAGILITY_ID_SEQ = new SequenceImpl<Integer>("country_fragility_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
      * The sequence <code>public.country_metadata_id_seq</code>
      */
     public static final Sequence<Integer> COUNTRY_METADATA_ID_SEQ = new SequenceImpl<Integer>("country_metadata_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
@@ -57,6 +72,11 @@ public class Sequences {
      * The sequence <code>public.country_vaccine_metadata_id_seq</code>
      */
     public static final Sequence<Integer> COUNTRY_VACCINE_METADATA_ID_SEQ = new SequenceImpl<Integer>("country_vaccine_metadata_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
+     * The sequence <code>public.country_worldbank_status_id_seq</code>
+     */
+    public static final Sequence<Integer> COUNTRY_WORLDBANK_STATUS_ID_SEQ = new SequenceImpl<Integer>("country_worldbank_status_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
 
     /**
      * The sequence <code>public.coverage_id_seq</code>

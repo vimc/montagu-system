@@ -10,6 +10,7 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addDisease
 import org.vaccineimpact.api.db.direct.addGroup
 import org.vaccineimpact.api.db.direct.addModel
+import org.vaccineimpact.api.db.direct.addModelVersion
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
@@ -23,6 +24,7 @@ class ModelTests : DatabaseTest()
             it.addDisease("d1")
             it.addModel("modelId", "groupId", "d1", "description1")
             it.addModel("modelId2", "groupId", "d1", isCurrent = false)
+            it.addModelVersion("modelId", "v1", setCurrentVersion = true)
         } requiringPermissions {
             PermissionSet("*/models.read")
         } andCheckArray {
@@ -32,7 +34,18 @@ class ModelTests : DatabaseTest()
                         "id" to "modelId",
                         "description" to "description1",
                         "citation" to "Unknown citation",
-                        "modelling_group" to "groupId"
+                        "modelling_group" to "groupId",
+                        "gender_specific" to false,
+                        "gender" to "both",
+                        "current_version" to obj(
+                                "id" to "1",
+                                "version" to "v1",
+                                "note" to "Some note",
+                                "fingerprint" to "Some fingerprint",
+                                "is_dynamic" to true,
+                                "code" to "R",
+                                "max_countries" to 100
+                        )
                 )
             })
         }
@@ -46,6 +59,7 @@ class ModelTests : DatabaseTest()
             it.addDisease("d1")
             it.addModel("modelId", "groupId", "d1", "description1")
             it.addModel("modelId2", "groupId", "d1", isCurrent = false)
+            it.addModelVersion("modelId", "v1", setCurrentVersion = true)
         } requiringPermissions {
             PermissionSet("*/models.read")
         } andCheck {
@@ -54,7 +68,18 @@ class ModelTests : DatabaseTest()
                         "id" to "modelId",
                         "description" to "description1",
                         "citation" to "Unknown citation",
-                        "modelling_group" to "groupId"
+                        "modelling_group" to "groupId",
+                        "gender_specific" to false,
+                        "gender" to "both",
+                        "current_version" to obj(
+                                "id" to "1",
+                                "version" to "v1",
+                                "note" to "Some note",
+                                "fingerprint" to "Some fingerprint",
+                                "is_dynamic" to true,
+                                "code" to "R",
+                                "max_countries" to 100
+                        )
                 )
             })
 

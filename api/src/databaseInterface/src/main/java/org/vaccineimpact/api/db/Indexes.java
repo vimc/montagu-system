@@ -21,9 +21,14 @@ import org.vaccineimpact.api.db.tables.BurdenEstimateSetProblem;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetType;
 import org.vaccineimpact.api.db.tables.BurdenOutcome;
+import org.vaccineimpact.api.db.tables.CofinanceStatus;
 import org.vaccineimpact.api.db.tables.Country;
+import org.vaccineimpact.api.db.tables.CountryCofinance;
+import org.vaccineimpact.api.db.tables.CountryDiseaseEndemic;
+import org.vaccineimpact.api.db.tables.CountryFragility;
 import org.vaccineimpact.api.db.tables.CountryMetadata;
 import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
+import org.vaccineimpact.api.db.tables.CountryWorldbankStatus;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
 import org.vaccineimpact.api.db.tables.DemographicDataset;
@@ -33,11 +38,14 @@ import org.vaccineimpact.api.db.tables.DemographicStatisticType;
 import org.vaccineimpact.api.db.tables.DemographicStatisticTypeVariant;
 import org.vaccineimpact.api.db.tables.DemographicValueUnit;
 import org.vaccineimpact.api.db.tables.DemographicVariant;
+import org.vaccineimpact.api.db.tables.DettlImportLog;
 import org.vaccineimpact.api.db.tables.DisabilityWeight;
 import org.vaccineimpact.api.db.tables.Disease;
+import org.vaccineimpact.api.db.tables.FrancophoneStatus;
 import org.vaccineimpact.api.db.tables.GaviEligibility;
 import org.vaccineimpact.api.db.tables.GaviEligibilityStatus;
 import org.vaccineimpact.api.db.tables.GaviFocalModel;
+import org.vaccineimpact.api.db.tables.GaviRegion;
 import org.vaccineimpact.api.db.tables.GaviSupportLevel;
 import org.vaccineimpact.api.db.tables.Gender;
 import org.vaccineimpact.api.db.tables.ImpactEstimate;
@@ -78,6 +86,8 @@ import org.vaccineimpact.api.db.tables.UserGroupMembership;
 import org.vaccineimpact.api.db.tables.UserGroupRole;
 import org.vaccineimpact.api.db.tables.Vaccine;
 import org.vaccineimpact.api.db.tables.VaccineRoutineAge;
+import org.vaccineimpact.api.db.tables.VxdelSegment;
+import org.vaccineimpact.api.db.tables.WorldbankStatus;
 
 
 /**
@@ -115,10 +125,16 @@ public class Indexes {
     public static final Index BURDEN_ESTIMATE_SET_TYPE_PKEY = Indexes0.BURDEN_ESTIMATE_SET_TYPE_PKEY;
     public static final Index BURDEN_OUTCOME_CODE_KEY = Indexes0.BURDEN_OUTCOME_CODE_KEY;
     public static final Index BURDEN_OUTCOME_PKEY = Indexes0.BURDEN_OUTCOME_PKEY;
+    public static final Index COFINANCE_STATUS_PKEY = Indexes0.COFINANCE_STATUS_PKEY;
     public static final Index COUNTRY_NID_UNIQUE = Indexes0.COUNTRY_NID_UNIQUE;
     public static final Index COUNTRY_PKEY = Indexes0.COUNTRY_PKEY;
+    public static final Index COUNTRY_COFINANCE_PKEY = Indexes0.COUNTRY_COFINANCE_PKEY;
+    public static final Index COUNTRY_DISEASE_ENDEMIC_PKEY = Indexes0.COUNTRY_DISEASE_ENDEMIC_PKEY;
+    public static final Index COUNTRY_FRAGILITY_PKEY = Indexes0.COUNTRY_FRAGILITY_PKEY;
     public static final Index COUNTRY_METADATA_PKEY = Indexes0.COUNTRY_METADATA_PKEY;
     public static final Index COUNTRY_VACCINE_METADATA_PKEY = Indexes0.COUNTRY_VACCINE_METADATA_PKEY;
+    public static final Index COUNTRY_WORLDBANK_STATUS_PKEY = Indexes0.COUNTRY_WORLDBANK_STATUS_PKEY;
+    public static final Index COUNTRY_WORLDBANK_STATUS_TOUCHSTONE_COUNTRY_YEAR_KEY = Indexes0.COUNTRY_WORLDBANK_STATUS_TOUCHSTONE_COUNTRY_YEAR_KEY;
     public static final Index COVERAGE_PKEY = Indexes0.COVERAGE_PKEY;
     public static final Index COVERAGE_SET_PKEY = Indexes0.COVERAGE_SET_PKEY;
     public static final Index DEMOGRAPHIC_DATASET_PKEY = Indexes0.DEMOGRAPHIC_DATASET_PKEY;
@@ -133,12 +149,15 @@ public class Indexes {
     public static final Index DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY = Indexes0.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY;
     public static final Index DEMOGRAPHIC_VALUE_UNIT_PKEY = Indexes0.DEMOGRAPHIC_VALUE_UNIT_PKEY;
     public static final Index DEMOGRAPHIC_VARIANT_PKEY = Indexes0.DEMOGRAPHIC_VARIANT_PKEY;
+    public static final Index DETTL_IMPORT_LOG_PKEY = Indexes0.DETTL_IMPORT_LOG_PKEY;
     public static final Index DISABILITY_WEIGHT_PKEY = Indexes0.DISABILITY_WEIGHT_PKEY;
     public static final Index DISEASE_PKEY = Indexes0.DISEASE_PKEY;
+    public static final Index FRANCOPHONE_STATUS_PKEY = Indexes0.FRANCOPHONE_STATUS_PKEY;
     public static final Index GAVI_ELIGIBILITY_PKEY = Indexes0.GAVI_ELIGIBILITY_PKEY;
     public static final Index GAVI_ELIGIBILITY_TOUCHSTONE_COUNTRY_YEAR_KEY = Indexes0.GAVI_ELIGIBILITY_TOUCHSTONE_COUNTRY_YEAR_KEY;
     public static final Index GAVI_ELIGIBILITY_STATUS_PKEY = Indexes0.GAVI_ELIGIBILITY_STATUS_PKEY;
     public static final Index GAVI_FOCAL_MODEL_PKEY = Indexes0.GAVI_FOCAL_MODEL_PKEY;
+    public static final Index GAVI_REGION_PKEY = Indexes0.GAVI_REGION_PKEY;
     public static final Index GAVI_SUPPORT_LEVEL_PKEY = Indexes0.GAVI_SUPPORT_LEVEL_PKEY;
     public static final Index GENDER_PKEY = Indexes0.GENDER_PKEY;
     public static final Index IMPACT_ESTIMATE_PKEY = Indexes0.IMPACT_ESTIMATE_PKEY;
@@ -189,6 +208,8 @@ public class Indexes {
     public static final Index USER_GROUP_ROLE_PKEY = Indexes0.USER_GROUP_ROLE_PKEY;
     public static final Index VACCINE_PKEY = Indexes0.VACCINE_PKEY;
     public static final Index VACCINE_ROUTINE_AGE_PKEY = Indexes0.VACCINE_ROUTINE_AGE_PKEY;
+    public static final Index VXDEL_SEGMENT_PKEY = Indexes0.VXDEL_SEGMENT_PKEY;
+    public static final Index WORLDBANK_STATUS_PKEY = Indexes0.WORLDBANK_STATUS_PKEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -213,10 +234,16 @@ public class Indexes {
         public static Index BURDEN_ESTIMATE_SET_TYPE_PKEY = Internal.createIndex("burden_estimate_set_type_pkey", BurdenEstimateSetType.BURDEN_ESTIMATE_SET_TYPE, new OrderField[] { BurdenEstimateSetType.BURDEN_ESTIMATE_SET_TYPE.CODE }, true);
         public static Index BURDEN_OUTCOME_CODE_KEY = Internal.createIndex("burden_outcome_code_key", BurdenOutcome.BURDEN_OUTCOME, new OrderField[] { BurdenOutcome.BURDEN_OUTCOME.CODE }, true);
         public static Index BURDEN_OUTCOME_PKEY = Internal.createIndex("burden_outcome_pkey", BurdenOutcome.BURDEN_OUTCOME, new OrderField[] { BurdenOutcome.BURDEN_OUTCOME.ID }, true);
+        public static Index COFINANCE_STATUS_PKEY = Internal.createIndex("cofinance_status_pkey", CofinanceStatus.COFINANCE_STATUS, new OrderField[] { CofinanceStatus.COFINANCE_STATUS.ID }, true);
         public static Index COUNTRY_NID_UNIQUE = Internal.createIndex("country_nid_unique", Country.COUNTRY, new OrderField[] { Country.COUNTRY.NID }, true);
         public static Index COUNTRY_PKEY = Internal.createIndex("country_pkey", Country.COUNTRY, new OrderField[] { Country.COUNTRY.ID }, true);
+        public static Index COUNTRY_COFINANCE_PKEY = Internal.createIndex("country_cofinance_pkey", CountryCofinance.COUNTRY_COFINANCE, new OrderField[] { CountryCofinance.COUNTRY_COFINANCE.ID }, true);
+        public static Index COUNTRY_DISEASE_ENDEMIC_PKEY = Internal.createIndex("country_disease_endemic_pkey", CountryDiseaseEndemic.COUNTRY_DISEASE_ENDEMIC, new OrderField[] { CountryDiseaseEndemic.COUNTRY_DISEASE_ENDEMIC.ID }, true);
+        public static Index COUNTRY_FRAGILITY_PKEY = Internal.createIndex("country_fragility_pkey", CountryFragility.COUNTRY_FRAGILITY, new OrderField[] { CountryFragility.COUNTRY_FRAGILITY.ID }, true);
         public static Index COUNTRY_METADATA_PKEY = Internal.createIndex("country_metadata_pkey", CountryMetadata.COUNTRY_METADATA, new OrderField[] { CountryMetadata.COUNTRY_METADATA.ID }, true);
         public static Index COUNTRY_VACCINE_METADATA_PKEY = Internal.createIndex("country_vaccine_metadata_pkey", CountryVaccineMetadata.COUNTRY_VACCINE_METADATA, new OrderField[] { CountryVaccineMetadata.COUNTRY_VACCINE_METADATA.ID }, true);
+        public static Index COUNTRY_WORLDBANK_STATUS_PKEY = Internal.createIndex("country_worldbank_status_pkey", CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS, new OrderField[] { CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS.ID }, true);
+        public static Index COUNTRY_WORLDBANK_STATUS_TOUCHSTONE_COUNTRY_YEAR_KEY = Internal.createIndex("country_worldbank_status_touchstone_country_year_key", CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS, new OrderField[] { CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS.TOUCHSTONE, CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS.COUNTRY, CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS.YEAR }, true);
         public static Index COVERAGE_PKEY = Internal.createIndex("coverage_pkey", Coverage.COVERAGE, new OrderField[] { Coverage.COVERAGE.ID }, true);
         public static Index COVERAGE_SET_PKEY = Internal.createIndex("coverage_set_pkey", CoverageSet.COVERAGE_SET, new OrderField[] { CoverageSet.COVERAGE_SET.ID }, true);
         public static Index DEMOGRAPHIC_DATASET_PKEY = Internal.createIndex("demographic_dataset_pkey", DemographicDataset.DEMOGRAPHIC_DATASET, new OrderField[] { DemographicDataset.DEMOGRAPHIC_DATASET.ID }, true);
@@ -231,12 +258,15 @@ public class Indexes {
         public static Index DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY = Internal.createIndex("demographic_statistic_type_variant_pkey", DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT, new OrderField[] { DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT.DEMOGRAPHIC_STATISTIC_TYPE, DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT.DEMOGRAPHIC_VARIANT }, true);
         public static Index DEMOGRAPHIC_VALUE_UNIT_PKEY = Internal.createIndex("demographic_value_unit_pkey", DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT, new OrderField[] { DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT.ID }, true);
         public static Index DEMOGRAPHIC_VARIANT_PKEY = Internal.createIndex("demographic_variant_pkey", DemographicVariant.DEMOGRAPHIC_VARIANT, new OrderField[] { DemographicVariant.DEMOGRAPHIC_VARIANT.ID }, true);
+        public static Index DETTL_IMPORT_LOG_PKEY = Internal.createIndex("dettl_import_log_pkey", DettlImportLog.DETTL_IMPORT_LOG, new OrderField[] { DettlImportLog.DETTL_IMPORT_LOG.NAME }, true);
         public static Index DISABILITY_WEIGHT_PKEY = Internal.createIndex("disability_weight_pkey", DisabilityWeight.DISABILITY_WEIGHT, new OrderField[] { DisabilityWeight.DISABILITY_WEIGHT.ID }, true);
         public static Index DISEASE_PKEY = Internal.createIndex("disease_pkey", Disease.DISEASE, new OrderField[] { Disease.DISEASE.ID }, true);
+        public static Index FRANCOPHONE_STATUS_PKEY = Internal.createIndex("francophone_status_pkey", FrancophoneStatus.FRANCOPHONE_STATUS, new OrderField[] { FrancophoneStatus.FRANCOPHONE_STATUS.ID }, true);
         public static Index GAVI_ELIGIBILITY_PKEY = Internal.createIndex("gavi_eligibility_pkey", GaviEligibility.GAVI_ELIGIBILITY, new OrderField[] { GaviEligibility.GAVI_ELIGIBILITY.ID }, true);
         public static Index GAVI_ELIGIBILITY_TOUCHSTONE_COUNTRY_YEAR_KEY = Internal.createIndex("gavi_eligibility_touchstone_country_year_key", GaviEligibility.GAVI_ELIGIBILITY, new OrderField[] { GaviEligibility.GAVI_ELIGIBILITY.TOUCHSTONE, GaviEligibility.GAVI_ELIGIBILITY.COUNTRY, GaviEligibility.GAVI_ELIGIBILITY.YEAR }, true);
         public static Index GAVI_ELIGIBILITY_STATUS_PKEY = Internal.createIndex("gavi_eligibility_status_pkey", GaviEligibilityStatus.GAVI_ELIGIBILITY_STATUS, new OrderField[] { GaviEligibilityStatus.GAVI_ELIGIBILITY_STATUS.ID }, true);
         public static Index GAVI_FOCAL_MODEL_PKEY = Internal.createIndex("gavi_focal_model_pkey", GaviFocalModel.GAVI_FOCAL_MODEL, new OrderField[] { GaviFocalModel.GAVI_FOCAL_MODEL.ID }, true);
+        public static Index GAVI_REGION_PKEY = Internal.createIndex("gavi_region_pkey", GaviRegion.GAVI_REGION, new OrderField[] { GaviRegion.GAVI_REGION.ID }, true);
         public static Index GAVI_SUPPORT_LEVEL_PKEY = Internal.createIndex("gavi_support_level_pkey", GaviSupportLevel.GAVI_SUPPORT_LEVEL, new OrderField[] { GaviSupportLevel.GAVI_SUPPORT_LEVEL.ID }, true);
         public static Index GENDER_PKEY = Internal.createIndex("gender_pkey", Gender.GENDER, new OrderField[] { Gender.GENDER.ID }, true);
         public static Index IMPACT_ESTIMATE_PKEY = Internal.createIndex("impact_estimate_pkey", ImpactEstimate.IMPACT_ESTIMATE, new OrderField[] { ImpactEstimate.IMPACT_ESTIMATE.ID }, true);
@@ -287,5 +317,7 @@ public class Indexes {
         public static Index USER_GROUP_ROLE_PKEY = Internal.createIndex("user_group_role_pkey", UserGroupRole.USER_GROUP_ROLE, new OrderField[] { UserGroupRole.USER_GROUP_ROLE.USER_GROUP, UserGroupRole.USER_GROUP_ROLE.ROLE, UserGroupRole.USER_GROUP_ROLE.SCOPE_ID }, true);
         public static Index VACCINE_PKEY = Internal.createIndex("vaccine_pkey", Vaccine.VACCINE, new OrderField[] { Vaccine.VACCINE.ID }, true);
         public static Index VACCINE_ROUTINE_AGE_PKEY = Internal.createIndex("vaccine_routine_age_pkey", VaccineRoutineAge.VACCINE_ROUTINE_AGE, new OrderField[] { VaccineRoutineAge.VACCINE_ROUTINE_AGE.ID }, true);
+        public static Index VXDEL_SEGMENT_PKEY = Internal.createIndex("vxdel_segment_pkey", VxdelSegment.VXDEL_SEGMENT, new OrderField[] { VxdelSegment.VXDEL_SEGMENT.ID }, true);
+        public static Index WORLDBANK_STATUS_PKEY = Internal.createIndex("worldbank_status_pkey", WorldbankStatus.WORLDBANK_STATUS, new OrderField[] { WorldbankStatus.WORLDBANK_STATUS.ID }, true);
     }
 }
