@@ -38,7 +38,6 @@ import org.vaccineimpact.api.db.tables.DemographicStatisticType;
 import org.vaccineimpact.api.db.tables.DemographicStatisticTypeVariant;
 import org.vaccineimpact.api.db.tables.DemographicValueUnit;
 import org.vaccineimpact.api.db.tables.DemographicVariant;
-import org.vaccineimpact.api.db.tables.DettlImportLog;
 import org.vaccineimpact.api.db.tables.DisabilityWeight;
 import org.vaccineimpact.api.db.tables.Disease;
 import org.vaccineimpact.api.db.tables.FrancophoneStatus;
@@ -149,7 +148,6 @@ public class Indexes {
     public static final Index DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY = Indexes0.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY;
     public static final Index DEMOGRAPHIC_VALUE_UNIT_PKEY = Indexes0.DEMOGRAPHIC_VALUE_UNIT_PKEY;
     public static final Index DEMOGRAPHIC_VARIANT_PKEY = Indexes0.DEMOGRAPHIC_VARIANT_PKEY;
-    public static final Index DETTL_IMPORT_LOG_PKEY = Indexes0.DETTL_IMPORT_LOG_PKEY;
     public static final Index DISABILITY_WEIGHT_PKEY = Indexes0.DISABILITY_WEIGHT_PKEY;
     public static final Index DISEASE_PKEY = Indexes0.DISEASE_PKEY;
     public static final Index FRANCOPHONE_STATUS_PKEY = Indexes0.FRANCOPHONE_STATUS_PKEY;
@@ -258,7 +256,6 @@ public class Indexes {
         public static Index DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY = Internal.createIndex("demographic_statistic_type_variant_pkey", DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT, new OrderField[] { DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT.DEMOGRAPHIC_STATISTIC_TYPE, DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT.DEMOGRAPHIC_VARIANT }, true);
         public static Index DEMOGRAPHIC_VALUE_UNIT_PKEY = Internal.createIndex("demographic_value_unit_pkey", DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT, new OrderField[] { DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT.ID }, true);
         public static Index DEMOGRAPHIC_VARIANT_PKEY = Internal.createIndex("demographic_variant_pkey", DemographicVariant.DEMOGRAPHIC_VARIANT, new OrderField[] { DemographicVariant.DEMOGRAPHIC_VARIANT.ID }, true);
-        public static Index DETTL_IMPORT_LOG_PKEY = Internal.createIndex("dettl_import_log_pkey", DettlImportLog.DETTL_IMPORT_LOG, new OrderField[] { DettlImportLog.DETTL_IMPORT_LOG.NAME }, true);
         public static Index DISABILITY_WEIGHT_PKEY = Internal.createIndex("disability_weight_pkey", DisabilityWeight.DISABILITY_WEIGHT, new OrderField[] { DisabilityWeight.DISABILITY_WEIGHT.ID }, true);
         public static Index DISEASE_PKEY = Internal.createIndex("disease_pkey", Disease.DISEASE, new OrderField[] { Disease.DISEASE.ID }, true);
         public static Index FRANCOPHONE_STATUS_PKEY = Internal.createIndex("francophone_status_pkey", FrancophoneStatus.FRANCOPHONE_STATUS, new OrderField[] { FrancophoneStatus.FRANCOPHONE_STATUS.ID }, true);

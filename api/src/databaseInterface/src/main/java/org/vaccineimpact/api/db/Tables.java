@@ -40,7 +40,6 @@ import org.vaccineimpact.api.db.tables.DemographicStatisticType;
 import org.vaccineimpact.api.db.tables.DemographicStatisticTypeVariant;
 import org.vaccineimpact.api.db.tables.DemographicValueUnit;
 import org.vaccineimpact.api.db.tables.DemographicVariant;
-import org.vaccineimpact.api.db.tables.DettlImportLog;
 import org.vaccineimpact.api.db.tables.DisabilityWeight;
 import org.vaccineimpact.api.db.tables.Disease;
 import org.vaccineimpact.api.db.tables.FrancophoneStatus;
@@ -275,11 +274,6 @@ public class Tables {
      * The table <code>public.demographic_variant</code>.
      */
     public static final DemographicVariant DEMOGRAPHIC_VARIANT = org.vaccineimpact.api.db.tables.DemographicVariant.DEMOGRAPHIC_VARIANT;
-
-    /**
-     * The table <code>public.dettl_import_log</code>.
-     */
-    public static final DettlImportLog DETTL_IMPORT_LOG = org.vaccineimpact.api.db.tables.DettlImportLog.DETTL_IMPORT_LOG;
 
     /**
      * The table <code>public.disability_weight</code>.

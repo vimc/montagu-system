@@ -15,7 +15,7 @@
             <inputSchema>public</inputSchema>
             <includes>.*</includes>
             <excludes>
-                schema_version | postgres_fdw_handler
+                schema_version | postgres_fdw_handler | dettl_import_log
             </excludes>
         </database>
 

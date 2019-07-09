@@ -48,7 +48,6 @@ import org.vaccineimpact.api.db.tables.DemographicStatisticType;
 import org.vaccineimpact.api.db.tables.DemographicStatisticTypeVariant;
 import org.vaccineimpact.api.db.tables.DemographicValueUnit;
 import org.vaccineimpact.api.db.tables.DemographicVariant;
-import org.vaccineimpact.api.db.tables.DettlImportLog;
 import org.vaccineimpact.api.db.tables.DisabilityWeight;
 import org.vaccineimpact.api.db.tables.Disease;
 import org.vaccineimpact.api.db.tables.FrancophoneStatus;
@@ -134,7 +133,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -863939140;
+    private static final long serialVersionUID = 837445850;
 
     /**
      * The reference instance of <code>public</code>
@@ -290,11 +289,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.demographic_variant</code>.
      */
     public final DemographicVariant DEMOGRAPHIC_VARIANT = org.vaccineimpact.api.db.tables.DemographicVariant.DEMOGRAPHIC_VARIANT;
-
-    /**
-     * The table <code>public.dettl_import_log</code>.
-     */
-    public final DettlImportLog DETTL_IMPORT_LOG = org.vaccineimpact.api.db.tables.DettlImportLog.DETTL_IMPORT_LOG;
 
     /**
      * The table <code>public.disability_weight</code>.
@@ -901,7 +895,6 @@ public class Public extends SchemaImpl {
             DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT,
             DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT,
             DemographicVariant.DEMOGRAPHIC_VARIANT,
-            DettlImportLog.DETTL_IMPORT_LOG,
             DisabilityWeight.DISABILITY_WEIGHT,
             Disease.DISEASE,
             FrancophoneStatus.FRANCOPHONE_STATUS,
