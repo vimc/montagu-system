@@ -14,13 +14,6 @@ services:
       - db
     volumes:
       - ${TOKEN_KEY_PATH}:/etc/montagu/api/token_key
-  reporting_api:
-    image: docker.montagu.dide.ic.ac.uk:5000/montagu-reporting-api:${MONTAGU_REPORTING_API_VERSION}
-    ports:
-      - "8081:8081"
-    volumes:
-      - ${TOKEN_KEY_PATH}:/etc/montagu/reports_api/token_key
-      - orderly_volume:/orderly
   db:
     image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:${MONTAGU_DB_VERSION}
     ports:
@@ -29,10 +22,3 @@ services:
   db_annex:
     image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:${MONTAGU_DB_VERSION}
     command: /etc/montagu/postgresql.test.conf
-  orderly:
-    image: docker.montagu.dide.ic.ac.uk:5000/orderly.server:${MONTAGU_ORDERLY_VERSION}
-    volumes:
-    - orderly_volume:/orderly
-    command: --port 8321 --go-signal /orderly_go /orderly
-volumes:
-  orderly_volume:

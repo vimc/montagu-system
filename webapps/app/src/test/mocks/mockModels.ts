@@ -1,15 +1,11 @@
 import * as models from "../../main/shared/models/Generated";
 import {
-    Artefact,
     ExpectationMapping,
-    ModellingGroupCreation, ReportVersionDetails,
+    ModellingGroupCreation,
     TouchstoneVersion
 } from "../../main/shared/models/Generated";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
 import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageProperties";
-import {ReportRow} from "../../main/report/components/ReportsList/ReportListTable";
-import {BasicVersionDetails} from "../../main/report/components/ReportsList/ReportListColumns/VersionColumn";
-import defineProperty = Reflect.defineProperty;
 
 let counter = 0;
 
@@ -213,74 +209,6 @@ export function mockUser(properties?: any): models.User {
         roles: [mockRole(), mockRole()],
         last_logged_in: null
     }, properties);
-}
-
-export function mockVersion(properties?: Partial<ReportVersionDetails>): ReportVersionDetails {
-
-    const template: ReportVersionDetails = {
-        id: "vId",
-        name: "testname",
-        display_name: "testdisplayname",
-        description: "a very nice report",
-        author: "dr author",
-        requester: "ms requester",
-        date: "2017-01-01",
-        data_hashes: {},
-        artefacts: [mockArtefact()],
-        resources: [],
-        published: true
-    };
-    return Object.assign(template, properties);
-}
-
-export function mockArtefact(properties?: Partial<Artefact>): Artefact {
-
-    const template: Artefact = {
-        format: "report",
-        files: ["filename1.csv", "filename2.html"],
-        description: "description"
-    };
-
-    return Object.assign(template, properties);
-}
-
-export function mockReportVersion(properties?: Partial<models.ReportVersion>): models.ReportVersion {
-
-    const template: models.ReportVersion = {
-        name: "report",
-        display_name: "display name",
-        id: "3123",
-        latest_version: "e62871eydhsjkh",
-        author: "author",
-        requester: "requester",
-        date: new Date().toDateString(),
-        published: false
-    };
-
-    return Object.assign(template, properties);
-}
-
-export function mockBasicVersionDetails(properties?: Partial<BasicVersionDetails>): BasicVersionDetails {
-    const template: BasicVersionDetails = {
-        version: "1234",
-        date: new Date(),
-        name: "report-name"
-    };
-
-    return Object.assign(template, properties);
-}
-
-export function mockReportRow(report?: Partial<models.ReportVersion>, version?: BasicVersionDetails): ReportRow {
-
-    const template: ReportRow = {
-        ...mockReportVersion({
-            name: "report_name"
-        }),
-        version: Object.assign(mockBasicVersionDetails(), version)
-    };
-
-    return Object.assign(template, report);
-
 }
 
 export function mockDemographicDataset(properties?: Partial<models.DemographicDataset>): models.DemographicDataset {

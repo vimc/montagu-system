@@ -77,7 +77,6 @@ describe('LocalService', () => {
 
         it('performs successful query', async () => {
             sandbox.setStubFunc(settings, 'apiUrl', () => 'api.address');
-            sandbox.setStubFunc(settings, 'reportingApiUrl', () => 'reporting.address');
             const store = createStore(state => state, mockContribState());
 
             class TestService extends AbstractLocalService {
@@ -92,25 +91,6 @@ describe('LocalService', () => {
             const serviceData = await testService.test();
             expect(serviceData).to.equal("testData");
             expect(doFetch.args[0][0]).to.eql("api.address/test/");
-        });
-
-        it('performs successful query to reporting API', async () => {
-            sandbox.setStubFunc(settings, 'apiUrl', () => 'api.address');
-            sandbox.setStubFunc(settings, 'reportingApiUrl', () => 'reporting.address');
-            const store = createStore(state => state, mockContribState());
-
-            class TestService extends AbstractLocalService {
-                test() {
-                    return this.get("/test/", "reporting");
-                }
-            }
-
-            const testService = new TestService(store.dispatch, store.getState);
-            const doFetch = sandbox.setStubFunc(testService, "doFetch", () => Promise.resolve());
-            sandbox.setStubFunc(testService, "processResponse", () => Promise.resolve("testData"));
-            const serviceData = await testService.test();
-            expect(serviceData).to.equal("testData");
-            expect(doFetch.args[0][0]).to.eql("reporting.address/test/");
         });
 
         it('performs query and api says token expired', async () => {

@@ -1,5 +1,4 @@
 interface Settings {
-    reportingApiUrl: () => string;
     apiUrl: () => string;
     montaguUrl: () => string;
     supportContact: string;
@@ -12,10 +11,8 @@ interface Settings {
     teamcityServiceMessages: boolean;
     admin: AdminSettings;
     contrib: ContribSettings;
-    report: ReportSettings;
     test: AppSpecificSettings;
     showTouchstoneCreation: boolean;
-    pinnedReports: string[];
 }
 
 interface AppSpecificSettings {
@@ -28,9 +25,5 @@ interface AdminSettings extends AppSpecificSettings {
 }
 
 interface ContribSettings extends AppSpecificSettings {
-
-}
-
-interface ReportSettings extends AppSpecificSettings {
 
 }

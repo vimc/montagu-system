@@ -13,7 +13,7 @@
    and rebuild as needed.
 5. Run `npm run SHORT_NAME` to run a development server serving one of the three
    portals on port 5000.
-6. Run `./scripts/run-development-apis.sh` to run both APIs (main and reporting)
+6. Run `./scripts/run-development-apis.sh` to run Montagu
    with a shared key, and with test data.
 
 ## Linting
@@ -58,7 +58,7 @@ The integration tests get run in three different ways:
 4. Browse to `http://localhost:8080/`
 
 # Portals
-There are three portals.
+There are 2 portals.
 
 ## Modellers' contribution portal
 Short name: `contrib`
@@ -72,9 +72,3 @@ Short name: `admin`
 This portal allows administrative staff to set up touchstones with all the
 necessary input data, responsibilities and recipes. It's also where we do user
 management.
-
-## Reporting portal
-Short name: `report`
-
-This portal makes Orderly reports available to funders and modellers. Staff can
-also review and publish unpublished reports.

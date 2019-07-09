@@ -17,7 +17,7 @@ const dbTemplateName = process.env.PGTEMPLATE;
 export class TestService extends AbstractLocalService {
 
     getAnyUrl(url: string) {
-        return this.doFetch(this.makeUrl(url, "main"), this.makeRequestOptions("GET", null));
+        return this.doFetch(this.makeUrl(url), this.makeRequestOptions("GET", null));
     }
 }
 

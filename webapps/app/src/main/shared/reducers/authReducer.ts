@@ -10,8 +10,6 @@ export interface AuthState {
     isAccountActive: boolean;
     isModeller: boolean;
     errorMessage?: string;
-    isReportReviewer: boolean;
-    isReportRunner: boolean;
 }
 
 export const initialAuthState: AuthState = {
@@ -20,9 +18,7 @@ export const initialAuthState: AuthState = {
     bearerToken: null,
     permissions: [],
     isAccountActive: false,
-    isModeller: false,
-    isReportReviewer: false,
-    isReportRunner: false
+    isModeller: false
 };
 
 export interface AuthStateOptions {
@@ -41,9 +37,7 @@ export function loadAuthState(options: AuthStateOptions): AuthState {
         isModeller: options.modellingGroups.length > 0,
         username: options.username,
         permissions: options.permissions,
-        modellingGroups: options.modellingGroups,
-        isReportReviewer: options.permissions.indexOf("*/reports.review") > -1,
-        isReportRunner: options.permissions.indexOf("*/reports.run") > -1,
+        modellingGroups: options.modellingGroups
     }
 }
 

@@ -2,7 +2,7 @@
 set -ex
 
 export here=$(dirname $0)
-source $here/run-apis.sh
+source $here/run-dependencies.sh
 
 # Add test accounts
 $here/add-test-accounts-for-integration-tests.sh
@@ -12,7 +12,7 @@ export PGHOST=localhost
 
 function cleanup {
     set +e
-    $here/stop-apis.sh
+    $here/stop-dependencies.sh
 }
 trap cleanup EXIT
 

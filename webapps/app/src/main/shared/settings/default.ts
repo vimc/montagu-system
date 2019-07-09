@@ -1,5 +1,4 @@
 export const settings: Settings = {
-    reportingApiUrl: () => "http://localhost:8081/v1",
     apiUrl: () => "http://localhost:8080/v1",
     montaguUrl: () => "http://localhost",
     supportContact: "montagu-help@imperial.ac.uk",
@@ -14,7 +13,6 @@ export const settings: Settings = {
         return !this.nonStochasticTouchstones.some((ts: string) => touchstoneId.indexOf(ts) === 0);
     },
     showTouchstoneCreation: false,
-    pinnedReports: ["other"],
     admin: {
         publicPath: "/admin",
         requiresModellingGroupMembership: false
@@ -22,10 +20,6 @@ export const settings: Settings = {
     contrib: {
         publicPath: "/contribution",
         requiresModellingGroupMembership: true
-    },
-    report: {
-        publicPath: "/reports",
-        requiresModellingGroupMembership: false
     },
     test: {
         publicPath: "/",

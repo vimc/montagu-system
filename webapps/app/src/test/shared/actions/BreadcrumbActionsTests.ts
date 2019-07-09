@@ -3,13 +3,13 @@ import { createMemoryHistory } from 'history';
 
 import {Sandbox} from "../../Sandbox";
 import {PageBreadcrumb} from "../../../main/shared/components/PageWithHeader/PageProperties";
-import {createReportStore} from "../../../main/report/stores/createReportStore";
 import {breadcrumbsActionCreators} from "../../../main/shared/actions/breadcrumbsActionsCreators";
-import {ReportAppState} from "../../../main/report/reducers/reportAppReducers";
 import {createMockStore} from "../../mocks/mockStore";
 import {breadcrumbsModule} from "../../../main/shared/modules/breadcrumbs";
 import {mockBreadcrumbs, mockPageBreadcrumb} from "../../mocks/mockModels";
 import {BreadcrumbsTypes} from "../../../main/shared/actionTypes/BreadrumbsTypes";
+import {createContribStore} from "../../../main/contrib/createStore";
+import {ContribAppState} from "../../../main/contrib/reducers/contribAppReducers";
 
 class A {
     static breadcrumb() : PageBreadcrumb {
@@ -39,9 +39,9 @@ describe("Breadcrumbs actions integration tests with store", () => {
 
     it("initializes breadcrumbs for page A", () => {
         const history = createMemoryHistory();
-        let store = createReportStore(history);
+        let store = createContribStore(history);
         store.dispatch(breadcrumbsActionCreators.createBreadcrumbs(A.breadcrumb()));
-        const state = store.getState() as ReportAppState;
+        const state = store.getState() as ContribAppState;
         const breadcrumbs = state.breadcrumbs.breadcrumbs;
         expect(breadcrumbs.length).to.equal(1);
         expect(breadcrumbs[0].name).to.equal("A");
@@ -50,9 +50,9 @@ describe("Breadcrumbs actions integration tests with store", () => {
 
     it("initializes breadcrumbs for page B", () => {
         const history = createMemoryHistory();
-        let store = createReportStore(history);
+        let store = createContribStore(history);
         store.dispatch(breadcrumbsActionCreators.createBreadcrumbs(B.breadcrumb()));
-        const state = store.getState() as ReportAppState;
+        const state = store.getState() as ContribAppState;
         const breadcrumbs = state.breadcrumbs.breadcrumbs;
         expect(breadcrumbs.length).to.equal(2);
         expect(breadcrumbs[0].name).to.equal("A");
