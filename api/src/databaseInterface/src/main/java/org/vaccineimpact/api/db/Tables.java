@@ -23,9 +23,14 @@ import org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetType;
 import org.vaccineimpact.api.db.tables.BurdenEstimateStochastic;
 import org.vaccineimpact.api.db.tables.BurdenOutcome;
+import org.vaccineimpact.api.db.tables.CofinanceStatus;
 import org.vaccineimpact.api.db.tables.Country;
+import org.vaccineimpact.api.db.tables.CountryCofinance;
+import org.vaccineimpact.api.db.tables.CountryDiseaseEndemic;
+import org.vaccineimpact.api.db.tables.CountryFragility;
 import org.vaccineimpact.api.db.tables.CountryMetadata;
 import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
+import org.vaccineimpact.api.db.tables.CountryWorldbankStatus;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
 import org.vaccineimpact.api.db.tables.DemographicDataset;
@@ -37,9 +42,11 @@ import org.vaccineimpact.api.db.tables.DemographicValueUnit;
 import org.vaccineimpact.api.db.tables.DemographicVariant;
 import org.vaccineimpact.api.db.tables.DisabilityWeight;
 import org.vaccineimpact.api.db.tables.Disease;
+import org.vaccineimpact.api.db.tables.FrancophoneStatus;
 import org.vaccineimpact.api.db.tables.GaviEligibility;
 import org.vaccineimpact.api.db.tables.GaviEligibilityStatus;
 import org.vaccineimpact.api.db.tables.GaviFocalModel;
+import org.vaccineimpact.api.db.tables.GaviRegion;
 import org.vaccineimpact.api.db.tables.GaviSupportLevel;
 import org.vaccineimpact.api.db.tables.Gender;
 import org.vaccineimpact.api.db.tables.ImpactEstimate;
@@ -92,6 +99,8 @@ import org.vaccineimpact.api.db.tables.VCoverageInfo;
 import org.vaccineimpact.api.db.tables.VResponsibilityInfo;
 import org.vaccineimpact.api.db.tables.Vaccine;
 import org.vaccineimpact.api.db.tables.VaccineRoutineAge;
+import org.vaccineimpact.api.db.tables.VxdelSegment;
+import org.vaccineimpact.api.db.tables.WorldbankStatus;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData1Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData2Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData3Record;
@@ -182,9 +191,29 @@ public class Tables {
     public static final BurdenOutcome BURDEN_OUTCOME = org.vaccineimpact.api.db.tables.BurdenOutcome.BURDEN_OUTCOME;
 
     /**
+     * The table <code>public.cofinance_status</code>.
+     */
+    public static final CofinanceStatus COFINANCE_STATUS = org.vaccineimpact.api.db.tables.CofinanceStatus.COFINANCE_STATUS;
+
+    /**
      * The table <code>public.country</code>.
      */
     public static final Country COUNTRY = org.vaccineimpact.api.db.tables.Country.COUNTRY;
+
+    /**
+     * The table <code>public.country_cofinance</code>.
+     */
+    public static final CountryCofinance COUNTRY_COFINANCE = org.vaccineimpact.api.db.tables.CountryCofinance.COUNTRY_COFINANCE;
+
+    /**
+     * The table <code>public.country_disease_endemic</code>.
+     */
+    public static final CountryDiseaseEndemic COUNTRY_DISEASE_ENDEMIC = org.vaccineimpact.api.db.tables.CountryDiseaseEndemic.COUNTRY_DISEASE_ENDEMIC;
+
+    /**
+     * The table <code>public.country_fragility</code>.
+     */
+    public static final CountryFragility COUNTRY_FRAGILITY = org.vaccineimpact.api.db.tables.CountryFragility.COUNTRY_FRAGILITY;
 
     /**
      * The table <code>public.country_metadata</code>.
@@ -195,6 +224,11 @@ public class Tables {
      * The table <code>public.country_vaccine_metadata</code>.
      */
     public static final CountryVaccineMetadata COUNTRY_VACCINE_METADATA = org.vaccineimpact.api.db.tables.CountryVaccineMetadata.COUNTRY_VACCINE_METADATA;
+
+    /**
+     * The table <code>public.country_worldbank_status</code>.
+     */
+    public static final CountryWorldbankStatus COUNTRY_WORLDBANK_STATUS = org.vaccineimpact.api.db.tables.CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS;
 
     /**
      * The table <code>public.coverage</code>.
@@ -252,6 +286,11 @@ public class Tables {
     public static final Disease DISEASE = org.vaccineimpact.api.db.tables.Disease.DISEASE;
 
     /**
+     * Status within the Organisation internationale de la Francophonie
+     */
+    public static final FrancophoneStatus FRANCOPHONE_STATUS = org.vaccineimpact.api.db.tables.FrancophoneStatus.FRANCOPHONE_STATUS;
+
+    /**
      * The table <code>public.gavi_eligibility</code>.
      */
     public static final GaviEligibility GAVI_ELIGIBILITY = org.vaccineimpact.api.db.tables.GaviEligibility.GAVI_ELIGIBILITY;
@@ -265,6 +304,11 @@ public class Tables {
      * The table <code>public.gavi_focal_model</code>.
      */
     public static final GaviFocalModel GAVI_FOCAL_MODEL = org.vaccineimpact.api.db.tables.GaviFocalModel.GAVI_FOCAL_MODEL;
+
+    /**
+     * include four types of gavi region interested by gavi donors
+     */
+    public static final GaviRegion GAVI_REGION = org.vaccineimpact.api.db.tables.GaviRegion.GAVI_REGION;
 
     /**
      * Enum table. Possible values: none (No vaccination), without (Vaccination without GAVI support), with (Vaccination with GAVI support)
@@ -714,4 +758,14 @@ public class Tables {
      * The table <code>public.vaccine_routine_age</code>.
      */
     public static final VaccineRoutineAge VACCINE_ROUTINE_AGE = org.vaccineimpact.api.db.tables.VaccineRoutineAge.VACCINE_ROUTINE_AGE;
+
+    /**
+     * Status within BMGF vxdel country classifiecation
+     */
+    public static final VxdelSegment VXDEL_SEGMENT = org.vaccineimpact.api.db.tables.VxdelSegment.VXDEL_SEGMENT;
+
+    /**
+     * Country development status according to the worldbank
+     */
+    public static final WorldbankStatus WORLDBANK_STATUS = org.vaccineimpact.api.db.tables.WorldbankStatus.WORLDBANK_STATUS;
 }
