@@ -48,7 +48,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             "a",
                             genderSpecific = true,
                             gender = "male",
-                            currentVersion = ModelVersion("1", "fakeId", "v1", "Some note",
+                            currentVersion = ModelVersion(1, "fakeId", "v1", "Some note",
                                     "Some fingerprint", true, "R", 100)),
                     Model("fakeId2",
                             "another model",
@@ -101,7 +101,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             "a",
                             false,
                             "both",
-                            ModelVersion("2", "fakeId", "v2", "Some note", "Some fingerprint",
+                            ModelVersion(2, "fakeId", "v2", "Some note", "Some fingerprint",
                                     true, "R", 100)))
         }
     }
