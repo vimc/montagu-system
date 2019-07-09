@@ -88,9 +88,9 @@ class ModelTests : RepositoryTests<ModelRepository>()
             it.addDisease("d2")
             it.addModel("fakeId", "a", "d1", "some model")
             it.addModel("fakeId2", "a", "d1", "another model", isCurrent = false)
-            it.addModelVersion("fakeId", "v1", setCurrentVersion = false)
-            it.addModelVersion("fakeId", "v2", setCurrentVersion = true)
-            it.addModelVersion("fakeId2", "v1", setCurrentVersion = true)
+            it.addModelVersion("fakeId", "v1", setCurrent = false)
+            it.addModelVersion("fakeId", "v2", setCurrent = true)
+            it.addModelVersion("fakeId2", "v1", setCurrent = true)
         }.check {
             repo ->
             val model = repo.get("fakeId")
@@ -101,7 +101,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             "a",
                             false,
                             "both",
-                            ModelVersion(2, "fakeId", "v2", "Some note", "Some fingerprint",
+                            ModelVersion("2", "fakeId", "v2", "Some note", "Some fingerprint",
                                     true, "R", 100)))
         }
     }
