@@ -1,5 +1,4 @@
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
-import {TouchstoneVersionPageLocationProps} from "../../components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
 import {modellingGroupsListPageActionCreators} from "./ModellingGroupsListPageActionCreators";
 import {AdminAppState} from "../../reducers/adminAppReducers";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
@@ -23,7 +22,7 @@ class ModelMetaPageActionCreators extends AdminPageActionCreators<{}> {
 
     loadData() {
         return async (dispatch: Dispatch<AdminAppState>) => {
-            await dispatch(modellingGroupsActionCreators.getAllGroups());
+            await dispatch(modellingGroupsActionCreators.getAllModels());
         }
     }
 }

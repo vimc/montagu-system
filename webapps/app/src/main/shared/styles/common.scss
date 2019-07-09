@@ -15,13 +15,13 @@ html, body {
 }
 
 select, input {
-    font-size: inherit;
+  font-size: inherit;
 }
 
 table tr th, .specialColumn td:first-child {
-    background-color: rgb(170, 224, 250);
-    font-weight: bold;
-    vertical-align: top;
+  background-color: rgb(170, 224, 250);
+  font-weight: bold;
+  vertical-align: top;
 }
 
 table {
@@ -29,49 +29,74 @@ table {
   @extend .table-responsive;
   @extend .table-bordered;
 
-    // Prevent double border on horizontal scroll due to combining table-bordered and table-responsive
-    border: 0;
+  // Prevent double border on horizontal scroll due to combining table-bordered and table-responsive
+  border: 0;
+
+  th.sortable {
+    cursor: pointer;
+    position: relative;
+    padding-right: 30px;
+
+    &:after {
+      right: .5em;
+      content: "\2193";
+      position: absolute;
+      bottom: .9em;
+      display: block;
+      opacity: .3;
+    }
+
+    &:before {
+      right: 1em;
+      content: "\2191";
+      position: absolute;
+      bottom: .9em;
+      display: block;
+      opacity: .3;
+    }
+  }
+
 }
 
 hr.dashed {
-    border-bottom: 1px dashed $body-color !important;
+  border-bottom: 1px dashed $body-color !important;
 }
 
 fieldset {
-    display: inline;
-    border: none;
-    margin: 0;
-    padding: 0;
+  display: inline;
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
 .largeSectionTitle {
-    font-family: header;
-    font-size: 24pt;
-    margin: 30px 0 5px 0;
+  font-family: header;
+  font-size: 24pt;
+  margin: 30px 0 5px 0;
 }
 
 .sectionTitle {
-    font-family: header;
-    font-size: 16pt;
-    margin: 30px 0 15px 0;
+  font-family: header;
+  font-size: 16pt;
+  margin: 30px 0 15px 0;
 }
 
 .subSectionTitle {
-    font-family: header;
-    font-size: 12pt;
-    margin: 15px 0;
-    color: rgb(127, 127, 127);
+  font-family: header;
+  font-size: 12pt;
+  margin: 15px 0;
+  color: rgb(127, 127, 127);
 }
 
 .smallTitle {
-    font-family: header;
-    font-size: 12pt;
-    margin: 20px 0 5px 0;
-    color: rgb(127, 127, 127);
+  font-family: header;
+  font-size: 12pt;
+  margin: 20px 0 5px 0;
+  color: rgb(127, 127, 127);
 }
 
 .control {
-    font-size: 16pt;
+  font-size: 16pt;
 }
 
 select.form-control {
@@ -99,5 +124,5 @@ select.form-control {
 }
 
 .render-whitespace {
-    white-space: pre-line;
+  white-space: pre-line;
 }
