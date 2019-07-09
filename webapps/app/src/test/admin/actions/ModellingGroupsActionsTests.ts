@@ -6,6 +6,7 @@ import {createMockAdminStore, createMockStore} from "../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../main/shared/services/ModellingGroupsService";
 import {ModellingGroupTypes} from "../../../main/admin/actionTypes/ModellingGroupsTypes";
 import {
+    mockModel,
     mockModellingGroup,
     mockModellingGroupCreation,
     mockModellingGroupDetails,
@@ -39,6 +40,22 @@ describe("Admin Modelling groups actions tests", () => {
             expect(getAllGroupsServiceStub.called).to.be.true;
             done();
         });
+    });
+
+    it("gets all models", async () => {
+        const testModel = mockModel();
+        const testModel2 = mockModel();
+        const store = createMockStore({});
+        const getAllGroupsServiceStub = sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllModels", () => {
+            return Promise.resolve([testModel, testModel2]);
+        });
+
+        await store.dispatch(modellingGroupsActionCreators.getAllModels());
+
+        const actions = store.getActions();
+        const expectedPayload = {type: ModellingGroupTypes.MODELS_FETCHED, data: [testModel, testModel2]};
+        expect(actions).to.eql([expectedPayload]);
+        expect(getAllGroupsServiceStub.called).to.be.true;
     });
 
     it("gets group details", (done) => {
@@ -233,8 +250,10 @@ describe("Admin Modelling groups actions tests", () => {
 
     it("dispatches ADD_MODELLING_GROUP on group creation", (done) => {
 
-        const newGroup = mockModellingGroupCreation({institution: "imperial", pi: "someone new",
-        description: "imperial (someone new)"});
+        const newGroup = mockModellingGroupCreation({
+            institution: "imperial", pi: "someone new",
+            description: "imperial (someone new)"
+        });
 
         verifyActionThatCallsService(done, {
             mockServices: () => {

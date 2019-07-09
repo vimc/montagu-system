@@ -19,6 +19,7 @@ import {TouchstoneVersionPage} from "./Touchstones/SingleTouchstoneVersion/Touch
 import {DownloadDemographicsAdminPage} from "./Touchstones/Demography/DownloadDemographicsPage";
 import {ScenarioPage} from "./Touchstones/Scenarios/ScenarioPage";
 import {LoginPage} from "../../shared/components/LoginPage";
+import {ModelMetaPage} from "./ModellingGroups/Models/ModelMetaPage";
 
 interface AdminRouterProps {
     loggedIn: boolean;
@@ -30,6 +31,7 @@ export const AdminRouter: React.FunctionComponent<AdminRouterProps> = (props: Ad
     const loggedIn = <Switch>
         <Route exact path="/" component={MainMenuPage}/>
         <Route exact path="/modelling-groups/" component={ModellingGroupsListPage}/>
+        <Route exact path="/modelling-groups/models/" component={ModelMetaPage}/>
         <Route exact path="/modelling-groups/:groupId/" component={ModellingGroupDetailsPage}/>
         <Route exact path="/modelling-groups/:groupId/admin/" component={ModellingGroupMembersPage}/>
         <Route exact path="/touchstones/" component={TouchstoneListPage}/>

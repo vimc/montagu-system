@@ -1,4 +1,4 @@
-import {ModellingGroup, ModellingGroupDetails, User} from "../../shared/models/Generated";
+import {ModellingGroup, ModellingGroupDetails, ResearchModel, User} from "../../shared/models/Generated";
 
 export enum ModellingGroupTypes {
     GROUPS_FETCHED = "GROUPS_FETCHED",
@@ -6,7 +6,8 @@ export enum ModellingGroupTypes {
     SET_CURRENT_GROUP = "SET_CURRENT_GROUP",
     SET_CURRENT_GROUP_MEMBERS = "SET_CURRENT_GROUP_MEMBERS",
     ADD_MODELLING_GROUP = "ADD_MODELLING_GROUP",
-    SET_SHOW_CREATE_GROUP = "SET_SHOW_CREATE_GROUP"
+    SET_SHOW_CREATE_GROUP = "SET_SHOW_CREATE_GROUP",
+    MODELS_FETCHED = "MODELS_FETCHED",
 }
 
 export interface SetShowCreateGroup {
@@ -17,6 +18,11 @@ export interface SetShowCreateGroup {
 export interface GroupsFetched {
     type: ModellingGroupTypes.GROUPS_FETCHED;
     data: ModellingGroup[];
+}
+
+export interface ModelsFetched {
+    type: ModellingGroupTypes.MODELS_FETCHED;
+    data: ResearchModel[];
 }
 
 export interface SetCurrentGroup {
@@ -46,4 +52,4 @@ export type ModellingGroupsAction =
     | SetCurrentGroupMembers
     | AddModellingGroup
     | SetShowCreateGroup
-    ;
+    | ModelsFetched;

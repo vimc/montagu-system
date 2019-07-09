@@ -8,6 +8,11 @@ export class ModellingGroupsService extends AbstractLocalService {
             .get("/modelling-groups/");
     }
 
+    getAllModels() {
+        return this.setOptions({cacheKey: ModellingGroupsCacheKeysEnum.models})
+            .get("/models/");
+    }
+
     getUserGroups() {
         return this.setOptions({cacheKey: ModellingGroupsCacheKeysEnum.userGroups})
             .get("/user/modelling-groups/");
@@ -48,6 +53,7 @@ export class ModellingGroupsService extends AbstractLocalService {
 }
 
 export enum ModellingGroupsCacheKeysEnum {
+    models = "models",
     groups = "groups",
     groupsDetails = "groupsDetails",
     userGroups = "userGroups"
