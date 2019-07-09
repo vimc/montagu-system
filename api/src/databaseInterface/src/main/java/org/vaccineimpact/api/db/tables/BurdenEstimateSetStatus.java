@@ -37,7 +37,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateSetStatusRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateSetStatus extends TableImpl<BurdenEstimateSetStatusRecord> {
 
-    private static final long serialVersionUID = 196225831;
+    private static final long serialVersionUID = 43121211;
 
     /**
      * The reference instance of <code>public.burden_estimate_set_status</code>
@@ -53,9 +53,9 @@ public class BurdenEstimateSetStatus extends TableImpl<BurdenEstimateSetStatusRe
     }
 
     /**
-     * The column <code>public.burden_estimate_set_status.code</code>. Valid values: {empty, partial, complete}
+     * The column <code>public.burden_estimate_set_status.code</code>. Valid values: {empty, partial, complete, invalid}
      */
-    public final TableField<BurdenEstimateSetStatusRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "Valid values: {empty, partial, complete}");
+    public final TableField<BurdenEstimateSetStatusRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "Valid values: {empty, partial, complete, invalid}");
 
     /**
      * The column <code>public.burden_estimate_set_status.description</code>.
