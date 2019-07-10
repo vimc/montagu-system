@@ -10,5 +10,4 @@ constructor(override val id: Int,
             val note: String?,
             val fingerprint: String?,
             val isDynamic: Boolean?,
-            val code: String?,
-            val maxCountries: Int?): HasKey<Int>
+            val code: String?): HasKey<Int>
