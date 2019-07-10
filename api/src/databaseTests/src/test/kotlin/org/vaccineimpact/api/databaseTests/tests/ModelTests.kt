@@ -34,7 +34,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
             it.addModel("fakeId", "a", "d1", "some model",
                     genderSpecific = true, gender = "male")
             it.addModel("fakeId2", "a", "d1", "another model",
-                    genderSpecific = false, gender = null, isCurrent = false)
+                    genderSpecific = false, gender = null)
 
             it.addModelVersion("fakeId", "v1", setCurrent = true)
 
@@ -57,6 +57,35 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             genderSpecific = false,
                             gender = null,
                             currentVersion = null)
+            ))
+        }
+    }
+
+    @Test
+    fun `get models omits models which are not current`()
+    {
+        given {
+            it.addGroup("a", "description a")
+            it.addDisease("d1")
+            it.addModel("fakeId", "a", "d1", "some model",
+                    genderSpecific = true, gender = "male")
+            it.addModel("fakeId2", "a", "d1", "another model",
+                    genderSpecific = false, gender = null, isCurrent = false)
+
+            it.addModelVersion("fakeId", "v1", setCurrent = true)
+
+        }.check {
+            repo ->
+            val models = repo.all()
+            Assertions.assertThat(models).hasSameElementsAs(listOf(
+                    Model("fakeId",
+                            "some model",
+                            "Unknown citation",
+                            "a",
+                            genderSpecific = true,
+                            gender = "male",
+                            currentVersion = ModelVersion(1, "fakeId", "v1", "Some note",
+                                    "Some fingerprint", true, "R")),
             ))
         }
     }

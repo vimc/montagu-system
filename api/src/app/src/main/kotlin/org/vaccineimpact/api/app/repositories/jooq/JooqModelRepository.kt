@@ -33,6 +33,7 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 .from(MODEL_VERSION)
                 .innerJoin(MODEL)
                 .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
+                .where(MODEL.IS_CURRENT.eq(true))
                 .fetch()
                 .associate{ it[MODEL_VERSION.ID] to it.into(ModelVersion::class.java) }
 
@@ -48,7 +49,7 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
         val modelRecord = modelQuery()
                 .where(MODEL.ID.eq(id))
                 .singleOrNull()
-                ?: throw UnknownObjectError(id, "model_id")
+                ?: throw UnknownObjectError(id, Model::class)
 
         val model = modelRecord.into(Model::class.java)
 
