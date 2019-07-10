@@ -22,8 +22,9 @@ class ModelTests : DatabaseTest()
         validate("/models/") against "Models" given {
             it.addGroup("groupId")
             it.addDisease("d1")
+            it.addDisease("d2")
             it.addModel("modelId", "groupId", "d1", "description1")
-            it.addModel("modelId2", "groupId", "d1", isCurrent = false)
+            it.addModel("modelId2", "groupId", "d2")
             it.addModelVersion("modelId", "v1", setCurrent = true)
         } requiringPermissions {
             PermissionSet("*/models.read")
