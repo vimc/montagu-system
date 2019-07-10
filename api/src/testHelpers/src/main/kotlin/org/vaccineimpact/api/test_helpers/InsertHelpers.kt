@@ -36,9 +36,19 @@ fun JooqContext.addModel(
         description: String = id,
         citation: String = "Unknown citation",
         isCurrent: Boolean = true,
+        genderSpecific: Boolean? = false,
+        gender: String? = "both",
         versions: List<String> = emptyList()
 ): Int
 {
+    val genderCode = if (gender == null) null else
+        dsl.select(GENDER.ID)
+                .from(GENDER)
+                .where(GENDER.CODE.eq(gender))
+                .fetch()
+                .single()
+                .into(Int::class.java)
+
     this.dsl.newRecord(MODEL).apply {
         this.id = id
         this.modellingGroup = groupId
@@ -47,6 +57,8 @@ fun JooqContext.addModel(
         this.currentVersion = null
         this.isCurrent = isCurrent
         this.disease = diseaseId
+        this.gender = genderCode
+        this.genderSpecific = genderSpecific
     }.store()
 
     var versionId = 0
@@ -63,6 +75,8 @@ fun JooqContext.addModelVersion(
         version: String,
         note: String = "Some note",
         fingerprint: String = "Some fingerprint",
+        code: String = "R",
+        isDynamic: Boolean = true,
         setCurrent: Boolean = false
 ): Int
 {
@@ -71,6 +85,8 @@ fun JooqContext.addModelVersion(
         this.version = version
         this.note = note
         this.fingerprint = fingerprint
+        this.code = code
+        this.isDynamic = isDynamic
     }
     record.store()
 

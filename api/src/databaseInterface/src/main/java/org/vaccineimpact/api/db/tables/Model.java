@@ -39,7 +39,7 @@ import org.vaccineimpact.api.db.tables.records.ModelRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Model extends TableImpl<ModelRecord> {
 
-    private static final long serialVersionUID = 1603649316;
+    private static final long serialVersionUID = -1916687555;
 
     /**
      * The reference instance of <code>public.model</code>
@@ -88,6 +88,16 @@ public class Model extends TableImpl<ModelRecord> {
      * The column <code>public.model.disease</code>.
      */
     public final TableField<ModelRecord, String> DISEASE = createField("disease", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.model.gender_specific</code>.
+     */
+    public final TableField<ModelRecord, Boolean> GENDER_SPECIFIC = createField("gender_specific", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.model.gender</code>.
+     */
+    public final TableField<ModelRecord, Integer> GENDER = createField("gender", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.model</code> table reference
@@ -155,7 +165,7 @@ public class Model extends TableImpl<ModelRecord> {
      */
     @Override
     public List<ForeignKey<ModelRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ModelRecord, ?>>asList(Keys.MODEL__MODEL_MODELLING_GROUP_FKEY, Keys.MODEL__MODEL_CURRENT_VERSION_FKEY, Keys.MODEL__MODEL_DISEASE_FKEY);
+        return Arrays.<ForeignKey<ModelRecord, ?>>asList(Keys.MODEL__MODEL_MODELLING_GROUP_FKEY, Keys.MODEL__MODEL_CURRENT_VERSION_FKEY, Keys.MODEL__MODEL_DISEASE_FKEY, Keys.MODEL__MODEL_GENDER_FKEY);
     }
 
     /**
