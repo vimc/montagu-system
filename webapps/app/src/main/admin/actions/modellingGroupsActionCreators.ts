@@ -122,6 +122,17 @@ export const modellingGroupsActionCreators = {
             type: ModellingGroupTypes.SET_SHOW_CREATE_GROUP,
             data: show
         }
+    },
+
+    getAllModels() {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const models = await (new ModellingGroupsService(dispatch, getState)).getAllModels();
+            dispatch({
+                type: ModellingGroupTypes.MODELS_FETCHED,
+                data: models
+            })
+
+        }
     }
 
 };

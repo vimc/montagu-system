@@ -32,6 +32,17 @@ export function mockScenario(properties?: Partial<models.Scenario>): models.Scen
     return Object.assign(template, properties);
 }
 
+export function mockModel(properties?: Partial<models.ResearchModel>) {
+    counter++;
+    const template: models.ResearchModel = {
+        id: "model-" + counter,
+        description: "Description",
+        citation: "citation",
+        modelling_group: "group-" + counter
+    };
+    return Object.assign(template, properties);
+}
+
 export function mockModellingGroup(properties?: Partial<models.ModellingGroup>) {
     counter++;
     const template: models.ModellingGroup = {

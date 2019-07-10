@@ -1,5 +1,5 @@
 import { ModellingGroupsAction, ModellingGroupTypes } from "../actionTypes/ModellingGroupsTypes";
-import {ErrorInfo, ModellingGroup, ModellingGroupDetails, User} from "../../shared/models/Generated";
+import {ErrorInfo, ModellingGroup, ModellingGroupDetails, ResearchModel, User} from "../../shared/models/Generated";
 import {isNonEmptyArray} from "../../shared/ArrayHelpers";
 
 export interface ModellingGroupsState {
@@ -9,6 +9,7 @@ export interface ModellingGroupsState {
     currentGroupMembers: User[];
     createGroupErrors: ErrorInfo[];
     showCreateGroupForm: boolean;
+    models: ResearchModel[];
 }
 
 export const modellingGroupInitialState: ModellingGroupsState = {
@@ -17,12 +18,15 @@ export const modellingGroupInitialState: ModellingGroupsState = {
     currentGroupDetails: null,
     currentGroupMembers: [],
     createGroupErrors: [],
-    showCreateGroupForm: false
+    showCreateGroupForm: false,
+    models: []
 };
 
 export const modellingGroupsReducer = (state = modellingGroupInitialState, action: ModellingGroupsAction)
     : ModellingGroupsState => {
     switch (action.type) {
+        case ModellingGroupTypes.MODELS_FETCHED:
+            return {...state, models: action.data};
         case ModellingGroupTypes.GROUPS_FETCHED:
             return {...state, groups: isNonEmptyArray(action.data) ? action.data : [] };
         case ModellingGroupTypes.SET_CURRENT_GROUP:

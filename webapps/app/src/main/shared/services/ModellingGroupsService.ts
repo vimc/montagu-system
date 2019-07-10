@@ -1,11 +1,16 @@
 import { AbstractLocalService } from "./AbstractLocalService";
-import {AssociateUser, ModellingGroupCreation} from "../models/Generated";
+import {AssociateUser, ModellingGroupCreation, ResearchModel} from "../models/Generated";
 
 export class ModellingGroupsService extends AbstractLocalService {
 
     getAllGroups() {
         return this.setOptions({cacheKey: ModellingGroupsCacheKeysEnum.groups})
             .get("/modelling-groups/");
+    }
+
+    getAllModels(): Promise<ResearchModel[]> {
+        return this.setOptions({cacheKey: ModellingGroupsCacheKeysEnum.models})
+            .get("/models/");
     }
 
     getUserGroups() {
@@ -48,6 +53,7 @@ export class ModellingGroupsService extends AbstractLocalService {
 }
 
 export enum ModellingGroupsCacheKeysEnum {
+    models = "models",
     groups = "groups",
     groupsDetails = "groupsDetails",
     userGroups = "userGroups"

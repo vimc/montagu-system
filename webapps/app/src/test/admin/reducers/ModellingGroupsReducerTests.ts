@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import {modellingGroupInitialState, modellingGroupsReducer} from "../../../main/admin/reducers/modellingGroupsReducer";
 import {AddModellingGroup, ModellingGroupTypes} from "../../../main/admin/actionTypes/ModellingGroupsTypes";
-import {mockModellingGroup, mockModellingGroupDetails, mockUser} from "../../mocks/mockModels";
+import {mockModel, mockModellingGroup, mockModellingGroupDetails, mockUser} from "../../mocks/mockModels";
 
 describe('Admin Modelling Groups reducer tests', () => {
 
@@ -16,6 +16,15 @@ describe('Admin Modelling Groups reducer tests', () => {
             type: ModellingGroupTypes.GROUPS_FETCHED,
             data: [testGroup, testGroup2]
         })).to.eql({...modellingGroupInitialState, groups: [testGroup, testGroup2]});
+    });
+
+    it('sets fetched models', () => {
+        const model1 = mockModel();
+        const model2 = mockModel();
+        expect(modellingGroupsReducer(undefined, {
+            type: ModellingGroupTypes.MODELS_FETCHED,
+            data: [model1, model2]
+        })).to.eql({...modellingGroupInitialState, models: [model1, model2]});
     });
 
     it('sets fetched groups empty ', () => {

@@ -60,6 +60,15 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             ]);
         });
 
+        it("can fetch models", async () => {
+            await addGroups(this.db);
+            const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState)).getAllModels();
+            expect(result).to.eql([
+                {citation: "Citation", description: "A model", id: "model", modelling_group: "g1"},
+                {citation: "Citation", description: "Another model", id: "model2", modelling_group: "g2"}
+            ]);
+        });
+
         it("can fetch group details", async () => {
             await addGroups(this.db);
             const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState)).getGroupDetails('g1');
@@ -281,6 +290,7 @@ function addGroups(db: Client): Promise<QueryResult> {
             INSERT INTO modelling_group (id, description, institution, pi) VALUES ('g2', 'Group 2', '', '');
             
             INSERT INTO model (id, modelling_group, description, citation, is_current) VALUES ('model', 'g1', 'A model', 'Citation', true);
+            INSERT INTO model (id, modelling_group, description, citation, is_current) VALUES ('model2', 'g2', 'Another model', 'Citation', true);
             
             INSERT INTO app_user (username) VALUES ('bob'); 
             INSERT INTO user_group (id, name) VALUES ('bob', 'bob');
