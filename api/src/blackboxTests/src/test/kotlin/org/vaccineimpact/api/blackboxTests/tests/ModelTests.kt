@@ -44,7 +44,6 @@ class ModelTests : DatabaseTest()
                                 "fingerprint" to "Some fingerprint",
                                 "is_dynamic" to true,
                                 "code" to "R",
-                                "max_countries" to 100,
                                 "model" to "modelId"
                         )
                 )
@@ -79,7 +78,6 @@ class ModelTests : DatabaseTest()
                                 "fingerprint" to "Some fingerprint",
                                 "is_dynamic" to true,
                                 "code" to "R",
-                                "max_countries" to 100,
                                 "model" to "modelId"
                         )
                 )

@@ -85,7 +85,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             genderSpecific = true,
                             gender = "male",
                             currentVersion = ModelVersion(1, "fakeId", "v1", "Some note",
-                                    "Some fingerprint", true, "R")),
+                                    "Some fingerprint", true, "R"))
             ))
         }
     }
