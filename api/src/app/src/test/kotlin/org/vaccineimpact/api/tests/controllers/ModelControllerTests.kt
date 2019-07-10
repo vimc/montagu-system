@@ -24,7 +24,7 @@ class ModelControllerTests : MontaguTests()
                 false,
                 "both",
                 ModelVersion(1, "test", "v1", "note", "fingerprint",
-                        true, "R", 100)))
+                        true, "R")))
 
         val modelRepo = mock<ModelRepository> {
             on { this.all() } doReturn models

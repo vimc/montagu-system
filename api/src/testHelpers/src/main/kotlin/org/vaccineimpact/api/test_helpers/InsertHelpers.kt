@@ -77,7 +77,6 @@ fun JooqContext.addModelVersion(
         fingerprint: String = "Some fingerprint",
         code: String = "R",
         isDynamic: Boolean = true,
-        maxCountries: Int = 100,
         setCurrent: Boolean = false
 ): Int
 {
@@ -88,7 +87,6 @@ fun JooqContext.addModelVersion(
         this.fingerprint = fingerprint
         this.code = code
         this.isDynamic = isDynamic
-        this.maxCountries = maxCountries
     }
     record.store()
 

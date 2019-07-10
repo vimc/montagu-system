@@ -8,8 +8,7 @@
         "note": { "type": "string" },
         "fingerprint": { "type": [ "string", "null" ] },
         "code": { "type": ["string", "null"] },
-        "is_dynamic": { "type": ["boolean", "null"] },
-        "max_countries": { "type": ["integer", "null"] }
+        "is_dynamic": { "type": ["boolean", "null"] }
     },
     "additionalProperties": false,
     "required": [ "id", "model", "version", "note", "fingerprint" ]

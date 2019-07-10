@@ -22,8 +22,7 @@ Schema: [`Models.schema.json`](../schemas/Models.schema.json)
                 "note":"Variation withoud herd",
                 "fingerprint":"ic-yf-wh",
                 "is_dynamic":true,
-                "code":"R",
-                "max_countries":100
+                "code":"R"
            }
         },
         { 
@@ -59,8 +58,7 @@ Schema: [`Model.schema.json`](../schemas/Model.schema.json)
             "note":"Variation withoud herd",
             "fingerprint":"ic-yf-wh",
             "is_dynamic":true,
-            "code":"R",
-            "max_countries":100
+            "code":"R"
        }
     }
 ## POST /models/
@@ -95,7 +93,6 @@ Schema: [`CreateModelVersion.schema.json`](../schemas/CreateModelVersion.schema.
         "note": "Notes about what's changed in the model",
         "fingerprint": null
         "is_dynamic":true,
-        "code":"R",
-        "max_countries":100
+        "code":"R"
     }
     
