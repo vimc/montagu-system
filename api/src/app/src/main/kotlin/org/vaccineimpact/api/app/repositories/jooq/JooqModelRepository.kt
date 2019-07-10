@@ -23,7 +23,6 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 GENDER.CODE.`as`("gender"),
                 MODEL.CURRENT_VERSION)
                 .fromJoinPath(MODEL, GENDER, joinType = JoinType.LEFT_OUTER_JOIN)
-
     }
 
     override fun all(): List<Model>
