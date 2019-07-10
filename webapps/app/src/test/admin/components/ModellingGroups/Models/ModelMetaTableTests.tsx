@@ -64,11 +64,16 @@ describe("ModelMetaTable tests", () => {
 
         // ascending
         expect(getFirstGroup()).to.eq("ga");
+        expect(rendered.find("th").at(0).hasClass("asc")).to.eq(true);
+        expect(rendered.find("th").at(0).hasClass("desc")).to.eq(false);
+
 
         rendered.find("th").at(0).simulate("click");
 
         // descending
         expect(getFirstGroup()).to.eq("gb");
+        expect(rendered.find("th").at(0).hasClass("asc")).to.eq(false);
+        expect(rendered.find("th").at(0).hasClass("desc")).to.eq(true);
     });
 
 
@@ -87,11 +92,15 @@ describe("ModelMetaTable tests", () => {
 
         // ascending
         expect(getFirstModel()).to.eq("ma");
+        expect(rendered.find("th").at(1).hasClass("asc")).to.eq(true);
+        expect(rendered.find("th").at(1).hasClass("desc")).to.eq(false);
 
         rendered.find("th").at(1).simulate("click");
 
         // descending
         expect(getFirstModel()).to.eq("mb");
+        expect(rendered.find("th").at(1).hasClass("asc")).to.eq(false);
+        expect(rendered.find("th").at(1).hasClass("desc")).to.eq(true);
     });
 
 });

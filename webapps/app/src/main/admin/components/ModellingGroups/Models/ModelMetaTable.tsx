@@ -31,7 +31,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
 
     onSort(sortKey: keyof ResearchModel) {
 
-        const cols: ILookup<boolean> = {};
+        const cols: ILookup<boolean> = {...this.state.cols};
         cols[sortKey] = !this.state.cols[sortKey];
 
         const ascending = cols[sortKey] ? 1 : -1;
@@ -41,14 +41,28 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
         });
     }
 
+    calculateClass(id: string) {
+        if (this.state.cols[id] === true) {
+            return "asc"
+        }
+        if (this.state.cols[id] === false){
+            return "desc"
+        }
+        return ""
+    }
+
     render() {
+
+
         return <div>
             <p>Click on a column header to sort</p>
             <table>
                 <thead>
                 <tr>
-                    <th className="sortable" onClick={() => this.onSort('modelling_group')}>Group</th>
-                    <th className="sortable" onClick={() => this.onSort('id')}>Model Name</th>
+                    <th className={"sortable " + this.calculateClass("modelling_group")}
+                        onClick={() => this.onSort('modelling_group')}>Group</th>
+                    <th className={"sortable " + this.calculateClass("id")}
+                        onClick={() => this.onSort('id')}>Model Name</th>
                     {/*<th onClick={() => this.onSort('disease')}>Disease</th>*/}
                     {/*<th onClick={() => this.onSort('type')}>Model Type</th>*/}
                     {/*<th onClick={() => this.onSort('code')}>Code</th>*/}
