@@ -24,5 +24,6 @@ object MontaguRouteConfig : RouteConfig
             PasswordRouteConfig.endpoints +
             ResponsibilityRouteConfig.endpoints +
             TouchstoneRouteConfig.endpoints +
-            UserRouteConfig.endpoints
+            UserRouteConfig.endpoints +
+            ExpectationsRouteConfig.endpoints
 }

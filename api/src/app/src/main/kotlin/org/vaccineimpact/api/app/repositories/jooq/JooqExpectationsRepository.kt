@@ -13,10 +13,7 @@ import org.vaccineimpact.api.db.tables.BurdenEstimateCountryExpectation
 import org.vaccineimpact.api.db.tables.BurdenEstimateExpectation
 import org.vaccineimpact.api.db.tables.BurdenEstimateOutcomeExpectation
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateExpectationRecord
-import org.vaccineimpact.api.models.CohortRestriction
-import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.ExpectationMapping
-import org.vaccineimpact.api.models.Expectations
+import org.vaccineimpact.api.models.*
 
 data class ApplicableScenariosAndDisease(val scenarios: List<String>, val disease: String)
 
@@ -85,6 +82,13 @@ class JooqExpectationsRepository(dsl: DSLContext)
                             mapping.disease
                     )
                 }
+    }
+
+    override fun getAllExpectations(): List<TouchstoneModelExpectations>
+    {
+        //1 get open responsibility -> disease, modelling group, open touchstone, expectations ids
+        //2 pull out nested expectations data
+        //OR do it all in one query
     }
 
     private fun getBasicDataAndMappingFromRecords(records: List<Record>): Pair<BurdenEstimateExpectationRecord, ApplicableScenariosAndDisease>
