@@ -125,4 +125,21 @@ class ModelTests : DatabaseTest()
         val response = requestHelper.get("/models/nonexistentmodel/", PermissionSet("*/can-login","*/models.read"))
         Assertions.assertThat(response.statusCode).isEqualTo(404)
     }
+
+    @Test
+    fun `get non-current model returns 404`()
+    {
+        val requestHelper = RequestHelper()
+        val userHelper = TestUserHelper()
+
+        JooqContext().use {
+            userHelper.setupTestUser(it)
+            it.addGroup("groupId")
+            it.addDisease("d1")
+            it.addModel("modelId", "groupId", "d1", "description1", isCurrent = false)
+        }
+
+        val response = requestHelper.get("/models/modelId/", PermissionSet("*/can-login","*/models.read"))
+        Assertions.assertThat(response.statusCode).isEqualTo(404)
+    }
 }
