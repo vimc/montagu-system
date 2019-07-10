@@ -12,7 +12,7 @@ import org.vaccineimpact.api.models.ModelVersion
 class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepository
 {
 
-    private fun modelQuery(): SelectJoinStep<*>
+    private fun modelQuery(): SelectConditionStep<*>
     {
         return dsl.select(
                 MODEL.ID,
@@ -23,6 +23,7 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 GENDER.CODE.`as`("gender"),
                 MODEL.CURRENT_VERSION)
                 .fromJoinPath(MODEL, GENDER, joinType = JoinType.LEFT_OUTER_JOIN)
+                .where(MODEL.IS_CURRENT.eq(true))
     }
 
     override fun all(): List<Model>
@@ -33,7 +34,6 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 .from(MODEL_VERSION)
                 .innerJoin(MODEL)
                 .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
-                .where(MODEL.IS_CURRENT.eq(true))
                 .fetch()
                 .associate{ it[MODEL_VERSION.ID] to it.into(ModelVersion::class.java) }
 
@@ -47,7 +47,7 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
     override fun get(id: String): Model
     {
         val modelRecord = modelQuery()
-                .where(MODEL.ID.eq(id))
+                .and(MODEL.ID.eq(id))
                 .singleOrNull()
                 ?: throw UnknownObjectError(id, Model::class)
 

@@ -31,9 +31,10 @@ class ModelTests : RepositoryTests<ModelRepository>()
         given {
             it.addGroup("a", "description a")
             it.addDisease("d1")
+            it.addDisease("d2")
             it.addModel("fakeId", "a", "d1", "some model",
                     genderSpecific = true, gender = "male")
-            it.addModel("fakeId2", "a", "d1", "another model",
+            it.addModel("fakeId2", "a", "d2", "another model",
                     genderSpecific = false, gender = null)
 
             it.addModelVersion("fakeId", "v1", setCurrent = true)
