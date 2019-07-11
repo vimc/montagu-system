@@ -1,4 +1,4 @@
-import {ModellingGroup, ModellingGroupDetails, ResearchModel, User} from "../../shared/models/Generated";
+import {Model, ModellingGroup, ModellingGroupDetails, User} from "../../shared/models/Generated";
 
 export enum ModellingGroupTypes {
     GROUPS_FETCHED = "GROUPS_FETCHED",
@@ -22,7 +22,7 @@ export interface GroupsFetched {
 
 export interface ModelsFetched {
     type: ModellingGroupTypes.MODELS_FETCHED;
-    data: ResearchModel[];
+    data: Model[];
 }
 
 export interface SetCurrentGroup {

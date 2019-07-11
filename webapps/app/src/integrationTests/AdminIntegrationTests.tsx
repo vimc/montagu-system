@@ -64,8 +64,10 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             await addGroups(this.db);
             const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState)).getAllModels();
             expect(result).to.eql([
-                {citation: "Citation", description: "A model", id: "model", modelling_group: "g1"},
-                {citation: "Citation", description: "Another model", id: "model2", modelling_group: "g2"}
+                {citation: "Citation", description: "A model", id: "model", modelling_group: "g1",
+                    gender: null, gender_specific: null, current_version: null},
+                {citation: "Citation", description: "Another model", id: "model2", modelling_group: "g2",
+                    gender: null, gender_specific: null, current_version: null}
             ]);
         });
 
