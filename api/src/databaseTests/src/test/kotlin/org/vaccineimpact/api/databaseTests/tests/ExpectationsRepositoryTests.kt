@@ -12,6 +12,7 @@ import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.CohortRestriction
 import org.vaccineimpact.api.models.Country
 import org.vaccineimpact.api.models.ExpectationMapping
+import org.vaccineimpact.api.models.TouchstoneModelExpectations
 import org.vaccineimpact.api.test_helpers.exampleExpectations
 
 class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
@@ -19,6 +20,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     override fun makeRepository(db: JooqContext) = JooqExpectationsRepository(db.dsl)
 
     private val groupId = "group"
+    private val otherGroupId = "other group"
     private val disease = "YF"
     private val scenarioId = "scenario"
     private val otherScenarioId = "otherScenario"
@@ -247,6 +249,40 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
                     )
             ))
         }
+    }
+
+    @Test
+    fun `can get all expectations`()
+    {
+        withDatabase { db ->
+            db.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
+            db.addTouchstoneVersion("touchstone2", 2, addTouchstone = true)
+            db.addScenarioDescription(scenarioId, "desc", "YF", addDisease = true)
+            db.addScenarioDescription(otherScenarioId, "other desc", "HepB", addDisease = true)
+            db.addGroup(groupId)
+            db.addGroup(otherGroupId)
+            val setId1 = db.addResponsibilitySet(groupId, touchstoneVersionId)
+            val setId2 = db.addResponsibilitySet(otherGroupId, "touchstone2-2")
+            val r1 = db.addResponsibility(setId1, touchstoneVersionId, scenarioId)
+            val r2 = db.addResponsibility(setId2, touchstoneVersionId, otherScenarioId)
+            val expId1 = db.addExpectations(r1)
+            val expId2 = db.addExpectations(r2)
+            db.addExistingExpectationsToResponsibility(r1, expId1)
+            db.addExistingExpectationsToResponsibility(r2, expId2)
+        }
+        withRepo { repo ->
+            val result = repo.getAllExpectations()
+            assertThat(result).isEqualTo(listOf(
+                    TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF", exampleExpectations()),
+                    TouchstoneModelExpectations("touchstone2-2", otherGroupId, "HepB", exampleExpectations())
+            ))
+        }
+    }
+
+    @Test
+    fun `get all expectations does not return those from closed touchstones or responsibilities`()
+    {
+
     }
 
     private fun addResponsibilityAnd(action: (JooqContext, Int, Int) -> Int) = withDatabase { db ->

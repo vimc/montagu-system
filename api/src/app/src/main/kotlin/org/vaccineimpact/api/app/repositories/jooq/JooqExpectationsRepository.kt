@@ -91,10 +91,13 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 TOUCHSTONE.ID,
                 RESPONSIBILITY_SET.MODELLING_GROUP,
                 *BURDEN_ESTIMATE_EXPECTATION.fields())
-                .fromJoinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION, SCENARIO, SCENARIO_DESCRIPTION,
-                        RESPONSIBILITY_SET, TOUCHSTONE)
+                .fromJoinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION)
+                .joinPath(RESPONSIBILITY, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
+                .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET, TOUCHSTONE)
                 .where(RESPONSIBILITY.IS_OPEN.eq(true))
                 .and(TOUCHSTONE.STATUS.eq("open"))
+                .and(SCENARIO.TOUCHSTONE.eq(RESPONSIBILITY_SET.TOUCHSTONE))
+                .orderBy(RESPONSIBILITY_SET.MODELLING_GROUP, SCENARIO_DESCRIPTION.DISEASE, TOUCHSTONE.ID)
 
         return records.map{
             TouchstoneModelExpectations(it[TOUCHSTONE.ID], it[RESPONSIBILITY_SET.MODELLING_GROUP],
