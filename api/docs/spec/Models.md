@@ -74,7 +74,7 @@ Schema: [`Model.schema.json`](../schemas/Model.schema.json)
         "id": "NEW-UNIQUE-ID",
         "description": "DESCRIPTION",
         "citation": "CITATION",
-        "modelling_group": "ID-OF-EXISTING-MODELLING-GROUP"
+        "modelling_group": "ID-OF-EXISTING-MODELLING-GROUP",
         "gender_specific": false,
         "gender": "both"
     }
@@ -91,7 +91,7 @@ Schema: [`CreateModelVersion.schema.json`](../schemas/CreateModelVersion.schema.
     {
         "version": "5.7-stable",
         "note": "Notes about what's changed in the model",
-        "fingerprint": null
+        "fingerprint": null,
         "is_dynamic":true,
         "code":"R"
     }
