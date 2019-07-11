@@ -15,8 +15,8 @@ Schema: [`Models.schema.json`](../schemas/Models.schema.json)
             "modelling_group": "IC-YellowFever",
             "gender_specific": false,
             "gender": "both",
-            "current_version: {
-                "id":"14",
+            "current_version": {
+                "id": 14,
                 "model":"IC-YF-WithoutHerd",
                 "version":"v1",
                 "note":"Variation withoud herd",
@@ -51,8 +51,8 @@ Schema: [`Model.schema.json`](../schemas/Model.schema.json)
         "modelling_group": "IC-YellowFever",
         "gender_specific": false,
         "gender": "both",
-        "current_version: {
-            "id":"14",
+        "current_version": {
+            "id": 14,
             "model":"IC-YF-WithoutHerd",
             "version":"v1",
             "note":"Variation withoud herd",
