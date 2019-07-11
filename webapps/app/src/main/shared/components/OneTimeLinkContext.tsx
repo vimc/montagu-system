@@ -1,10 +1,9 @@
 import * as React from "react";
 import {connect} from "react-redux";
-import {ReportAppState} from "../../report/reducers/reportAppReducers";
 import {oneTimeTokenActionCreators} from "../actions/oneTimeTokenActionCreators";
-import {APIService} from "../models/APIService";
 import {buildURL} from "../services/AbstractLocalService";
 import {Dispatch} from "redux";
+import {ContribAppState} from "../../contrib/reducers/contribAppReducers";
 
 const url = require('url'),
     querystring = require("querystring");
@@ -17,7 +16,6 @@ interface PropsSharedWithChildren {
 
 // Props that are passed to the HOC
 interface PublicProps extends PropsSharedWithChildren {
-    service?: APIService;
     // If set, then enabled will be set to false for this many seconds after
     // clicking. If the href changes, the disable will be cancelled
     delayBeforeReenable?: number;
@@ -26,7 +24,7 @@ interface PublicProps extends PropsSharedWithChildren {
 // The complete set of props used by the HOC
 interface Props extends PublicProps {
     token: string;
-    refreshToken: (url: string, service: APIService) => void;
+    refreshToken: (url: string) => void;
 }
 
 // These props are passed to the children
@@ -40,14 +38,14 @@ interface ComponentState {
     enabled: boolean;
 }
 
-const mapStateToProps = (state: ReportAppState, props: PublicProps): Partial<Props> => {
+const mapStateToProps = (state: ContribAppState, props: PublicProps): Partial<Props> => {
     return {...props, token: state.onetimeTokens.tokens[props.href]}
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>, props: Props): Props => {
     return {
         ...props,
-        refreshToken: (url, service) => setTimeout(() => dispatch(oneTimeTokenActionCreators.fetchToken(url, service)))
+        refreshToken: (url) => setTimeout(() => dispatch(oneTimeTokenActionCreators.fetchToken(url)))
     }
 };
 
@@ -77,9 +75,8 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
 
         render() {
             let href = null;
-            const service = this.getService();
             if (this.props.token != null) {
-                href = appendAccessToken(buildURL(this.props.href, service), this.props.token);
+                href = appendAccessToken(buildURL(this.props.href), this.props.token);
             }
             return <WrappedComponent
                 className={this.props.className}
@@ -112,13 +109,10 @@ export function OneTimeLinkContext(WrappedComponent: ComponentConstructor<OneTim
 
         private refreshToken() {
             if (this.props.href != null) {
-                this.props.refreshToken(this.props.href, this.getService());
+                this.props.refreshToken(this.props.href);
             }
         }
 
-        private getService(): APIService {
-            return this.props.service || "main";
-        }
     });
 }
 

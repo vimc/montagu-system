@@ -5,17 +5,17 @@ import {checkAsync} from "../../testHelpers";
 import {OneTimeLinkContext, OneTimeLinkProps} from "../../../main/shared/components/OneTimeLinkContext";
 import {Sandbox} from "../../Sandbox";
 import {OneTimeTokenService} from "../../../main/shared/services/OneTimeTokenService";
-import {mockOnetimeTokenState, mockReportAppState} from "../../mocks/mockStates";
+import {mockContribState, mockOnetimeTokenState} from "../../mocks/mockStates";
 import {ILookup} from "../../../main/shared/models/Lookup";
-import {ReportAppState} from "../../../main/report/reducers/reportAppReducers";
 import {shallow} from "enzyme";
-import {createMockReportStore} from "../../mocks/mockStore";
 import {MockStore} from "redux-mock-store";
 import * as Sinon from "sinon"
+import {ContribAppState} from "../../../main/contrib/reducers/contribAppReducers";
+import {createMockContribStore} from "../../mocks/mockStore";
 
 describe("OneTimeLinkContext", () => {
     const sandbox = new Sandbox();
-    let store: MockStore<ReportAppState> = null,
+    let store: MockStore<ContribAppState> = null,
         fetchTokenStub: Sinon.SinonStub = null;
 
     const url = "/banana/";
@@ -24,7 +24,7 @@ describe("OneTimeLinkContext", () => {
     tokens[url] = token;
 
     beforeEach(() => {
-        store = createMockReportStore(mockReportAppState({onetimeTokens: mockOnetimeTokenState({tokens})}));
+        store = createMockContribStore(mockContribState({onetimeTokens: mockOnetimeTokenState({tokens})}));
         fetchTokenStub = sandbox.sinon.stub(OneTimeTokenService.prototype, "fetchToken")
             .returns(Promise.resolve("token"))
     });
@@ -71,25 +71,17 @@ describe("OneTimeLinkContext", () => {
     });
 
     it("triggers fetchToken on mount", (done: DoneCallback) => {
-        render(<Class href="/banana/" service="main"/>);
+        render(<Class href="/banana/"/>);
         checkAsync(done, () => {
             expect(fetchTokenStub.called).to.equal(true, "Expected fetchToken to be called");
-            expect(fetchTokenStub.getCall(0).args).to.eql(["/banana/", "main"]);
+            expect(fetchTokenStub.getCall(0).args).to.eql(["/banana/"]);
         });
     });
 
     it("does not trigger fetchToken if href is null", (done: DoneCallback) => {
-        render(<Class href={null} service="main"/>);
+        render(<Class href={null}/>);
         checkAsync(done, () => {
             expect(fetchTokenStub.notCalled).to.equal(true, "Expected fetchToken to not be called");
-        });
-    });
-
-    it("triggers fetchToken for reporting service if service is reporting", (done: DoneCallback) => {
-        render(<Class href="/banana/" service="reporting"/>);
-        checkAsync(done, () => {
-            expect(fetchTokenStub.called).to.equal(true, "Expected fetchToken to be called");
-            expect(fetchTokenStub.getCall(0).args).to.eql(["/banana/", "reporting"]);
         });
     });
 

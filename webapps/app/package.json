@@ -13,7 +13,6 @@
     "integration_tests": "./scripts/run-integration-tests-with-apis.sh",
     "admin": "serve out/admin --single",
     "contrib": "serve out/contrib --single",
-    "report": "serve out/report --single",
     "tslint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'"
   },
   "repository": {

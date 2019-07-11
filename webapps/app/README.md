@@ -13,7 +13,7 @@
    and rebuild as needed.
 5. Run `npm run SHORT_NAME` to run a development server serving one of the three
    portals on port 5000.
-6. Run `./scripts/run-development-apis.sh` to run both APIs (main and reporting)
+6. Run `./scripts/run-development-dependencies.sh` to run Montagu
    with a shared key, and with test data.
 
 ## Linting
@@ -41,7 +41,7 @@ The integration tests get run in three different ways:
    separately from the Webapp build environment.
 3. This reusable image is used in the Montagu TeamCity build configuration. It
    is slightly different, in that it is running as part of a Docker network, and
-   so connects to the APIs and database at different URLs (e.g. `api` as
+   so connects to the API and database at different URLs (e.g. `api` as
    opposed to `localhost`). Also, because we want the ability for the portals to
    be pinned at different versions, we run the integration test container once
    per portal, running just the subset of tests applicable to that portal, and
@@ -58,7 +58,7 @@ The integration tests get run in three different ways:
 4. Browse to `http://localhost:8080/`
 
 # Portals
-There are three portals.
+There are 2 portals.
 
 ## Modellers' contribution portal
 Short name: `contrib`
@@ -72,9 +72,3 @@ Short name: `admin`
 This portal allows administrative staff to set up touchstones with all the
 necessary input data, responsibilities and recipes. It's also where we do user
 management.
-
-## Reporting portal
-Short name: `report`
-
-This portal makes Orderly reports available to funders and modellers. Staff can
-also review and publish unpublished reports.

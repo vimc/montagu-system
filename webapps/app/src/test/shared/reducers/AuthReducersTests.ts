@@ -11,9 +11,7 @@ const testAuthData: AuthState = {
     bearerToken: 'testtoken',
     permissions: [],
     isAccountActive: true,
-    isModeller: false,
-    isReportReviewer: false,
-    isReportRunner: false
+    isModeller: false
 };
 
 describe('Auth reducer tests', () => {
@@ -122,44 +120,5 @@ describe ('loadAuthState tests', () => {
         expect(nonModeller.isModeller).to.eql(false);
     });
 
-    it('sets isReportReviewer correctly' , () => {
-        const reviewer = loadAuthState({
-            username: "testUser",
-            loggedIn: true,
-            bearerToken: "testToken",
-            permissions: ["perm1", "perm2", "*/reports.review"],
-            modellingGroups: ["group1", "group2"]
-        });
-        expect(reviewer.isReportReviewer).to.eql(true);
 
-        const nonReviewer = loadAuthState({
-            username: "testUser",
-            loggedIn: true,
-            bearerToken: "testToken",
-            permissions: ["perm1", "perm2"],
-            modellingGroups: [] as string[]
-        });
-        expect(nonReviewer.isReportReviewer).to.eql(false);
-
-    });
-
-    it('sets isReportRunner correctly' , () => {
-        const runner = loadAuthState({
-            username: "testUser",
-            loggedIn: true,
-            bearerToken: "testToken",
-            permissions: ["perm1", "perm2", "*/reports.run"],
-            modellingGroups: ["group1", "group2"]
-        });
-        expect(runner.isReportRunner).to.eql(true);
-
-        const nonRunner = loadAuthState({
-            username: "testUser",
-            loggedIn: true,
-            bearerToken: "testToken",
-            permissions: ["*/reports.review", "perm1", "perm2"],
-            modellingGroups: [] as string[]
-        });
-        expect(nonRunner.isReportRunner).to.eql(false);
-    });
 });

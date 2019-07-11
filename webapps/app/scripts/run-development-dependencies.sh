@@ -3,12 +3,12 @@ set -ex
 
 here=$(dirname $0)
 $here/clear-docker.sh
-source $here/run-apis.sh
+source $here/run-dependencies.sh
 
 # From now on, if the user presses Ctrl+C we should teardown gracefully
 trap on_interrupt INT
 function on_interrupt() {
-    $here/stop-apis.sh
+    $here/stop-dependencies.sh
 }
 
 # Generate test data
