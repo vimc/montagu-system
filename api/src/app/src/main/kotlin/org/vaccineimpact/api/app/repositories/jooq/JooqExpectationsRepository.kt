@@ -86,9 +86,21 @@ class JooqExpectationsRepository(dsl: DSLContext)
 
     override fun getAllExpectations(): List<TouchstoneModelExpectations>
     {
-        //1 get open responsibility -> disease, modelling group, open touchstone, expectations ids
-        //2 pull out nested expectations data
-        //OR do it all in one query
+        val records = dsl.select(
+                SCENARIO_DESCRIPTION.DISEASE,
+                TOUCHSTONE.ID,
+                RESPONSIBILITY_SET.MODELLING_GROUP,
+                *BURDEN_ESTIMATE_EXPECTATION.fields())
+                .fromJoinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION, SCENARIO, SCENARIO_DESCRIPTION,
+                        RESPONSIBILITY_SET, TOUCHSTONE)
+                .where(RESPONSIBILITY.IS_OPEN.eq(true))
+                .and(TOUCHSTONE.STATUS.eq("open"))
+
+        return records.map{
+            TouchstoneModelExpectations(it[TOUCHSTONE.ID], it[RESPONSIBILITY_SET.MODELLING_GROUP],
+                    it[SCENARIO_DESCRIPTION.DISEASE],
+                    it.into(BurdenEstimateExpectationRecord::class.java).withCountriesAndOutcomes())
+        }
     }
 
     private fun getBasicDataAndMappingFromRecords(records: List<Record>): Pair<BurdenEstimateExpectationRecord, ApplicableScenariosAndDisease>
