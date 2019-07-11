@@ -280,9 +280,59 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     }
 
     @Test
-    fun `get all expectations does not return those from closed touchstones or responsibilities`()
+    fun `get all expectations does not return those from closed touchstones`()
     {
+        withDatabase { db ->
+            db.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
+            db.addTouchstoneVersion("touchstone2", 2, addTouchstone = true)
+            db.addScenarioDescription(scenarioId, "desc", "YF", addDisease = true)
+            db.addScenarioDescription(otherScenarioId, "other desc", "HepB", addDisease = true)
+            db.addGroup(groupId)
+            db.addGroup(otherGroupId)
+            val setId1 = db.addResponsibilitySet(groupId, touchstoneVersionId)
+            val setId2 = db.addResponsibilitySet(otherGroupId, "touchstone2-2")
+            val r1 = db.addResponsibility(setId1, touchstoneVersionId, scenarioId)
+            val r2 = db.addResponsibility(setId2, touchstoneVersionId, otherScenarioId)
+            val expId1 = db.addExpectations(r1)
+            val expId2 = db.addExpectations(r2)
+            db.addExistingExpectationsToResponsibility(r1, expId1)
+            db.addExistingExpectationsToResponsibility(r2, expId2)
+        }
+        withRepo { repo ->
+            val result = repo.getAllExpectations()
+            assertThat(result).isEqualTo(listOf(
+                    TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF", exampleExpectations()),
+                    TouchstoneModelExpectations("touchstone2-2", otherGroupId, "HepB", exampleExpectations())
+            ))
+        }
+    }
 
+    @Test
+    fun `get all expectations does not return those from closed responsibilities`()
+    {
+        withDatabase { db ->
+            db.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
+            db.addTouchstoneVersion("touchstone2", 2, addTouchstone = true)
+            db.addScenarioDescription(scenarioId, "desc", "YF", addDisease = true)
+            db.addScenarioDescription(otherScenarioId, "other desc", "HepB", addDisease = true)
+            db.addGroup(groupId)
+            db.addGroup(otherGroupId)
+            val setId1 = db.addResponsibilitySet(groupId, touchstoneVersionId)
+            val setId2 = db.addResponsibilitySet(otherGroupId, "touchstone2-2")
+            val r1 = db.addResponsibility(setId1, touchstoneVersionId, scenarioId)
+            val r2 = db.addResponsibility(setId2, touchstoneVersionId, otherScenarioId)
+            val expId1 = db.addExpectations(r1)
+            val expId2 = db.addExpectations(r2)
+            db.addExistingExpectationsToResponsibility(r1, expId1)
+            db.addExistingExpectationsToResponsibility(r2, expId2)
+        }
+        withRepo { repo ->
+            val result = repo.getAllExpectations()
+            assertThat(result).isEqualTo(listOf(
+                    TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF", exampleExpectations()),
+                    TouchstoneModelExpectations("touchstone2-2", otherGroupId, "HepB", exampleExpectations())
+            ))
+        }
     }
 
     private fun addResponsibilityAnd(action: (JooqContext, Int, Int) -> Int) = withDatabase { db ->

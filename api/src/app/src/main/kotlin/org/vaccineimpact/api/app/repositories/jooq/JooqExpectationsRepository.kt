@@ -92,7 +92,7 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 RESPONSIBILITY_SET.MODELLING_GROUP,
                 *BURDEN_ESTIMATE_EXPECTATION.fields())
                 .fromJoinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION)
-                .joinPath(RESPONSIBILITY, RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
+                .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET, TOUCHSTONE)
                 .where(RESPONSIBILITY.IS_OPEN.eq(true))
                 .and(TOUCHSTONE.STATUS.eq("open"))
