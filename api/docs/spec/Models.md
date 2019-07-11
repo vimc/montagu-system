@@ -91,8 +91,6 @@ Schema: [`CreateModelVersion.schema.json`](../schemas/CreateModelVersion.schema.
     {
         "version": "5.7-stable",
         "note": "Notes about what's changed in the model",
-        "fingerprint": null,
-        "is_dynamic":true,
-        "code":"R"
+        "fingerprint": null
     }
     
