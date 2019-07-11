@@ -284,7 +284,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     {
         withDatabase { db ->
             db.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
-            db.addTouchstoneVersion("touchstone2", 2, addTouchstone = true)
+            db.addTouchstoneVersion("touchstone2", 2, status="closed", addTouchstone = true)
             db.addScenarioDescription(scenarioId, "desc", "YF", addDisease = true)
             db.addScenarioDescription(otherScenarioId, "other desc", "HepB", addDisease = true)
             db.addGroup(groupId)
@@ -302,7 +302,6 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             val result = repo.getAllExpectations()
             assertThat(result).isEqualTo(listOf(
                     TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF", exampleExpectations()),
-                    TouchstoneModelExpectations("touchstone2-2", otherGroupId, "HepB", exampleExpectations())
             ))
         }
     }
@@ -320,7 +319,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             val setId1 = db.addResponsibilitySet(groupId, touchstoneVersionId)
             val setId2 = db.addResponsibilitySet(otherGroupId, "touchstone2-2")
             val r1 = db.addResponsibility(setId1, touchstoneVersionId, scenarioId)
-            val r2 = db.addResponsibility(setId2, touchstoneVersionId, otherScenarioId)
+            val r2 = db.addResponsibility(setId2, touchstoneVersionId, otherScenarioId, open=false)
             val expId1 = db.addExpectations(r1)
             val expId2 = db.addExpectations(r2)
             db.addExistingExpectationsToResponsibility(r1, expId1)
@@ -330,7 +329,6 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             val result = repo.getAllExpectations()
             assertThat(result).isEqualTo(listOf(
                     TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF", exampleExpectations()),
-                    TouchstoneModelExpectations("touchstone2-2", otherGroupId, "HepB", exampleExpectations())
             ))
         }
     }
