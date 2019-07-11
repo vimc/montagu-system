@@ -12,7 +12,7 @@ Schema: [`Models.schema.json`](../schemas/Models.schema.json)
             "id": "IC-YF-WithoutHerd",
             "description": "YF burden estimate - without herd effect",
             "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
-            "modelling_group": "IC-YellowFever"
+            "modelling_group": "IC-YellowFever",
             "gender_specific": false,
             "gender": "both",
             "current_version: {
@@ -29,7 +29,7 @@ Schema: [`Models.schema.json`](../schemas/Models.schema.json)
             "id": "LSHTM-DynaMice",
             "description": "DynaMice",
             "citation": "Dynamic Citation",
-            "modelling_group": "LSHTML-Jit"
+            "modelling_group": "LSHTML-Jit",
             "gender_specific": true,
             "gender": "female",
             "current_version": null
