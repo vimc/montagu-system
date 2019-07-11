@@ -17,8 +17,8 @@ fun exampleInternalUser(username: String = "username") = InternalUser(
         emptyList()
 )
 
-fun exampleExpectations() = Expectations(
-        id = 1,
+fun exampleExpectations(id: Int=1) = Expectations(
+        id = id,
         description = "description",
         years = 2000..2100,
         ages = 0..99,
