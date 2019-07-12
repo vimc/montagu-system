@@ -7,4 +7,4 @@ data class TouchstoneModelExpectations
 constructor(val touchstoneVersion: String,
             val modellingGroup: String,
             val disease: String,
-            val expectations: Expectations)
+            val expectations: OutcomeExpectations)

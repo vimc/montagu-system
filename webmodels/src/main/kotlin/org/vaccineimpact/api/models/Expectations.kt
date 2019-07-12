@@ -3,6 +3,13 @@ package org.vaccineimpact.api.models
 import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import kotlin.coroutines.experimental.buildSequence
 
+data class OutcomeExpectations(val id: Int,
+            val description: String,
+            val years: IntRange,
+            val ages: IntRange,
+            val cohorts: CohortRestriction,
+            val outcomes: List<String>)
+
 data class Expectations(
         val id: Int,
         val description: String,
