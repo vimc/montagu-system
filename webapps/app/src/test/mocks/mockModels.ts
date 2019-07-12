@@ -28,13 +28,31 @@ export function mockScenario(properties?: Partial<models.Scenario>): models.Scen
     return Object.assign(template, properties);
 }
 
-export function mockModel(properties?: Partial<models.ResearchModel>) {
+export function mockModelVersion(properties?: Partial<models.ModelVersion>) {
     counter++;
-    const template: models.ResearchModel = {
+    const template: models.ModelVersion = {
+        id: counter,
+        fingerprint: null,
+        is_dynamic: false,
+        model: "model",
+        note: null,
+        code: "R",
+        version: "v-" + counter
+    };
+
+    return Object.assign(template, properties);
+}
+
+export function mockModel(properties?: Partial<models.Model>) {
+    counter++;
+    const template: models.Model = {
         id: "model-" + counter,
         description: "Description",
         citation: "citation",
-        modelling_group: "group-" + counter
+        modelling_group: "group-" + counter,
+        gender: null,
+        gender_specific: false,
+        current_version: mockModelVersion()
     };
     return Object.assign(template, properties);
 }

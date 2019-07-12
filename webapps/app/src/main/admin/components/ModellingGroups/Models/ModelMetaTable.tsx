@@ -1,16 +1,35 @@
 import * as React from "react";
-import {ResearchModel} from "../../../../shared/models/Generated";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {connect} from "react-redux";
 import {ILookup} from "../../../../shared/models/Lookup";
 
+interface ModelMetaRow {
+    code: string | null
+    is_dynamic: boolean
+    citation: string;
+    gender: string | null;
+    gender_specific: boolean | null;
+    id: string;
+    modelling_group: string;
+}
+
 interface ModelMetaProps {
-    models: ResearchModel[]
+    models: ModelMetaRow[]
 }
 
 interface State {
     cols: ILookup<boolean>
-    data: ResearchModel[]
+    data: ModelMetaRow[]
+}
+
+function compare(a: unknown, b: unknown) {
+    if (typeof a == "boolean" || a == null || b == null) {
+        return (a === b) ? 0 : a ? -1 : 1;
+    }
+    if (typeof a == "string") {
+        return a.localeCompare(b as string)
+    }
+    return 0
 }
 
 export class ModelMetaTableComponent extends React.Component<ModelMetaProps, State> {
@@ -29,7 +48,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
         };
     }
 
-    onSort(sortKey: keyof ResearchModel) {
+    onSort(sortKey: keyof ModelMetaRow) {
 
         const cols: ILookup<boolean> = {...this.state.cols};
         cols[sortKey] = !this.state.cols[sortKey];
@@ -37,7 +56,8 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
         const ascending = cols[sortKey] ? 1 : -1;
         this.setState({
             cols: {...cols},
-            data: this.state.data.sort((a, b) => ascending * a[sortKey].localeCompare(b[sortKey]))
+            data: this.state.data.sort((a, b) => ascending * compare(a[sortKey as keyof ModelMetaRow],
+                b[sortKey as keyof ModelMetaRow]))
         });
     }
 
@@ -45,11 +65,16 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
         if (this.state.cols[id] === true) {
             return "asc"
         }
-        if (this.state.cols[id] === false){
+        if (this.state.cols[id] === false) {
             return "desc"
         }
         return ""
     }
+
+    createHeader = (key: keyof ModelMetaRow, displayName: string) => {
+        return <th className={"sortable " + this.calculateClass(key)}
+                   onClick={() => this.onSort(key)}>{displayName}</th>
+    };
 
     render() {
 
@@ -59,13 +84,13 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
             <table>
                 <thead>
                 <tr>
-                    <th className={"sortable " + this.calculateClass("modelling_group")}
-                        onClick={() => this.onSort('modelling_group')}>Group</th>
-                    <th className={"sortable " + this.calculateClass("id")}
-                        onClick={() => this.onSort('id')}>Model Name</th>
-                    {/*<th onClick={() => this.onSort('disease')}>Disease</th>*/}
-                    {/*<th onClick={() => this.onSort('type')}>Model Type</th>*/}
-                    {/*<th onClick={() => this.onSort('code')}>Code</th>*/}
+                    {this.createHeader("modelling_group", "Group")}
+                    {this.createHeader("id", "Model Name")}
+                    {/*{this.createHeader("disease", "Disease")}*/}
+                    {this.createHeader("is_dynamic", "Model Type")}
+                    {this.createHeader("code", "Code")}
+                    {this.createHeader("gender", "Gender")}
+
                     {/*<th>Max Countries</th>*/}
                     {/*<th>Years</th>*/}
                     {/*<th>Ages</th>*/}
@@ -75,11 +100,14 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                 </tr>
                 </thead>
                 <tbody>
-                {this.state.data.map(function (model: ResearchModel, index: number) {
+                {this.state.data.map(function (model: ModelMetaRow, index: number) {
                     return (
                         <tr key={index} data-item={model}>
                             <td data-title="group">{model.modelling_group}</td>
                             <td data-title="name">{model.id}</td>
+                            <td data-title="type">{model.is_dynamic ? "Dynamic" : "Static"}</td>
+                            <td data-title="code">{model.code}</td>
+                            <td data-title="gender">{model.gender ? model.gender : "NA"}</td>
                         </tr>
                     );
                 })}
@@ -90,9 +118,14 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
     }
 }
 
+
 export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
     return {
-        models: state.groups.models
+        models: state.groups.models.map(m => ({
+            ...m,
+            code: m.current_version.code,
+            is_dynamic: m.current_version.is_dynamic
+        }))
     }
 };
 

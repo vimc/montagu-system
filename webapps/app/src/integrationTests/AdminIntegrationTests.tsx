@@ -5,8 +5,10 @@ import {IntegrationTestSuite, addCoverageSetsForScenario, addCoverageData, TestS
 import {expect} from "chai";
 import {shallow} from "enzyme";
 import {Client, QueryResult} from "pg";
-import {Scenario, ModellingGroup, ResponsibilitySetWithExpectations,
-        RoleAssignment, User} from "../main/shared/models/Generated";
+import {
+    Scenario, ModellingGroup, ResponsibilitySetWithExpectations,
+    RoleAssignment, User
+} from "../main/shared/models/Generated";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
 import {AuthService} from "../main/shared/services/AuthService";
 import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
@@ -64,8 +66,24 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             await addGroups(this.db);
             const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState)).getAllModels();
             expect(result).to.eql([
-                {citation: "Citation", description: "A model", id: "model", modelling_group: "g1"},
-                {citation: "Citation", description: "Another model", id: "model2", modelling_group: "g2"}
+                {
+                    citation: "Citation",
+                    description: "A model",
+                    id: "model",
+                    modelling_group: "g1",
+                    gender: null,
+                    gender_specific: false,
+                    current_version: null
+                },
+                {
+                    citation: "Citation",
+                    description: "Another model",
+                    id: "model2",
+                    modelling_group: "g2",
+                    gender: null,
+                    gender_specific: false,
+                    current_version: null
+                }
             ]);
         });
 
@@ -227,7 +245,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
             const rendered = shallow(<ScenarioGroupComponent
                 touchstoneVersionId={touchstoneVersionId}
-                disease={{id:"yf", name:"Yellow Fever"}}
+                disease={{id: "yf", name: "Yellow Fever"}}
                 canDownloadCoverage={true}
                 scenarios={scenarios}/>);
 
@@ -240,7 +258,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const result = await response.text();
 
             expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage\n"
-                                        + "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1970,1,2,1-2,1000,1000\n")
+                + "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1970,1,2,1-2,1000,1000\n")
         });
 
         it("can download coverage data in wide format", async () => {
@@ -260,7 +278,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
             const rendered = shallow(<ScenarioGroupComponent
                 touchstoneVersionId={touchstoneVersionId}
-                disease={{id:"yf", name:"Yellow Fever"}}
+                disease={{id: "yf", name: "Yellow Fever"}}
                 canDownloadCoverage={true}
                 scenarios={scenarios}/>);
 

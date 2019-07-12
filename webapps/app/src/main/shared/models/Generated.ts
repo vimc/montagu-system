@@ -27,7 +27,7 @@ export interface CohortRestriction {
 
 export type ActivityType = "none" | "routine" | "campaign" | "campaign-reactive";
 
-export type GAVISupportLevel = "no vaccine" | "no gavi" | "total" | "high" | "low" | "bestcase" | "hold2010" | "bestminus";
+export type GAVISupportLevel = "no vaccine" | "no gavi" | "total" | "high" | "low" | "bestcase" | "status-quo" | "continue" | "gavi-optimistic" | "intensified" | "hold2010" | "bestminus";
 
 export interface CoverageSet {
     activity_type: ActivityType;
@@ -72,6 +72,26 @@ export interface NumberRange {
     minimum_inclusive: number;
 }
 
+export interface ModelVersion {
+    code: string | null;
+    fingerprint: string | null;
+    id: number;
+    is_dynamic: boolean | null;
+    model: string;
+    note: string | null;
+    version: string;
+}
+
+export interface Model {
+    citation: string;
+    current_version: ModelVersion | null;
+    description: string;
+    gender: string | null;
+    gender_specific: boolean | null;
+    id: string;
+    modelling_group: string;
+}
+
 export interface ModellingGroup {
     description: string;
     id: string;
@@ -104,39 +124,6 @@ export interface ModelRunParameterSet {
     model: string;
     uploaded_by: string;
     uploaded_on: string;
-}
-
-export interface ReportVersion {
-    author: string;
-    date: string;
-    display_name: string | null;
-    id: string;
-    latest_version: string;
-    name: string;
-    published: boolean;
-    requester: string;
-}
-
-export type ArtefactFormat = "staticgraph" | "interactivegraph" | "data" | "report" | "interactivehtml";
-
-export interface Artefact {
-    description: string;
-    files: string[];
-    format: ArtefactFormat;
-}
-
-export interface ReportVersionDetails {
-    artefacts: Artefact[];
-    author: string;
-    data_hashes: { [key: string]: string };
-    date: string;
-    description: string;
-    display_name: string | null;
-    id: string;
-    name: string;
-    published: boolean;
-    requester: string;
-    resources: string[];
 }
 
 export interface Expectations {
@@ -243,6 +230,7 @@ export interface User {
     email: string;
     last_logged_in: string;
     name: string;
+    permissions: string[] | null;
     roles: RoleAssignment[] | null;
     username: string;
 }
