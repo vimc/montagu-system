@@ -277,7 +277,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
                     TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF",
                             exampleOutcomeExpectations(outcomes=listOf("deaths"))),
                     TouchstoneModelExpectations("touchstone2-2", otherGroupId, "HepB",
-                            exampleOutcomeExpectations(id=2, outcomes=listOf("deaths", "cases")))
+                            exampleOutcomeExpectations(id=2, outcomes=listOf("cases", "deaths")))
             ))
         }
     }

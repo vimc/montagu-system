@@ -54,7 +54,7 @@ class ExpectationsTests : DatabaseTest()
                                     "minimum_birth_year" to null,
                                     "maximum_birth_year" to null
                                 ),
-                                "outcomes" to array("deaths", "cases")
+                                "outcomes" to array("cases", "deaths")
                         )
                 )
             })

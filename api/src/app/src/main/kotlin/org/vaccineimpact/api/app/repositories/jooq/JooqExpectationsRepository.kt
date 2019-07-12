@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
+import org.jooq.JoinType
 import org.jooq.Record
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
@@ -95,7 +96,7 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 .fromJoinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION)
                 .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET, TOUCHSTONE)
-                .joinPath(BURDEN_ESTIMATE_EXPECTATION, Tables.outcomes)
+                .joinPath(BURDEN_ESTIMATE_EXPECTATION, Tables.outcomes, joinType = JoinType.LEFT_OUTER_JOIN)
                 .where(RESPONSIBILITY.IS_OPEN.eq(true))
                 .and(TOUCHSTONE.STATUS.eq("open"))
                 .and(SCENARIO.TOUCHSTONE.eq(RESPONSIBILITY_SET.TOUCHSTONE))
@@ -104,16 +105,18 @@ class JooqExpectationsRepository(dsl: DSLContext)
         val outcomes = records.groupingBy{ it[BURDEN_ESTIMATE_EXPECTATION.ID] }
             .fold({key, _ -> mutableListOf<String>()},
                         {_, list, it ->
-                            list.add(it[Tables.outcomes.OUTCOME])
+                            if (it[Tables.outcomes.OUTCOME] != null) list.add(it[Tables.outcomes.OUTCOME])
                             list})
 
         return records.groupBy{it[BURDEN_ESTIMATE_EXPECTATION.ID]}
                 .map{
                     val fields = it.value.first()
-                    TouchstoneModelExpectations(fields[TOUCHSTONE.ID], fields[RESPONSIBILITY_SET.MODELLING_GROUP],
-                    fields[SCENARIO_DESCRIPTION.DISEASE],
-                    fields.into(BurdenEstimateExpectationRecord::class.java).toOutcomeExpectations(outcomes[it.key]!!))
-        }
+                    TouchstoneModelExpectations(
+                            fields[TOUCHSTONE.ID], fields[RESPONSIBILITY_SET.MODELLING_GROUP],
+                            fields[SCENARIO_DESCRIPTION.DISEASE],
+                            fields.into(BurdenEstimateExpectationRecord::class.java)
+                                    .toOutcomeExpectations(outcomes[it.key]!!))
+                }
     }
 
     private fun getBasicDataAndMappingFromRecords(records: List<Record>): Pair<BurdenEstimateExpectationRecord, ApplicableScenariosAndDisease>
@@ -141,7 +144,7 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 record.yearMinInclusive..record.yearMaxInclusive,
                 record.ageMinInclusive..record.ageMaxInclusive,
                 CohortRestriction(record.cohortMinInclusive, record.cohortMaxInclusive),
-                outcomes
+                outcomes.sorted()
         )
     }
 
