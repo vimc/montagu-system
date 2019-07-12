@@ -54,8 +54,7 @@ class ExpectationsTests : DatabaseTest()
                                     "minimum_birth_year" to null,
                                     "maximum_birth_year" to null
                                 ),
-                                "countries" to array(),
-                                "outcomes" to array()
+                                "outcomes" to array("deaths", "cases")
                         )
                 )
             })
@@ -80,7 +79,6 @@ class ExpectationsTests : DatabaseTest()
                                         "minimum_birth_year" to null,
                                         "maximum_birth_year" to null
                                 ),
-                                "countries" to array(),
                                 "outcomes" to array()
                         )
                 )
@@ -100,7 +98,7 @@ class ExpectationsTests : DatabaseTest()
         val setId2 = db.addResponsibilitySet(otherGroupId, "touchstone2-2")
         val r1 = db.addResponsibility(setId1, touchstoneVersionId, scenarioId)
         val r2 = db.addResponsibility(setId2, "touchstone2-2", otherScenarioId)
-        val expId1 = db.addExpectations(r1)
+        val expId1 = db.addExpectations(r1, outcomes=listOf("deaths", "cases"))
         val expId2 = db.addExpectations(r2)
         db.addExistingExpectationsToResponsibility(r1, expId1)
         db.addExistingExpectationsToResponsibility(r2, expId2)

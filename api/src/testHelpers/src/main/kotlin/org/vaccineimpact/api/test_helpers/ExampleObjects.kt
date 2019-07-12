@@ -27,6 +27,16 @@ fun exampleExpectations(id: Int=1) = Expectations(
         outcomes = emptyList()
 )
 
+
+fun exampleOutcomeExpectations(id: Int=1, outcomes:List<String> = emptyList()) = OutcomeExpectations(
+        id = id,
+        description = "description",
+        years = 2000..2100,
+        ages = 0..99,
+        cohorts = CohortRestriction(null, null),
+        outcomes = outcomes
+)
+
 fun exampleExpectationMapping() = ExpectationMapping(
         exampleExpectations(),
         listOf("yf-scenario", "yf-scenario-2"),

@@ -15,7 +15,7 @@
       "minLength": 1
     },
     "expectations": {
-      "$ref": "Expectation.schema.json"
+      "$ref": "OutcomeExpectation.schema.json"
     }
   },
   "additionalProperties": false,

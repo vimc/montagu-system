@@ -90,19 +90,29 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 SCENARIO_DESCRIPTION.DISEASE,
                 TOUCHSTONE.ID,
                 RESPONSIBILITY_SET.MODELLING_GROUP,
-                *BURDEN_ESTIMATE_EXPECTATION.fields())
+                *BURDEN_ESTIMATE_EXPECTATION.fields(),
+                Tables.outcomes.OUTCOME)
                 .fromJoinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION)
                 .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET, TOUCHSTONE)
+                .joinPath(BURDEN_ESTIMATE_EXPECTATION, Tables.outcomes)
                 .where(RESPONSIBILITY.IS_OPEN.eq(true))
                 .and(TOUCHSTONE.STATUS.eq("open"))
                 .and(SCENARIO.TOUCHSTONE.eq(RESPONSIBILITY_SET.TOUCHSTONE))
                 .orderBy(RESPONSIBILITY_SET.MODELLING_GROUP, SCENARIO_DESCRIPTION.DISEASE, TOUCHSTONE.ID)
 
-        return records.map{
-            TouchstoneModelExpectations(it[TOUCHSTONE.ID], it[RESPONSIBILITY_SET.MODELLING_GROUP],
-                    it[SCENARIO_DESCRIPTION.DISEASE],
-                    it.into(BurdenEstimateExpectationRecord::class.java).withCountriesAndOutcomes())
+        val outcomes = records.groupingBy{ it[BURDEN_ESTIMATE_EXPECTATION.ID] }
+            .fold({key, _ -> mutableListOf<String>()},
+                        {_, list, it ->
+                            list.add(it[Tables.outcomes.OUTCOME])
+                            list})
+
+        return records.groupBy{it[BURDEN_ESTIMATE_EXPECTATION.ID]}
+                .map{
+                    val fields = it.value.first()
+                    TouchstoneModelExpectations(fields[TOUCHSTONE.ID], fields[RESPONSIBILITY_SET.MODELLING_GROUP],
+                    fields[SCENARIO_DESCRIPTION.DISEASE],
+                    fields.into(BurdenEstimateExpectationRecord::class.java).toOutcomeExpectations(outcomes[it.key]!!))
         }
     }
 
@@ -120,6 +130,19 @@ class JooqExpectationsRepository(dsl: DSLContext)
         val disease = diseases.singleOrNull()
                 ?: throw DatabaseContentsError("Expectations $expectationsId is used by responsibilities that do not all share the same disease: ${diseases.joinToString()}")
         return ApplicableScenariosAndDisease(scenarios, disease)
+    }
+
+    private fun BurdenEstimateExpectationRecord.toOutcomeExpectations(outcomes: List<String>): OutcomeExpectations
+    {
+        val record = this
+        return OutcomeExpectations(
+                record.id,
+                record.description,
+                record.yearMinInclusive..record.yearMaxInclusive,
+                record.ageMinInclusive..record.ageMaxInclusive,
+                CohortRestriction(record.cohortMinInclusive, record.cohortMaxInclusive),
+                outcomes
+        )
     }
 
     private fun BurdenEstimateExpectationRecord.withCountriesAndOutcomes(): Expectations

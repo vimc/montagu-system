@@ -29,16 +29,6 @@ Schema: [`TouchstoneModelExpectations.schema.json`](../schemas/TouchstoneModelEx
                     "minimum_birth_year": 1950,
                     "maximum_birth_year": 2050
                 },
-                "countries": [
-                    {
-                        "id": "AFG",
-                        "name": "Afghanistan"
-                    },
-                    {
-                        "id": "AGO",
-                        "name": "Angola"
-                    }
-                ],
                 "outcomes": ["deaths", "cases"]
             }
         },
@@ -61,16 +51,6 @@ Schema: [`TouchstoneModelExpectations.schema.json`](../schemas/TouchstoneModelEx
                     "minimum_birth_year": 1960,
                     "maximum_birth_year": 2060
                 },
-                "countries": [
-                    {
-                        "id": "AFG",
-                        "name": "Afghanistan"
-                    },
-                    {
-                        "id": "AGO",
-                        "name": "Angola"
-                    }
-                ],
                 "outcomes": ["cases"]
             }
         }
