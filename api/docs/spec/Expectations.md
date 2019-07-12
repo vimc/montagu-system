@@ -29,7 +29,7 @@ Schema: [`TouchstoneModelExpectations.schema.json`](../schemas/TouchstoneModelEx
                     "minimum_birth_year": 1950,
                     "maximum_birth_year": 2050
                 },
-                "outcomes": [""cases","deaths"]
+                "outcomes": ["cases","deaths"]
             }
         },
         {
