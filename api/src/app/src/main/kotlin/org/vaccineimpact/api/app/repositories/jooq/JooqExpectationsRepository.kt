@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
+import org.jooq.JoinType
 import org.jooq.Record
 import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
@@ -13,10 +14,7 @@ import org.vaccineimpact.api.db.tables.BurdenEstimateCountryExpectation
 import org.vaccineimpact.api.db.tables.BurdenEstimateExpectation
 import org.vaccineimpact.api.db.tables.BurdenEstimateOutcomeExpectation
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateExpectationRecord
-import org.vaccineimpact.api.models.CohortRestriction
-import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.ExpectationMapping
-import org.vaccineimpact.api.models.Expectations
+import org.vaccineimpact.api.models.*
 
 data class ApplicableScenariosAndDisease(val scenarios: List<String>, val disease: String)
 
@@ -87,6 +85,39 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 }
     }
 
+    override fun getAllExpectations(): List<TouchstoneModelExpectations>
+    {
+        val records = dsl.select(
+                SCENARIO_DESCRIPTION.DISEASE,
+                TOUCHSTONE.ID,
+                RESPONSIBILITY_SET.MODELLING_GROUP,
+                *BURDEN_ESTIMATE_EXPECTATION.fields(),
+                Tables.outcomes.OUTCOME)
+                .fromJoinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION)
+                .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
+                .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET, TOUCHSTONE)
+                .joinPath(BURDEN_ESTIMATE_EXPECTATION, Tables.outcomes, joinType = JoinType.LEFT_OUTER_JOIN)
+                .where(RESPONSIBILITY.IS_OPEN.eq(true))
+                .and(TOUCHSTONE.STATUS.eq("open"))
+                .and(SCENARIO.TOUCHSTONE.eq(RESPONSIBILITY_SET.TOUCHSTONE))
+                .orderBy(RESPONSIBILITY_SET.MODELLING_GROUP, SCENARIO_DESCRIPTION.DISEASE, TOUCHSTONE.ID)
+
+        val outcomes = records.groupBy{ it[BURDEN_ESTIMATE_EXPECTATION.ID] }
+            .mapValues{
+                it.value.mapNotNull{ row -> row[Tables.outcomes.OUTCOME] }
+            }
+
+        return records.groupBy{it[BURDEN_ESTIMATE_EXPECTATION.ID]}
+                .map{
+                    val fields = it.value.first()
+                    TouchstoneModelExpectations(
+                            fields[TOUCHSTONE.ID], fields[RESPONSIBILITY_SET.MODELLING_GROUP],
+                            fields[SCENARIO_DESCRIPTION.DISEASE],
+                            fields.into(BurdenEstimateExpectationRecord::class.java)
+                                    .toOutcomeExpectations(outcomes[it.key]!!))
+                }
+    }
+
     private fun getBasicDataAndMappingFromRecords(records: List<Record>): Pair<BurdenEstimateExpectationRecord, ApplicableScenariosAndDisease>
     {
         val basicData = records.first().into(BurdenEstimateExpectationRecord::class.java)
@@ -101,6 +132,19 @@ class JooqExpectationsRepository(dsl: DSLContext)
         val disease = diseases.singleOrNull()
                 ?: throw DatabaseContentsError("Expectations $expectationsId is used by responsibilities that do not all share the same disease: ${diseases.joinToString()}")
         return ApplicableScenariosAndDisease(scenarios, disease)
+    }
+
+    private fun BurdenEstimateExpectationRecord.toOutcomeExpectations(outcomes: List<String>): OutcomeExpectations
+    {
+        val record = this
+        return OutcomeExpectations(
+                record.id,
+                record.description,
+                record.yearMinInclusive..record.yearMaxInclusive,
+                record.ageMinInclusive..record.ageMaxInclusive,
+                CohortRestriction(record.cohortMinInclusive, record.cohortMaxInclusive),
+                outcomes.sorted()
+        )
     }
 
     private fun BurdenEstimateExpectationRecord.withCountriesAndOutcomes(): Expectations

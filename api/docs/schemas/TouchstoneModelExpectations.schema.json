@@ -1,0 +1,5 @@
+{
+  "id": "TouchstoneModelExpectations",
+  "type": "array",
+  "items": { "$ref": "TouchstoneModelExpectation.schema.json" }
+}

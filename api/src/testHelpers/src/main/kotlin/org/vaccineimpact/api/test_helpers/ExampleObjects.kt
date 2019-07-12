@@ -17,14 +17,24 @@ fun exampleInternalUser(username: String = "username") = InternalUser(
         emptyList()
 )
 
-fun exampleExpectations() = Expectations(
-        id = 1,
+fun exampleExpectations(id: Int=1) = Expectations(
+        id = id,
         description = "description",
         years = 2000..2100,
         ages = 0..99,
         cohorts = CohortRestriction(null, null),
         countries = emptyList(),
         outcomes = emptyList()
+)
+
+
+fun exampleOutcomeExpectations(id: Int=1, outcomes:List<String> = emptyList()) = OutcomeExpectations(
+        id = id,
+        description = "description",
+        years = 2000..2100,
+        ages = 0..99,
+        cohorts = CohortRestriction(null, null),
+        outcomes = outcomes
 )
 
 fun exampleExpectationMapping() = ExpectationMapping(

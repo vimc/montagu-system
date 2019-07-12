@@ -138,6 +138,7 @@ For all other endpoints, see these files:
 * [Authentication](Authentication.md)
 * [Users](Users.md)
 * [Diseases](Diseases.md)
+* [Expectations](Expectations.md)
 * [Touchstones](Touchstones.md)
     - [Demographics](Demographics.md)
 * [Models](Models.md)
