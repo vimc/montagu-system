@@ -102,11 +102,10 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 .and(SCENARIO.TOUCHSTONE.eq(RESPONSIBILITY_SET.TOUCHSTONE))
                 .orderBy(RESPONSIBILITY_SET.MODELLING_GROUP, SCENARIO_DESCRIPTION.DISEASE, TOUCHSTONE.ID)
 
-        val outcomes = records.groupingBy{ it[BURDEN_ESTIMATE_EXPECTATION.ID] }
-            .fold({key, _ -> mutableListOf<String>()},
-                        {_, list, it ->
-                            if (it[Tables.outcomes.OUTCOME] != null) list.add(it[Tables.outcomes.OUTCOME])
-                            list})
+        val outcomes = records.groupBy{ it[BURDEN_ESTIMATE_EXPECTATION.ID] }
+            .mapValues{
+                it.value.mapNotNull{ row -> row[Tables.outcomes.OUTCOME] }
+            }
 
         return records.groupBy{it[BURDEN_ESTIMATE_EXPECTATION.ID]}
                 .map{
