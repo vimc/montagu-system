@@ -8,7 +8,8 @@
         "note": { "type": "string" },
         "fingerprint": { "type": [ "string", "null" ] },
         "code": { "type": ["string", "null"] },
-        "is_dynamic": { "type": ["boolean", "null"] }
+        "is_dynamic": { "type": ["boolean", "null"] },
+        "countries": { "$ref": "Countries.schema.json" }
     },
     "additionalProperties": false,
     "required": [ "id", "model", "version", "note", "fingerprint" ]
