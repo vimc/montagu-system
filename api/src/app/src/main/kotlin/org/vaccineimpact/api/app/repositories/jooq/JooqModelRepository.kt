@@ -37,7 +37,8 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
 
         return modelRecords.map{
             val model = it.into(Model::class.java)
-            model.currentVersion = currentVersions[it[MODEL.CURRENT_VERSION]]
+            if (it[MODEL.CURRENT_VERSION] != null)
+                model.currentVersion = currentVersions[it[MODEL.CURRENT_VERSION]]
             model
         }
     }
