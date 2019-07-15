@@ -1,3 +1,4 @@
+
 @import "bootstrap";
 @import "buttons";
 @import "errors";
@@ -38,6 +39,7 @@ table {
     &:after {
       content: "\2193";
       margin-left: .8em;
+      float: right;
       opacity: .3;
     }
 
