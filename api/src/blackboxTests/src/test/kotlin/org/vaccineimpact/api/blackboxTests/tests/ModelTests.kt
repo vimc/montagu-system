@@ -25,7 +25,7 @@ class ModelTests : DatabaseTest()
 
             it.addCountries(listOf("ABC", "DEF"))
 
-            it.addModelVersion("modelId", "v1", setCurrent = true, countries=listOf("c1", "c2"))
+            it.addModelVersion("modelId", "v1", setCurrent = true, countries=listOf("ABC", "DEF"))
         } requiringPermissions {
             PermissionSet("*/models.read")
         } andCheckArray {
