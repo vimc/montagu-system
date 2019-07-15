@@ -24,7 +24,6 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
                 .joinPath(MODEL_VERSION, MODEL_VERSION_COUNTRY, COUNTRY, joinType=JoinType.LEFT_OUTER_JOIN)
 
-
         val currentVersions = currentVersionRecords.groupBy{it[MODEL_VERSION.ID]}
                 .mapValues{
                     val countries =  it.value.mapNotNull{r ->
