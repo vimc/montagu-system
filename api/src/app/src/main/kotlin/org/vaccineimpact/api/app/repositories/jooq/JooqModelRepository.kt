@@ -22,16 +22,21 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 .from(MODEL_VERSION)
                 .innerJoin(MODEL)
                 .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
-                .joinPath(MODEL_VERSION, MODEL_VERSION_COUNTRY, COUNTRY)
+                .joinPath(MODEL_VERSION, MODEL_VERSION_COUNTRY, COUNTRY, joinType=JoinType.LEFT_OUTER_JOIN)
 
         val currentVersionCountries = currentVersionRecords
                 .groupBy{ it[MODEL_VERSION.ID] }
                 .mapValues{
-                    it.value.map{r -> r.into(Country::class.java)}
+                    it.value.mapNotNull{r ->
+                        if (r[COUNTRY.ID] != null)
+                            r.into(Country::class.java)
+                        else
+                            null
+                    }
                 }
 
         val currentVersions = currentVersionRecords.groupBy{it[MODEL_VERSION.ID]}
-                .map{
+                .mapValues{
                     it.value.first().toModelVersionWithCountries(currentVersionCountries[it.key]!!)
                 }
 
@@ -88,9 +93,9 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
     {
         return ModelVersion(this[MODEL_VERSION.ID],
                 this[MODEL_VERSION.MODEL],
-                this[MODEL_VERSION.NOTE],
                 this[MODEL_VERSION.VERSION],
                 this[MODEL_VERSION.NOTE],
+                this[MODEL_VERSION.FINGERPRINT],
                 this[MODEL_VERSION.IS_DYNAMIC],
                 this[MODEL_VERSION.CODE],
                 countries)
