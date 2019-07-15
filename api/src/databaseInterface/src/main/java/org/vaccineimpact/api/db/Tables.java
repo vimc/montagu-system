@@ -62,6 +62,7 @@ import org.vaccineimpact.api.db.tables.ModelRunParameter;
 import org.vaccineimpact.api.db.tables.ModelRunParameterSet;
 import org.vaccineimpact.api.db.tables.ModelRunParameterValue;
 import org.vaccineimpact.api.db.tables.ModelVersion;
+import org.vaccineimpact.api.db.tables.ModelVersionCountry;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
 import org.vaccineimpact.api.db.tables.Permission;
@@ -384,6 +385,11 @@ public class Tables {
      * The table <code>public.model_version</code>.
      */
     public static final ModelVersion MODEL_VERSION = org.vaccineimpact.api.db.tables.ModelVersion.MODEL_VERSION;
+
+    /**
+     * The table <code>public.model_version_country</code>.
+     */
+    public static final ModelVersionCountry MODEL_VERSION_COUNTRY = org.vaccineimpact.api.db.tables.ModelVersionCountry.MODEL_VERSION_COUNTRY;
 
     /**
      * With the self-referencing "current" field; we consider a modelling group to be the current one if current is null.  This is not recursive; if we move a modelling group to a new id then every modelling group that has current pointing at the old id must be updated to point at the new one.  This means that no `current` points at an `id` that does not have `current` as `null`.

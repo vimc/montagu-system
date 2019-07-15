@@ -60,6 +60,7 @@ import org.vaccineimpact.api.db.tables.ModelRunParameter;
 import org.vaccineimpact.api.db.tables.ModelRunParameterSet;
 import org.vaccineimpact.api.db.tables.ModelRunParameterValue;
 import org.vaccineimpact.api.db.tables.ModelVersion;
+import org.vaccineimpact.api.db.tables.ModelVersionCountry;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
 import org.vaccineimpact.api.db.tables.Permission;
@@ -176,6 +177,7 @@ public class Indexes {
     public static final Index MODEL_RUN_PARAMETER_VALUE_PKEY = Indexes0.MODEL_RUN_PARAMETER_VALUE_PKEY;
     public static final Index MODEL_VERSION_MODEL_VERSION_KEY = Indexes0.MODEL_VERSION_MODEL_VERSION_KEY;
     public static final Index MODEL_VERSION_PKEY = Indexes0.MODEL_VERSION_PKEY;
+    public static final Index MODEL_VERSION_COUNTRY_PKEY = Indexes0.MODEL_VERSION_COUNTRY_PKEY;
     public static final Index MODELLING_GROUP_PKEY = Indexes0.MODELLING_GROUP_PKEY;
     public static final Index ONETIME_TOKEN_PKEY = Indexes0.ONETIME_TOKEN_PKEY;
     public static final Index PERMISSION_PKEY = Indexes0.PERMISSION_PKEY;
@@ -284,6 +286,7 @@ public class Indexes {
         public static Index MODEL_RUN_PARAMETER_VALUE_PKEY = Internal.createIndex("model_run_parameter_value_pkey", ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE, new OrderField[] { ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE.ID }, true);
         public static Index MODEL_VERSION_MODEL_VERSION_KEY = Internal.createIndex("model_version_model_version_key", ModelVersion.MODEL_VERSION, new OrderField[] { ModelVersion.MODEL_VERSION.MODEL, ModelVersion.MODEL_VERSION.VERSION }, true);
         public static Index MODEL_VERSION_PKEY = Internal.createIndex("model_version_pkey", ModelVersion.MODEL_VERSION, new OrderField[] { ModelVersion.MODEL_VERSION.ID }, true);
+        public static Index MODEL_VERSION_COUNTRY_PKEY = Internal.createIndex("model_version_country_pkey", ModelVersionCountry.MODEL_VERSION_COUNTRY, new OrderField[] { ModelVersionCountry.MODEL_VERSION_COUNTRY.MODEL_VERSION, ModelVersionCountry.MODEL_VERSION_COUNTRY.COUNTRY }, true);
         public static Index MODELLING_GROUP_PKEY = Internal.createIndex("modelling_group_pkey", ModellingGroup.MODELLING_GROUP, new OrderField[] { ModellingGroup.MODELLING_GROUP.ID }, true);
         public static Index ONETIME_TOKEN_PKEY = Internal.createIndex("onetime_token_pkey", OnetimeToken.ONETIME_TOKEN, new OrderField[] { OnetimeToken.ONETIME_TOKEN.ID }, true);
         public static Index PERMISSION_PKEY = Internal.createIndex("permission_pkey", Permission.PERMISSION, new OrderField[] { Permission.PERMISSION.NAME }, true);

@@ -7,10 +7,8 @@ import org.vaccineimpact.api.app.repositories.ModelRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqModelRepository
 import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.addDisease
-import org.vaccineimpact.api.db.direct.addGroup
-import org.vaccineimpact.api.db.direct.addModel
-import org.vaccineimpact.api.db.direct.addModelVersion
+import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.models.Country
 import org.vaccineimpact.api.models.Model
 import org.vaccineimpact.api.models.ModelVersion
 
@@ -37,7 +35,10 @@ class ModelTests : RepositoryTests<ModelRepository>()
             it.addModel("fakeId2", "a", "d2", "another model",
                     genderSpecific = false, gender = null)
 
-            it.addModelVersion("fakeId", "v1", setCurrent = true)
+
+            it.addCountries(listOf("c1", "c2"))
+
+            it.addModelVersion("fakeId", "v1", setCurrent = true, countries=listOf("c1", "c2"))
 
         }.check {
             repo ->
@@ -50,7 +51,8 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             genderSpecific = true,
                             gender = "male",
                             currentVersion = ModelVersion(1, "fakeId", "v1", "Some note",
-                                    "Some fingerprint", true, "R")),
+                                    "Some fingerprint", true, "R",
+                                    countries=listOf(Country("c1", "c1-Name"), Country("c2", "c2-Name")))),
                     Model("fakeId2",
                             "another model",
                             "Unknown citation",
@@ -86,7 +88,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             genderSpecific = true,
                             gender = "male",
                             currentVersion = ModelVersion(1, "fakeId", "v1", "Some note",
-                                    "Some fingerprint", true, "R"))
+                                    "Some fingerprint", true, "R", countries=listOf()))
             ))
         }
     }
@@ -118,8 +120,11 @@ class ModelTests : RepositoryTests<ModelRepository>()
             it.addDisease("d2")
             it.addModel("fakeId", "a", "d1", "some model")
             it.addModel("fakeId2", "a", "d1", "another model", isCurrent = false)
+
+            it.addCountries(listOf("c1", "c2"))
+
             it.addModelVersion("fakeId", "v1", setCurrent = false)
-            it.addModelVersion("fakeId", "v2", setCurrent = true)
+            it.addModelVersion("fakeId", "v2", setCurrent = true, countries = listOf("c1", "c2"))
             it.addModelVersion("fakeId2", "v1", setCurrent = true)
         }.check {
             repo ->
@@ -132,7 +137,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             false,
                             "both",
                             ModelVersion(2, "fakeId", "v2", "Some note", "Some fingerprint",
-                                    true, "R")))
+                                    true, "R", listOf(Country("c1", "c1-Name"), Country("c2", "c2-Name")))))
         }
     }
 
