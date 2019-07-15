@@ -23,7 +23,7 @@ class ModelTests : DatabaseTest()
             it.addModel("modelId", "groupId", "d1", "description1")
             it.addModel("modelId2", "groupId", "d2")
 
-            it.addCountries(listOf("c1", "c2"))
+            it.addCountries(listOf("ABC", "DEF"))
 
             it.addModelVersion("modelId", "v1", setCurrent = true, countries=listOf("c1", "c2"))
         } requiringPermissions {
@@ -48,12 +48,12 @@ class ModelTests : DatabaseTest()
                                 "model" to "modelId",
                                 "countries" to array(
                                         obj(
-                                                "id" to "c1",
-                                                "name" to "c1-Name"
+                                                "id" to "ABC",
+                                                "name" to "ABC-Name"
                                         ),
                                         obj(
-                                                "id" to "c2",
-                                                "name" to "c2-Name"
+                                                "id" to "DEF",
+                                                "name" to "DEF-Name"
                                         )
                                 )
                         )
@@ -71,9 +71,9 @@ class ModelTests : DatabaseTest()
             it.addModel("modelId", "groupId", "d1", "description1")
             it.addModel("modelId2", "groupId", "d1", isCurrent = false)
 
-            it.addCountries(listOf("c1", "c2"))
+            it.addCountries(listOf("ABC", "DEF"))
 
-            it.addModelVersion("modelId", "v1", setCurrent = true, countries=listOf("c1"))
+            it.addModelVersion("modelId", "v1", setCurrent = true, countries=listOf("ABC"))
         } requiringPermissions {
             PermissionSet("*/models.read")
         } andCheck {
@@ -95,8 +95,8 @@ class ModelTests : DatabaseTest()
                                 "model" to "modelId",
                                 "countries" to array(
                                         obj(
-                                                "id" to "c1",
-                                                "name" to "c1-Name"
+                                                "id" to "ABC",
+                                                "name" to "ABC-Name"
                                         )
                                 )
                         )
