@@ -77,7 +77,8 @@ fun JooqContext.addModelVersion(
         fingerprint: String = "Some fingerprint",
         code: String = "R",
         isDynamic: Boolean = true,
-        setCurrent: Boolean = false
+        setCurrent: Boolean = false,
+        countries: List<String> = listOf()
 ): Int
 {
     val record = this.dsl.newRecord(MODEL_VERSION).apply {
@@ -96,6 +97,15 @@ fun JooqContext.addModelVersion(
                 .set(MODEL.CURRENT_VERSION, record.id)
                 .where(MODEL.ID.eq(modelId))
                 .execute()
+    }
+
+    for (c in countries)
+    {
+        val mvcRecord = this.dsl.newRecord(MODEL_VERSION_COUNTRY).apply{
+            this.modelVersion = record.id
+            this.country = c
+        }
+        mvcRecord.store()
     }
 
     return record.id

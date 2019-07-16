@@ -70,6 +70,7 @@ import org.vaccineimpact.api.db.tables.ModelRunParameter;
 import org.vaccineimpact.api.db.tables.ModelRunParameterSet;
 import org.vaccineimpact.api.db.tables.ModelRunParameterValue;
 import org.vaccineimpact.api.db.tables.ModelVersion;
+import org.vaccineimpact.api.db.tables.ModelVersionCountry;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
 import org.vaccineimpact.api.db.tables.Permission;
@@ -133,7 +134,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 837445850;
+    private static final long serialVersionUID = 2063938310;
 
     /**
      * The reference instance of <code>public</code>
@@ -399,6 +400,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.model_version</code>.
      */
     public final ModelVersion MODEL_VERSION = org.vaccineimpact.api.db.tables.ModelVersion.MODEL_VERSION;
+
+    /**
+     * The table <code>public.model_version_country</code>.
+     */
+    public final ModelVersionCountry MODEL_VERSION_COUNTRY = org.vaccineimpact.api.db.tables.ModelVersionCountry.MODEL_VERSION_COUNTRY;
 
     /**
      * With the self-referencing "current" field; we consider a modelling group to be the current one if current is null.  This is not recursive; if we move a modelling group to a new id then every modelling group that has current pointing at the old id must be updated to point at the new one.  This means that no `current` points at an `id` that does not have `current` as `null`.
@@ -917,6 +923,7 @@ public class Public extends SchemaImpl {
             ModelRunParameterSet.MODEL_RUN_PARAMETER_SET,
             ModelRunParameterValue.MODEL_RUN_PARAMETER_VALUE,
             ModelVersion.MODEL_VERSION,
+            ModelVersionCountry.MODEL_VERSION_COUNTRY,
             ModellingGroup.MODELLING_GROUP,
             OnetimeToken.ONETIME_TOKEN,
             Permission.PERMISSION,

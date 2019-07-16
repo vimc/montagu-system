@@ -7,10 +7,7 @@ import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.direct.addDisease
-import org.vaccineimpact.api.db.direct.addGroup
-import org.vaccineimpact.api.db.direct.addModel
-import org.vaccineimpact.api.db.direct.addModelVersion
+import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
@@ -25,7 +22,10 @@ class ModelTests : DatabaseTest()
             it.addDisease("d2")
             it.addModel("modelId", "groupId", "d1", "description1")
             it.addModel("modelId2", "groupId", "d2")
-            it.addModelVersion("modelId", "v1", setCurrent = true)
+
+            it.addCountries(listOf("ABC", "DEF"))
+
+            it.addModelVersion("modelId", "v1", setCurrent = true, countries=listOf("ABC", "DEF"))
         } requiringPermissions {
             PermissionSet("*/models.read")
         } andCheckArray {
@@ -45,7 +45,17 @@ class ModelTests : DatabaseTest()
                                 "fingerprint" to "Some fingerprint",
                                 "is_dynamic" to true,
                                 "code" to "R",
-                                "model" to "modelId"
+                                "model" to "modelId",
+                                "countries" to array(
+                                        obj(
+                                                "id" to "ABC",
+                                                "name" to "ABC-Name"
+                                        ),
+                                        obj(
+                                                "id" to "DEF",
+                                                "name" to "DEF-Name"
+                                        )
+                                )
                         )
                 )
             })
@@ -60,7 +70,10 @@ class ModelTests : DatabaseTest()
             it.addDisease("d1")
             it.addModel("modelId", "groupId", "d1", "description1")
             it.addModel("modelId2", "groupId", "d1", isCurrent = false)
-            it.addModelVersion("modelId", "v1", setCurrent = true)
+
+            it.addCountries(listOf("ABC", "DEF"))
+
+            it.addModelVersion("modelId", "v1", setCurrent = true, countries=listOf("ABC"))
         } requiringPermissions {
             PermissionSet("*/models.read")
         } andCheck {
@@ -79,7 +92,13 @@ class ModelTests : DatabaseTest()
                                 "fingerprint" to "Some fingerprint",
                                 "is_dynamic" to true,
                                 "code" to "R",
-                                "model" to "modelId"
+                                "model" to "modelId",
+                                "countries" to array(
+                                        obj(
+                                                "id" to "ABC",
+                                                "name" to "ABC-Name"
+                                        )
+                                )
                         )
                 )
             })

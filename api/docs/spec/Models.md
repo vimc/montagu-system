@@ -22,7 +22,11 @@ Schema: [`Models.schema.json`](../schemas/Models.schema.json)
                 "note":"Variation withoud herd",
                 "fingerprint":"ic-yf-wh",
                 "is_dynamic":true,
-                "code":"R"
+                "code":"R",
+                "countries": [
+                    {"id": "AFG", "name": "Afghanistan"},
+                    {"id": "AGO", "name": "Angola"}
+                ]
            }
         },
         { 
@@ -58,7 +62,11 @@ Schema: [`Model.schema.json`](../schemas/Model.schema.json)
             "note":"Variation withoud herd",
             "fingerprint":"ic-yf-wh",
             "is_dynamic":true,
-            "code":"R"
+            "code":"R",
+            "countries": [
+                {"id": "AFG", "name": "Afghanistan"},
+                {"id": "AGO", "name": "Angola"}
+            ]
        }
     }
 ## POST /models/
