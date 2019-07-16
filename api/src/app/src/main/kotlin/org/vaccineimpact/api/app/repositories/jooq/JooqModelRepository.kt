@@ -16,30 +16,36 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
 {
     override fun all(): List<Model>
     {
-        val modelRecords =  modelQuery()
+        val modelRecords = modelQuery()
 
-        val currentVersionRecords = dsl.select(*MODEL_VERSION.fields(),*COUNTRY.fields())
+        val currentVersionRecords = dsl.select(*MODEL_VERSION.fields(), *COUNTRY.fields())
                 .from(MODEL_VERSION)
                 .innerJoin(MODEL)
                 .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
-                .joinPath(MODEL_VERSION, MODEL_VERSION_COUNTRY, COUNTRY, joinType=JoinType.LEFT_OUTER_JOIN)
+                .joinPath(MODEL_VERSION, MODEL_VERSION_COUNTRY, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
 
-        val currentVersions = currentVersionRecords.groupBy{it[MODEL_VERSION.ID]}
-                .mapValues{
-                    val countries =  it.value.mapNotNull{r ->
+        val currentVersions = currentVersionRecords.groupBy { it[MODEL_VERSION.ID] }
+                .mapValues {
+                    val countries = it.value.mapNotNull { r ->
                         if (r[COUNTRY.ID] != null)
+                        {
                             r.into(Country::class.java)
+                        }
                         else
+                        {
                             null
+                        }
                     }
 
                     it.value.first().toModelVersionWithCountries(countries)
                 }
 
-        return modelRecords.map{
+        return modelRecords.map {
             val model = it.into(Model::class.java)
             if (it[MODEL.CURRENT_VERSION] != null)
+            {
                 model.currentVersion = currentVersions[it[MODEL.CURRENT_VERSION]]
+            }
             model
         }
     }
