@@ -1,20 +1,21 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
-import org.jooq.*
+import org.jooq.DSLContext
+import org.jooq.JoinType
+import org.jooq.Record
+import org.jooq.SelectConditionStep
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ModelRepository
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
-import org.vaccineimpact.api.db.tables.records.ModelVersionRecord
 import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.Model
+import org.vaccineimpact.api.models.ResearchModel
 import org.vaccineimpact.api.models.ModelVersion
 
 class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepository
 {
-    override fun all(): List<Model>
+    override fun all(): List<ResearchModel>
     {
         val modelRecords = modelQuery()
 
@@ -41,7 +42,8 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 }
 
         return modelRecords.map {
-            val model = it.into(Model::class.java)
+            val model = it.into(ResearchModel::class.java)
+
             if (it[MODEL.CURRENT_VERSION] != null)
             {
                 model.currentVersion = currentVersions[it[MODEL.CURRENT_VERSION]]
@@ -50,14 +52,14 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
         }
     }
 
-    override fun get(id: String): Model
+    override fun get(id: String): ResearchModel
     {
         val modelRecord = modelQuery()
                 .and(MODEL.ID.eq(id))
                 .singleOrNull()
-                ?: throw UnknownObjectError(id, Model::class)
+                ?: throw UnknownObjectError(id, ResearchModel::class)
 
-        val model = modelRecord.into(Model::class.java)
+        val model = modelRecord.into(ResearchModel::class.java)
 
         val versionRecord = dsl.select()
                 .from(MODEL_VERSION)
