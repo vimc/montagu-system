@@ -10,12 +10,12 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.ResearchModel
 import org.vaccineimpact.api.models.ModelVersion
+import org.vaccineimpact.api.models.ResearchModelDetails
 
 class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepository
 {
-    override fun all(): List<ResearchModel>
+    override fun all(): List<ResearchModelDetails>
     {
         val modelRecords = modelQuery()
 
@@ -42,7 +42,7 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 }
 
         return modelRecords.map {
-            val model = it.into(ResearchModel::class.java)
+            val model = it.into(ResearchModelDetails::class.java)
 
             if (it[MODEL.CURRENT_VERSION] != null)
             {
@@ -52,14 +52,14 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
         }
     }
 
-    override fun get(id: String): ResearchModel
+    override fun get(id: String): ResearchModelDetails
     {
         val modelRecord = modelQuery()
                 .and(MODEL.ID.eq(id))
                 .singleOrNull()
-                ?: throw UnknownObjectError(id, ResearchModel::class)
+                ?: throw UnknownObjectError(id, ResearchModelDetails::class)
 
-        val model = modelRecord.into(ResearchModel::class.java)
+        val model = modelRecord.into(ResearchModelDetails::class.java)
 
         val versionRecord = dsl.select()
                 .from(MODEL_VERSION)

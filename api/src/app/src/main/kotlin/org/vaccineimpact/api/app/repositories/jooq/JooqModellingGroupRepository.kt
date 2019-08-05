@@ -99,7 +99,7 @@ class JooqModellingGroupRepository(
                 .where(MODEL.IS_CURRENT)
                 .and(MODEL.MODELLING_GROUP.eq(group.id))
                 .fetch()
-                .map { ResearchModel(it[MODEL.ID], it[MODEL.DESCRIPTION], it[MODEL.CITATION], group.id, null, null, null) }
+                .map { ResearchModel(it[MODEL.ID], it[MODEL.DESCRIPTION], it[MODEL.CITATION], group.id) }
         val users = dsl.select(APP_USER.USERNAME)
                 .fromJoinPath(APP_USER, USER_GROUP_MEMBERSHIP, USER_GROUP, USER_GROUP_ROLE, ROLE)
                 .where(ROLE.NAME.eq("member"))

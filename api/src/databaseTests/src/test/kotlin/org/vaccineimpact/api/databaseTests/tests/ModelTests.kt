@@ -9,8 +9,8 @@ import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.ResearchModel
 import org.vaccineimpact.api.models.ModelVersion
+import org.vaccineimpact.api.models.ResearchModelDetails
 
 class ModelTests : RepositoryTests<ModelRepository>()
 {
@@ -43,8 +43,9 @@ class ModelTests : RepositoryTests<ModelRepository>()
         }.check {
             repo ->
             val models = repo.all()
-            Assertions.assertThat(models).hasSameElementsAs(listOf(
-                    ResearchModel("fakeId",
+            Assertions.assertThat(models).hasSameElementsAs(
+                    listOf(
+                            ResearchModelDetails("fakeId",
                             "some model",
                             "Unknown citation",
                             "a",
@@ -53,7 +54,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             currentVersion = ModelVersion(1, "fakeId", "v1", "Some note",
                                     "Some fingerprint", true, "R",
                                     countries=listOf(Country("c1", "c1-Name"), Country("c2", "c2-Name")))),
-                    ResearchModel("fakeId2",
+                            ResearchModelDetails("fakeId2",
                             "another model",
                             "Unknown citation",
                             "a",
@@ -81,7 +82,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
             repo ->
             val models = repo.all()
             Assertions.assertThat(models).hasSameElementsAs(listOf(
-                    ResearchModel("fakeId",
+                    ResearchModelDetails("fakeId",
                             "some model",
                             "Unknown citation",
                             "a",
@@ -106,7 +107,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
             repo ->
             val model = repo.get("fakeId")
             Assertions.assertThat(model)
-                    .isEqualTo(ResearchModel("fakeId", "some model", "Unknown citation","a",
+                    .isEqualTo(ResearchModelDetails("fakeId", "some model", "Unknown citation","a",
                             false, "both", null))
         }
     }
@@ -130,7 +131,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
             repo ->
             val model = repo.get("fakeId")
             Assertions.assertThat(model)
-                    .isEqualTo(ResearchModel("fakeId",
+                    .isEqualTo(ResearchModelDetails("fakeId",
                             "some model",
                             "Unknown citation",
                             "a",
