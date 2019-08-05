@@ -1,10 +1,9 @@
 import { ModellingGroupsAction, ModellingGroupTypes } from "../actionTypes/ModellingGroupsTypes";
 import {
     ErrorInfo,
-    ResearchModel,
     ModellingGroup,
     ModellingGroupDetails,
-    User
+    User, ResearchModelDetails
 } from "../../shared/models/Generated";
 import {isNonEmptyArray} from "../../shared/ArrayHelpers";
 
@@ -15,7 +14,7 @@ export interface ModellingGroupsState {
     currentGroupMembers: User[];
     createGroupErrors: ErrorInfo[];
     showCreateGroupForm: boolean;
-    models: ResearchModel[];
+    models: ResearchModelDetails[];
 }
 
 export const modellingGroupInitialState: ModellingGroupsState = {

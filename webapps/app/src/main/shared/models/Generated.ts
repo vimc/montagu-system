@@ -70,23 +70,9 @@ export interface ModellingGroup {
     id: string;
 }
 
-export interface ModelVersion {
-    code: string | null;
-    countries: Country[];
-    fingerprint: string | null;
-    id: number;
-    is_dynamic: boolean | null;
-    model: string;
-    note: string | null;
-    version: string;
-}
-
 export interface ResearchModel {
     citation: string;
-    current_version: ModelVersion | null;
     description: string;
-    gender: string | null;
-    gender_specific: boolean | null;
     id: string;
     modelling_group: string;
 }
@@ -111,6 +97,27 @@ export interface ModelRunParameterSet {
     model: string;
     uploaded_by: string;
     uploaded_on: string;
+}
+
+export interface ModelVersion {
+    code: string | null;
+    countries: Country[];
+    fingerprint: string | null;
+    id: number;
+    is_dynamic: boolean | null;
+    model: string;
+    note: string | null;
+    version: string;
+}
+
+export interface ResearchModelDetails {
+    citation: string;
+    current_version: ModelVersion | null;
+    description: string;
+    gender: string | null;
+    gender_specific: boolean | null;
+    id: string;
+    modelling_group: string;
 }
 
 export interface Expectations {
