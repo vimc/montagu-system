@@ -1,7 +1,7 @@
 import { ModellingGroupsAction, ModellingGroupTypes } from "../actionTypes/ModellingGroupsTypes";
 import {
     ErrorInfo,
-    Model,
+    ResearchModel,
     ModellingGroup,
     ModellingGroupDetails,
     User
@@ -15,7 +15,7 @@ export interface ModellingGroupsState {
     currentGroupMembers: User[];
     createGroupErrors: ErrorInfo[];
     showCreateGroupForm: boolean;
-    models: Model[];
+    models: ResearchModel[];
 }
 
 export const modellingGroupInitialState: ModellingGroupsState = {

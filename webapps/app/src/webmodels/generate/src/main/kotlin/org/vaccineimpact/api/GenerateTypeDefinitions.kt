@@ -29,7 +29,6 @@ fun main(args: Array<String>) {
                 rootClasses = setOf(
                         AssociateRole::class,
                         AssociateUser::class,
-                        Changelog::class,
                         CohortRestriction::class,
                         CoverageSet::class,
                         Country::class,
@@ -37,7 +36,6 @@ fun main(args: Array<String>) {
                         Disease::class,
                         DemographicDataset::class,
                         NumberRange::class,
-                        Model::class,
                         ModellingGroup::class,
                         ModellingGroupDetails::class,
                         ModellingGroupCreation::class,
