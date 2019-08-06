@@ -118,7 +118,6 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         val touchstoneSet = mockTouchstones()
         val repo = mockEstimatesRepository(touchstoneSet)
 
-        val before = Instant.now()
         val properties = CreateBurdenEstimateSet(
                 BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN, "single"),
                 1
