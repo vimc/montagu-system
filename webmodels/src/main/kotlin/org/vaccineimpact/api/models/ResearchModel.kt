@@ -15,7 +15,7 @@ constructor(override val id: String,
             val description: String,
             val citation: String,
             val modellingGroup: String,
-            var disease: Disease,
+            val disease: Disease,
             val genderSpecific: Boolean? = null,
             val gender: String? = null,
             var currentVersion: ModelVersion? = null) : HasKey<String>
