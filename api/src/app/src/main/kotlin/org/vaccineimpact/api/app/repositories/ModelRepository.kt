@@ -1,9 +1,9 @@
 package org.vaccineimpact.api.app.repositories
 
-import org.vaccineimpact.api.models.Model
+import org.vaccineimpact.api.models.ResearchModelDetails
 
 interface ModelRepository : Repository
 {
-    fun all(): List<Model>
-    fun get(id: String): Model
+    fun all(): List<ResearchModelDetails>
+    fun get(id: String): ResearchModelDetails
 }

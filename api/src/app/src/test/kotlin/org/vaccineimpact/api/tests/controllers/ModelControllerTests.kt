@@ -8,8 +8,8 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.ModelController
 import org.vaccineimpact.api.app.repositories.ModelRepository
 import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.Model
 import org.vaccineimpact.api.models.ModelVersion
+import org.vaccineimpact.api.models.ResearchModelDetails
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 
@@ -18,7 +18,7 @@ class ModelControllerTests : MontaguTests()
     @Test
     fun `getModels returns all models`()
     {
-        val models = listOf(Model("test",
+        val models = listOf(ResearchModelDetails("test",
                 "test name",
                 "test@test.com",
                 "",
@@ -40,7 +40,7 @@ class ModelControllerTests : MontaguTests()
     fun `getModel returns model`()
     {
         val modelId = "testId"
-        val model = Model(modelId,
+        val model = ResearchModelDetails(modelId,
                 "test name",
                 "test@test.com",
                 "",
