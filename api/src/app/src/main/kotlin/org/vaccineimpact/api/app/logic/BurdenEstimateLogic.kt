@@ -146,7 +146,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
             val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
                     .expectation.expectedRowHashMap()
             val validatedRowMap = burdenEstimateRepository.validateEstimates(set, expectedRows)
-            val countriesWithMissingRows = validatedRowMap.filter(::missingRows)
+            val countriesWithMissingRows = validatedRowMap.filter(::hasMissingRows)
             if (countriesWithMissingRows.any())
             {
                 burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
@@ -173,21 +173,14 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         scenarioRepository.checkScenarioDescriptionExists(path.scenarioId)
     }
 
-    private fun missingRows(countryMapEntry: Map.Entry<String, HashMap<Short, HashMap<Short, Boolean>>>): Boolean
-    {
-        return countryMapEntry.value.any { age ->
-            age.value.any { year -> !year.value }
-        }
-    }
-
     private fun rowErrorMessage(countriesWithMissingRows: Map<String, HashMap<Short, HashMap<Short, Boolean>>>): String
     {
         val countries = countriesWithMissingRows.keys
         val firstCountryWithMissingData = countries.first()
         val firstMissingAgesRow = countriesWithMissingRows.getValue(firstCountryWithMissingData)
-        val firstAgeWithMissingYears = firstMissingAgesRow.filter(::hasFalseEntry).keys.first()
+        val firstAgeWithMissingYears = firstMissingAgesRow.filter(::hasMissingYear).keys.first()
         val firstMissingYearsRow = firstMissingAgesRow.getValue(firstAgeWithMissingYears)
-        val firstMissingYear = firstMissingYearsRow.filter(::isFalse).keys.first()
+        val firstMissingYear = firstMissingYearsRow.filter(::isMissing).keys.first()
 
         val basicMessage = "Missing rows for ${countries.joinToString(", ")}"
         val exampleRowMessage = "For example:\n$firstCountryWithMissingData, age $firstAgeWithMissingYears," +
@@ -195,14 +188,19 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         return "$basicMessage\n$exampleRowMessage"
     }
 
-    private fun isFalse(mapEntry: Map.Entry<Short, Boolean>): Boolean
+    private fun isMissing(yearMapEntry: Map.Entry<Short, Boolean>): Boolean
     {
-        return !mapEntry.value
+        return !yearMapEntry.value
     }
 
-    private fun hasFalseEntry(mapEntry: Map.Entry<Short, HashMap<Short, Boolean>>): Boolean
+    private fun hasMissingYear(ageMapEntry: Map.Entry<Short, HashMap<Short, Boolean>>): Boolean
     {
-        return mapEntry.value.any(::isFalse)
+        return ageMapEntry.value.any(::isMissing)
+    }
+
+    private fun hasMissingRows(countryMapEntry: Map.Entry<String, HashMap<Short, HashMap<Short, Boolean>>>): Boolean
+    {
+        return countryMapEntry.value.any(::hasMissingYear)
     }
 
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
