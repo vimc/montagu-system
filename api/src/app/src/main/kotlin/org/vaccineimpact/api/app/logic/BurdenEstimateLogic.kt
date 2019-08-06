@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.app.logic
 
-import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
@@ -8,7 +7,6 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
-import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstoneVersion
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.app.validateStochastic
 import org.vaccineimpact.api.models.*
@@ -148,11 +146,11 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
             val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
                     .expectation.expectedRowHashMap()
             val validatedRowMap = burdenEstimateRepository.validateEstimates(set, expectedRows)
-            val missingRows = validatedRowMap.filter(::missingRows)
-            if (missingRows.any())
+            val countriesWithMissingRows = validatedRowMap.filter(::missingRows)
+            if (countriesWithMissingRows.any())
             {
                 burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
-                throw MissingRowsError(rowErrorMessage(missingRows))
+                throw MissingRowsError(rowErrorMessage(countriesWithMissingRows))
             }
             burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
         }
@@ -182,16 +180,29 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         }
     }
 
-    private fun rowErrorMessage(missingRows: Map<String, HashMap<Short, HashMap<Short, Boolean>>>): String
+    private fun rowErrorMessage(countriesWithMissingRows: Map<String, HashMap<Short, HashMap<Short, Boolean>>>): String
     {
-        val countries = missingRows.keys
-        val message = "Missing rows for ${countries.joinToString(", ")}"
-        val firstMissingAgesRow = missingRows.getValue(countries.first())
-        val firstAgeWithMissingYears = firstMissingAgesRow.filter { it.value.any { y -> !y.value } }.keys.first()
-        val firstMissingYear = firstMissingAgesRow.getValue(firstAgeWithMissingYears).filter { year -> !year.value }.keys.first()
-        val exampleRows = "For example:\n${countries.first()}, age $firstAgeWithMissingYears," +
+        val countries = countriesWithMissingRows.keys
+        val firstCountryWithMissingData = countries.first()
+        val firstMissingAgesRow = countriesWithMissingRows.getValue(firstCountryWithMissingData)
+        val firstAgeWithMissingYears = firstMissingAgesRow.filter(::hasFalseEntry).keys.first()
+        val firstMissingYearsRow = firstMissingAgesRow.getValue(firstAgeWithMissingYears)
+        val firstMissingYear = firstMissingYearsRow.filter(::isFalse).keys.first()
+
+        val basicMessage = "Missing rows for ${countries.joinToString(", ")}"
+        val exampleRowMessage = "For example:\n$firstCountryWithMissingData, age $firstAgeWithMissingYears," +
                 " year $firstMissingYear"
-        return "$message\n$exampleRows"
+        return "$basicMessage\n$exampleRowMessage"
+    }
+
+    private fun isFalse(mapEntry: Map.Entry<Short, Boolean>): Boolean
+    {
+        return !mapEntry.value
+    }
+
+    private fun hasFalseEntry(mapEntry: Map.Entry<Short, HashMap<Short, Boolean>>): Boolean
+    {
+        return mapEntry.value.any(::isFalse)
     }
 
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
