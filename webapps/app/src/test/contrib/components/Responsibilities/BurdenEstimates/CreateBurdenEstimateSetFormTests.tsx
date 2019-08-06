@@ -13,6 +13,7 @@ import {OptionSelector} from "../../../../../main/contrib/components/OptionSelec
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {estimatesActionCreators} from "../../../../../main/contrib/actions/estimatesActionCreators";
+import {BurdenEstimateSetTypeCode} from "../../../../../main/shared/models/Generated";
 
 describe("Create Burden Estimates Form Component tests", () => {
 
@@ -36,6 +37,13 @@ describe("Create Burden Estimates Form Component tests", () => {
         expect(details).to.have.lengthOf(1);
     });
 
+    it ("initialises type to central-average", () => {
+        const props = {touchstoneId: "touchstone-1", groupId: "group-1", scenarioId: "scenario-1"};
+        const rendered = shallow(<CreateBurdenEstimateSetForm {...props} />, {context: {store}}).dive();
+        const formState = rendered.state() as CreateBurdenEstimateSetFormState;
+        expect(formState.data.type.type).to.eql("central-averaged")
+    });
+
     it("updates type details on change", () => {
         const props = {touchstoneId: "touchstone-1", groupId: "group-1", scenarioId: "scenario-1"};
 
@@ -48,35 +56,6 @@ describe("Create Burden Estimates Form Component tests", () => {
         expect(formState.data.type.details).to.eql("some value");
     });
 
-
-    it("renders type code select", () => {
-        const props = {touchstoneId: "touchstone-1", groupId: "group-1", scenarioId: "scenario-1"};
-
-        const rendered = shallow(<CreateBurdenEstimateSetForm {...props} />, {context: {store}}).dive();
-
-        const select = rendered.find(OptionSelector);
-
-        expect(select.prop("name")).to.eql("typeCode");
-        expect(select.prop("defaultOption")).to.eql("-- Please select one --");
-        expect(select.prop("className")).to.eql("form-control");
-        expect(select.prop("required")).to.eql(true);
-        expect(select.prop("options")).to.eql([{value: "central-single-run", text: "Single model run"}, {
-            value: "central-averaged",
-            text: "Averaged across model runs"
-        }]);
-
-    });
-
-    it("updates type code on change", () => {
-        const props = {touchstoneId: "touchstone-1", groupId: "group-1", scenarioId: "scenario-1"};
-        const rendered = shallow(<CreateBurdenEstimateSetForm {...props} />, {context: {store}}).dive();
-
-        const typeSelect = rendered.find(OptionSelector);
-        typeSelect.simulate("change", "central-averaged");
-
-        const formState = rendered.state() as CreateBurdenEstimateSetFormState;
-        expect(formState.data.type.type).to.eql("central-averaged");
-    });
 
     it("fetches estimates token and refreshes responsibilities on success", () => {
         const props = {touchstoneId: "touchstone-1", groupId: "group-1", scenarioId: "scenario-1"};
