@@ -11,6 +11,7 @@ interface ModelMetaRow {
     gender_specific: boolean | null;
     id: string;
     modelling_group: string;
+    outcomes: string;
 }
 
 interface ModelMetaProps {
@@ -95,7 +96,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                     {/*<th>Years</th>*/}
                     {/*<th>Ages</th>*/}
                     {/*<th>Cohorts</th>*/}
-                    {/*<th>Outcomes</th>*/}
+                    <th>Outcomes</th>
                     {/*<th>DALYs</th>*/}
                 </tr>
                 </thead>
@@ -108,6 +109,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                             <td data-title="type">{model.is_dynamic ? "Dynamic" : "Static"}</td>
                             <td data-title="code">{model.code}</td>
                             <td data-title="gender">{model.gender ? model.gender : "NA"}</td>
+                            <td data-title="outcomes">{model.outcomes}</td>
                         </tr>
                     );
                 })}
@@ -124,7 +126,10 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
         models: state.groups.models.map(m => ({
             ...m,
             code: m.current_version.code,
-            is_dynamic: m.current_version.is_dynamic
+            is_dynamic: m.current_version.is_dynamic,
+            //TODO: get disease from model
+            outcomes: state.groups.expectations.find(e => e.modelling_group == m.modelling_group
+                && e.disease == "YF").expectations.outcomes.join(",")
         }))
     }
 };

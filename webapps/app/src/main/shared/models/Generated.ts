@@ -214,6 +214,22 @@ export interface Touchstone {
     versions: TouchstoneVersion[];
 }
 
+export interface OutcomeExpectations {
+    ages: NumberRange;
+    cohorts: CohortRestriction;
+    description: string;
+    id: number;
+    outcomes: string[];
+    years: NumberRange;
+}
+
+export interface TouchstoneModelExpectations {
+    disease: string;
+    expectations: OutcomeExpectations;
+    modelling_group: string;
+    touchstone_version: string;
+}
+
 export interface RoleAssignment {
     name: string;
     scope_id: string | null;

@@ -48,6 +48,7 @@ fun main(args: Array<String>) {
                         ScenarioAndCoverageSets::class,
                         ScenarioTouchstoneAndCoverageSets::class,
                         Touchstone::class,
+                        TouchstoneModelExpectations::class,
                         TouchstoneStatus::class,
                         User::class
                 ),
