@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.ModelController
 import org.vaccineimpact.api.app.repositories.ModelRepository
 import org.vaccineimpact.api.models.Country
+import org.vaccineimpact.api.models.Disease
 import org.vaccineimpact.api.models.ModelVersion
 import org.vaccineimpact.api.models.ResearchModelDetails
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -22,6 +23,7 @@ class ModelControllerTests : MontaguTests()
                 "test name",
                 "test@test.com",
                 "",
+                Disease("YF", "Yellow Fever"),
                 false,
                 "both",
                 ModelVersion(1, "test", "v1", "note", "fingerprint",
@@ -44,6 +46,7 @@ class ModelControllerTests : MontaguTests()
                 "test name",
                 "test@test.com",
                 "",
+                Disease("YF", "Yellow Fever"),
                 true,
                 "female",
                 currentVersion = null)
