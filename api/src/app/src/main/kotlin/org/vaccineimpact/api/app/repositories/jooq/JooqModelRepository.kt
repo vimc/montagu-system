@@ -22,13 +22,11 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
 
         val currentVersionRecords = dsl.select(
                     *MODEL_VERSION.fields(),
-                    *DISEASE.fields(),
                     *COUNTRY.fields())
                 .from(MODEL_VERSION)
                 .innerJoin(MODEL)
                 .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
                 .joinPath(MODEL_VERSION, MODEL_VERSION_COUNTRY, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
-                .joinPath(MODEL, DISEASE)
 
         val currentVersions = currentVersionRecords.groupBy { it[MODEL_VERSION.ID] }
                 .mapValues {
@@ -92,17 +90,24 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 MODEL.CITATION,
                 MODEL.MODELLING_GROUP,
                 MODEL.GENDER_SPECIFIC,
-                GENDER.CODE.`as`("gender"),
-                MODEL.CURRENT_VERSION)
+                GENDER.CODE,
+                MODEL.CURRENT_VERSION,
+                *DISEASE.fields())
                 .fromJoinPath(MODEL, GENDER, joinType = JoinType.LEFT_OUTER_JOIN)
+                .joinPath(MODEL, DISEASE)
                 .where(MODEL.IS_CURRENT.eq(true))
     }
 
     private fun Record.toModelWithDisease(): ResearchModelDetails
     {
-        val model = this.into(ResearchModelDetails::class.java)
-        model.disease = this.into(Disease::class.java)
-        return model
+        val disease = this.into(Disease::class.java)
+        return ResearchModelDetails(this[MODEL.ID],
+                this[MODEL.DESCRIPTION],
+                this[MODEL.CITATION],
+                this[MODEL.MODELLING_GROUP],
+                disease,
+                this[MODEL.GENDER_SPECIFIC],
+                this[GENDER.CODE])
     }
 
     private fun Record.toModelVersionWithCountries(countries: List<Country>): ModelVersion
