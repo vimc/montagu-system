@@ -13,13 +13,6 @@ export interface AssociateUser {
     username: string;
 }
 
-export interface Changelog {
-    from_file: boolean;
-    label: string;
-    report_version: string;
-    value: string;
-}
-
 export interface CohortRestriction {
     maximum_birth_year: number | null;
     minimum_birth_year: number | null;
@@ -72,33 +65,13 @@ export interface NumberRange {
     minimum_inclusive: number;
 }
 
-export interface ModelVersion {
-    code: string | null;
-    fingerprint: string | null;
-    id: number;
-    is_dynamic: boolean | null;
-    model: string;
-    note: string | null;
-    version: string;
-}
-
-export interface Model {
-    citation: string;
-    current_version: ModelVersion | null;
-    description: string;
-    gender: string | null;
-    gender_specific: boolean | null;
-    id: string;
-    modelling_group: string;
-}
-
 export interface ModellingGroup {
     description: string;
     id: string;
 }
 
 export interface ResearchModel {
-    citation: string | null;
+    citation: string;
     description: string;
     id: string;
     modelling_group: string;
@@ -124,6 +97,27 @@ export interface ModelRunParameterSet {
     model: string;
     uploaded_by: string;
     uploaded_on: string;
+}
+
+export interface ModelVersion {
+    code: string | null;
+    countries: Country[];
+    fingerprint: string | null;
+    id: number;
+    is_dynamic: boolean | null;
+    model: string;
+    note: string | null;
+    version: string;
+}
+
+export interface ResearchModelDetails {
+    citation: string;
+    current_version: ModelVersion | null;
+    description: string;
+    gender: string | null;
+    gender_specific: boolean | null;
+    id: string;
+    modelling_group: string;
 }
 
 export interface Expectations {

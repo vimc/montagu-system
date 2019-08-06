@@ -37,15 +37,16 @@ export function mockModelVersion(properties?: Partial<models.ModelVersion>) {
         model: "model",
         note: null,
         code: "R",
-        version: "v-" + counter
+        version: "v-" + counter,
+        countries: []
     };
 
     return Object.assign(template, properties);
 }
 
-export function mockModel(properties?: Partial<models.Model>) {
+export function mockModel(properties?: Partial<models.ResearchModelDetails>) {
     counter++;
-    const template: models.Model = {
+    const template: models.ResearchModelDetails = {
         id: "model-" + counter,
         description: "Description",
         citation: "citation",
