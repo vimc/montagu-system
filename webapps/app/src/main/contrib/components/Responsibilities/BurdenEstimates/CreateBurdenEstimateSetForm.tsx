@@ -30,14 +30,6 @@ export interface CreateBurdenEstimateSetFormState {
 export class CreateBurdenEstimateSetFormComponent extends React.Component<CreateBurdenEstimateSetFormProps, CreateBurdenEstimateSetFormState> {
 
     private successMessage: string = "Success! You have registered how your central estimates were calculated";
-    private options = [
-        {
-            value: "central-single-run",
-            text: "Single model run"
-        }, {
-            value: "central-averaged",
-            text: "Averaged across model runs"
-        }];
 
     constructor(props: CreateBurdenEstimateSetFormProps) {
         super(props);
@@ -45,7 +37,7 @@ export class CreateBurdenEstimateSetFormComponent extends React.Component<Create
             data: {
                 model_run_parameter_set: null,
                 type: {
-                    type: null,
+                    type: "central-averaged",
                     details: null
                 }
             },
@@ -54,23 +46,9 @@ export class CreateBurdenEstimateSetFormComponent extends React.Component<Create
             disabled: false,
             validated: false
         };
-        this.onTypeChange = this.onTypeChange.bind(this);
         this.onDetailsChange = this.onDetailsChange.bind(this);
         this.clearFormStatus = this.clearFormStatus.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-    }
-
-    onTypeChange(value: BurdenEstimateSetTypeCode) {
-        this.setState( {
-            data: {
-                model_run_parameter_set: null,
-                type: {
-                    type: value,
-                    details: this.state.data.type.details
-                }
-            },
-            errors: []
-        });
     }
 
     onDetailsChange(e: FormEvent<HTMLInputElement>) {
@@ -119,24 +97,16 @@ export class CreateBurdenEstimateSetFormComponent extends React.Component<Create
 
         return <div className={"bg-light p-3"}>
             <h5>First step: register how these central estimates were calculated</h5>
+            <p>
+                Please provide details of how these averaged central estimates were calculated. NB We no longer accept single
+                model run estimates.
+            </p>
             <form encType="multipart/form-data"
                   onSubmit={this.onSubmit}
                   className={this.state.validated ? "was-validated" : ""}
                   noValidate
             >
                 <div className="row">
-                    <div className="col">
-                        <label>How were these estimates calculated?</label>
-                        <OptionSelector
-                            name={"typeCode"}
-                            defaultOption={"-- Please select one --"}
-                            options={this.options} onChange={this.onTypeChange}
-                            className="form-control" required={true}
-                        />
-                        <div className="invalid-feedback">
-                            Please choose one
-                        </div>
-                    </div>
                     <div className="col">
                         <label>Details of how these estimates were calculated</label>
                         <input
