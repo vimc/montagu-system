@@ -35,7 +35,7 @@ interface BurdenEstimateLogic
     fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String, setId: Int): BurdenEstimateSet
 
     fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
-                              scenarioId: String) : FlexibleDataTable<BurdenEstimate>
+                              scenarioId: String): FlexibleDataTable<BurdenEstimate>
 
     fun validateResponsibilityPath(path: ResponsibilityPath, validTouchstoneStatusList: List<TouchstoneStatus>)
 }
@@ -72,14 +72,14 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
     }
 
     override fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
-                                       scenarioId: String) : FlexibleDataTable<BurdenEstimate>
+                                       scenarioId: String): FlexibleDataTable<BurdenEstimate>
     {
         val data = burdenEstimateRepository.getBurdenEstimateOutcomesSequence(groupId,
-                                                    touchstoneVersionId, scenarioId, setId)
+                touchstoneVersionId, scenarioId, setId)
 
         //first, group the outcome rows by disease, year, age, country code and country name
         val groupedRows = data
-                .groupBy{
+                .groupBy {
                     hashSetOf(it.disease, it.year, it.age,
                             it.country, it.countryName)
                 }
@@ -89,7 +89,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
 
         //next, map to BurdenEstimate objects, including extracting the cohort size outcome
         val rows = groupedRows.values
-                .map{
+                .map {
                     mapBurdenEstimate(it)
                 }
 
@@ -107,11 +107,11 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
 
         //We should find cohort size as one of the burden outcomes
 
-        val cohortSize = records.firstOrNull{it.burden_outcome_code == COHORT_SIZE_CODE}?.value
-        val burdenOutcomeRows = records.filter{it.burden_outcome_code != COHORT_SIZE_CODE}
+        val cohortSize = records.firstOrNull { it.burden_outcome_code == COHORT_SIZE_CODE }?.value
+        val burdenOutcomeRows = records.filter { it.burden_outcome_code != COHORT_SIZE_CODE }
 
         val burdenOutcomeValues =
-                burdenOutcomeRows.associateBy({it.burden_outcome_code}, {it.value})
+                burdenOutcomeRows.associateBy({ it.burden_outcome_code }, { it.value })
 
         return BurdenEstimate(
                 reference.disease,
@@ -133,7 +133,6 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
         val set = burdenEstimateRepository.getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
 
-        // Invalid Operation if this set is already closed
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
             throw InvalidOperationError("This burden estimate set has already been closed.")
@@ -160,7 +159,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
     }
 
     override fun validateResponsibilityPath(
-            path:  ResponsibilityPath,
+            path: ResponsibilityPath,
             validTouchstoneStatusList: List<TouchstoneStatus>
     )
     {
@@ -172,14 +171,14 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         {
             throw UnknownObjectError(touchstoneVersion.id, TouchstoneVersion::class)
         }
-        //Check that scenario exists
+
         scenarioRepository.checkScenarioDescriptionExists(path.scenarioId)
     }
 
     private fun missingRows(countryMapEntry: Map.Entry<String, HashMap<Short, HashMap<Short, Boolean>>>): Boolean
     {
-        return countryMapEntry.value.any { a ->
-            a.value.any { y -> !y.value }
+        return countryMapEntry.value.any { age ->
+            age.value.any { year -> !year.value }
         }
     }
 
@@ -187,10 +186,11 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
     {
         val countries = missingRows.keys
         val message = "Missing rows for ${countries.joinToString(", ")}"
-        val firstRowAges = missingRows[countries.first()]
-        val firstMissingAge = firstRowAges!!.keys.first()
-        val exampleRows = "For example:\n${countries.first()}, age $firstMissingAge," +
-                " year ${firstRowAges[firstMissingAge]!!.keys.first()}"
+        val firstMissingAgesRow = missingRows.getValue(countries.first())
+        val firstAgeWithMissingYears = firstMissingAgesRow.filter { it.value.any { y -> !y.value } }.keys.first()
+        val firstMissingYear = firstMissingAgesRow.getValue(firstAgeWithMissingYears).filter { year -> !year.value }.keys.first()
+        val exampleRows = "For example:\n${countries.first()}, age $firstAgeWithMissingYears," +
+                " year $firstMissingYear"
         return "$message\n$exampleRows"
     }
 
