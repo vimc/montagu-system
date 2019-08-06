@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.controllers.BurdenEstimates
 
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
@@ -40,6 +41,11 @@ open class BurdenEstimatesController(
         // First check if we're allowed to see this touchstoneVersion
         val path = getValidResponsibilityPath()
         val properties = context.postData<CreateBurdenEstimateSet>()
+
+        if (properties.type.type == BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN)
+        {
+            throw BadRequest("Single model run estimate sets are no longer accepted.")
+        }
 
         //Also check if any specified model run parameter set belongs to this group and touchstone
         if (properties.modelRunParameterSet != null)
