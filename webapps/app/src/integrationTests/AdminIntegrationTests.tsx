@@ -1,13 +1,16 @@
 import * as React from "react";
 import {createMemoryHistory} from 'history';
 
-import {IntegrationTestSuite, addCoverageSetsForScenario, addCoverageData, TestService} from "./IntegrationTest";
+import {addCoverageData, addCoverageSetsForScenario, IntegrationTestSuite, TestService} from "./IntegrationTest";
 import {expect} from "chai";
 import {shallow} from "enzyme";
 import {Client, QueryResult} from "pg";
 import {
-    Scenario, ModellingGroup, ResponsibilitySetWithExpectations,
-    RoleAssignment, User
+    ModellingGroup,
+    ResponsibilitySetWithExpectations,
+    RoleAssignment,
+    Scenario,
+    User
 } from "../main/shared/models/Generated";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
 import {AuthService} from "../main/shared/services/AuthService";
@@ -65,6 +68,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         it("can fetch models", async () => {
             await addGroups(this.db);
             const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState)).getAllModels();
+            console.log(result);
             expect(result).to.eql([
                 {
                     citation: "Citation",
@@ -73,7 +77,11 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                     modelling_group: "g1",
                     gender: null,
                     gender_specific: false,
-                    current_version: null
+                    current_version: null,
+                    disease: {
+                        id: "YF",
+                        name: "yellow fever"
+                    }
                 },
                 {
                     citation: "Citation",
@@ -82,7 +90,11 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                     modelling_group: "g2",
                     gender: null,
                     gender_specific: false,
-                    current_version: null
+                    current_version: null,
+                    disease: {
+                        id: "YF",
+                        name: "yellow fever"
+                    }
                 }
             ]);
         });
@@ -307,8 +319,9 @@ function addGroups(db: Client): Promise<QueryResult> {
             INSERT INTO modelling_group (id, description, institution, pi) VALUES ('g1', 'Group 1', '', '');
             INSERT INTO modelling_group (id, description, institution, pi) VALUES ('g2', 'Group 2', '', '');
             
-            INSERT INTO model (id, modelling_group, description, citation, is_current) VALUES ('model', 'g1', 'A model', 'Citation', true);
-            INSERT INTO model (id, modelling_group, description, citation, is_current) VALUES ('model2', 'g2', 'Another model', 'Citation', true);
+            INSERT INTO disease (id, name) values ('YF', 'yellow fever');
+            INSERT INTO model (id, modelling_group, description, citation, is_current, disease) VALUES ('model', 'g1', 'A model', 'Citation', true, 'YF');
+            INSERT INTO model (id, modelling_group, description, citation, is_current, disease) VALUES ('model2', 'g2', 'Another model', 'Citation', true, 'YF');
             
             INSERT INTO app_user (username) VALUES ('bob'); 
             INSERT INTO user_group (id, name) VALUES ('bob', 'bob');

@@ -53,7 +53,8 @@ export function mockModel(properties?: Partial<models.ResearchModelDetails>) {
         modelling_group: "group-" + counter,
         gender: null,
         gender_specific: false,
-        current_version: mockModelVersion()
+        current_version: mockModelVersion(),
+        disease: mockDisease()
     };
     return Object.assign(template, properties);
 }
