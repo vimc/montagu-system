@@ -92,6 +92,7 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 TOUCHSTONE.ID,
                 RESPONSIBILITY_SET.MODELLING_GROUP,
                 *BURDEN_ESTIMATE_EXPECTATION.fields(),
+                SCENARIO.SCENARIO_DESCRIPTION,
                 Tables.outcomes.OUTCOME)
                 .fromJoinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION)
                 .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
@@ -104,8 +105,14 @@ class JooqExpectationsRepository(dsl: DSLContext)
 
         val outcomes = records.groupBy{ it[BURDEN_ESTIMATE_EXPECTATION.ID] }
             .mapValues{
-                it.value.mapNotNull{ row -> row[Tables.outcomes.OUTCOME] }
+                it.value.mapNotNull{ row -> row[Tables.outcomes.OUTCOME] }.distinct()
             }
+
+        val scenarios = records.groupBy{ it[BURDEN_ESTIMATE_EXPECTATION.ID] }
+                .mapValues{
+                    it.value.map{ row -> row[SCENARIO.SCENARIO_DESCRIPTION]}.distinct()
+                }
+
 
         return records.groupBy{it[BURDEN_ESTIMATE_EXPECTATION.ID]}
                 .map{
@@ -114,7 +121,8 @@ class JooqExpectationsRepository(dsl: DSLContext)
                             fields[TOUCHSTONE.ID], fields[RESPONSIBILITY_SET.MODELLING_GROUP],
                             fields[SCENARIO_DESCRIPTION.DISEASE],
                             fields.into(BurdenEstimateExpectationRecord::class.java)
-                                    .toOutcomeExpectations(outcomes[it.key]!!))
+                                    .toOutcomeExpectations(outcomes[it.key]!!),
+                            scenarios[it.key]!!)
                 }
     }
 

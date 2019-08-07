@@ -30,7 +30,8 @@ Schema: [`TouchstoneModelExpectations.schema.json`](../schemas/TouchstoneModelEx
                     "maximum_birth_year": 2050
                 },
                 "outcomes": ["cases","deaths"]
-            }
+            },
+            "scenarios": ["yf-routine", "yf-campaign"]
         },
         {
             "touchstone_version": "2018-op-1",
@@ -52,6 +53,7 @@ Schema: [`TouchstoneModelExpectations.schema.json`](../schemas/TouchstoneModelEx
                     "maximum_birth_year": 2060
                 },
                 "outcomes": ["cases"]
-            }
+            },
+            "scenarios": ["yf-routine"]
         }
     ]

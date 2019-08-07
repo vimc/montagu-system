@@ -16,8 +16,12 @@
     },
     "expectations": {
       "$ref": "OutcomeExpectation.schema.json"
+    },
+    "scenarios": {
+      "type": "array",
+      "items": { "type": "string" }
     }
   },
   "additionalProperties": false,
-  "required": [ "touchstone_version", "modelling_group", "disease", "expectations"]
+  "required": [ "touchstone_version", "modelling_group", "disease", "expectations", "scenarios"]
 }

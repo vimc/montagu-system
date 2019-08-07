@@ -55,7 +55,9 @@ class ExpectationsTests : DatabaseTest()
                                     "maximum_birth_year" to null
                                 ),
                                 "outcomes" to array("cases", "deaths")
-                        )
+
+                        ),
+                        "scenarios" to array(scenarioId)
                 )
             })
 
@@ -80,7 +82,8 @@ class ExpectationsTests : DatabaseTest()
                                         "maximum_birth_year" to null
                                 ),
                                 "outcomes" to array()
-                        )
+                        ),
+                        "scenarios" to array(otherScenarioId)
                 )
             })
         }
