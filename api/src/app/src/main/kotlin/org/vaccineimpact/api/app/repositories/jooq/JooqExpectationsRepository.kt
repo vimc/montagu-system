@@ -113,7 +113,6 @@ class JooqExpectationsRepository(dsl: DSLContext)
                     it.value.map{ row -> row[SCENARIO.SCENARIO_DESCRIPTION]}.distinct()
                 }
 
-
         return records.groupBy{it[BURDEN_ESTIMATE_EXPECTATION.ID]}
                 .map{
                     val fields = it.value.first()
