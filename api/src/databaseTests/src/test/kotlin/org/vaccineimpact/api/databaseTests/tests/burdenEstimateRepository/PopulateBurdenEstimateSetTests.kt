@@ -6,10 +6,9 @@ import org.junit.Test
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.db.Tables
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.BurdenEstimateSetStatus
-import org.vaccineimpact.api.models.BurdenEstimateSetType
-import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
+import org.vaccineimpact.api.db.direct.addBurdenEstimate
+import org.vaccineimpact.api.db.direct.addCountries
+import org.vaccineimpact.api.models.*
 import java.time.Instant
 
 class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
@@ -97,6 +96,61 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             assertThat(result is StochasticBurdenEstimateWriter).isTrue()
         }
 
+    }
+
+    @Test
+    fun `validateEstimates returns a map with missing rows`()
+    {
+        val years = 2000..2010
+        val ages = 0..10
+        val expectations = Expectations(1, "", years, ages, CohortRestriction(null, null),
+                listOf(Country("ABC", "a"), Country("DEF", "d")), listOf("cases"))
+
+        val setId = withDatabase { db ->
+            val (_, setId) = setupDatabaseWithBurdenEstimateSetAndReturnIds(db)
+            db.addCountries(listOf("ABC", "DEF"))
+            for (year in years)
+            {
+                for (age in ages)
+                {
+                    db.addBurdenEstimate(setId, "ABC", year = year.toShort(), age = age.toShort(), outcome = "cases")
+
+                    if (year > 2005)
+                    {
+                        db.addBurdenEstimate(setId, "DEF", year = year.toShort(), age = age.toShort(), outcome = "cases")
+                    }
+                }
+            }
+
+            setId
+        }
+
+        val burdenEstimateSet = BurdenEstimateSet(setId, Instant.now(), "",
+                BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED),
+                BurdenEstimateSetStatus.EMPTY, listOf())
+
+        val result = withRepo {
+            it.validateEstimates(burdenEstimateSet,
+                    expectations.expectedRowLookup())
+        }
+
+        for (year in years)
+        {
+            for (age in ages)
+            {
+                assertThat(result["ABC"]!![age.toShort()]!![year.toShort()]!!).isTrue()
+
+                if (year > 2005)
+                {
+                    assertThat(result["DEF"]!![age.toShort()]!![year.toShort()]!!).isTrue()
+                }
+                else
+                {
+                    assertThat(result["DEF"]!![age.toShort()]!![year.toShort()]!!).isFalse()
+                }
+
+            }
+        }
     }
 
 }

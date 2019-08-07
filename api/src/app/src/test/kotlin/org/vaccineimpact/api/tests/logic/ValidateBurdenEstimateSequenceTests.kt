@@ -25,7 +25,7 @@ class ValidateBurdenEstimateSequenceTests : MontaguTests()
                 BurdenEstimateWithRunId("d1", null, 2001, 1, "AFG", "Afghanistan", 10000F, mapOf()),
                 BurdenEstimateWithRunId("d1", null, 2000, 1, "AGO", "Angola", 10000F, mapOf()),
                 BurdenEstimateWithRunId("d1", null, 2000, 2, "AFG", "Afghanistan", 10000F, mapOf()))
-        val checked = source.asSequence().validate(expectations.expectedRowHashMap())
+        val checked = source.asSequence().validate(expectations.expectedRowLookup())
         assertThat(checked.toList()).hasSameElementsAs(source)
     }
 
@@ -36,7 +36,7 @@ class ValidateBurdenEstimateSequenceTests : MontaguTests()
                 BurdenEstimateWithRunId("d2", null, 2001, 1, "AFG", "", 10000F, mapOf()))
 
         assertThatThrownBy {
-            source.asSequence().validate(expectations.expectedRowHashMap()).toList()
+            source.asSequence().validate(expectations.expectedRowLookup()).toList()
         }.isInstanceOf(InconsistentDataError::class.java).hasMessageContaining("disease")
     }
 
@@ -46,7 +46,7 @@ class ValidateBurdenEstimateSequenceTests : MontaguTests()
         val source = listOf(BurdenEstimateWithRunId("d1", null, 2000, 1, "Bad", "", 10000F, mapOf()))
 
         assertThatThrownBy {
-            source.asSequence().validate(expectations.expectedRowHashMap()).toList()
+            source.asSequence().validate(expectations.expectedRowLookup()).toList()
         }.isInstanceOf(BadRequest::class.java).hasMessageContaining("country")
     }
 
@@ -56,7 +56,7 @@ class ValidateBurdenEstimateSequenceTests : MontaguTests()
         val source = listOf(BurdenEstimateWithRunId("d1", null, 2000, 10, "AFG", "", 10000F, mapOf()))
 
         assertThatThrownBy {
-            source.asSequence().validate(expectations.expectedRowHashMap()).toList()
+            source.asSequence().validate(expectations.expectedRowLookup()).toList()
         }.isInstanceOf(BadRequest::class.java).hasMessageContaining("age")
     }
 
@@ -66,7 +66,7 @@ class ValidateBurdenEstimateSequenceTests : MontaguTests()
         val source = listOf(BurdenEstimateWithRunId("d1", null, 2003, 1, "AFG", "", 10000F, mapOf()))
 
         assertThatThrownBy {
-            source.asSequence().validate(expectations.expectedRowHashMap()).toList()
+            source.asSequence().validate(expectations.expectedRowLookup()).toList()
         }.isInstanceOf(BadRequest::class.java).hasMessageContaining("year")
     }
 
@@ -77,7 +77,7 @@ class ValidateBurdenEstimateSequenceTests : MontaguTests()
                 BurdenEstimateWithRunId("d1", null, 2000, 1, "AFG", "", 10000F, mapOf()))
 
         assertThatThrownBy {
-            source.asSequence().validate(expectations.expectedRowHashMap()).toList()
+            source.asSequence().validate(expectations.expectedRowLookup()).toList()
         }.isInstanceOf(InconsistentDataError::class.java).hasMessageContaining("Duplicate")
     }
     @Test
@@ -86,7 +86,7 @@ class ValidateBurdenEstimateSequenceTests : MontaguTests()
         val source = listOf(BurdenEstimateWithRunId("d1", null, 2000, 1, "AFG", "Afghanistan", 10000F, mapOf()),
                 BurdenEstimateWithRunId("d2", null, 2001, 1, "AFG", "", 10000F, mapOf()))
 
-        val checked = source.asSequence().validate(expectations.expectedRowHashMap())
+        val checked = source.asSequence().validate(expectations.expectedRowLookup())
         checked.take(1).toList()
 
         assertThatThrownBy { checked.take(2).toList() }
@@ -100,7 +100,7 @@ class ValidateBurdenEstimateSequenceTests : MontaguTests()
                 BurdenEstimateWithRunId("d1", null, 2001, 1, "AFG", "Afghanistan", 10000F, mapOf()),
                 BurdenEstimateWithRunId("d2", null, 2000, 1, "AFG", "", 10000F, mapOf()))
 
-        val checked = source.asSequence().validate(expectations.expectedRowHashMap())
+        val checked = source.asSequence().validate(expectations.expectedRowLookup())
 
         val iterator = checked.iterator()
         // 1 != 3

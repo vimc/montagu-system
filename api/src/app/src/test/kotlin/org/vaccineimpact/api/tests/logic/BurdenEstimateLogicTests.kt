@@ -538,7 +538,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val writer = mockWriter()
         Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
         val repo = mockEstimatesRepository(writer)
-        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(fakeExpectations.expectedRowHashMap())
+        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(fakeExpectations.expectedRowLookup())
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock())
 
         assertThatThrownBy {
@@ -550,21 +550,36 @@ class BurdenEstimateLogicTests : MontaguTests()
     @Test
     fun `missing rows message contains all country names and one example row`()
     {
-        val expectations = fakeExpectations.copy(ages = 10..15, countries = listOf(Country("AFG", ""), Country("AGO", ""),
+        val expectations = fakeExpectations.copy(years = 2000..2010, ages = 10..15, countries = listOf(Country("AFG", ""), Country("AGO", ""),
                 Country("NGA", "")))
+
+        val rowPresenceLookup = expectations.expectedRowLookup()
+
+        for (year in 2000..2010)
+        {
+            for (age in 10..15)
+            {
+                rowPresenceLookup["AFG"]!![age.toShort()]!![year.toShort()] = true
+
+                if (year < 2005 || age < 12)
+                {
+                    rowPresenceLookup["AGO"]!![age.toShort()]!![year.toShort()] = true
+                }
+            }
+        }
         val writer = mockWriter()
         Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
         val repo = mockEstimatesRepository(writer)
-        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(expectations.expectedRowHashMap())
+        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(rowPresenceLookup)
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock())
 
         assertThatThrownBy {
             sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
         }.isInstanceOf(MissingRowsError::class.java)
                 .hasMessage("""the following problems occurred:
-Missing rows for AFG, AGO, NGA
+Missing rows for AGO, NGA
 For example:
-AFG, age 10, year 2000""")
+AGO, age 12, year 2005""")
     }
 
     @Test
@@ -661,14 +676,14 @@ AFG, age 10, year 2000""")
         val touchstoneVersion = TouchstoneVersion(touchstoneVersionId, "touchstone", 1,
                 "description", TouchstoneStatus.OPEN)
 
-        val mockTouchstoneVersions = mock<SimpleDataSet<TouchstoneVersion, String>>{
-            on {get(touchstoneVersionId)} doReturn touchstoneVersion
+        val mockTouchstoneVersions = mock<SimpleDataSet<TouchstoneVersion, String>> {
+            on { get(touchstoneVersionId) } doReturn touchstoneVersion
         }
 
         val scenarioRepo = mock<ScenarioRepository>()
 
-        val touchstoneRepo = mock<TouchstoneRepository>{
-            on {touchstoneVersions} doReturn mockTouchstoneVersions
+        val touchstoneRepo = mock<TouchstoneRepository> {
+            on { touchstoneVersions } doReturn mockTouchstoneVersions
         }
 
         val sut = RepositoriesBurdenEstimateLogic(groupRepo, mock(), mock(), scenarioRepo, touchstoneRepo)
@@ -691,12 +706,12 @@ AFG, age 10, year 2000""")
         val touchstoneVersion = TouchstoneVersion(touchstoneVersionId, "touchstone", 1,
                 "description", TouchstoneStatus.IN_PREPARATION)
 
-        val mockTouchstoneVersions = mock<SimpleDataSet<TouchstoneVersion, String>>{
-            on {get(touchstoneVersionId)} doReturn touchstoneVersion
+        val mockTouchstoneVersions = mock<SimpleDataSet<TouchstoneVersion, String>> {
+            on { get(touchstoneVersionId) } doReturn touchstoneVersion
         }
 
-        val touchstoneRepo = mock<TouchstoneRepository>{
-            on {touchstoneVersions} doReturn mockTouchstoneVersions
+        val touchstoneRepo = mock<TouchstoneRepository> {
+            on { touchstoneVersions } doReturn mockTouchstoneVersions
         }
 
         val sut = RepositoriesBurdenEstimateLogic(mock(), mock(), mock(), mock(), touchstoneRepo)

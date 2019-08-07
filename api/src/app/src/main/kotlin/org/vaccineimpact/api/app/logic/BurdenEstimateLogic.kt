@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.app.logic
 
-import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
@@ -8,7 +7,6 @@ import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
-import org.vaccineimpact.api.app.security.checkEstimatePermissionsForTouchstoneVersion
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.app.validateStochastic
 import org.vaccineimpact.api.models.*
@@ -35,7 +33,7 @@ interface BurdenEstimateLogic
     fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String, setId: Int): BurdenEstimateSet
 
     fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
-                              scenarioId: String) : FlexibleDataTable<BurdenEstimate>
+                              scenarioId: String): FlexibleDataTable<BurdenEstimate>
 
     fun validateResponsibilityPath(path: ResponsibilityPath, validTouchstoneStatusList: List<TouchstoneStatus>)
 }
@@ -46,6 +44,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                                       private val scenarioRepository: ScenarioRepository,
                                       private val touchstoneRepository: TouchstoneRepository) : BurdenEstimateLogic
 {
+
     override fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
     {
         scenarioRepository.checkScenarioDescriptionExists(scenarioId)
@@ -72,14 +71,14 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
     }
 
     override fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
-                                       scenarioId: String) : FlexibleDataTable<BurdenEstimate>
+                                       scenarioId: String): FlexibleDataTable<BurdenEstimate>
     {
         val data = burdenEstimateRepository.getBurdenEstimateOutcomesSequence(groupId,
-                                                    touchstoneVersionId, scenarioId, setId)
+                touchstoneVersionId, scenarioId, setId)
 
         //first, group the outcome rows by disease, year, age, country code and country name
         val groupedRows = data
-                .groupBy{
+                .groupBy {
                     hashSetOf(it.disease, it.year, it.age,
                             it.country, it.countryName)
                 }
@@ -89,7 +88,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
 
         //next, map to BurdenEstimate objects, including extracting the cohort size outcome
         val rows = groupedRows.values
-                .map{
+                .map {
                     mapBurdenEstimate(it)
                 }
 
@@ -107,11 +106,11 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
 
         //We should find cohort size as one of the burden outcomes
 
-        val cohortSize = records.firstOrNull{it.burden_outcome_code == COHORT_SIZE_CODE}?.value
-        val burdenOutcomeRows = records.filter{it.burden_outcome_code != COHORT_SIZE_CODE}
+        val cohortSize = records.firstOrNull { it.burden_outcome_code == COHORT_SIZE_CODE }?.value
+        val burdenOutcomeRows = records.filter { it.burden_outcome_code != COHORT_SIZE_CODE }
 
         val burdenOutcomeValues =
-                burdenOutcomeRows.associateBy({it.burden_outcome_code}, {it.value})
+                burdenOutcomeRows.associateBy({ it.burden_outcome_code }, { it.value })
 
         return BurdenEstimate(
                 reference.disease,
@@ -133,7 +132,6 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
         val set = burdenEstimateRepository.getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)
 
-        // Invalid Operation if this set is already closed
         if (set.status == BurdenEstimateSetStatus.COMPLETE)
         {
             throw InvalidOperationError("This burden estimate set has already been closed.")
@@ -147,20 +145,20 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         else
         {
             val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
-                    .expectation.expectedRowHashMap()
+                    .expectation.expectedRowLookup()
             val validatedRowMap = burdenEstimateRepository.validateEstimates(set, expectedRows)
-            val missingRows = validatedRowMap.filter(::missingRows)
-            if (missingRows.any())
+            val countriesWithMissingRows = validatedRowMap.filter{ it.hasMissingAges() }
+            if (countriesWithMissingRows.any())
             {
                 burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
-                throw MissingRowsError(rowErrorMessage(missingRows))
+                throw MissingRowsError(rowErrorMessage(countriesWithMissingRows))
             }
             burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
         }
     }
 
     override fun validateResponsibilityPath(
-            path:  ResponsibilityPath,
+            path: ResponsibilityPath,
             validTouchstoneStatusList: List<TouchstoneStatus>
     )
     {
@@ -172,26 +170,21 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         {
             throw UnknownObjectError(touchstoneVersion.id, TouchstoneVersion::class)
         }
-        //Check that scenario exists
+
         scenarioRepository.checkScenarioDescriptionExists(path.scenarioId)
     }
 
-    private fun missingRows(countryMapEntry: Map.Entry<String, HashMap<Short, HashMap<Short, Boolean>>>): Boolean
+    private fun rowErrorMessage(countriesWithMissingRows: Map<String, AgeLookup>): String
     {
-        return countryMapEntry.value.any { a ->
-            a.value.any { y -> !y.value }
-        }
-    }
+        val countries = countriesWithMissingRows.keys
+        val exampleRowLookup = countriesWithMissingRows.values.first()
+        val firstAgeWithMissingYears = exampleRowLookup.firstAgeWithMissingRows()
+        val firstMissingYear = exampleRowLookup.getValue(firstAgeWithMissingYears).firstMissingYear()
 
-    private fun rowErrorMessage(missingRows: Map<String, HashMap<Short, HashMap<Short, Boolean>>>): String
-    {
-        val countries = missingRows.keys
-        val message = "Missing rows for ${countries.joinToString(", ")}"
-        val firstRowAges = missingRows[countries.first()]
-        val firstMissingAge = firstRowAges!!.keys.first()
-        val exampleRows = "For example:\n${countries.first()}, age $firstMissingAge," +
-                " year ${firstRowAges[firstMissingAge]!!.keys.first()}"
-        return "$message\n$exampleRows"
+        val basicMessage = "Missing rows for ${countries.joinToString(", ")}"
+        val exampleRowMessage = "For example:\n${countries.first()}, age $firstAgeWithMissingYears," +
+                " year $firstMissingYear"
+        return "$basicMessage\n$exampleRowMessage"
     }
 
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
@@ -224,8 +217,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                                                  estimates: Sequence<BurdenEstimateWithRunId>)
     {
         val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
-                .expectation.expectedRowHashMap()
-
+                .expectation.expectedRowLookup()
 
         val validatedEstimates = estimates.validate(expectedRows)
 

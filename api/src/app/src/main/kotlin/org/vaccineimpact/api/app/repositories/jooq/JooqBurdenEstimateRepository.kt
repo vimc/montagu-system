@@ -83,7 +83,7 @@ class JooqBurdenEstimateRepository(
             .fetch()
             .intoMap(Tables.COUNTRY.NID, Tables.COUNTRY.ID)
 
-    override fun validateEstimates(set: BurdenEstimateSet, expectedRowMap: HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>): HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>
+    override fun validateEstimates(set: BurdenEstimateSet, expectedRowMap: RowLookup): RowLookup
     {
         val countries = getCountriesAsLookup()
         dsl.select(BURDEN_ESTIMATE.COUNTRY, BURDEN_ESTIMATE.AGE, BURDEN_ESTIMATE.YEAR)
@@ -95,7 +95,7 @@ class JooqBurdenEstimateRepository(
         return expectedRowMap
     }
 
-    private fun validate(r: BurdenEstimateRecord, countries: Map<Short, String>, expectedRows: HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>)
+    private fun validate(r: BurdenEstimateRecord, countries: Map<Short, String>, expectedRows: RowLookup)
     {
         val countryId = countries[r.country]
         val ages = expectedRows[countryId]

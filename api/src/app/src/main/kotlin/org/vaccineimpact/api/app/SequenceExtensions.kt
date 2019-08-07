@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
+import org.vaccineimpact.api.models.RowLookup
 
 // This passes through the original sequence without affecting it, and the
 // sequence remains lazily evaluated, but as the elements "pass through"
@@ -10,7 +11,7 @@ import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 // Note that the exception will originate from whatever part of the program is currently
 // asking for another element from the sequence, not from the caller of
 // this function.
-fun Sequence<BurdenEstimateWithRunId>.validate(expectedRows: HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>
+fun Sequence<BurdenEstimateWithRunId>.validate(expectedRows: RowLookup
 ): Sequence<BurdenEstimateWithRunId>
 {
     var first: BurdenEstimateWithRunId? = null

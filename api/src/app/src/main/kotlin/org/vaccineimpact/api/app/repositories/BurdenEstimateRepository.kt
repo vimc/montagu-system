@@ -40,8 +40,8 @@ interface BurdenEstimateRepository : Repository
     @Throws(UnknownObjectError::class)
     fun getResponsibilityInfo(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityInfo
     fun validateEstimates(set: BurdenEstimateSet,
-                          expectedRowMap: HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>)
-            : HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>
+                          expectedRowMap: RowLookup)
+            : RowLookup
     fun getBurdenOutcomeIds(matching: String): List<Short>
 
     fun getEstimates(setId: Int, responsibilityId: Int, outcomeIds: List<Short>,
