@@ -2,6 +2,7 @@ import * as React from "react";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {connect} from "react-redux";
 import {ILookup} from "../../../../shared/models/Lookup";
+import {Expectations, OutcomeExpectations} from "../../../../shared/models/Generated";
 
 interface ModelMetaRow {
     code: string | null
@@ -79,7 +80,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
 
     createHeader = (key: keyof ModelMetaRow, displayName: string, limitWidth: boolean = false) => {
         return <th className={"sortable " + this.calculateClass(key) +
-                        limitWidth ? " modelMetaLimitedWidthHeader" : ""}
+                                (limitWidth ? " modelMetaLimitedWidthHeader" : "")}
                    onClick={() => this.onSort(key)}>{displayName}</th>
     };
 
@@ -132,29 +133,50 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
 
 
 export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
+
+    const expectationNotFound  = "Error: expectation not found for model";
+
     return {
         models: state.groups.models.map(m => {
-            //TODO: what if not found?
-            const expectation = state.groups.expectations.find(e => e.modelling_group == m.modelling_group
-                && e.disease == m.disease.id).expectations;
-
-            const cohorts = (expectation.cohorts.minimum_birth_year && expectation.cohorts.maximum_birth_year) ?
-                    `${expectation.cohorts.minimum_birth_year} - ${expectation.cohorts.maximum_birth_year}` :
-                (expectation.cohorts.minimum_birth_year) ? `Min ${expectation.cohorts.minimum_birth_year}` :
-                (expectation.cohorts.maximum_birth_year) ? `Max ${expectation.cohorts.maximum_birth_year}` :
-                "Any";
-
-            return {
+            const modelValues = {
                 ...m,
                 code: m.current_version.code,
                 is_dynamic: m.current_version.is_dynamic,
-                disease: m.disease.name,
-                outcomes: expectation.outcomes.join(", "),
-                has_dalys: expectation.outcomes.indexOf("dalys") > -1,
-                years: `${expectation.years.minimum_inclusive} - ${expectation.years.maximum_inclusive}`,
-                ages: `${expectation.ages.minimum_inclusive} - ${expectation.ages.maximum_inclusive}`,
-                cohorts: cohorts
-            }})
+                disease: m.disease.name
+            };
+
+            const modelExpectation = state.groups.expectations.find(
+                e => e.modelling_group == m.modelling_group && e.disease == m.disease.id);
+
+            if (modelExpectation) {
+                const expectation = modelExpectation.expectations;
+
+                const cohorts = (expectation.cohorts.minimum_birth_year && expectation.cohorts.maximum_birth_year) ?
+                    `${expectation.cohorts.minimum_birth_year} - ${expectation.cohorts.maximum_birth_year}` :
+                    (expectation.cohorts.minimum_birth_year) ? `Min ${expectation.cohorts.minimum_birth_year}` :
+                        (expectation.cohorts.maximum_birth_year) ? `Max ${expectation.cohorts.maximum_birth_year}` :
+                            "Any";
+
+                return {
+                    ...modelValues,
+                    outcomes: expectation.outcomes.join(", "),
+                    has_dalys: expectation.outcomes.indexOf("dalys") > -1,
+                    years: `${expectation.years.minimum_inclusive} - ${expectation.years.maximum_inclusive}`,
+                    ages: `${expectation.ages.minimum_inclusive} - ${expectation.ages.maximum_inclusive}`,
+                    cohorts: cohorts
+                }
+            } else {
+                return {
+                    ...modelValues,
+                    outcomes: expectationNotFound,
+                    has_dalys: false,
+                    years: expectationNotFound,
+                    ages: expectationNotFound,
+                    cohorts: expectationNotFound
+                }
+            }
+
+        }
     }
 };
 
