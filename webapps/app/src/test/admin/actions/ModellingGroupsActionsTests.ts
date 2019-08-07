@@ -10,9 +10,11 @@ import {
     mockModellingGroup,
     mockModellingGroupCreation,
     mockModellingGroupDetails,
+    mockTouchstoneModelExpectations,
     mockUser
 } from "../../mocks/mockModels";
 import {verifyActionThatCallsService} from "../../ActionCreatorTestHelpers";
+import {ExpectationsService} from "../../../main/shared/services/ExpectationsService";
 
 describe("Admin Modelling groups actions tests", () => {
     const sandbox = new Sandbox();
@@ -42,20 +44,31 @@ describe("Admin Modelling groups actions tests", () => {
         });
     });
 
-    it("gets all models", async () => {
+    it("gets all models and expectations", async () => {
         const testModel = mockModel();
         const testModel2 = mockModel();
+        const testExpectation = mockTouchstoneModelExpectations();
+        const testExpectation2 = mockTouchstoneModelExpectations();
         const store = createMockStore({});
         const getAllGroupsServiceStub = sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllModels", () => {
             return Promise.resolve([testModel, testModel2]);
         });
+        const getAllExpectationsServiceStub = sandbox.setStubFunc(ExpectationsService.prototype, "getAllExpectations",
+            () => {
+           return Promise.resolve( [testExpectation, testExpectation2] );
+        });
 
-        await store.dispatch(modellingGroupsActionCreators.getAllModels());
+        await store.dispatch(modellingGroupsActionCreators.getAllModelsAndExpectations());
 
         const actions = store.getActions();
-        const expectedPayload = {type: ModellingGroupTypes.MODELS_FETCHED, data: [testModel, testModel2]};
-        expect(actions).to.eql([expectedPayload]);
+
         expect(getAllGroupsServiceStub.called).to.be.true;
+        expect(getAllExpectationsServiceStub.called).to.be.true;
+
+        const expectedPayload = {type: ModellingGroupTypes.MODELS_FETCHED, models: [testModel, testModel2],
+                                    expectations: [testExpectation, testExpectation2]};
+        expect(actions).to.eql([expectedPayload]);
+
     });
 
     it("gets group details", (done) => {

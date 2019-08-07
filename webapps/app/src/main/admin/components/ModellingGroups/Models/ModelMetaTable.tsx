@@ -176,7 +176,7 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                 }
             }
 
-        }
+        })
     }
 };
 

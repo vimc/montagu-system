@@ -18,7 +18,7 @@ describe("modelMetaPageActionCreators", () => {
 
     it("fetches models on load", async () => {
 
-        sandbox.setStubReduxAction(modellingGroupsActionCreators, "getAllModels");
+        sandbox.setStubReduxAction(modellingGroupsActionCreators, "getAllModelsAndExpectations");
         const store = createMockAdminStore(state);
         await store.dispatch(modelMetaPageActionCreators.loadData());
         expect(store.getActions()).to.eql([
