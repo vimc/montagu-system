@@ -4,11 +4,11 @@ import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import kotlin.coroutines.experimental.buildSequence
 
 data class OutcomeExpectations(val id: Int,
-            val description: String,
-            val years: IntRange,
-            val ages: IntRange,
-            val cohorts: CohortRestriction,
-            val outcomes: List<String>)
+                               val description: String,
+                               val years: IntRange,
+                               val ages: IntRange,
+                               val cohorts: CohortRestriction,
+                               val outcomes: List<String>)
 
 data class Expectations(
         val id: Int,
@@ -46,15 +46,15 @@ data class Expectations(
         }
     }
 
-    fun expectedRowHashMap(): HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>
+    fun expectedRowLookup(): RowLookup
     {
-        val map = HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>()
+        val map = RowLookup()
         for (country in countries)
         {
-            val ageMap = HashMap<Short, HashMap<Short, Boolean>>()
+            val ageMap = AgeLookup()
             for (age in ages)
             {
-                val yearMap = HashMap<Short, Boolean>()
+                val yearMap = YearLookup()
                 years.map { if ((it - age).withinCohortRange()) yearMap[it.toShort()] = false }
                 ageMap[age.toShort()] = yearMap
             }
