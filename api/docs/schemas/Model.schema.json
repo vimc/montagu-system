@@ -11,6 +11,7 @@
             "minLength": 1
         },
         "modelling_group": { "$ref": "StandardIdentifier.schema.json" },
+        "disease": { "$ref": "Disease.schema.json"},
         "gender_specific": {
           "type": ["boolean", "null"]
         },

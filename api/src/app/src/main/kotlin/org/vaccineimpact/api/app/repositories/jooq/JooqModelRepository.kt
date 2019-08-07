@@ -10,6 +10,7 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.models.Country
+import org.vaccineimpact.api.models.Disease
 import org.vaccineimpact.api.models.ModelVersion
 import org.vaccineimpact.api.models.ResearchModelDetails
 
@@ -19,7 +20,9 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
     {
         val modelRecords = modelQuery()
 
-        val currentVersionRecords = dsl.select(*MODEL_VERSION.fields(), *COUNTRY.fields())
+        val currentVersionRecords = dsl.select(
+                    *MODEL_VERSION.fields(),
+                    *COUNTRY.fields())
                 .from(MODEL_VERSION)
                 .innerJoin(MODEL)
                 .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
@@ -42,7 +45,7 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 }
 
         return modelRecords.map {
-            val model = it.into(ResearchModelDetails::class.java)
+            val model = it.toModelWithDisease()
 
             if (it[MODEL.CURRENT_VERSION] != null)
             {
@@ -59,7 +62,7 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 .singleOrNull()
                 ?: throw UnknownObjectError(id, ResearchModelDetails::class)
 
-        val model = modelRecord.into(ResearchModelDetails::class.java)
+        val model = modelRecord.toModelWithDisease()
 
         val versionRecord = dsl.select()
                 .from(MODEL_VERSION)
@@ -87,10 +90,24 @@ class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepositor
                 MODEL.CITATION,
                 MODEL.MODELLING_GROUP,
                 MODEL.GENDER_SPECIFIC,
-                GENDER.CODE.`as`("gender"),
-                MODEL.CURRENT_VERSION)
+                GENDER.CODE,
+                MODEL.CURRENT_VERSION,
+                *DISEASE.fields())
                 .fromJoinPath(MODEL, GENDER, joinType = JoinType.LEFT_OUTER_JOIN)
+                .joinPath(MODEL, DISEASE)
                 .where(MODEL.IS_CURRENT.eq(true))
+    }
+
+    private fun Record.toModelWithDisease(): ResearchModelDetails
+    {
+        val disease = this.into(Disease::class.java)
+        return ResearchModelDetails(this[MODEL.ID],
+                this[MODEL.DESCRIPTION],
+                this[MODEL.CITATION],
+                this[MODEL.MODELLING_GROUP],
+                disease,
+                this[MODEL.GENDER_SPECIFIC],
+                this[GENDER.CODE])
     }
 
     private fun Record.toModelVersionWithCountries(countries: List<Country>): ModelVersion

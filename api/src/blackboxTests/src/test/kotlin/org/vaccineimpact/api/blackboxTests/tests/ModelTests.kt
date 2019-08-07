@@ -18,8 +18,8 @@ class ModelTests : DatabaseTest()
     {
         validate("/models/") against "Models" given {
             it.addGroup("groupId")
-            it.addDisease("d1")
-            it.addDisease("d2")
+            it.addDisease("d1", "Disease 1")
+            it.addDisease("d2", "Disease 2")
             it.addModel("modelId", "groupId", "d1", "description1")
             it.addModel("modelId2", "groupId", "d2")
 
@@ -38,6 +38,10 @@ class ModelTests : DatabaseTest()
                         "modelling_group" to "groupId",
                         "gender_specific" to false,
                         "gender" to "both",
+                        "disease" to obj(
+                                "id" to "d1",
+                                "name" to "Disease 1"
+                        ),
                         "current_version" to obj(
                                 "id" to 1,
                                 "version" to "v1",
@@ -67,7 +71,7 @@ class ModelTests : DatabaseTest()
     {
         validate("/models/modelId/") against "Model" given {
             it.addGroup("groupId")
-            it.addDisease("d1")
+            it.addDisease("d1", "Disease 1")
             it.addModel("modelId", "groupId", "d1", "description1")
             it.addModel("modelId2", "groupId", "d1", isCurrent = false)
 
@@ -85,6 +89,10 @@ class ModelTests : DatabaseTest()
                         "modelling_group" to "groupId",
                         "gender_specific" to false,
                         "gender" to "both",
+                        "disease" to obj(
+                                "id" to "d1",
+                                "name" to "Disease 1"
+                        ),
                         "current_version" to obj(
                                 "id" to 1,
                                 "version" to "v1",
@@ -112,7 +120,7 @@ class ModelTests : DatabaseTest()
     {
         validate("/models/modelId/") against "Model" given {
             it.addGroup("groupId")
-            it.addDisease("d1")
+            it.addDisease("d1", "Disease 1")
             it.addModel("modelId", "groupId", "d1", "description1")
         } requiringPermissions {
             PermissionSet("*/models.read")
@@ -125,6 +133,10 @@ class ModelTests : DatabaseTest()
                         "modelling_group" to "groupId",
                         "gender_specific" to false,
                         "gender" to "both",
+                        "disease" to obj(
+                                "id" to "d1",
+                                "name" to "Disease 1"
+                        ),
                         "current_version" to null
                 )
             })
