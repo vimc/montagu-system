@@ -4,11 +4,11 @@ import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import kotlin.coroutines.experimental.buildSequence
 
 data class OutcomeExpectations(val id: Int,
-            val description: String,
-            val years: IntRange,
-            val ages: IntRange,
-            val cohorts: CohortRestriction,
-            val outcomes: List<String>)
+                               val description: String,
+                               val years: IntRange,
+                               val ages: IntRange,
+                               val cohorts: CohortRestriction,
+                               val outcomes: List<String>)
 
 data class Expectations(
         val id: Int,
@@ -46,15 +46,15 @@ data class Expectations(
         }
     }
 
-    fun expectedRowHashMap(): HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>
+    fun expectedRowLookup(): RowLookup
     {
-        val map = HashMap<String, HashMap<Short, HashMap<Short, Boolean>>>()
+        val map = RowLookup()
         for (country in countries)
         {
-            val ageMap = HashMap<Short, HashMap<Short, Boolean>>()
+            val ageMap = AgeLookup()
             for (age in ages)
             {
-                val yearMap = HashMap<Short, Boolean>()
+                val yearMap = YearLookup()
                 years.map { if ((it - age).withinCohortRange()) yearMap[it.toShort()] = false }
                 ageMap[age.toShort()] = yearMap
             }
@@ -106,3 +106,33 @@ data class ExpectedStochasticRow(
 ) : ExpectedRow
 
 interface ExpectedRow
+
+typealias YearLookup = HashMap<Short, Boolean>
+typealias Year = Map.Entry<Short, Boolean>
+typealias AgeLookup = HashMap<Short, YearLookup>
+typealias YearsForAge = Map.Entry<Short, YearLookup>
+typealias RowLookup = HashMap<String, AgeLookup>
+typealias AgesForCountry = Map.Entry<String, AgeLookup>
+
+fun Year.isMissing(): Boolean
+{
+    return !this.value
+}
+
+fun YearsForAge.hasMissingYear(): Boolean
+{
+    return this.value.any { it.isMissing() }
+}
+
+fun AgesForCountry.hasMissingAges(): Boolean
+{
+    return this.value.any { it.hasMissingYear() }
+}
+
+fun AgeLookup.firstAgeWithMissingRows(): Short {
+    return this.filter { it.hasMissingYear() }.keys.first()
+}
+
+fun YearLookup.firstMissingYear(): Short {
+    return this.filter { it.isMissing() }.keys.first()
+}
