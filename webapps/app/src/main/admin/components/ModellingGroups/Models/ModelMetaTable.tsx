@@ -11,7 +11,9 @@ interface ModelMetaRow {
     gender_specific: boolean | null;
     id: string;
     modelling_group: string;
+    cohorts: string;
     outcomes: string;
+    has_dalys: boolean;
 }
 
 interface ModelMetaProps {
@@ -72,13 +74,13 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
         return ""
     }
 
-    createHeader = (key: keyof ModelMetaRow, displayName: string) => {
-        return <th className={"sortable " + this.calculateClass(key)}
+    createHeader = (key: keyof ModelMetaRow, displayName: string, limitWidth: boolean = false) => {
+        return <th className={"sortable " + this.calculateClass(key) +
+                        limitWidth ? " modelMetaLimitedWidthHeader" : ""}
                    onClick={() => this.onSort(key)}>{displayName}</th>
     };
 
     render() {
-
 
         return <div>
             <p>Click on a column header to sort</p>
@@ -95,9 +97,9 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                     {/*<th>Max Countries</th>*/}
                     {/*<th>Years</th>*/}
                     {/*<th>Ages</th>*/}
-                    {/*<th>Cohorts</th>*/}
-                    <th>Outcomes</th>
-                    {/*<th>DALYs</th>*/}
+                    {this.createHeader("cohorts", "Cohorts")}
+                    {this.createHeader("outcomes", "Outcomes", true)}
+                    {this.createHeader("has_dalys", "DALYs")}
                 </tr>
                 </thead>
                 <tbody>
@@ -109,7 +111,9 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                             <td data-title="type">{model.is_dynamic ? "Dynamic" : "Static"}</td>
                             <td data-title="code">{model.code}</td>
                             <td data-title="gender">{model.gender ? model.gender : "NA"}</td>
-                            <td data-title="outcomes">{model.outcomes}</td>
+                            <td data-title="cohorts">{model.cohorts}</td>
+                            <td data-title="outcomes" className="modelMetaLimitedWidthCell">{model.outcomes}</td>
+                            <td data-title="dalys">{model.has_dalys ? "Yes" : "No"}</td>
                         </tr>
                     );
                 })}
@@ -123,14 +127,23 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
 
 export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
     return {
-        models: state.groups.models.map(m => ({
-            ...m,
-            code: m.current_version.code,
-            is_dynamic: m.current_version.is_dynamic,
-            //TODO: get disease from model
-            outcomes: state.groups.expectations.find(e => e.modelling_group == m.modelling_group
-                && e.disease == "YF").expectations.outcomes.join(",")
-        }))
+        models: state.groups.models.map(m => {
+            //TODO: get disease from model - what if not found?
+            const expectation = state.groups.expectations.find(e => e.modelling_group == m.modelling_group
+                && e.disease == "YF").expectations;
+            const cohorts = (expectation.cohorts.minimum_birth_year && expectation.cohorts.maximum_birth_year) ?
+                    `${expectation.cohorts.minimum_birth_year} - ${expectation.cohorts.maximum_birth_year}` :
+                (expectation.cohorts.minimum_birth_year) ? `Min ${expectation.cohorts.minimum_birth_year}` :
+                (expectation.cohorts.maximum_birth_year) ? `Max ${expectation.cohorts.maximum_birth_year}` :
+                "Any";
+            return {
+                ...m,
+                code: m.current_version.code,
+                is_dynamic: m.current_version.is_dynamic,
+                outcomes: expectation.outcomes.join(", "),
+                has_dalys: expectation.outcomes.find(o => o =="dalys"),
+                cohorts: cohorts
+            }})
     }
 };
 
