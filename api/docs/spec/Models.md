@@ -13,6 +13,10 @@ Schema: [`Models.schema.json`](../schemas/Models.schema.json)
             "description": "YF burden estimate - without herd effect",
             "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
             "modelling_group": "IC-YellowFever",
+            "disease": {
+                    "id": "YF",
+                    "name": "Yellow Fever"
+             },
             "gender_specific": false,
             "gender": "both",
             "current_version": {
@@ -34,6 +38,10 @@ Schema: [`Models.schema.json`](../schemas/Models.schema.json)
             "description": "DynaMice",
             "citation": "Dynamic Citation",
             "modelling_group": "LSHTML-Jit",
+            "disease": {
+                    "id": "Measles",
+                    "name": "Measles"
+             },
             "gender_specific": true,
             "gender": "female",
             "current_version": null
@@ -53,6 +61,10 @@ Schema: [`Model.schema.json`](../schemas/Model.schema.json)
         "description": "YF burden estimate - without herd effect",
         "citation": "Garske T, Van Kerkhove MD, Yactayo S, Ronveaux O, Lewis RF, Staples JE, Perea W, Ferguson NMet al., 2014, Yellow Fever in Africa: Estimating the Burden of Disease and Impact of Mass Vaccination from Outbreak and Serological Data, PLOS MEDICINE, Vol: 11, ISSN: 1549-1676",
         "modelling_group": "IC-YellowFever",
+        "disease": {
+                "id": "YF",
+                "name": "Yellow Fever"
+        },
         "gender_specific": false,
         "gender": "both",
         "current_version": {
@@ -83,6 +95,10 @@ Schema: [`Model.schema.json`](../schemas/Model.schema.json)
         "description": "DESCRIPTION",
         "citation": "CITATION",
         "modelling_group": "ID-OF-EXISTING-MODELLING-GROUP",
+        "disease": {
+                "id": "YF",
+                "name": "Yellow Fever"
+        },
         "gender_specific": false,
         "gender": "both"
     }

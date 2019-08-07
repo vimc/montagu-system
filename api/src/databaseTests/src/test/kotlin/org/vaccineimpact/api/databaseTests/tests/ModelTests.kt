@@ -9,6 +9,7 @@ import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.Country
+import org.vaccineimpact.api.models.Disease
 import org.vaccineimpact.api.models.ModelVersion
 import org.vaccineimpact.api.models.ResearchModelDetails
 
@@ -28,8 +29,8 @@ class ModelTests : RepositoryTests<ModelRepository>()
     {
         given {
             it.addGroup("a", "description a")
-            it.addDisease("d1")
-            it.addDisease("d2")
+            it.addDisease("d1", "Disease 1")
+            it.addDisease("d2", "Disease 2")
             it.addModel("fakeId", "a", "d1", "some model",
                     genderSpecific = true, gender = "male")
             it.addModel("fakeId2", "a", "d2", "another model",
@@ -49,6 +50,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             "some model",
                             "Unknown citation",
                             "a",
+                            Disease("d1", "Disease 1"),
                             genderSpecific = true,
                             gender = "male",
                             currentVersion = ModelVersion(1, "fakeId", "v1", "Some note",
@@ -58,6 +60,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             "another model",
                             "Unknown citation",
                             "a",
+                            Disease("d2", "Disease 2"),
                             genderSpecific = false,
                             gender = null,
                             currentVersion = null)
@@ -70,7 +73,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
     {
         given {
             it.addGroup("a", "description a")
-            it.addDisease("d1")
+            it.addDisease("d1", "Disease 1")
             it.addModel("fakeId", "a", "d1", "some model",
                     genderSpecific = true, gender = "male")
             it.addModel("fakeId2", "a", "d1", "another model",
@@ -86,6 +89,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             "some model",
                             "Unknown citation",
                             "a",
+                            Disease("d1", "Disease 1"),
                             genderSpecific = true,
                             gender = "male",
                             currentVersion = ModelVersion(1, "fakeId", "v1", "Some note",
@@ -99,8 +103,8 @@ class ModelTests : RepositoryTests<ModelRepository>()
     {
         given {
             it.addGroup("a", "description a")
-            it.addDisease("d1")
-            it.addDisease("d2")
+            it.addDisease("d1", "Disease 1")
+            it.addDisease("d2", "Disease 2")
             it.addModel("fakeId", "a", "d1", "some model")
             it.addModel("fakeId2", "a", "d1", "another model", isCurrent = false)
         }.check {
@@ -108,7 +112,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
             val model = repo.get("fakeId")
             Assertions.assertThat(model)
                     .isEqualTo(ResearchModelDetails("fakeId", "some model", "Unknown citation","a",
-                            false, "both", null))
+                            Disease("d1", "Disease 1"), false, "both", null))
         }
     }
 
@@ -117,8 +121,8 @@ class ModelTests : RepositoryTests<ModelRepository>()
     {
         given {
             it.addGroup("a", "description a")
-            it.addDisease("d1")
-            it.addDisease("d2")
+            it.addDisease("d1", "Disease 1")
+            it.addDisease("d2", "Disease 2")
             it.addModel("fakeId", "a", "d1", "some model")
             it.addModel("fakeId2", "a", "d1", "another model", isCurrent = false)
 
@@ -135,6 +139,7 @@ class ModelTests : RepositoryTests<ModelRepository>()
                             "some model",
                             "Unknown citation",
                             "a",
+                            Disease("d1", "Disease 1"),
                             false,
                             "both",
                             ModelVersion(2, "fakeId", "v2", "Some note", "Some fingerprint",
