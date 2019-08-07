@@ -131,7 +131,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 
         val result = withRepo {
             it.validateEstimates(burdenEstimateSet,
-                    expectations.expectedRowHashMap())
+                    expectations.expectedRowLookup())
         }
 
         for (year in years)

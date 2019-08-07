@@ -44,6 +44,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                                       private val scenarioRepository: ScenarioRepository,
                                       private val touchstoneRepository: TouchstoneRepository) : BurdenEstimateLogic
 {
+
     override fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
     {
         scenarioRepository.checkScenarioDescriptionExists(scenarioId)
@@ -144,9 +145,9 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         else
         {
             val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
-                    .expectation.expectedRowHashMap()
+                    .expectation.expectedRowLookup()
             val validatedRowMap = burdenEstimateRepository.validateEstimates(set, expectedRows)
-            val countriesWithMissingRows = validatedRowMap.filter(::hasMissingRows)
+            val countriesWithMissingRows = validatedRowMap.filter{ it.hasMissingAges() }
             if (countriesWithMissingRows.any())
             {
                 burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
@@ -173,34 +174,17 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         scenarioRepository.checkScenarioDescriptionExists(path.scenarioId)
     }
 
-    private fun rowErrorMessage(countriesWithMissingRows: Map<String, HashMap<Short, HashMap<Short, Boolean>>>): String
+    private fun rowErrorMessage(countriesWithMissingRows: Map<String, AgeLookup>): String
     {
         val countries = countriesWithMissingRows.keys
-        val firstCountryWithMissingData = countries.first()
-        val firstMissingAgesRow = countriesWithMissingRows.getValue(firstCountryWithMissingData)
-        val firstAgeWithMissingYears = firstMissingAgesRow.filter(::hasMissingYear).keys.first()
-        val firstMissingYearsRow = firstMissingAgesRow.getValue(firstAgeWithMissingYears)
-        val firstMissingYear = firstMissingYearsRow.filter(::isMissing).keys.first()
+        val exampleRowLookup = countriesWithMissingRows.values.first()
+        val firstAgeWithMissingYears = exampleRowLookup.firstAgeWithMissingRows()
+        val firstMissingYear = exampleRowLookup.getValue(firstAgeWithMissingYears).firstMissingYear()
 
         val basicMessage = "Missing rows for ${countries.joinToString(", ")}"
-        val exampleRowMessage = "For example:\n$firstCountryWithMissingData, age $firstAgeWithMissingYears," +
+        val exampleRowMessage = "For example:\n${countries.first()}, age $firstAgeWithMissingYears," +
                 " year $firstMissingYear"
         return "$basicMessage\n$exampleRowMessage"
-    }
-
-    private fun isMissing(yearMapEntry: Map.Entry<Short, Boolean>): Boolean
-    {
-        return !yearMapEntry.value
-    }
-
-    private fun hasMissingYear(ageMapEntry: Map.Entry<Short, HashMap<Short, Boolean>>): Boolean
-    {
-        return ageMapEntry.value.any(::isMissing)
-    }
-
-    private fun hasMissingRows(countryMapEntry: Map.Entry<String, HashMap<Short, HashMap<Short, Boolean>>>): Boolean
-    {
-        return countryMapEntry.value.any(::hasMissingYear)
     }
 
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
@@ -233,8 +217,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                                                  estimates: Sequence<BurdenEstimateWithRunId>)
     {
         val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
-                .expectation.expectedRowHashMap()
-
+                .expectation.expectedRowLookup()
 
         val validatedEstimates = estimates.validate(expectedRows)
 

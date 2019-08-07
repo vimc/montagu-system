@@ -22,7 +22,6 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.io.ByteArrayOutputStream
 import java.io.StringReader
 import java.time.Instant
-import kotlin.math.exp
 
 class BurdenEstimateLogicTests : MontaguTests()
 {
@@ -539,7 +538,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val writer = mockWriter()
         Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
         val repo = mockEstimatesRepository(writer)
-        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(fakeExpectations.expectedRowHashMap())
+        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(fakeExpectations.expectedRowLookup())
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock())
 
         assertThatThrownBy {
@@ -554,24 +553,24 @@ class BurdenEstimateLogicTests : MontaguTests()
         val expectations = fakeExpectations.copy(years = 2000..2010, ages = 10..15, countries = listOf(Country("AFG", ""), Country("AGO", ""),
                 Country("NGA", "")))
 
-        val missingRows = expectations.expectedRowHashMap()
+        val rowPresenceLookup = expectations.expectedRowLookup()
 
         for (year in 2000..2010)
         {
             for (age in 10..15)
             {
-                missingRows["AFG"]!![age.toShort()]!![year.toShort()] = true
+                rowPresenceLookup["AFG"]!![age.toShort()]!![year.toShort()] = true
 
                 if (year < 2005 || age < 12)
                 {
-                    missingRows["AGO"]!![age.toShort()]!![year.toShort()] = true
+                    rowPresenceLookup["AGO"]!![age.toShort()]!![year.toShort()] = true
                 }
             }
         }
         val writer = mockWriter()
         Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
         val repo = mockEstimatesRepository(writer)
-        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(missingRows)
+        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(rowPresenceLookup)
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock())
 
         assertThatThrownBy {
