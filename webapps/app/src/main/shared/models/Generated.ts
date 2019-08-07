@@ -114,6 +114,7 @@ export interface ResearchModelDetails {
     citation: string;
     current_version: ModelVersion | null;
     description: string;
+    disease: Disease;
     gender: string | null;
     gender_specific: boolean | null;
     id: string;
