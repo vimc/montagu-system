@@ -4,13 +4,13 @@ import {connect} from 'react-redux';
 
 import {ModellingGroup, Responsibility, Scenario, TouchstoneVersion} from "../../../../shared/models/Generated";
 import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
-import {UploadBurdenEstimatesForm} from "./UploadBurdenEstimatesForm";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {isNullOrUndefined} from "util";
 import {InternalLink} from "../../../../shared/components/InternalLink";
 import {Col, Row} from "reactstrap";
 import {DiagnosticSection} from "./DiagnosticSection";
+import {UploadEstimatesForm} from "./UploadBurdenEstimatesForm";
 
 export interface UploadBurdenEstimatesContentProps {
     touchstone: TouchstoneVersion;
@@ -18,7 +18,6 @@ export interface UploadBurdenEstimatesContentProps {
     group: ModellingGroup;
     responsibilitySetStatus: string;
     responsibility: Responsibility;
-    canCreate: boolean;
     canUpload: boolean;
 }
 
@@ -34,23 +33,19 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
                 scenario</h5>
             <InternalLink href={templatesUrl}>Download templates</InternalLink>
             <p className="my-3">
-                Please note we expect estimates for 98 countries, 100 ages and 100 years to take over a minute to process.
+                Please note we expect estimates for 98 countries, 100 ages and 100 years to take over a minute to
+                process.
                 So don't worry if it takes a little while!
             </p>
             <Row>
                 <Col>
                     <CurrentEstimateSetSummary
                         estimateSet={this.props.responsibility.current_estimate_set}
-                        canUpload={this.props.canCreate}
-                    />
-                    <UploadBurdenEstimatesForm
                         canUpload={this.props.canUpload}
-                        canCreate={this.props.canCreate}
-                        groupId={this.props.group.id}
-                        touchstoneId={this.props.touchstone.id}
-                        scenarioId={this.props.scenario.id}
-                        estimateSet={this.props.responsibility.current_estimate_set}
                     />
+                    {this.props.canUpload && <UploadEstimatesForm groupId={this.props.group.id}
+                                              scenarioId={this.props.scenario.id}
+                                              touchstoneId={this.props.touchstone.id}/>}
                 </Col>
             </Row>
             {this.props.responsibility.current_estimate_set &&
@@ -68,12 +63,9 @@ export const mapStateToProps = (state: ContribAppState): Partial<UploadBurdenEst
         group: state.groups.currentUserGroup,
         responsibilitySetStatus: state.responsibilities.responsibilitiesSet ? state.responsibilities.responsibilitiesSet.status : null,
         responsibility: state.responsibilities.currentResponsibility,
-        canCreate: false,
-        canUpload: false
+        canUpload: false,
     };
-    newProps.canCreate = newProps.responsibilitySetStatus === "incomplete";
-    newProps.canUpload = newProps.canCreate && newProps.responsibility && newProps.responsibility.current_estimate_set != null
-        && newProps.responsibility.current_estimate_set.status == "empty";
+    newProps.canUpload = newProps.responsibilitySetStatus === "incomplete";
     return newProps;
 };
 

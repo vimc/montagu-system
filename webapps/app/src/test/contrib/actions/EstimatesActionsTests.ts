@@ -9,7 +9,7 @@ import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPro
 import {mockModellingGroup, mockResponsibilitySetWithExpectations, mockTouchstone} from "../../mocks/mockModels";
 import {ExtendedResponsibilitySet} from "../../../main/contrib/models/ResponsibilitySet";
 import {ResponsibilitiesTypes} from "../../../main/contrib/actionTypes/ResponsibilitiesTypes";
-import {CreateBurdenEstimateSet, ErrorInfo, Result, ResultStatus} from "../../../main/shared/models/Generated";
+import {BurdenEstimateSetType, ErrorInfo} from "../../../main/shared/models/Generated";
 import {BurdenOutcome, EstimateTypes} from "../../../main/contrib/actionTypes/EstimateTypes";
 import {responsibilitiesActionCreators} from "../../../main/contrib/actions/responsibilitiesActionCreators";
 
@@ -77,11 +77,16 @@ describe("Estimates actions tests", () => {
 
     });
 
-    it("creates burden", (done: DoneCallback) => {
+    it("creates burden estimate set and fetches upload token on success", (done: DoneCallback) => {
         const store = createStore();
         const createBurdenEndpoint = sandbox.setStubFunc(EstimatesService.prototype, "createBurden", () => {
-            return Promise.resolve();
+            return Promise.resolve("http://some/url/for/new/set/1/");
         });
+
+        sandbox.setStubFunc(EstimatesService.prototype, "getUploadToken", () => {
+            return Promise.resolve("TOKEN");
+        });
+
         sandbox.setStubFunc(ResponsibilitiesService.prototype, "clearCacheForResponsibilities", () => {
             return Promise.resolve();
         });
@@ -92,12 +97,9 @@ describe("Estimates actions tests", () => {
             return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
         });
 
-        const data: CreateBurdenEstimateSet = {
-            type: {
-                type: "central-averaged",
-                details: "test"
-            },
-            model_run_parameter_set: null
+        const data: BurdenEstimateSetType = {
+            type: "central-averaged",
+            details: "test"
         };
 
         store.dispatch(estimatesActionCreators.createBurden(data));
@@ -105,6 +107,8 @@ describe("Estimates actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = [
+                {type: EstimateTypes.SET_CREATED, data: "1"},
+                {type: EstimateTypes.UPLOAD_TOKEN_FETCHED, data: "TOKEN"},
                 {type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
                 {type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility}
             ];
@@ -156,7 +160,7 @@ describe("Estimates actions tests", () => {
                 return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
             });
             sandbox.setStubFunc(EstimatesService.prototype, "populateEstimatesFromFile", () => {
-                return Promise.resolve({ status: "failure", errors: [{code: "missing-rows", message: "TEST"}]});
+                return Promise.resolve({status: "failure", errors: [{code: "missing-rows", message: "TEST"}]});
             });
 
             sandbox.setStubReduxAction(responsibilitiesActionCreators, "refreshResponsibilities");
@@ -187,7 +191,7 @@ describe("Estimates actions tests", () => {
                 return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
             });
             sandbox.setStubFunc(EstimatesService.prototype, "populateEstimatesFromFile", () => {
-                return Promise.resolve({ status: "failure", errors: [{code: "e-code", message: "TEST"}]});
+                return Promise.resolve({status: "failure", errors: [{code: "e-code", message: "TEST"}]});
             });
 
             sandbox.setStubReduxAction(responsibilitiesActionCreators, "refreshResponsibilities");
@@ -218,7 +222,7 @@ describe("Estimates actions tests", () => {
                 return {groupId: "g-1", touchstoneId: "t-1", scenarioId: "s-1", estimateSetId: "e-1"};
             });
             sandbox.setStubFunc(EstimatesService.prototype, "populateEstimatesFromFile", () => {
-                return Promise.resolve({ status: "failure", errors: [{code: "e-code", message: "TEST"}]});
+                return Promise.resolve({status: "failure", errors: [{code: "e-code", message: "TEST"}]});
             });
 
             const refreshResponsibilitiesStub = sandbox.setStubReduxAction(responsibilitiesActionCreators, "refreshResponsibilities");
@@ -244,7 +248,7 @@ describe("Estimates actions tests", () => {
                 return Promise.resolve("TOKEN");
             });
 
-            await store.dispatch(estimatesActionCreators.getUploadToken());
+            await store.dispatch(estimatesActionCreators.getUploadToken(1));
 
             const actions = store.getActions();
             const expectedPayload = [

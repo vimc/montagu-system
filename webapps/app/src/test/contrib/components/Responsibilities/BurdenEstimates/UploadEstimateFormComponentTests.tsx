@@ -4,15 +4,15 @@ import "../../../../helper";
 import {Sandbox} from "../../../../Sandbox";
 import {
     initialUploadState,
-    PopulateEstimatesFormComponent,
     SelectedFile,
+    UploadEstimatesFormComponent,
     UploadEstimatesState
-} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/PopulateBurdenEstimatesForm";
+} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {mount, shallow} from "enzyme";
 import {EventEmitter} from "events";
 import {Alert} from "reactstrap";
 
-describe("Populate Burden Estimates Form Component tests", () => {
+describe("Upload Burden Estimates Form Component tests", () => {
 
     const sandbox = new Sandbox();
 
@@ -51,9 +51,9 @@ describe("Populate Burden Estimates Form Component tests", () => {
     });
 
     const getComponent = (props: any = {}) => {
-        return shallow(<PopulateEstimatesFormComponent
+        return shallow(<UploadEstimatesFormComponent
             createUploadClient={() => fakeUploadClient as any}
-            getUploadToken={props.getUploadToken || nullFunction}
+            createBurdenEstimateSet={props.createEstimateSet || nullFunction}
             populateEstimateSet={props.populateEstimateSet || nullFunction}
             hasPopulateSuccess={props.hasPopulateSuccess || false}
             populateErrors={[]}
@@ -63,22 +63,18 @@ describe("Populate Burden Estimates Form Component tests", () => {
             populatingInProgress={false}
             touchstoneId={"1"}
             scenarioId={"1"}
-            groupId={"1"}
-            setId={1}/>);
+            groupId={"1"}/>);
     };
 
-    it("validates file and gets upload token if valid", () => {
+    it("validates file", () => {
 
-        const getUploadToken = sandbox.sinon.stub();
-        const result = getComponent({getUploadToken});
+        const result = getComponent();
 
         fakeUploadClient.emit("fileAdded", {fileName: "wrongfile.png"});
-        expect(result.state().validationResult.isValid).to.be.false;
-        expect(getUploadToken.called).to.be.false;
+        expect(result.state().fileValidationResult.isValid).to.be.false;
 
         fakeUploadClient.emit("fileAdded", {fileName: "goodfile.csv"});
-        expect(result.state().validationResult.isValid).to.be.true;
-        expect(getUploadToken.called).to.be.true;
+        expect(result.state().fileValidationResult.isValid).to.be.true;
     });
 
     describe("selected file component", () => {
@@ -87,7 +83,7 @@ describe("Populate Burden Estimates Form Component tests", () => {
             const state: UploadEstimatesState = {
                 ...initialUploadState,
                 file: {fileName: "test.csv"} as any,
-                validationResult: {isValid: true} as any
+                fileValidationResult: {isValid: true} as any
             };
 
             const result = mount(<SelectedFile {...state} />);
@@ -100,7 +96,7 @@ describe("Populate Burden Estimates Form Component tests", () => {
             const state: UploadEstimatesState = {
                 ...initialUploadState,
                 file: {fileName: "test.csv"} as any,
-                validationResult: {isValid: false, content: "some error"} as any
+                fileValidationResult: {isValid: false, content: "some error"} as any
             };
 
             const result = mount(<SelectedFile {...state} />);
@@ -120,10 +116,10 @@ describe("Populate Burden Estimates Form Component tests", () => {
 
     it("file upload is disabled if url is null", () => {
 
-        const result = shallow(<PopulateEstimatesFormComponent
+        const result = shallow(<UploadEstimatesFormComponent
             createUploadClient={() => fakeUploadClient as any}
-            getUploadToken={nullFunction}
-            populateEstimateSet={ nullFunction}
+            createBurdenEstimateSet={nullFunction}
+            populateEstimateSet={nullFunction}
             hasPopulateSuccess={false}
             populateErrors={[]}
             resetPopulateState={nullFunction}
@@ -132,8 +128,7 @@ describe("Populate Burden Estimates Form Component tests", () => {
             populatingInProgress={false}
             touchstoneId={"1"}
             scenarioId={"1"}
-            groupId={"1"}
-            setId={1}/>);
+            groupId={"1"}/>);
 
         result.setState({file: {fileName: "test.csv"}});
 
@@ -142,15 +137,26 @@ describe("Populate Burden Estimates Form Component tests", () => {
 
     it("file upload is disabled if file is null", () => {
 
-        const result = getComponent();
-
+        const result = getComponent({metadata: {type: "central-averaged", details: "whatever"}});
         expect(result.find(".submit").props().disabled).to.be.true;
     });
 
     it("file upload is disabled if file is invalid", () => {
 
         const result = getComponent();
-        result.setState({file: {fileName: "test.csv"}, validationResult: {isValid: false}});
+        result.setState({
+            metadata: {type: "central-averaged", details: "whatever"},
+            file: {fileName: "test.csv"},
+            fileValidationResult: {isValid: false}
+        });
+
+        expect(result.find(".submit").props().disabled).to.be.true;
+    });
+
+    it("file upload is disabled if metadata is missing", () => {
+
+        const result = getComponent();
+        result.setState({file: {fileName: "test.csv"}, fileValidationResult: {isValid: true}});
 
         expect(result.find(".submit").props().disabled).to.be.true;
     });
@@ -158,22 +164,63 @@ describe("Populate Burden Estimates Form Component tests", () => {
     it("file upload is disabled while uploading is in progress", () => {
 
         const result = getComponent();
-        result.setState({isUploading: true});
+        result.setState({
+            isUploading: true,
+            metadata: {type: "central-averaged", details: "whatever"},
+            file: {fileName: "test.csv"},
+            validationResult: {isValid: true},
+        });
 
         expect(result.find(".submit").props().disabled).to.be.true;
     });
 
-    it("starts file upload", () => {
+    it("creates estimate set if metadata and file present", () => {
 
         const resetPopulateState = sandbox.sinon.stub();
-        const result = getComponent({resetPopulateState: resetPopulateState});
+        const createEstimateSet = sandbox.sinon.stub();
+        const result = getComponent({resetPopulateState: resetPopulateState, createEstimateSet: createEstimateSet});
         result.setState({
+            metadata: {
+                type: "central-averaged",
+                details: "whatever"
+            },
             file: {fileName: "test.csv"}
         });
         result.find(".submit").simulate("click");
         expect(resetPopulateState.called).to.be.true;
-        expect(result.state().isUploading).to.be.true;
-        expect(fakeUploadClient.uploadStarted).to.be.true;
+        expect(createEstimateSet.called).to.be.true;
+
+        // the url for uploading is null so the upload itself should not start
+        expect(result.state().isUploading).to.be.false;
+        expect(fakeUploadClient.uploadStarted).not.to.be.true;
+    });
+
+
+    it("uploads estimates when url is not null", (done: DoneCallback) => {
+
+        const resetPopulateState = sandbox.sinon.stub();
+        const createEstimateSet = sandbox.sinon.stub();
+        const result = getComponent({
+            url: "something",
+            resetPopulateState: resetPopulateState,
+            createEstimateSet: createEstimateSet
+        });
+        result.setState({
+            metadata: {
+                type: "central-averaged",
+                details: "whatever"
+            },
+            file: {fileName: "test.csv"}
+        });
+        result.find(".submit").simulate("click");
+        expect(resetPopulateState.called).to.be.true;
+        expect(createEstimateSet.called).to.be.true;
+
+        setTimeout(() => {
+            expect(result.state().isUploading).to.be.true;
+            expect(fakeUploadClient.uploadStarted).to.be.true;
+            done();
+        });
     });
 
     it("shows progress bar on file upload progress", () => {

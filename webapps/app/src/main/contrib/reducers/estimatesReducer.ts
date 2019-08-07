@@ -12,6 +12,7 @@ export interface EstimatesState {
     populateErrors: ErrorInfo[];
     hasPopulateSuccess: boolean;
     populatingInProgress: boolean;
+    populatingSetId: number;
     // these are dictionaries with burden estimate set ids as keys
     deaths: ILookup<ILookup<DataPoint[]>>
     dalys: ILookup<ILookup<DataPoint[]>>
@@ -24,6 +25,7 @@ export const estimatesInitialState: EstimatesState = {
     populateErrors: [],
     hasPopulateSuccess: false,
     populatingInProgress: false,
+    populatingSetId: null,
     deaths: null,
     dalys: null,
     cases: null,
@@ -63,7 +65,8 @@ export const estimatesReducer = (state = estimatesInitialState, action: Estimate
             return {
                 ...state,
                 hasPopulateSuccess: false,
-                populateErrors: []
+                populateErrors: [],
+                populatingSetId: null
             };
         case EstimateTypes.POPULATING_ESTIMATES:
             return {
@@ -76,6 +79,11 @@ export const estimatesReducer = (state = estimatesInitialState, action: Estimate
                 populateErrors: action.data.errors,
                 hasPopulateSuccess: action.data.setStatus == "complete",
                 populatingInProgress: false
+            };
+        case EstimateTypes.SET_CREATED:
+            return {
+                ...state,
+                populatingSetId: action.data
             };
         default:
             return state;
