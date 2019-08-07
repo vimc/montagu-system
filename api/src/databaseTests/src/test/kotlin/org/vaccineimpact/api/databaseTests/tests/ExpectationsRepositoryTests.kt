@@ -125,7 +125,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             expId
         }
         withRepo { repo ->
-            val (expectations, scenarios, disease) = repo.getExpectationsById(expectationsId)
+            val (_, scenarios, disease) = repo.getExpectationsById(expectationsId)
             assertThat(scenarios).isEqualTo(listOf(otherScenarioId, scenarioId))
             assertThat(disease).isEqualTo(disease)
         }

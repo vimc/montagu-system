@@ -2,11 +2,13 @@ package org.vaccineimpact.api.tests.controllers.BurdenEstimates
 
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.mockito.Mockito
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimatesController
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
@@ -108,6 +110,32 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
                 eq("username"),
                 timestamp = check { it > before && it < after })
         verifyValidResponsibilityPathChecks(logic, mockContext)
+    }
+
+    @Test
+    fun `cannot create estimate set with central single run type`()
+    {
+        val touchstoneSet = mockTouchstones()
+        val repo = mockEstimatesRepository(touchstoneSet)
+
+        val properties = CreateBurdenEstimateSet(
+                BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN, "single"),
+                1
+        )
+        val mockContext = mock<ActionContext> {
+            on { username } doReturn "username"
+            on { params(":group-id") } doReturn groupId
+            on { params(":touchstone-version-id") } doReturn touchstoneVersionId
+            on { params(":scenario-id") } doReturn scenarioId
+            on { postData<CreateBurdenEstimateSet>() } doReturn properties
+        }
+
+        val logic = mockLogic()
+
+        assertThatThrownBy { BurdenEstimatesController(mockContext, logic, repo).createBurdenEstimateSet() }
+                .isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining("Single model run estimate sets are no longer accepted")
+
     }
 
     @Test
