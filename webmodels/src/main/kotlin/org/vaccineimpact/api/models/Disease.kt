@@ -1,3 +1,8 @@
 package org.vaccineimpact.api.models
 
-data class Disease(override val id: String, val name: String): HasKey<String>
+import java.beans.ConstructorProperties
+
+
+data class Disease
+@ConstructorProperties("id", "name")
+constructor(override val id: String, val name: String): HasKey<String>
