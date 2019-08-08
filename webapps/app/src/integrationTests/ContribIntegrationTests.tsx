@@ -10,8 +10,10 @@ import {
     ResponsibilitySetWithExpectations,
     Result, ScenarioTouchstoneAndCoverageSets, Touchstone,
 } from "../main/shared/models/Generated";
-import {IntegrationTestSuite, TestService, ResponsibilityIds, addResponsibilities, addGroups,
-        addCoverageSetsForGroup, addCoverageData, addTouchstone} from "./IntegrationTest";
+import {
+    IntegrationTestSuite, TestService, ResponsibilityIds, addResponsibilities, addGroups,
+    addCoverageSetsForGroup, addCoverageData, addTouchstone
+} from "./IntegrationTest";
 import * as enzyme from "enzyme";
 import {shallow} from "enzyme";
 import * as Adapter from "enzyme-adapter-react-16";
@@ -19,7 +21,7 @@ import * as Adapter from "enzyme-adapter-react-16";
 import {createContribStore} from "../main/contrib/createStore";
 import {Sandbox} from "../test/Sandbox";
 import {DownloadCoverageContentComponent} from "../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
-import {mockModellingGroup, mockScenario, mockTouchstoneVersion} from "../test/mocks/mockModels";
+import {mockBurdenEstimateSet, mockModellingGroup, mockScenario, mockTouchstoneVersion} from "../test/mocks/mockModels";
 import {FileDownloadButton} from "../main/shared/components/FileDownloadLink";
 import {DownloadDemographicsContentComponent} from "../main/shared/components/Demographics/DownloadDemographicsContent";
 import {RunParametersService} from "../main/contrib/services/RunParametersService";
@@ -33,6 +35,7 @@ import {DemographicService} from "../main/shared/services/DemographicService";
 import {EstimatesService} from "../main/contrib/services/EstimatesService";
 import {ILookup} from "../main/shared/models/Lookup";
 import {DataPoint} from "../main/contrib/reducers/estimatesReducer";
+import {CurrentEstimateSetSummary} from "../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 
 enzyme.configure({adapter: new Adapter()});
 
@@ -399,6 +402,27 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             expect(response.errors[0].code).to.eq("unknown-upload-token");
         });
 
+        it("can download burden estimates", async () => {
+
+            const responsibilityIds = await addResponsibilities(this.db, scenarioId, touchstoneVersionId, groupId);
+            const modelVersionId = await addModel(this.db);
+            const setId = await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
+
+            const rendered = shallow(<CurrentEstimateSetSummary
+                touchstoneId={touchstoneVersionId}
+                groupId={groupId}
+                scenarioId={scenarioId}
+                canUpload={true}
+                estimateSet={mockBurdenEstimateSet({id: setId, problems: [], status: "invalid"})}/>);
+
+            const href = rendered.find(FileDownloadButton).prop("href");
+
+            const response = await new TestService(this.store.dispatch, this.store.getState)
+                .getAnyUrl(href);
+
+            expect(response.status).to.equal(200);
+        })
+
     }
 }
 
@@ -422,7 +446,7 @@ function addBurdenEstimateSet(db: Client, responsibilityId: number, modelVersion
 }
 
 
-function addBurdenEstimate(db: Client, setId: number, value: number){
+function addBurdenEstimate(db: Client, setId: number, value: number) {
     return db.query("INSERT INTO country (id, name, nid) VALUES ('XYZ', 'fake-country', 1111)")
         .then(() => db.query("SELECT id from burden_outcome where code = 'cases'"))
         .then(result => db.query(`INSERT INTO burden_estimate (burden_estimate_set, country, year, burden_outcome, value, age)
