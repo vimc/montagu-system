@@ -4,15 +4,14 @@ import "../../../../helper";
 import {Sandbox} from "../../../../Sandbox";
 import {
     initialUploadState,
-    SelectedFile, UploadEstimatesForm,
+    SelectedFile,
     UploadEstimatesFormComponent,
     UploadEstimatesState
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {mount, shallow} from "enzyme";
 import {EventEmitter} from "events";
 import {Alert, Button} from "reactstrap";
-import {createMockContribStore} from "../../../../mocks/mockStore";
-import {mockContribState} from "../../../../mocks/mockStates";
+
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 
 describe("Upload Burden Estimates Form Component tests", () => {
@@ -61,7 +60,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
             hasPopulateSuccess={props.hasPopulateSuccess || false}
             populateErrors={[]}
             resetPopulateState={props.resetPopulateState || nullFunction}
-            url={props.url || "/url"}
+            url={props.url != undefined ? "/url": props.url}
             uploadToken={"TOKEN"}
             populatingInProgress={props.populatingInProgress || false}
             touchstoneId={"1"}
