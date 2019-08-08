@@ -377,9 +377,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const modelVersionId = await addModel(this.db);
             const setId = await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
 
-            const value = 32156;
-            await addBurdenEstimate(this.db, setId, value);
-
             const response: String = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .getUploadToken(groupId, touchstoneVersionId, scenarioId, setId);
 
@@ -390,9 +387,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const responsibilityIds = await addResponsibilities(this.db, scenarioId, touchstoneVersionId, groupId);
             const modelVersionId = await addModel(this.db);
             const setId = await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
-
-            const value = 32156;
-            await addBurdenEstimate(this.db, setId, value);
 
             const response = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .populateEstimatesFromFile(groupId, touchstoneVersionId, scenarioId, setId, "TOKEN") as Result;
@@ -421,6 +415,12 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 .getAnyUrl(href);
 
             expect(response.status).to.equal(200);
+
+            const result = await response.text();
+            const headers = result.split("\n")[0];
+
+            // just check it's the format we're expecting
+            expect(headers).to.eq("disease,year,age,country,country_name,cohort_size")
         })
 
     }
@@ -444,7 +444,6 @@ function addBurdenEstimateSet(db: Client, responsibilityId: number, modelVersion
         .then(() => db.query(`SELECT id FROM burden_estimate_set;`))
         .then(result => result.rows[0].id);
 }
-
 
 function addBurdenEstimate(db: Client, setId: number, value: number) {
     return db.query("INSERT INTO country (id, name, nid) VALUES ('XYZ', 'fake-country', 1111)")
