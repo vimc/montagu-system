@@ -145,6 +145,7 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                 disease: m.disease.name
             };
 
+            //TODO: select latest touchstone
             const modelExpectation = state.groups.expectations.find(
                 e => e.modelling_group == m.modelling_group && e.disease == m.disease.id);
 
