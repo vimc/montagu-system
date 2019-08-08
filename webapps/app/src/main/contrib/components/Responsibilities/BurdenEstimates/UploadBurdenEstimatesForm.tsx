@@ -100,7 +100,6 @@ export class UploadEstimatesFormComponent extends React.Component<UploadEstimate
     };
 
     componentDidMount = () => {
-
         const settings: ConfigurationHash = {
             ...baseSettings,
             target: (params) => `${this.props.url}?${params.join("&")}`,
@@ -134,7 +133,6 @@ export class UploadEstimatesFormComponent extends React.Component<UploadEstimate
         });
 
         this.uploadClient.on('progress', () => {
-
             this.setState({
                 isUploading: true,
                 progress: roundToOneDecimalPlace(this.uploadClient.progress() * 100)
@@ -142,7 +140,6 @@ export class UploadEstimatesFormComponent extends React.Component<UploadEstimate
         });
 
         this.uploadClient.on('fileSuccess', () => {
-
             this.resetUploadState(false);
             this.props.createBurdenEstimateSet(this.state.metadata);
             this.props.populateEstimateSet(this.props.uploadToken);
@@ -165,33 +162,23 @@ export class UploadEstimatesFormComponent extends React.Component<UploadEstimate
         });
     };
 
-    startUpload = () => {
+    componentDidUpdate(prevProps: Readonly<UploadEstimatesProps>) {
+        if (prevProps.url == null && this.props.url != null) {
+            this.uploadClient.upload();
+        }
+    }
 
+    startUpload = () => {
+        this.setState({
+            isUploading: true
+        });
         this.props.resetPopulateState();
         this.props.createBurdenEstimateSet(this.state.metadata);
-
-        const tryUpload = setInterval(() => {
-            if (!this.uploadDisabled()) {
-
-                clearInterval(tryUpload);
-                this.setState({
-                    isUploading: true
-                });
-
-                this.uploadClient.upload();
-            }
-        });
-
     };
 
     cancelUpload = () => {
         this.resetUploadState(true);
         this.uploadClient.cancel();
-    };
-
-    uploadDisabled = () => {
-        return this.submitDisabled()
-            || this.props.url == null
     };
 
     submitDisabled = () => {
@@ -280,14 +267,19 @@ export class UploadEstimatesFormComponent extends React.Component<UploadEstimate
                 <Alert color="success" isOpen={this.props.hasPopulateSuccess} toggle={this.props.resetPopulateState}>
                     Success! You have uploaded a new set of burden estimates
                 </Alert>
-                <button disabled={this.submitDisabled()}
-                        id="submit-form"
-                        className="submit start"
-                        onClick={this.startUpload}>Upload
-                </button>
-                <button disabled={!this.state.isUploading} className="cancel"
-                        onClick={this.cancelUpload}>Cancel
-                </button>
+                {!this.props.populatingInProgress &&
+                <div>
+                    <button disabled={this.submitDisabled()}
+                            id="submit-form"
+                            className="submit start"
+                            onClick={this.startUpload}>Upload
+                    </button>
+                    <button disabled={!this.state.isUploading} className="cancel"
+                             onClick={this.cancelUpload}>Cancel
+                    </button>
+                </div>
+                }
+                {this.props.populatingInProgress && <LoadingElement/>}
                 <small className="form-text text-muted">
                     * All fields are required
                 </small>
@@ -340,6 +332,5 @@ export const mapDispatchToProps:
 
 export const UploadEstimatesForm =
     compose<UploadEstimatesProps, UploadEstimatesPublicProps>(
-        connect(mapStateToProps, mapDispatchToProps),
-        branch((props: UploadEstimatesProps) => props.populatingInProgress, renderComponent(LoadingElement))
+        connect(mapStateToProps, mapDispatchToProps)
     )(UploadEstimatesFormComponent);

@@ -96,11 +96,4 @@ describe("Upload Burden Estimates Form tests", () => {
 
     });
 
-    it("displays loading element while populating is in progress", () => {
-
-        const result = mount(<UploadEstimatesForm groupId={"g1"} scenarioId={"s1"} touchstoneId={"t1"}/>,
-            {context: {store: createMockContribStore(mockContribState({estimates: {populatingInProgress: true}}))}});
-        expect(result.find(LoadingElement)).to.have.lengthOf(1);
-
-    });
 });

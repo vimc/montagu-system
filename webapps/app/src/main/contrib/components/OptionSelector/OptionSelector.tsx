@@ -26,7 +26,8 @@ export class OptionSelector extends React.Component<OptionList, undefined> {
             defaultOption = <option key={null} value="">{this.props.defaultOption}</option>;
         }
 
-        return <select onChange={this.onChange} className={this.props.className} name={this.props.name} required={this.props.required}>
+        return <select onChange={this.onChange} className={this.props.className}
+                       name={this.props.name} required={this.props.required}>
                 {defaultOption}
                 {options}
             </select>;

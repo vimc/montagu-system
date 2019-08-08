@@ -4,13 +4,16 @@ import "../../../../helper";
 import {Sandbox} from "../../../../Sandbox";
 import {
     initialUploadState,
-    SelectedFile,
+    SelectedFile, UploadEstimatesForm,
     UploadEstimatesFormComponent,
     UploadEstimatesState
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {mount, shallow} from "enzyme";
 import {EventEmitter} from "events";
-import {Alert} from "reactstrap";
+import {Alert, Button} from "reactstrap";
+import {createMockContribStore} from "../../../../mocks/mockStore";
+import {mockContribState} from "../../../../mocks/mockStates";
+import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 
 describe("Upload Burden Estimates Form Component tests", () => {
 
@@ -60,7 +63,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
             resetPopulateState={props.resetPopulateState || nullFunction}
             url={props.url || "/url"}
             uploadToken={"TOKEN"}
-            populatingInProgress={false}
+            populatingInProgress={props.populatingInProgress || false}
             touchstoneId={"1"}
             scenarioId={"1"}
             groupId={"1"}/>);
@@ -189,21 +192,19 @@ describe("Upload Burden Estimates Form Component tests", () => {
         result.find(".submit").simulate("click");
         expect(resetPopulateState.called).to.be.true;
         expect(createEstimateSet.called).to.be.true;
-
-        // the url for uploading is null so the upload itself should not start
-        expect(result.state().isUploading).to.be.false;
+        expect(result.state().isUploading).to.be.true;
         expect(fakeUploadClient.uploadStarted).not.to.be.true;
     });
 
 
-    it("uploads estimates when url is not null", (done: DoneCallback) => {
+    it("uploads estimates when url becomes not null", () => {
 
         const resetPopulateState = sandbox.sinon.stub();
         const createEstimateSet = sandbox.sinon.stub();
         const result = getComponent({
-            url: "something",
             resetPopulateState: resetPopulateState,
-            createEstimateSet: createEstimateSet
+            createEstimateSet: createEstimateSet,
+            url: null
         });
         result.setState({
             metadata: {
@@ -216,11 +217,10 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(resetPopulateState.called).to.be.true;
         expect(createEstimateSet.called).to.be.true;
 
-        setTimeout(() => {
-            expect(result.state().isUploading).to.be.true;
-            expect(fakeUploadClient.uploadStarted).to.be.true;
-            done();
-        });
+        result.setProps({url: "URL"});
+        result.update();
+
+        expect(fakeUploadClient.uploadStarted).to.be.true;
     });
 
     it("shows progress bar on file upload progress", () => {
@@ -314,6 +314,14 @@ describe("Upload Burden Estimates Form Component tests", () => {
         result.find(".cancel").simulate("click");
         expect(result.state()).to.deep.eq(initialUploadState);
         expect(fakeUploadClient.cancelled).to.be.true;
+
+    });
+
+    it("hides buttons and displays loading element while populating is in progress", () => {
+
+        const result = getComponent({populatingInProgress: true});
+        expect(result.find("button")).to.have.lengthOf(0);
+        expect(result.find(LoadingElement)).to.have.lengthOf(1);
 
     });
 

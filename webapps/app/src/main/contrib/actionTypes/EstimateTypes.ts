@@ -60,6 +60,7 @@ export namespace Estimates {
         type: EstimateTypes.SET_CREATED,
         data: number
     }
+
 }
 
 export type EstimatesAction =

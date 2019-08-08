@@ -66,7 +66,8 @@ export const estimatesReducer = (state = estimatesInitialState, action: Estimate
                 ...state,
                 hasPopulateSuccess: false,
                 populateErrors: [],
-                populatingSetId: null
+                populatingSetId: null,
+                uploadToken: null
             };
         case EstimateTypes.POPULATING_ESTIMATES:
             return {
@@ -78,7 +79,8 @@ export const estimatesReducer = (state = estimatesInitialState, action: Estimate
                 ...state,
                 populateErrors: action.data.errors,
                 hasPopulateSuccess: action.data.setStatus == "complete",
-                populatingInProgress: false
+                populatingInProgress: false,
+                uploadToken: null
             };
         case EstimateTypes.SET_CREATED:
             return {
