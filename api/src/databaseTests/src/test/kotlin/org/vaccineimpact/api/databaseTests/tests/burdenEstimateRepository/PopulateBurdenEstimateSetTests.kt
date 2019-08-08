@@ -103,7 +103,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     {
         val years = 2000..2010
         val ages = 0..10
-        val expectations = Expectations(1, "", years, ages, CohortRestriction(null, null),
+        val expectations = CountryOutcomeExpectations(1, "", years, ages, CohortRestriction(null, null),
                 listOf(Country("ABC", "a"), Country("DEF", "d")), listOf("cases"))
 
         val setId = withDatabase { db ->

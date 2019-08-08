@@ -52,7 +52,7 @@ class ExpectationsLogicTests : MontaguTests()
                 "", 1, "", TouchstoneStatus.OPEN)))
     }
 
-    private val fakeExpectations = Expectations(expectationId, "desc", 1..11, 2000..2009, CohortRestriction(), listOf(), listOf())
+    private val fakeExpectations = CountryOutcomeExpectations(expectationId, "desc", 1..11, 2000..2009, CohortRestriction(), listOf(), listOf())
     private val fakeExpectationsMapping = ExpectationMapping(fakeExpectations, listOf(scenarioId), disease)
 
     private val expectationsRepo = mock<ExpectationsRepository> {

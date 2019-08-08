@@ -39,7 +39,7 @@ class ExpectationsTests : DatabaseTest()
                         "touchstone_version" to touchstoneVersionId,
                         "modelling_group" to groupId,
                         "disease" to "YF",
-                        "expectations" to obj(
+                        "expectation" to obj(
                                 "id" to 1,
                                 "description" to "description",
                                 "years" to obj(
@@ -57,7 +57,7 @@ class ExpectationsTests : DatabaseTest()
                                 "outcomes" to array("cases", "deaths")
 
                         ),
-                        "scenarios" to array(scenarioId)
+                        "applicable_scenarios" to array(scenarioId)
                 )
             })
 
@@ -66,7 +66,7 @@ class ExpectationsTests : DatabaseTest()
                         "touchstone_version" to "touchstone2-2",
                         "modelling_group" to otherGroupId,
                         "disease" to "HepB",
-                        "expectations" to obj(
+                        "expectation" to obj(
                                 "id" to 2,
                                 "description" to "description",
                                 "years" to obj(
@@ -83,7 +83,7 @@ class ExpectationsTests : DatabaseTest()
                                 ),
                                 "outcomes" to array()
                         ),
-                        "scenarios" to array(otherScenarioId)
+                        "applicable_scenarios" to array(otherScenarioId)
                 )
             })
         }

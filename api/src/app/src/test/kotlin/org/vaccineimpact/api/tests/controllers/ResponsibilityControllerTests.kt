@@ -154,7 +154,7 @@ class ResponsibilityControllerTests : MontaguTests()
         """.trimMargin())
     }
 
-    private val fakeExpectations = Expectations(1, "desc", 2000..2001, 1..1, CohortRestriction(), listOf(Country("a", "countrya")),
+    private val fakeExpectations = CountryOutcomeExpectations(1, "desc", 2000..2001, 1..1, CohortRestriction(), listOf(Country("a", "countrya")),
             listOf("dalys"))
 
     private val fakeExpectationMapping = ExpectationMapping(

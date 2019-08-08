@@ -137,7 +137,7 @@ class JooqExpectationsRepository(dsl: DSLContext)
         val scenarios = records.map { it[SCENARIO_DESCRIPTION.ID] }.distinct().sorted()
         val diseases = records.map { it[SCENARIO_DESCRIPTION.DISEASE] }.distinct()
         val disease = diseases.singleOrNull()
-                ?: throw DatabaseContentsError("Expectations $expectationsId is used by responsibilities that do not all share the same disease: ${diseases.joinToString()}")
+                ?: throw DatabaseContentsError("CountryOutcomeExpectations $expectationsId is used by responsibilities that do not all share the same disease: ${diseases.joinToString()}")
         return ApplicableScenariosAndDisease(scenarios, disease)
     }
 
@@ -154,12 +154,12 @@ class JooqExpectationsRepository(dsl: DSLContext)
         )
     }
 
-    private fun BurdenEstimateExpectationRecord.withCountriesAndOutcomes(): Expectations
+    private fun BurdenEstimateExpectationRecord.withCountriesAndOutcomes(): CountryOutcomeExpectations
     {
         val record = this
         val countries = getCountries(record)
         val outcomes = getOutcomes(record)
-        return Expectations(
+        return CountryOutcomeExpectations(
                 record.id,
                 record.description,
                 record.yearMinInclusive..record.yearMaxInclusive,
