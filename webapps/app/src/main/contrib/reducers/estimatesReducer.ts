@@ -80,6 +80,7 @@ export const estimatesReducer = (state = estimatesInitialState, action: Estimate
                 populateErrors: action.data.errors,
                 hasPopulateSuccess: action.data.setStatus == "complete",
                 populatingInProgress: false,
+                populatingSetId: null,
                 uploadToken: null
             };
         case EstimateTypes.SET_CREATED:
