@@ -455,10 +455,7 @@ class JooqBurdenEstimateRepository(
 
         val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
 
-        val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion, properties)
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, properties.type)
-
-        return setId
+        return addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion, properties)
     }
 
     override fun clearBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
