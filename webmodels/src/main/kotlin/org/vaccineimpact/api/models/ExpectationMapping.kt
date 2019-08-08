@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.models
 
 data class ExpectationMapping(
-        val expectation: Expectations,
-        val applicableScenarios: List<String>,
-        val disease: String
-)
+        override val expectation: CountryOutcomeExpectations,
+        override val applicableScenarios: List<String>,
+        override val disease: String
+): AppliedExpectation
