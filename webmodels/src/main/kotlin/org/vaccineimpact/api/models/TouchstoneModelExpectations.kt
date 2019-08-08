@@ -6,6 +6,6 @@ data class TouchstoneModelExpectations
 @ConstructorProperties("touchstoneVersion", "modellingGroup", "disease", "expectations", "scenarios")
 constructor(val touchstoneVersion: String,
             val modellingGroup: String,
-            val disease: String,
-            val expectations: OutcomeExpectations,
-            val scenarios: List<String>)
+            override val disease: String,
+            override val expectation: OutcomeExpectations,
+            override val applicableScenarios: List<String>): AppliedExpectation
