@@ -95,7 +95,12 @@ describe('Estimates reducer tests', () => {
 
     it("sets populate state after set is populated successfully", () => {
 
-        const mockState = {...estimatesInitialState, populatingInProgress: true};
+        const mockState = {
+            ...estimatesInitialState,
+            uploadToken: "TOKEN",
+            populatingSetId: 1,
+            populatingInProgress: true
+        };
 
         const result = estimatesReducer(mockState, {
             type: EstimateTypes.ESTIMATE_SET_POPULATED,
@@ -106,6 +111,7 @@ describe('Estimates reducer tests', () => {
         expect(result.hasPopulateSuccess).to.be.true;
         expect(result.populatingInProgress).to.be.false;
         expect(result.populatingSetId).to.be.null;
+        expect(result.uploadToken).to.be.null;
     });
 
     it("resets populate state", () => {
