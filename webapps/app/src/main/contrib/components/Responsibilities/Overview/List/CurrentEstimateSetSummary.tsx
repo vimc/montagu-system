@@ -2,16 +2,20 @@ import * as React from "react";
 import {BurdenEstimateSet} from "../../../../../shared/models/Generated";
 import {settings} from "../../../../../shared/Settings";
 import {longTimestamp} from "../../../../../shared/Helpers";
+import {FileDownloadButton} from "../../../../../shared/components/FileDownloadLink";
 
 export interface CurrentEstimateSetSummaryProps {
     estimateSet: BurdenEstimateSet;
     canUpload: boolean;
+    groupId: string;
+    touchstoneId: string;
+    scenarioId: string
 }
 
 export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSetSummaryProps, undefined> {
     static getMessage(set: BurdenEstimateSet, canUpload: boolean): JSX.Element {
         if (!canUpload) {
-            return <ReviewedAndApprovedMessage />;
+            return <ReviewedAndApprovedMessage/>;
         } else {
             if (set == null) {
                 return <span>No central burden estimate sets have been uploaded.</span>;
@@ -25,13 +29,11 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
                     return <span>
                         A complete set of central estimates was uploaded on {timestamp}.
                     </span>;
-                }
-                else if (set.status == "invalid") {
+                } else if (set.status == "invalid") {
                     return <span>
                         You uploaded an incomplete set of central estimates on {timestamp}.
                     </span>;
-                }
-                else {
+                } else {
                     return <span>
                         You have a central estimate set in status '{set.status}', which was created on {timestamp}
                     </span>;
@@ -40,13 +42,27 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
         }
     }
 
+    url() {
+        if (this.props.estimateSet && this.props.estimateSet.status != "empty") {
+            return `/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/${this.props.estimateSet.id}/estimates/`
+        } else {
+            null
+        }
+    }
+
     render(): JSX.Element {
         const {estimateSet, canUpload} = this.props;
         const estimateText = CurrentEstimateSetSummary.getMessage(estimateSet, canUpload);
         const alertType = (estimateSet && estimateSet.status == "invalid") ? "danger" : "warning";
-
+        const url = this.url();
         return <div className={`mt-3 alert alert-${alertType}`}>
             {estimateText}
+            {url && [
+                <FileDownloadButton href={url} className={"float-right"}>
+                    Download these estimates
+                </FileDownloadButton>,
+                <div className={"clearfix"}></div>
+            ]}
         </div>;
     }
 }

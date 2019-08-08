@@ -9,15 +9,48 @@ import {
 } from "../../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 import {BurdenEstimateSet} from "../../../../../../main/shared/models/Generated";
 import {mockBurdenEstimateSet} from "../../../../../mocks/mockModels";
+import {FileDownloadButton} from "../../../../../../main/shared/components/FileDownloadLink";
 
 describe("CurrentEstimateSetSummary Component Tests", () => {
-    const render = function(set: BurdenEstimateSet, canUpload: boolean): ShallowWrapper<any, any> {
-        return shallow(<CurrentEstimateSetSummary estimateSet={set} canUpload={canUpload}/>);
+    const render = function (set: BurdenEstimateSet, canUpload: boolean): ShallowWrapper<any, any> {
+        return shallow(<CurrentEstimateSetSummary groupId={"g1"} touchstoneId={"t1"} scenarioId={"s1"}
+                                                  estimateSet={set} canUpload={canUpload}/>);
     };
 
     it("displays no estimates message if current estimate is null", () => {
         const rendered = render(null, true);
         expect(rendered.text()).to.contain("No central burden estimate sets have been uploaded");
+    });
+
+    it("does not display download button if current estimate is null", () => {
+        const rendered = render(null, true);
+        expect(rendered.find(FileDownloadButton)).to.have.lengthOf(0);
+    });
+
+    it("does not display download button if current estimate set is empty", () => {
+        const rendered = render(mockBurdenEstimateSet({
+            status: "empty",
+            uploaded_on: "2017-07-13 13:55:29 +0100"
+        }), true);
+        expect(rendered.find(FileDownloadButton)).to.have.lengthOf(0);
+    });
+
+    it("displays download button if current estimate set is invalid", () => {
+        const rendered = render(mockBurdenEstimateSet({
+            id: 1,
+            status: "invalid",
+            uploaded_on: "2017-07-13 13:55:29 +0100"
+        }), true);
+        expect(rendered.find(FileDownloadButton).props().href).to.eq("/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/estimates/")
+    });
+
+    it("displays download button if current estimate set is complete", () => {
+        const rendered = render(mockBurdenEstimateSet({
+            id: 1,
+            status: "complete",
+            uploaded_on: "2017-07-13 13:55:29 +0100"
+        }), true);
+        expect(rendered.find(FileDownloadButton).props().href).to.eq("/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/estimates/")
     });
 
     it("displays empty set message if current estimate is empty", () => {
@@ -64,4 +97,6 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
         const div = rendered.find("div").first();
         expect(div.hasClass("alert-danger")).to.eq(true);
     });
+
+
 });

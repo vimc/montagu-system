@@ -42,6 +42,9 @@ export class UploadBurdenEstimatesContentComponent extends React.Component<Uploa
                     <CurrentEstimateSetSummary
                         estimateSet={this.props.responsibility.current_estimate_set}
                         canUpload={this.props.canCreate}
+                        groupId={this.props.group.id}
+                        touchstoneId={this.props.touchstone.id}
+                        scenarioId={this.props.scenario.id}
                     />
                     <UploadBurdenEstimatesForm
                         canUpload={this.props.canUpload}
