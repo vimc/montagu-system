@@ -260,24 +260,28 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             db.addTouchstoneVersion("touchstone2", 2, addTouchstone = true)
             db.addScenarioDescription(scenarioId, "desc", "YF", addDisease = true)
             db.addScenarioDescription(otherScenarioId, "other desc", "HepB", addDisease = true)
+            db.addScenarioDescription("scenario3", "desc3", "HepB", addDisease = false)
             db.addGroup(groupId)
             db.addGroup(otherGroupId)
             val setId1 = db.addResponsibilitySet(groupId, touchstoneVersionId)
             val setId2 = db.addResponsibilitySet(otherGroupId, "touchstone2-2")
             val r1 = db.addResponsibility(setId1, touchstoneVersionId, scenarioId)
             val r2 = db.addResponsibility(setId2, "touchstone2-2", otherScenarioId)
+            val r3 = db.addResponsibility(setId2, "touchstone2-2", "scenario3")
             val expId1 = db.addExpectations(r1, outcomes=listOf("deaths"))
             val expId2 = db.addExpectations(r2, outcomes=listOf("deaths", "cases"))
             db.addExistingExpectationsToResponsibility(r1, expId1)
             db.addExistingExpectationsToResponsibility(r2, expId2)
+            db.addExistingExpectationsToResponsibility(r3, expId2)
         }
         withRepo { repo ->
             val result = repo.getAllExpectations()
             assertThat(result).isEqualTo(listOf(
                     TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF",
-                            exampleOutcomeExpectations(outcomes=listOf("deaths"))),
+                            exampleOutcomeExpectations(outcomes=listOf("deaths")), listOf(scenarioId)),
                     TouchstoneModelExpectations("touchstone2-2", otherGroupId, "HepB",
-                            exampleOutcomeExpectations(id=2, outcomes=listOf("cases", "deaths")))
+                            exampleOutcomeExpectations(id=2, outcomes=listOf("cases", "deaths")),
+                            listOf(otherScenarioId, "scenario3"))
             ))
         }
     }
@@ -304,7 +308,8 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
         withRepo { repo ->
             val result = repo.getAllExpectations()
             assertThat(result).isEqualTo(listOf(
-                    TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF", exampleOutcomeExpectations())
+                    TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF", exampleOutcomeExpectations(),
+                            listOf(scenarioId))
             ))
         }
     }
@@ -349,7 +354,8 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
         withRepo { repo ->
             val result = repo.getAllExpectations()
             assertThat(result).isEqualTo(listOf(
-                    TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF", exampleOutcomeExpectations())
+                    TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF", exampleOutcomeExpectations(),
+                            listOf(scenarioId))
             ))
         }
     }

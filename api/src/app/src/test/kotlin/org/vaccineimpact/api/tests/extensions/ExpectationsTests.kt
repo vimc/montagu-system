@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.models.CohortRestriction
 import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.Expectations
+import org.vaccineimpact.api.models.CountryOutcomeExpectations
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class ExpectationsTests : MontaguTests()
@@ -17,7 +17,7 @@ class ExpectationsTests : MontaguTests()
         val longCountryList = (1..100).map {
             Country(it.toString(), it.toString())
         }
-        val expectations = Expectations(1,
+        val expectations = CountryOutcomeExpectations(1,
                 "desc",
                 2001..2080,
                 1..80,
@@ -42,7 +42,7 @@ class ExpectationsTests : MontaguTests()
         val countryList = (1..1).map {
             Country(it.toString(), it.toString())
         }
-        val expectations = Expectations(1,
+        val expectations = CountryOutcomeExpectations(1,
                 "desc",
                 2000..2001,
                 1..2,
@@ -90,7 +90,7 @@ class ExpectationsTests : MontaguTests()
             Country(it.toString(), it.toString())
         }
 
-        val expectations = Expectations(1,
+        val expectations = CountryOutcomeExpectations(1,
                 "desc",
                 2000..2001,
                 1..1,
@@ -126,7 +126,7 @@ class ExpectationsTests : MontaguTests()
         val longCountryList = (1..100).map {
             Country(it.toString(), it.toString())
         }
-        val expectations = Expectations(1,
+        val expectations = CountryOutcomeExpectations(1,
                 "desc",
                 2001..2080,
                 1..80,
@@ -148,7 +148,7 @@ class ExpectationsTests : MontaguTests()
     {
         val expectedOutcomes = listOf("Dalys", "Deaths")
 
-        val expectations = Expectations(
+        val expectations = CountryOutcomeExpectations(
                 1,
                 "desc",
                 2000..2007,
@@ -172,7 +172,7 @@ class ExpectationsTests : MontaguTests()
         val expectedOutcomes = listOf("Dalys", "Deaths")
         val cohortRestriction = CohortRestriction(1994, null)
 
-        val expectations = Expectations(
+        val expectations = CountryOutcomeExpectations(
                 1,
                 "desc",
                 2000..2007,
@@ -196,7 +196,7 @@ class ExpectationsTests : MontaguTests()
         val expectedOutcomes = listOf("Dalys", "Deaths")
         val cohortRestriction = CohortRestriction(null, 2001)
 
-        val expectations = Expectations(
+        val expectations = CountryOutcomeExpectations(
                 1,
                 "desc",
                 2000..2007,
@@ -220,7 +220,7 @@ class ExpectationsTests : MontaguTests()
         val expectedOutcomes = listOf("Dalys", "Deaths")
         val cohortRestriction = CohortRestriction(1996, 2002)
 
-        val expectations = Expectations(
+        val expectations = CountryOutcomeExpectations(
                 1,
                 "desc",
                 2000..2007,

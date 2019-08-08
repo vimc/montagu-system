@@ -62,7 +62,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         }
     }
 
-    private val fakeExpectations = Expectations(1, "desc", 2000..2001, 1..2, CohortRestriction(),
+    private val fakeExpectations = CountryOutcomeExpectations(1, "desc", 2000..2001, 1..2, CohortRestriction(),
             listOf(Country("AFG", "")),
             listOf())
 

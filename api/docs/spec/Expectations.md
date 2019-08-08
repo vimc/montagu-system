@@ -14,7 +14,7 @@ Schema: [`TouchstoneModelExpectations.schema.json`](../schemas/TouchstoneModelEx
             "touchstone_version": "2017-op-1",
             "modelling_group": "IC-Garkse",
             "disease": "YF",
-            "expectations": {
+            "expectation": {
                 "id": 12,
                 "description": "Expectations for pilot run",
                 "years": {
@@ -30,13 +30,14 @@ Schema: [`TouchstoneModelExpectations.schema.json`](../schemas/TouchstoneModelEx
                     "maximum_birth_year": 2050
                 },
                 "outcomes": ["cases","deaths"]
-            }
+            },
+            "applicable_scenarios": ["yf-routine", "yf-campaign"]
         },
         {
             "touchstone_version": "2018-op-1",
             "modelling_group": "IC-Garkse",
             "disease": "YF",
-            "expectations": {
+            "expectation": {
                 "id": 13,
                 "description": "Expectations for pilot run",
                 "years": {
@@ -52,6 +53,7 @@ Schema: [`TouchstoneModelExpectations.schema.json`](../schemas/TouchstoneModelEx
                     "maximum_birth_year": 2060
                 },
                 "outcomes": ["cases"]
-            }
+            },
+            "applicable_scenarios": ["yf-routine"]
         }
     ]

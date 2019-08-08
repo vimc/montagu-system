@@ -8,13 +8,13 @@ import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 import org.vaccineimpact.api.models.CohortRestriction
 import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.Expectations
+import org.vaccineimpact.api.models.CountryOutcomeExpectations
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class ValidateBurdenEstimateSequenceTests : MontaguTests()
 {
     private val countries = listOf(Country("AFG", ""), Country("AGO", ""))
-    private val expectations = Expectations(1, "desc", 2000..2001, 1..2, CohortRestriction(),
+    private val expectations = CountryOutcomeExpectations(1, "desc", 2000..2001, 1..2, CohortRestriction(),
             countries,
             listOf())
 
