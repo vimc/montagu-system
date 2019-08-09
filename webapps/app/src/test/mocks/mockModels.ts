@@ -79,7 +79,8 @@ export function mockTouchstoneModelExpectations(properties?: Partial<models.Touc
     counter++;
     const template: models.TouchstoneModelExpectations = {
         disease: `disease-${counter}`,
-        expectations: mockOutcomeExpectations(),
+        expectation: mockOutcomeExpectations(),
+        applicable_scenarios: ["scenario-1", "scenario-2"],
         modelling_group: "group-" + counter,
         touchstone_version: "touchstone-" + counter
     };
@@ -170,9 +171,9 @@ export function mockCountry(properties?: Partial<models.Country>): models.Countr
     return Object.assign(template, properties);
 }
 
-export function mockExpectations(properties?: Partial<models.Expectations>): models.Expectations {
+export function mockExpectations(properties?: Partial<models.CountryOutcomeExpectations>): models.CountryOutcomeExpectations {
     counter++;
-    const template: models.Expectations = {
+    const template: models.CountryOutcomeExpectations = {
         id: counter,
         description: "description",
         ages: {minimum_inclusive: 0, maximum_inclusive: 99},

@@ -105,7 +105,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                 touchstone_version: touchstoneVersionId,
                 modelling_group: "g1",
                 disease: "yf",
-                expectations: {
+                expectation: {
                     id: 1,
                     description: "bee desc",
                     years: {
@@ -122,7 +122,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                     },
                     outcomes: ["cases", "deaths"]
                 },
-                scenarios: [scenarioId]
+                applicable_scenarios: [scenarioId]
             }]);
         });
 

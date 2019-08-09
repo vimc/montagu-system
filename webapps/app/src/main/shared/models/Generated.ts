@@ -124,6 +124,21 @@ export interface ResearchModelDetails {
 export interface Expectations {
     ages: NumberRange;
     cohorts: CohortRestriction;
+    description: string;
+    id: number;
+    outcomes: string[];
+    years: NumberRange;
+}
+
+export interface AppliedExpectation {
+    applicable_scenarios: string[];
+    disease: string;
+    expectation: Expectations;
+}
+
+export interface CountryOutcomeExpectations extends Expectations {
+    ages: NumberRange;
+    cohorts: CohortRestriction;
     countries: Country[];
     description: string;
     id: number;
@@ -131,10 +146,10 @@ export interface Expectations {
     years: NumberRange;
 }
 
-export interface ExpectationMapping {
+export interface ExpectationMapping extends AppliedExpectation {
     applicable_scenarios: string[];
     disease: string;
-    expectation: Expectations;
+    expectation: CountryOutcomeExpectations;
 }
 
 export type BurdenEstimateSetStatus = "empty" | "partial" | "complete" | "invalid";
@@ -215,7 +230,7 @@ export interface Touchstone {
     versions: TouchstoneVersion[];
 }
 
-export interface OutcomeExpectations {
+export interface OutcomeExpectations extends Expectations {
     ages: NumberRange;
     cohorts: CohortRestriction;
     description: string;
@@ -224,9 +239,10 @@ export interface OutcomeExpectations {
     years: NumberRange;
 }
 
-export interface TouchstoneModelExpectations {
+export interface TouchstoneModelExpectations extends AppliedExpectation {
+    applicable_scenarios: string[];
     disease: string;
-    expectations: OutcomeExpectations;
+    expectation: OutcomeExpectations;
     modelling_group: string;
     touchstone_version: string;
 }

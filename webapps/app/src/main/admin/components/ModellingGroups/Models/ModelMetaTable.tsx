@@ -13,11 +13,13 @@ interface ModelMetaRow {
     id: string;
     modelling_group: string;
     disease: string;
+    max_countries: number | null;
     years: string;
     ages: string;
     cohorts: string;
     outcomes: string;
     has_dalys: boolean;
+
 }
 
 interface ModelMetaProps {
@@ -35,6 +37,15 @@ function compare(a: unknown, b: unknown) {
     }
     if (typeof a == "string") {
         return a.localeCompare(b as string)
+    }
+    if (typeof a == "number" || typeof b == "number") {
+        if (a == null) {
+            return 1;
+        }
+        if (b == null) {
+            return -1;
+        }
+        return (a as number) - (b as number)
     }
     return 0
 }
@@ -98,7 +109,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                     {this.createHeader("code", "Code")}
                     {this.createHeader("gender", "Gender")}
 
-                    {/*<th>Max Countries</th>*/}
+                    {this.createHeader("max_countries", "Max Countries")}
                     {this.createHeader("years", "Years")}
                     {this.createHeader("ages", "Ages")}
                     {this.createHeader("cohorts", "Cohorts")}
@@ -116,6 +127,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                             <td data-title="type">{model.is_dynamic ? "Dynamic" : "Static"}</td>
                             <td data-title="code">{model.code}</td>
                             <td data-title="gender">{model.gender ? model.gender : "NA"}</td>
+                            <td data-title="max_countries">{model.max_countries}</td>
                             <td data-title="years">{model.years}</td>
                             <td data-title="ages">{model.ages}</td>
                             <td data-title="cohorts">{model.cohorts}</td>
@@ -142,15 +154,18 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                 ...m,
                 code: m.current_version.code,
                 is_dynamic: m.current_version.is_dynamic,
-                disease: m.disease.name
+                disease: m.disease.name,
+                max_countries: m.current_version ? m.current_version.countries.length : null
             };
 
-            //TODO: select latest touchstone
-            const modelExpectation = state.groups.expectations.find(
-                e => e.modelling_group == m.modelling_group && e.disease == m.disease.id);
+            const filteredExpectations = state.groups.expectations
+                .filter(e => e.modelling_group == m.modelling_group && e.disease == m.disease.id)
+                .sort((a,b) => a.touchstone_version < b.touchstone_version ? 1 : -1); //sort by touchstone version desc
+
+            const modelExpectation = filteredExpectations.length ? filteredExpectations[0] : null;
 
             if (modelExpectation) {
-                const expectation = modelExpectation.expectations;
+                const expectation = modelExpectation.expectation;
 
                 const cohorts = (expectation.cohorts.minimum_birth_year && expectation.cohorts.maximum_birth_year) ?
                     `${expectation.cohorts.minimum_birth_year} - ${expectation.cohorts.maximum_birth_year}` :
