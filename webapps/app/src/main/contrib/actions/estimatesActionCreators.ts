@@ -4,30 +4,51 @@ import {EstimatesService} from "../services/EstimatesService";
 import {responsibilitiesActionCreators} from "./responsibilitiesActionCreators";
 import {mapStateToPropsHelper} from "../helpers/mapStateToPropsHelper";
 import {ContribAppState} from "../reducers/contribAppReducers";
-import {BurdenEstimateSetStatus, CreateBurdenEstimateSet, Result, ResultStatus} from "../../shared/models/Generated";
+import {
+    BurdenEstimateSetStatus,
+    BurdenEstimateSetType,
+    CreateBurdenEstimateSet,
+    Result
+} from "../../shared/models/Generated";
 import {BurdenOutcome, Estimates, EstimateTypes} from "../actionTypes/EstimateTypes";
 import BurdenEstimatesFetched = Estimates.BurdenEstimatesFetched;
 import UploadTokenFetched = Estimates.UploadTokenFetched;
 import EstimateSetPopulated = Estimates.EstimateSetPopulated;
 import ResetPopulateState = Estimates.ResetPopulateState;
 import PopulatingEstimateSet = Estimates.PopulatingEstimateSet;
+import BurdenEstimateSetCreated = Estimates.BurdenEstimateSetCreated;
 
 export const estimatesActionCreators = {
-    createBurden(data: CreateBurdenEstimateSet) {
+    createBurden(setType: BurdenEstimateSetType) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
 
             const ids = mapStateToPropsHelper.getResponsibilityIds(getState());
 
-            await (new EstimatesService(dispatch, getState)).createBurden(ids.groupId, ids.touchstoneId, ids.scenarioId, data);
-            dispatch(responsibilitiesActionCreators.refreshResponsibilities());
+            const data: CreateBurdenEstimateSet = {
+                model_run_parameter_set: null,
+                type: setType
+            };
+            const newSetUrl = await (new EstimatesService(dispatch, getState))
+                .createBurden(ids.groupId, ids.touchstoneId, ids.scenarioId, data);
+
+            if (newSetUrl) {
+                const setId = newSetUrl.split("/").filter(Number).pop();
+                dispatch(estimatesActionCreators.getUploadToken(setId));
+                dispatch(responsibilitiesActionCreators.refreshResponsibilities());
+                dispatch({
+                    type: EstimateTypes.SET_CREATED,
+                    data: setId
+                } as BurdenEstimateSetCreated)
+            }
+
         }
     },
-    getUploadToken() {
+    getUploadToken(setId: number) {
         return async (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState) => {
 
             const ids = mapStateToPropsHelper.getResponsibilityIds(getState());
             const token = await (new EstimatesService(dispatch, getState))
-                .getUploadToken(ids.groupId, ids.touchstoneId, ids.scenarioId, ids.estimateSetId);
+                .getUploadToken(ids.groupId, ids.touchstoneId, ids.scenarioId, setId);
 
             dispatch({
                 type: EstimateTypes.UPLOAD_TOKEN_FETCHED,
