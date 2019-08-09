@@ -51,7 +51,7 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `central estimates update current estimate set`()
+    fun `does not update current estimate set on creation`()
     {
         var returnedIds: ReturnedIds? = null
         var setId: Int? = null
@@ -60,24 +60,13 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         } makeTheseChanges { repo ->
             setId = repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
         } andCheckDatabase { db ->
-            checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!,
-                    RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET)
-        }
-    }
 
-    @Test
-    fun `stochastic estimates update current estimate set`()
-    {
-        var returnedIds: ReturnedIds? = null
-        var setId: Int? = null
-        given { db ->
-            returnedIds = setupDatabase(db)
-        } makeTheseChanges { repo ->
-            val properties = defaultProperties.withType(BurdenEstimateSetTypeCode.STOCHASTIC)
-            setId = repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, properties, username, timestamp)
-        } andCheckDatabase { db ->
-            checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!,
-                    RESPONSIBILITY.CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET)
+            val actualSetId = db.dsl.select(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET)
+                    .from(RESPONSIBILITY)
+                    .where(RESPONSIBILITY.ID.eq(returnedIds!!.responsibility))
+                    .fetchOneInto(Int::class.java)
+
+            assertThat(actualSetId).isNotEqualTo(setId)
         }
     }
 
@@ -168,14 +157,4 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         }
     }
 
-    private fun checkCurrentBurdenEstimateSet(db: JooqContext, returnedIds: ReturnedIds, setId: Int,
-                                              fieldToCheck: TableField<*, Int>)
-    {
-        val actualSetId = db.dsl.select(fieldToCheck)
-                .from(RESPONSIBILITY)
-                .where(RESPONSIBILITY.ID.eq(returnedIds.responsibility))
-                .fetchOneInto(Int::class.java)
-
-        assertThat(actualSetId).isEqualTo(setId)
-    }
 }
