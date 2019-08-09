@@ -19,7 +19,7 @@ interface ModelMetaRow {
     cohorts: string;
     outcomes: string;
     has_dalys: boolean;
-
+    scenario_count: number;
 }
 
 interface ModelMetaProps {
@@ -106,6 +106,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                     {this.createHeader("id", "Model Name")}
                     {this.createHeader("disease", "Disease")}
                     {this.createHeader("is_dynamic", "Model Type")}
+                    {this.createHeader("scenario_count", "Scenarios")}
                     {this.createHeader("code", "Code")}
                     {this.createHeader("gender", "Gender")}
 
@@ -125,6 +126,8 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                             <td data-title="name">{model.id}</td>
                             <td data-title="disease">{model.disease}</td>
                             <td data-title="type">{model.is_dynamic ? "Dynamic" : "Static"}</td>
+                            <td data-title="scenarios">{`${model.scenario_count} scenario` +
+                                                            (model.scenario_count === 1 ? "" : "s")}</td>
                             <td data-title="code">{model.code}</td>
                             <td data-title="gender">{model.gender ? model.gender : "NA"}</td>
                             <td data-title="max_countries">{model.max_countries}</td>
@@ -179,7 +182,8 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                     has_dalys: expectation.outcomes.indexOf("dalys") > -1,
                     years: `${expectation.years.minimum_inclusive} - ${expectation.years.maximum_inclusive}`,
                     ages: `${expectation.ages.minimum_inclusive} - ${expectation.ages.maximum_inclusive}`,
-                    cohorts: cohorts
+                    cohorts: cohorts,
+                    scenario_count: modelExpectation.applicable_scenarios.length
                 }
             } else {
                 return {
@@ -188,7 +192,8 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                     has_dalys: false,
                     years: expectationNotFound,
                     ages: expectationNotFound,
-                    cohorts: expectationNotFound
+                    cohorts: expectationNotFound,
+                    scenario_count: 0
                 }
             }
 

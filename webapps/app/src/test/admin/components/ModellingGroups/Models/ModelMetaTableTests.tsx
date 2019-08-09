@@ -36,6 +36,7 @@ describe("ModelMetaTable tests", () => {
         disease: "d1",
         modelling_group: "ga",
         touchstone_version: "t-1",
+        applicable_scenarios: ["scenario 1"],
         expectation: mockOutcomeExpectations({
             years: { minimum_inclusive: 1900, maximum_inclusive: 2000},
             ages: { minimum_inclusive: 0, maximum_inclusive: 99},
@@ -47,6 +48,7 @@ describe("ModelMetaTable tests", () => {
         disease: "d2",
         modelling_group: "gb",
         touchstone_version: "t-1",
+        applicable_scenarios: ["scenario 1", "scenario 2"],
         expectation: mockOutcomeExpectations({
             years: { minimum_inclusive: 1950, maximum_inclusive: 2000},
             ages: { minimum_inclusive: 0, maximum_inclusive: 49},
@@ -65,7 +67,8 @@ describe("ModelMetaTable tests", () => {
             cohorts: "Max 2000",
             outcomes: "deaths, dalys",
             has_dalys: true,
-            max_countries: 2
+            max_countries: 2,
+            scenario_count: 1
         },
         {...testModel2,
             code: "C",
@@ -76,7 +79,8 @@ describe("ModelMetaTable tests", () => {
             cohorts: "1900 - 2000",
             outcomes: "deaths, cases",
             has_dalys: false,
-            max_countries: 1
+            max_countries: 1,
+            scenario_count: 2
         }];
 
     const sandbox = new Sandbox();
@@ -134,19 +138,20 @@ describe("ModelMetaTable tests", () => {
         const store = createMockStore(testState);
         const rendered = shallow(<ModelMetaTable/>, {context: {store}}).dive();
 
-        expect(rendered.find("th")).to.have.lengthOf(12);
+        expect(rendered.find("th")).to.have.lengthOf(13);
         expect(rendered.find("th").at(0).text()).to.eq("Group");
         expect(rendered.find("th").at(1).text()).to.eq("Model Name");
         expect(rendered.find("th").at(2).text()).to.eq("Disease");
         expect(rendered.find("th").at(3).text()).to.eq("Model Type");
-        expect(rendered.find("th").at(4).text()).to.eq("Code");
-        expect(rendered.find("th").at(5).text()).to.eq("Gender");
-        expect(rendered.find("th").at(6).text()).to.eq("Max Countries");
-        expect(rendered.find("th").at(7).text()).to.eq("Years");
-        expect(rendered.find("th").at(8).text()).to.eq("Ages");
-        expect(rendered.find("th").at(9).text()).to.eq("Cohorts");
-        expect(rendered.find("th").at(10).text()).to.eq("Outcomes");
-        expect(rendered.find("th").at(11).text()).to.eq("DALYs");
+        expect(rendered.find("th").at(4).text()).to.eq("Scenarios");
+        expect(rendered.find("th").at(5).text()).to.eq("Code");
+        expect(rendered.find("th").at(6).text()).to.eq("Gender");
+        expect(rendered.find("th").at(7).text()).to.eq("Max Countries");
+        expect(rendered.find("th").at(8).text()).to.eq("Years");
+        expect(rendered.find("th").at(9).text()).to.eq("Ages");
+        expect(rendered.find("th").at(10).text()).to.eq("Cohorts");
+        expect(rendered.find("th").at(11).text()).to.eq("Outcomes");
+        expect(rendered.find("th").at(12).text()).to.eq("DALYs");
 
         const body = rendered.find("tbody");
 
@@ -160,27 +165,29 @@ describe("ModelMetaTable tests", () => {
         expect(cellsForRow(0).at(1).text()).to.eq("mb");
         expect(cellsForRow(0).at(2).text()).to.eq("Disease 1");
         expect(cellsForRow(0).at(3).text()).to.eq("Static");
-        expect(cellsForRow(0).at(4).text()).to.eq("R");
-        expect(cellsForRow(0).at(5).text()).to.eq("NA");
-        expect(cellsForRow(0).at(6).text()).to.eq("2");
-        expect(cellsForRow(0).at(7).text()).to.eq("1900 - 2000");
-        expect(cellsForRow(0).at(8).text()).to.eq("0 - 99");
-        expect(cellsForRow(0).at(9).text()).to.eq("Max 2000");
-        expect(cellsForRow(0).at(10).text()).to.eq("deaths, dalys");
-        expect(cellsForRow(0).at(11).text()).to.eq("Yes");
+        expect(cellsForRow(0).at(4).text()).to.eq("1 scenario");
+        expect(cellsForRow(0).at(5).text()).to.eq("R");
+        expect(cellsForRow(0).at(6).text()).to.eq("NA");
+        expect(cellsForRow(0).at(7).text()).to.eq("2");
+        expect(cellsForRow(0).at(8).text()).to.eq("1900 - 2000");
+        expect(cellsForRow(0).at(9).text()).to.eq("0 - 99");
+        expect(cellsForRow(0).at(10).text()).to.eq("Max 2000");
+        expect(cellsForRow(0).at(11).text()).to.eq("deaths, dalys");
+        expect(cellsForRow(0).at(12).text()).to.eq("Yes");
 
         expect(cellsForRow(1).at(0).text()).to.eq("gb");
         expect(cellsForRow(1).at(1).text()).to.eq("ma");
         expect(cellsForRow(1).at(2).text()).to.eq("Disease 2");
         expect(cellsForRow(1).at(3).text()).to.eq("Dynamic");
-        expect(cellsForRow(1).at(4).text()).to.eq("C");
-        expect(cellsForRow(1).at(5).text()).to.eq("female");
-        expect(cellsForRow(1).at(6).text()).to.eq("1");
-        expect(cellsForRow(1).at(7).text()).to.eq("1950 - 2000");
-        expect(cellsForRow(1).at(8).text()).to.eq("0 - 49");
-        expect(cellsForRow(1).at(9).text()).to.eq("1900 - 2000");
-        expect(cellsForRow(1).at(10).text()).to.eq("deaths, cases");
-        expect(cellsForRow(1).at(11).text()).to.eq("No");
+        expect(cellsForRow(1).at(4).text()).to.eq("2 scenarios");
+        expect(cellsForRow(1).at(5).text()).to.eq("C");
+        expect(cellsForRow(1).at(6).text()).to.eq("female");
+        expect(cellsForRow(1).at(7).text()).to.eq("1");
+        expect(cellsForRow(1).at(8).text()).to.eq("1950 - 2000");
+        expect(cellsForRow(1).at(9).text()).to.eq("0 - 49");
+        expect(cellsForRow(1).at(10).text()).to.eq("1900 - 2000");
+        expect(cellsForRow(1).at(11).text()).to.eq("deaths, cases");
+        expect(cellsForRow(1).at(12).text()).to.eq("No");
     });
 
     it("sorts by group", () => {
@@ -199,36 +206,40 @@ describe("ModelMetaTable tests", () => {
         assertSortsBy(3, "Dynamic", "Static")
     });
 
+    it("sorts by type", () => {
+        assertSortsBy(4, "1 scenario", "2 scenarios")
+    });
+
     it("sorts by code", () => {
-        assertSortsBy(4, "C", "R")
+        assertSortsBy(5, "C", "R")
     });
 
     it("sorts by gender", () => {
-        assertSortsBy(5, "female", "NA")
+        assertSortsBy(6, "female", "NA")
     });
 
     it("sorts by max countries", () => {
-        assertSortsBy(6, "1", "2")
+        assertSortsBy(7, "1", "2")
     });
 
     it("sorts by years", () => {
-        assertSortsBy(7, "1900 - 2000", "1950 - 2000")
+        assertSortsBy(8, "1900 - 2000", "1950 - 2000")
     });
 
     it("sorts by ages", () => {
-        assertSortsBy(8, "0 - 49", "0 - 99")
+        assertSortsBy(9, "0 - 49", "0 - 99")
     });
 
     it("sorts by cohorts", () => {
-        assertSortsBy(9, "1900 - 2000", "Max 2000")
+        assertSortsBy(10, "1900 - 2000", "Max 2000")
     });
 
     it("sorts by outcomes", () => {
-        assertSortsBy(10, "deaths, cases", "deaths, dalys")
+        assertSortsBy(11, "deaths, cases", "deaths, dalys")
     });
 
     it("sorts by has dalys", () => {
-        assertSortsBy(11, "Yes", "No")
+        assertSortsBy(12, "Yes", "No")
     });
 
     function assertSortsBy(colIndex: number, ascValue: string, descValue: string) {
