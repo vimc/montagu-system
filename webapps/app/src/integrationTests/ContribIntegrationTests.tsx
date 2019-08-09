@@ -248,14 +248,10 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             expect(responsibilitiesInitial.responsibilities[0].current_estimate_set).to.equal(null);
 
-            await (new EstimatesService(this.store.dispatch, this.store.getState))
+            const result = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .createBurden(groupId, touchstoneVersionId, scenarioId, data);
 
-            const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-                .setOptions({noCache: true}).getResponsibilities(groupId, touchstoneVersionId);
-
-            const estimateSet = responsibilities.responsibilities[0].current_estimate_set;
-            expect(estimateSet.type).to.eql(data.type);
+            expect(result).to.eql("http://api:8080/v1/modelling-groups/test-group/responsibilities/test-1/yf-1/estimate-sets/1/");
         });
 
         it("can download coverage data", async () => {
