@@ -80,7 +80,7 @@ describe('Estimates reducer tests', () => {
 
     it("sets populate state after set is populated with errors", () => {
 
-        const mockErrors =  [{code: "e", message: "e"}];
+        const mockErrors = [{code: "e", message: "e"}];
         const mockState = {...estimatesInitialState, populatingInProgress: true};
         const result = estimatesReducer(mockState, {
             type: EstimateTypes.ESTIMATE_SET_POPULATED,
@@ -90,11 +90,17 @@ describe('Estimates reducer tests', () => {
         expect(result.populateErrors).to.have.members(mockErrors);
         expect(result.hasPopulateSuccess).to.be.false;
         expect(result.populatingInProgress).to.be.false;
+        expect(result.populatingSetId).to.be.null;
     });
 
     it("sets populate state after set is populated successfully", () => {
 
-        const mockState = {...estimatesInitialState, populatingInProgress: true};
+        const mockState = {
+            ...estimatesInitialState,
+            uploadToken: "TOKEN",
+            populatingSetId: 1,
+            populatingInProgress: true
+        };
 
         const result = estimatesReducer(mockState, {
             type: EstimateTypes.ESTIMATE_SET_POPULATED,
@@ -104,6 +110,8 @@ describe('Estimates reducer tests', () => {
         expect(result.populateErrors).to.have.lengthOf(0);
         expect(result.hasPopulateSuccess).to.be.true;
         expect(result.populatingInProgress).to.be.false;
+        expect(result.populatingSetId).to.be.null;
+        expect(result.uploadToken).to.be.null;
     });
 
     it("resets populate state", () => {
@@ -111,7 +119,9 @@ describe('Estimates reducer tests', () => {
         const mockState = {
             ...estimatesInitialState,
             hasPopulateSuccess: true,
-            populateErrors: [{code: "e", message: ""}]
+            populateErrors: [{code: "e", message: ""}],
+            populatingSetId: 1,
+            uploadToken: "TOKEN"
         };
 
         const result = estimatesReducer(mockState, {
@@ -120,7 +130,9 @@ describe('Estimates reducer tests', () => {
         });
 
         expect(result.hasPopulateSuccess).to.be.false;
+        expect(result.populatingSetId).to.be.null;
         expect(result.populateErrors).to.have.lengthOf(0);
+        expect(result.uploadToken).to.be.null;
     });
 
     it("sets upload token", () => {
@@ -131,6 +143,16 @@ describe('Estimates reducer tests', () => {
         });
 
         expect(result.uploadToken).to.eq("TOKEN");
+    });
+
+    it("sets populatingSetId", () => {
+
+        const result = estimatesReducer(estimatesInitialState, {
+            type: EstimateTypes.SET_CREATED,
+            data: 1
+        });
+
+        expect(result.populatingSetId).to.eq(1);
     });
 
 });
