@@ -38,7 +38,8 @@ fun JooqContext.addModel(
         isCurrent: Boolean = true,
         genderSpecific: Boolean? = false,
         gender: String? = "both",
-        versions: List<String> = emptyList()
+        versions: List<String> = emptyList(),
+        countries: List<String> = listOf()
 ): Int
 {
     val genderCode = if (gender == null) null else
@@ -64,7 +65,7 @@ fun JooqContext.addModel(
     var versionId = 0
     for (version in versions)
     {
-        versionId = addModelVersion(id, version, setCurrent = true)
+        versionId = addModelVersion(id, version, setCurrent = true, countries=countries)
     }
 
     return versionId

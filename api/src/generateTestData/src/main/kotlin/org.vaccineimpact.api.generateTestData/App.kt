@@ -13,7 +13,8 @@ fun main(args: Array<String>) {
 
         db.addGroup("IC-Garske", "Imperial Yellow Fever modelling group")
         db.addGroup("IC-Imaginary", "Imperial speculative modelling group")
-        db.addModel("yf-model", "IC-Garske", "YF", "Yellow Fever Model", versions = listOf("v1"))
+        db.addModel("yf-model", "IC-Garske", "YF", "Yellow Fever Model",
+                versions = listOf("v1"), countries=db.fetchCountries(96))
 
         db.addTouchstone("op-2017", "Operational Forecast 2017")
 
