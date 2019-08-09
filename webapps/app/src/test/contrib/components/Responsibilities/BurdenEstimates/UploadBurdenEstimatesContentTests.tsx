@@ -27,13 +27,13 @@ import {
     CurrentEstimateSetSummary,
     CurrentEstimateSetSummaryProps
 } from "../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
-import {
-    UploadBurdenEstimatesForm,
-    UploadBurdenEstimatesFormComponentProps
-} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {RecursivePartial} from "../../../../mocks/mockStates";
 import {InternalLink} from "../../../../../main/shared/components/InternalLink";
 import {DiagnosticSection} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/DiagnosticSection";
+import {
+    UploadEstimatesForm,
+    UploadEstimatesPublicProps
+} from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 
 describe("UploadBurdenEstimatesContent", () => {
 
@@ -73,8 +73,7 @@ describe("UploadBurdenEstimatesContent", () => {
             group: testGroup,
             responsibilitySetStatus: testResponsibilitySet.status,
             responsibility: testResponsibility,
-            canCreate: true,
-            canUpload: false
+            canUpload: true
         };
         expect(rendered.props()).to.eql(expectedProps)
     });
@@ -158,19 +157,29 @@ describe("UploadBurdenEstimatesContent", () => {
         expect(currentEstimateSetSummary.props()).to.eql(expectedProps);
     });
 
-    it("renders on component level, passes right params to UploadBurdenEstimatesForm", () => {
+    it("renders UploadEstimatesForm if canUpload is true", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-        const uploadBurdenEstimatesForm = rendered.find(UploadBurdenEstimatesForm);
+        const uploadBurdenEstimatesForm = rendered.find(UploadEstimatesForm);
         expect(uploadBurdenEstimatesForm.length).to.equal(1);
 
-        const expected: Partial<UploadBurdenEstimatesFormComponentProps> = {
-            canCreate: true,
-            canUpload: false,
-            estimateSet: testEstimateSet,
+        const expected: Partial<UploadEstimatesPublicProps> = {
             groupId: testGroup.id,
             scenarioId: testScenario.id,
             touchstoneId: testTouchstone.id
         };
         expect(uploadBurdenEstimatesForm.props()).to.eql(expected);
+    });
+
+    it("does not render UploadEstimatesForm if canUpload is false", () => {
+
+        store = createMockStore({
+            ...testState,
+            responsibilities: {...testState.responsibilities, currentResponsibility: null}
+        });
+
+        const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
+        const uploadBurdenEstimatesForm = rendered.find(UploadEstimatesForm);
+        expect(uploadBurdenEstimatesForm.length).to.equal(0);
+
     });
 });

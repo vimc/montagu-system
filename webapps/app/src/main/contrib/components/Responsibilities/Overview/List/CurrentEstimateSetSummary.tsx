@@ -55,7 +55,7 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
         const estimateText = CurrentEstimateSetSummary.getMessage(estimateSet, canUpload);
         const alertType = (estimateSet && estimateSet.status == "invalid") ? "danger" : "warning";
         const url = this.url();
-        return <div className={`mt-3 alert alert-${alertType}`}>
+        return <div className={`mt-3 alert alert-${alertType} text-left`}>
             {estimateText}
             {url && [
                 <FileDownloadButton href={url} className={"float-right"}>

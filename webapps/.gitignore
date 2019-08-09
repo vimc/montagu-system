@@ -1,6 +1,7 @@
 *.dropbox.attr
 *.iml
 .idea/*
+**/*/.idea
 nohup\.out
 react-prototype/dist/*
 react-prototype/node_modules/*

@@ -6,6 +6,7 @@ import UploadTokenFetched = Estimates.UploadTokenFetched;
 import EstimateSetPopulated = Estimates.EstimateSetPopulated;
 import ResetPopulateState = Estimates.ResetPopulateState;
 import PopulatingEstimateSet = Estimates.PopulatingEstimateSet;
+import BurdenEstimateSetCreated = Estimates.BurdenEstimateSetCreated;
 
 export enum EstimateTypes {
     UPLOAD_TOKEN_FETCHED,
@@ -13,7 +14,8 @@ export enum EstimateTypes {
     ESTIMATE_SET_POPULATED,
     SET_CHART_TYPE,
     RESET_POPULATE_STATE,
-    POPULATING_ESTIMATES
+    POPULATING_ESTIMATES,
+    SET_CREATED
 }
 
 export enum BurdenOutcome {
@@ -53,6 +55,12 @@ export namespace Estimates {
         type: EstimateTypes.RESET_POPULATE_STATE,
         data: boolean
     }
+
+    export interface BurdenEstimateSetCreated {
+        type: EstimateTypes.SET_CREATED,
+        data: number
+    }
+
 }
 
 export type EstimatesAction =
@@ -62,3 +70,4 @@ export type EstimatesAction =
     | EstimateSetPopulated
     | ResetPopulateState
     | PopulatingEstimateSet
+    | BurdenEstimateSetCreated
