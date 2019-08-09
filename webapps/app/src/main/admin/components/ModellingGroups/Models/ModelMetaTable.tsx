@@ -89,9 +89,9 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
         return ""
     }
 
-    createHeader = (key: keyof ModelMetaRow, displayName: string, limitWidth: boolean = false) => {
-        return <th className={"sortable " + this.calculateClass(key) +
-                                (limitWidth ? " modelMetaLimitedWidthHeader" : "")}
+    createHeader = (key: keyof ModelMetaRow, displayName: string, minWidth: string) => {
+        return <th className={"sortable " + this.calculateClass(key)}
+                   style={{minWidth: minWidth}}
                    onClick={() => this.onSort(key)}>{displayName}</th>
     };
 
@@ -102,20 +102,20 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
             <table>
                 <thead>
                 <tr>
-                    {this.createHeader("modelling_group", "Group")}
-                    {this.createHeader("id", "Model Name")}
-                    {this.createHeader("disease", "Disease")}
-                    {this.createHeader("is_dynamic", "Model Type")}
-                    {this.createHeader("scenario_count", "Scenarios")}
-                    {this.createHeader("code", "Code")}
-                    {this.createHeader("gender", "Gender")}
+                    {this.createHeader("modelling_group", "Group", "7em")}
+                    {this.createHeader("id", "Model Name", "10em")}
+                    {this.createHeader("disease", "Disease", "8em")}
+                    {this.createHeader("is_dynamic", "Model Type", "9em")}
+                    {this.createHeader("scenario_count", "Scenarios", "8.5em")}
+                    {this.createHeader("code", "Code", "6em")}
+                    {this.createHeader("gender", "Gender", "7em")}
 
-                    {this.createHeader("max_countries", "Max Countries")}
-                    {this.createHeader("years", "Years")}
-                    {this.createHeader("ages", "Ages")}
-                    {this.createHeader("cohorts", "Cohorts")}
-                    {this.createHeader("outcomes", "Outcomes", true)}
-                    {this.createHeader("has_dalys", "DALYs")}
+                    {this.createHeader("max_countries", "Max Countries", "10.5em")}
+                    {this.createHeader("years", "Years", "6.5em")}
+                    {this.createHeader("ages", "Ages", "6em")}
+                    {this.createHeader("cohorts", "Cohorts", "7.5em")}
+                    {this.createHeader("outcomes", "Outcomes", "8.5em")}
+                    {this.createHeader("has_dalys", "DALYs", "7em")}
                 </tr>
                 </thead>
                 <tbody>
@@ -134,7 +134,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                             <td data-title="years">{model.years}</td>
                             <td data-title="ages">{model.ages}</td>
                             <td data-title="cohorts">{model.cohorts}</td>
-                            <td data-title="outcomes" className="modelMetaLimitedWidthCell">{model.outcomes}</td>
+                            <td data-title="outcomes">{model.outcomes}</td>
                             <td data-title="dalys">{model.has_dalys ? "Yes" : "No"}</td>
                         </tr>
                     );

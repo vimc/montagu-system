@@ -8,7 +8,7 @@ import {ModelMetaTable} from "./ModelMetaTable";
 export class ModelMetaPageComponent extends React.Component<PageProperties<undefined>> {
 
     render(): JSX.Element {
-        return <PageArticle title={this.props.title}>
+        return <PageArticle title={this.props.title} isFluid={true}>
             <ModelMetaTable/>
         </PageArticle>;
     }
