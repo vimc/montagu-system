@@ -12,7 +12,8 @@ constructor(
         val uploadedBy: String,
         val type: BurdenEstimateSetType,
         val status: BurdenEstimateSetStatus,
-        val problems: List<String>
+        val problems: List<String>,
+        val originalFileName: String?
 ) : HasKey<Int>
 {
     fun withType(code: BurdenEstimateSetTypeCode, details: String? = null): BurdenEstimateSet
