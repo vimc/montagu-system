@@ -477,7 +477,7 @@ class JooqBurdenEstimateRepository(
                                          timestamp: Instant): Int
     {
         val setRecord = dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
-            this.modelVersion = modelVersion
+            this.modelVersion = modelVersionId
             this.responsibility = responsibilityId
             this.uploadedBy = uploader
             this.uploadedOn = Timestamp.from(timestamp)
