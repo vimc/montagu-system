@@ -16,7 +16,7 @@ constructor(
         val status: BurdenEstimateSetStatus,
         val problems: List<String>,
         @SerializationRule(Rule.EXCLUDE_IF_NULL)
-        val originalFileName: String?
+        val originalFilename: String?
 ) : HasKey<Int>
 {
     fun withType(code: BurdenEstimateSetTypeCode, details: String? = null): BurdenEstimateSet
