@@ -10,8 +10,10 @@ import {
     ResponsibilitySetWithExpectations,
     Result, ScenarioTouchstoneAndCoverageSets, Touchstone,
 } from "../main/shared/models/Generated";
-import {IntegrationTestSuite, TestService, ResponsibilityIds, addResponsibilities, addGroups,
-        addCoverageSetsForGroup, addCoverageData, addTouchstone} from "./IntegrationTest";
+import {
+    IntegrationTestSuite, TestService, ResponsibilityIds, addResponsibilities, addGroups,
+    addCoverageSetsForGroup, addCoverageData, addTouchstone
+} from "./IntegrationTest";
 import * as enzyme from "enzyme";
 import {shallow} from "enzyme";
 import * as Adapter from "enzyme-adapter-react-16";
@@ -19,7 +21,7 @@ import * as Adapter from "enzyme-adapter-react-16";
 import {createContribStore} from "../main/contrib/createStore";
 import {Sandbox} from "../test/Sandbox";
 import {DownloadCoverageContentComponent} from "../main/contrib/components/Responsibilities/Coverage/DownloadCoverageContent";
-import {mockModellingGroup, mockScenario, mockTouchstoneVersion} from "../test/mocks/mockModels";
+import {mockBurdenEstimateSet, mockModellingGroup, mockScenario, mockTouchstoneVersion} from "../test/mocks/mockModels";
 import {FileDownloadButton} from "../main/shared/components/FileDownloadLink";
 import {DownloadDemographicsContentComponent} from "../main/shared/components/Demographics/DownloadDemographicsContent";
 import {RunParametersService} from "../main/contrib/services/RunParametersService";
@@ -33,6 +35,7 @@ import {DemographicService} from "../main/shared/services/DemographicService";
 import {EstimatesService} from "../main/contrib/services/EstimatesService";
 import {ILookup} from "../main/shared/models/Lookup";
 import {DataPoint} from "../main/contrib/reducers/estimatesReducer";
+import {CurrentEstimateSetSummary} from "../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 
 enzyme.configure({adapter: new Adapter()});
 
@@ -245,14 +248,10 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             expect(responsibilitiesInitial.responsibilities[0].current_estimate_set).to.equal(null);
 
-            await (new EstimatesService(this.store.dispatch, this.store.getState))
+            const result = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .createBurden(groupId, touchstoneVersionId, scenarioId, data);
 
-            const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
-                .setOptions({noCache: true}).getResponsibilities(groupId, touchstoneVersionId);
-
-            const estimateSet = responsibilities.responsibilities[0].current_estimate_set;
-            expect(estimateSet.type).to.eql(data.type);
+            expect(result).to.eql("http://api:8080/v1/modelling-groups/test-group/responsibilities/test-1/yf-1/estimate-sets/1/");
         });
 
         it("can download coverage data", async () => {
@@ -374,9 +373,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const modelVersionId = await addModel(this.db);
             const setId = await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
 
-            const value = 32156;
-            await addBurdenEstimate(this.db, setId, value);
-
             const response: String = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .getUploadToken(groupId, touchstoneVersionId, scenarioId, setId);
 
@@ -388,9 +384,6 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const modelVersionId = await addModel(this.db);
             const setId = await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
 
-            const value = 32156;
-            await addBurdenEstimate(this.db, setId, value);
-
             const response = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .populateEstimatesFromFile(groupId, touchstoneVersionId, scenarioId, setId, "TOKEN") as Result;
 
@@ -398,6 +391,33 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             // endpoint here
             expect(response.errors[0].code).to.eq("unknown-upload-token");
         });
+
+        it("can download burden estimates", async () => {
+
+            const responsibilityIds = await addResponsibilities(this.db, scenarioId, touchstoneVersionId, groupId);
+            const modelVersionId = await addModel(this.db);
+            const setId = await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
+
+            const rendered = shallow(<CurrentEstimateSetSummary
+                touchstoneId={touchstoneVersionId}
+                groupId={groupId}
+                scenarioId={scenarioId}
+                canUpload={true}
+                estimateSet={mockBurdenEstimateSet({id: setId, problems: [], status: "invalid"})}/>);
+
+            const href = rendered.find(FileDownloadButton).prop("href");
+
+            const response = await new TestService(this.store.dispatch, this.store.getState)
+                .getAnyUrl(href);
+
+            expect(response.status).to.equal(200);
+
+            const result = await response.text();
+            const headers = result.split("\n")[0];
+
+            // just check it's the format we're expecting
+            expect(headers).to.eq("disease,year,age,country,country_name,cohort_size")
+        })
 
     }
 }
@@ -421,8 +441,7 @@ function addBurdenEstimateSet(db: Client, responsibilityId: number, modelVersion
         .then(result => result.rows[0].id);
 }
 
-
-function addBurdenEstimate(db: Client, setId: number, value: number){
+function addBurdenEstimate(db: Client, setId: number, value: number) {
     return db.query("INSERT INTO country (id, name, nid) VALUES ('XYZ', 'fake-country', 1111)")
         .then(() => db.query("SELECT id from burden_outcome where code = 'cases'"))
         .then(result => db.query(`INSERT INTO burden_estimate (burden_estimate_set, country, year, burden_outcome, value, age)

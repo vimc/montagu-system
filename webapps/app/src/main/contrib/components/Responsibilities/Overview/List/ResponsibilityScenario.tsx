@@ -42,6 +42,9 @@ export class ResponsibilityScenarioComponent extends React.Component<Responsibil
                         <ButtonLink href={downloadUrl}>Download coverage data</ButtonLink>
                         <ButtonLink href={uploadUrl}>Upload central burden estimates</ButtonLink>
                         <CurrentEstimateSetSummary
+                            groupId={this.props.modellingGroup.id}
+                            touchstoneId={this.props.touchstone.id}
+                            scenarioId={item.scenario.id}
                             estimateSet={this.props.responsibility.current_estimate_set}
                             canUpload={canUpload}
                         />
