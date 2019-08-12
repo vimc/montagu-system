@@ -33,7 +33,6 @@ abstract class BurdenEstimateControllerTestsBase: MontaguTests() {
         return mock {
             on { touchstoneRepository } doReturn touchstoneRepo
             on { getBurdenEstimateSet(any(), any(), any(), any()) } doReturn existingBurdenEstimateSet
-            on { createBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doReturn 1
         }
     }
 
@@ -45,6 +44,7 @@ abstract class BurdenEstimateControllerTestsBase: MontaguTests() {
                 args.getArgument<Sequence<BurdenEstimateWithRunId>>(4).toList()
                 Unit
             }
+            on { createBurdenEstimateSet(any(), any(), any(), any(), any(), any()) } doReturn 1
         }
     }
 

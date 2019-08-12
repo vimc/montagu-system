@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.tests.logic
+package org.vaccineimpact.api.tests.logic.BurdenEstimateLogic
 
 import com.nhaarman.mockito_kotlin.*
 import com.opencsv.CSVReader
@@ -719,7 +719,6 @@ AGO, age 12, year 2005""")
         assertThatThrownBy {
             sut.validateResponsibilityPath(path, statusList)
         }.isInstanceOf(UnknownObjectError::class.java).hasMessageContaining("Unknown touchstone-version with id 'touchstone-1'")
-
 
     }
 

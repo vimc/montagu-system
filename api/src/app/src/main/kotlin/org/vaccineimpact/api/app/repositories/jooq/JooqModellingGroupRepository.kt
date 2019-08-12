@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
+import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
@@ -24,6 +25,20 @@ class JooqModellingGroupRepository(
                 .and(MODEL.IS_CURRENT)
                 .fetch()
                 .mapNotNull { it.into(String::class.java) }
+    }
+
+    override fun getLatestModelVersionForGroup(groupId: String, disease: String): Int
+    {
+        return dsl.select(MODEL_VERSION.ID)
+                .fromJoinPath(MODELLING_GROUP, MODEL)
+                .join(MODEL_VERSION)
+                .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
+                .where(MODELLING_GROUP.ID.eq(groupId))
+                .and(MODEL.DISEASE.eq(disease))
+                .and(MODEL.IS_CURRENT)
+                .fetch().singleOrNull()?.value1()
+                ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
+
     }
 
     override fun createModellingGroup(newGroup: ModellingGroupCreation)

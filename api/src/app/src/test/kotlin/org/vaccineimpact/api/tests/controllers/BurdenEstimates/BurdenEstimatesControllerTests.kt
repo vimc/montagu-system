@@ -102,7 +102,7 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         assertThat(url).endsWith("/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/estimate-sets/1/")
         verify(repo).checkModelRunParameterSetExists(1, groupId, touchstoneVersionId)
 
-        verify(repo).createBurdenEstimateSet(
+        verify(logic).createBurdenEstimateSet(
                 eq(groupId), eq(touchstoneVersionId), eq(scenarioId),
                 eq(properties),
                 eq("username"),

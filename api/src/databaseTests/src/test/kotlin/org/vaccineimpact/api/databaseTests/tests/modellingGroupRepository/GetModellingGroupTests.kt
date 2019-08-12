@@ -3,6 +3,7 @@ package org.vaccineimpact.api.databaseTests.tests.modellingGroupRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.ModellingGroup
 import org.vaccineimpact.api.models.ModellingGroupDetails
@@ -247,6 +248,41 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
     {
         givenABlankDatabase() check { repo ->
             assertThatThrownBy { repo.getModellingGroupDetails("a") }.isInstanceOf(org.vaccineimpact.api.app.errors.UnknownObjectError::class.java)
+        }
+    }
+
+    @Test
+    fun `can get latest model version for modelling group`()
+    {
+        val groupId = "g1"
+        val diseaseId = "d1"
+        val versionId = withDatabase {
+            it.addGroup(groupId, "description")
+            it.addDisease(diseaseId)
+            it.addModel("m1", groupId, diseaseId)
+            it.addModelVersion("m1", "v1", setCurrent = true)
+        }
+
+        withRepo {
+            assertThat(it.getLatestModelVersionForGroup(groupId, diseaseId)).isEqualTo(versionId)
+        }
+    }
+
+    @Test
+    fun `throws UnknownObjectError if group has no models`() {
+
+        val groupId = "g1"
+        val diseaseId = "d1"
+        withDatabase {
+            it.addGroup(groupId, "description")
+            it.addDisease(diseaseId)
+        }
+
+        withRepo {
+            assertThatThrownBy {
+                it.getLatestModelVersionForGroup(groupId, diseaseId)
+            }.isInstanceOf(DatabaseContentsError::class.java)
+                    .hasMessageContaining("Modelling group $groupId does not have any models/model versions in the database")
         }
     }
 

@@ -1,8 +1,10 @@
 package org.vaccineimpact.api.app.repositories
 
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.serialization.SplitData
+import org.vaccineimpact.api.models.ModellingGroup
+import org.vaccineimpact.api.models.ModellingGroupCreation
+import org.vaccineimpact.api.models.ModellingGroupDetails
+import org.vaccineimpact.api.models.Touchstone
 
 interface ModellingGroupRepository : Repository
 {
@@ -19,4 +21,6 @@ interface ModellingGroupRepository : Repository
     fun createModellingGroup(newGroup: ModellingGroupCreation)
 
     fun getDiseasesForModellingGroup(groupId: String): List<String>
+
+    fun getLatestModelVersionForGroup(groupId: String, disease: String): Int
 }

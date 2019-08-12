@@ -13,9 +13,11 @@ interface BurdenEstimateRepository : Repository
     val touchstoneRepository: TouchstoneRepository
 
     /** Returns the database ID of the newly created burden estimate set **/
-    fun createBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
+    fun createBurdenEstimateSet(responsibilityId: Int,
+                                modelVersionId: Int,
                                 properties: CreateBurdenEstimateSet,
-                                uploader: String, timestamp: Instant): Int
+                                uploader: String,
+                                timestamp: Instant): Int
 
     fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
                              burdenEstimateSetId: Int): BurdenEstimateSet
@@ -24,7 +26,7 @@ interface BurdenEstimateRepository : Repository
 
     fun clearBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
 
-    fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,
+    fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, modelVersionId: Int,
                                 modelRuns: List<ModelRun>,
                                 uploader: String, timestamp: Instant): Int
 
@@ -39,9 +41,11 @@ interface BurdenEstimateRepository : Repository
 
     @Throws(UnknownObjectError::class)
     fun getResponsibilityInfo(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityInfo
+
     fun validateEstimates(set: BurdenEstimateSet,
                           expectedRowMap: RowLookup)
             : RowLookup
+
     fun getBurdenOutcomeIds(matching: String): List<Short>
 
     fun getEstimates(setId: Int, responsibilityId: Int, outcomeIds: List<Short>,
@@ -51,5 +55,5 @@ interface BurdenEstimateRepository : Repository
     fun getBurdenEstimateOutcomesSequence(groupId: String, touchstoneVersionId: String, scenarioId: String, burdenEstimateSetId: Int)
             : Sequence<BurdenEstimateOutcome>
 
-    fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int) : List<String>
+    fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<String>
 }

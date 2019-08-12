@@ -48,7 +48,7 @@ open class BurdenEstimatesController(
                     path.touchstoneVersionId)
         }
 
-        val id = estimateRepository.createBurdenEstimateSet(path.groupId, path.touchstoneVersionId, path.scenarioId,
+        val id = estimatesLogic.createBurdenEstimateSet(path.groupId, path.touchstoneVersionId, path.scenarioId,
                 properties = properties,
                 uploader = context.username!!,
                 timestamp = Instant.now())
