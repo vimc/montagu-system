@@ -40,7 +40,7 @@ import org.vaccineimpact.api.db.tables.records.BurdenEstimateSetRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BurdenEstimateSet extends TableImpl<BurdenEstimateSetRecord> {
 
-    private static final long serialVersionUID = -1006511403;
+    private static final long serialVersionUID = -2062499688;
 
     /**
      * The reference instance of <code>public.burden_estimate_set</code>
@@ -124,6 +124,11 @@ public class BurdenEstimateSet extends TableImpl<BurdenEstimateSetRecord> {
      * The column <code>public.burden_estimate_set.model_run_parameter_set</code>.
      */
     public final TableField<BurdenEstimateSetRecord, Integer> MODEL_RUN_PARAMETER_SET = createField("model_run_parameter_set", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.burden_estimate_set.original_filename</code>.
+     */
+    public final TableField<BurdenEstimateSetRecord, String> ORIGINAL_FILENAME = createField("original_filename", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * Create a <code>public.burden_estimate_set</code> table reference
