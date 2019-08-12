@@ -12,6 +12,7 @@ import {
 } from "../actionTypes/ModellingGroupsTypes";
 import {ContribAppState} from "../../contrib/reducers/contribAppReducers";
 import {isNonEmptyArray} from "../../shared/ArrayHelpers";
+import {ExpectationsService} from "../../shared/services/ExpectationsService";
 
 export const modellingGroupsActionCreators = {
 
@@ -124,12 +125,14 @@ export const modellingGroupsActionCreators = {
         }
     },
 
-    getAllModels() {
+    getAllModelsAndExpectations() {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             const models = await (new ModellingGroupsService(dispatch, getState)).getAllModels();
+            const expectations = await (new ExpectationsService(dispatch, getState)).getAllExpectations();
             dispatch({
                 type: ModellingGroupTypes.MODELS_FETCHED,
-                data: models
+                models: models,
+                expectations: expectations
             })
 
         }

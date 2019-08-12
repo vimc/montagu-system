@@ -20,6 +20,7 @@ import {mockModellingGroupCreation} from "../test/mocks/mockModels";
 import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 import {ScenarioGroupComponent} from "../main/admin/components/Touchstones/Scenarios/ScenarioGroup"
 import {FileDownloadButton} from "../main/shared/components/FileDownloadLink";
+import {ExpectationsService} from "../main/shared/services/ExpectationsService";
 
 const touchstoneVersionId = "test-1";
 const scenarioId = "yf-1";
@@ -78,7 +79,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                     gender_specific: false,
                     current_version: null,
                     disease: {
-                        id: "YF",
+                        id: "yf",
                         name: "yellow fever"
                     }
                 },
@@ -91,11 +92,39 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                     gender_specific: false,
                     current_version: null,
                     disease: {
-                        id: "YF",
+                        id: "yf",
                         name: "yellow fever"
                     }
                 }
             ]);
+        });
+
+        it("can fetch expectations", async () => {
+            await addResponsibilities(this.db);
+            const result = await (new ExpectationsService(this.store.dispatch, this.store.getState)).getAllExpectations();
+            expect(result).to.eql([{
+                touchstone_version: touchstoneVersionId,
+                modelling_group: "g1",
+                disease: "yf",
+                expectation: {
+                    id: 1,
+                    description: "bee desc",
+                    years: {
+                        minimum_inclusive: 1950,
+                        maximum_inclusive: 2100
+                    },
+                    ages: {
+                        minimum_inclusive: 0,
+                        maximum_inclusive: 99
+                    },
+                    cohorts: {
+                        minimum_birth_year: 1900,
+                        maximum_birth_year: 2100
+                    },
+                    outcomes: ["cases", "deaths"]
+                },
+                applicable_scenarios: [scenarioId]
+            }]);
         });
 
         it("can fetch group details", async () => {
@@ -217,7 +246,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const result = await touchstoneService
                 .getResponsibilitiesForTouchstoneVersion(touchstoneVersionId);
 
-            expect(result).to.have.deep.members(expectedResponsibilitySets)
+            expect(result).to.eql(expectedResponsibilitySets)
         });
 
         it("can get scenarios for touchstone", async () => {
@@ -318,9 +347,9 @@ function addGroups(db: Client): Promise<QueryResult> {
             INSERT INTO modelling_group (id, description, institution, pi) VALUES ('g1', 'Group 1', '', '');
             INSERT INTO modelling_group (id, description, institution, pi) VALUES ('g2', 'Group 2', '', '');
             
-            INSERT INTO disease (id, name) values ('YF', 'yellow fever');
-            INSERT INTO model (id, modelling_group, description, citation, is_current, disease) VALUES ('model', 'g1', 'A model', 'Citation', true, 'YF');
-            INSERT INTO model (id, modelling_group, description, citation, is_current, disease) VALUES ('model2', 'g2', 'Another model', 'Citation', true, 'YF');
+            INSERT INTO disease (id, name) values ('yf', 'yellow fever');
+            INSERT INTO model (id, modelling_group, description, citation, is_current, disease) VALUES ('model', 'g1', 'A model', 'Citation', true, 'yf');
+            INSERT INTO model (id, modelling_group, description, citation, is_current, disease) VALUES ('model2', 'g2', 'Another model', 'Citation', true, 'yf');
             
             INSERT INTO app_user (username) VALUES ('bob'); 
             INSERT INTO user_group (id, name) VALUES ('bob', 'bob');
@@ -370,8 +399,8 @@ function addResponsibilities(db: Client) {
             DO $$
                 DECLARE scenario_id integer;
                 DECLARE set_id integer;
+                DECLARE burden_estimate_expectation_id integer;
             BEGIN
-                INSERT INTO disease (id, name) VALUES ('yf', 'Yellow Fever');
                 INSERT INTO scenario_description (id, description, disease)
                 VALUES ('${scenarioId}', 'Yellow Fever scenario', 'yf');
                 INSERT INTO scenario (touchstone, scenario_description)
@@ -382,8 +411,19 @@ function addResponsibilities(db: Client) {
                 VALUES ('g1', '${touchstoneVersionId}', 'incomplete')
                 RETURNING id INTO set_id;
                 
-                INSERT INTO responsibility (responsibility_set, scenario, is_open)
-                VALUES (set_id, scenario_id, true);
+                INSERT INTO burden_estimate_expectation (year_min_inclusive, year_max_inclusive, age_min_inclusive,
+                    age_max_inclusive, cohort_min_inclusive, cohort_max_inclusive, description, version)
+                VALUES (1950, 2100, 0, 99, 1900, 2100, 'bee desc', '1')    
+                RETURNING id INTO burden_estimate_expectation_id;
+                
+                INSERT INTO burden_estimate_outcome_expectation (burden_estimate_expectation, outcome)
+                VALUES (burden_estimate_expectation_id, 'cases');
+                
+                INSERT INTO burden_estimate_outcome_expectation (burden_estimate_expectation, outcome)
+                VALUES (burden_estimate_expectation_id, 'deaths');
+                
+                INSERT INTO responsibility (responsibility_set, scenario, is_open, expectations)
+                VALUES (set_id, scenario_id, true, burden_estimate_expectation_id);
             END $$;
     `))
 }
@@ -405,5 +445,28 @@ const expectedResponsibilitySets: ResponsibilitySetWithExpectations[] = [{
             }
         }
     ],
-    expectations: []
+    expectations: [
+        {
+            applicable_scenarios: [scenarioId],
+            disease: "yf",
+            expectation: {
+                ages: {
+                    minimum_inclusive: 0,
+                    maximum_inclusive: 99
+                },
+                cohorts: {
+                    minimum_birth_year: 1900,
+                    maximum_birth_year: 2100
+                },
+                countries: [],
+                description: "bee desc",
+                id: 1,
+                outcomes: ["cases", "deaths"],
+                years: {
+                    minimum_inclusive: 1950,
+                    maximum_inclusive: 2100
+                }
+            }
+        }
+     ]
 }];

@@ -6,6 +6,9 @@ import {
 } from "../../main/shared/models/Generated";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
 import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageProperties";
+import {OutcomeExpectations} from "../../main/shared/models/Generated";
+import {NumberRange} from "../../main/shared/models/Generated";
+import {CohortRestriction} from "../../main/shared/models/Generated";
 
 let counter = 0;
 
@@ -53,10 +56,35 @@ export function mockModel(properties?: Partial<models.ResearchModelDetails>) {
         modelling_group: "group-" + counter,
         gender: null,
         gender_specific: false,
-        current_version: mockModelVersion(),
-        disease: mockDisease()
+        disease: mockDisease(),
+        current_version: mockModelVersion()
     };
     return Object.assign(template, properties);
+}
+
+export function mockOutcomeExpectations(properties?: Partial<models.OutcomeExpectations>) {
+    counter++;
+    const template: models.OutcomeExpectations = {
+        ages: { maximum_inclusive: 100, minimum_inclusive: 0 },
+        cohorts: {maximum_birth_year: 2000, minimum_birth_year: 1900},
+        description: "Description",
+        id: counter,
+        outcomes: ["deaths", "dalys"],
+        years: { maximum_inclusive: 2100, minimum_inclusive: 1900 }
+    };
+    return Object.assign(template,properties);
+}
+
+export function mockTouchstoneModelExpectations(properties?: Partial<models.TouchstoneModelExpectations>) {
+    counter++;
+    const template: models.TouchstoneModelExpectations = {
+        disease: `disease-${counter}`,
+        expectation: mockOutcomeExpectations(),
+        applicable_scenarios: ["scenario-1", "scenario-2"],
+        modelling_group: "group-" + counter,
+        touchstone_version: "touchstone-" + counter
+    };
+    return Object.assign(template, properties)
 }
 
 export function mockModellingGroup(properties?: Partial<models.ModellingGroup>) {
@@ -143,9 +171,9 @@ export function mockCountry(properties?: Partial<models.Country>): models.Countr
     return Object.assign(template, properties);
 }
 
-export function mockExpectations(properties?: Partial<models.Expectations>): models.Expectations {
+export function mockExpectations(properties?: Partial<models.CountryOutcomeExpectations>): models.CountryOutcomeExpectations {
     counter++;
-    const template: models.Expectations = {
+    const template: models.CountryOutcomeExpectations = {
         id: counter,
         description: "description",
         ages: {minimum_inclusive: 0, maximum_inclusive: 99},

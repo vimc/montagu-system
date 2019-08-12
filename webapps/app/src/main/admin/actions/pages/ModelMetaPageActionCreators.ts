@@ -22,7 +22,7 @@ class ModelMetaPageActionCreators extends AdminPageActionCreators<{}> {
 
     loadData() {
         return async (dispatch: Dispatch<AdminAppState>) => {
-            await dispatch(modellingGroupsActionCreators.getAllModels());
+            await dispatch(modellingGroupsActionCreators.getAllModelsAndExpectations());
         }
     }
 }
