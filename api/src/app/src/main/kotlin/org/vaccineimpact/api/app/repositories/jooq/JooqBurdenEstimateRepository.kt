@@ -144,7 +144,7 @@ class JooqBurdenEstimateRepository(
     {
         //Check that the parameter set exists and belongs to the specified group and touchstone
         getModelRunParameterSets(groupId, touchstoneVersionId)
-                .filter{ s -> s.id == modelRunParameterSetId }
+                .filter { s -> s.id == modelRunParameterSetId }
                 .firstOrNull() ?: throw UnknownObjectError(modelRunParameterSetId, ModelRunParameterSet::class)
     }
 
@@ -175,14 +175,14 @@ class JooqBurdenEstimateRepository(
     {
         val table = BURDEN_ESTIMATE_SET
         val records = dsl.select(
-                    table.ID,
-                    table.UPLOADED_ON,
-                    table.UPLOADED_BY,
-                    table.SET_TYPE,
-                    table.SET_TYPE_DETAILS,
-                    table.STATUS,
-                    BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
-                 )
+                table.ID,
+                table.UPLOADED_ON,
+                table.UPLOADED_BY,
+                table.SET_TYPE,
+                table.SET_TYPE_DETAILS,
+                table.STATUS,
+                BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
+        )
                 .from(table)
                 .join(RESPONSIBILITY)
                 .on(RESPONSIBILITY.ID.eq(table.RESPONSIBILITY))
@@ -195,8 +195,8 @@ class JooqBurdenEstimateRepository(
                 .and(SCENARIO_DESCRIPTION.ID.eq(scenarioId))
                 .fetch()
 
-         return mapper.mapBurdenEstimateSets(records).singleOrNull()
-                 ?: throw UnknownObjectError(burdenEstimateSetId, BurdenEstimateSet::class)
+        return mapper.mapBurdenEstimateSets(records).singleOrNull()
+                ?: throw UnknownObjectError(burdenEstimateSetId, BurdenEstimateSet::class)
     }
 
     override fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
@@ -237,15 +237,15 @@ class JooqBurdenEstimateRepository(
             throw InvalidOperationError("Cannot get burden estimate data for stochastic burden estimate sets")
         }
 
-        return  dsl.select(
-                    DISEASE.ID,
-                    BURDEN_ESTIMATE.YEAR,
-                    BURDEN_ESTIMATE.AGE,
-                    COUNTRY.ID,
-                    COUNTRY.NAME,
-                    BURDEN_OUTCOME.CODE,
-                    BURDEN_ESTIMATE.VALUE
-                )
+        return dsl.select(
+                DISEASE.ID,
+                BURDEN_ESTIMATE.YEAR,
+                BURDEN_ESTIMATE.AGE,
+                COUNTRY.ID,
+                COUNTRY.NAME,
+                BURDEN_OUTCOME.CODE,
+                BURDEN_ESTIMATE.VALUE
+        )
                 .fromJoinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE)
                 .join(RESPONSIBILITY)
                 .on(BURDEN_ESTIMATE_SET.RESPONSIBILITY.eq(RESPONSIBILITY.ID))
@@ -262,11 +262,11 @@ class JooqBurdenEstimateRepository(
                         COUNTRY.NAME,
                         BURDEN_OUTCOME.CODE)
                 .fetchSequence()
-                .map{it.into(BurdenEstimateOutcome::class.java)}
+                .map { it.into(BurdenEstimateOutcome::class.java) }
 
     }
 
-    override fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int) : List<String>
+    override fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<String>
     {
         return dsl.select(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
                 .from(BURDEN_ESTIMATE_SET)
@@ -280,21 +280,18 @@ class JooqBurdenEstimateRepository(
                 .getValues(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
     }
 
-    override fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,
+    override fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String,
+                                         modelVersionId: Int,
                                          modelRuns: List<ModelRun>,
                                          uploader: String, timestamp: Instant): Int
     {
-        // Dereference modelling group IDs
-        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
-        val modelVersion = getlatestModelVersion(modellingGroup.id, disease)
-
         // We aren't checking whether the provided disease is associated with a scenario in this
         // responsibility set but the intention is to refactor the data model so that a responsibility set
         // is tied to a single disease, which will make this easier to do down the line
-        val setId = getResponsibilitySetId(modellingGroup.id, touchstoneVersionId)
+        val setId = getResponsibilitySetId(groupId, touchstoneVersionId)
 
         return addModelRunParameterSet(setId,
-                modelVersion, modelRuns, uploader, timestamp)
+                modelVersionId, modelRuns, uploader, timestamp)
     }
 
     private fun addModelRunParameterSet(responsibilitySetId: Int, modelVersionId: Int,
@@ -386,11 +383,6 @@ class JooqBurdenEstimateRepository(
 
     private fun addParameters(modelRuns: List<ModelRun>, modelRunParameterSetId: Int): Map<String, Int>
     {
-        if (!modelRuns.any())
-        {
-            throw BadRequest("No model runs provided")
-        }
-
         val parameters = modelRuns.first().parameterValues.keys
         return parameters.associateBy({ it }, {
             val record = this.dsl.newRecord(MODEL_RUN_PARAMETER).apply {
@@ -421,42 +413,15 @@ class JooqBurdenEstimateRepository(
         }
     }
 
-    override fun createBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
+    override fun createBurdenEstimateSet(responsibilityId: Int,
+                                         modelVersionId: Int,
                                          properties: CreateBurdenEstimateSet,
-                                         uploader: String, timestamp: Instant): Int
+                                         uploader: String,
+                                         timestamp: Instant): Int
     {
-        // Dereference modelling group IDs
-        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
 
-        val responsibilityInfo = getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
-        val status = responsibilityInfo.setStatus.toLowerCase()
-
-        if (status == ResponsibilitySetStatus.SUBMITTED.name.toLowerCase())
-        {
-            throw InvalidOperationError("The burden estimates uploaded for this touchstone have been submitted " +
-                    "for review. You cannot upload any new estimates.")
-        }
-
-        if (status == ResponsibilitySetStatus.APPROVED.name.toLowerCase())
-        {
-            throw InvalidOperationError("The burden estimates uploaded for this touchstone have been reviewed" +
-                    " and approved. You cannot upload any new estimates.")
-        }
-
-        val modelRunParameterSetId = properties.modelRunParameterSet
-        if (modelRunParameterSetId != null)
-        {
-            dsl.select(MODEL_RUN_PARAMETER_SET.ID)
-                    .from(MODEL_RUN_PARAMETER_SET)
-                    .where(MODEL_RUN_PARAMETER_SET.ID.eq(modelRunParameterSetId))
-                    .fetch()
-                    .singleOrNull() ?: throw UnknownObjectError(modelRunParameterSetId, "model run parameter set")
-        }
-
-        val latestModelVersion = getlatestModelVersion(modellingGroup.id, responsibilityInfo.disease)
-
-        val setId = addSet(responsibilityInfo.id, uploader, timestamp, latestModelVersion, properties)
-        updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, properties.type)
+        val setId = addSet(responsibilityId, uploader, timestamp, modelVersionId, properties)
+        updateCurrentBurdenEstimateSet(responsibilityId, setId, properties.type)
 
         return setId
     }
@@ -491,20 +456,6 @@ class JooqBurdenEstimateRepository(
         {
             centralBurdenEstimateWriter
         }
-    }
-
-    private fun getlatestModelVersion(groupId: String, disease: String): Int
-    {
-        return dsl.select(MODEL_VERSION.ID)
-                .fromJoinPath(MODELLING_GROUP, MODEL)
-                .join(MODEL_VERSION)
-                .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))
-                .where(MODELLING_GROUP.ID.eq(groupId))
-                .and(MODEL.DISEASE.eq(disease))
-                .and(MODEL.IS_CURRENT)
-                .fetch().singleOrNull()?.value1()
-                ?: throw DatabaseContentsError("Modelling group $groupId does not have any models/model versions in the database")
-
     }
 
     override fun changeBurdenEstimateStatus(setId: Int, newStatus: BurdenEstimateSetStatus)

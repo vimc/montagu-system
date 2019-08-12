@@ -25,7 +25,8 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            setId = repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
+            setId = repo.createBurdenEstimateSet(returnedIds!!.responsibility, returnedIds!!.modelVersion!!,
+                    defaultProperties, username, timestamp)
         } andCheckDatabase { db ->
             checkBurdenEstimateSetMetadata(db, setId!!, returnedIds!!, "empty")
         }
@@ -40,10 +41,12 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
                         "mean"
                 ), 1
         )
+        var returnedIds: BurdenEstimateRepositoryTests.ReturnedIds? = null
         given { db ->
-            setupDatabaseWithModelRunParameterSet(db)
+            returnedIds = setupDatabaseWithModelRunParameterSet(db)
         } makeTheseChanges { repo ->
-            repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, properties, username, timestamp)
+            repo.createBurdenEstimateSet(returnedIds!!.responsibility, returnedIds!!.modelVersion!!,
+                    properties, username, timestamp)
         } andCheck { repo ->
             val set = repo.getBurdenEstimateSets(groupId, touchstoneVersionId, scenarioId).single()
             assertThat(set.type).isEqualTo(properties.type)
@@ -58,7 +61,8 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            setId = repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
+            setId = repo.createBurdenEstimateSet(returnedIds!!.responsibility, returnedIds!!.modelVersion!!,
+                    defaultProperties, username, timestamp)
         } andCheckDatabase { db ->
             checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!,
                     RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET)
@@ -74,86 +78,11 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
             val properties = defaultProperties.withType(BurdenEstimateSetTypeCode.STOCHASTIC)
-            setId = repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, properties, username, timestamp)
+            setId = repo.createBurdenEstimateSet(returnedIds!!.responsibility, returnedIds!!.modelVersion!!,
+                    properties, username, timestamp)
         } andCheckDatabase { db ->
             checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!,
                     RESPONSIBILITY.CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET)
-        }
-    }
-
-    @Test
-    fun `cannot create burden estimate set if group has no model`()
-    {
-        JooqContext().use { db ->
-            setupDatabase(db, addModel = false)
-            val repo = makeRepository(db)
-            assertThatThrownBy {
-                repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
-            }.isInstanceOf(DatabaseContentsError::class.java)
-        }
-    }
-
-    @Test
-    fun `cannot create burden estimate set if responsibility set status is submitted`()
-    {
-        JooqContext().use { db ->
-            setupDatabase(db, responsibilitySetStatus = "submitted")
-            val repo = makeRepository(db)
-            assertThatThrownBy {
-                repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
-            }.isInstanceOf(InvalidOperationError::class.java)
-                    .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been submitted for review." +
-                            " You cannot upload any new estimates.")
-        }
-    }
-
-    @Test
-    fun `cannot create burden estimate set if responsibility set status is approved`()
-    {
-        JooqContext().use { db ->
-            setupDatabase(db, responsibilitySetStatus = "approved")
-            val repo = makeRepository(db)
-            assertThatThrownBy {
-                repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, defaultProperties, username, timestamp)
-            }.isInstanceOf(InvalidOperationError::class.java)
-                    .hasMessage("the following problems occurred:\nThe burden estimates uploaded for this touchstone have been reviewed and approved." +
-                            " You cannot upload any new estimates.")
-        }
-    }
-
-    @Test
-    fun `throws unknown create burden estimate set if model run parameter set does not exist`()
-    {
-        assertUnknownObjectError { repo ->
-            repo.createBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId,
-                    defaultProperties.copy(modelRunParameterSet = 267), username, timestamp)
-        }
-    }
-
-    @Test
-    fun `cannot create burden estimate set if touchstone doesn't exist`()
-    {
-        assertUnknownObjectError { repo ->
-            repo.createBurdenEstimateSet(groupId, "wrong-id", scenarioId,
-                    defaultProperties, username, timestamp)
-        }
-    }
-
-    @Test
-    fun `cannot create burden estimate set if group doesn't exist`()
-    {
-        assertUnknownObjectError { repo ->
-            repo.createBurdenEstimateSet("wrong-id", touchstoneVersionId, scenarioId,
-                    defaultProperties, username, timestamp)
-        }
-    }
-
-    @Test
-    fun `cannot create burden estimate set if scenario doesn't exist`()
-    {
-        assertUnknownObjectError { repo ->
-            repo.createBurdenEstimateSet(groupId, touchstoneVersionId, "wrong-id",
-                    defaultProperties, username, timestamp)
         }
     }
 

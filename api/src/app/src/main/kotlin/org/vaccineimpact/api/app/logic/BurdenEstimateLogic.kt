@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.logic
 
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
+import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
@@ -9,16 +10,27 @@ import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.app.validateStochastic
+import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
 import org.vaccineimpact.api.serialization.FlexibleDataTable
+import java.time.Instant
 
 interface BurdenEstimateLogic
 {
+    fun createBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                properties: CreateBurdenEstimateSet,
+                                uploader: String, timestamp: Instant): Int
+
     fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
                                   estimates: Sequence<BurdenEstimateWithRunId>)
 
     @Throws(MissingRowsError::class)
     fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
+
+    fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,
+                                modelRuns: List<ModelRun>,
+                                uploader: String, timestamp: Instant): Int
 
     fun getEstimates(setId: Int,
                      groupId: String,
@@ -44,6 +56,62 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                                       private val scenarioRepository: ScenarioRepository,
                                       private val touchstoneRepository: TouchstoneRepository) : BurdenEstimateLogic
 {
+
+    constructor(repositories: Repositories) : this(repositories.modellingGroup,
+            repositories.burdenEstimates,
+            repositories.expectations,
+            repositories.scenario,
+            repositories.touchstone)
+
+    override fun createBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                         properties: CreateBurdenEstimateSet,
+                                         uploader: String, timestamp: Instant): Int
+    {
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+
+        val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
+        val status = responsibilityInfo.setStatus.toLowerCase()
+
+        if (status == ResponsibilitySetStatus.SUBMITTED.name.toLowerCase())
+        {
+            throw InvalidOperationError("The burden estimates uploaded for this touchstone have been submitted " +
+                    "for review. You cannot upload any new estimates.")
+        }
+
+        if (status == ResponsibilitySetStatus.APPROVED.name.toLowerCase())
+        {
+            throw InvalidOperationError("The burden estimates uploaded for this touchstone have been reviewed" +
+                    " and approved. You cannot upload any new estimates.")
+        }
+
+        val modelRunParameterSetId = properties.modelRunParameterSet
+        if (modelRunParameterSetId != null)
+        {
+            burdenEstimateRepository.checkModelRunParameterSetExists(modelRunParameterSetId, modellingGroup.id, touchstoneVersionId)
+        }
+
+        val latestModelVersion = modellingGroupRepository.getLatestModelVersionForGroup(modellingGroup.id, responsibilityInfo.disease)
+
+        return burdenEstimateRepository.createBurdenEstimateSet(responsibilityInfo.id, latestModelVersion, properties, uploader, timestamp)
+    }
+
+    override fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,
+                                         modelRuns: List<ModelRun>,
+                                         uploader: String, timestamp: Instant): Int
+    {
+        if (!modelRuns.any())
+        {
+            throw BadRequest("No model runs provided")
+        }
+
+        // Dereference modelling group IDs
+        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
+        val modelVersion = modellingGroupRepository.getLatestModelVersionForGroup(modellingGroup.id, disease)
+
+        return burdenEstimateRepository.addModelRunParameterSet(modellingGroup.id,
+                touchstoneVersionId, modelVersion, modelRuns, uploader, timestamp)
+    }
 
     override fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List<BurdenEstimateSet>
     {
@@ -147,7 +215,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
             val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
                     .expectation.expectedRowLookup()
             val validatedRowMap = burdenEstimateRepository.validateEstimates(set, expectedRows)
-            val countriesWithMissingRows = validatedRowMap.filter{ it.hasMissingAges() }
+            val countriesWithMissingRows = validatedRowMap.filter { it.hasMissingAges() }
             if (countriesWithMissingRows.any())
             {
                 burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)

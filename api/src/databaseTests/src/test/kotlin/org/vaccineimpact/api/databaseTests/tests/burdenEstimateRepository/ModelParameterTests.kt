@@ -28,8 +28,8 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            repo.addModelRunParameterSet(groupId, touchstoneVersionId, diseaseId,
-                     modelRuns, username, timestamp)
+            repo.addModelRunParameterSet(groupId, touchstoneVersionId, returnedIds!!.modelVersion!!,
+                    modelRuns, username, timestamp)
         } andCheckDatabase { db ->
 
             val record = db.dsl.select()
@@ -66,53 +66,13 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `cannot create model run parameter set if group has no model`()
-    {
-        JooqContext().use { db ->
-            returnedIds = setupDatabase(db, addModel = false)
-            val repo = makeRepository(db)
-
-            Assertions.assertThatThrownBy {
-                repo.addModelRunParameterSet(groupId, touchstoneVersionId, diseaseId,
-                        modelRuns, username, timestamp)
-            }.isInstanceOf(DatabaseContentsError::class.java)
-                    .hasMessageContaining("Modelling group $groupId does not have any models/model versions in the database")
-        }
-    }
-
-    @Test
-    fun `cannot create model run parameter set if no model runs provided`()
-    {
-        JooqContext().use { db ->
-            returnedIds = setupDatabase(db)
-            val repo = makeRepository(db)
-
-            Assertions.assertThatThrownBy {
-                repo.addModelRunParameterSet(groupId, touchstoneVersionId, diseaseId,
-                        listOf(), username, timestamp)
-            }.isInstanceOf(BadRequest::class.java)
-                    .hasMessageContaining("No model runs provided")
-        }
-    }
-
-    @Test
     fun `cannot create model run parameter set if touchstone doesn't exist`()
     {
-        assertUnknownObjectError(setup = {db -> setupDatabase(db)},
+        assertUnknownObjectError(setup = { db -> setupDatabase(db) },
                 work = { repo ->
-                    repo.addModelRunParameterSet(groupId, "wrong-id", diseaseId,
-                             modelRuns, "test.user", timestamp)
-        })
-    }
-
-    @Test
-    fun `cannot create model run parameter set if group doesn't exist`()
-    {
-        assertUnknownObjectError(setup = {db -> setupDatabase(db)},
-                work = { repo ->
-                    repo.addModelRunParameterSet("wrong-id", touchstoneVersionId, diseaseId,
-                        modelRuns, "test.user", timestamp)
-        })
+                    repo.addModelRunParameterSet(groupId, "wrong-id", returnedIds!!.modelVersion!!,
+                            modelRuns, "test.user", timestamp)
+                })
     }
 
     private fun assertUnknownObjectError(setup: (db: JooqContext) -> Any,
@@ -145,8 +105,8 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
         given { db ->
             returnedIds = setupDatabase(db)
         } makeTheseChanges { repo ->
-            repo.addModelRunParameterSet(groupId, touchstoneVersionId, diseaseId,
-                   modelRuns, username, timestamp)
+            repo.addModelRunParameterSet(groupId, touchstoneVersionId, returnedIds!!.modelVersion!!,
+                    modelRuns, username, timestamp)
 
         } andCheck { repo ->
             val sets = repo.getModelRunParameterSets(groupId, touchstoneVersionId)
@@ -188,7 +148,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     @Test
     fun `Unknown Object error if model run parameter set id does not exist`()
     {
-        assertUnknownObjectError(setup = {db -> setupDatabase(db)},
+        assertUnknownObjectError(setup = { db -> setupDatabase(db) },
                 work = { repo ->
                     repo.getModelRunParameterSet(groupId, touchstoneVersionId, 1)
                 })
@@ -197,7 +157,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     @Test
     fun `Unknown Object error if model run parameter set does not belong to the group`()
     {
-        assertUnknownObjectError(setup = {db -> setupDatabaseWithModelRunParameterSetValues(db)},
+        assertUnknownObjectError(setup = { db -> setupDatabaseWithModelRunParameterSetValues(db) },
                 work = { repo ->
                     repo.getModelRunParameterSet("group-2", touchstoneVersionId, 1)
                 })
@@ -207,16 +167,16 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     @Test
     fun `Unknown Object error if model run parameter set does not belong to the touchstone version`()
     {
-        assertUnknownObjectError(setup = {db -> setupDatabaseWithModelRunParameterSetValues(db)},
+        assertUnknownObjectError(setup = { db -> setupDatabaseWithModelRunParameterSetValues(db) },
                 work = { repo ->
                     repo.getModelRunParameterSet(groupId, "touchstone-2", 1)
-        })
+                })
     }
 
     @Test
     fun `cannot get model run parameter sets if touchstone doesn't exist`()
     {
-        assertUnknownObjectError(setup = {db -> setupDatabase(db)},
+        assertUnknownObjectError(setup = { db -> setupDatabase(db) },
                 work = { repo ->
                     repo.getModelRunParameterSets(groupId, "wrong-id")
                 })
@@ -225,7 +185,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     @Test
     fun `cannot get model run parameter sets if group doesn't exist`()
     {
-        assertUnknownObjectError(setup = {db -> setupDatabase(db)},
+        assertUnknownObjectError(setup = { db -> setupDatabase(db) },
                 work = { repo ->
                     repo.getModelRunParameterSets("wrong-id", touchstoneVersionId)
                 })
@@ -245,7 +205,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     @Test
     fun `check model run parameter set exists throws error when set does not exist`()
     {
-        assertUnknownObjectError(setup = {db -> setupDatabase(db)},
+        assertUnknownObjectError(setup = { db -> setupDatabase(db) },
                 work = { repo ->
                     repo.checkModelRunParameterSetExists(99, groupId, touchstoneVersionId)
                 })
@@ -257,7 +217,7 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
         var returnedIds: ReturnedIds? = null
         withDatabase { db ->
             returnedIds = setupDatabaseWithModelRunParameterSet(db)
-            db.addGroup("some other group", "another group" )
+            db.addGroup("some other group", "another group")
         }
         withRepo { repo ->
             val modelRunParameterSetId = returnedIds!!.modelRunParameterSetId!!
