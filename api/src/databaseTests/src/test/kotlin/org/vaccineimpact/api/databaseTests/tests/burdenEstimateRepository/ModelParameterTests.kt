@@ -68,9 +68,10 @@ class ModelParameterTests : BurdenEstimateRepositoryTests()
     @Test
     fun `cannot create model run parameter set if touchstone doesn't exist`()
     {
-        assertUnknownObjectError(setup = { db -> setupDatabase(db) },
+        val returnedIds = withDatabase { setupDatabase(it) }
+        assertUnknownObjectError(setup = { },
                 work = { repo ->
-                    repo.addModelRunParameterSet(groupId, "wrong-id", returnedIds!!.modelVersion!!,
+                    repo.addModelRunParameterSet(groupId, "wrong-id", returnedIds.modelVersion!!,
                             modelRuns, "test.user", timestamp)
                 })
     }

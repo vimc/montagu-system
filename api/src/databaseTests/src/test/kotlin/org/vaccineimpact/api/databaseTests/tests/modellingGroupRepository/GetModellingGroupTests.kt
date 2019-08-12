@@ -256,14 +256,15 @@ class GetModellingGroupTests : ModellingGroupRepositoryTests()
     {
         val groupId = "g1"
         val diseaseId = "d1"
-        withDatabase {
+        val versionId = withDatabase {
             it.addGroup(groupId, "description")
             it.addDisease(diseaseId)
             it.addModel("m1", groupId, diseaseId)
+            it.addModelVersion("m1", "v1", setCurrent = true)
         }
 
         withRepo {
-            assertThat(it.getLatestModelVersionForGroup(groupId, diseaseId)).isEqualTo(diseaseId)
+            assertThat(it.getLatestModelVersionForGroup(groupId, diseaseId)).isEqualTo(versionId)
         }
     }
 
