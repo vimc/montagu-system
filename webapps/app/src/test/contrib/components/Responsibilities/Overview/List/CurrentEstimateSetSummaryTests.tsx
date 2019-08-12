@@ -64,9 +64,10 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
     it("displays complete set message if current estimate is complete", () => {
         const rendered = render(mockBurdenEstimateSet({
             status: "complete",
-            uploaded_on: "2017-07-13 13:55:29 +0100"
+            uploaded_on: "2017-07-13 13:55:29 +0100",
+            original_filename: "file.csv"
         }), true);
-        expect(rendered.text()).to.contain("A complete set of central estimates was uploaded on Thu Jul 13");
+        expect(rendered.text()).to.contain("A complete set of central estimates was uploaded on Thu Jul 13 2017, 13:55 with filename \"file.csv\"");
 
         const div = rendered.find("div").first();
         expect(div.hasClass("alert-warning")).to.eq(true);
@@ -89,10 +90,10 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
     it("displays error alert when set is invalid", () => {
         const rendered = render(mockBurdenEstimateSet({
             status: "invalid",
-            uploaded_on: "2017-07-13 13:55:29 +0100"
+            uploaded_on: "2017-07-13 13:55:29 +0100",
+            original_filename: "file.csv"
         }), true);
-        expect(rendered.text()).to.contain("You uploaded an incomplete set of central estimates");
-        expect(rendered.text()).to.contain("Thu Jul 13");
+        expect(rendered.text()).to.contain("You uploaded an incomplete set of central estimates on Thu Jul 13 2017, 13:55 with filename \"file.csv\"");
 
         const div = rendered.find("div").first();
         expect(div.hasClass("alert-danger")).to.eq(true);

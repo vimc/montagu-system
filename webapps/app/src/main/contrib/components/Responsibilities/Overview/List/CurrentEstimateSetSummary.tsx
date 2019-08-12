@@ -27,15 +27,15 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
                     </span>;
                 } else if (set.status == "complete") {
                     return <span>
-                        A complete set of central estimates was uploaded on {timestamp}.
+                        A complete set of central estimates was uploaded on {timestamp} with filename "{set.original_filename}"
                     </span>;
                 } else if (set.status == "invalid") {
                     return <span>
-                        You uploaded an incomplete set of central estimates on {timestamp}.
+                        You uploaded an incomplete set of central estimates on {timestamp} with filename "{set.original_filename}"
                     </span>;
                 } else {
                     return <span>
-                        You have a central estimate set in status '{set.status}', which was created on {timestamp}
+                        You have a central estimate set in status '{set.status}', which was created on {timestamp}"
                     </span>;
                 }
             }
@@ -58,10 +58,10 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
         return <div className={`mt-3 alert alert-${alertType} text-left`}>
             {estimateText}
             {url && [
-                <FileDownloadButton href={url} className={"float-right"}>
+                <FileDownloadButton href={url} className={"float-right"} key={`download-${estimateSet.id}`}>
                     Download these estimates
                 </FileDownloadButton>,
-                <div className={"clearfix"}></div>
+                <div className={"clearfix"} key={`clearfix-${estimateSet.id}`}></div>
             ]}
         </div>;
     }

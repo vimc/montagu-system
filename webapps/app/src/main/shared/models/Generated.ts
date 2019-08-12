@@ -156,6 +156,7 @@ export type BurdenEstimateSetStatus = "empty" | "partial" | "complete" | "invali
 
 export interface BurdenEstimateSet {
     id: number;
+    original_filename: string | null;
     problems: string[];
     status: BurdenEstimateSetStatus;
     type: BurdenEstimateSetType;

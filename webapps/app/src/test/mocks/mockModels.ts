@@ -292,7 +292,8 @@ export function mockBurdenEstimateSet(properties?: Partial<models.BurdenEstimate
             type: "central-single-run",
             details: "Run number 64"
         },
-        status: "complete"
+        status: "complete",
+        original_filename: "fakefile.csv"
     };
     return Object.assign(template, properties);
 }
