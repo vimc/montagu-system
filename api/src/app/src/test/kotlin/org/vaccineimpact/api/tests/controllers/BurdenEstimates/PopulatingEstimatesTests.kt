@@ -35,7 +35,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 
         val mockContext = mockPopulateFromLocalFileActionContext("user.name")
         val repo = mockEstimatesRepository(touchstoneSet)
-        val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true)
+        val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true, fileName = "file.csv")
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
 
         val sut = BurdenEstimateUploadController(mockContext, mock(), logic, repo, mock(), mockTokenHelper, cache)
@@ -44,7 +44,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 
         assertThat(result.status).isEqualTo(ResultStatus.SUCCESS)
         assertThat(result.data).isEqualTo("OK")
-        verify(logic).populateBurdenEstimateSet(eq(1), eq("g1"), eq("t1"), eq("s1"), any())
+        verify(logic).populateBurdenEstimateSet(eq(1), eq("g1"), eq("t1"), eq("s1"), any(), eq("file.csv"))
         verify(logic).closeBurdenEstimateSet(eq(1), eq("g1"), eq("t1"), eq("s1"))
     }
 
@@ -53,7 +53,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
     {
         val touchstoneSet = mockTouchstones()
         val logic = mock<BurdenEstimateLogic> {
-            on { populateBurdenEstimateSet(any(), any(), any(), any(), any()) } doAnswer { args ->
+            on { populateBurdenEstimateSet(any(), any(), any(), any(), any(), anyOrNull()) } doAnswer { args ->
                 // Force evaluation of sequence
                 args.getArgument<Sequence<BurdenEstimateWithRunId>>(4).toList()
                 Unit
@@ -82,7 +82,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
     {
         val touchstoneSet = mockTouchstones()
         val logic = mock<BurdenEstimateLogic> {
-            on { populateBurdenEstimateSet(any(), any(), any(), any(), any()) } doAnswer { args ->
+            on { populateBurdenEstimateSet(any(), any(), any(), any(), any(), anyOrNull()) } doAnswer { args ->
                 // Force evaluation of sequence
                 args.getArgument<Sequence<BurdenEstimateWithRunId>>(4).toList()
                 Unit

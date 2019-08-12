@@ -32,6 +32,23 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
+    fun `can update set filename`()
+    {
+        val setId = withDatabase { db ->
+            setupDatabaseWithBurdenEstimateSet(db, type = "central-averaged")
+        }
+        withRepo {
+            it.updateBurdenEstimateSetFilename(setId, "file.csv")
+        }
+
+        withDatabase { db ->
+            val t = Tables.BURDEN_ESTIMATE_SET
+            val set = db.dsl.selectFrom(t).where(t.ID.eq(setId)).fetchOne()
+            Assertions.assertThat(set[t.ORIGINAL_FILENAME]).isEqualTo("file.csv")
+        }
+    }
+
+    @Test
     fun `can update current central estimate set`()
     {
         val (returnedIds, setId) = withDatabase { db ->
@@ -74,7 +91,8 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
                 1, Instant.now(), "test.user",
                 BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean"),
                 BurdenEstimateSetStatus.EMPTY,
-                emptyList()
+                emptyList(),
+                null
         )
         withRepo {
             val result = it.getEstimateWriter(centralEstimateSet)
@@ -89,7 +107,8 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
                 1, Instant.now(), "test.user",
                 BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC, "mean"),
                 BurdenEstimateSetStatus.EMPTY,
-                emptyList()
+                emptyList(),
+                null
         )
         withRepo {
             val result = it.getEstimateWriter(stochasticEstimateSet)
@@ -127,7 +146,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
 
         val burdenEstimateSet = BurdenEstimateSet(setId, Instant.now(), "",
                 BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED),
-                BurdenEstimateSetStatus.EMPTY, listOf())
+                BurdenEstimateSetStatus.EMPTY, listOf(), null)
 
         val result = withRepo {
             it.validateEstimates(burdenEstimateSet,

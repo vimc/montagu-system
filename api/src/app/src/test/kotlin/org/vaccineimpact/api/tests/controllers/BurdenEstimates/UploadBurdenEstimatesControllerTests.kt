@@ -344,10 +344,10 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         }
     }
 
-    protected fun makeFakeCacheWithChunkedFile(uid: String, uploadFinished: Boolean): Cache<ChunkedFile>
+    protected fun makeFakeCacheWithChunkedFile(uid: String, uploadFinished: Boolean, fileName: String = "filename.csv"): Cache<ChunkedFile>
     {
         val fakeInfo = ChunkedFile(totalChunks = 1, totalSize = 1000, chunkSize = 100,
-                uniqueIdentifier = uid, originalFileName = "filename.csv")
+                uniqueIdentifier = uid, originalFileName = fileName)
 
         if (uploadFinished)
         {
@@ -428,7 +428,8 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 eq(groupId), eq(touchstoneVersionId), eq(scenarioId),
                 argWhere {
                     it.toSet() == expectedData.toSet()
-                }
+                },
+                anyOrNull()
         )
         verifyValidResponsibilityPathChecks(logic, actionContext)
     }

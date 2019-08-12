@@ -29,7 +29,8 @@ class BurdenEstimateLogicTests : MontaguTests()
             1, Instant.now(), "test.user",
             BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean"),
             BurdenEstimateSetStatus.EMPTY,
-            emptyList()
+            emptyList(),
+            null
     )
 
     private val disease = "disease-1"
@@ -108,7 +109,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val estimatesRepo = mockEstimatesRepository(estimateWriter)
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), estimatesRepo, mockExpectationsRepository(), mock(), mock())
         Assertions.assertThatThrownBy {
-            sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data)
+            sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, data, null)
         }.isInstanceOf(InconsistentDataError::class.java)
                 .hasMessageContaining("disease")
     }
@@ -120,7 +121,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val repo = mockEstimatesRepository(writer)
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock())
 
-        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
+        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData, null)
 
         verify(writer).addEstimatesToSet(eq(setId), any(), eq(disease))
     }
@@ -131,8 +132,18 @@ class BurdenEstimateLogicTests : MontaguTests()
         val repo = mockEstimatesRepository()
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock())
 
-        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
+        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData, null)
         verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)
+    }
+
+    @Test
+    fun `original filename is updated`()
+    {
+        val repo = mockEstimatesRepository()
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock())
+
+        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData, "file.csv")
+        verify(repo).updateBurdenEstimateSetFilename(setId, "file.csv")
     }
 
     @Test
@@ -141,7 +152,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val repo = mockEstimatesRepository()
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock())
 
-        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
+        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData, null)
         verify(repo).getEstimateWriter(defaultEstimateSet)
     }
 
@@ -458,7 +469,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         }
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock())
 
-        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
+        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData, null)
         verify(writer).addEstimatesToSet(eq(setId), any(), eq(disease))
     }
 
@@ -474,7 +485,7 @@ class BurdenEstimateLogicTests : MontaguTests()
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock())
 
         Assertions.assertThatThrownBy {
-            sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData)
+            sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData, null)
         }.isInstanceOf(InvalidOperationError::class.java)
                 .hasMessageContaining("You must create a new set if you want to upload any new estimates.")
 
@@ -653,7 +664,7 @@ AGO, age 12, year 2005""")
     {
         val fakeEstimateSets = listOf(BurdenEstimateSet(1, Instant.now(), "someone",
                 BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, ""),
-                BurdenEstimateSetStatus.COMPLETE, listOf()))
+                BurdenEstimateSetStatus.COMPLETE, listOf(), null))
 
         val repo = mock<BurdenEstimateRepository> {
             on { getBurdenEstimateSets("g1", "t1", "s1") } doReturn fakeEstimateSets

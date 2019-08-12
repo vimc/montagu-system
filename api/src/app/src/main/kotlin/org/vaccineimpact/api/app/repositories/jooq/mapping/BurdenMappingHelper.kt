@@ -36,7 +36,8 @@ class BurdenMappingHelper : MappingHelper()
                 common[table.UPLOADED_BY],
                 mapBurdenEstimateSetType(common),
                 mapEnum(common[table.STATUS]),
-                problems
+                problems,
+                common[table.ORIGINAL_FILENAME]
         )
     }
 

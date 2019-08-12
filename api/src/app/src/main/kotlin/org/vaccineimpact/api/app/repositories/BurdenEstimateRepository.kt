@@ -56,4 +56,6 @@ interface BurdenEstimateRepository : Repository
             : Sequence<BurdenEstimateOutcome>
 
     fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<String>
+
+    fun updateBurdenEstimateSetFilename(setId: Int, filename: String?)
 }

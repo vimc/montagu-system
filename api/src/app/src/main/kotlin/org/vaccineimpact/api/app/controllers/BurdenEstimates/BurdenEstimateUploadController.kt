@@ -119,8 +119,8 @@ class BurdenEstimateUploadController(context: ActionContext,
                     path.groupId,
                     path.touchstoneVersionId,
                     path.scenarioId,
-                    data
-            )
+                    data,
+                    file.originalFileName)
 
             chunkedFileCache.remove(file.uniqueIdentifier)
 
@@ -150,9 +150,11 @@ class BurdenEstimateUploadController(context: ActionContext,
         val data = getBurdenEstimateDataFromCSV(metadata, source)
         estimatesLogic.populateBurdenEstimateSet(
                 setId,
-                path.groupId, path.touchstoneVersionId, path.scenarioId,
-                data
-        )
+                path.groupId,
+                path.touchstoneVersionId,
+                path.scenarioId,
+                data,
+                filename = null)
 
         // Then, maybe close the burden estimate set
         val keepOpen = context.queryParams("keepOpen")?.toBoolean() ?: false
