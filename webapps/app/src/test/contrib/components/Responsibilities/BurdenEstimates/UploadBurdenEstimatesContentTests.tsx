@@ -147,6 +147,9 @@ describe("UploadBurdenEstimatesContent", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const currentEstimateSetSummary = rendered.find(CurrentEstimateSetSummary);
         const expectedProps: CurrentEstimateSetSummaryProps = {
+            groupId: testGroup.id,
+            scenarioId: testScenario.id,
+            touchstoneId: testTouchstone.id,
             canUpload: true,
             estimateSet: testEstimateSet
         };
