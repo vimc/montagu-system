@@ -2,7 +2,7 @@ import * as React from "react";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {connect} from "react-redux";
 import {ILookup} from "../../../../shared/models/Lookup";
-import {Expectations, OutcomeExpectations} from "../../../../shared/models/Generated";
+import {UncontrolledTooltip} from "reactstrap";
 
 interface ModelMetaRow {
     code: string | null
@@ -20,6 +20,7 @@ interface ModelMetaRow {
     outcomes: string;
     has_dalys: boolean;
     scenario_count: number;
+    scenarios: string[];
 }
 
 interface ModelMetaProps {
@@ -120,6 +121,20 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                 </thead>
                 <tbody>
                 {this.state.data.map(function (model: ModelMetaRow, index: number) {
+                    const scenarioDetailsLink = model.scenario_count > 0 ?
+                        <div><a href="#" id={`scenario-details-link-${index}`}>view</a></div> : "";
+
+                    const scenarioDetailsTooltip = model.scenario_count > 0 ?
+                        <UncontrolledTooltip  target={`scenario-details-link-${index}`}
+                                              className={"model-meta-tooltip"}
+                                              placement={"right"}>
+                            {
+                                model.scenarios.map(function(scenario: string, index: number) {
+                                    return (<div>{scenario}</div>);
+                                })
+                            }
+                        </UncontrolledTooltip> : "";
+
                     return (
                         <tr key={index} data-item={model}>
                             <td data-title="group">{model.modelling_group}</td>
@@ -127,7 +142,9 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                             <td data-title="disease">{model.disease}</td>
                             <td data-title="type">{model.is_dynamic ? "Dynamic" : "Static"}</td>
                             <td data-title="scenarios">{`${model.scenario_count} scenario` +
-                                                            (model.scenario_count === 1 ? "" : "s")}</td>
+                                                            (model.scenario_count === 1 ? "" : "s")}
+                                {scenarioDetailsLink}
+                            </td>
                             <td data-title="code">{model.code}</td>
                             <td data-title="gender">{model.gender ? model.gender : "NA"}</td>
                             <td data-title="max_countries">{model.max_countries}</td>
@@ -136,6 +153,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                             <td data-title="cohorts">{model.cohorts}</td>
                             <td data-title="outcomes">{model.outcomes}</td>
                             <td data-title="dalys">{model.has_dalys ? "Yes" : "No"}</td>
+                            {scenarioDetailsTooltip}
                         </tr>
                     );
                 })}
@@ -183,7 +201,8 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                     years: `${expectation.years.minimum_inclusive} - ${expectation.years.maximum_inclusive}`,
                     ages: `${expectation.ages.minimum_inclusive} - ${expectation.ages.maximum_inclusive}`,
                     cohorts: cohorts,
-                    scenario_count: modelExpectation.applicable_scenarios.length
+                    scenario_count: modelExpectation.applicable_scenarios.length,
+                    scenarios: modelExpectation.applicable_scenarios
                 }
             } else {
                 return {
@@ -193,7 +212,8 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                     years: expectationNotFound,
                     ages: expectationNotFound,
                     cohorts: expectationNotFound,
-                    scenario_count: 0
+                    scenario_count: 0,
+                    scenarios: []
                 }
             }
 

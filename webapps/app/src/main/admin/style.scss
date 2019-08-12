@@ -1,3 +1,13 @@
 
 @import "../shared/styles/variables";
 @import "../shared/styles/common";
+
+.model-meta-tooltip > .tooltip-inner{
+  color: #212529;
+  background-color: white;
+  border: 1px solid #c8c8c8;
+}
+
+.model-meta-tooltip > .arrow::before {
+  border-right-color: #c8c8c8;
+}
