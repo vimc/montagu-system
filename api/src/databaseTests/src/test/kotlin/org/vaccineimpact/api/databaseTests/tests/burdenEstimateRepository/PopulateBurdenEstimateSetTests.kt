@@ -32,7 +32,7 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `can update set filename`()
+    fun `can update burden estimate set original filename`()
     {
         val setId = withDatabase { db ->
             setupDatabaseWithBurdenEstimateSet(db, type = "central-averaged")
