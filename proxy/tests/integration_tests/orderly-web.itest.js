@@ -49,4 +49,4 @@ test('old report page urls are redirected', async () => {
 
     expect(await browser.getCurrentUrl()).toBe("https://localhost/reports/report/r1/20170516-134824-a16bab9d")
 
-});
+}, 8000);
