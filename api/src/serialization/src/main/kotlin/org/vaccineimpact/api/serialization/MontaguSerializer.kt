@@ -82,6 +82,7 @@ open class MontaguSerializer : Serializer
         val baseGson = common.create()
         gson = common
                 .registerTypeAdapter<User>(ruleBasedSerializer(baseGson))
+                .registerTypeAdapter<BurdenEstimateSet>(ruleBasedSerializer(baseGson))
                 .registerTypeAdapter<ScenarioTouchstoneAndCoverageSets>(ruleBasedSerializer(baseGson))
                 .registerTypeAdapter<ScenarioAndCoverageSets>(ruleBasedSerializer(baseGson))
                 .registerTypeAdapter<BurdenEstimateDataSeries>(BurdenEstimateDataSeriesTypeAdaptor())
