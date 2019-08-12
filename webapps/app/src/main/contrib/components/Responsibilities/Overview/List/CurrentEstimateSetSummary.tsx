@@ -35,7 +35,7 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
                     </span>;
                 } else {
                     return <span>
-                        You have a central estimate set in status '{set.status}', which was created on {timestamp}"
+                        You have a central estimate set in status '{set.status}', which was created on {timestamp}
                     </span>;
                 }
             }
