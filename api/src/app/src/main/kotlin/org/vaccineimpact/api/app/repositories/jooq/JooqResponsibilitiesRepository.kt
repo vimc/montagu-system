@@ -88,7 +88,7 @@ class JooqResponsibilitiesRepository(
                 status = mapper.mapEnum(first[Tables.BURDEN_ESTIMATE_SET.STATUS]),
                 problems = input.filter { it[Tables.BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] != null }
                         .map { it[Tables.BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] },
-                originalFileName = first[Tables.BURDEN_ESTIMATE_SET.ORIGINAL_FILENAME]
+                originalFilename = first[Tables.BURDEN_ESTIMATE_SET.ORIGINAL_FILENAME]
         )
     }
 

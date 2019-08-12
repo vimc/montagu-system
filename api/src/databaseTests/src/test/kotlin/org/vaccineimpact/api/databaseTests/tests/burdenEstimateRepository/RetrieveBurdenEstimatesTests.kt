@@ -232,14 +232,14 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             Assertions.assertThat(a.uploadedOn).isAfter(before)
             Assertions.assertThat(a.uploadedOn).isBefore(after)
             Assertions.assertThat(a.problems).isEmpty()
-            Assertions.assertThat(a.originalFileName).isNull()
+            Assertions.assertThat(a.originalFilename).isNull()
 
             val b = sets.single { it.id == setB }
             Assertions.assertThat(b.uploadedBy).isEqualTo("some.other.user")
             Assertions.assertThat(b.uploadedOn).isAfter(a.uploadedOn)
             Assertions.assertThat(b.uploadedOn).isBefore(after)
             Assertions.assertThat(b.problems).hasSameElementsAs(listOf("some problem"))
-            Assertions.assertThat(b.originalFileName).isEqualTo("file.csv")
+            Assertions.assertThat(b.originalFilename).isEqualTo("file.csv")
         }
     }
 
@@ -278,7 +278,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             assertThat(set.uploadedBy).isEqualTo(username)
             assertThat(set.problems).isEmpty()
             assertThat(set.isStochastic()).isTrue()
-            assertThat(set.originalFileName).isEqualTo("file.csv")
+            assertThat(set.originalFilename).isEqualTo("file.csv")
         }
     }
 
