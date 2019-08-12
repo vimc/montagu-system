@@ -413,19 +413,6 @@ class JooqBurdenEstimateRepository(
         }
     }
 
-    override fun createBurdenEstimateSet(responsibilityId: Int,
-                                         modelVersionId: Int,
-                                         properties: CreateBurdenEstimateSet,
-                                         uploader: String,
-                                         timestamp: Instant): Int
-    {
-
-        val setId = addSet(responsibilityId, uploader, timestamp, modelVersionId, properties)
-        updateCurrentBurdenEstimateSet(responsibilityId, setId, properties.type)
-
-        return setId
-    }
-
     override fun clearBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
     {
         // Dereference modelling group IDs
@@ -483,8 +470,11 @@ class JooqBurdenEstimateRepository(
                 .execute()
     }
 
-    private fun addSet(responsibilityId: Int, uploader: String, timestamp: Instant,
-                       modelVersion: Int, properties: CreateBurdenEstimateSet): Int
+    override fun createBurdenEstimateSet(responsibilityId: Int,
+                                         modelVersionId: Int,
+                                         properties: CreateBurdenEstimateSet,
+                                         uploader: String,
+                                         timestamp: Instant): Int
     {
         val setRecord = dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
             this.modelVersion = modelVersion

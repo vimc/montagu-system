@@ -1,14 +1,7 @@
 package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.jooq.TableField
 import org.junit.Test
-import org.vaccineimpact.api.app.errors.DatabaseContentsError
-import org.vaccineimpact.api.app.errors.InvalidOperationError
-import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.RESPONSIBILITY
 import org.vaccineimpact.api.models.BurdenEstimateSetType
 import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
@@ -19,7 +12,7 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     @Test
     fun `can create burden estimate set with empty status`()
     {
-        var returnedIds: BurdenEstimateRepositoryTests.ReturnedIds? = null
+        var returnedIds: ReturnedIds? = null
         var setId: Int? = null
 
         given { db ->
@@ -41,7 +34,7 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
                         "mean"
                 ), 1
         )
-        var returnedIds: BurdenEstimateRepositoryTests.ReturnedIds? = null
+        var returnedIds: ReturnedIds? = null
         given { db ->
             returnedIds = setupDatabaseWithModelRunParameterSet(db)
         } makeTheseChanges { repo ->
@@ -54,7 +47,7 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `central estimates update current estimate set`()
+    fun `does not update current estimate set on creation`()
     {
         var returnedIds: ReturnedIds? = null
         var setId: Int? = null
@@ -64,47 +57,13 @@ class CreateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
             setId = repo.createBurdenEstimateSet(returnedIds!!.responsibility, returnedIds!!.modelVersion!!,
                     defaultProperties, username, timestamp)
         } andCheckDatabase { db ->
-            checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!,
-                    RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET)
+            val actualSetId = db.dsl.select(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET)
+                    .from(RESPONSIBILITY)
+                    .where(RESPONSIBILITY.ID.eq(returnedIds!!.responsibility))
+                    .fetchOneInto(Int::class.java)
+
+            assertThat(actualSetId).isNotEqualTo(setId)
         }
     }
 
-    @Test
-    fun `stochastic estimates update current estimate set`()
-    {
-        var returnedIds: ReturnedIds? = null
-        var setId: Int? = null
-        given { db ->
-            returnedIds = setupDatabase(db)
-        } makeTheseChanges { repo ->
-            val properties = defaultProperties.withType(BurdenEstimateSetTypeCode.STOCHASTIC)
-            setId = repo.createBurdenEstimateSet(returnedIds!!.responsibility, returnedIds!!.modelVersion!!,
-                    properties, username, timestamp)
-        } andCheckDatabase { db ->
-            checkCurrentBurdenEstimateSet(db, returnedIds!!, setId!!,
-                    RESPONSIBILITY.CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET)
-        }
-    }
-
-    private fun assertUnknownObjectError(work: (repo: BurdenEstimateRepository) -> Any)
-    {
-        JooqContext().use { db ->
-            setupDatabaseWithModelRunParameterSet(db)
-            val repo = makeRepository(db)
-            assertThatThrownBy {
-                work(repo)
-            }.isInstanceOf(UnknownObjectError::class.java)
-        }
-    }
-
-    private fun checkCurrentBurdenEstimateSet(db: JooqContext, returnedIds: ReturnedIds, setId: Int,
-                                              fieldToCheck: TableField<*, Int>)
-    {
-        val actualSetId = db.dsl.select(fieldToCheck)
-                .from(RESPONSIBILITY)
-                .where(RESPONSIBILITY.ID.eq(returnedIds.responsibility))
-                .fetchOneInto(Int::class.java)
-
-        assertThat(actualSetId).isEqualTo(setId)
-    }
 }
