@@ -34,13 +34,15 @@ test('can access orderly web', async () => {
 
     const title = await browser.findElement(webDriver.By.className("site-title"));
     expect(await title.getText()).toBe("Reporting portal")
-});
+}, 8000);
 
 test('old report page urls are redirected', async () => {
 
-    browser.get("https://localhost/reports/r1/20170516-134824-a16bab9d");
+    await browser.get("https://localhost");
+    await TestHelper.ensureLoggedIn(browser);
 
-    TestHelper.ensureLoggedIn(browser);
+    await browser.get("https://localhost/reports/r1/20170516-134824-a16bab9d");
+
     await browser.wait(() => {
         return browser.getCurrentUrl().then((url) => {
             return url === "https://localhost/reports/report/r1/20170516-134824-a16bab9d";

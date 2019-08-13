@@ -60,7 +60,7 @@ test('can submit and use new password', async () => {
     const token = await TestHelper.submitResetPasswordRequestAndReadLinkToken(browser);
     await changePasswordAndTestLogin(token, "newpassword");
 
-});
+}, 8000);
 
 async function changePasswordAndTestLogin(token, password) {
     //set password
