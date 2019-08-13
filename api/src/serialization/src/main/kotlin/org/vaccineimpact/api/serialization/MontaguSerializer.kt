@@ -123,12 +123,11 @@ open class MontaguSerializer : Serializer
 
     override val serializeNullsTo = "<NA>"
 
-    private val decimalFormat = DecimalFormat("###.##")
-
     override fun serializeValueForCSV(value: Any?) = when (value)
     {
         null -> serializeNullsTo
         is Enum<*> -> serializeEnum(value)
+        is BigDecimal -> value.stripTrailingZeros().toPlainString()
         else -> value.toString()
     }
 

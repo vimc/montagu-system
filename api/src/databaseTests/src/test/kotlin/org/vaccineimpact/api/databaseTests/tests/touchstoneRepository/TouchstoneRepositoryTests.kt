@@ -11,6 +11,7 @@ import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.db.toDecimalOrNull
 import org.vaccineimpact.api.models.LongCoverageRow
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>()
 {
@@ -93,15 +94,15 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
             addABCountries(db);
         }
 
-        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal(0.2))
-        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), BigDecimal(0.6))
-        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(300), BigDecimal(0.8))
+        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal.valueOf(0.2))
+        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), BigDecimal.valueOf(0.6))
+        db.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(300), BigDecimal.valueOf(0.8))
 
-        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(400), BigDecimal(0.1))
-        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(500), BigDecimal(0.2))
-        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), BigDecimal(0.3))
+        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(400), BigDecimal.valueOf(0.1))
+        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(500), BigDecimal.valueOf(0.2))
+        db.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), BigDecimal.valueOf(0.3))
 
-        db.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+        db.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal.valueOf(0.123))
     }
 
     protected fun giveScenarioCoverageSets(db: JooqContext, scenarioId: String, includeCoverageData: Boolean)
@@ -118,14 +119,13 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
         }
     }
 
-    protected fun assertLongCoverageRowListEqualWithCoverageTolerance(actual: List<LongCoverageRow>,
-                                                                    expected: List<LongCoverageRow>,
-                                                                    tolerance: Double = 0.0001)
+    protected fun assertLongCoverageRowListEqual(actual: List<LongCoverageRow>,
+                                                 expected: List<LongCoverageRow>)
     {
         //Do an 'almost exact' list comparison on expected LongCoverageRows, allowing for tolerance on floating point
         //coverage values
         Assertions.assertThat(actual.count()).isEqualTo(expected.count())
-        for (i in 0..expected.count()-1)
+        for (i in 0 until expected.count())
         {
             val e = expected[i]
             val a = actual[i]
@@ -141,7 +141,8 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
             Assertions.assertThat(a.ageLast).isEqualTo(e.ageLast)
             Assertions.assertThat(a.ageRangeVerbatim).isEqualTo(e.ageRangeVerbatim)
             Assertions.assertThat(a.target).isEqualTo(e.target)
-            Assertions.assertThat(a.coverage).isCloseTo(e.coverage, Assertions.within(BigDecimal(tolerance)))
+            Assertions.assertThat(a.coverage?.setScale(10, RoundingMode.HALF_UP))
+                    .isEqualTo(e.coverage?.setScale(10, RoundingMode.HALF_UP))
         }
 
     }

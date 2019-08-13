@@ -11,6 +11,7 @@ import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneId
@@ -37,7 +38,8 @@ class MontaguSerializerTests : MontaguTests()
         assertThat(serializer.convertFieldName("camelCase")).isEqualTo("camel_case")
     }
 
-    enum class TestEnum { SIMPLE, COMPLEX_VALUE }
+    enum class TestEnum
+    { SIMPLE, COMPLEX_VALUE }
 
     @Test
     fun `serializeEnum serializes any enum correctly`()
@@ -170,17 +172,20 @@ class MontaguSerializerTests : MontaguTests()
     @Test
     fun `serializes decimal for CSV with correct decimal places`()
     {
-        assertThat(serializer.serializeValueForCSV(BigDecimal(123))).isEqualTo("123")
-        assertThat(serializer.serializeValueForCSV(BigDecimal(123.4))).isEqualTo("123.4")
-        assertThat(serializer.serializeValueForCSV(BigDecimal(123.45))).isEqualTo("123.45")
-        assertThat(serializer.serializeValueForCSV(BigDecimal(123.456))).isEqualTo("123.46")
-        assertThat(serializer.serializeValueForCSV(BigDecimal(123.5000000))).isEqualTo("123.5")
+        assertThat(serializer.serializeValueForCSV(BigDecimal.valueOf(123))).isEqualTo("123")
+        assertThat(serializer.serializeValueForCSV(BigDecimal.valueOf(123.4))).isEqualTo("123.4")
+        assertThat(serializer.serializeValueForCSV(BigDecimal.valueOf(123.45))).isEqualTo("123.45")
+        assertThat(serializer.serializeValueForCSV(BigDecimal.valueOf(123.456))).isEqualTo("123.456")
+        assertThat(serializer.serializeValueForCSV(BigDecimal.valueOf(123.45678))).isEqualTo("123.45678")
+        assertThat(serializer.serializeValueForCSV(BigDecimal.valueOf(123456.78))).isEqualTo("123456.78")
     }
 
     @Test
-    fun `serializes decimal for CSV with no grouping`()
+    fun `trims trailing zeros for decimal values`()
     {
-        assertThat(serializer.serializeValueForCSV((BigDecimal(123456.78)))).isEqualTo("123456.78")
+        val test = BigDecimal(0.3).divide(BigDecimal(0.4), 10, BigDecimal.ROUND_HALF_UP)
+        assertThat(test.toString()).isEqualTo("0.7500000000")
+        assertThat(serializer.serializeValueForCSV(test)).isEqualTo("0.75")
     }
 
     fun checkSerializedForm(expected: JsonObject, actual: Any): Unit
