@@ -2,10 +2,8 @@ package org.vaccineimpact.api.app.logic
 
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.repositories.*
-import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
-import org.vaccineimpact.api.serialization.DecimalRoundingSerializer
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 

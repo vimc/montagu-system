@@ -18,8 +18,6 @@ import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
-import org.vaccineimpact.api.serialization.DecimalRoundingSerializer
-import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.serialization.SplitData
 import java.math.BigDecimal
 import kotlin.sequences.Sequence
@@ -46,15 +44,14 @@ class JooqTouchstoneRepository(
     override fun getDemographicData(statisticTypeCode: String,
                                     source: String,
                                     touchstoneVersionId: String,
-                                    gender: String,
-                                    serializer: Serializer): SplitData<DemographicDataForTouchstone, LongDemographicRow>
+                                    gender: String): SplitData<DemographicDataForTouchstone, LongDemographicRow>
     {
         val metadata = getDemographicMetadata(statisticTypeCode, source, touchstoneVersionId, gender)
         val data = getDemographicStatistics(touchstoneVersionId, statisticTypeCode, source, gender)
                 .orderBy(DEMOGRAPHIC_STATISTIC.COUNTRY, DEMOGRAPHIC_STATISTIC.YEAR, DEMOGRAPHIC_STATISTIC.AGE_FROM)
                 .fetchSequence()
                 .map { mapDemographicRow(it) }
-        return SplitData(metadata, DataTable.new(data, serializer))
+        return SplitData(metadata, DataTable.new(data))
     }
 
     private fun getDemographicMetadata(
@@ -146,7 +143,7 @@ class JooqTouchstoneRepository(
         val coverageData = getCoverageDataForScenario(touchstoneVersionId, scenarioDescId)
         val metadata = ScenarioAndCoverageSets(scenario, coverageSets)
 
-        return SplitData(metadata, DataTable.new(coverageData.asSequence(), serializer = DecimalRoundingSerializer.instance))
+        return SplitData(metadata, DataTable.new(coverageData.asSequence()))
     }
 
     override fun getCoverageDataForScenario(
