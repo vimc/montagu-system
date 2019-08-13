@@ -125,16 +125,10 @@ open class MontaguSerializer : Serializer
 
     private val decimalFormat = DecimalFormat("###.##")
 
-    private fun serializeBigDecimal(value: BigDecimal) : String
-    {
-        return decimalFormat.format(value)
-    }
-
     override fun serializeValueForCSV(value: Any?) = when (value)
     {
         null -> serializeNullsTo
         is Enum<*> -> serializeEnum(value)
-        is BigDecimal -> serializeBigDecimal(value)
         else -> value.toString()
     }
 
