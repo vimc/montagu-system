@@ -58,7 +58,7 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
         return <div className={`mt-3 alert alert-${alertType} text-left`}>
             {estimateText}
             {url && [
-                <FileDownloadButton href={url} className={"float-right"}>
+                <FileDownloadButton href={url} className={"float-right mr-0"}>
                     Download these estimates
                 </FileDownloadButton>,
                 <div className={"clearfix"}></div>
