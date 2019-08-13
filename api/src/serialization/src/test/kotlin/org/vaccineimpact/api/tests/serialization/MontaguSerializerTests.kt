@@ -5,6 +5,7 @@ import com.beust.klaxon.Parser
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
@@ -170,14 +171,9 @@ class MontaguSerializerTests : MontaguTests()
     }
 
     @Test
-    fun `serializes decimal for CSV with correct decimal places`()
+    fun `serializes decimal for CSV unrounded`()
     {
-        assertThat(serializer.serializeValueForCSV(BigDecimal.valueOf(123))).isEqualTo("123")
-        assertThat(serializer.serializeValueForCSV(BigDecimal.valueOf(123.4))).isEqualTo("123.4")
-        assertThat(serializer.serializeValueForCSV(BigDecimal.valueOf(123.45))).isEqualTo("123.45")
-        assertThat(serializer.serializeValueForCSV(BigDecimal.valueOf(123.456))).isEqualTo("123.456")
-        assertThat(serializer.serializeValueForCSV(BigDecimal.valueOf(123.45678))).isEqualTo("123.45678")
-        assertThat(serializer.serializeValueForCSV(BigDecimal.valueOf(123456.78))).isEqualTo("123456.78")
+        assertThat(serializer.serializeValueForCSV(123.4567999.toDecimal())).isEqualTo("123.4567999")
     }
 
     @Test
