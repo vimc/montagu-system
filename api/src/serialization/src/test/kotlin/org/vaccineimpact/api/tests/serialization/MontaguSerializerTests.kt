@@ -168,11 +168,20 @@ class MontaguSerializerTests : MontaguTests()
     }
 
     @Test
-    fun `serializes decimal for CSV unrounded`()
+    fun `serializes decimal for CSV with correct decimal places`()
     {
-        assertThat(serializer.serializeValueForCSV(BigDecimal(123.4567999))).startsWith("123.456799")
+        assertThat(serializer.serializeValueForCSV(BigDecimal(123))).isEqualTo("123")
+        assertThat(serializer.serializeValueForCSV(BigDecimal(123.4))).isEqualTo("123.4")
+        assertThat(serializer.serializeValueForCSV(BigDecimal(123.45))).isEqualTo("123.45")
+        assertThat(serializer.serializeValueForCSV(BigDecimal(123.456))).isEqualTo("123.46")
+        assertThat(serializer.serializeValueForCSV(BigDecimal(123.5000000))).isEqualTo("123.5")
     }
 
+    @Test
+    fun `serializes decimal for CSV with no grouping`()
+    {
+        assertThat(serializer.serializeValueForCSV((BigDecimal(123456.78)))).isEqualTo("123456.78")
+    }
 
     fun checkSerializedForm(expected: JsonObject, actual: Any): Unit
     {

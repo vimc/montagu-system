@@ -625,7 +625,7 @@ fun JooqContext.generateDemographicData(
                         age + ageRange.step,
                         genderId = genderId,
                         variant = variantId,
-                        value = random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 4)
+                        value = random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2)
                 ))
 
             }

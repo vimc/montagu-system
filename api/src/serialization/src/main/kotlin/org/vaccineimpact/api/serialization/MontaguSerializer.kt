@@ -6,6 +6,8 @@ import com.google.gson.*
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
+import java.math.BigDecimal
+import java.text.DecimalFormat
 import java.time.Instant
 import java.time.LocalDate
 
@@ -121,10 +123,18 @@ open class MontaguSerializer : Serializer
 
     override val serializeNullsTo = "<NA>"
 
+    private val decimalFormat = DecimalFormat("###.##")
+
+    private fun serializeBigDecimal(value: BigDecimal) : String
+    {
+        return decimalFormat.format(value)
+    }
+
     override fun serializeValueForCSV(value: Any?) = when (value)
     {
         null -> serializeNullsTo
         is Enum<*> -> serializeEnum(value)
+        is BigDecimal -> serializeBigDecimal(value)
         else -> value.toString()
     }
 

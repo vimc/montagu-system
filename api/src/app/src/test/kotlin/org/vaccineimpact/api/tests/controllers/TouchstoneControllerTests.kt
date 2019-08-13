@@ -192,7 +192,7 @@ class TouchstoneControllerTests : MontaguTests()
                 DemographicMetadata("id", "name", null, listOf(), "people", "age", source))
 
         val repo = mock<TouchstoneRepository> {
-            on { getDemographicData(type, source, openTouchstoneVersion.id, serializer = MontaguSerializer.instance) } doReturn
+            on { getDemographicData(type, source, openTouchstoneVersion.id) } doReturn
                     SplitData(demographicMetadata, DataTable.new(emptySequence()))
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
         }
@@ -291,7 +291,7 @@ class TouchstoneControllerTests : MontaguTests()
         )
 
         return mock<TouchstoneRepository> {
-            on { getDemographicData(type, source, openTouchstoneVersion.id, serializer = MontaguSerializer.instance) } doReturn
+            on { getDemographicData(type, source, openTouchstoneVersion.id) } doReturn
                     SplitData(demographicMetadata, DataTable.new(fakeRows))
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
         }
