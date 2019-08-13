@@ -1,10 +1,7 @@
 package org.vaccineimpact.api.db.direct
 
-import org.vaccineimpact.api.db.AnnexJooqContext
-import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.db.fromJoinPath
-import org.vaccineimpact.api.db.nextDecimal
 import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord
 import org.vaccineimpact.api.db.tables.records.ScenarioRecord
@@ -625,7 +622,7 @@ fun JooqContext.generateDemographicData(
                         age + ageRange.step,
                         genderId = genderId,
                         variant = variantId,
-                        value = random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2)
+                        value = random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 4)
                 ))
 
             }
@@ -669,8 +666,8 @@ fun JooqContext.generateCoverageData(
         yearRange: IntProgression = 1960..2000 step 5,
         ageRange: IntProgression = 0..80 step 5,
         testYear: Int = 1955,
-        target: BigDecimal = BigDecimal.valueOf(100.12),
-        coverage: BigDecimal = BigDecimal.valueOf(200.13),
+        target: BigDecimal = 100.12.toDecimal(),
+        coverage: BigDecimal = 200.13.toDecimal(),
         uniformData: Boolean = false, /*Make all target and coverage values the same*/
         ageRangeVerbatim: String? = null)
 {
