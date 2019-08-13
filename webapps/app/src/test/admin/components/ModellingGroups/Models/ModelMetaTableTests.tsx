@@ -68,7 +68,9 @@ describe("ModelMetaTable tests", () => {
             outcomes: "deaths, dalys",
             has_dalys: true,
             max_countries: 2,
-            scenario_count: 1
+            scenario_count: 1,
+            countries: [{id: "C1", name: "Country 1"}, {id: "C2", name: "Country 2"}],
+            scenarios: ["s1"]
         },
         {...testModel2,
             code: "C",
@@ -80,7 +82,9 @@ describe("ModelMetaTable tests", () => {
             outcomes: "deaths, cases",
             has_dalys: false,
             max_countries: 1,
-            scenario_count: 2
+            scenario_count: 2,
+            countries: [{id: "C3", name: "Country3"}],
+            scenarios: ["s2", "s3"]
         }];
 
     const sandbox = new Sandbox();
@@ -242,6 +246,16 @@ describe("ModelMetaTable tests", () => {
         assertSortsBy(12, "Yes", "No")
     });
 
+    it("shows scenario tooltips", () => {
+        assertTooltip(4, 0, "s1");
+        assertTooltip(4, 1, "s2 s3");
+    });
+
+    it("shows countries tooltips", () => {
+        assertTooltip(7, 0, "Country 1 (C1) Country 2 (C2)");
+        assertTooltip(7, 1, "Country 3 (C3)");
+    });
+
     function assertSortsBy(colIndex: number, ascValue: string, descValue: string) {
 
         const rendered = shallow(<ModelMetaTableComponent models={mappedData}/>);
@@ -263,6 +277,20 @@ describe("ModelMetaTable tests", () => {
         expect(getFirstRowValue()).to.eq(descValue);
         expect(rendered.find("th").at(colIndex).hasClass("asc")).to.eq(false);
         expect(rendered.find("th").at(colIndex).hasClass("desc")).to.eq(true);
+    }
+
+    function assertTooltip(colIndex: number, rowIndex: number, text: string) {
+        const rendered = shallow(<ModelMetaTableComponent models={mappedData}/>);
+
+        const cell = rendered.find("tbody").find("tr").at(rowIndex).find("td").at(colIndex);
+        const link = cell.find("a");
+        expect(link.text()).to.eql("view");
+
+        link.simulate("mouseover");
+
+        const newcell = rendered.find("tbody").find("tr").at(rowIndex).find("td").at(colIndex);
+        expect(newcell.find(".tooltip-inner").text()).to.eql(text);
+
     }
 
 });

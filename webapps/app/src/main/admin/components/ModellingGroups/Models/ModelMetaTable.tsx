@@ -53,11 +53,12 @@ function compare(a: unknown, b: unknown) {
     return 0
 }
 
-function createTooltip(target: string, content: any){
+function createTooltip(target: string, container: string, content: any){
     return <UncontrolledTooltip  target={target}
                                  className={"model-meta-tooltip"}
                                  autohide={false}
-                                 placement={"right"}>
+                                 placement={"right"}
+                                 container={container}>
         {content}
     </UncontrolledTooltip>
 }
@@ -139,14 +140,14 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                         <div><a href="#" id={`countries-details-link-${index}`}>view</a></div> : "";
 
                     const scenarioDetailsTooltip = model.scenario_count > 0 ?
-                        createTooltip(`scenario-details-link-${index}`,
+                        createTooltip(`scenario-details-link-${index}`, `scenario-cell-${index}`,
                             model.scenarios.map(function(scenario: string) {
                                 return (<div>{scenario}</div>);
                             }))
                         : "";
 
                     const countriesDetailsTooltip = model.max_countries > 0 ?
-                        createTooltip(`countries-details-link-${index}`,
+                        createTooltip(`countries-details-link-${index}`, `countries-cell-${index}`,
                             model.countries.map(function(country: Country) {
                                 return (<div>{`${country.name} (${country.id})`}</div>);
                             }))
@@ -158,13 +159,13 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                             <td data-title="name">{model.id}</td>
                             <td data-title="disease">{model.disease}</td>
                             <td data-title="type">{model.is_dynamic ? "Dynamic" : "Static"}</td>
-                            <td data-title="scenarios">{`${model.scenario_count} scenario` +
+                            <td data-title="scenarios" id={`scenario-cell-${index}`}>{`${model.scenario_count} scenario` +
                                                             (model.scenario_count === 1 ? "" : "s")}
                                 {scenarioDetailsLink}
                             </td>
                             <td data-title="code">{model.code}</td>
                             <td data-title="gender">{model.gender ? model.gender : "NA"}</td>
-                            <td data-title="max_countries">{model.max_countries}
+                            <td data-title="max_countries" id={`countries-cell-${index}`}>{model.max_countries}
                                 {countriesDetailsLink}</td>
                             <td data-title="years">{model.years}</td>
                             <td data-title="ages">{model.ages}</td>
