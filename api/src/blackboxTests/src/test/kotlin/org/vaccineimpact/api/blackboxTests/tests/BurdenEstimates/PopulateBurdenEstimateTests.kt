@@ -3,7 +3,10 @@ package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 import khttp.responses.Response
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.blackboxTests.helpers.*
+import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
+import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
+import org.vaccineimpact.api.blackboxTests.helpers.TokenLiteral
+import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
@@ -193,8 +196,8 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can upload file in 1 chunk and then populate set`() {
-
+    fun `can upload file in 1 chunk and then populate set`()
+    {
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
         }
@@ -208,7 +211,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val queryParams = mapOf("chunkNumber" to 1,
                 "totalSize" to size,
                 "chunkSize" to size,
-                "fileName" to  fileName,
+                "fileName" to fileName,
                 "totalChunks" to 1)
                 .map { "${it.key}=${it.value}" }
                 .joinToString("&")
@@ -224,11 +227,16 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
                     .from(BURDEN_ESTIMATE)
                     .fetch()
             assertThat(records).isNotEmpty
+
+            val metadata = db.dsl.selectFrom(BURDEN_ESTIMATE_SET)
+                    .fetchOne()
+            assertThat(metadata[BURDEN_ESTIMATE_SET.ORIGINAL_FILENAME]).isEqualTo("test.csv")
         }
     }
 
     @Test
-    fun `can upload file by multiple chunks and then populate set`() {
+    fun `can upload file by multiple chunks and then populate set`()
+    {
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it, yearMinInclusive = 1996, yearMaxInclusive = 1999)
         }
@@ -257,7 +265,8 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `can upload file by multiple chunks and get validation error on set population`() {
+    fun `can upload file by multiple chunks and get validation error on set population`()
+    {
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
         }
@@ -286,7 +295,8 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     @Test
-    fun `cannot reuse an upload token for a different file`() {
+    fun `cannot reuse an upload token for a different file`()
+    {
 
         val setId = JooqContext().use {
             setUpWithBurdenEstimateSet(it)
@@ -304,7 +314,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val newMetadata = mapOf("chunkNumber" to 1,
                 "totalSize" to size,
                 "chunkSize" to 1,
-                "fileName" to  fileName,
+                "fileName" to fileName,
                 "totalChunks" to 1)
                 .map { "${it.key}=${it.value}" }
                 .joinToString("&")
@@ -335,7 +345,8 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         assertThat(response.statusCode).isEqualTo(400)
     }
 
-    private fun getUploadToken(setUrl: String, token: TokenLiteral) : String {
+    private fun getUploadToken(setUrl: String, token: TokenLiteral): String
+    {
         val response = RequestHelper().get("$setUrl/actions/request-upload/", token = token)
         val json = com.beust.klaxon.Parser().parse(StringBuilder(response.text)) as com.beust.klaxon.JsonObject
         return json["data"] as String

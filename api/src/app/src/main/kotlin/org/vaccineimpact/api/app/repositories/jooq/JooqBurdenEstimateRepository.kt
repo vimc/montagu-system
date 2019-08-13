@@ -159,6 +159,7 @@ class JooqBurdenEstimateRepository(
                 table.SET_TYPE_DETAILS,
                 table.STATUS,
                 table.RESPONSIBILITY,
+                table.ORIGINAL_FILENAME,
                 BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
         )
                 .from(table)
@@ -181,6 +182,7 @@ class JooqBurdenEstimateRepository(
                 table.SET_TYPE,
                 table.SET_TYPE_DETAILS,
                 table.STATUS,
+                table.ORIGINAL_FILENAME,
                 BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
         )
                 .from(table)
@@ -211,6 +213,7 @@ class JooqBurdenEstimateRepository(
                 table.SET_TYPE,
                 table.SET_TYPE_DETAILS,
                 table.STATUS,
+                table.ORIGINAL_FILENAME,
                 BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM
         )
                 .from(table)
@@ -504,6 +507,14 @@ class JooqBurdenEstimateRepository(
                 .fetchOne()
                 ?.into(ResponsibilityInfo::class.java)
                 ?: findMissingObjects(touchstoneVersionId, scenarioId)
+    }
+
+    override fun updateBurdenEstimateSetFilename(setId: Int, filename: String?)
+    {
+        dsl.update(BURDEN_ESTIMATE_SET)
+                .set(BURDEN_ESTIMATE_SET.ORIGINAL_FILENAME, filename)
+                .where(BURDEN_ESTIMATE_SET.ID.eq(setId))
+                .execute()
     }
 
     private fun getResponsibilitySetId(groupId: String, touchstoneVersionId: String): Int

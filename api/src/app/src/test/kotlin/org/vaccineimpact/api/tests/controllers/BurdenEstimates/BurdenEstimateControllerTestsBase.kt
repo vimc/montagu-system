@@ -39,7 +39,7 @@ abstract class BurdenEstimateControllerTestsBase: MontaguTests() {
     protected fun mockLogic(): BurdenEstimateLogic
     {
         return mock {
-            on { populateBurdenEstimateSet(any(), any(), any(), any(), any()) } doAnswer { args ->
+            on { populateBurdenEstimateSet(any(), any(), any(), any(), any(), anyOrNull()) } doAnswer { args ->
                 // Force evaluation of sequence
                 args.getArgument<Sequence<BurdenEstimateWithRunId>>(4).toList()
                 Unit
@@ -58,6 +58,6 @@ abstract class BurdenEstimateControllerTestsBase: MontaguTests() {
             1, Instant.now(), "test.user",
             BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "mean"),
             BurdenEstimateSetStatus.EMPTY,
-            emptyList()
-    )
+            emptyList(),
+            null)
 }

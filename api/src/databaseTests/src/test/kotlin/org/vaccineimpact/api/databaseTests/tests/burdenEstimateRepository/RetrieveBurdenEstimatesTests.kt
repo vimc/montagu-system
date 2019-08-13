@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
-import com.sun.org.apache.bcel.internal.classfile.Unknown
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -15,7 +14,6 @@ import org.vaccineimpact.api.models.BurdenEstimateGrouping
 import org.vaccineimpact.api.models.BurdenEstimateSet
 import org.vaccineimpact.api.models.BurdenEstimateSetType
 import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
-import spark.route.HttpMethod
 import java.time.Instant
 
 class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
@@ -224,7 +222,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             val modelVersionId = ids.modelVersion!!
             db.addUserForTesting(otherUser)
             setA = db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
-            setB = db.addBurdenEstimateSet(ids.responsibility, modelVersionId, "some.other.user")
+            setB = db.addBurdenEstimateSet(ids.responsibility, modelVersionId, "some.other.user", filename = "file.csv")
             db.addBurdenEstimateProblem("some problem", setB)
         } check { repo ->
             val after = Instant.now()
@@ -234,12 +232,14 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             Assertions.assertThat(a.uploadedOn).isAfter(before)
             Assertions.assertThat(a.uploadedOn).isBefore(after)
             Assertions.assertThat(a.problems).isEmpty()
+            Assertions.assertThat(a.originalFilename).isNull()
 
             val b = sets.single { it.id == setB }
             Assertions.assertThat(b.uploadedBy).isEqualTo("some.other.user")
             Assertions.assertThat(b.uploadedOn).isAfter(a.uploadedOn)
             Assertions.assertThat(b.uploadedOn).isBefore(after)
             Assertions.assertThat(b.problems).hasSameElementsAs(listOf("some problem"))
+            Assertions.assertThat(b.originalFilename).isEqualTo("file.csv")
         }
     }
 
@@ -271,13 +271,14 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         val setId = withDatabase { db ->
             val ids = setupDatabase(db)
             val modelVersionId = ids.modelVersion!!
-            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setType = "stochastic")
+            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setType = "stochastic", filename = "file.csv")
         }
         withRepo { repo ->
             val set = repo.getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId,  setId)
             assertThat(set.uploadedBy).isEqualTo(username)
             assertThat(set.problems).isEmpty()
             assertThat(set.isStochastic()).isTrue()
+            assertThat(set.originalFilename).isEqualTo("file.csv")
         }
     }
 

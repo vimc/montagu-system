@@ -226,7 +226,8 @@ fun JooqContext.addBurdenEstimateSet(
         setType: String = "central-single-run", setTypeDetails: String? = null,
         modelRunParameterSetId: Int? = null,
         timestamp: Instant = Instant.now(),
-        setId: Int? = null
+        setId: Int? = null,
+        filename: String? = null
 ): Int
 {
     val record = this.dsl.newRecord(BURDEN_ESTIMATE_SET).apply {
@@ -241,6 +242,7 @@ fun JooqContext.addBurdenEstimateSet(
         this.complete = false
         this.status = status
         this.modelRunParameterSet = modelRunParameterSetId
+        this.originalFilename = filename
     }
     if (setId != null)
     {

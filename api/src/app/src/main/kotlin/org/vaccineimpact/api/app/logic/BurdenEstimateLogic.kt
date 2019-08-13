@@ -23,7 +23,7 @@ interface BurdenEstimateLogic
                                 uploader: String, timestamp: Instant): Int
 
     fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
-                                  estimates: Sequence<BurdenEstimateWithRunId>)
+                                  estimates: Sequence<BurdenEstimateWithRunId>, filename: String?)
 
     @Throws(MissingRowsError::class)
     fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
@@ -256,7 +256,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
     }
 
     override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
-                                           estimates: Sequence<BurdenEstimateWithRunId>)
+                                           estimates: Sequence<BurdenEstimateWithRunId>, filename: String?)
     {
         val group = modellingGroupRepository.getModellingGroup(groupId)
         val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(group.id, touchstoneVersionId, scenarioId)
@@ -279,6 +279,11 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
 
         burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)
         burdenEstimateRepository.updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type)
+
+        if (filename != null)
+        {
+            burdenEstimateRepository.updateBurdenEstimateSetFilename(setId, filename)
+        }
     }
 
     private fun populateCentralBurdenEstimateSet(set: BurdenEstimateSet, responsibilityInfo: ResponsibilityInfo,

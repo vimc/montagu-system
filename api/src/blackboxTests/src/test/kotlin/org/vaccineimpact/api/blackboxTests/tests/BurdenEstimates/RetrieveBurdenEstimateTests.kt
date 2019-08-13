@@ -26,7 +26,7 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
             val ids = setUp(db)
             db.addUserForTesting("some.user")
             val setId = db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId, "some.user",
-                    setType = "central-averaged", setTypeDetails = "mean")
+                    setType = "central-averaged", setTypeDetails = "mean", filename = "file.csv")
             db.addBurdenEstimateProblem("a problem", setId)
         } requiringPermissions {
             PermissionSet(
@@ -42,6 +42,7 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
             assertThat(obj["type"]).isEqualTo(json {
                 obj("type" to "central-averaged", "details" to "mean")
             })
+            assertThat(obj["original_filename"]).isEqualTo("file.csv")
         }
     }
 
@@ -52,7 +53,7 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
             val ids = setUp(db)
             db.addUserForTesting("some.user")
             val setId = db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId, "some.user",
-                    setType = "central-averaged", setTypeDetails = "mean")
+                    setType = "central-averaged", setTypeDetails = "mean", filename = "file.csv")
             db.addBurdenEstimateProblem("a problem", setId)
         } requiringPermissions {
             PermissionSet(
@@ -67,6 +68,35 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
             assertThat(data["type"]).isEqualTo(json {
                 obj("type" to "central-averaged", "details" to "mean")
             })
+            assertThat(data["original_filename"]).isEqualTo("file.csv")
+        }
+    }
+
+    @Test
+    fun `can get burden estimate set with no original file`()
+    {
+        validate("${setUrl}1/") against "BurdenEstimateSet" given { db ->
+            val ids = setUp(db)
+            db.addUserForTesting("some.user")
+            val setId = db.addBurdenEstimateSet(ids.responsibilityId, ids.modelVersionId, "some.user",
+                    setType = "central-averaged", setTypeDetails = "mean", filename = null)
+            db.addBurdenEstimateProblem("a problem", setId)
+        } requiringPermissions {
+            PermissionSet(
+                    "$groupScope/estimates.read",
+                    "$groupScope/responsibilities.read"
+            )
+        } andCheck { data ->
+            assertThat(data["uploaded_by"]).isEqualTo("some.user")
+            assertThat(data["problems"]).isEqualTo(json {
+                array("a problem")
+            })
+            assertThat(data["type"]).isEqualTo(json {
+                obj("type" to "central-averaged", "details" to "mean")
+            })
+
+            // set to do not serialise if null, so this field should simply be missing
+            assertThat(data.containsKey("original_filename")).isFalse()
         }
     }
 

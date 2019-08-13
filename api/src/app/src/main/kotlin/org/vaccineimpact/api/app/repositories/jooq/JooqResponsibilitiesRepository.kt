@@ -58,7 +58,8 @@ class JooqResponsibilitiesRepository(
                         table.SET_TYPE,
                         table.SET_TYPE_DETAILS,
                         table.STATUS,
-                        table.ID
+                        table.ID,
+                        table.ORIGINAL_FILENAME
                 )
                 .fromJoinPath(table, Tables.BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)
                 .join(Tables.RESPONSIBILITY)
@@ -86,7 +87,8 @@ class JooqResponsibilitiesRepository(
                 type = mapper.mapBurdenEstimateSetType(first),
                 status = mapper.mapEnum(first[Tables.BURDEN_ESTIMATE_SET.STATUS]),
                 problems = input.filter { it[Tables.BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] != null }
-                        .map { it[Tables.BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }
+                        .map { it[Tables.BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] },
+                originalFilename = first[Tables.BURDEN_ESTIMATE_SET.ORIGINAL_FILENAME]
         )
     }
 

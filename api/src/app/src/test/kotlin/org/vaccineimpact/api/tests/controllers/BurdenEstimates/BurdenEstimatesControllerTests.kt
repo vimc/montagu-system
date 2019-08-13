@@ -23,12 +23,14 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
                 BurdenEstimateSet(1, Instant.MIN, "ThePast",
                         BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "Median"),
                         BurdenEstimateSetStatus.COMPLETE,
-                        emptyList()
+                        emptyList(),
+                        "file.csv"
                 ),
                 BurdenEstimateSet(2, Instant.MAX, "TheFuture",
                         BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_SINGLE_RUN, null),
                         BurdenEstimateSetStatus.EMPTY,
-                        listOf("Doesn't exist yet")
+                        listOf("Doesn't exist yet"),
+                        null
                 )
         )
         val touchstoneRepo = mockTouchstoneRepository()
@@ -55,7 +57,8 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         val data = BurdenEstimateSet(1, Instant.MIN, "ThePast",
                 BurdenEstimateSetType(BurdenEstimateSetTypeCode.CENTRAL_AVERAGED, "Median"),
                 BurdenEstimateSetStatus.COMPLETE,
-                emptyList()
+                emptyList(),
+                "file.csv"
         )
         val touchstoneRepo = mockTouchstoneRepository()
         val repo = mock<BurdenEstimateRepository> {

@@ -26,7 +26,8 @@ Schema: [`BurdenEstimates.schema.json`](../schemas/BurdenEstimates.schema.json)
                 "details": "Mean over all stochastic runs"
             },
             "problems": [],
-            "status": "complete"
+            "status": "complete",
+            "original_filename": "file.csv"
         }
     ]   
 
@@ -45,7 +46,8 @@ Schema: [`BurdenEstimateSet.schema.json`](../schemas/BurdenEstimateSet.schema.js
             "details": "Mean over all stochastic runs"
         },
         "problems": [],
-        "status": "empty"
+        "status": "empty",
+        "original_filename": "file.csv"
     }
     
 ## GET /modelling-groups/{modelling-group-id}/responsibilities/{touchstone-id}/{scenario-id}/estimate-sets/{estimate-id}/estimates/
