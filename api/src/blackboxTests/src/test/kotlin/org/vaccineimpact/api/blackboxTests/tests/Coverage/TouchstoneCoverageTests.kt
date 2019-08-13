@@ -8,7 +8,7 @@ import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.blackboxTests.schemas.SplitSchema
 import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.toDecimalOrNull
+import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import java.math.BigDecimal
 import java.io.StringReader
@@ -83,8 +83,8 @@ class TouchstoneCoverageTests : CoverageTests()
         val requestHelper = RequestHelper()
 
         val testYear = 1980
-        val testTarget = BigDecimal(1000)
-        val testCoverage = "0.9".toDecimalOrNull()!!
+        val testTarget = 1000.toDecimal()
+        val testCoverage = 0.9.toDecimal()
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
@@ -132,7 +132,7 @@ class TouchstoneCoverageTests : CoverageTests()
 
         val testYear = 1980
         val testTarget = BigDecimal(1000)
-        val testCoverage = "0.9".toDecimalOrNull()!!
+        val testCoverage = 0.9.toDecimal()
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
@@ -183,7 +183,7 @@ class TouchstoneCoverageTests : CoverageTests()
 
         val testYear = 1980
         val testTarget = BigDecimal(1000)
-        val testCoverage = "0.9".toDecimalOrNull()!!
+        val testCoverage = 0.9.toDecimal()
 
         val age_range_1 = "age_range_1"
         val age_range_2 = "age_range_2"
@@ -366,7 +366,7 @@ class TouchstoneCoverageTests : CoverageTests()
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get("$url", minimumPermissions, acceptsContentType = "text/csv")
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
 
         val csv = StringReader(response.text)
                 .use { CSVReader(it).readAll() }

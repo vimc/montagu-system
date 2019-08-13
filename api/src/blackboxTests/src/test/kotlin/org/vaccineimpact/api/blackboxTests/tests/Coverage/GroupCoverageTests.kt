@@ -10,12 +10,8 @@ import org.vaccineimpact.api.blackboxTests.validators.SplitValidator
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.db.toDecimalOrNull
-import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.serialization.DataTableDeserializer
-import org.vaccineimpact.api.test_helpers.DatabaseTest
-import org.vaccineimpact.api.validateSchema.JSONValidator
 import java.io.StringReader
 import java.math.BigDecimal
 
@@ -52,8 +48,8 @@ class GroupCoverageTests : CoverageTests()
         val requestHelper = RequestHelper()
 
         val testYear = 1980
-        val testTarget = "1000".toDecimalOrNull()!!
-        val testCoverage = "0.9".toDecimalOrNull()!!
+        val testTarget = 1000.toDecimal()
+        val testCoverage = 0.9.toDecimal()
 
         val age_range_1 = "age_range_1"
         val age_range_2 = "age_range_2"
@@ -101,8 +97,8 @@ class GroupCoverageTests : CoverageTests()
         val requestHelper = RequestHelper()
 
         val testYear = 1980
-        val testTarget = "1000".toDecimalOrNull()!!
-        val testCoverage = "0.9".toDecimalOrNull()!!
+        val testTarget = 1000.toDecimal()
+        val testCoverage = 0.9.toDecimal()
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
@@ -110,7 +106,7 @@ class GroupCoverageTests : CoverageTests()
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get("$url", minimumPermissions, acceptsContentType = "text/csv")
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
 
         val csv = StringReader(response.text)
                 .use { CSVReader(it).readAll() }
@@ -215,7 +211,7 @@ class GroupCoverageTests : CoverageTests()
 
         val testYear = 1980
         val testTarget = BigDecimal(1000)
-        val testCoverage = "0.9".toDecimalOrNull()!!
+        val testCoverage = 0.9.toDecimal()
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
@@ -223,7 +219,7 @@ class GroupCoverageTests : CoverageTests()
             userHelper.setupTestUser(it)
         }
 
-        val response = requestHelper.get("$url", minimumPermissions, acceptsContentType = "text/csv")
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
 
         val csv = StringReader(response.text)
                 .use { CSVReader(it).readAll() }
@@ -252,8 +248,8 @@ class GroupCoverageTests : CoverageTests()
         val requestHelper = RequestHelper()
 
         val testYear = 1980
-        val testTarget = BigDecimal(1000)
-        val testCoverage = BigDecimal(0.9)
+        val testTarget = 1000.toDecimal()
+        val testCoverage = 0.9.toDecimal()
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
@@ -299,8 +295,8 @@ class GroupCoverageTests : CoverageTests()
         val requestHelper = RequestHelper()
 
         val testYear = 1980
-        val testTarget = BigDecimal(1000)
-        val testCoverage = "0.9".toDecimalOrNull()!!
+        val testTarget = 1000.toDecimal()
+        val testCoverage = 0.9.toDecimal()
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
@@ -343,8 +339,8 @@ class GroupCoverageTests : CoverageTests()
         val requestHelper = RequestHelper()
 
         val testYear = 1980
-        val testTarget = BigDecimal(1000)
-        val testCoverage = "0.9".toDecimalOrNull()!!
+        val testTarget = 1000.toDecimal()
+        val testCoverage = 0.9.toDecimal()
 
         val age_range_1 = "age_range_1"
         val age_range_2 = "age_range_2"
@@ -419,8 +415,8 @@ class GroupCoverageTests : CoverageTests()
         val requestHelper = RequestHelper()
 
         val testYear = 1980
-        val testTarget = "123.123".toDecimalOrNull()!!
-        val testCoverage = "456.461".toDecimalOrNull()!!
+        val testTarget = 123.123.toDecimal()
+        val testCoverage = 456.461.toDecimal()
 
         JooqContext().use {
             addCoverageData(it, touchstoneStatus = "open", testYear = testYear,
@@ -446,8 +442,8 @@ class GroupCoverageTests : CoverageTests()
             Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
         }
 
-        Assertions.assertThat(firstRow[10]).isEqualTo("456.46") //should have been rounded b
-        Assertions.assertThat(firstRow[15]).isEqualTo("123.12")
+        Assertions.assertThat(firstRow[10]).isEqualTo("456.461")
+        Assertions.assertThat(firstRow[15]).isEqualTo("123.123")
 
     }
 

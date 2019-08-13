@@ -669,8 +669,8 @@ fun JooqContext.generateCoverageData(
         yearRange: IntProgression = 1960..2000 step 5,
         ageRange: IntProgression = 0..80 step 5,
         testYear: Int = 1955,
-        target: BigDecimal = BigDecimal(100.12),
-        coverage: BigDecimal = BigDecimal(200.13),
+        target: BigDecimal = BigDecimal.valueOf(100.12),
+        coverage: BigDecimal = BigDecimal.valueOf(200.13),
         uniformData: Boolean = false, /*Make all target and coverage values the same*/
         ageRangeVerbatim: String? = null)
 {
@@ -690,7 +690,7 @@ fun JooqContext.generateCoverageData(
                         ageTo = BigDecimal(age + ageRange.step),
                         ageRangeVerbatim = ageRangeVerbatim,
                         target = if (uniformData) target else null,
-                        coverage = if (uniformData) coverage else random.nextDecimal(0, 100, numberOfDecimalPlaces = 2)
+                        coverage = if (uniformData) coverage else random.nextDecimal(0, 100, numberOfDecimalPlaces = 4)
                 ))
             }
 

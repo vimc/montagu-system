@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.db.toDecimalOrNull
 import org.vaccineimpact.api.models.*
 
 class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
@@ -145,11 +144,11 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
                     result.toList(),
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), BigDecimal.valueOf(0.6333333333)),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), 0.6333333333.toDecimal()),
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1500), BigDecimal.valueOf(0.2133333333)),
+                                    "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1500), 0.2133333333.toDecimal()),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal.valueOf(0.123))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), 0.123.toDecimal())
                     ))
 
         }
@@ -188,7 +187,7 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
                                     "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, null),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000".toDecimalOrNull(), "0.5".toDecimalOrNull()))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", 1000.toDecimal(), 0.5.toDecimal()))
             )
 
         }
@@ -208,12 +207,12 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
             addABCountries(it)
             it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
 
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal.valueOf(0.23))
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), BigDecimal.valueOf(0.68))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), 0.23.toDecimal())
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), 0.68.toDecimal())
             it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, null)
 
             //Make sure other groups aren't affected
-            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), 0.5.toDecimal())
         } check {
             val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
 
@@ -221,9 +220,9 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
                     result.toList(),
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(300), BigDecimal(0.53)),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(300), 0.53.toDecimal()),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5)))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), 0.5.toDecimal()))
             )
 
         }
@@ -243,12 +242,12 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
             addABCountries(it)
             it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
 
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal.valueOf(0.2))
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), BigDecimal.valueOf(0.6))
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, BigDecimal.valueOf(0.8))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), 0.2.toDecimal())
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), 0.6.toDecimal())
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, 0.8.toDecimal())
 
             //Make sure other groups aren't affected
-            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal.valueOf(0.5))
+            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), 0.5.toDecimal())
         } check {
             val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
 
@@ -257,9 +256,9 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
                     result.toList(),
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(300), BigDecimal(0.4666666666666666667)),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(300), 0.4666666667.toDecimal()),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5)))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), 0.5.toDecimal()))
             )
 
         }
@@ -279,12 +278,12 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
             addABCountries(it)
             it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
 
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal.valueOf(0.12))
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), BigDecimal.valueOf(0.63))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), 0.12.toDecimal())
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), 0.63.toDecimal())
             it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(500), null)
 
             //Make sure other groups aren't affected
-            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), 0.5.toDecimal())
         } check {
             val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
 
@@ -293,9 +292,9 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
                     result.toList(),
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(300), BigDecimal(0.46)),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(300), 0.46.toDecimal()),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5)))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), 0.5.toDecimal()))
             )
 
         }
@@ -315,13 +314,13 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
             addABCountries(it)
             it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
 
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal.valueOf(0.21))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), 0.21.toDecimal())
             it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, null)
             it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", null, BigDecimal(5.2))
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), BigDecimal.valueOf(0.65))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(100), 0.65.toDecimal())
 
             //Make sure other groups aren't affected
-            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal.valueOf(0.5))
+            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), 0.5.toDecimal())
         } check {
             val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
 
@@ -330,9 +329,9 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
                     result.toList(),
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), BigDecimal(0.43000000000000000000)),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(200), 0.43.toDecimal()),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5)))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), 0.5.toDecimal()))
             )
 
         }
@@ -365,9 +364,9 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
             assertThat(result.toList()).containsExactlyElementsOf(
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", "0".toDecimalOrNull(), null),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 0.toDecimal(), null),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000".toDecimalOrNull(), "0.5".toDecimalOrNull()))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", 1000.toDecimal(), 0.5.toDecimal()))
             )
 
         }
@@ -387,12 +386,12 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
             addABCountries(it)
             it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
 
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(0), BigDecimal(0.2))
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(0), BigDecimal(0.6))
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(500), null) //This should get ignored because of null coverage
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 0.toDecimal(), 0.2.toDecimal())
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 0.toDecimal(), 0.6.toDecimal())
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 500.toDecimal(), null) //This should get ignored because of null coverage
 
             //Make sure other groups aren't affected
-            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), BigDecimal(0.5))
+            it.addCoverageRow(setB, "BBB", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", 1000.toDecimal(), 0.5.toDecimal())
         } check {
             val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
 
@@ -400,9 +399,9 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
             assertThat(result.toList()).containsExactlyElementsOf(
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", "0".toDecimalOrNull(), null),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 0.toDecimal(), null),
                             LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", "1000".toDecimalOrNull(), "0.5".toDecimalOrNull()))
+                                    "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", 1000.toDecimal(), 0.5.toDecimal()))
             )
 
         }
@@ -422,8 +421,8 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
             addABCountries(it)
             it.addExpectations(responsibilityId, countries = listOf("AAA", "BBB"))
 
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1), BigDecimal.valueOf(0.2))
-            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "one-two", BigDecimal(2), BigDecimal.valueOf(0.6))
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 1.toDecimal(), 0.2.toDecimal())
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "one-two", 2.toDecimal(), 0.6.toDecimal())
 
         } check {
             val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
@@ -432,9 +431,9 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
                     result.toList(),
                     listOf(
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", "1".toDecimalOrNull(), "0.2".toDecimalOrNull()),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 1.toDecimal(), 0.2.toDecimal()),
                             LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "one-two", "2".toDecimalOrNull(), "0.6".toDecimalOrNull())
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "one-two", 2.toDecimal(), 0.6.toDecimal())
                     ))
 
         }
@@ -446,19 +445,19 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
     @Test
     fun `can get expected coverage data for responsibility single row, target and coverage are zero`()
     {
-        testSingleRowResponsibilityCoverageValuesAreUnchanged("0".toDecimalOrNull(), "0".toDecimalOrNull())
+        testSingleRowResponsibilityCoverageValuesAreUnchanged(0.toDecimal(), 0.toDecimal())
     }
 
     @Test
     fun `can get expected coverage data for responsibility single row, target is zero, coverage is null`()
     {
-        testSingleRowResponsibilityCoverageValuesAreUnchanged("0".toDecimalOrNull(), null)
+        testSingleRowResponsibilityCoverageValuesAreUnchanged(0.toDecimal(), null)
     }
 
     @Test
     fun `can get expected coverage data for responsibility single row, target is null, coverage is zero`()
     {
-        testSingleRowResponsibilityCoverageValuesAreUnchanged(null, "0".toDecimalOrNull())
+        testSingleRowResponsibilityCoverageValuesAreUnchanged(null, 0.toDecimal())
     }
 
     @Test
@@ -470,31 +469,31 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
     @Test
     fun `can get expected coverage data for responsibility single row, target is null`()
     {
-        testSingleRowResponsibilityCoverageValuesAreUnchanged(null, "0.5".toDecimalOrNull())
+        testSingleRowResponsibilityCoverageValuesAreUnchanged(null, 0.5.toDecimal())
     }
 
     @Test
     fun `can get expected coverage data for responsibility single row, coverage is null`()
     {
-        testSingleRowResponsibilityCoverageValuesAreUnchanged("50".toDecimalOrNull(), null)
+        testSingleRowResponsibilityCoverageValuesAreUnchanged(50.toDecimal(), null)
     }
 
     @Test
     fun `can get expected coverage data for responsibility single row, target is zero`()
     {
-        testSingleRowResponsibilityCoverageValuesAreUnchanged("0".toDecimalOrNull(), "0.5".toDecimalOrNull())
+        testSingleRowResponsibilityCoverageValuesAreUnchanged(0.toDecimal(), 0.5.toDecimal())
     }
 
     @Test
     fun `can get expected coverage data for responsibility single row, coverage is zero`()
     {
-        testSingleRowResponsibilityCoverageValuesAreUnchanged("50".toDecimalOrNull(), "0".toDecimalOrNull())
+        testSingleRowResponsibilityCoverageValuesAreUnchanged(50.toDecimal(), 0.toDecimal())
     }
 
     @Test
     fun `can get expected coverage data for responsibility single row, target and coverage are non-zero`()
     {
-        testSingleRowResponsibilityCoverageValuesAreUnchanged("50".toDecimalOrNull(), "0.5".toDecimalOrNull())
+        testSingleRowResponsibilityCoverageValuesAreUnchanged(50.toDecimal(), 0.5.toDecimal())
     }
 
     private fun testSingleRowResponsibilityCoverageValuesAreUnchanged(target: BigDecimal?, coverage: BigDecimal?)

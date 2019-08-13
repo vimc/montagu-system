@@ -8,7 +8,6 @@ import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.toDecimal
-import org.vaccineimpact.api.db.toDecimalOrNull
 import org.vaccineimpact.api.models.LongCoverageRow
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -114,7 +113,7 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
         if (includeCoverageData)
         {
             db.addCountries(listOf("AAA", "BBB"))
-            db.addCoverageRow(setA, "AAA", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), "50.5".toDecimalOrNull())
+            db.addCoverageRow(setA, "AAA", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), 50.5.toDecimal())
             db.addCoverageRow(setB, "BBB", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
         }
     }

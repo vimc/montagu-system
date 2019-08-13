@@ -2,6 +2,7 @@ package org.vaccineimpact.api.blackboxTests.tests.Coverage
 
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.db.toDecimal
 import org.vaccineimpact.api.models.helpers.FlexibleColumns
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import java.math.BigDecimal
@@ -31,8 +32,8 @@ abstract class CoverageTests : DatabaseTest()
 
     protected fun addCoverageData(db: JooqContext, touchstoneStatus: String,
                                 testYear: Int = 1955,
-                                target: BigDecimal = BigDecimal(100.12),
-                                coverage: BigDecimal = BigDecimal(200.13),
+                                target: BigDecimal = 100.12.toDecimal(),
+                                coverage: BigDecimal = 200.13.toDecimal(),
                                 includeSubnationalCoverage: Boolean = false,
                                 uniformData: Boolean = false, /*Make all target and coverage values the same*/
                                 ageRangeVerbatim: String? = null,
@@ -63,8 +64,8 @@ abstract class CoverageTests : DatabaseTest()
         {
             //Generate duplicate rows - same dimension values (year, age etc) with different target and coverage
             db.generateCoverageData(coverageSetId, countryCount = 2, yearRange = 1985..2000 step 5,
-                    ageRange = 0..20 step 5, testYear = testYear, target = BigDecimal(target.toDouble()/2),
-                    coverage = BigDecimal(coverage.toDouble()/3), uniformData = uniformData,
+                    ageRange = 0..20 step 5, testYear = testYear, target = (target.toDouble()/2).toDecimal(),
+                    coverage = (coverage.toDouble()/3).toDecimal(), uniformData = uniformData,
                     ageRangeVerbatim = ageRangeVerbatim )
         }
     }
