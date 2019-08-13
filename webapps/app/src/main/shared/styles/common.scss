@@ -35,12 +35,15 @@ table {
 
   th.sortable {
     cursor: pointer;
+    position: relative;
 
     &:after {
       content: "\2193";
       margin-left: .8em;
-      float: right;
       opacity: .3;
+      position: absolute;
+      bottom: 0.9em;
+      right: 0.5em
     }
 
     &.desc:after {
@@ -50,8 +53,10 @@ table {
     &:before {
       content: "\2191";
       opacity: .3;
-      float: right;
       margin-left: .1em;
+      position: absolute;
+      bottom: 0.9em;
+      right: 1em
     }
 
     &.asc:before {

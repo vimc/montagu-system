@@ -13,6 +13,7 @@ import {createMockStore} from "../../../../mocks/mockStore";
 import {modellingGroupsListPageActionCreators} from "../../../../../main/admin/actions/pages/ModellingGroupsListPageActionCreators";
 import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
 import {ModellingGroupsListContent} from "../../../../../main/admin/components/ModellingGroups/List/ModellingGroupsListContent";
+import {ButtonLink} from "../../../../../main/shared/components/ButtonLink";
 
 describe("Modelling Groups List Page Component Tests", () => {
 
@@ -25,7 +26,7 @@ describe("Modelling Groups List Page Component Tests", () => {
         expect(typeof rendered.props().onLoad).is.equal('function');
     });
 
-    it("renders page component, title and sub component", () => {
+    it("renders page component, title and sub components", () => {
         let testMatch = mockMatch<undefined>();
         let store = createMockStore();
         const onLoadStub = sandbox.setStubReduxAction(modellingGroupsListPageActionCreators, "onLoad");
@@ -36,5 +37,6 @@ describe("Modelling Groups List Page Component Tests", () => {
         expect(onLoadStub.called).is.equal(true);
         expect(pageArticle.props().title).is.equal(ModellingGroupsListPageComponent.title);
         expect(pageArticle.find(ModellingGroupsListContent).length).is.equal(1);
+        expect(pageArticle.find(ButtonLink).prop("href")).is.equal("/modelling-groups/models")
     });
 });

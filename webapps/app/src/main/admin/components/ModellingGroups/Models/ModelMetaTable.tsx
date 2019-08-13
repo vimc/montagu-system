@@ -111,7 +111,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
 
         return <div>
             <p>Click on a column header to sort</p>
-            <table>
+            <table id={"model-meta-table"}>
                 <thead>
                 <tr>
                     {this.createHeader("modelling_group", "Group", "7em")}
@@ -122,7 +122,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                     {this.createHeader("code", "Code", "6em")}
                     {this.createHeader("gender", "Gender", "7em")}
 
-                    {this.createHeader("max_countries", "Max Countries", "10.5em")}
+                    {this.createHeader("max_countries", "Max Countries", "6.5em")}
                     {this.createHeader("years", "Years", "6.5em")}
                     {this.createHeader("ages", "Ages", "6em")}
                     {this.createHeader("cohorts", "Cohorts", "7.5em")}

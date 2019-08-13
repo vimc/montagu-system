@@ -9,6 +9,7 @@ import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArti
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {modellingGroupsListPageActionCreators} from "../../../actions/pages/ModellingGroupsListPageActionCreators";
 import {CreateModellingGroupSection} from "../Create/CreateModellingGroupSection";
+import {ButtonLink} from "../../../../shared/components/ButtonLink";
 
 export class ModellingGroupsListPageComponent extends React.Component<PageProperties<undefined>> {
     static title: string = "Modelling groups";
@@ -22,6 +23,8 @@ export class ModellingGroupsListPageComponent extends React.Component<PageProper
             <CreateModellingGroupSection/>
             <div className="sectionTitle">All groups</div>
             <ModellingGroupsListContent/>
+            <div className="sectionTitle">Models</div>
+            <ButtonLink href="/modelling-groups/models">View all model metadata</ButtonLink>
         </PageArticle>;
     }
 }
