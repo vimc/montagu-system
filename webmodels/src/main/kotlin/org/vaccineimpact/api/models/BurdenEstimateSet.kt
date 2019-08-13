@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.models
 
+import org.vaccineimpact.api.models.helpers.Rule
+import org.vaccineimpact.api.models.helpers.SerializationRule
 import org.vaccineimpact.api.models.validation.RequiredWhen
 import java.beans.ConstructorProperties
 import java.time.Instant
@@ -12,7 +14,9 @@ constructor(
         val uploadedBy: String,
         val type: BurdenEstimateSetType,
         val status: BurdenEstimateSetStatus,
-        val problems: List<String>
+        val problems: List<String>,
+        @SerializationRule(Rule.EXCLUDE_IF_NULL)
+        val originalFilename: String?
 ) : HasKey<Int>
 {
     fun withType(code: BurdenEstimateSetTypeCode, details: String? = null): BurdenEstimateSet
