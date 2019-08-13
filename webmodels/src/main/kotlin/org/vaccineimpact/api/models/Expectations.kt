@@ -7,5 +7,5 @@ interface Expectations
     val years: IntRange
     val ages: IntRange
     val cohorts: CohortRestriction
-    val outcomes: List<String>
+    val outcomes: List<Outcome>
 }

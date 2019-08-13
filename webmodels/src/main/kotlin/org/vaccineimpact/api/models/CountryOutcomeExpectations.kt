@@ -10,7 +10,7 @@ data class CountryOutcomeExpectations(
         override val ages: IntRange,
         override val cohorts: CohortRestriction,
         val countries: List<Country>,
-        override val outcomes: List<String>): Expectations
+        override val outcomes: List<Outcome>): Expectations
 {
     private fun Int.withinCohortRange(): Boolean
     {
@@ -83,7 +83,7 @@ data class ExpectedCentralRow(
         val countryName: String,
         val cohortSize: Float?,
         @FlexibleProperty
-        val outcomes: Map<String, Float?>
+        val outcomes: Map<Outcome, Float?>
 ) : ExpectedRow
 
 data class ExpectedStochasticRow(
@@ -95,7 +95,7 @@ data class ExpectedStochasticRow(
         val countryName: String,
         val cohortSize: Float?,
         @FlexibleProperty
-        val outcomes: Map<String, Float?>
+        val outcomes: Map<Outcome, Float?>
 ) : ExpectedRow
 
 interface ExpectedRow
