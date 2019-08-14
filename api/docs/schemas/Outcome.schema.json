@@ -1,0 +1,14 @@
+{
+  "id": "Outcome",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [ "code", "name"]
+}

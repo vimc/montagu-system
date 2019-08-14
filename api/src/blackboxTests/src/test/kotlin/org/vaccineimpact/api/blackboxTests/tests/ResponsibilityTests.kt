@@ -13,6 +13,7 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.models.Outcome
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import org.vaccineimpact.api.validateSchema.JSONValidator
@@ -28,6 +29,9 @@ class ResponsibilityTests : DatabaseTest()
 
     val responsibilitiesUrl = "/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/"
     val responsibilityUrl = "/modelling-groups/$groupId/responsibilities/$touchstoneVersionId/$scenarioId/"
+
+    val outcomes = listOf(Outcome("test_deaths", "test deaths name"),
+                          Outcome("test_dalys", "test dalys name"))
 
     @Test
     fun `getResponsibilities matches schema`()
@@ -268,7 +272,7 @@ class ResponsibilityTests : DatabaseTest()
                     ageMinInclusive = 0, ageMaxInclusive = 99,
                     cohortMinInclusive = null, cohortMaxInclusive = 2050,
                     countries = listOf("A", "B"),
-                    outcomes = listOf("deaths", "dalys")
+                    outcomes = outcomes
             )
             TestUserHelper().setupTestUser(db)
             id
@@ -287,7 +291,10 @@ class ResponsibilityTests : DatabaseTest()
                             obj("id" to "A", "name" to "A-Name"),
                             obj("id" to "B", "name" to "B-Name")
                     ),
-                    "outcomes" to array("deaths", "dalys")
+                    "outcomes" to array(
+                            obj("code" to "test_deaths", "name" to "test deaths name"),
+                            obj("code" to "test_dalys", "name" to "test dalys name")
+                    )
             )
         })
     }
@@ -354,7 +361,7 @@ class ResponsibilityTests : DatabaseTest()
         var id = 0
         JooqContext().use {
             val responsibilityId = addResponsibilities(it, touchstoneStatus = "open")
-            id = it.addExpectations(responsibilityId, outcomes = listOf("deaths", "dalys"))
+            id = it.addExpectations(responsibilityId, outcomes = outcomes)
             userHelper.setupTestUser(it)
         }
 
@@ -373,7 +380,7 @@ class ResponsibilityTests : DatabaseTest()
         var id = 0
         JooqContext().use {
             val responsibilityId = addResponsibilities(it, touchstoneStatus = "open")
-            id = it.addExpectations(responsibilityId, outcomes = listOf("deaths", "dalys"))
+            id = it.addExpectations(responsibilityId, outcomes = outcomes)
             userHelper.setupTestUser(it)
         }
 

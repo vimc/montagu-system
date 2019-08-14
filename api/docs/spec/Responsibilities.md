@@ -102,7 +102,12 @@ Schema: [`ResponsibilitySet.schema.json`](../schemas/ResponsibilitySet.schema.js
                         { "id": "AFG", "name": "Afghanistan" },
                         { "id": "AGO", "name": "Angola" }
                     ],
-                    "outcomes": [ "cohort_size", "cases", "deaths", "dalys" ]
+                    "outcomes": [ 
+                        { "code": "cohort_size", "name": "cohort size" },
+                        { "code": "cases", "name": "cases" },
+                        { "code": "deaths", "name": "deaths" }
+                        { "code": "dalys", "name"": "DALYs" } 
+                    ]
                 },
                 "applicable_scenarios": [
                     "menA-novacc", 

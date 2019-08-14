@@ -72,12 +72,12 @@ class GroupResponsibilityController(
         return if (type == "central")
         {
             FlexibleDataTable.new(expectations.expectedCentralRows(expectationMapping.disease),
-                    expectations.outcomes, NullToEmptyStringSerializer.instance)
+                    expectations.outcomes.map{ it.code }, NullToEmptyStringSerializer.instance)
         }
         else
         {
             FlexibleDataTable.new(expectations.expectedStochasticRows(expectationMapping.disease),
-                    expectations.outcomes, NullToEmptyStringSerializer.instance)
+                    expectations.outcomes.map{ it.code }, NullToEmptyStringSerializer.instance)
         }
 
     }

@@ -10,6 +10,7 @@ import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.models.Outcome
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
@@ -54,8 +55,10 @@ class ExpectationsTests : DatabaseTest()
                                     "minimum_birth_year" to null,
                                     "maximum_birth_year" to null
                                 ),
-                                "outcomes" to array("cases", "deaths")
-
+                                "outcomes" to array(
+                                    obj("code" to "test_cases", "name" to "test cases name"),
+                                    obj("code" to "test_deaths", "name" to "test deaths name")
+                                )
                         ),
                         "applicable_scenarios" to array(scenarioId)
                 )
@@ -101,7 +104,12 @@ class ExpectationsTests : DatabaseTest()
         val setId2 = db.addResponsibilitySet(otherGroupId, "touchstone2-2")
         val r1 = db.addResponsibility(setId1, touchstoneVersionId, scenarioId)
         val r2 = db.addResponsibility(setId2, "touchstone2-2", otherScenarioId)
-        val expId1 = db.addExpectations(r1, outcomes=listOf("deaths", "cases"))
+
+        val outcomes = listOf(
+                Outcome("test_deaths", "test deaths name"),
+                Outcome("test_cases", "test cases name")
+        )
+        val expId1 = db.addExpectations(r1, outcomes=outcomes)
         val expId2 = db.addExpectations(r2)
         db.addExistingExpectationsToResponsibility(r1, expId1)
         db.addExistingExpectationsToResponsibility(r2, expId2)
