@@ -293,7 +293,7 @@ export function mockBurdenEstimateSet(properties?: Partial<models.BurdenEstimate
             details: "Run number 64"
         },
         status: "complete",
-        original_filename: "test.csv"
+        original_filename: "fakefile.csv"
     };
     return Object.assign(template, properties);
 }
