@@ -161,7 +161,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                     const outcomesDetailsTooltip = model.outcomes.length > 0 ?
                         createTooltip(`outcomes-details-link-${index}`,
                             model.outcomes_details.map(function(outcome: Outcome) {
-                                return (<div>{`${outcome.code} (${outcome.name})`}</div>);
+                                return (<div>{`${outcome.code}: ${outcome.name}`}</div>);
                             }))
                         : "";
 
