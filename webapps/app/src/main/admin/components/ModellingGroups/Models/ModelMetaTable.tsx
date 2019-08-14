@@ -3,7 +3,7 @@ import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {connect} from "react-redux";
 import {ILookup} from "../../../../shared/models/Lookup";
 import {UncontrolledTooltip} from "reactstrap";
-import {Country} from "../../../../shared/models/Generated";
+import {Country, Outcome} from "../../../../shared/models/Generated";
 
 interface ModelMetaRow {
     code: string | null
@@ -19,6 +19,7 @@ interface ModelMetaRow {
     ages: string;
     cohorts: string;
     outcomes: string;
+    outcomes_details: Outcome[];
     has_dalys: boolean;
     scenario_count: number;
     scenarios: string[];
@@ -138,6 +139,11 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                     const countriesDetailsLink = model.max_countries > 0 ?
                         <div><a href="#" id={`countries-details-link-${index}`}>view</a></div> : "";
 
+
+                    const outcomesDetailsLink = model.outcomes_details.length > 0   ?
+                        <div><a href="#" id={`outcomes-details-link-${index}`}>definitions</a></div> : "";
+
+
                     const scenarioDetailsTooltip = model.scenario_count > 0 ?
                         createTooltip(`scenario-details-link-${index}`,
                             model.scenarios.map(function(scenario: string) {
@@ -149,6 +155,13 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                         createTooltip(`countries-details-link-${index}`,
                             model.countries.map(function(country: Country) {
                                 return (<div>{`${country.name} (${country.id})`}</div>);
+                            }))
+                        : "";
+
+                    const outcomesDetailsTooltip = model.outcomes.length > 0 ?
+                        createTooltip(`outcomes-details-link-${index}`,
+                            model.outcomes_details.map(function(outcome: Outcome) {
+                                return (<div>{`${outcome.code} (${outcome.name})`}</div>);
                             }))
                         : "";
 
@@ -169,10 +182,13 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                             <td data-title="years">{model.years}</td>
                             <td data-title="ages">{model.ages}</td>
                             <td data-title="cohorts">{model.cohorts}</td>
-                            <td data-title="outcomes">{model.outcomes}</td>
+                            <td data-title="outcomes">{model.outcomes}
+                                {outcomesDetailsLink}
+                            </td>
                             <td data-title="dalys">{model.has_dalys ? "Yes" : "No"}</td>
                             {scenarioDetailsTooltip}
                             {countriesDetailsTooltip}
+                            {outcomesDetailsTooltip}
                         </tr>
                     );
                 })}
@@ -220,6 +236,7 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                 return {
                     ...modelValues,
                     outcomes: outcome_codes.join(", "),
+                    outcomes_details: expectation.outcomes,
                     has_dalys: outcome_codes.indexOf("dalys") > -1,
                     years: `${expectation.years.minimum_inclusive} - ${expectation.years.maximum_inclusive}`,
                     ages: `${expectation.ages.minimum_inclusive} - ${expectation.ages.maximum_inclusive}`,
@@ -231,6 +248,7 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                 return {
                     ...modelValues,
                     outcomes: expectationNotFound,
+                    outcomes_details: [],
                     has_dalys: false,
                     years: expectationNotFound,
                     ages: expectationNotFound,
