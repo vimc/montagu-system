@@ -126,7 +126,7 @@ Schema: [`ResponsibilitySets.schema.json`](../schemas/ResponsibilitySets.schema.
                         { "code": "cohort_size", "name": "cohort size" },
                         { "code": "cases", "name": "cases" },
                         { "code": "deaths", "name": "deaths" },
-                        { "code": "dalys", "name"": "DALYs" } 
+                        { "code": "dalys", "name": "DALYs" } 
                     ]
                 },
                 "applicable_scenarios": [
