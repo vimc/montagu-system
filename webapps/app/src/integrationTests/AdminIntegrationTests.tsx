@@ -121,7 +121,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                         minimum_birth_year: 1900,
                         maximum_birth_year: 2100
                     },
-                    outcomes: ["cases", "deaths"]
+                    outcomes: [{code: "cases", name: "cases"}, {code: "deaths", name: "deaths"}]
                 },
                 applicable_scenarios: [scenarioId]
             }]);
