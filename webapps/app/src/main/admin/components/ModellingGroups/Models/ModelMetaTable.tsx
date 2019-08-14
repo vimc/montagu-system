@@ -215,10 +215,12 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                         (expectation.cohorts.maximum_birth_year) ? `Max ${expectation.cohorts.maximum_birth_year}` :
                             "Any";
 
+                const outcome_codes = expectation.outcomes.map(o => o.code)
+
                 return {
                     ...modelValues,
-                    outcomes: expectation.outcomes.join(", "),
-                    has_dalys: expectation.outcomes.indexOf("dalys") > -1,
+                    outcomes: outcome_codes.join(", "),
+                    has_dalys: outcome_codes.indexOf("dalys") > -1,
                     years: `${expectation.years.minimum_inclusive} - ${expectation.years.maximum_inclusive}`,
                     ages: `${expectation.ages.minimum_inclusive} - ${expectation.ages.maximum_inclusive}`,
                     cohorts: cohorts,

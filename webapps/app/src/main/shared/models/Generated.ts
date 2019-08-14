@@ -121,12 +121,17 @@ export interface ResearchModelDetails {
     modelling_group: string;
 }
 
+export interface Outcome {
+    code: string;
+    name: string;
+}
+
 export interface Expectations {
     ages: NumberRange;
     cohorts: CohortRestriction;
     description: string;
     id: number;
-    outcomes: string[];
+    outcomes: Outcome[];
     years: NumberRange;
 }
 
@@ -142,7 +147,7 @@ export interface CountryOutcomeExpectations extends Expectations {
     countries: Country[];
     description: string;
     id: number;
-    outcomes: string[];
+    outcomes: Outcome[];
     years: NumberRange;
 }
 
@@ -156,6 +161,7 @@ export type BurdenEstimateSetStatus = "empty" | "partial" | "complete" | "invali
 
 export interface BurdenEstimateSet {
     id: number;
+    original_filename: string | null;
     problems: string[];
     status: BurdenEstimateSetStatus;
     type: BurdenEstimateSetType;
@@ -235,7 +241,7 @@ export interface OutcomeExpectations extends Expectations {
     cohorts: CohortRestriction;
     description: string;
     id: number;
-    outcomes: string[];
+    outcomes: Outcome[];
     years: NumberRange;
 }
 

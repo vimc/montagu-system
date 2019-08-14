@@ -42,7 +42,7 @@ describe("ModelMetaTable tests", () => {
             years: { minimum_inclusive: 1900, maximum_inclusive: 2000},
             ages: { minimum_inclusive: 0, maximum_inclusive: 99},
             cohorts: { minimum_birth_year: null, maximum_birth_year: 2000 },
-            outcomes: ["deaths", "dalys"]
+            outcomes: [ {code: "deaths", name: "deaths name"}, {code: "dalys", name: "dalys name"}]
         })
     });
     const testExpectation2 = mockTouchstoneModelExpectations({
@@ -54,7 +54,7 @@ describe("ModelMetaTable tests", () => {
             years: { minimum_inclusive: 1950, maximum_inclusive: 2000},
             ages: { minimum_inclusive: 0, maximum_inclusive: 49},
             cohorts: { minimum_birth_year: 1900, maximum_birth_year: 2000 },
-            outcomes: ["deaths", "cases"]
+            outcomes: [{code: "deaths", name: "deaths name"}, {code: "cases", name: "cases name"}]
         })
     });
 
@@ -110,7 +110,7 @@ describe("ModelMetaTable tests", () => {
                 years: { minimum_inclusive: 1910, maximum_inclusive: 2100},
                 ages: { minimum_inclusive: 1, maximum_inclusive: 90},
                 cohorts: { minimum_birth_year: 1800, maximum_birth_year: 1900 },
-                outcomes: ["deaths2", "dalys2"]
+                outcomes: [{code: "deaths2", name: "deaths2"}, {code: "dalys2", name: "dalys2"}]
             })
         });
         const earlierExpectation2 = mockTouchstoneModelExpectations({
@@ -121,7 +121,7 @@ describe("ModelMetaTable tests", () => {
                 years: { minimum_inclusive: 1951, maximum_inclusive: 20010},
                 ages: { minimum_inclusive: 1, maximum_inclusive: 41},
                 cohorts: { minimum_birth_year: 1901, maximum_birth_year: 2001 },
-                outcomes: ["deaths2", "cases2"]
+                outcomes: [{code: "deaths2", name: "deaths2"}, {code: "cases2", name: "cases2"}]
             })
         });
 

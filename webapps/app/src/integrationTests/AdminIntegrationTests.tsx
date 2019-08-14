@@ -461,7 +461,7 @@ const expectedResponsibilitySets: ResponsibilitySetWithExpectations[] = [{
                 countries: [],
                 description: "bee desc",
                 id: 1,
-                outcomes: ["cases", "deaths"],
+                outcomes: [{code: "cases", name: "cases"},{code: "deaths", name: "deaths"}],
                 years: {
                     minimum_inclusive: 1950,
                     maximum_inclusive: 2100
