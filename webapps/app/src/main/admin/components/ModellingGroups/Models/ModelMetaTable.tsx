@@ -117,10 +117,14 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
 
         const obsolete = this.props.obsoleteModels;
 
+        if (obsolete && this.state.data.length == 0) {
+            return "";
+        }
+
         return <div>
             {!obsolete || <p>The following obsolete models were also found.</p>}
             <p>Click on a column header to sort</p>
-            <table id={"model-meta-table"}>
+            <table className={"model-meta-table"}>
                 <thead>
                 <tr>
                     {this.createHeader("modelling_group", "Group", "7em")}
