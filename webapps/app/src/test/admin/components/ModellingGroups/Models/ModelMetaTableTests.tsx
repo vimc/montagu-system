@@ -98,7 +98,7 @@ describe("ModelMetaTable tests", () => {
             groups: {models: [testModel, testModel2], expectations: [testExpectation, testExpectation2]}
         };
         const store = createMockStore(testState);
-        const rendered = shallow(<ModelMetaTable/>, {context: {store}});
+        const rendered = shallow(<ModelMetaTable obsoleteModels={false}/>, {context: {store}});
 
         expect(rendered.props().models).to.eql(mappedData);
     });
@@ -132,7 +132,7 @@ describe("ModelMetaTable tests", () => {
                      expectations: [earlierExpectation, earlierExpectation2,testExpectation, testExpectation2]}
         };
         const store = createMockStore(testState);
-        const rendered = shallow(<ModelMetaTable/>, {context: {store}});
+        const rendered = shallow(<ModelMetaTable obsoleteModels={false}/>, {context: {store}});
 
         expect(rendered.props().models).to.eql(mappedData);
     });
@@ -143,7 +143,7 @@ describe("ModelMetaTable tests", () => {
             groups: {models: [testModel, testModel2], expectations: [testExpectation, testExpectation2]}
         };
         const store = createMockStore(testState);
-        const rendered = shallow(<ModelMetaTable/>, {context: {store}}).dive();
+        const rendered = shallow(<ModelMetaTable obsoleteModels={false}/>, {context: {store}}).dive();
 
         expect(rendered.find("th")).to.have.lengthOf(13);
         expect(rendered.find("th").at(0).text()).to.eq("Group");
@@ -266,7 +266,7 @@ describe("ModelMetaTable tests", () => {
 
     function assertSortsBy(colIndex: number, ascValue: string, descValue: string) {
 
-        const rendered = shallow(<ModelMetaTableComponent models={mappedData}/>);
+        const rendered = shallow(<ModelMetaTableComponent models={mappedData} obsoleteModels={false}/>);
 
         function getFirstRowValue() {
             return rendered.find("tbody").find("tr").at(0).find("td").at(colIndex).text()
@@ -292,7 +292,7 @@ describe("ModelMetaTable tests", () => {
             groups: {models: [testModel, testModel2], expectations: [testExpectation, testExpectation2]}
         };
         const store = createMockStore(testState);
-        const rendered = shallow(<ModelMetaTable/>, {context: {store}}).dive();
+        const rendered = shallow(<ModelMetaTable obsoleteModels={false}/>, {context: {store}}).dive();
 
         const row =  rendered.find("tbody").find("tr").at(rowIndex);
 
