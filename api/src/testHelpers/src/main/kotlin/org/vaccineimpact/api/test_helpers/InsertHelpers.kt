@@ -774,12 +774,12 @@ fun JooqContext.addUserWithRoles(username: String, vararg roles: ReifiedRole)
     }
 }
 
-fun JooqContext.fetchOutcomes(count: Int): List<String>
+fun JooqContext.fetchOutcomes(count: Int): List<Outcome>
 {
-    return dsl.select(BURDEN_OUTCOME.CODE)
+    return dsl.select(BURDEN_OUTCOME.CODE, BURDEN_OUTCOME.NAME)
             .from(BURDEN_OUTCOME)
             .limit(count)
-            .fetchInto(String::class.java)
+            .fetchInto(Outcome::class.java)
 }
 
 
