@@ -19,7 +19,9 @@
   background-color: white;
   border: 1px solid #c8c8c8;
   max-height:200px!important;
+  max-width:350px!important;
   overflow-y:auto!important;
+  text-align:left!important;
 }
 
 .model-meta-tooltip > .arrow::before {
