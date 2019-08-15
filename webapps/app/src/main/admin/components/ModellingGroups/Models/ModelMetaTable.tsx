@@ -134,34 +134,34 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                 <tbody>
                 {this.state.data.map(function (model: ModelMetaRow, index: number) {
                     const scenarioDetailsLink = model.scenario_count > 0 ?
-                        <div><a href="#" id={`scenario-details-link-${index}`}>view</a></div> : "";
+                        <div key={`scenario-details-${index}`}><a href="#" id={`scenario-details-link-${index}`}>view</a></div> : "";
 
                     const countriesDetailsLink = model.max_countries > 0 ?
-                        <div><a href="#" id={`countries-details-link-${index}`}>view</a></div> : "";
+                        <div key={`countries-details-${index}`}><a href="#" id={`countries-details-link-${index}`}>view</a></div> : "";
 
 
                     const outcomesDetailsLink = model.outcomes_details.length > 0   ?
-                        <div><a href="#" id={`outcomes-details-link-${index}`}>definitions</a></div> : "";
+                        <div key={`outcomes-details-${index}`}><a href="#" id={`outcomes-details-link-${index}`}>definitions</a></div> : "";
 
 
                     const scenarioDetailsTooltip = model.scenario_count > 0 ?
                         createTooltip(`scenario-details-link-${index}`,
-                            model.scenarios.map(function(scenario: string) {
-                                return (<div>{scenario}</div>);
+                            model.scenarios.map(function(scenario: string, scenarioIdx: number) {
+                                return (<div key={`scenario-${index}-${scenarioIdx}`}>{scenario}</div>);
                             }))
                         : "";
 
                     const countriesDetailsTooltip = model.max_countries > 0 ?
                         createTooltip(`countries-details-link-${index}`,
-                            model.countries.map(function(country: Country) {
-                                return (<div>{`${country.name} (${country.id})`}</div>);
+                            model.countries.map(function(country: Country, countryIdx: number) {
+                                return (<div key={`country-${index}-${countryIdx}`}>{`${country.name} (${country.id})`}</div>);
                             }))
                         : "";
 
                     const outcomesDetailsTooltip = model.outcomes_details.length > 0 ?
                         createTooltip(`outcomes-details-link-${index}`,
-                            model.outcomes_details.map(function(outcome: Outcome) {
-                                return (<div><strong>{`${outcome.code}: `}</strong>{`${outcome.name}`}</div>);
+                            model.outcomes_details.map(function(outcome: Outcome, outcomeIdx: number) {
+                                return (<div key={`outcome-${index}-${outcomeIdx}`}><strong>{`${outcome.code}: `}</strong>{`${outcome.name}`}</div>);
                             }))
                         : "";
 
