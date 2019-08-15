@@ -5,4 +5,4 @@ data class OutcomeExpectations(override val id: Int,
                                override val years: IntRange,
                                override val ages: IntRange,
                                override val cohorts: CohortRestriction,
-                               override val outcomes: List<String>): Expectations
+                               override val outcomes: List<Outcome>): Expectations
