@@ -73,6 +73,16 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
         expect(div.hasClass("alert-warning")).to.eq(true);
     });
 
+    it("does not display filename for complete set if it doesn't exist", () => {
+        const rendered = render(mockBurdenEstimateSet({
+            status: "complete",
+            uploaded_on: "2017-07-13 13:55:29 +0100",
+            original_filename: null
+        }), true);
+        expect(rendered.text()).to.contain("A complete set of central estimates was uploaded on Thu Jul 13");
+        expect(rendered.text()).not.to.contain("with filename \"file.csv\"");
+    });
+
     it("displays fallback message for unknown status", () => {
         const rendered = render(mockBurdenEstimateSet({
             status: "foo" as any,
@@ -99,6 +109,16 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
 
         const div = rendered.find("div").first();
         expect(div.hasClass("alert-danger")).to.eq(true);
+    });
+
+    it("does not display filename for invalid set if it doesn't exist", () => {
+        const rendered = render(mockBurdenEstimateSet({
+            status: "invalid",
+            uploaded_on: "2017-07-13 13:55:29 +0100",
+            original_filename: null
+        }), true);
+        expect(rendered.text()).to.contain("You uploaded an incomplete set of central estimates");
+        expect(rendered.text()).not.to.contain("with filename \"file.csv\"");
     });
 
 
