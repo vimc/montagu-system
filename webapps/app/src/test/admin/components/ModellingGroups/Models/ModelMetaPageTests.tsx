@@ -18,7 +18,7 @@ describe("ModelMetaPage", () => {
         const rendered = shallowRenderPage(<ModelMetaPage {...mockPageProperties()} />);
 
         expect(rendered.find(PageArticle).props().title).to.eq("Model Metadata");
-        expect(rendered.find(PageArticle).find(ModelMetaTable)).to.have.length(1);
+        expect(rendered.find(PageArticle).find(ModelMetaTable)).to.have.length(2);
         expect(onLoadStub.called).is.equal(true);
     });
 
