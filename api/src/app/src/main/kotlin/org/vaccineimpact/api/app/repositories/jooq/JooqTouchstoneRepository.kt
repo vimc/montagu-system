@@ -10,11 +10,8 @@ import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.mapping.MappingHelper
+import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.db.fetchSequence
-import org.vaccineimpact.api.db.fieldsAsList
-import org.vaccineimpact.api.db.fromJoinPath
-import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
@@ -221,7 +218,7 @@ class JooqTouchstoneRepository(
         //Danger of divide by zero error here - treat as NULL if summed target is 0
         return `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.COVERAGE_)) //If only one row in group
                 .otherwise(sum(validTargetOrNull().mul(validCoverageOrNull()))
-                        .div(nullif(sum(validTargetOrNull()), BigDecimal.valueOf(0))))
+                        .div(nullif(sum(validTargetOrNull()), 0.toDecimal())))
 
     }
 
