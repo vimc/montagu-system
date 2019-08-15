@@ -21,17 +21,18 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
                 return <span>No central burden estimate sets have been uploaded.</span>;
             } else {
                 const timestamp = longTimestamp(new Date(set.uploaded_on));
+                const filename = set.original_filename ? ` with filename \"${set.original_filename}\"` : "";
                 if (set.status == "empty") {
                     return <span>
                         You registered how you calculated your central estimates on {timestamp}.
                     </span>;
                 } else if (set.status == "complete") {
                     return <span>
-                        A complete set of central estimates was uploaded on {timestamp} with filename "{set.original_filename}"
+                        A complete set of central estimates was uploaded on {timestamp} {filename}
                     </span>;
                 } else if (set.status == "invalid") {
                     return <span>
-                        You uploaded an incomplete set of central estimates on {timestamp} with filename "{set.original_filename}"
+                        You uploaded an incomplete set of central estimates on {timestamp} {filename}
                     </span>;
                 } else {
                     return <span>
