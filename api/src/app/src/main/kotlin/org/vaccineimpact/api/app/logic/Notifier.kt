@@ -10,19 +10,20 @@ interface Notifier
     fun notify(message: String)
 }
 
-class SlackNotifier(private val client: HttpClient = KHttpClient(), private val appConfig: ConfigWrapper = Config) : Notifier
+class SlackNotifier(private val client: HttpClient = KHttpClient(),
+                    private val appConfig: ConfigWrapper = Config) : Notifier
 {
     private val logger = LoggerFactory.getLogger(SlackNotifier::class.java)
     override fun notify(message: String)
     {
         try
         {
-            val headers = mapOf("Content-Type" to ContentTypes.json)
+            val headers = mapOf("Content-type" to ContentTypes.json)
             client.post(appConfig["slack.url"], headers, mapOf("text" to message))
         }
         catch (e: Exception)
         {
-            logger.warn("There was a problem sending the slack message: ${e.message}")
+            logger.warn("There was a problem sending the Slack message: ${e.message}")
         }
     }
 }
