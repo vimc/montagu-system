@@ -41,7 +41,7 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
                 Expecting data on:
                 <ul id={"outcomes"}>
                     <li>cohort_size</li>
-                    {expectation.outcomes.map(o => <li key={o}>{o}</li>)}
+                    {expectation.outcomes.map(o => <li key={o.code}>{o.code}</li>)}
                 </ul>
                 For all combinations of:
                 <ul>

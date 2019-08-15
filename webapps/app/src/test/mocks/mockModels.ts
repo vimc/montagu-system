@@ -69,7 +69,7 @@ export function mockOutcomeExpectations(properties?: Partial<models.OutcomeExpec
         cohorts: {maximum_birth_year: 2000, minimum_birth_year: 1900},
         description: "Description",
         id: counter,
-        outcomes: ["deaths", "dalys"],
+        outcomes: [ {code: "deaths", name: "deaths name"}, {code: "dalys", name: "dalys name"}],
         years: { maximum_inclusive: 2100, minimum_inclusive: 1900 }
     };
     return Object.assign(template,properties);
@@ -180,7 +180,7 @@ export function mockExpectations(properties?: Partial<models.CountryOutcomeExpec
         years: {minimum_inclusive: 2000, maximum_inclusive: 2100},
         cohorts: {minimum_birth_year: 2000, maximum_birth_year: 2050},
         countries: [mockCountry(), mockCountry()],
-        outcomes: ["deaths", "cases"]
+        outcomes: [{code: "deaths", name: "deaths"}, {code: "cases", name: "cases"}]
     };
     return Object.assign(template, properties);
 }

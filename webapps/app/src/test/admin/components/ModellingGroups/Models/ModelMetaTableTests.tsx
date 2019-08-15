@@ -42,7 +42,7 @@ describe("ModelMetaTable tests", () => {
             years: { minimum_inclusive: 1900, maximum_inclusive: 2000},
             ages: { minimum_inclusive: 0, maximum_inclusive: 99},
             cohorts: { minimum_birth_year: null, maximum_birth_year: 2000 },
-            outcomes: ["deaths", "dalys"]
+            outcomes: [ {code: "deaths", name: "deaths name"}, {code: "dalys", name: "dalys name"}]
         })
     });
     const testExpectation2 = mockTouchstoneModelExpectations({
@@ -54,7 +54,7 @@ describe("ModelMetaTable tests", () => {
             years: { minimum_inclusive: 1950, maximum_inclusive: 2000},
             ages: { minimum_inclusive: 0, maximum_inclusive: 49},
             cohorts: { minimum_birth_year: 1900, maximum_birth_year: 2000 },
-            outcomes: ["deaths", "cases"]
+            outcomes: [{code: "deaths", name: "deaths name"}, {code: "cases", name: "cases name"}]
         })
     });
 
@@ -67,6 +67,7 @@ describe("ModelMetaTable tests", () => {
             ages: "0 - 99",
             cohorts: "Max 2000",
             outcomes: "deaths, dalys",
+            outcomes_details: [{code: "deaths", name: "deaths name"}, {code: "dalys", name: "dalys name"}],
             has_dalys: true,
             max_countries: 2,
             scenario_count: 1,
@@ -81,6 +82,7 @@ describe("ModelMetaTable tests", () => {
             ages: "0 - 49",
             cohorts: "1900 - 2000",
             outcomes: "deaths, cases",
+            outcomes_details: [{code: "deaths", name: "deaths name"}, {code: "cases", name: "cases name"}],
             has_dalys: false,
             max_countries: 1,
             scenario_count: 2,
@@ -110,7 +112,7 @@ describe("ModelMetaTable tests", () => {
                 years: { minimum_inclusive: 1910, maximum_inclusive: 2100},
                 ages: { minimum_inclusive: 1, maximum_inclusive: 90},
                 cohorts: { minimum_birth_year: 1800, maximum_birth_year: 1900 },
-                outcomes: ["deaths2", "dalys2"]
+                outcomes: [{code: "deaths2", name: "deaths2"}, {code: "dalys2", name: "dalys2"}]
             })
         });
         const earlierExpectation2 = mockTouchstoneModelExpectations({
@@ -121,7 +123,7 @@ describe("ModelMetaTable tests", () => {
                 years: { minimum_inclusive: 1951, maximum_inclusive: 20010},
                 ages: { minimum_inclusive: 1, maximum_inclusive: 41},
                 cohorts: { minimum_birth_year: 1901, maximum_birth_year: 2001 },
-                outcomes: ["deaths2", "cases2"]
+                outcomes: [{code: "deaths2", name: "deaths2"}, {code: "cases2", name: "cases2"}]
             })
         });
 
@@ -177,7 +179,7 @@ describe("ModelMetaTable tests", () => {
         expect(cellsForRow(0).at(8).text()).to.eq("1900 - 2000");
         expect(cellsForRow(0).at(9).text()).to.eq("0 - 99");
         expect(cellsForRow(0).at(10).text()).to.eq("Max 2000");
-        expect(cellsForRow(0).at(11).text()).to.eq("deaths, dalys");
+        expect(cellsForRow(0).at(11).text()).to.eq("deaths, dalys" + "definitions");
         expect(cellsForRow(0).at(12).text()).to.eq("Yes");
 
         expect(cellsForRow(1).at(0).text()).to.eq("gb");
@@ -191,7 +193,7 @@ describe("ModelMetaTable tests", () => {
         expect(cellsForRow(1).at(8).text()).to.eq("1950 - 2000");
         expect(cellsForRow(1).at(9).text()).to.eq("0 - 49");
         expect(cellsForRow(1).at(10).text()).to.eq("1900 - 2000");
-        expect(cellsForRow(1).at(11).text()).to.eq("deaths, cases");
+        expect(cellsForRow(1).at(11).text()).to.eq("deaths, cases" + "definitions");
         expect(cellsForRow(1).at(12).text()).to.eq("No");
     });
 
@@ -240,7 +242,7 @@ describe("ModelMetaTable tests", () => {
     });
 
     it("sorts by outcomes", () => {
-        assertSortsBy(11, "deaths, cases", "deaths, dalys")
+        assertSortsBy(11, "deaths, cases" + "definitions", "deaths, dalys" + "definitions")
     });
 
     it("sorts by has dalys", () => {
@@ -255,6 +257,11 @@ describe("ModelMetaTable tests", () => {
     it("shows countries tooltips", () => {
         assertTooltip(7, 0, "countries-details-link-0", ["Country1 (AA)","Country2 (AB)"]);
         assertTooltip(7, 1, "countries-details-link-1", ["Country1 (AA)"]);
+    });
+
+    it ("shows outcomes tooltips", () => {
+        assertTooltip(11, 0, "outcomes-details-link-0", ["deaths: deaths name", "dalys: dalys name"]);
+        assertTooltip(11, 1, "outcomes-details-link-1", ["deaths: deaths name","cases: cases name"]);
     });
 
     function assertSortsBy(colIndex: number, ascValue: string, descValue: string) {
@@ -288,6 +295,7 @@ describe("ModelMetaTable tests", () => {
         const rendered = shallow(<ModelMetaTable/>, {context: {store}}).dive();
 
         const row =  rendered.find("tbody").find("tr").at(rowIndex);
+
         const cell = row.find("td").at(colIndex);
         const link = cell.find("a");
         expect(link.prop("id")).to.eql(target);
