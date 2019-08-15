@@ -141,7 +141,8 @@ describe("ExpectationsDescription", () => {
 
     it("renders outcomes", () => {
         const expectation: ExpectationMapping = {
-            expectation: mockExpectations({outcomes: ["deaths", "cases"]}),
+            expectation: mockExpectations({outcomes: [{code: "deaths", name:"deaths"},
+                                                                {code: "cases", name: "cases"}]}),
             applicable_scenarios: ["a", "b", "c"],
             disease: "YF"
         };
