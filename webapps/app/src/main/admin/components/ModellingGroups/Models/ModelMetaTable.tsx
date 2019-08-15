@@ -5,7 +5,7 @@ import {ILookup} from "../../../../shared/models/Lookup";
 import {UncontrolledTooltip} from "reactstrap";
 import {Country, Outcome, ResearchModelDetails, TouchstoneModelExpectations} from "../../../../shared/models/Generated";
 
-interface ModelMetaRow {
+export interface ModelMetaRow {
     code: string | null
     is_dynamic: boolean
     citation: string;
