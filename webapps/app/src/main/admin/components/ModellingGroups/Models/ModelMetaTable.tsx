@@ -2,7 +2,8 @@ import * as React from "react";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {connect} from "react-redux";
 import {ILookup} from "../../../../shared/models/Lookup";
-import {Expectations, OutcomeExpectations} from "../../../../shared/models/Generated";
+import {UncontrolledTooltip} from "reactstrap";
+import {Country} from "../../../../shared/models/Generated";
 
 interface ModelMetaRow {
     code: string | null
@@ -20,6 +21,8 @@ interface ModelMetaRow {
     outcomes: string;
     has_dalys: boolean;
     scenario_count: number;
+    scenarios: string[];
+    countries: Country[];
 }
 
 interface ModelMetaProps {
@@ -48,6 +51,15 @@ function compare(a: unknown, b: unknown) {
         return (a as number) - (b as number)
     }
     return 0
+}
+
+function createTooltip(target: string, content: any){
+    return <UncontrolledTooltip  target={target}
+                                 className={"model-meta-tooltip"}
+                                 autohide={false}
+                                 placement={"right"}>
+        {content}
+    </UncontrolledTooltip>
 }
 
 export class ModelMetaTableComponent extends React.Component<ModelMetaProps, State> {
@@ -99,7 +111,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
 
         return <div>
             <p>Click on a column header to sort</p>
-            <table>
+            <table id={"model-meta-table"}>
                 <thead>
                 <tr>
                     {this.createHeader("modelling_group", "Group", "7em")}
@@ -110,7 +122,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                     {this.createHeader("code", "Code", "6em")}
                     {this.createHeader("gender", "Gender", "7em")}
 
-                    {this.createHeader("max_countries", "Max Countries", "10.5em")}
+                    {this.createHeader("max_countries", "Max Countries", "6.5em")}
                     {this.createHeader("years", "Years", "6.5em")}
                     {this.createHeader("ages", "Ages", "6em")}
                     {this.createHeader("cohorts", "Cohorts", "7.5em")}
@@ -120,6 +132,26 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                 </thead>
                 <tbody>
                 {this.state.data.map(function (model: ModelMetaRow, index: number) {
+                    const scenarioDetailsLink = model.scenario_count > 0 ?
+                        <div><a href="#" id={`scenario-details-link-${index}`}>view</a></div> : "";
+
+                    const countriesDetailsLink = model.max_countries > 0 ?
+                        <div><a href="#" id={`countries-details-link-${index}`}>view</a></div> : "";
+
+                    const scenarioDetailsTooltip = model.scenario_count > 0 ?
+                        createTooltip(`scenario-details-link-${index}`,
+                            model.scenarios.map(function(scenario: string) {
+                                return (<div>{scenario}</div>);
+                            }))
+                        : "";
+
+                    const countriesDetailsTooltip = model.max_countries > 0 ?
+                        createTooltip(`countries-details-link-${index}`,
+                            model.countries.map(function(country: Country) {
+                                return (<div>{`${country.name} (${country.id})`}</div>);
+                            }))
+                        : "";
+
                     return (
                         <tr key={index} data-item={model}>
                             <td data-title="group">{model.modelling_group}</td>
@@ -127,15 +159,20 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                             <td data-title="disease">{model.disease}</td>
                             <td data-title="type">{model.is_dynamic ? "Dynamic" : "Static"}</td>
                             <td data-title="scenarios">{`${model.scenario_count} scenario` +
-                                                            (model.scenario_count === 1 ? "" : "s")}</td>
+                                                            (model.scenario_count === 1 ? "" : "s")}
+                                {scenarioDetailsLink}
+                            </td>
                             <td data-title="code">{model.code}</td>
                             <td data-title="gender">{model.gender ? model.gender : "NA"}</td>
-                            <td data-title="max_countries">{model.max_countries}</td>
+                            <td data-title="max_countries">{model.max_countries}
+                                {countriesDetailsLink}</td>
                             <td data-title="years">{model.years}</td>
                             <td data-title="ages">{model.ages}</td>
                             <td data-title="cohorts">{model.cohorts}</td>
                             <td data-title="outcomes">{model.outcomes}</td>
                             <td data-title="dalys">{model.has_dalys ? "Yes" : "No"}</td>
+                            {scenarioDetailsTooltip}
+                            {countriesDetailsTooltip}
                         </tr>
                     );
                 })}
@@ -158,7 +195,9 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                 code: m.current_version.code,
                 is_dynamic: m.current_version.is_dynamic,
                 disease: m.disease.name,
-                max_countries: m.current_version ? m.current_version.countries.length : null
+                max_countries: m.current_version ? m.current_version.countries.length : null,
+                countries: m.current_version ? m.current_version.countries.sort((a,b) => a.name > b.name ?  1 : -1)
+                                            : []
             };
 
             const filteredExpectations = state.groups.expectations
@@ -183,7 +222,8 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                     years: `${expectation.years.minimum_inclusive} - ${expectation.years.maximum_inclusive}`,
                     ages: `${expectation.ages.minimum_inclusive} - ${expectation.ages.maximum_inclusive}`,
                     cohorts: cohorts,
-                    scenario_count: modelExpectation.applicable_scenarios.length
+                    scenario_count: modelExpectation.applicable_scenarios.length,
+                    scenarios: modelExpectation.applicable_scenarios
                 }
             } else {
                 return {
@@ -193,7 +233,8 @@ export const mapStateToProps = (state: AdminAppState): ModelMetaProps => {
                     years: expectationNotFound,
                     ages: expectationNotFound,
                     cohorts: expectationNotFound,
-                    scenario_count: 0
+                    scenario_count: 0,
+                    scenarios: []
                 }
             }
 

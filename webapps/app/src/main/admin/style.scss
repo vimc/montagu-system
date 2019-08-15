@@ -1,3 +1,27 @@
 
 @import "../shared/styles/variables";
 @import "../shared/styles/common";
+
+.container-fit {
+  width: fit-content!important;
+}
+
+#model-meta-table {
+  overflow-x: visible!important;
+
+  th {
+    padding-right: 1.8em;
+  }
+}
+
+.model-meta-tooltip > .tooltip-inner {
+  color: #212529;
+  background-color: white;
+  border: 1px solid #c8c8c8;
+  max-height:200px!important;
+  overflow-y:auto!important;
+}
+
+.model-meta-tooltip > .arrow::before {
+  border-right-color: #c8c8c8;
+}

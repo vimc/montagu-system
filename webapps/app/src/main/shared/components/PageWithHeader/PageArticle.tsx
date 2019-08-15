@@ -8,7 +8,7 @@ export interface PageArticleProps {
 }
 
 const PageArticle: React.FunctionComponent<PageArticleProps> = (props: PageArticleProps) => {
-    return <article className={"page " + (props.isFluid ? "fluid-container" : "container")}>
+    return <article className={"page " + (props.isFluid ? "container-fluid container-fit" : "container")}>
         { !props.hideTitle &&
         <div className="page__title">{ props.title }</div>
         }

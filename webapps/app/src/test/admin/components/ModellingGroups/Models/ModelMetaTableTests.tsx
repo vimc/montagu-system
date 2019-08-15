@@ -14,6 +14,7 @@ import {
     ModelMetaTable,
     ModelMetaTableComponent,
 } from "../../../../../main/admin/components/ModellingGroups/Models/ModelMetaTable";
+import {UncontrolledTooltip} from "reactstrap";
 
 describe("ModelMetaTable tests", () => {
 
@@ -68,7 +69,9 @@ describe("ModelMetaTable tests", () => {
             outcomes: "deaths, dalys",
             has_dalys: true,
             max_countries: 2,
-            scenario_count: 1
+            scenario_count: 1,
+            countries: [{id: "AA", name: "Country1"}, {id: "AB", name: "Country2"}],
+            scenarios: ["scenario 1"]
         },
         {...testModel2,
             code: "C",
@@ -80,7 +83,9 @@ describe("ModelMetaTable tests", () => {
             outcomes: "deaths, cases",
             has_dalys: false,
             max_countries: 1,
-            scenario_count: 2
+            scenario_count: 2,
+            countries: [{id: "AA", name: "Country1"}],
+            scenarios: ["scenario 1", "scenario 2"]
         }];
 
     const sandbox = new Sandbox();
@@ -165,10 +170,10 @@ describe("ModelMetaTable tests", () => {
         expect(cellsForRow(0).at(1).text()).to.eq("mb");
         expect(cellsForRow(0).at(2).text()).to.eq("Disease 1");
         expect(cellsForRow(0).at(3).text()).to.eq("Static");
-        expect(cellsForRow(0).at(4).text()).to.eq("1 scenario");
+        expect(cellsForRow(0).at(4).text()).to.eq("1 scenario" + "view");
         expect(cellsForRow(0).at(5).text()).to.eq("R");
         expect(cellsForRow(0).at(6).text()).to.eq("NA");
-        expect(cellsForRow(0).at(7).text()).to.eq("2");
+        expect(cellsForRow(0).at(7).text()).to.eq("2" + "view");
         expect(cellsForRow(0).at(8).text()).to.eq("1900 - 2000");
         expect(cellsForRow(0).at(9).text()).to.eq("0 - 99");
         expect(cellsForRow(0).at(10).text()).to.eq("Max 2000");
@@ -179,10 +184,10 @@ describe("ModelMetaTable tests", () => {
         expect(cellsForRow(1).at(1).text()).to.eq("ma");
         expect(cellsForRow(1).at(2).text()).to.eq("Disease 2");
         expect(cellsForRow(1).at(3).text()).to.eq("Dynamic");
-        expect(cellsForRow(1).at(4).text()).to.eq("2 scenarios");
+        expect(cellsForRow(1).at(4).text()).to.eq("2 scenarios" + "view");
         expect(cellsForRow(1).at(5).text()).to.eq("C");
         expect(cellsForRow(1).at(6).text()).to.eq("female");
-        expect(cellsForRow(1).at(7).text()).to.eq("1");
+        expect(cellsForRow(1).at(7).text()).to.eq("1" + "view");
         expect(cellsForRow(1).at(8).text()).to.eq("1950 - 2000");
         expect(cellsForRow(1).at(9).text()).to.eq("0 - 49");
         expect(cellsForRow(1).at(10).text()).to.eq("1900 - 2000");
@@ -207,7 +212,7 @@ describe("ModelMetaTable tests", () => {
     });
 
     it("sorts by type", () => {
-        assertSortsBy(4, "1 scenario", "2 scenarios")
+        assertSortsBy(4, "1 scenario" + "view", "2 scenarios" +  "view")
     });
 
     it("sorts by code", () => {
@@ -219,7 +224,7 @@ describe("ModelMetaTable tests", () => {
     });
 
     it("sorts by max countries", () => {
-        assertSortsBy(7, "1", "2")
+        assertSortsBy(7, "1" + "view", "2" + "view")
     });
 
     it("sorts by years", () => {
@@ -240,6 +245,16 @@ describe("ModelMetaTable tests", () => {
 
     it("sorts by has dalys", () => {
         assertSortsBy(12, "Yes", "No")
+    });
+
+    it("shows scenario tooltips", () => {
+        assertTooltip(4, 0, "scenario-details-link-0", ["scenario 1"]);
+        assertTooltip(4, 1, "scenario-details-link-1", ["scenario 1","scenario 2"]);
+    });
+
+    it("shows countries tooltips", () => {
+        assertTooltip(7, 0, "countries-details-link-0", ["Country1 (AA)","Country2 (AB)"]);
+        assertTooltip(7, 1, "countries-details-link-1", ["Country1 (AA)"]);
     });
 
     function assertSortsBy(colIndex: number, ascValue: string, descValue: string) {
@@ -263,6 +278,29 @@ describe("ModelMetaTable tests", () => {
         expect(getFirstRowValue()).to.eq(descValue);
         expect(rendered.find("th").at(colIndex).hasClass("asc")).to.eq(false);
         expect(rendered.find("th").at(colIndex).hasClass("desc")).to.eq(true);
+    }
+
+    function assertTooltip(colIndex: number, rowIndex: number, target: string, contents: string[]) {
+        const testState = {
+            groups: {models: [testModel, testModel2], expectations: [testExpectation, testExpectation2]}
+        };
+        const store = createMockStore(testState);
+        const rendered = shallow(<ModelMetaTable/>, {context: {store}}).dive();
+
+        const row =  rendered.find("tbody").find("tr").at(rowIndex);
+        const cell = row.find("td").at(colIndex);
+        const link = cell.find("a");
+        expect(link.prop("id")).to.eql(target);
+
+        const tooltip = row.find(UncontrolledTooltip).find(`[target="${target}"]`).dive();
+
+        expect(tooltip.prop("target")).to.eql(target);
+        expect(tooltip.prop("className")).to.eql("model-meta-tooltip");
+        expect(tooltip.prop("autohide")).to.eql(false);
+
+        for (let i: number = 0; i < contents.length; i++) {
+            expect(tooltip.childAt(i).text()).to.eql(contents[i]);
+        }
     }
 
 });
