@@ -15,16 +15,21 @@
   }
 }
 
-.model-meta-tooltip > .tooltip-inner {
-  color: #212529;
-  background-color: white;
-  border: 1px solid #c8c8c8;
-  max-height:200px!important;
-  max-width:350px!important;
-  overflow-y:auto!important;
-  text-align:left!important;
+.model-meta-tooltip {
+  opacity: 1.0!important;
+
+  .tooltip-inner {
+    color: #212529;
+    background-color: white;
+    border: 1px solid #c8c8c8;
+    max-height:200px!important;
+    max-width:350px!important;
+    overflow-y:auto!important;
+    text-align:left!important;
+  }
+
+  .arrow::before {
+    border-right-color: #c8c8c8;
+  }
 }
 
-.model-meta-tooltip > .arrow::before {
-  border-right-color: #c8c8c8;
-}

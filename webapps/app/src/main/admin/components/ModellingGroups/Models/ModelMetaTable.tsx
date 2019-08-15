@@ -221,6 +221,7 @@ export const mapStateToProps = (state: AdminAppState, props: ModelMetaPublicProp
     });
 
     const includedModels = state.groups.models.filter((model) => {
+        //A model is considered obsolete if it has no expectations
         return (props.obsoleteModels && modelExpectations[model.id].length == 0) ||
             (!props.obsoleteModels && modelExpectations[model.id].length > 0)
     });
