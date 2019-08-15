@@ -54,14 +54,17 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                                       private val burdenEstimateRepository: BurdenEstimateRepository,
                                       private val expectationsRepository: ExpectationsRepository,
                                       private val scenarioRepository: ScenarioRepository,
-                                      private val touchstoneRepository: TouchstoneRepository) : BurdenEstimateLogic
+                                      private val touchstoneRepository: TouchstoneRepository,
+                                      private val notifier: Notifier) : BurdenEstimateLogic
 {
 
-    constructor(repositories: Repositories) : this(repositories.modellingGroup,
+    constructor(repositories: Repositories, notifier: Notifier = SlackNotifier()) : this(
+            repositories.modellingGroup,
             repositories.burdenEstimates,
             repositories.expectations,
             repositories.scenario,
-            repositories.touchstone)
+            repositories.touchstone,
+            notifier)
 
     override fun createBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
                                          properties: CreateBurdenEstimateSet,
@@ -284,6 +287,8 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         {
             burdenEstimateRepository.updateBurdenEstimateSetFilename(setId, filename)
         }
+
+        notifier.notify("A burden estimate set has just been uploaded for ${group.id}")
     }
 
     private fun populateCentralBurdenEstimateSet(set: BurdenEstimateSet, responsibilityInfo: ResponsibilityInfo,

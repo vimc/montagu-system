@@ -17,8 +17,7 @@ abstract class BaseBurdenEstimateController(context: ActionContext,
 
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
-            RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario,
-                                                repos.touchstone))
+            RepositoriesBurdenEstimateLogic(repos))
 
     protected fun closeEstimateSetAndReturnMissingRowError(setId: Int, groupId: String, touchstoneVersionId: String,
                                                            scenarioId: String): Result

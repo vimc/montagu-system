@@ -56,7 +56,7 @@ class CreateBurdenEstimateLogicTests : MontaguTests()
     @Test
     fun `creates burden estimate set for incomplete responsibility set`()
     {
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, getBurdenRepo(ResponsibilitySetStatus.INCOMPLETE), mock(), mock(), mock())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, getBurdenRepo(ResponsibilitySetStatus.INCOMPLETE), mock(), mock(), mock(), mock())
         val result =
                 sut.createBurdenEstimateSet(groupId,
                         touchstoneVersionId,
@@ -70,7 +70,7 @@ class CreateBurdenEstimateLogicTests : MontaguTests()
     @Test
     fun `cannot create burden estimate set if responsibility set status is submitted`()
     {
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, getBurdenRepo(ResponsibilitySetStatus.SUBMITTED), mock(), mock(), mock())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, getBurdenRepo(ResponsibilitySetStatus.SUBMITTED), mock(), mock(), mock(), mock())
         assertThatThrownBy {
             sut.createBurdenEstimateSet(groupId,
                     touchstoneVersionId,
@@ -87,7 +87,7 @@ class CreateBurdenEstimateLogicTests : MontaguTests()
     @Test
     fun `cannot create burden estimate set if responsibility set status is approved`()
     {
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, getBurdenRepo(ResponsibilitySetStatus.APPROVED), mock(), mock(), mock())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, getBurdenRepo(ResponsibilitySetStatus.APPROVED), mock(), mock(), mock(), mock())
         assertThatThrownBy {
             sut.createBurdenEstimateSet(groupId,
                     touchstoneVersionId,
@@ -107,7 +107,7 @@ class CreateBurdenEstimateLogicTests : MontaguTests()
     {
         val properties = defaultProperties.copy(modelRunParameterSet = 111)
         val mockRepo = getBurdenRepo(ResponsibilitySetStatus.INCOMPLETE)
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, mockRepo, mock(), mock(), mock())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, mockRepo, mock(), mock(), mock(), mock())
         sut.createBurdenEstimateSet(groupId,
                 touchstoneVersionId,
                 scenarioId,
@@ -122,7 +122,7 @@ class CreateBurdenEstimateLogicTests : MontaguTests()
     fun `does not check model run parameter set exists if not provided`()
     {
         val mockRepo = getBurdenRepo(ResponsibilitySetStatus.INCOMPLETE)
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, mockRepo, mock(), mock(), mock())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, mockRepo, mock(), mock(), mock(), mock())
         sut.createBurdenEstimateSet(groupId,
                 touchstoneVersionId,
                 scenarioId,
@@ -135,7 +135,7 @@ class CreateBurdenEstimateLogicTests : MontaguTests()
     @Test
     fun `creates model run parameter set`()
     {
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, getBurdenRepo(ResponsibilitySetStatus.INCOMPLETE), mock(), mock(), mock())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, getBurdenRepo(ResponsibilitySetStatus.INCOMPLETE), mock(), mock(), mock(), mock())
 
         val result = sut.addModelRunParameterSet(groupId, touchstoneVersionId, disease,
                 listOf(ModelRun("run1", mapOf())), "uploader", Instant.now())
@@ -145,7 +145,7 @@ class CreateBurdenEstimateLogicTests : MontaguTests()
     @Test
     fun `cannot create model run parameter set if no model runs provided`()
     {
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, getBurdenRepo(ResponsibilitySetStatus.INCOMPLETE), mock(), mock(), mock())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepo, getBurdenRepo(ResponsibilitySetStatus.INCOMPLETE), mock(), mock(), mock(), mock())
 
         Assertions.assertThatThrownBy {
             sut.addModelRunParameterSet(groupId, touchstoneVersionId, disease,

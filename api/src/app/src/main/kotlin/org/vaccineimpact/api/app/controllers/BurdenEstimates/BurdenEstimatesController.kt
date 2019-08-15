@@ -18,8 +18,7 @@ open class BurdenEstimatesController(
 {
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
-            RepositoriesBurdenEstimateLogic(repos.modellingGroup, repos.burdenEstimates, repos.expectations, repos.scenario,
-                    repos.touchstone),
+            RepositoriesBurdenEstimateLogic(repos),
             repos.burdenEstimates)
 
     fun getBurdenEstimateSets(): List<BurdenEstimateSet>
