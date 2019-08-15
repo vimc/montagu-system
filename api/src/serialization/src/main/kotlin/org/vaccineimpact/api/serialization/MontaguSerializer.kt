@@ -6,6 +6,8 @@ import com.google.gson.*
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityStatus
+import java.math.BigDecimal
+import java.text.DecimalFormat
 import java.time.Instant
 import java.time.LocalDate
 
@@ -126,6 +128,7 @@ open class MontaguSerializer : Serializer
     {
         null -> serializeNullsTo
         is Enum<*> -> serializeEnum(value)
+        is BigDecimal -> value.stripTrailingZeros().toPlainString()
         else -> value.toString()
     }
 

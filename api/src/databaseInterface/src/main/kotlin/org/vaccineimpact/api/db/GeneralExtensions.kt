@@ -2,6 +2,7 @@ package org.vaccineimpact.api.db
 
 import java.math.BigDecimal
 import java.util.*
+import kotlin.math.pow
 
 fun <T> T.getOther(a: T, b: T) = when (this)
 {
@@ -13,9 +14,9 @@ fun <T> T.getOther(a: T, b: T) = when (this)
 fun Random.nextDecimal(min: Int = 0, max: Int = 1, numberOfDecimalPlaces: Int = 2): BigDecimal
 {
     val range = max - min
-    val factor = Math.pow(10.0, numberOfDecimalPlaces.toDouble()).toInt()
-    val int = this.nextInt(range * factor)
-    return BigDecimal(int).divide(BigDecimal(factor), numberOfDecimalPlaces, BigDecimal.ROUND_HALF_UP)
+    val factor = 10.0.pow(numberOfDecimalPlaces.toDouble())
+    val int = this.nextInt(range * factor.toInt())
+    return BigDecimal(int).divide(BigDecimal.valueOf(factor), numberOfDecimalPlaces, BigDecimal.ROUND_HALF_UP)
 }
 
 fun Int.toDecimal(): BigDecimal = this.toLong().toDecimal()

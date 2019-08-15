@@ -35,8 +35,7 @@ interface TouchstoneRepository : Repository
     fun getDemographicDatasets(touchstoneVersionId: String): List<DemographicDataset>
     fun getDemographicData(statisticTypeCode: String, source: String,
                            touchstoneVersionId: String,
-                           gender: String = "both",
-                           serializer: Serializer): SplitData<DemographicDataForTouchstone, LongDemographicRow>
+                           gender: String = "both"): SplitData<DemographicDataForTouchstone, LongDemographicRow>
 
     fun mapTouchstone(records: List<Record>): Touchstone
     fun mapTouchstoneVersion(record: Record): TouchstoneVersion

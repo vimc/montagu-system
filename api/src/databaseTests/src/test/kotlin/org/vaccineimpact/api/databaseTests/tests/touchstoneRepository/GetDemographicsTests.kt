@@ -6,7 +6,6 @@ import org.junit.Test
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.TouchstoneStatus
-import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.test_helpers.DemographicDummyData
 
 class GetDemographicsTests : TouchstoneRepositoryTests()
@@ -81,7 +80,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         } check {
             val version = it.getDemographicData("tot-pop",
-                    source, touchstoneVersionId, serializer = MontaguSerializer.instance).structuredMetadata.touchstoneVersion
+                    source, touchstoneVersionId).structuredMetadata.touchstoneVersion
             Assertions.assertThat(version.name).isEqualTo(touchstoneName)
             Assertions.assertThat(version.description).isEqualTo("Description")
             Assertions.assertThat(version.status).isEqualTo(TouchstoneStatus.OPEN)
@@ -104,7 +103,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
 
         } check {
             var metadata = it.getDemographicData("tot-pop", source,
-                    touchstoneVersionId, serializer = MontaguSerializer.instance)
+                    touchstoneVersionId)
                     .structuredMetadata.demographicData
 
             Assertions.assertThat(metadata.id).isEqualTo("tot-pop")
@@ -116,7 +115,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(metadata.countries).hasSameElementsAs(countries)
 
             metadata = it.getDemographicData("as-fert", source,
-                    touchstoneVersionId, serializer = MontaguSerializer.instance)
+                    touchstoneVersionId)
                     .structuredMetadata.demographicData
 
             Assertions.assertThat(metadata.id).isEqualTo("as-fert")
@@ -142,7 +141,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val all = it.getDemographicData("tot-pop", source,
-                    touchstoneVersionId, serializer = MontaguSerializer.instance)
+                    touchstoneVersionId)
             val data = all
                     .tableData.data
 
@@ -157,7 +156,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             Assertions.assertThat(data.count()).isEqualTo(numAges * numYears * numCountries * numVariants)
 
             val fertilityData = it.getDemographicData("as-fert", source,
-                    touchstoneVersionId, serializer = MontaguSerializer.instance)
+                    touchstoneVersionId)
                     .tableData.data
 
             numYears = 3
@@ -182,7 +181,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val data = it.getDemographicData("as-fert", source,
-                    touchstoneVersionId, serializer = MontaguSerializer.instance)
+                    touchstoneVersionId)
             Assertions.assertThat(data.structuredMetadata.demographicData.gender).isEqualTo("both")
             Assertions.assertThat(data.tableData.data.any { it.gender == "both" }).isTrue()
 
@@ -203,7 +202,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val data = it.getDemographicData("tot-pop",
-                    source, touchstoneVersionId, "female", serializer = MontaguSerializer.instance)
+                    source, touchstoneVersionId, "female")
             Assertions.assertThat(data.structuredMetadata.demographicData.gender).isEqualTo("both")
             Assertions.assertThat(data.tableData.data.any { it.gender == "both" }).isTrue()
         }
@@ -223,7 +222,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val data = it.getDemographicData("as-fert", source,
-                    touchstoneVersionId, "female", serializer = MontaguSerializer.instance)
+                    touchstoneVersionId, "female")
             Assertions.assertThat(data.structuredMetadata.demographicData.gender).isEqualTo("female")
             Assertions.assertThat(data.tableData.data.any { it.gender == "female" }).isTrue()
         }
@@ -239,8 +238,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             Assertions.assertThatThrownBy {
-                it.getDemographicData("tot-pop", source, touchstoneVersionId,
-                        serializer = MontaguSerializer.instance)
+                it.getDemographicData("tot-pop", source, touchstoneVersionId)
             }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
@@ -260,7 +258,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val result = it.getDemographicData("tot-pop",
-                    source, touchstoneVersionId, serializer = MontaguSerializer.instance)
+                    source, touchstoneVersionId)
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
         }
     }
@@ -277,7 +275,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             Assertions.assertThatThrownBy { it.getDemographicData("tot-pop", source,
-                    touchstoneVersionId, serializer = MontaguSerializer.instance) }
+                    touchstoneVersionId) }
                     .isInstanceOf(UnknownObjectError::class.java)
                     .matches { (it as UnknownObjectError).typeName == "demographic-statistic-type" }
 
@@ -295,7 +293,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val result = it.getDemographicData("tot-pop", source,
-                    touchstoneVersionId, serializer = MontaguSerializer.instance)
+                    touchstoneVersionId)
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
 
         }
@@ -313,7 +311,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             val result = it.getDemographicData("tot-pop",
-                    source, touchstoneVersionId, serializer = MontaguSerializer.instance)
+                    source, touchstoneVersionId)
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
         }
     }
@@ -340,7 +338,7 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
             val expectedCountries = countries.take(2)
 
             val result = it.getDemographicData("tot-pop", source,
-                    anotherTouchstoneId, serializer = MontaguSerializer.instance)
+                    anotherTouchstoneId)
             val metadata = result.structuredMetadata.demographicData
             
             assertThat(metadata.countries).isEqualTo(expectedCountries)
@@ -374,11 +372,10 @@ class GetDemographicsTests : TouchstoneRepositoryTests()
         } check {
 
             var result = it.getDemographicData("tot-pop", source,
-                    anotherTouchstoneId, serializer = MontaguSerializer.instance)
+                    anotherTouchstoneId)
             Assertions.assertThat(result.tableData.data.count()).isEqualTo(0)
 
-            result = it.getDemographicData("tot-pop", newSource, anotherTouchstoneId,
-                    serializer = MontaguSerializer.instance)
+            result = it.getDemographicData("tot-pop", newSource, anotherTouchstoneId)
             Assertions.assertThat(result.tableData.data.count()).isGreaterThan(0)
         }
     }

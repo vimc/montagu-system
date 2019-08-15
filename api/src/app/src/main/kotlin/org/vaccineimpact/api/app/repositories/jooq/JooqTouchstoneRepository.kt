@@ -10,16 +10,11 @@ import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.mapping.MappingHelper
+import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.db.fetchSequence
-import org.vaccineimpact.api.db.fieldsAsList
-import org.vaccineimpact.api.db.fromJoinPath
-import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
-import org.vaccineimpact.api.serialization.DecimalRoundingSerializer
-import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.serialization.SplitData
 import java.math.BigDecimal
 import kotlin.sequences.Sequence
@@ -46,15 +41,14 @@ class JooqTouchstoneRepository(
     override fun getDemographicData(statisticTypeCode: String,
                                     source: String,
                                     touchstoneVersionId: String,
-                                    gender: String,
-                                    serializer: Serializer): SplitData<DemographicDataForTouchstone, LongDemographicRow>
+                                    gender: String): SplitData<DemographicDataForTouchstone, LongDemographicRow>
     {
         val metadata = getDemographicMetadata(statisticTypeCode, source, touchstoneVersionId, gender)
         val data = getDemographicStatistics(touchstoneVersionId, statisticTypeCode, source, gender)
                 .orderBy(DEMOGRAPHIC_STATISTIC.COUNTRY, DEMOGRAPHIC_STATISTIC.YEAR, DEMOGRAPHIC_STATISTIC.AGE_FROM)
                 .fetchSequence()
                 .map { mapDemographicRow(it) }
-        return SplitData(metadata, DataTable.new(data, serializer))
+        return SplitData(metadata, DataTable.new(data))
     }
 
     private fun getDemographicMetadata(
@@ -146,7 +140,7 @@ class JooqTouchstoneRepository(
         val coverageData = getCoverageDataForScenario(touchstoneVersionId, scenarioDescId)
         val metadata = ScenarioAndCoverageSets(scenario, coverageSets)
 
-        return SplitData(metadata, DataTable.new(coverageData.asSequence(), serializer = DecimalRoundingSerializer.instance))
+        return SplitData(metadata, DataTable.new(coverageData.asSequence()))
     }
 
     override fun getCoverageDataForScenario(
@@ -158,7 +152,7 @@ class JooqTouchstoneRepository(
                 .filter { it[COVERAGE_SET.ID] != null }
 
         return coverageRecords
-                .filter{ it[COUNTRY.NAME] != null }
+                .filter { it[COUNTRY.NAME] != null }
                 .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
     }
 
@@ -172,7 +166,7 @@ class JooqTouchstoneRepository(
                 .filter { it[COVERAGE_SET.ID] != null }
 
         return coverageRecords
-                .filter{ it[COUNTRY.NAME] != null }
+                .filter { it[COUNTRY.NAME] != null }
                 .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
     }
 
@@ -194,7 +188,7 @@ class JooqTouchstoneRepository(
         return records.map { mapCoverageSet(it) }
     }
 
-    private fun coverageDimensions() : Array<Field<*>>
+    private fun coverageDimensions(): Array<Field<*>>
     {
         //The columns in the Coverage table which the target and coverage values are grouped by
         return arrayOf(COVERAGE.COVERAGE_SET,
@@ -207,7 +201,7 @@ class JooqTouchstoneRepository(
                 COVERAGE.GENDER)
     }
 
-    private fun aggregatedValues() : List<Field<*>>
+    private fun aggregatedValues(): List<Field<*>>
     {
         return arrayOf(
                 aggregatedCoverage().`as`("coverage"),
@@ -216,7 +210,7 @@ class JooqTouchstoneRepository(
     }
 
 
-    private fun aggregatedCoverage() : Field<BigDecimal?>
+    private fun aggregatedCoverage(): Field<BigDecimal?>
     {
         //Aggregated coverage - the sum of each row's coverage * target (to get total no of fvp's across campaign)
         //divided by the the total target population
@@ -224,18 +218,18 @@ class JooqTouchstoneRepository(
         //Danger of divide by zero error here - treat as NULL if summed target is 0
         return `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.COVERAGE_)) //If only one row in group
                 .otherwise(sum(validTargetOrNull().mul(validCoverageOrNull()))
-                        .div(nullif(sum(validTargetOrNull()),BigDecimal(0.0)) ) )
+                        .div(nullif(sum(validTargetOrNull()), 0.toDecimal())))
 
     }
 
-    private fun aggregatedTarget() : Field<BigDecimal?>
+    private fun aggregatedTarget(): Field<BigDecimal?>
     {
         //If only one row in group, pass that row's value through unchanged
         return `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.TARGET)) //If only one row in group
-                .otherwise( sum(validTargetOrNull() ))
+                .otherwise(sum(validTargetOrNull()))
     }
 
-    private fun validTargetOrNull() : Field<BigDecimal?>
+    private fun validTargetOrNull(): Field<BigDecimal?>
     {
         //Coverage and target values only make sense if both are provided. Return the target value of a row providing
         //coverage is not null, else return null
@@ -243,7 +237,7 @@ class JooqTouchstoneRepository(
                 .otherwise(COVERAGE.TARGET)
     }
 
-    private fun validCoverageOrNull() : Field<BigDecimal?>
+    private fun validCoverageOrNull(): Field<BigDecimal?>
     {
         //Coverage and target values only make sense if both are provided. Return the coverage value of a row providing
         //target is not null, else return null
@@ -252,9 +246,9 @@ class JooqTouchstoneRepository(
     }
 
     private fun getCoverageRowsForScenario(
-        touchstoneVersionId: String,
-        scenarioDescriptionId: String)
-        : Result<Record>
+            touchstoneVersionId: String,
+            scenarioDescriptionId: String)
+            : Result<Record>
     {
         //This query is now grouped to support sub-national campaigns
         return dsl
