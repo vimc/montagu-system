@@ -28,7 +28,7 @@ fun exampleExpectations(id: Int=1) = CountryOutcomeExpectations(
 )
 
 
-fun exampleOutcomeExpectations(id: Int=1, outcomes:List<String> = emptyList()) = OutcomeExpectations(
+fun exampleOutcomeExpectations(id: Int=1, outcomes:List<Outcome> = emptyList()) = OutcomeExpectations(
         id = id,
         description = "description",
         years = 2000..2100,

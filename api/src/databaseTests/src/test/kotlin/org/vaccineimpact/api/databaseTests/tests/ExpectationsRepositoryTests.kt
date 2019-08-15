@@ -9,10 +9,7 @@ import org.vaccineimpact.api.app.repositories.jooq.JooqExpectationsRepository
 import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
-import org.vaccineimpact.api.models.CohortRestriction
-import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.ExpectationMapping
-import org.vaccineimpact.api.models.TouchstoneModelExpectations
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.test_helpers.exampleExpectations
 import org.vaccineimpact.api.test_helpers.exampleOutcomeExpectations
 
@@ -98,19 +95,19 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     @Test
     fun `can pull outcome expectations`()
     {
+        val outcomes = listOf(Outcome("test_cases", "test cases name"),
+                                            Outcome("test_deaths", "test deaths name"))
+
         val responsibilityId = addResponsibilityAnd { db, _, responsibilityId ->
             db.addExpectations(
                     responsibilityId,
-                    outcomes = listOf("cases", "deaths")
+                    outcomes = outcomes
             )
             responsibilityId
         }
         withRepo { repo ->
             val result = repo.getExpectationsForResponsibility(responsibilityId).expectation
-            assertThat(result.outcomes).hasSameElementsAs(listOf(
-                    "cases",
-                    "deaths"
-            ))
+            assertThat(result.outcomes).hasSameElementsAs(outcomes)
         }
     }
 
@@ -255,6 +252,9 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     @Test
     fun `can get all expectations`()
     {
+        val deathsOutcome = Outcome("test_deaths", "test deaths name")
+        val casesOutcome = Outcome("test_cases", "test cases name")
+
         withDatabase { db ->
             db.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
             db.addTouchstoneVersion("touchstone2", 2, addTouchstone = true)
@@ -268,8 +268,8 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             val r1 = db.addResponsibility(setId1, touchstoneVersionId, scenarioId)
             val r2 = db.addResponsibility(setId2, "touchstone2-2", otherScenarioId)
             val r3 = db.addResponsibility(setId2, "touchstone2-2", "scenario3")
-            val expId1 = db.addExpectations(r1, outcomes=listOf("deaths"))
-            val expId2 = db.addExpectations(r2, outcomes=listOf("deaths", "cases"))
+            val expId1 = db.addExpectations(r1, outcomes=listOf(deathsOutcome))
+            val expId2 = db.addExpectations(r2, outcomes=listOf(deathsOutcome, casesOutcome))
             db.addExistingExpectationsToResponsibility(r1, expId1)
             db.addExistingExpectationsToResponsibility(r2, expId2)
             db.addExistingExpectationsToResponsibility(r3, expId2)
@@ -278,9 +278,9 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             val result = repo.getAllExpectations()
             assertThat(result).isEqualTo(listOf(
                     TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF",
-                            exampleOutcomeExpectations(outcomes=listOf("deaths")), listOf(scenarioId)),
+                            exampleOutcomeExpectations(outcomes=listOf(deathsOutcome)), listOf(scenarioId)),
                     TouchstoneModelExpectations("touchstone2-2", otherGroupId, "HepB",
-                            exampleOutcomeExpectations(id=2, outcomes=listOf("cases", "deaths")),
+                            exampleOutcomeExpectations(id=2, outcomes=listOf(casesOutcome, deathsOutcome)),
                             listOf(otherScenarioId, "scenario3"))
             ))
         }

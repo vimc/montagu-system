@@ -29,7 +29,10 @@ Schema: [`TouchstoneModelExpectations.schema.json`](../schemas/TouchstoneModelEx
                     "minimum_birth_year": 1950,
                     "maximum_birth_year": 2050
                 },
-                "outcomes": ["cases","deaths"]
+                "outcomes": [
+                    { "code": "cases", "name": "cases" },
+                    { "code": "deaths", "name": "deaths" }
+                ]
             },
             "applicable_scenarios": ["yf-routine", "yf-campaign"]
         },
@@ -52,7 +55,9 @@ Schema: [`TouchstoneModelExpectations.schema.json`](../schemas/TouchstoneModelEx
                     "minimum_birth_year": 1960,
                     "maximum_birth_year": 2060
                 },
-                "outcomes": ["cases"]
+                "outcomes": [
+                    { "code": "cases", "name": "cases" }
+                ]
             },
             "applicable_scenarios": ["yf-routine"]
         }

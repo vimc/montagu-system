@@ -9,7 +9,7 @@
     "cohorts": { "$ref": "CohortRestriction.schema.json" },
     "outcomes": {
       "type": "array",
-      "items": { "type": "string" }
+      "items": { "$ref": "Outcome.schema.json" }
     }
   },
   "additionalProperties": false,

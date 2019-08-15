@@ -93,11 +93,14 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 RESPONSIBILITY_SET.MODELLING_GROUP,
                 *BURDEN_ESTIMATE_EXPECTATION.fields(),
                 SCENARIO.SCENARIO_DESCRIPTION,
-                Tables.outcomes.OUTCOME)
+                BURDEN_OUTCOME.CODE,
+                BURDEN_OUTCOME.NAME)
                 .fromJoinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION)
                 .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION)
                 .joinPath(RESPONSIBILITY, RESPONSIBILITY_SET, TOUCHSTONE)
                 .joinPath(BURDEN_ESTIMATE_EXPECTATION, Tables.outcomes, joinType = JoinType.LEFT_OUTER_JOIN)
+                .leftJoin(BURDEN_OUTCOME)
+                .on(Tables.outcomes.OUTCOME.eq(BURDEN_OUTCOME.CODE))
                 .where(RESPONSIBILITY.IS_OPEN.eq(true))
                 .and(TOUCHSTONE.STATUS.eq("open"))
                 .and(SCENARIO.TOUCHSTONE.eq(RESPONSIBILITY_SET.TOUCHSTONE))
@@ -105,7 +108,16 @@ class JooqExpectationsRepository(dsl: DSLContext)
 
         val outcomes = records.groupBy{ it[BURDEN_ESTIMATE_EXPECTATION.ID] }
             .mapValues{
-                it.value.mapNotNull{ row -> row[Tables.outcomes.OUTCOME] }.distinct()
+                it.value.mapNotNull{ row ->
+                            if (row[BURDEN_OUTCOME.CODE] == null)
+                            {
+                                null
+                            }
+                            else
+                            {
+                                Outcome(row[BURDEN_OUTCOME.CODE], row[BURDEN_OUTCOME.NAME])
+                            }
+                        }.distinct()
             }
 
         val scenarios = records.groupBy{ it[BURDEN_ESTIMATE_EXPECTATION.ID] }
@@ -141,7 +153,7 @@ class JooqExpectationsRepository(dsl: DSLContext)
         return ApplicableScenariosAndDisease(scenarios, disease)
     }
 
-    private fun BurdenEstimateExpectationRecord.toOutcomeExpectations(outcomes: List<String>): OutcomeExpectations
+    private fun BurdenEstimateExpectationRecord.toOutcomeExpectations(outcomes: List<Outcome>): OutcomeExpectations
     {
         val record = this
         return OutcomeExpectations(
@@ -150,7 +162,7 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 record.yearMinInclusive..record.yearMaxInclusive,
                 record.ageMinInclusive..record.ageMaxInclusive,
                 CohortRestriction(record.cohortMinInclusive, record.cohortMaxInclusive),
-                outcomes.sorted()
+                outcomes.sortedBy { it.code }
         )
     }
 
@@ -170,12 +182,14 @@ class JooqExpectationsRepository(dsl: DSLContext)
         )
     }
 
-    private fun getOutcomes(basicData: BurdenEstimateExpectationRecord): List<String>
+    private fun getOutcomes(basicData: BurdenEstimateExpectationRecord): List<Outcome>
     {
-        return dsl.select(Tables.outcomes.OUTCOME)
+        return dsl.select(BURDEN_OUTCOME.CODE, BURDEN_OUTCOME.NAME)
                 .from(Tables.outcomes)
+                .join(BURDEN_OUTCOME)
+                .on(Tables.outcomes.OUTCOME.eq(BURDEN_OUTCOME.CODE))
                 .where(Tables.outcomes.BURDEN_ESTIMATE_EXPECTATION.eq(basicData.id))
-                .fetchInto(String::class.java)
+                .fetchInto(Outcome::class.java)
                 .toList()
     }
 

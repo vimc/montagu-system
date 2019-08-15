@@ -13,6 +13,7 @@ import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.tests.AuthenticationTests.Companion.url
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.models.Outcome
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import java.io.StringReader
 
@@ -105,7 +106,13 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
     {
         JooqContext().use {
 
-            val setId = setUpWithBurdenEstimateSet(it, expectedOutcomes = listOf("cases", "dalys", "deaths"))
+            val outcomes = listOf(
+                Outcome("cases", "cases name"),
+                Outcome("dalys", "dalys name"),
+                Outcome("deaths", "deaths name")
+            )
+
+            val setId = setUpWithBurdenEstimateSet(it, expectedOutcomes = outcomes)
             it.addCountries(listOf("ABC", "DEF"))
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "cohort_size", value = 100F)
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "cases", value = 40F)

@@ -10,10 +10,7 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.BURDEN_OUTCOME
 import org.vaccineimpact.api.db.direct.*
-import org.vaccineimpact.api.models.BurdenEstimateGrouping
-import org.vaccineimpact.api.models.BurdenEstimateSet
-import org.vaccineimpact.api.models.BurdenEstimateSetType
-import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
+import org.vaccineimpact.api.models.*
 import java.time.Instant
 
 class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
@@ -618,19 +615,23 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
     @Test
     fun `can getExpectedOutcomesForBurdenEstimateSet`()
     {
+        val deaths = Outcome("test_deaths", "test deaths name")
+        val cases = Outcome("test_cases", "test cases name")
+        val dalys = Outcome("test_dalys", "test dalys name")
+
         val setId = withDatabase { db ->
             val ids = setupDatabase(db)
             val modelVersionId = ids.modelVersion!!
-            db.addExpectations(ids.responsibility, outcomes = listOf("cases", "deaths", "dalys"))
+            db.addExpectations(ids.responsibility, outcomes = listOf(cases, deaths, dalys))
             db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
         }
         withRepo { repo ->
             val result = repo.getExpectedOutcomesForBurdenEstimateSet(setId)
 
             Assertions.assertThat(result.count()).isEqualTo(3)
-            Assertions.assertThat(result[0]).isEqualTo("cases")
-            Assertions.assertThat(result[1]).isEqualTo("dalys")
-            Assertions.assertThat(result[2]).isEqualTo("deaths")
+            Assertions.assertThat(result[0]).isEqualTo("test_cases")
+            Assertions.assertThat(result[1]).isEqualTo("test_dalys")
+            Assertions.assertThat(result[2]).isEqualTo("test_deaths")
         }
     }
 
@@ -642,7 +643,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             val ids = setupDatabase(db)
             val modelVersionId = ids.modelVersion!!
             db.addCountries(listOf("ABC"))
-            db.addExpectations(ids.responsibility, outcomes = listOf("cases_acute"))
+            db.addExpectations(ids.responsibility, outcomes = listOf(Outcome("cases_acute", "cases acute name")))
             db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setId = setId)
 
             //add secondary estimate sets and expectations
@@ -671,6 +672,12 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         //Add a second scenario
         db.addScenarioDescription(secondScenarioId, "description", "Hib3")
 
+        val outcomes = listOf(
+                Outcome("cases", "cases name"),
+                Outcome("deaths", "deaths name"),
+                Outcome("dalys", "dalys name")
+        )
+
 
         val secondTouchstoneResponsibilitySetId = db.addResponsibilitySet(groupId, secondTouchstoneVersionId)
         val secondTouchstoneResponsibilityId = db.addResponsibility(secondTouchstoneResponsibilitySetId,
@@ -678,20 +685,20 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         val secondTouchstoneBurdenEstimateSetId = 99
         db.addBurdenEstimateSet(secondTouchstoneResponsibilityId, modelVersionId, username, setId = secondTouchstoneBurdenEstimateSetId)
         db.addBurdenEstimate(secondTouchstoneBurdenEstimateSetId, "ABC", 1960, 65, "deaths", 27f )
-        db.addExpectations(secondTouchstoneResponsibilityId, outcomes = listOf("cases", "deaths", "dalys"))
+        db.addExpectations(secondTouchstoneResponsibilityId, outcomes = outcomes)
 
         val secondGroupResponsibilitySetId = db.addResponsibilitySet(secondModellingGroupId, touchstoneVersionId)
         val secondGroupResponsibilityId = db.addResponsibility(secondGroupResponsibilitySetId, touchstoneVersionId, scenarioId)
         val secondGroupBurdenEstimateSetId = 199
         db.addBurdenEstimateSet(secondGroupResponsibilityId, modelVersionId, username, setId = secondGroupBurdenEstimateSetId)
         db.addBurdenEstimate(secondGroupBurdenEstimateSetId, "ABC", 1961, 61, "cases", 77f )
-        db.addExpectations(secondGroupResponsibilityId, outcomes = listOf("cases", "deaths", "dalys"))
+        db.addExpectations(secondGroupResponsibilityId, outcomes = outcomes)
 
         val secondScenarioResponsibilityId = db.addResponsibility(primaryResponsibilitySetId, touchstoneVersionId, secondScenarioId)
         val secondScenarioBurdenEstimateSetId = 299
         db.addBurdenEstimateSet(secondScenarioResponsibilityId, modelVersionId, username, setId = secondScenarioBurdenEstimateSetId)
         db.addBurdenEstimate(secondScenarioBurdenEstimateSetId, "ABC", 1962, 62, "dalys", 87f )
-        db.addExpectations(secondGroupResponsibilityId, outcomes = listOf("cases", "deaths", "dalys"))
+        db.addExpectations(secondGroupResponsibilityId, outcomes = outcomes)
     }
 
     private fun checkSetHasExpectedType(sets: List<BurdenEstimateSet>, setId: Int, expectedType: BurdenEstimateSetType)
