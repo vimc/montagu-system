@@ -9,8 +9,8 @@ export class ModelMetaPageComponent extends React.Component<PageProperties<undef
 
     render(): JSX.Element {
         return <PageArticle title={this.props.title} isFluid={true}>
-            <ModelMetaTable obsoleteModels={false}/>
-            <ModelMetaTable obsoleteModels={true}/>
+            <ModelMetaTable obsoleteOnly={false}/>
+            <ModelMetaTable obsoleteOnly={true}/>
         </PageArticle>;
     }
 }

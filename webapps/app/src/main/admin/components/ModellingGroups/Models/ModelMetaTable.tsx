@@ -27,11 +27,11 @@ export interface ModelMetaRow {
 }
 
 interface ModelMetaPublicProps {
-    obsoleteModels: boolean,
+    obsoleteOnly: boolean,
 }
 
 interface ModelMetaProps {
-    obsoleteModels: boolean,
+    obsoleteOnly: boolean,
     models: ModelMetaRow[]
 }
 
@@ -113,16 +113,65 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                    onClick={() => this.onSort(key)}>{displayName}</th>
     };
 
+    createExpectationHeaders = () => {
+        return <React.Fragment>
+            {this.createHeader("scenario_count", "Scenarios", "8.5em")}
+            {this.createHeader("years", "Years", "6.5em")}}
+            {this.createHeader("ages", "Ages", "6em")}
+            {this.createHeader("cohorts", "Cohorts", "7.5em")}
+            {this.createHeader("outcomes", "Outcomes", "8.5em")}
+            {this.createHeader("has_dalys", "DALYs", "7em")}
+        </React.Fragment>
+    };
+
+    createExpectationCells = (model: ModelMetaRow, index: number) => {
+        const scenarioDetailsLink = model.scenario_count > 0 ?
+            <div key={`scenario-details-${index}`}><a href="#" id={`scenario-details-link-${index}`}>view</a></div> : "";
+
+        const outcomesDetailsLink = model.outcomes_details.length > 0 ?
+            <div key={`outcomes-details-${index}`}><a href="#" id={`outcomes-details-link-${index}`}>definitions</a></div> : "";
+
+        const outcomesDetailsTooltip = model.outcomes_details.length > 0 ?
+            createTooltip(`outcomes-details-link-${index}`,
+                model.outcomes_details.map(function(outcome: Outcome, outcomeIdx: number) {
+                    return (<div key={`outcome-${index}-${outcomeIdx}`}><strong>{`${outcome.code}: `}</strong>{`${outcome.name}`}</div>);
+                }))
+            : "";
+
+        const scenarioDetailsTooltip = model.scenario_count > 0 ?
+            createTooltip(`scenario-details-link-${index}`,
+                model.scenarios.map(function (scenario: string, scenarioIdx: number) {
+                    return (<div key={`scenario-${index}-${scenarioIdx}`}>{scenario}</div>);
+                }))
+            : "";
+
+        return <React.Fragment>
+            <td data-title="scenarios">{`${model.scenario_count} scenario` + (model.scenario_count === 1 ? "" : "s")}
+                {scenarioDetailsLink}
+            </td>
+            <td data-title="years">{model.years}</td>
+            <td data-title="ages">{model.ages}</td> }
+
+            <td data-title="cohorts">{model.cohorts}</td>
+            <td data-title="outcomes">{model.outcomes}
+                {outcomesDetailsLink}
+            </td> }
+            <td data-title="dalys">{model.has_dalys ? "Yes" : "No"}</td>
+            {scenarioDetailsTooltip}
+            {outcomesDetailsTooltip}
+        </React.Fragment>
+    };
+
     render() {
 
-        const obsolete = this.props.obsoleteModels;
+        const obsolete = this.props.obsoleteOnly;
 
         if (obsolete && this.state.data.length == 0) {
             return "";
         }
 
         return <div>
-            {!obsolete || <p>The following obsolete models were also found.</p>}
+            {obsolete && <p>The following obsolete models were also found.</p>}
             <p>Click on a column header to sort</p>
             <table className={"model-meta-table"}>
                 <thead>
@@ -131,47 +180,22 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                     {this.createHeader("id", "Model Name", "10em")}
                     {this.createHeader("disease", "Disease", "8em")}
                     {this.createHeader("is_dynamic", "Model Type", "9em")}
-                    {obsolete || this.createHeader("scenario_count", "Scenarios", "8.5em")}
                     {this.createHeader("code", "Code", "6em")}
                     {this.createHeader("gender", "Gender", "7em")}
                     {this.createHeader("max_countries", "Max Countries", "6.5em")}
-                    {obsolete || this.createHeader("years", "Years", "6.5em")}
-                    {obsolete || this.createHeader("ages", "Ages", "6em")}
-                    {obsolete || this.createHeader("cohorts", "Cohorts", "7.5em")}
-                    {obsolete || this.createHeader("outcomes", "Outcomes", "8.5em")}
-                    {obsolete || this.createHeader("has_dalys", "DALYs", "7em")}
+                    { obsolete || this.createExpectationHeaders() }
                 </tr>
                 </thead>
                 <tbody>
-                {this.state.data.map(function (model: ModelMetaRow, index: number) {
-                    const scenarioDetailsLink = !obsolete && model.scenario_count > 0 ?
-                            <div key={`scenario-details-${index}`}><a href="#" id={`scenario-details-link-${index}`}>view</a></div> : "";
+                {this.state.data.map((model: ModelMetaRow, index: number) =>  {
 
                     const countriesDetailsLink = model.max_countries > 0 ?
                             <div key={`countries-details-${index}`}><a href="#" id={`countries-details-link-${index}`}>view</a></div> : "";
-
-
-                    const outcomesDetailsLink = !obsolete && model.outcomes_details.length > 0 ?
-                        <div key={`outcomes-details-${index}`}><a href="#" id={`outcomes-details-link-${index}`}>definitions</a></div> : "";
-
-                    const scenarioDetailsTooltip = !obsolete && model.scenario_count > 0 ?
-                            createTooltip(`scenario-details-link-${index}`,
-                                model.scenarios.map(function (scenario: string, scenarioIdx: number) {
-                                    return (<div key={`scenario-${index}-${scenarioIdx}`}>{scenario}</div>);
-                                }))
-                            : "";
 
                     const countriesDetailsTooltip = model.max_countries > 0 ?
                             createTooltip(`countries-details-link-${index}`,
                                 model.countries.map(function (country: Country, countryIdx: number) {
                                     return (<div key={`country-${index}-${countryIdx}`}>{`${country.name} (${country.id})`}</div>);
-                                }))
-                            : "";
-
-                    const outcomesDetailsTooltip = !obsolete && model.outcomes_details.length > 0 ?
-                            createTooltip(`outcomes-details-link-${index}`,
-                                model.outcomes_details.map(function(outcome: Outcome, outcomeIdx: number) {
-                                    return (<div key={`outcome-${index}-${outcomeIdx}`}><strong>{`${outcome.code}: `}</strong>{`${outcome.name}`}</div>);
                                 }))
                             : "";
 
@@ -181,25 +205,13 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                             <td data-title="name">{model.id}</td>
                             <td data-title="disease">{model.disease}</td>
                             <td data-title="type">{model.is_dynamic ? "Dynamic" : "Static"}</td>
-                            {obsolete ||
-                                <td data-title="scenarios">{`${model.scenario_count} scenario` +
-                                                            (model.scenario_count === 1 ? "" : "s")}
-                                {scenarioDetailsLink}
-                                </td>}
                             <td data-title="code">{model.code}</td>
                             <td data-title="gender">{model.gender ? model.gender : "NA"}</td>
                             <td data-title="max_countries">{model.max_countries}
                                 {countriesDetailsLink}</td>
-                            {obsolete || <td data-title="years">{model.years}</td>}
-                            {obsolete || <td data-title="ages">{model.ages}</td>}
-                            {obsolete || <td data-title="cohorts">{model.cohorts}</td>}
-                            {obsolete || <td data-title="outcomes">{model.outcomes}
-                                {outcomesDetailsLink}
-                            </td>}
-                            {obsolete || <td data-title="dalys">{model.has_dalys ? "Yes" : "No"}</td>}
-                            {scenarioDetailsTooltip}
+                            {obsolete || this.createExpectationCells(model, index)}
+
                             {countriesDetailsTooltip}
-                            {outcomesDetailsTooltip}
                         </tr>
                     );
                 })}
@@ -221,12 +233,12 @@ export const mapStateToProps = (state: AdminAppState, props: ModelMetaPublicProp
 
     const includedModels = state.groups.models.filter((model) => {
         //A model is considered obsolete if it has no expectations
-        return (props.obsoleteModels && modelExpectations[model.id].length == 0) ||
-            (!props.obsoleteModels && modelExpectations[model.id].length > 0)
+        return (props.obsoleteOnly && modelExpectations[model.id].length == 0) ||
+            (!props.obsoleteOnly && modelExpectations[model.id].length > 0)
     });
 
     return {
-        obsoleteModels: props.obsoleteModels,
+        obsoleteOnly: props.obsoleteOnly,
         models: includedModels
             .map(m => {
             const modelValues = {
@@ -239,7 +251,7 @@ export const mapStateToProps = (state: AdminAppState, props: ModelMetaPublicProp
                                             : []
             };
 
-           if (!props.obsoleteModels) {
+           if (!props.obsoleteOnly) {
                 const modelExpectation = modelExpectations[m.id]
                     .sort((a,b) => a.touchstone_version < b.touchstone_version ? 1 : -1)[0]; //sort by touchstone version desc
                 const expectation = modelExpectation.expectation;
