@@ -116,7 +116,7 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
     createExpectationHeaders = () => {
         return <React.Fragment>
             {this.createHeader("scenario_count", "Scenarios", "8.5em")}
-            {this.createHeader("years", "Years", "6.5em")}}
+            {this.createHeader("years", "Years", "6.5em")}
             {this.createHeader("ages", "Ages", "6em")}
             {this.createHeader("cohorts", "Cohorts", "7.5em")}
             {this.createHeader("outcomes", "Outcomes", "8.5em")}
@@ -150,12 +150,11 @@ export class ModelMetaTableComponent extends React.Component<ModelMetaProps, Sta
                 {scenarioDetailsLink}
             </td>
             <td data-title="years">{model.years}</td>
-            <td data-title="ages">{model.ages}</td> }
-
+            <td data-title="ages">{model.ages}</td>
             <td data-title="cohorts">{model.cohorts}</td>
             <td data-title="outcomes">{model.outcomes}
                 {outcomesDetailsLink}
-            </td> }
+            </td>
             <td data-title="dalys">{model.has_dalys ? "Yes" : "No"}</td>
             {scenarioDetailsTooltip}
             {outcomesDetailsTooltip}
