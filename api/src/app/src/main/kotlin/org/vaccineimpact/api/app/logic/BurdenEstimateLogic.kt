@@ -10,7 +10,6 @@ import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.app.validateStochastic
-import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
 import org.vaccineimpact.api.serialization.FlexibleDataTable
@@ -54,14 +53,17 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                                       private val burdenEstimateRepository: BurdenEstimateRepository,
                                       private val expectationsRepository: ExpectationsRepository,
                                       private val scenarioRepository: ScenarioRepository,
-                                      private val touchstoneRepository: TouchstoneRepository) : BurdenEstimateLogic
+                                      private val touchstoneRepository: TouchstoneRepository,
+                                      private val notifier: Notifier) : BurdenEstimateLogic
 {
 
-    constructor(repositories: Repositories) : this(repositories.modellingGroup,
+    constructor(repositories: Repositories, notifier: Notifier = SlackNotifier()) : this(
+            repositories.modellingGroup,
             repositories.burdenEstimates,
             repositories.expectations,
             repositories.scenario,
-            repositories.touchstone)
+            repositories.touchstone,
+            notifier)
 
     override fun createBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
                                          properties: CreateBurdenEstimateSet,
@@ -212,6 +214,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         }
         else
         {
+            val identifier = "${modellingGroup.id} - ${responsibilityInfo.disease} - $scenarioId"
             val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
                     .expectation.expectedRowLookup()
             val validatedRowMap = burdenEstimateRepository.validateEstimates(set, expectedRows)
@@ -219,9 +222,11 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
             if (countriesWithMissingRows.any())
             {
                 burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
+                notifier.notify("A burden estimate set with missing rows has just been uploaded for $identifier")
                 throw MissingRowsError(rowErrorMessage(countriesWithMissingRows))
             }
             burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
+            notifier.notify("A complete burden estimate set has just been uploaded for $identifier")
         }
     }
 
