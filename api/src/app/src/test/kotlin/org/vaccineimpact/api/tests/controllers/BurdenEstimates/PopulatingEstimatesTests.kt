@@ -1,12 +1,11 @@
 package org.vaccineimpact.api.tests.controllers.BurdenEstimates
 
-import org.junit.Test
-import org.vaccineimpact.api.app.context.ActionContext
-import java.io.File
-import org.assertj.core.api.Assertions.*
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import com.nhaarman.mockito_kotlin.*
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.Test
 import org.vaccineimpact.api.app.ChunkedFileManager.Companion.UPLOAD_DIR
+import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimateUploadController
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
@@ -17,9 +16,8 @@ import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.models.ResultStatus
 import org.vaccineimpact.api.security.KeyHelper
-import org.vaccineimpact.api.security.TokenValidationException
 import org.vaccineimpact.api.security.WebTokenHelper
-import java.lang.NullPointerException
+import java.io.File
 
 class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 {
@@ -38,7 +36,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true, fileName = "file.csv")
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
 
-        val sut = BurdenEstimateUploadController(mockContext, mock(), logic, repo, mock(), mockTokenHelper, cache)
+        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mock(), mockTokenHelper, cache)
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
 
@@ -70,7 +68,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true)
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
 
-        val sut = BurdenEstimateUploadController(mockContext, mock(), logic, repo, mock(), mockTokenHelper, cache)
+        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mock(), mockTokenHelper, cache)
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
         assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
@@ -99,7 +97,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true)
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
 
-        val sut = BurdenEstimateUploadController(mockContext, mock(), logic, repo, mock(), mockTokenHelper, cache)
+        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mock(), mockTokenHelper, cache)
 
         assertThatThrownBy {
             sut.populateBurdenEstimateSetFromLocalFile()
@@ -122,7 +120,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true)
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
 
-        val sut = BurdenEstimateUploadController(mockContext, mock(), logic, repo, mock(), mockTokenHelper, cache)
+        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mock(), mockTokenHelper, cache)
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
 

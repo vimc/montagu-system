@@ -12,6 +12,8 @@ import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
+import org.vaccineimpact.api.app.logic.RepositoriesResponsibilitiesLogic
+import org.vaccineimpact.api.app.logic.ResponsibilitiesLogic
 import org.vaccineimpact.api.app.models.ChunkedFile
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
@@ -28,21 +30,22 @@ import org.vaccineimpact.api.serialization.Serializer
 import java.io.File
 
 class BurdenEstimateUploadController(context: ActionContext,
-                                     private val repositories: Repositories,
                                      private val estimatesLogic: BurdenEstimateLogic,
+                                     private val responsibilitiesLogic: ResponsibilitiesLogic,
                                      private val estimateRepository: BurdenEstimateRepository,
                                      private val postDataHelper: PostDataHelper = PostDataHelper(),
                                      private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair),
                                      private val chunkedFileCache: Cache<ChunkedFile> = ChunkedFileCache.instance,
                                      private val chunkedFileManager: ChunkedFileManager = ChunkedFileManager(),
                                      private val serializer: Serializer = MontaguSerializer.instance)
-    : BaseBurdenEstimateController(context, estimatesLogic)
+    : BaseBurdenEstimateController(context, estimatesLogic, responsibilitiesLogic)
 {
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
-            repos,
             RepositoriesBurdenEstimateLogic(repos),
+            RepositoriesResponsibilitiesLogic(repos.modellingGroup, repos.scenario, repos.touchstone),
             repos.burdenEstimates)
+
 
     fun getUploadToken(): String
     {

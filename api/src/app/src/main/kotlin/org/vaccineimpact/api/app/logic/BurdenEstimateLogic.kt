@@ -1,10 +1,9 @@
 package org.vaccineimpact.api.app.logic
 
-import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
-import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
@@ -45,15 +44,13 @@ interface BurdenEstimateLogic
 
     fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
                               scenarioId: String): FlexibleDataTable<BurdenEstimate>
-
-    fun validateResponsibilityPath(path: ResponsibilityPath, validTouchstoneStatusList: List<TouchstoneStatus>)
 }
 
 class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: ModellingGroupRepository,
                                       private val burdenEstimateRepository: BurdenEstimateRepository,
                                       private val expectationsRepository: ExpectationsRepository,
                                       private val scenarioRepository: ScenarioRepository,
-                                      private val touchstoneRepository: TouchstoneRepository,
+                                      private val responsibilitiesRepository: ResponsibilitiesRepository,
                                       private val notifier: Notifier) : BurdenEstimateLogic
 {
 
@@ -62,7 +59,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
             repositories.burdenEstimates,
             repositories.expectations,
             repositories.scenario,
-            repositories.touchstone,
+            repositories.responsibilities,
             notifier)
 
     override fun createBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
@@ -227,24 +224,23 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
             }
             burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
             notifier.notify("A complete burden estimate set has just been uploaded for $identifier")
+            notifyIfResponsibilitySetIsComplete(modellingGroup.id, responsibilityInfo.disease, touchstoneVersionId)
         }
     }
 
-    override fun validateResponsibilityPath(
-            path: ResponsibilityPath,
-            validTouchstoneStatusList: List<TouchstoneStatus>
-    )
+    private fun notifyIfResponsibilitySetIsComplete(groupId: String, disease: String, touchstoneVersionId: String)
     {
-        //Check that modelling group exists
-        modellingGroupRepository.getModellingGroup(path.groupId)
-        //Check touchstone and is accessible for this user
-        val touchstoneVersion = touchstoneRepository.touchstoneVersions.get(path.touchstoneVersionId)
-        if (!validTouchstoneStatusList.contains(touchstoneVersion.status))
-        {
-            throw UnknownObjectError(touchstoneVersion.id, TouchstoneVersion::class)
-        }
+        val responsibilities = responsibilitiesRepository.getResponsibilitiesForGroup(groupId,
+                touchstoneVersionId,
+                ScenarioFilterParameters(null, disease))
 
-        scenarioRepository.checkScenarioDescriptionExists(path.scenarioId)
+        if (responsibilities.responsibilities.all {
+                    it.currentEstimateSet != null &&
+                            it.currentEstimateSet?.status == BurdenEstimateSetStatus.COMPLETE
+                })
+        {
+            notifier.notify("Group $groupId have uploaded complete estimate sets for all scenarios in $touchstoneVersionId")
+        }
     }
 
     private fun rowErrorMessage(countriesWithMissingRows: Map<String, AgeLookup>): String
