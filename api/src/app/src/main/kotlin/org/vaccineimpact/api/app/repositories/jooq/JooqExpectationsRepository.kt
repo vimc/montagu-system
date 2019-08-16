@@ -15,6 +15,7 @@ import org.vaccineimpact.api.db.tables.BurdenEstimateExpectation
 import org.vaccineimpact.api.db.tables.BurdenEstimateOutcomeExpectation
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateExpectationRecord
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.*
 
 data class ApplicableScenariosAndDisease(val scenarios: List<String>, val disease: String)
 
@@ -198,6 +199,7 @@ class JooqExpectationsRepository(dsl: DSLContext)
         return dsl.select(COUNTRY.ID, COUNTRY.NAME)
                 .fromJoinPath(Tables.countries, COUNTRY)
                 .where(Tables.countries.BURDEN_ESTIMATE_EXPECTATION.eq(basicData.id))
+                .orderBy(COUNTRY.ID)
                 .fetchInto(Country::class.java)
                 .toList()
     }

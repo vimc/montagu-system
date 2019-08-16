@@ -2,9 +2,9 @@ package org.vaccineimpact.api.tests.extensions
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.vaccineimpact.api.models.CohortRestriction
+import org.vaccineimpact.api.models.expectations.CohortRestriction
 import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.CountryOutcomeExpectations
+import org.vaccineimpact.api.models.expectations.CountryOutcomeExpectations
 import org.vaccineimpact.api.models.Outcome
 import org.vaccineimpact.api.test_helpers.MontaguTests
 

@@ -1,7 +1,7 @@
 package org.vaccineimpact.api.app.repositories
 
-import org.vaccineimpact.api.models.ExpectationMapping
-import org.vaccineimpact.api.models.TouchstoneModelExpectations
+import org.vaccineimpact.api.models.expectations.ExpectationMapping
+import org.vaccineimpact.api.models.expectations.TouchstoneModelExpectations
 
 interface ExpectationsRepository : Repository
 {

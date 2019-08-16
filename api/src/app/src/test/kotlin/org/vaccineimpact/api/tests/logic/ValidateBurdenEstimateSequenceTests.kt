@@ -6,9 +6,9 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
-import org.vaccineimpact.api.models.CohortRestriction
+import org.vaccineimpact.api.models.expectations.CohortRestriction
 import org.vaccineimpact.api.models.Country
-import org.vaccineimpact.api.models.CountryOutcomeExpectations
+import org.vaccineimpact.api.models.expectations.CountryOutcomeExpectations
 import org.vaccineimpact.api.test_helpers.MontaguTests
 
 class ValidateBurdenEstimateSequenceTests : MontaguTests()
