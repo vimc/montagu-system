@@ -10,6 +10,9 @@ import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.CohortRestriction
+import org.vaccineimpact.api.models.expectations.ExpectationMapping
+import org.vaccineimpact.api.models.expectations.TouchstoneModelExpectations
 import org.vaccineimpact.api.test_helpers.exampleExpectations
 import org.vaccineimpact.api.test_helpers.exampleOutcomeExpectations
 
@@ -76,16 +79,16 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     fun `can pull country expectations`()
     {
         val responsibilityId = addResponsibilityAnd { db, _, responsibilityId ->
-            db.addCountries(listOf("ABC", "DEF", "GHI"))
+            db.addCountries(listOf("GHI", "ABC", "DEF"))
             db.addExpectations(
                     responsibilityId,
-                    countries = listOf("ABC", "DEF")
+                    countries = listOf("DEF", "ABC")
             )
             responsibilityId
         }
         withRepo { repo ->
             val result = repo.getExpectationsForResponsibility(responsibilityId).expectation
-            assertThat(result.countries).hasSameElementsAs(listOf(
+            assertThat(result.countries).containsExactlyElementsOf(listOf(
                     Country("ABC", "ABC-Name"),
                     Country("DEF", "DEF-Name")
             ))
@@ -278,9 +281,9 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             val result = repo.getAllExpectations()
             assertThat(result).isEqualTo(listOf(
                     TouchstoneModelExpectations(touchstoneVersionId, groupId, "YF",
-                            exampleOutcomeExpectations(outcomes=listOf(deathsOutcome)), listOf(scenarioId)),
+                            exampleOutcomeExpectations(outcomes = listOf(deathsOutcome)), listOf(scenarioId)),
                     TouchstoneModelExpectations("touchstone2-2", otherGroupId, "HepB",
-                            exampleOutcomeExpectations(id=2, outcomes=listOf(casesOutcome, deathsOutcome)),
+                            exampleOutcomeExpectations(id = 2, outcomes = listOf(casesOutcome, deathsOutcome)),
                             listOf(otherScenarioId, "scenario3"))
             ))
         }

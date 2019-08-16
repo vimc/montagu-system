@@ -4,7 +4,7 @@ import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.models.TouchstoneModelExpectations
+import org.vaccineimpact.api.models.expectations.TouchstoneModelExpectations
 
 class ExpectationsController(context: ActionContext,
                         private val repo: ExpectationsRepository)

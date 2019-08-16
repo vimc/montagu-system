@@ -396,8 +396,8 @@ class BurdenEstimateLogicTests : BaseBurdenEstimateLogicTests()
     @Test
     fun `missing rows message contains all country names and one example row`()
     {
-        val expectations = fakeExpectations.copy(years = 2000..2010, ages = 10..15, countries = listOf(Country("AFG", ""), Country("AGO", ""),
-                Country("NGA", "")))
+        val expectations = fakeExpectations.copy(years = 2000..2010, ages = 10..15, countries =
+        listOf(Country("AFG", ""), Country("AGO", ""), Country("NGA", "")))
 
         val rowPresenceLookup = expectations.expectedRowLookup()
 
