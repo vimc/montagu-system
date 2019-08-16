@@ -112,15 +112,4 @@ class PopulateBurdenEstimateLogicTests : BaseBurdenEstimateLogicTests()
         sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData, null)
         verify(repo).getEstimateWriter(defaultEstimateSet)
     }
-
-    @Test
-    fun `notifies when a set has been populated`()
-    {
-        val repo = mockEstimatesRepository()
-        val mockNotifier = mock<Notifier>()
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mockNotifier)
-
-        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData, null)
-        verify(mockNotifier).notify("A burden estimate set has just been uploaded for $groupId")
-    }
 }

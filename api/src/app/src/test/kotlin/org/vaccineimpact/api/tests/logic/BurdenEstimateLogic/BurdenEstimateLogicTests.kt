@@ -12,6 +12,7 @@ import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.logic.Notifier
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.*
@@ -565,6 +566,34 @@ AGO, age 12, year 2005""")
             sut.validateResponsibilityPath(path, statusList)
         }.isInstanceOf(UnknownObjectError::class.java).hasMessageContaining("Unknown touchstone-version with id 'touchstone-1'")
 
+    }
+
+    @Test
+    fun `notifies when a set is marked as complete`()
+    {
+        val repo = mockEstimatesRepository()
+        val mockNotifier = mock<Notifier>()
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mockNotifier)
+
+        sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
+        verify(mockNotifier).notify("A complete burden estimate set has just been uploaded for $groupId - $disease - $scenarioId")
+    }
+
+    @Test
+    fun `notifies when a set is closed but has missing rows`()
+    {
+        val writer = mockWriter()
+        val mockNotifier = mock<Notifier>()
+        Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
+        val repo = mockEstimatesRepository(writer)
+        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(fakeExpectations.expectedRowLookup())
+        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mockNotifier)
+
+        assertThatThrownBy {
+            sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
+        }.isInstanceOf(MissingRowsError::class.java)
+        verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
+        verify(mockNotifier).notify("A burden estimate set with missing rows has just been uploaded for $groupId - $disease - $scenarioId")
     }
 
 }
