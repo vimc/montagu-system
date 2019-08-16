@@ -99,11 +99,20 @@ export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial
     }
 };
 
+const getData = (props: DiagnosticSectionProps) => {
+    props.getData(BurdenOutcome.DEATHS, props.scenarioId, props.setId);
+    props.getData(BurdenOutcome.DALYS, props.scenarioId, props.setId);
+    props.getData(BurdenOutcome.CASES, props.scenarioId, props.setId);
+};
+
 const lifecyleProps: Partial<LifecycleMethods<DiagnosticSectionProps>> = {
     onDidMount(props: DiagnosticSectionProps) {
-        props.getData(BurdenOutcome.DEATHS, props.scenarioId, props.setId);
-        props.getData(BurdenOutcome.DALYS, props.scenarioId, props.setId);
-        props.getData(BurdenOutcome.CASES, props.scenarioId, props.setId);
+       getData(props);
+    },
+    onDidUpdate(prevProps: DiagnosticSectionProps, props: DiagnosticSectionProps) {
+        if (props.setId != prevProps.setId || props.scenarioId != prevProps.scenarioId) {
+            getData(props);
+        }
     }
 };
 
