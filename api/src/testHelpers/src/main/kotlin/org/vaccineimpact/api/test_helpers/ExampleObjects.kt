@@ -1,6 +1,10 @@
 package org.vaccineimpact.api.test_helpers
 
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.CohortRestriction
+import org.vaccineimpact.api.models.expectations.CountryOutcomeExpectations
+import org.vaccineimpact.api.models.expectations.ExpectationMapping
+import org.vaccineimpact.api.models.expectations.OutcomeExpectations
 import org.vaccineimpact.api.models.responsibilities.*
 import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.UserProperties

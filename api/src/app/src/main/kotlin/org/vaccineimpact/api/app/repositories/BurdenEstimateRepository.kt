@@ -5,6 +5,7 @@ import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.RowLookup
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.time.Instant
 

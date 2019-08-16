@@ -13,6 +13,8 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.ExpectationMapping
+import org.vaccineimpact.api.models.expectations.ExpectedRow
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import org.vaccineimpact.api.serialization.NullToEmptyStringSerializer

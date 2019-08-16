@@ -9,6 +9,8 @@ import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.direct.addBurdenEstimate
 import org.vaccineimpact.api.db.direct.addCountries
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.CohortRestriction
+import org.vaccineimpact.api.models.expectations.CountryOutcomeExpectations
 import java.time.Instant
 
 class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()

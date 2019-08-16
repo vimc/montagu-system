@@ -3,7 +3,7 @@ package org.vaccineimpact.api.app
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
-import org.vaccineimpact.api.models.RowLookup
+import org.vaccineimpact.api.models.expectations.RowLookup
 
 // This passes through the original sequence without affecting it, and the
 // sequence remains lazily evaluated, but as the elements "pass through"

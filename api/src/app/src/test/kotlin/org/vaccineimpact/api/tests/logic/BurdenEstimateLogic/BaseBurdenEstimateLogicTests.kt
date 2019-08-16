@@ -10,6 +10,9 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.CohortRestriction
+import org.vaccineimpact.api.models.expectations.CountryOutcomeExpectations
+import org.vaccineimpact.api.models.expectations.ExpectationMapping
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Instant
 

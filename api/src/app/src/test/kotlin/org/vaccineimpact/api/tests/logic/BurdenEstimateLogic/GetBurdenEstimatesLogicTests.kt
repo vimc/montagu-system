@@ -19,7 +19,6 @@ import java.time.Instant
 
 class GetBurdenEstimatesLogicTests : BaseBurdenEstimateLogicTests()
 {
-
     @Test
     fun `gets burden estimate set data`()
     {

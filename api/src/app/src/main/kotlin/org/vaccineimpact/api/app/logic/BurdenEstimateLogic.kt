@@ -10,6 +10,10 @@ import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.app.validateStochastic
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.AgeLookup
+import org.vaccineimpact.api.models.expectations.firstAgeWithMissingRows
+import org.vaccineimpact.api.models.expectations.firstMissingYear
+import org.vaccineimpact.api.models.expectations.hasMissingAges
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.time.Instant

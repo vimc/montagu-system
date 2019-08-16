@@ -2,10 +2,8 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.DSLContext
 import org.jooq.JoinType
-import org.jooq.impl.DSL.inline
 import org.jooq.impl.DSL.sum
 import org.vaccineimpact.api.app.errors.BadRequest
-import org.vaccineimpact.api.app.errors.DatabaseContentsError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
@@ -21,7 +19,6 @@ import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
 import java.sql.Timestamp
@@ -29,7 +26,7 @@ import java.time.Instant
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.fetchSequence
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
-import java.lang.reflect.Type
+import org.vaccineimpact.api.models.expectations.RowLookup
 
 data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")

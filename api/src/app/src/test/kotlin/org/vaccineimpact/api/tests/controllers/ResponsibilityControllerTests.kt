@@ -12,6 +12,9 @@ import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.CohortRestriction
+import org.vaccineimpact.api.models.expectations.CountryOutcomeExpectations
+import org.vaccineimpact.api.models.expectations.ExpectationMapping
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.responsibilities.Responsibility
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
