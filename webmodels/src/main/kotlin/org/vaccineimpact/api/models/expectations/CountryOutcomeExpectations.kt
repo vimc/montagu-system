@@ -1,5 +1,6 @@
-package org.vaccineimpact.api.models
+package org.vaccineimpact.api.models.expectations
 
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.FlexibleProperty
 import kotlin.coroutines.experimental.buildSequence
 

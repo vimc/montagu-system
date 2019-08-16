@@ -1,6 +1,6 @@
 package org.vaccineimpact.api.models.responsibilities
 
-import org.vaccineimpact.api.models.ExpectationMapping
+import org.vaccineimpact.api.models.expectations.ExpectationMapping
 
 data class ResponsibilitySetWithExpectations(
         val modellingGroupId: String,
