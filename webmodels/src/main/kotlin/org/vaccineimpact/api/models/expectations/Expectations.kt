@@ -1,4 +1,6 @@
-package org.vaccineimpact.api.models
+package org.vaccineimpact.api.models.expectations
+
+import org.vaccineimpact.api.models.Outcome
 
 interface Expectations
 {

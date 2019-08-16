@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.models
+package org.vaccineimpact.api.models.expectations
 
 interface AppliedExpectation
 {
