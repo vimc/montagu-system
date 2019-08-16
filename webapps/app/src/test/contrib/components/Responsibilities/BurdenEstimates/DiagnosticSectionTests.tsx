@@ -144,6 +144,29 @@ describe("Diagnostic section", () => {
         expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, testEstimateSet.id)).to.be.true;
     });
 
+    it("fetches data when setId or scenarioId is updated", () => {
+
+        const store = createMockContribStore({...testState, responsibilities: {}});
+        const getEstimatesStub = sandbox.setStubReduxAction(estimatesActionCreators, "getEstimates");
+        const rendered = mount(<DiagnosticSection scenarioId={testScenario.id}
+                                                  setId={testEstimateSet.id}/>, {context: {store}});
+
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, testScenario.id, testEstimateSet.id)).to.be.true;
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, testScenario.id, testEstimateSet.id)).to.be.true;
+        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, testEstimateSet.id)).to.be.true;
+
+        rendered.setProps({setId: 123});
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, testScenario.id, 123)).to.be.true;
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, testScenario.id, 123)).to.be.true;
+        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, 123)).to.be.true;
+
+        rendered.setProps({scenarioId: 456});
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, 456, 123)).to.be.true;
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, 456, 123)).to.be.true;
+        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, 456, 123)).to.be.true;
+
+    });
+
     it("sets chart type", () => {
 
         const rendered = shallow(<DiagnosticSection scenarioId={testScenario.id}
