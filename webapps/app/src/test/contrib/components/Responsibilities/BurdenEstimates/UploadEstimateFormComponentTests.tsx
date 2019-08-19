@@ -10,7 +10,7 @@ import {
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {mount, shallow} from "enzyme";
 import {EventEmitter} from "events";
-import {Alert, Button} from "reactstrap";
+import {Alert} from "reactstrap";
 
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 
@@ -21,6 +21,12 @@ describe("Upload Burden Estimates Form Component tests", () => {
     class FakeUploadClient extends EventEmitter {
         cancelled: boolean;
         uploadStarted: boolean;
+        retryStarted: boolean;
+        files: [{ progress: () => number, retry: () => void }] = [{
+            progress: () => 0, retry: () => {
+                this.retryStarted = true
+            }
+        }];
 
         assignBrowse() {
 
@@ -36,6 +42,10 @@ describe("Upload Burden Estimates Form Component tests", () => {
 
         upload() {
             this.uploadStarted = true
+        }
+
+        retry() {
+            this.retryStarted = true
         }
     }
 
@@ -60,7 +70,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
             hasPopulateSuccess={props.hasPopulateSuccess || false}
             populateErrors={[]}
             resetPopulateState={props.resetPopulateState || nullFunction}
-            url={props.url != undefined ? "/url": props.url}
+            url={props.url != undefined ? "/url" : props.url}
             uploadToken={"TOKEN"}
             populatingInProgress={props.populatingInProgress || false}
             touchstoneId={"1"}
@@ -195,8 +205,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(fakeUploadClient.uploadStarted).not.to.be.true;
     });
 
-
-    it("uploads estimates when url becomes not null", () => {
+    it("uploads estimates when url changes", () => {
 
         const resetPopulateState = sandbox.sinon.stub();
         const createEstimateSet = sandbox.sinon.stub();
@@ -220,6 +229,35 @@ describe("Upload Burden Estimates Form Component tests", () => {
         result.update();
 
         expect(fakeUploadClient.uploadStarted).to.be.true;
+    });
+
+    it("retries upload when url changes if file is unchanged", () => {
+
+        // when file has already been uploaded, its progress will be stored in the upload client as 1
+        fakeUploadClient.files[0].progress = () => 1;
+
+        const resetPopulateState = sandbox.sinon.stub();
+        const createEstimateSet = sandbox.sinon.stub();
+        const result = getComponent({
+            resetPopulateState: resetPopulateState,
+            createEstimateSet: createEstimateSet,
+            url: null
+        });
+        result.setState({
+            metadata: {
+                type: "central-averaged",
+                details: "whatever"
+            },
+            file: {fileName: "test.csv"}
+        });
+        result.find(".submit").simulate("click");
+        expect(resetPopulateState.called).to.be.true;
+        expect(createEstimateSet.called).to.be.true;
+
+        result.setProps({url: "URL"});
+        result.update();
+
+        expect(fakeUploadClient.retryStarted).to.be.true;
     });
 
     it("shows progress bar on file upload progress", () => {

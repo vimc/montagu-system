@@ -14,7 +14,7 @@ import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {Dispatch} from "redux";
 import {estimatesActionCreators} from "../../../actions/estimatesActionCreators";
 import {connect} from "react-redux";
-import {branch, compose, renderComponent} from "recompose";
+import {branch, compose} from "recompose";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {roundToOneDecimalPlace} from "../../../../shared/Helpers";
 import {OptionSelector} from "../../OptionSelector/OptionSelector";
@@ -141,7 +141,6 @@ export class UploadEstimatesFormComponent extends React.Component<UploadEstimate
 
         this.uploadClient.on('fileSuccess', () => {
             this.resetUploadState(false);
-            this.props.createBurdenEstimateSet(this.state.metadata);
             this.props.populateEstimateSet(this.props.uploadToken);
         });
 
@@ -157,14 +156,20 @@ export class UploadEstimatesFormComponent extends React.Component<UploadEstimate
             this.setState({
                 uploadErrors: uploadErrors,
                 isUploading: false,
-                progress: 0
+                progress: 0,
+                file: null
             });
         });
     };
 
     componentDidUpdate(prevProps: Readonly<UploadEstimatesProps>) {
-        if (prevProps.url == null && this.props.url != null) {
-            this.uploadClient.upload();
+        if (prevProps.url != this.props.url && this.props.url != null) {
+            if (this.uploadClient.files[0].progress(false) == 1){
+                this.uploadClient.files[0].retry();
+            }
+            else {
+                this.uploadClient.upload();
+            }
         }
     }
 
