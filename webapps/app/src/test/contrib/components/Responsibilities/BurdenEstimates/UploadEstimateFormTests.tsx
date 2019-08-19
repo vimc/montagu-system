@@ -1,18 +1,15 @@
 import * as React from "react";
 import {expect} from "chai";
-import {mount} from "enzyme";
 
 import "../../../../helper";
 import {
     mapDispatchToProps,
-    mapStateToProps,
-    UploadEstimatesForm
+    mapStateToProps
 } from "../../../../../main/contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
 import {mockContribState} from "../../../../mocks/mockStates";
 import {Sandbox} from "../../../../Sandbox";
 import {estimatesActionCreators} from "../../../../../main/contrib/actions/estimatesActionCreators";
-import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
-import {createMockContribStore} from "../../../../mocks/mockStore";
+
 
 describe("Upload Burden Estimates Form tests", () => {
 

@@ -34,7 +34,6 @@ export const estimatesActionCreators = {
             if (newSetUrl) {
                 const setId = newSetUrl.split("/").filter(Number).pop();
                 dispatch(estimatesActionCreators.getUploadToken(setId));
-                dispatch(responsibilitiesActionCreators.refreshResponsibilities());
                 dispatch({
                     type: EstimateTypes.SET_CREATED,
                     data: setId
@@ -64,10 +63,11 @@ export const estimatesActionCreators = {
                 data: true
             } as PopulatingEstimateSet);
 
-            const ids = mapStateToPropsHelper.getResponsibilityIds(getState());
+            const state = getState();
+            const ids = mapStateToPropsHelper.getResponsibilityIds(state);
 
             const result = await (new EstimatesService(dispatch, getState))
-                .populateEstimatesFromFile(ids.groupId, ids.touchstoneId, ids.scenarioId, ids.estimateSetId, uploadToken);
+                .populateEstimatesFromFile(ids.groupId, ids.touchstoneId, ids.scenarioId, state.estimates.populatingSetId, uploadToken);
 
             dispatch(this._estimateSetPopulated(result));
             dispatch(responsibilitiesActionCreators.refreshResponsibilities())
