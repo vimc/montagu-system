@@ -6,27 +6,19 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.mockito.Mockito
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
-import org.vaccineimpact.api.app.errors.InconsistentDataError
-import org.vaccineimpact.api.app.errors.InvalidOperationError
-import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.logic.Notifier
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.*
-import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.io.ByteArrayOutputStream
 import java.io.StringReader
 import java.time.Instant
 
-class BurdenEstimateLogicTests : BaseBurdenEstimateLogicTests()
+class GetBurdenEstimatesLogicTests : BaseBurdenEstimateLogicTests()
 {
-
     @Test
     fun `gets burden estimate set data`()
     {
@@ -327,128 +319,6 @@ class BurdenEstimateLogicTests : BaseBurdenEstimateLogicTests()
     }
 
     @Test
-    fun `modelling-group id is checked before closing burden estimate set`()
-    {
-        val writer = mockWriter()
-        Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
-        val repo = mockEstimatesRepository(writer)
-        val groupRepo = mockGroupRepository()
-        val sut = RepositoriesBurdenEstimateLogic(groupRepo, repo, mockExpectationsRepository(), mock(), mock(), mock())
-        sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        verify(groupRepo).getModellingGroup(groupId)
-    }
-
-    @Test
-    fun `can close non-empty burden estimate set`()
-    {
-        val writer = mockWriter()
-        Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
-        val repo = mockEstimatesRepository(writer)
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mock())
-        sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
-    }
-
-    @Test
-    fun `cannot close empty burden estimate set`()
-    {
-        val writer = mockWriter()
-        Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(true)
-        val repo = mockEstimatesRepository(writer)
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mock())
-
-        assertThatThrownBy {
-            sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        }.isInstanceOf(InvalidOperationError::class.java)
-    }
-
-    @Test
-    fun `cannot close burden estimate set which is already complete`()
-    {
-        val repo = mock<BurdenEstimateRepository> {
-            on { getBurdenEstimateSetForResponsibility(any(), any()) } doReturn defaultEstimateSet
-                    .copy(status = BurdenEstimateSetStatus.COMPLETE)
-            on { getResponsibilityInfo(any(), any(), any()) } doReturn
-                    ResponsibilityInfo(responsibilityId, disease, "open", setId)
-        }
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mock())
-
-        assertThatThrownBy {
-            sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        }.isInstanceOf(InvalidOperationError::class.java).hasMessageContaining("This burden estimate set has already been closed")
-    }
-
-    @Test
-    fun `closing a burden estimate set with missing rows marks it as invalid`()
-    {
-        val writer = mockWriter()
-        Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
-        val repo = mockEstimatesRepository(writer)
-        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(fakeExpectations.expectedRowLookup())
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mock())
-
-        assertThatThrownBy {
-            sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        }.isInstanceOf(MissingRowsError::class.java)
-        verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
-    }
-
-    @Test
-    fun `missing rows message contains all country names and one example row`()
-    {
-        val expectations = fakeExpectations.copy(years = 2000..2010, ages = 10..15, countries =
-        listOf(Country("AFG", ""), Country("AGO", ""), Country("NGA", "")))
-
-        val rowPresenceLookup = expectations.expectedRowLookup()
-
-        for (year in 2000..2010)
-        {
-            for (age in 10..15)
-            {
-                rowPresenceLookup["AFG"]!![age.toShort()]!![year.toShort()] = true
-
-                if (year < 2005 || age < 12)
-                {
-                    rowPresenceLookup["AGO"]!![age.toShort()]!![year.toShort()] = true
-                }
-            }
-        }
-        val writer = mockWriter()
-        Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
-        val repo = mockEstimatesRepository(writer)
-        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(rowPresenceLookup)
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mock())
-
-        assertThatThrownBy {
-            sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        }.isInstanceOf(MissingRowsError::class.java)
-                .hasMessage("""the following problems occurred:
-Missing rows for AGO, NGA
-For example:
-AGO, age 12, year 2005""")
-    }
-
-    @Test
-    fun `cannot close burden estimate set when responsibility lookup throws an error`()
-    {
-        val writer = mockWriter()
-        Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
-
-        val repo = mock<BurdenEstimateRepository> {
-            on { getBurdenEstimateSetForResponsibility(any(), any()) } doReturn defaultEstimateSet
-                    .copy(status = BurdenEstimateSetStatus.PARTIAL)
-            on { getResponsibilityInfo(groupId, touchstoneVersionId, scenarioId) } doThrow
-                    UnknownObjectError(scenarioId, "responsibility")
-            on { getEstimateWriter(defaultEstimateSet) } doReturn writer
-        }
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mock())
-
-        Assertions.assertThatThrownBy {
-            sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        }.isInstanceOf(UnknownObjectError::class.java).hasMessageContaining(scenarioId)
-    }
-
-    @Test
     fun `can get estimated deaths for responsibility`()
     {
         val fakeEstimates: Map<Short, List<BurdenEstimateDataPoint>> =
@@ -509,91 +379,4 @@ AGO, age 12, year 2005""")
         val result = sut.getBurdenEstimateSets("g1", "t1", "s1")
         assertThat(result).hasSameElementsAs(fakeEstimateSets)
     }
-
-    @Test
-    fun `can validate Responsibility Path`()
-    {
-        val path = ResponsibilityPath(groupId, touchstoneVersionId, scenarioId)
-
-        val statusList = mutableListOf(TouchstoneStatus.OPEN, TouchstoneStatus.FINISHED)
-
-        val groupRepo = mock<ModellingGroupRepository>()
-
-        val touchstoneVersion = TouchstoneVersion(touchstoneVersionId, "touchstone", 1,
-                "description", TouchstoneStatus.OPEN)
-
-        val mockTouchstoneVersions = mock<SimpleDataSet<TouchstoneVersion, String>> {
-            on { get(touchstoneVersionId) } doReturn touchstoneVersion
-        }
-
-        val scenarioRepo = mock<ScenarioRepository>()
-
-        val touchstoneRepo = mock<TouchstoneRepository> {
-            on { touchstoneVersions } doReturn mockTouchstoneVersions
-        }
-
-        val sut = RepositoriesBurdenEstimateLogic(groupRepo, mock(), mock(), scenarioRepo, touchstoneRepo, mock())
-
-        sut.validateResponsibilityPath(path, statusList)
-
-        verify(groupRepo).getModellingGroup(groupId)
-        verify(touchstoneRepo).touchstoneVersions
-        verify(mockTouchstoneVersions).get(touchstoneVersionId)
-        verify(scenarioRepo).checkScenarioDescriptionExists(scenarioId)
-    }
-
-    @Test
-    fun `throws UnknownObjectError when validating Responsibility Path if touchstone status is not in allowable list`()
-    {
-        val path = ResponsibilityPath(groupId, touchstoneVersionId, scenarioId)
-
-        val statusList = mutableListOf(TouchstoneStatus.OPEN, TouchstoneStatus.FINISHED)
-
-        val touchstoneVersion = TouchstoneVersion(touchstoneVersionId, "touchstone", 1,
-                "description", TouchstoneStatus.IN_PREPARATION)
-
-        val mockTouchstoneVersions = mock<SimpleDataSet<TouchstoneVersion, String>> {
-            on { get(touchstoneVersionId) } doReturn touchstoneVersion
-        }
-
-        val touchstoneRepo = mock<TouchstoneRepository> {
-            on { touchstoneVersions } doReturn mockTouchstoneVersions
-        }
-
-        val sut = RepositoriesBurdenEstimateLogic(mock(), mock(), mock(), mock(), touchstoneRepo, mock())
-
-        assertThatThrownBy {
-            sut.validateResponsibilityPath(path, statusList)
-        }.isInstanceOf(UnknownObjectError::class.java).hasMessageContaining("Unknown touchstone-version with id 'touchstone-1'")
-
-    }
-
-    @Test
-    fun `notifies when a set is marked as complete`()
-    {
-        val repo = mockEstimatesRepository()
-        val mockNotifier = mock<Notifier>()
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mockNotifier)
-
-        sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        verify(mockNotifier).notify("A complete burden estimate set has just been uploaded for $groupId - $disease - $scenarioId")
-    }
-
-    @Test
-    fun `notifies when a set is closed but has missing rows`()
-    {
-        val writer = mockWriter()
-        val mockNotifier = mock<Notifier>()
-        Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
-        val repo = mockEstimatesRepository(writer)
-        Mockito.`when`(repo.validateEstimates(any(), any())).doReturn(fakeExpectations.expectedRowLookup())
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mockNotifier)
-
-        assertThatThrownBy {
-            sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        }.isInstanceOf(MissingRowsError::class.java)
-        verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
-        verify(mockNotifier).notify("A burden estimate set with missing rows has just been uploaded for $groupId - $disease - $scenarioId")
-    }
-
 }

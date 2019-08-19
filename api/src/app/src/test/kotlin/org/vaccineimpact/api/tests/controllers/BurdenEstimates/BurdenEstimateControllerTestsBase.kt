@@ -3,6 +3,7 @@ package org.vaccineimpact.api.tests.controllers.BurdenEstimates
 import com.nhaarman.mockito_kotlin.*
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
+import org.vaccineimpact.api.app.logic.ResponsibilitiesLogic
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -48,9 +49,9 @@ abstract class BurdenEstimateControllerTestsBase: MontaguTests() {
         }
     }
 
-    protected fun verifyValidResponsibilityPathChecks(burdenEstimatesLogic: BurdenEstimateLogic, context: ActionContext)
+    protected fun verifyValidResponsibilityPathChecks(responsibilitiesLogic: ResponsibilitiesLogic, context: ActionContext)
     {
-        verify(burdenEstimatesLogic).validateResponsibilityPath(any(), any())
+        verify(responsibilitiesLogic).validateResponsibilityPath(any(), any())
         verify(context).hasPermission(any())
     }
 

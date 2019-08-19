@@ -14,6 +14,7 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
+import org.vaccineimpact.api.app.logic.ResponsibilitiesLogic
 import org.vaccineimpact.api.app.models.ChunkedFile
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
@@ -39,16 +40,17 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val repo = mockEstimatesRepository(mockTouchstones())
         val logic = mockLogic()
         val context = mockActionContext()
+        val responsibilitiesLogic = mock<ResponsibilitiesLogic>()
         val sut = BurdenEstimateUploadController(context,
-                mock(),
                 logic,
+                responsibilitiesLogic,
                 repo,
                 mock(),
                 mockTokenHelper)
         val result = sut.getUploadToken()
         verify(repo).getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, 1)
         assertThat(result).isEqualTo("TOKEN")
-        verifyValidResponsibilityPathChecks(logic, context)
+        verifyValidResponsibilityPathChecks(responsibilitiesLogic, context)
     }
 
 
@@ -62,16 +64,18 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val repo = mockEstimatesRepository(mockTouchstones(), existingBurdenEstimateSet = defaultEstimateSet.copy(
                 type = BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC)))
         val context = mockActionContext()
-        val logic = mockLogic()
+        val estimateLogic = mockLogic()
+        val responsibilitiesLogic = mock<ResponsibilitiesLogic>()
         val sut = BurdenEstimateUploadController(context,
-                mock(), logic,
+                estimateLogic,
+                responsibilitiesLogic,
                 repo,
                 mock(),
                 mockTokenHelper)
         assertThatThrownBy { sut.getUploadToken() }
                 .isInstanceOf(InvalidOperationError::class.java)
                 .hasMessageContaining("Stochastic estimate upload not supported")
-        verifyValidResponsibilityPathChecks(logic, context)
+        verifyValidResponsibilityPathChecks(responsibilitiesLogic, context)
 
     }
 
@@ -93,7 +97,8 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         )
 
         val mockContext = mockActionContext()
-        verifyLogicIsInvokedToPopulateSet(mockContext, mockEstimatesRepository(touchstoneSet), logic,
+        verifyLogicIsInvokedToPopulateSet(mockContext,
+                mockEstimatesRepository(touchstoneSet), logic,
                 normalCSVData.asSequence(), expectedData)
     }
 
@@ -127,8 +132,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val mockContext = mockActionContext()
         val repo = mockEstimatesRepository(touchstoneSet, existingBurdenEstimateSet = defaultEstimateSet.copy(
                 type = BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC)))
-        verifyLogicIsInvokedToPopulateSet(mockContext, repo, logic,
-                csvData.asSequence(), expectedData)
+        verifyLogicIsInvokedToPopulateSet(mockContext, repo, logic, csvData.asSequence(), expectedData)
     }
 
     @Test
@@ -154,21 +158,21 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
     @Test
     fun `populate burden estimate set catches missing row error and returns result`()
     {
-        val logic = mockLogic()
-        Mockito.`when`(logic.closeBurdenEstimateSet(any(), any(), any(), any()))
+        val estimateLogic = mockLogic()
+        Mockito.`when`(estimateLogic.closeBurdenEstimateSet(any(), any(), any(), any()))
                 .doThrow(MissingRowsError("message"))
         val repo = mockEstimatesRepository()
         val mockContext = mockActionContext()
         val mockPostData = mockCSVPostData(normalCSVData)
-
-       val result = BurdenEstimateUploadController(mockContext,
-                    mockRepositories(repo, mock(), mock()),
-                    logic,
-                    repo,
-                    postDataHelper = mockPostData).populateBurdenEstimateSet()
+        val responsibilitiesLogic = mock<ResponsibilitiesLogic>()
+        val result = BurdenEstimateUploadController(mockContext,
+                estimateLogic,
+                responsibilitiesLogic,
+                repo,
+                postDataHelper = mockPostData).populateBurdenEstimateSet()
 
         assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
-        verifyValidResponsibilityPathChecks(logic, mockContext)
+        verifyValidResponsibilityPathChecks(responsibilitiesLogic, mockContext)
     }
 
     @Test
@@ -362,18 +366,19 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
     {
         val timesExpected = if (expectedClosed) times(1) else never()
 
-        val logic = mockLogic()
+        val estimatesLogic = mockLogic()
+        val responsibilitiesLogic = mock<ResponsibilitiesLogic>()
         val repo = mockEstimatesRepository()
         val mockContext = mockActionContext(keepOpen = keepOpen)
         val mockPostData = mockCSVPostData(normalCSVData)
         BurdenEstimateUploadController(mockContext,
-                mockRepositories(repo, mock(), mock()),
-                logic,
+                estimatesLogic,
+                responsibilitiesLogic,
                 repo,
                 postDataHelper = mockPostData).populateBurdenEstimateSet()
-        verify(logic, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
+        verify(estimatesLogic, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
                 groupId, touchstoneVersionId, scenarioId)
-        verifyValidResponsibilityPathChecks(logic, mockContext)
+        verifyValidResponsibilityPathChecks(responsibilitiesLogic, mockContext)
     }
 
     protected fun mockActionContext(user: String = "username", keepOpen: String? = null): ActionContext
@@ -410,7 +415,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
     protected fun <T : Any> verifyLogicIsInvokedToPopulateSet(
             actionContext: ActionContext,
             repo: BurdenEstimateRepository,
-            logic: BurdenEstimateLogic,
+            estimatesLogic: BurdenEstimateLogic,
             actualData: Sequence<T>,
             expectedData: List<BurdenEstimateWithRunId>
     )
@@ -419,19 +424,22 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
             on { csvData<T>(any(), any()) } doReturn actualData
         }
 
-        val sut = BurdenEstimateUploadController(actionContext, mockRepositories(repo, mock(), mock()), logic,
+        val responsibilitiesLogic = mock<ResponsibilitiesLogic>()
+        val sut = BurdenEstimateUploadController(actionContext,
+                estimatesLogic,
+                responsibilitiesLogic,
                 repo,
                 postDataHelper = postDataHelper)
 
         sut.populateBurdenEstimateSet()
-        verify(logic).populateBurdenEstimateSet(eq(1),
+        verify(estimatesLogic).populateBurdenEstimateSet(eq(1),
                 eq(groupId), eq(touchstoneVersionId), eq(scenarioId),
                 argWhere {
                     it.toSet() == expectedData.toSet()
                 },
                 anyOrNull()
         )
-        verifyValidResponsibilityPathChecks(logic, actionContext)
+        verifyValidResponsibilityPathChecks(responsibilitiesLogic, actionContext)
     }
 
     protected val normalCSVData = listOf(
