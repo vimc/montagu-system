@@ -243,7 +243,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                             it.currentEstimateSet?.status == BurdenEstimateSetStatus.COMPLETE
                 })
         {
-            notifier.notify("Group $groupId have uploaded complete estimate sets for all scenarios in $touchstoneVersionId")
+            notifier.notify("Group $groupId have uploaded complete estimate sets for all $disease scenarios in $touchstoneVersionId")
         }
     }
 

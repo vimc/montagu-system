@@ -202,7 +202,7 @@ AGO, age 12, year 2005""")
                 mock(), responsibilitiesRepository, mockNotifier)
 
         sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        verify(mockNotifier).notify("Group $groupId have uploaded complete estimate sets for all scenarios in $touchstoneVersionId")
+        verify(mockNotifier).notify("Group $groupId have uploaded complete estimate sets for all $disease scenarios in $touchstoneVersionId")
     }
 
     @Test
@@ -222,7 +222,8 @@ AGO, age 12, year 2005""")
                 mock(), responsibilitiesRepository, mockNotifier)
 
         sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        verify(mockNotifier, Times(0)).notify("Group $groupId have uploaded complete estimate sets for all scenarios in $touchstoneVersionId")
+        verify(mockNotifier).notify("A complete burden estimate set has just been uploaded for $groupId - $disease - $scenarioId")
+        verify(mockNotifier, Times(1))
     }
 
     private val responsibilityWithCompleteEstimateSet = Responsibility(Scenario("s1", "desc", "d1", listOf()),
