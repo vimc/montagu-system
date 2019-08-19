@@ -14,7 +14,7 @@ import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {Dispatch} from "redux";
 import {estimatesActionCreators} from "../../../actions/estimatesActionCreators";
 import {connect} from "react-redux";
-import {branch, compose, renderComponent} from "recompose";
+import {branch, compose} from "recompose";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {roundToOneDecimalPlace} from "../../../../shared/Helpers";
 import {OptionSelector} from "../../OptionSelector/OptionSelector";

@@ -22,11 +22,10 @@ describe("Upload Burden Estimates Form Component tests", () => {
         cancelled: boolean;
         uploadStarted: boolean;
         retryStarted: boolean;
-        files: [{ progress: () => number, retry: () => void, retryStarted: boolean }] = [{
+        files: [{ progress: () => number, retry: () => void }] = [{
             progress: () => 0, retry: () => {
                 this.retryStarted = true
-            },
-            retryStarted: false
+            }
         }];
 
         assignBrowse() {
@@ -258,7 +257,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
         result.setProps({url: "URL"});
         result.update();
 
-        expect(fakeUploadClient.files[0].retryStarted).to.be.true;
+        expect(fakeUploadClient.retryStarted).to.be.true;
     });
 
     it("shows progress bar on file upload progress", () => {
