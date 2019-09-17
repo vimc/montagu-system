@@ -13,9 +13,9 @@ import {settings} from "../../../../../main/shared/Settings";
 describe("ExpectationsDescription", () => {
 
     const mockScenarios = [
-        mockScenario({id: "a", description: "desc-a"}),
-        mockScenario({id: "b", description: "desc-b"}),
-        mockScenario({id: "c", description: "desc-c"})];
+        mockScenario({id: "a", description: "Routine"}),
+        mockScenario({id: "b", description: "Best case"}),
+        mockScenario({id: "c", description: "Campaign"})];
 
     const sandbox = new Sandbox();
 
@@ -41,7 +41,7 @@ describe("ExpectationsDescription", () => {
     });
 
 
-    it("renders applicable scenarios", () => {
+    it("renders applicable scenarios sorted by description", () => {
 
         const expectation: ExpectationMapping = {
             disease: "YF",
@@ -57,8 +57,9 @@ describe("ExpectationsDescription", () => {
         />);
 
         expect(rendered.find("#scenarios").find("li")).to.have.lengthOf(3);
-        expect(rendered.find("#scenarios").find("li").at(0).text()).to.eq("a: desc-a");
-
+        expect(rendered.find("#scenarios").find("li").at(0).text()).to.eq("Best case (b)");
+        expect(rendered.find("#scenarios").find("li").at(1).text()).to.eq("Campaign (c)");
+        expect(rendered.find("#scenarios").find("li").at(2).text()).to.eq("Routine (a)");
     });
 
     it("renders number of years", () => {

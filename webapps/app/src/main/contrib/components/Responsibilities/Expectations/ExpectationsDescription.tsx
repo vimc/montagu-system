@@ -13,8 +13,12 @@ interface ExpectationsDescriptionProps {
 
 export class ExpectationsDescription extends React.PureComponent<ExpectationsDescriptionProps> {
 
-    scenarioMapping(id: string) {
-        return <li key={id}>{id}: {this.props.allScenarios.find(s => s.id == id).description}</li>
+    scenarioMapping(s: Scenario) {
+        return <li key={s.id}>{s.description} ({s.id})</li>
+    }
+
+    getScenario(id: string): Scenario {
+        return this.props.allScenarios.find(s => s.id == id)
     }
 
     render(): JSX.Element {
@@ -35,7 +39,10 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
             <div className="h3">{expectationMapping.expectation.description}</div>
             For scenarios:
             <ul id="scenarios">
-                {expectationMapping.applicable_scenarios.map(s => this.scenarioMapping(s))}
+                {expectationMapping.applicable_scenarios
+                    .map(id => this.getScenario(id))
+                    .sort((a, b) => a.description > b.description ? 1 : -1)
+                    .map(s => this.scenarioMapping(s))}
             </ul>
             <div>
                 Expecting data on:
