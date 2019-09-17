@@ -40,7 +40,7 @@ export class ExpectationsDescription extends React.PureComponent<ExpectationsDes
             For scenarios:
             <ul id="scenarios">
                 {expectationMapping.applicable_scenarios
-                    .map(s => this.getScenario(s))
+                    .map(id => this.getScenario(id))
                     .sort((a, b) => a.description > b.description ? 1 : -1)
                     .map(s => this.scenarioMapping(s))}
             </ul>
