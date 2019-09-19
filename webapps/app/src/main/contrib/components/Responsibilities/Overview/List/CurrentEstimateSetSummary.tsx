@@ -43,7 +43,7 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
         }
     }
 
-    url() {
+    url(): any {
         // TODO re-enable once this endpoint is fixed
         // see VIMC-3100
         // if (this.props.estimateSet && this.props.estimateSet.status != "empty") {
@@ -51,6 +51,7 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
         // } else {
         //     null
         // }
+        return null
     }
 
     render(): JSX.Element {
