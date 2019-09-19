@@ -35,23 +35,32 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
         expect(rendered.find(FileDownloadButton)).to.have.lengthOf(0);
     });
 
-    it("displays download button if current estimate set is invalid", () => {
-        const rendered = render(mockBurdenEstimateSet({
-            id: 1,
-            status: "invalid",
-            uploaded_on: "2017-07-13 13:55:29 +0100"
-        }), true);
-        expect(rendered.find(FileDownloadButton).props().href).to.eq("/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/estimates/")
-    });
-
-    it("displays download button if current estimate set is complete", () => {
+    it("does not display download button at all", () => {
         const rendered = render(mockBurdenEstimateSet({
             id: 1,
             status: "complete",
             uploaded_on: "2017-07-13 13:55:29 +0100"
         }), true);
-        expect(rendered.find(FileDownloadButton).props().href).to.eq("/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/estimates/")
+        expect(rendered.find(FileDownloadButton)).to.have.lengthOf(0);
     });
+
+    // it("displays download button if current estimate set is invalid", () => {
+    //     const rendered = render(mockBurdenEstimateSet({
+    //         id: 1,
+    //         status: "invalid",
+    //         uploaded_on: "2017-07-13 13:55:29 +0100"
+    //     }), true);
+    //     expect(rendered.find(FileDownloadButton).props().href).to.eq("/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/estimates/")
+    // });
+    //
+    // it("displays download button if current estimate set is complete", () => {
+    //     const rendered = render(mockBurdenEstimateSet({
+    //         id: 1,
+    //         status: "complete",
+    //         uploaded_on: "2017-07-13 13:55:29 +0100"
+    //     }), true);
+    //     expect(rendered.find(FileDownloadButton).props().href).to.eq("/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/estimates/")
+    // });
 
     it("displays empty set message if current estimate is empty", () => {
         const rendered = render(mockBurdenEstimateSet({

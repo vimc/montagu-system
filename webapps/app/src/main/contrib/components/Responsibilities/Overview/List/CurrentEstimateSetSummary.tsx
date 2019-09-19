@@ -44,11 +44,13 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
     }
 
     url() {
-        if (this.props.estimateSet && this.props.estimateSet.status != "empty") {
-            return `/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/${this.props.estimateSet.id}/estimates/`
-        } else {
-            null
-        }
+        // TODO re-enable once this endpoint is fixed
+        // see VIMC-3100
+        // if (this.props.estimateSet && this.props.estimateSet.status != "empty") {
+        //     return `/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/${this.props.estimateSet.id}/estimates/`
+        // } else {
+        //     null
+        // }
     }
 
     render(): JSX.Element {
