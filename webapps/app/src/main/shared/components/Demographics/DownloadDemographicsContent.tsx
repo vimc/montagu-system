@@ -33,10 +33,10 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
             </div>
             <div>
                 <p>
-                    All available datasets are based on the UNWPP 2017 release, with the
+                    All available datasets are based on the UNWPP 2019 release, with the
                     exception of neonatal (28 day) mortality which is a hybrid between the
                     UNWPP infant mortality (available 1950 to 2100) and neonatal mortality
-                    from IGME/childmortality.org.
+                    from IGME/childmortality.org, released in September 2019.
                 </p>
                 <p>
                     Select the following options to download a CSV file containing
