@@ -392,32 +392,32 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             expect(response.errors[0].code).to.eq("unknown-upload-token");
         });
 
-        // it("can download burden estimates", async () => {
-        //
-        //     const responsibilityIds = await addResponsibilities(this.db, scenarioId, touchstoneVersionId, groupId);
-        //     const modelVersionId = await addModel(this.db);
-        //     const setId = await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
-        //
-        //     const rendered = shallow(<CurrentEstimateSetSummary
-        //         touchstoneId={touchstoneVersionId}
-        //         groupId={groupId}
-        //         scenarioId={scenarioId}
-        //         canUpload={true}
-        //         estimateSet={mockBurdenEstimateSet({id: setId, problems: [], status: "invalid"})}/>);
-        //
-        //     const href = rendered.find(FileDownloadButton).prop("href");
-        //
-        //     const response = await new TestService(this.store.dispatch, this.store.getState)
-        //         .getAnyUrl(href);
-        //
-        //     expect(response.status).to.equal(200);
-        //
-        //     const result = await response.text();
-        //     const headers = result.split("\n")[0];
-        //
-        //     // just check it's the format we're expecting
-        //     expect(headers).to.eq("disease,year,age,country,country_name,cohort_size")
-        // })
+        it("can download burden estimates", async () => {
+
+            const responsibilityIds = await addResponsibilities(this.db, scenarioId, touchstoneVersionId, groupId);
+            const modelVersionId = await addModel(this.db);
+            const setId = await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
+
+            const rendered = shallow(<CurrentEstimateSetSummary
+                touchstoneId={touchstoneVersionId}
+                groupId={groupId}
+                scenarioId={scenarioId}
+                canUpload={true}
+                estimateSet={mockBurdenEstimateSet({id: setId, problems: [], status: "invalid"})}/>);
+
+            const href = rendered.find(FileDownloadButton).prop("href");
+
+            const response = await new TestService(this.store.dispatch, this.store.getState)
+                .getAnyUrl(href);
+
+            expect(response.status).to.equal(200);
+
+            const result = await response.text();
+            const headers = result.split("\n")[0];
+
+            // just check it's the format we're expecting
+            expect(headers).to.eq("disease,year,age,country,country_name,cohort_size")
+        })
 
     }
 }
