@@ -13,6 +13,7 @@ interface Settings {
     contrib: ContribSettings;
     test: AppSpecificSettings;
     showTouchstoneCreation: boolean;
+    canDownloadEstimates: (groupId: string) => boolean;
 }
 
 interface AppSpecificSettings {
