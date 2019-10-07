@@ -30,7 +30,9 @@ export class ResponsibilityList extends React.Component<ResponsibilityListCompon
         const props = this.props;
         const reps = this.getResponsibilities(props);
         if (reps.length) {
-            const items = reps.map((item: Responsibility) =>
+            const items = reps
+                .sort((a, b) => a.scenario.description > b.scenario.description ? 1 : -1)
+                .map((item: Responsibility) =>
                 <ResponsibilityScenario
                     key={item.scenario.id}
                     responsibility={item}
