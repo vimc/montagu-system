@@ -50,6 +50,19 @@ describe('Responsibility Overview List Component tests', () => {
         expect(children.at(1).key()).to.equal("scenario-2");
     });
 
+
+    it("renders responsibilities ordered alphabetically by scenario description", () => {
+        const props = makeProps([
+            mockResponsibility({}, mockScenario({ description: "b", disease: "d1", id: "d" })),
+            mockResponsibility({}, mockScenario({ description: "a", disease: "d2", id: "e" }))
+        ]);
+        const rendered = shallow(<ResponsibilityList {...props} />);
+        const children = rendered.find(ResponsibilityScenario);
+        expect(children).to.have.length(2);
+        expect(children.at(0).key()).to.equal("e");
+        expect(children.at(1).key()).to.equal("d");
+    });
+
     it("renders disease filter", () => {
         const props = makeProps([ mockResponsibility() ]);
         const rendered = shallow(<ResponsibilityList {...props} />);
