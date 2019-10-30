@@ -103,7 +103,7 @@ export const estimatesActionCreators = {
 
             return dispatch({
                 type: EstimateTypes.BURDEN_ESTIMATES_FETCHED,
-                data: {burdens: data, type: outcome, setId: setId}
+                data: {burdens: Object.freeze(data), type: outcome, setId: setId}
             } as BurdenEstimatesFetched);
         }
     },

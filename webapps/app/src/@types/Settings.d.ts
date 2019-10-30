@@ -6,6 +6,7 @@ interface Settings {
     slackUrl: string;
     isApplicantTouchstone: (id: string) => boolean;
     is2017Touchstone: (id: string) => boolean;
+    is2019Touchstone: (id: string) => boolean;
     isVersionOfStochasticTouchstone: (touchstoneId: string) => boolean;
     nonStochasticTouchstones: string[],
     teamcityServiceMessages: boolean;
