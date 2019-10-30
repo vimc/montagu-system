@@ -27,7 +27,9 @@ data class ScenarioTouchstoneAndCoverageSets(
         val coverageSets: List<CoverageSet>?
 )
 
-data class LongCoverageRow(
+interface CoverageRow
+
+interface LongCoverageRow: CoverageRow {
         val scenario: String, //This is the scenario description ID
         val setName: String,
         val vaccine: String,
@@ -41,9 +43,43 @@ data class LongCoverageRow(
         val ageRangeVerbatim: String?,
         val target: BigDecimal?,
         val coverage: BigDecimal?
-) : CoverageRow
+}
 
-data class WideCoverageRow(
+data class NoGenderLongCoverageRow(
+        override val scenario: String,
+        override val setName: String,
+        override val vaccine: String,
+        override val gaviSupport: GAVISupportLevel,
+        override val activityType: ActivityType,
+        override val countryCode: String,
+        override val country: String,
+        override val year: Int,
+        override val ageFirst: BigDecimal?,
+        override val ageLast: BigDecimal?,
+        override val ageRangeVerbatim: String?,
+        override val target: BigDecimal?,
+        override val coverage: BigDecimal?
+) : LongCoverageRow
+
+data class GenderedLongCoverageRow(
+        override val scenario: String,
+        override val setName: String,
+        override val vaccine: String,
+        override val gaviSupport: GAVISupportLevel,
+        override val activityType: ActivityType,
+        override val countryCode: String,
+        override val country: String,
+        override val year: Int,
+        override val ageFirst: BigDecimal?,
+        override val ageLast: BigDecimal?,
+        override val ageRangeVerbatim: String?,
+        override val target: BigDecimal?,
+        override val coverage: BigDecimal?,
+        val gender: String
+) : LongCoverageRow
+
+
+interface WideCoverageRow: CoverageRow {
         val scenario: String, //This is the scenario description ID
         val setName: String,
         val vaccine: String,
@@ -56,6 +92,36 @@ data class WideCoverageRow(
         val ageRangeVerbatim: String?,
         @FlexibleProperty
         val coverageAndTargetPerYear: Map<String, BigDecimal?>
-) : CoverageRow
+}
 
-interface CoverageRow
+data class NoGenderWideCoverageRow(
+        override val scenario: String, //This is the scenario description ID
+        override val setName: String,
+        override val vaccine: String,
+        override val gaviSupport: GAVISupportLevel,
+        override val activityType: ActivityType,
+        override val countryCode: String,
+        override val country: String,
+        override val ageFirst: BigDecimal?,
+        override val ageLast: BigDecimal?,
+        override val ageRangeVerbatim: String?,
+        @FlexibleProperty
+        override val coverageAndTargetPerYear: Map<String, BigDecimal?>
+) : WideCoverageRow
+
+data class GenderedWideCoverageRow(
+        override val scenario: String, //This is the scenario description ID
+        override val setName: String,
+        override val vaccine: String,
+        override val gaviSupport: GAVISupportLevel,
+        override val activityType: ActivityType,
+        override val countryCode: String,
+        override val country: String,
+        override val ageFirst: BigDecimal?,
+        override val ageLast: BigDecimal?,
+        override val ageRangeVerbatim: String?,
+        val gender: String,
+        @FlexibleProperty
+        override val coverageAndTargetPerYear: Map<String, BigDecimal?>
+) : WideCoverageRow
+
