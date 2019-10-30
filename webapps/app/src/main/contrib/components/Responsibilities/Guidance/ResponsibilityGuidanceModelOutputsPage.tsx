@@ -12,7 +12,7 @@ import {ResponsibilityGuidancePageProps} from "./ResponsibilityGuidancePageProps
 import {ResponsibilityGuidanceModelOutputsContent2017} from "./content/ResponsibilityGuidanceModelOutputsContent2017";
 import {ResponsibilityGuidanceModelOutputsContentLatest} from "./content/ResponsibilityGuidanceModelOutputsContentLatest";
 import {ResponsibilityGuidanceTouchstoneNotOpenContent} from "./content/ResponsibilityGuidanceTouchstoneNotOpenContent";
-import {Redirect} from "react-router";
+import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 
 export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Component<ResponsibilityGuidancePageProps> {
 
@@ -30,7 +30,11 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
             return <ResponsibilityGuidanceModelOutputsContent2017/>
         } else if (settings.is2019Touchstone(this.props.touchstoneVersion.id)) {
             const outputsPdf = require("./content/guidance-2019-outputs.pdf");
-            return <Redirect to={outputsPdf}/>
+            return <PageArticle title={"Guidance on model outputs: how to generate and upload central estimates"}>
+                <a href={outputsPdf} target={"_blank"}>
+                    Guidance on model outputs: how to generate and upload central estimates
+                </a>
+            </PageArticle>
         } else {
             return <ResponsibilityGuidanceModelOutputsContentLatest/>
         }

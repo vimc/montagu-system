@@ -13,7 +13,7 @@ import {ResponsibilityGuidancePageProps} from "./ResponsibilityGuidancePageProps
 import {ResponsibilityGuidanceModelInputsContent2017} from "./content/ResponsibilityGuidanceModelInputsContent2017";
 import {ResponsibilityGuidanceModelInputsContentLatest} from "./content/ResponsibilityGuidanceModelInputsContentLatest";
 import {ResponsibilityGuidanceTouchstoneNotOpenContent} from "./content/ResponsibilityGuidanceTouchstoneNotOpenContent";
-import {Redirect} from "react-router";
+import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 
 export class ResponsibilityGuidanceModelInputsPageComponent extends React.Component<ResponsibilityGuidancePageProps> {
 
@@ -31,7 +31,11 @@ export class ResponsibilityGuidanceModelInputsPageComponent extends React.Compon
             return <ResponsibilityGuidanceModelInputsContent2017/>
         } else if (settings.is2019Touchstone(this.props.touchstoneVersion.id)) {
             const inputsPdf = require("./content/guidance-2019-inputs.pdf");
-            return <Redirect to={inputsPdf}/>
+            return <PageArticle title={"Guidance on model inputs: coverage and demographic data"}>
+                <a href={inputsPdf} target={"_blank"}>
+                    Guidance on model inputs: coverage and demographic data
+                </a>
+            </PageArticle>
         } else {
             return <ResponsibilityGuidanceModelInputsContentLatest/>
         }

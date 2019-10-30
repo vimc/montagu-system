@@ -84,29 +84,16 @@ function commonConfig(name, public_path) {
                     exclude: [/index.html$/, /guidance-2019-inputs.pdf$/, /guidance-2019-outputs.pdf$/],
                 },
                 {
-                    test: /stochastic_template_params.csv$/,
+                    test: /(stochastic_template_params.csv|guidance-2019-inputs.pdf|guidance-2019-outputs.pdf)$/,
                     loaders: [
                     {
                         loader: "file-loader",
                         options: {
                             publicPath: public_path + 'resources/',
                             outputPath: 'resources/',
-                            name: "stochastic_template_params.csv"
+                            name: "[name].[ext]"
                         }
                     }
-                    ]
-                },
-                {
-                    test: /(guidance-2019-inputs.pdf|guidance-2019-outputs.pdf)$/,
-                    loaders: [
-                        {
-                            loader: "file-loader",
-                            options: {
-                                publicPath: '/resources/',
-                                outputPath: 'resources/',
-                                name: "[name].[ext]"
-                            }
-                        }
                     ]
                 },
                 {
