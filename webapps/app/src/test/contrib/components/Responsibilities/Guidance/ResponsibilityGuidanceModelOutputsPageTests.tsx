@@ -62,8 +62,6 @@ describe("Guidance Model Outputs Page Component tests", () => {
 
         const content = rendered.find(ResponsibilityGuidanceModelOutputsContentLatest);
         expect(content.getElements().length).is.equal(1);
-
-
     });
 
     it("renders component for finished touchstone", () => {
@@ -107,9 +105,26 @@ describe("Guidance Model Outputs Page Component tests", () => {
 
         const content = rendered.find(ResponsibilityGuidanceModelOutputsContent2017);
         expect(content.getElements().length).is.equal(1);
+    });
 
+    it("renders component for 2019 touchstone", () => {
+        const testTouchstone = mockTouchstoneVersion({id: "op-2019-1"});
 
+        const store = createMockContribStore({
+            touchstones: {currentTouchstoneVersion: testTouchstone}
+        });
 
+        const testMatch = mockMatch<ResponsibilityGuidancePageLocationProps>({
+            touchstoneId: testTouchstone.id
+        });
+
+        const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelOutputsPageActionCreators, "onLoad");
+        const rendered = shallow(<ResponsibilityGuidanceModelOutputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
+
+        expect(onLoadStub.called).is.equal(true);
+
+        const link = rendered.find("a");
+        expect(link.prop("href")).contains("guidance-2019-outputs.pdf");
     });
 });
 

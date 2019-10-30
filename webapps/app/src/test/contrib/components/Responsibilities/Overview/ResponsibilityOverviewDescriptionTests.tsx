@@ -6,6 +6,7 @@ import "../../../../helper";
 import { Sandbox } from "../../../../Sandbox";
 import {ResponsibilityOverviewDescription} from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewDescription";
 import {settings} from "../../../../../main/shared/Settings";
+import {InternalLink} from "../../../../../main/shared/components/InternalLink";
 
 describe("Responsibility Overview Description Component", () => {
 
@@ -29,6 +30,28 @@ describe("Responsibility Overview Description Component", () => {
     it("renders component on touchstone is not open", () => {
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId2} groupId={testGroupId} touchstoneStatus="finished"/>);
         expect(rendered.text().indexOf("This touchstone is no longer open")).to.greaterThan(-1);
+    });
+
+    it("renders internal links for non-2019 touchstone", () => {
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"t1"}
+                                                                    groupId={testGroupId}
+                                                                    touchstoneStatus={"open"}/>);
+        const link = rendered.find(InternalLink);
+
+        expect(link.at(4).prop("href")).eq("/help/model-inputs/t1");
+        expect(link.at(5).prop("href")).eq("/help/model-outputs/t1");
+        expect(rendered.find("a").length).eq(0);
+    });
+
+    it("renders external links for 2019 touchstone", () => {
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"2019"}
+                                                                    groupId={testGroupId}
+                                                                    touchstoneStatus={"open"}/>);
+        const link = rendered.find("a");
+
+        expect(link.at(0).prop("href")).contains("guidance-2019-inputs.pdf");
+        expect(link.at(1).prop("href")).contains("guidance-2019-outputs.pdf");
+        expect(rendered.find(InternalLink).length).eq(4);
     });
 
     it("renders stochastic content when touchstone is stochastic", () => {
