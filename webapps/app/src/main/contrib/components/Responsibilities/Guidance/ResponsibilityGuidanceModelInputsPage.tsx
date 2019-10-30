@@ -30,8 +30,7 @@ export class ResponsibilityGuidanceModelInputsPageComponent extends React.Compon
         if (settings.is2017Touchstone(this.props.touchstoneVersion.id)) {
             return <ResponsibilityGuidanceModelInputsContent2017/>
         } else if (settings.is2019Touchstone(this.props.touchstoneVersion.id)) {
-            const inputsPdf = require("./content/guidance-2019-inputs.pdf");
-            return <Redirect to={inputsPdf}/>
+            return <Redirect to={"/resources/guidance-2019-inputs.pdf"}/>
         } else {
             return <ResponsibilityGuidanceModelInputsContentLatest/>
         }
