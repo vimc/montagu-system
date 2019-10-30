@@ -111,11 +111,23 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
     {
         val groupedRows = data
                 .groupBy {
-                    hashSetOf(
-                            it.countryCode, it.setName,
-                            it.ageFirst, it.ageLast, it.ageRangeVerbatim,
-                            it.vaccine, it.gaviSupport, it.activityType
-                    )
+                    if (it is GenderedLongCoverageRow)
+                    {
+                        hashSetOf(
+                                it.countryCode, it.setName,
+                                it.ageFirst, it.ageLast, it.ageRangeVerbatim,
+                                it.vaccine, it.gaviSupport, it.activityType,
+                                it.gender
+                        )
+                    }
+                    else
+                    {
+                        hashSetOf(
+                                it.countryCode, it.setName,
+                                it.ageFirst, it.ageLast, it.ageRangeVerbatim,
+                                it.vaccine, it.gaviSupport, it.activityType
+                        )
+                    }
                 }
 
         val rows = groupedRows.values
@@ -148,17 +160,36 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                 records.associateBy({ "coverage_${it.year}" }, { it.coverage }) +
                         records.associateBy({ "target_${it.year}" }, { it.target })
 
-        return WideCoverageRow(reference.scenario,
-                reference.setName,
-                reference.vaccine,
-                reference.gaviSupport,
-                reference.activityType,
-                reference.countryCode,
-                reference.country,
-                reference.ageFirst,
-                reference.ageLast,
-                reference.ageRangeVerbatim,
-                coverageAndTargetPerYear)
+        if (reference is GenderedLongCoverageRow)
+        {
+            return GenderedWideCoverageRow(reference.scenario,
+                    reference.setName,
+                    reference.vaccine,
+                    reference.gaviSupport,
+                    reference.activityType,
+                    reference.countryCode,
+                    reference.country,
+                    reference.ageFirst,
+                    reference.ageLast,
+                    reference.ageRangeVerbatim,
+                    reference.gender,
+                    coverageAndTargetPerYear)
+        }
+        else
+        {
+            return NoGenderWideCoverageRow(reference.scenario,
+                    reference.setName,
+                    reference.vaccine,
+                    reference.gaviSupport,
+                    reference.activityType,
+                    reference.countryCode,
+                    reference.country,
+                    reference.ageFirst,
+                    reference.ageLast,
+                    reference.ageRangeVerbatim,
+                    coverageAndTargetPerYear)
+        }
+
     }
 
 }

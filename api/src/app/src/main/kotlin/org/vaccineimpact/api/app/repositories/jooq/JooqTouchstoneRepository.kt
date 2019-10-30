@@ -153,7 +153,7 @@ class JooqTouchstoneRepository(
 
         return coverageRecords
                 .filter { it[COUNTRY.NAME] != null }
-                .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
+                .map { mapCoverageRow(it, scenarioDescriptionId, touchstoneVersionId) }.asSequence()
     }
 
     override fun getCoverageDataForResponsibility(
@@ -167,7 +167,7 @@ class JooqTouchstoneRepository(
 
         return coverageRecords
                 .filter { it[COUNTRY.NAME] != null }
-                .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
+                .map { mapCoverageRow(it, scenarioDescriptionId, touchstoneVersionId) }.asSequence()
     }
 
     override fun getCoverageSetsForScenario(
@@ -256,11 +256,13 @@ class JooqTouchstoneRepository(
                 .select(coverageDimensions().toList())
                 .select(aggregatedValues())
                 .select(COUNTRY.NAME)
+                .select(GENDER.NAME)
                 .fromJoinPath(TOUCHSTONE, SCENARIO)
                 // We don't mind if there are no coverage sets, so do a left join
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
+                .joinPath(COVERAGE, GENDER)
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
                 .groupBy(*COVERAGE_SET.fields(),
@@ -289,11 +291,13 @@ class JooqTouchstoneRepository(
                 .select(coverageDimensions().toList())
                 .select(aggregatedValues())
                 .select(COUNTRY.NAME)
+                .select(GENDER.NAME)
                 .fromJoinPath(TOUCHSTONE, SCENARIO, RESPONSIBILITY)
                 // We don't mind if there are no coverage sets, so do a left join
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
+                .joinPath(COVERAGE, GENDER)
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(RESPONSIBILITY.ID.eq(responsibilityId))
                 .and(COUNTRY.ID.isNull.or(COUNTRY.ID.`in`(expectedCountries)))
@@ -464,21 +468,45 @@ class JooqTouchstoneRepository(
             mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE])
     )
 
-    private fun mapCoverageRow(record: Record, scenarioDescriptionId: String) = LongCoverageRow(
-            scenarioDescriptionId,
-            record[COVERAGE_SET.NAME],
-            record[COVERAGE_SET.VACCINE],
-            mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
-            mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),
-            record[COVERAGE.COUNTRY],
-            record[COUNTRY.NAME],
-            record[COVERAGE.YEAR],
-            record[COVERAGE.AGE_FROM],
-            record[COVERAGE.AGE_TO],
-            record[COVERAGE.AGE_RANGE_VERBATIM],
-            record[COVERAGE.TARGET],
-            record[COVERAGE.COVERAGE_]
-    )
+    private fun mapCoverageRow(record: Record, scenarioDescriptionId: String, touchstoneVersionId: String) =
+            if (includeGenderInCoverage(touchstoneVersionId))
+            {
+                GenderedLongCoverageRow(
+                        scenarioDescriptionId,
+                        record[COVERAGE_SET.NAME],
+                        record[COVERAGE_SET.VACCINE],
+                        mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
+                        mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),
+                        record[COVERAGE.COUNTRY],
+                        record[COUNTRY.NAME],
+                        record[COVERAGE.YEAR],
+                        record[COVERAGE.AGE_FROM],
+                        record[COVERAGE.AGE_TO],
+                        record[COVERAGE.AGE_RANGE_VERBATIM],
+                        record[COVERAGE.TARGET],
+                        record[COVERAGE.COVERAGE_],
+                        record[GENDER.NAME]
+                )
+            }
+            else
+            {
+                NoGenderLongCoverageRow(
+                        scenarioDescriptionId,
+                        record[COVERAGE_SET.NAME],
+                        record[COVERAGE_SET.VACCINE],
+                        mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
+                        mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),
+                        record[COVERAGE.COUNTRY],
+                        record[COUNTRY.NAME],
+                        record[COVERAGE.YEAR],
+                        record[COVERAGE.AGE_FROM],
+                        record[COVERAGE.AGE_TO],
+                        record[COVERAGE.AGE_RANGE_VERBATIM],
+                        record[COVERAGE.TARGET],
+                        record[COVERAGE.COVERAGE_]
+                )
+            }
+
 
     private fun mapDemographicRow(record: Record) = LongDemographicRow(
             record[field(name(TOUCHSTONE_COUNTRIES, "nid"), Int::class.java)],
@@ -490,4 +518,8 @@ class JooqTouchstoneRepository(
             record[GENDER.CODE],
             record[DEMOGRAPHIC_STATISTIC.VALUE]
     )
-}
+
+    private fun includeGenderInCoverage(touchstoneVersionId: String): Boolean {
+        return touchstoneVersionId > "2019"
+    }
+}S
