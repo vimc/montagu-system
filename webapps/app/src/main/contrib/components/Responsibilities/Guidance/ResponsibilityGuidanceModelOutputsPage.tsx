@@ -28,8 +28,9 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
 
         if (settings.is2017Touchstone(this.props.touchstoneVersion.id)) {
             return <ResponsibilityGuidanceModelOutputsContent2017/>
-        } else if(settings.is2019Touchstone(this.props.touchstoneVersion.id)) {
-            return <Redirect to={"/resources/guidance-2019-outputs.pdf"} />
+        } else if (settings.is2019Touchstone(this.props.touchstoneVersion.id)) {
+            const outputsPdf = require("./content/guidance-2019-outputs.pdf");
+            return <Redirect to={outputsPdf}/>
         } else {
             return <ResponsibilityGuidanceModelOutputsContentLatest/>
         }
