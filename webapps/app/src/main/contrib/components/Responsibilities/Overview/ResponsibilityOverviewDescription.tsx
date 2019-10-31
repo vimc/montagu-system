@@ -2,10 +2,6 @@ import * as React from "react";
 
 import {settings} from "../../../../shared/Settings";
 import {InternalLink} from "../../../../shared/components/InternalLink";
-import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
-import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
-import {TouchstoneVersion} from "../../../../shared/models/Generated";
-import {ResponsibilityOverviewPageLocationProps} from "./ResponsibilityOverviewPage";
 
 interface ResponsibilityOverviewDescriptionProps {
     currentTouchstoneId: string;
@@ -13,20 +9,17 @@ interface ResponsibilityOverviewDescriptionProps {
     touchstoneStatus: string;
 }
 
-const outputGuide = require("./outputs-guide.pdf");
-
-
 const ContactDetails = () => {
     return <div>
         If you have any questions or anything is not as you expected, please email&nbsp;
         <a href={`mailto:${settings.supportContact}`}>
-                        {settings.supportContact}
-                    </a>
+            {settings.supportContact}
+        </a>
         &nbsp;or use the #montagu-help
-                    channel on&nbsp;
+        channel on&nbsp;
         <a href={settings.slackUrl} target="_blank">Slack</a>.
     </div>
-}
+};
 
 const JanuaryRfpTouchstone = () => {
     return <div>
@@ -53,39 +46,41 @@ const JanuaryRfpTouchstone = () => {
 
 
 export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewDescriptionProps) => {
-    if (props.touchstoneStatus !== "open"){
-        return  <div>
+    if (props.touchstoneStatus !== "open") {
+        return <div>
             <div className="alert alert-danger">This touchstone is no longer open.</div>
             <ContactDetails/>
         </div>;
     }
 
     if (settings.isApplicantTouchstone(props.currentTouchstoneId)) {
-
         return JanuaryRfpTouchstone()
-
     } else {
-        const guidanceInputsUrl = `/help/model-inputs/${props.currentTouchstoneId}`;
-        const guidanceOutputsUrl = `/help/model-outputs/${props.currentTouchstoneId}`;
+        let guidanceInputsUrl = `/help/model-inputs/${props.currentTouchstoneId}`;
+        let guidanceOutputsUrl = `/help/model-outputs/${props.currentTouchstoneId}`;
+
+        if (settings.is2019Touchstone(props.currentTouchstoneId)) {
+            guidanceOutputsUrl = require("../Guidance/content/guidance-2019-outputs.pdf");
+            guidanceInputsUrl = require("../Guidance/content/guidance-2019-inputs.pdf");
+        }
 
         let templatesInfo;
         let outputGuidanceLinkText;
         let stochasticEstimatesText;
 
-        if (settings.isVersionOfStochasticTouchstone(props.currentTouchstoneId))
-        {
+        const guidanceAsPdfs = settings.is2019Touchstone(props.currentTouchstoneId);
+
+        if (settings.isVersionOfStochasticTouchstone(props.currentTouchstoneId)) {
             templatesInfo = <li>
-                                Download csv templates for central and stochastic burden estimates,
-                                and for underlying parameter values.
-                            </li>;
+                Download csv templates for central and stochastic burden estimates,
+                and for underlying parameter values.
+            </li>;
             outputGuidanceLinkText = "Guidance on model outputs: how to generate and upload central and stochastic estimates";
             stochasticEstimatesText = "In the future, you will also be able to upload stochastic burden estimates for each scenario."
-        }
-        else
-        {
+        } else {
             templatesInfo = <li>
-                                Download csv templates for central burden estimates.
-                            </li>;
+                Download csv templates for central burden estimates.
+            </li>;
             outputGuidanceLinkText = "Guidance on model outputs: how to generate and upload central estimates";
             stochasticEstimatesText = "Stochastic estimates are not required for this touchstone. Please provide central estimates only";
         }
@@ -129,25 +124,42 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
                     </li>
                 }
             </ul>
-                <p>
-                    {stochasticEstimatesText}
-                </p>
+            <p>
+                {stochasticEstimatesText}
+            </p>
             <span>
                     Useful links:
                 </span>
+            {!guidanceAsPdfs &&
             <ul>
                 <li>
                     <InternalLink href={guidanceInputsUrl}>
                         Guidance on model inputs: coverage and demographic data
                     </InternalLink>
                 </li>
-                <li>
-                    <InternalLink href={guidanceOutputsUrl}>
-                        {outputGuidanceLinkText}
-                    </InternalLink>
+                <li><InternalLink href={guidanceOutputsUrl}>
+                    {outputGuidanceLinkText}
+                </InternalLink>
+
                 </li>
             </ul>
-            <ContactDetails />
-        </div>;
+            }
+            {guidanceAsPdfs &&
+            <ul>
+                <li>
+                    <a href={guidanceInputsUrl} target={"_blank"}>
+                        Guidance on model inputs: coverage and demographic data
+                    </a>
+                </li>
+                <li>
+                    <a href={guidanceOutputsUrl} target={"_blank"}>
+                        {outputGuidanceLinkText}
+                    </a>
+                </li>
+            </ul>
+            }
+
+            <ContactDetails/>
+        </div>
     }
 };
