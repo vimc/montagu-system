@@ -12,6 +12,7 @@
         "age_last": "Int",
         "age_range_verbatim": "String?",
         "target": "Decimal?",
-        "coverage": "Decimal?"
+        "coverage": "Decimal?",
+        "gender": "String"
     }
 }

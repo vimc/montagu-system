@@ -22,6 +22,7 @@ abstract class CoverageTests : DatabaseTest()
             val ageFirst: Int?,
             val ageLast: Int?,
             val ageRangeVerbatim: String?,
+            val gender: String,
             val coverageAndTargetPerYear: Map<String, String?>
     )
 

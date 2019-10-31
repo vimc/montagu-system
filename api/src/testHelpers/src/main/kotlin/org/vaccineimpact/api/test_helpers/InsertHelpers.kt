@@ -672,7 +672,8 @@ fun JooqContext.generateCoverageData(
         target: BigDecimal = 100.12.toDecimal(),
         coverage: BigDecimal = 200.13.toDecimal(),
         uniformData: Boolean = false, /*Make all target and coverage values the same*/
-        ageRangeVerbatim: String? = null)
+        ageRangeVerbatim: String? = null,
+        gender: Int? = 1)
 {
     val records = mutableListOf<CoverageRecord>()
     val countries = this.fetchCountries(countryCount)
@@ -690,7 +691,8 @@ fun JooqContext.generateCoverageData(
                         ageTo = BigDecimal(age + ageRange.step),
                         ageRangeVerbatim = ageRangeVerbatim,
                         target = if (uniformData) target else null,
-                        coverage = if (uniformData) coverage else random.nextDecimal(0, 100, numberOfDecimalPlaces = 4)
+                        coverage = if (uniformData) coverage else random.nextDecimal(0, 100, numberOfDecimalPlaces = 4),
+                        gender = gender
                 ))
             }
 
@@ -702,7 +704,8 @@ fun JooqContext.generateCoverageData(
                     ageTo = BigDecimal(age + ageRange.step),
                     ageRangeVerbatim = ageRangeVerbatim,
                     target = target,
-                    coverage = coverage
+                    coverage = coverage,
+                    gender = gender
             ))
         }
     }
