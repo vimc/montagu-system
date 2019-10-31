@@ -44,7 +44,7 @@ describe("Responsibility Overview Description Component", () => {
     });
 
     it("renders external links for 2019 touchstone", () => {
-        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"2019"}
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"201910"}
                                                                     groupId={testGroupId}
                                                                     touchstoneStatus={"open"}/>);
         const link = rendered.find("a");

@@ -64,8 +64,6 @@ describe("Guidance Model Inputs Page Component tests", () => {
 
         const content = rendered.find(ResponsibilityGuidanceModelInputsContentLatest);
         expect(content.getElements().length).is.equal(1);
-
-
     });
 
     it("renders component for finished touchstone", () => {
@@ -86,8 +84,6 @@ describe("Guidance Model Inputs Page Component tests", () => {
 
         const content = rendered.find(ResponsibilityGuidanceTouchstoneNotOpenContent);
         expect(content.getElements().length).is.equal(1);
-
-
 
     });
 
@@ -113,7 +109,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
     });
 
     it("renders component for 2019 touchstone", () => {
-        const testTouchstone = mockTouchstoneVersion({id: "op-2019-1"});
+        const testTouchstone = mockTouchstoneVersion({id: "201910"});
 
         const store = createMockContribStore({
             touchstones: {currentTouchstoneVersion: testTouchstone}
@@ -123,7 +119,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
             touchstoneId: testTouchstone.id
         });
 
-        const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelOutputsPageActionCreators, "onLoad");
+        const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
         expect(onLoadStub.called).is.equal(true);
