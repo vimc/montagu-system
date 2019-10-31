@@ -126,6 +126,99 @@ class TouchstoneCoverageTests : CoverageTests()
     }
 
     @Test
+    fun `wide coverage data for scenario returns gender`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = 2)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[10]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[10]).isEqualTo("male")
+    }
+
+    @Test
+    fun `wide coverage data for scenario for coverage with null gender defaults to 'both'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[10]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[10]).isEqualTo("both")
+    }
+
+    @Test
+    fun `wide coverage data for scenario for coverage with null gender defaults to 'female' when disease is 'HPV'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null, disease="HPV")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[10]).isEqualTo("gender")
+
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[10]).isEqualTo("female")
+    }
+
+    @Test
+    fun `wide coverage data for scenario has no gender column when touchstone is pre-2019`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = 2, touchstoneName = "201810-test")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers.count()).isEqualTo(10)
+    }
+
+    @Test
     fun `wide coverage data for scenario with subnational rows have expected target and coverage values`()
     {
         val userHelper = TestUserHelper()
