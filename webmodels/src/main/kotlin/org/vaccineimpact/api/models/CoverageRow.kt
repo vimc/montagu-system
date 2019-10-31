@@ -30,18 +30,18 @@ data class ScenarioTouchstoneAndCoverageSets(
 interface CoverageRow
 
 interface LongCoverageRow: CoverageRow {
-        val scenario: String, //This is the scenario description ID
-        val setName: String,
-        val vaccine: String,
-        val gaviSupport: GAVISupportLevel,
-        val activityType: ActivityType,
-        val countryCode: String,
-        val country: String,
-        val year: Int,
-        val ageFirst: BigDecimal?,
-        val ageLast: BigDecimal?,
-        val ageRangeVerbatim: String?,
-        val target: BigDecimal?,
+        val scenario: String //This is the scenario description ID
+        val setName: String
+        val vaccine: String
+        val gaviSupport: GAVISupportLevel
+        val activityType: ActivityType
+        val countryCode: String
+        val country: String
+        val year: Int
+        val ageFirst: BigDecimal?
+        val ageLast: BigDecimal?
+        val ageRangeVerbatim: String?
+        val target: BigDecimal?
         val coverage: BigDecimal?
 }
 
@@ -80,16 +80,16 @@ data class GenderedLongCoverageRow(
 
 
 interface WideCoverageRow: CoverageRow {
-        val scenario: String, //This is the scenario description ID
-        val setName: String,
-        val vaccine: String,
-        val gaviSupport: GAVISupportLevel,
-        val activityType: ActivityType,
-        val countryCode: String,
-        val country: String,
-        val ageFirst: BigDecimal?,
-        val ageLast: BigDecimal?,
-        val ageRangeVerbatim: String?,
+        val scenario: String //This is the scenario description ID
+        val setName: String
+        val vaccine: String
+        val gaviSupport: GAVISupportLevel
+        val activityType: ActivityType
+        val countryCode: String
+        val country: String
+        val ageFirst: BigDecimal?
+        val ageLast: BigDecimal?
+        val ageRangeVerbatim: String?
         @FlexibleProperty
         val coverageAndTargetPerYear: Map<String, BigDecimal?>
 }
