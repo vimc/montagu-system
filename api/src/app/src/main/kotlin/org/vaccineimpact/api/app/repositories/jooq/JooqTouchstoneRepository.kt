@@ -6,6 +6,7 @@ import org.jooq.impl.DSL.*
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
+import org.vaccineimpact.api.app.getLongCoverageRowDataTable
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
@@ -140,7 +141,8 @@ class JooqTouchstoneRepository(
         val coverageData = getCoverageDataForScenario(touchstoneVersionId, scenarioDescId)
         val metadata = ScenarioAndCoverageSets(scenario, coverageSets)
 
-        return SplitData(metadata, DataTable.new(coverageData.asSequence()))
+        //return SplitData(metadata, DataTable.new(coverageData.asSequence()))
+        return SplitData(metadata, getLongCoverageRowDataTable(coverageData.asSequence()))
     }
 
     override fun getCoverageDataForScenario(
@@ -271,10 +273,12 @@ class JooqTouchstoneRepository(
                 .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
                 .groupBy(*COVERAGE_SET.fields(),
                         *coverageDimensions(),
-                        COUNTRY.NAME)
+                        COUNTRY.NAME,
+                        GENDER.NAME)
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
                         COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO,
-                        COVERAGE.AGE_RANGE_VERBATIM).fetch()
+                        COVERAGE.AGE_RANGE_VERBATIM,
+                        GENDER.NAME).fetch()
 
 
     }
@@ -307,10 +311,12 @@ class JooqTouchstoneRepository(
                 .and(COUNTRY.ID.isNull.or(COUNTRY.ID.`in`(expectedCountries)))
                 .groupBy(*COVERAGE_SET.fields(),
                         *coverageDimensions(),
-                        COUNTRY.NAME)
+                        COUNTRY.NAME,
+                        GENDER.NAME)
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
                         COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO,
-                        COVERAGE.AGE_RANGE_VERBATIM).fetch()
+                        COVERAGE.AGE_RANGE_VERBATIM,
+                        GENDER.NAME).fetch()
     }
 
     private val TOUCHSTONE_SOURCES = "touchstoneSources"
@@ -489,7 +495,7 @@ class JooqTouchstoneRepository(
                         record[COVERAGE.AGE_RANGE_VERBATIM],
                         record[COVERAGE.TARGET],
                         record[COVERAGE.COVERAGE_],
-                        record[GENDER.NAME] ?: defaultGender(diseaseId)
+                        (record[GENDER.NAME] ?: defaultGender(diseaseId)).toLowerCase()
                 )
             }
             else
@@ -526,7 +532,7 @@ class JooqTouchstoneRepository(
     private fun getDiseaseIdForScenarioDescription(scenarioDescriptionId: String): String =
             dsl.select(SCENARIO_DESCRIPTION.DISEASE)
                 .from(SCENARIO_DESCRIPTION)
-                .where(SCENARIO_DESCRIPTION.ID.equals(scenarioDescriptionId))
+                .where(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
                 .fetchOne()[SCENARIO_DESCRIPTION.DISEASE]
 
     private fun includeGenderInCoverage(touchstoneVersionId: String): Boolean = touchstoneVersionId > "2019"

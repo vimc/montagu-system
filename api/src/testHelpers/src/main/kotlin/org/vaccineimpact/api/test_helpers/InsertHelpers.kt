@@ -711,7 +711,7 @@ fun JooqContext.generateCoverageData(
 
 fun JooqContext.addCoverageRow(coverageSetId: Int, country: String, year: Int,
                                ageFrom: BigDecimal, ageTo: BigDecimal, ageRangeVerbatim: String?,
-                               target: BigDecimal?, coverage: BigDecimal?)
+                               target: BigDecimal?, coverage: BigDecimal?, gender: Int? = 1)
 {
     this.newCoverageRowRecord(
             coverageSetId,
@@ -721,13 +721,15 @@ fun JooqContext.addCoverageRow(coverageSetId: Int, country: String, year: Int,
             ageTo,
             ageRangeVerbatim,
             target,
-            coverage
+            coverage,
+            gender
     ).store()
 }
 
 private fun JooqContext.newCoverageRowRecord(coverageSetId: Int, country: String, year: Int,
                                              ageFrom: BigDecimal, ageTo: BigDecimal, ageRangeVerbatim: String?,
-                                             target: BigDecimal?, coverage: BigDecimal?) = this.dsl.newRecord(COVERAGE).apply {
+                                             target: BigDecimal?, coverage: BigDecimal?,
+                                             gender: Int? = 1) = this.dsl.newRecord(COVERAGE).apply {
     this.coverageSet = coverageSetId
     this.country = country
     this.year = year
@@ -736,6 +738,7 @@ private fun JooqContext.newCoverageRowRecord(coverageSetId: Int, country: String
     this.ageRangeVerbatim = ageRangeVerbatim
     this.target = target
     this.coverage = coverage
+    this.gender = gender
 }
 
 private fun JooqContext.newDemographicRowRecord(sourceId: Int, typeId: Int, country: String, year: Int,

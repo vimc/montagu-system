@@ -1,6 +1,9 @@
 package org.vaccineimpact.api.app
 
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.helpers.ContentTypes
+import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.serialization.FlexibleDataTable
 import spark.Filter
 import spark.Request
 import spark.Response
@@ -62,5 +65,31 @@ fun Future<Exception?>.awaitAndThrowIfError()
     if (exception != null)
     {
         throw exception
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+fun getWideCoverageRowDataTable(data: Sequence<WideCoverageRow>, flexibleHeaders: Iterable<Any>): FlexibleDataTable<out WideCoverageRow>
+{
+    if (data.count() == 0 || data.first() is GenderedWideCoverageRow)
+    {
+        return FlexibleDataTable.new(data as Sequence<GenderedWideCoverageRow>, flexibleHeaders)
+    }
+    else
+    {
+        return FlexibleDataTable.new(data as Sequence<NoGenderWideCoverageRow>, flexibleHeaders)
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+fun getLongCoverageRowDataTable(data: Sequence<LongCoverageRow>): DataTable<out LongCoverageRow>
+{
+    if (data.count() == 0 || data.first() is GenderedLongCoverageRow)
+    {
+        return DataTable.new(data as Sequence<GenderedLongCoverageRow>)
+    }
+    else
+    {
+        return DataTable.new(data as Sequence<NoGenderLongCoverageRow>)
     }
 }
