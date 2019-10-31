@@ -151,9 +151,11 @@ class JooqTouchstoneRepository(
         val coverageRecords = getCoverageRowsForScenario(touchstoneVersionId, scenarioDescriptionId)
                 .filter { it[COVERAGE_SET.ID] != null }
 
+        val diseaseId = getDiseaseIdForScenarioDescription(scenarioDescriptionId)
+
         return coverageRecords
                 .filter { it[COUNTRY.NAME] != null }
-                .map { mapCoverageRow(it, scenarioDescriptionId, touchstoneVersionId) }.asSequence()
+                .map { mapCoverageRow(it, scenarioDescriptionId, touchstoneVersionId, diseaseId) }.asSequence()
     }
 
     override fun getCoverageDataForResponsibility(
@@ -165,9 +167,11 @@ class JooqTouchstoneRepository(
         val coverageRecords = getCoverageRowsForResponsibility(responsibilityId, touchstoneVersionId)
                 .filter { it[COVERAGE_SET.ID] != null }
 
+        val diseaseId = getDiseaseIdForScenarioDescription(scenarioDescriptionId)
+
         return coverageRecords
                 .filter { it[COUNTRY.NAME] != null }
-                .map { mapCoverageRow(it, scenarioDescriptionId, touchstoneVersionId) }.asSequence()
+                .map { mapCoverageRow(it, scenarioDescriptionId, touchstoneVersionId, diseaseId) }.asSequence()
     }
 
     override fun getCoverageSetsForScenario(
@@ -262,7 +266,7 @@ class JooqTouchstoneRepository(
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
-                .joinPath(COVERAGE, GENDER)
+                .joinPath(COVERAGE, GENDER, joinType = JoinType.LEFT_OUTER_JOIN)
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
                 .groupBy(*COVERAGE_SET.fields(),
@@ -297,7 +301,7 @@ class JooqTouchstoneRepository(
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
-                .joinPath(COVERAGE, GENDER)
+                .joinPath(COVERAGE, GENDER, joinType = JoinType.LEFT_OUTER_JOIN)
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(RESPONSIBILITY.ID.eq(responsibilityId))
                 .and(COUNTRY.ID.isNull.or(COUNTRY.ID.`in`(expectedCountries)))
@@ -468,7 +472,7 @@ class JooqTouchstoneRepository(
             mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE])
     )
 
-    private fun mapCoverageRow(record: Record, scenarioDescriptionId: String, touchstoneVersionId: String) =
+    private fun mapCoverageRow(record: Record, scenarioDescriptionId: String, touchstoneVersionId: String, diseaseId: String) =
             if (includeGenderInCoverage(touchstoneVersionId))
             {
                 GenderedLongCoverageRow(
@@ -485,7 +489,7 @@ class JooqTouchstoneRepository(
                         record[COVERAGE.AGE_RANGE_VERBATIM],
                         record[COVERAGE.TARGET],
                         record[COVERAGE.COVERAGE_],
-                        record[GENDER.NAME]
+                        record[GENDER.NAME] ?: defaultGender(diseaseId)
                 )
             }
             else
@@ -519,7 +523,21 @@ class JooqTouchstoneRepository(
             record[DEMOGRAPHIC_STATISTIC.VALUE]
     )
 
-    private fun includeGenderInCoverage(touchstoneVersionId: String): Boolean {
-        return touchstoneVersionId > "2019"
-    }
-}S
+    private fun getDiseaseIdForScenarioDescription(scenarioDescriptionId: String): String =
+            dsl.select(SCENARIO_DESCRIPTION.DISEASE)
+                .from(SCENARIO_DESCRIPTION)
+                .where(SCENARIO_DESCRIPTION.ID.equals(scenarioDescriptionId))
+                .fetchOne()[SCENARIO_DESCRIPTION.DISEASE]
+
+    private fun includeGenderInCoverage(touchstoneVersionId: String): Boolean = touchstoneVersionId > "2019"
+
+    private fun defaultGender(diseaseId: String): String =
+            if (diseaseId == "HPV")
+            {
+                "female"
+            }
+            else
+            {
+                "both"
+            }
+}

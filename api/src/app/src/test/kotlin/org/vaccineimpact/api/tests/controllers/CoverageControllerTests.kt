@@ -133,7 +133,7 @@ class CoverageControllerTests : MontaguTests()
     fun `wide format table is empty if long format is`()
     {
         val coverageSets = mockCoverageSetsData(TouchstoneStatus.IN_PREPARATION)
-        val splitData = SplitData(coverageSets, DataTable.new(listOf<LongCoverageRow>().asSequence()))
+        val splitData = SplitData(coverageSets, DataTable.new(listOf<GenderedLongCoverageRow>().asSequence()))
         val logic = mock<CoverageLogic> {
             on { getCoverageDataForGroup(any(), any(), any(), any(), anyOrNull()) } doReturn splitData
         }
@@ -197,7 +197,7 @@ class CoverageControllerTests : MontaguTests()
             )
     )
 
-    private fun generateCoverageRows(testYear: Int, target: BigDecimal, coverage: BigDecimal): List<LongCoverageRow>
+    private fun generateCoverageRows(testYear: Int, target: BigDecimal, coverage: BigDecimal): List<GenderedLongCoverageRow>
     {
         val countries = listOf("ABC", "DEF")
         val setNames = listOf("set1", "set2")
@@ -207,7 +207,7 @@ class CoverageControllerTests : MontaguTests()
         val ageTos = listOf(BigDecimal.TEN, BigDecimal(5))
         val activityTypes = listOf(ActivityType.CAMPAIGN, ActivityType.NONE)
 
-        val listToReturn = mutableListOf<LongCoverageRow>()
+        val listToReturn = mutableListOf<GenderedLongCoverageRow>()
 
         for (country in countries)
         {
@@ -225,16 +225,18 @@ class CoverageControllerTests : MontaguTests()
                                 {
                                     for (year in years)
                                     {
-                                        listToReturn.add(LongCoverageRow("sId", set, vaccine, support, activity,
+                                        listToReturn.add(GenderedLongCoverageRow("sId", set, vaccine, support, activity,
                                                 country, "$country-Name", year, ageFrom, ageTo, "$ageFrom-$ageTo",
                                                 random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
-                                                random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2)))
+                                                random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
+                                                "both"))
                                     }
 
-                                    listToReturn.add(LongCoverageRow("sId", set, vaccine, support, activity,
+                                    listToReturn.add(GenderedLongCoverageRow("sId", set, vaccine, support, activity,
                                             country, "$country-Name", testYear, ageFrom, ageTo, "$ageFrom-$ageTo",
                                             target,
-                                            coverage))
+                                            coverage,
+                                            "both"))
                                 }
                             }
                         }

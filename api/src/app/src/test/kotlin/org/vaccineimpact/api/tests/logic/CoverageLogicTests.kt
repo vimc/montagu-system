@@ -60,7 +60,7 @@ class CoverageLogicTests : MontaguTests()
             target: BigDecimal = BigDecimal(123.123),
             coverage: BigDecimal = BigDecimal(456.456),
             //provide this parameter to roll your own data
-            coverageRows: List<LongCoverageRow>? = null ): TouchstoneRepository
+            coverageRows: List<GenderedLongCoverageRow>? = null ): TouchstoneRepository
     {
         val coverageSets = mockCoverageSetsData()
         val fakeRows = coverageRows ?: generateCoverageRows(testYear, target, coverage)
@@ -273,17 +273,19 @@ class CoverageLogicTests : MontaguTests()
     private val random = Random(0)
 
     private val coverageRowsWithDifferentAgeRangeVerbatim = listOf(
-            LongCoverageRow("sId", "set1", "vaccine1", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+            GenderedLongCoverageRow("sId", "set1", "vaccine1", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
                     "ABC", "ABC-Name", 2000, BigDecimal(0), BigDecimal(5), "age_range_1",
                     random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
-                    random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2)),
-            LongCoverageRow("sId", "set1", "vaccine1", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                    random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
+                    "both"),
+            GenderedLongCoverageRow("sId", "set1", "vaccine1", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
                     "ABC", "ABC-Name", 2000, BigDecimal(0), BigDecimal(5), "age_range_2",
                     random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
-                    random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2))
+                    random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
+                    "both")
     )
 
-    private fun generateCoverageRows(testYear: Int, target: BigDecimal, coverage: BigDecimal): List<LongCoverageRow>
+    private fun generateCoverageRows(testYear: Int, target: BigDecimal, coverage: BigDecimal): List<GenderedLongCoverageRow>
     {
         val countries = listOf("ABC", "DEF")
         val setNames = listOf("set1", "set2")
@@ -293,7 +295,7 @@ class CoverageLogicTests : MontaguTests()
         val ageTos = listOf(BigDecimal.TEN, BigDecimal(5))
         val activityTypes = listOf(ActivityType.CAMPAIGN, ActivityType.NONE)
 
-        val listToReturn = mutableListOf<LongCoverageRow>()
+        val listToReturn = mutableListOf<GenderedLongCoverageRow>()
 
         for (country in countries)
         {
@@ -311,16 +313,18 @@ class CoverageLogicTests : MontaguTests()
                                 {
                                     for (year in years)
                                     {
-                                        listToReturn.add(LongCoverageRow("sId", set, vaccine, support, activity,
+                                        listToReturn.add(GenderedLongCoverageRow("sId", set, vaccine, support, activity,
                                                 country, "$country-Name", year, ageFrom, ageTo, "$ageFrom-$ageTo",
                                                 random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
-                                                random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2)))
+                                                random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
+                                                "both"))
                                     }
 
-                                    listToReturn.add(LongCoverageRow("sId", set, vaccine, support, activity,
+                                    listToReturn.add(GenderedLongCoverageRow("sId", set, vaccine, support, activity,
                                             country, "$country-Name", testYear, ageFrom, ageTo, "$ageFrom-$ageTo",
                                             target,
-                                            coverage))
+                                            coverage,
+                                            "both"))
                                 }
                             }
                         }

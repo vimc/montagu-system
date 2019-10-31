@@ -68,11 +68,20 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                     scenario.id)
         }
 
+        val dataTable: DataTable<out LongCoverageRow>
+        if (data.first() is GenderedLongCoverageRow){
+            dataTable = DataTable.new<GenderedLongCoverageRow>(data as Sequence<GenderedLongCoverageRow>)
+        }
+        else
+        {
+            dataTable = DataTable.new<NoGenderLongCoverageRow>(data as Sequence<NoGenderLongCoverageRow>)
+        }
+
         val splitData = SplitData(ScenarioTouchstoneAndCoverageSets(
                 responsibilityAndTouchstone.touchstoneVersion,
                 scenario,
                 coverageSets
-        ), DataTable.new(data))
+        ), dataTable)
 
         return getDatatable(splitData, format)
     }
@@ -107,7 +116,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
     }
 
     private fun getWideDatatable(data: Sequence<LongCoverageRow>):
-            FlexibleDataTable<WideCoverageRow>
+            FlexibleDataTable<out WideCoverageRow>
     {
         val groupedRows = data
                 .groupBy {
@@ -146,7 +155,16 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
             listOf()
         }
 
-        return FlexibleDataTable.new(rows.asSequence(), years.sorted())
+
+        //TODO: Find a nicer way to do this!
+        if (rows.first() is GenderedWideCoverageRow)
+        {
+            return FlexibleDataTable.new<GenderedWideCoverageRow>(rows.asSequence() as Sequence<GenderedWideCoverageRow>, years.sorted())
+        }
+        else
+        {
+            return FlexibleDataTable.new<NoGenderWideCoverageRow>(rows.asSequence() as Sequence<NoGenderWideCoverageRow>, years.sorted())
+        }
 
     }
 
