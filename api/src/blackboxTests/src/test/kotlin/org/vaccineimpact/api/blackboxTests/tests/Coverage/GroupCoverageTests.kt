@@ -449,8 +449,8 @@ class GroupCoverageTests : CoverageTests()
             Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
         }
 
-        Assertions.assertThat(firstRow[10]).isEqualTo("456.461")
-        Assertions.assertThat(firstRow[15]).isEqualTo("123.123")
+        Assertions.assertThat(firstRow[11]).isEqualTo("456.461")
+        Assertions.assertThat(firstRow[16]).isEqualTo("123.123")
 
     }
 
