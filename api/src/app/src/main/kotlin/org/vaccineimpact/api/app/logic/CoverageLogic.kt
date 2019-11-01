@@ -70,14 +70,6 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                     scenario.id)
         }
 
-        /*val dataTable: DataTable<out LongCoverageRow>
-        if (data.first() is GenderedLongCoverageRow){
-            dataTable = DataTable.new<GenderedLongCoverageRow>(data as Sequence<GenderedLongCoverageRow>)
-        }
-        else
-        {
-            dataTable = DataTable.new<NoGenderLongCoverageRow>(data as Sequence<NoGenderLongCoverageRow>)
-        }*/
         val dataTable = getLongCoverageRowDataTable(data)
 
         val splitData = SplitData(ScenarioTouchstoneAndCoverageSets(
@@ -158,15 +150,6 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
             listOf()
         }
 
-        //TODO: Find a nicer way to do this!
-        /*if (rows.first() is GenderedWideCoverageRow)
-        {
-            return FlexibleDataTable.new<GenderedWideCoverageRow>(rows.asSequence() as Sequence<GenderedWideCoverageRow>, years.sorted())
-        }
-        else
-        {
-            return FlexibleDataTable.new<NoGenderWideCoverageRow>(rows.asSequence() as Sequence<NoGenderWideCoverageRow>, years.sorted())
-        }*/
         return getWideCoverageRowDataTable(rows.asSequence(), years.sorted())
 
     }

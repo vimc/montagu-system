@@ -233,6 +233,36 @@ class CoverageLogicTests : MontaguTests()
     }
 
     @Test
+    fun `getCoverageDataForGroup returns WideCoverageRows with gender if data from repo has gender`()
+    {
+        val data = RepositoriesCoverageLogic(mock(), responsibilityRepo(), touchstoneRepo(), scenarioRepo())
+                .getCoverageDataForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id, format = "wide", allCountries = true).data
+
+        Assertions.assertThat(data.first()).isInstanceOf(GenderedWideCoverageRow::class.java)
+        Assertions.assertThat((data.first() as GenderedWideCoverageRow).gender).isEqualTo("both")
+    }
+
+    @Test
+    fun `getCoverageDataForGroup returns WideCoverageRows without gender if data has no gender`()
+    {
+        val fakeRows = listOf(
+                NoGenderLongCoverageRow("sId", "set1", "vaccine1", GAVISupportLevel.GAVI_OPTIMISTIC, ActivityType.CAMPAIGN,
+                        "country1", "Country-Name", 1970, BigDecimal(0), BigDecimal(10), "0-10",
+                        random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2),
+                        random.nextDecimal(1000, 10000, numberOfDecimalPlaces = 2))
+        )
+
+        val mockTouchstoneRepo =  mock<TouchstoneRepository> {
+            on { getCoverageDataForScenario(fakeTouchstoneVersion.id, fakeScenario.id) } doReturn fakeRows.asSequence()
+        }
+
+        val data = RepositoriesCoverageLogic(mock(), responsibilityRepo(), mockTouchstoneRepo, scenarioRepo())
+                .getCoverageDataForGroup(groupId, fakeTouchstoneVersion.id, fakeScenario.id, format = "wide", allCountries = true).data
+
+        Assertions.assertThat(data.first()).isInstanceOf(NoGenderWideCoverageRow::class.java)
+    }
+
+    @Test
     fun `getCoverageSetsForGroup checks responsibility for group exists`()
     {
         val responsibilitiesRepository = responsibilityRepo()

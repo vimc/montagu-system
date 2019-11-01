@@ -141,7 +141,6 @@ class JooqTouchstoneRepository(
         val coverageData = getCoverageDataForScenario(touchstoneVersionId, scenarioDescId)
         val metadata = ScenarioAndCoverageSets(scenario, coverageSets)
 
-        //return SplitData(metadata, DataTable.new(coverageData.asSequence()))
         return SplitData(metadata, getLongCoverageRowDataTable(coverageData.asSequence()))
     }
 
