@@ -42,6 +42,102 @@ class GroupCoverageTests : CoverageTests()
     }
 
     @Test
+    fun `coverage data for responsibility returns gender`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = 2)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[13]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[13]).isEqualTo("male")
+    }
+
+    @Test
+    fun `coverage data for scenario for responsibility with null gender defaults to 'both'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[13]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[13]).isEqualTo("both")
+    }
+
+    @Test
+    fun `coverage data for responsibility for coverage with null gender defaults to 'female' when disease is 'HPV'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null, disease="HPV")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[13]).isEqualTo("gender")
+
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[13]).isEqualTo("female")
+    }
+
+    @Test
+    fun `coverage data for responsibility has no gender column when touchstone is pre-2019`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        val testYear = 1980
+
+        JooqContext().use {
+            addCoverageData(it, testYear = testYear, touchstoneStatus = "open", gender = 2, touchstoneName = "201810-test")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("/modelling-groups/$groupId/responsibilities/201810-test-1/$scenarioId/coverage/",
+                minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers.count()).isEqualTo(13)
+    }
+
+    @Test
     fun `coverage data for responsibility with subnational rows with different age_range_verbatim keeps rows separate`()
     {
         val userHelper = TestUserHelper()
@@ -74,7 +170,7 @@ class GroupCoverageTests : CoverageTests()
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
         //5: "country_code", 6: "country", 7: "year" 8: "age_first", 9: "age_last", 10: "age_range_verbatim",
-        //11: "target", 12: "coverage"
+        //11: "target", 12: "coverage" 13: "gender"
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1000"
         val expectedAggregatedCoverage = "0.9"
@@ -114,7 +210,7 @@ class GroupCoverageTests : CoverageTests()
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
         //5: "country_code", 6: "country", 7: "year" 8: "age_first", 9: "age_last", 10: "age_range_verbatim",
-        //11: "target", 12: "coverage"
+        //11: "target", 12: "coverage" 13: "gender"
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1500"
         val expectedAggregatedCoverage = "0.7"
@@ -335,6 +431,102 @@ class GroupCoverageTests : CoverageTests()
         Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedCoverage)
 
 
+    }
+
+    @Test
+    fun `wide coverage data for responsibility returns gender`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = 2)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[10]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[10]).isEqualTo("male")
+    }
+
+    @Test
+    fun `wide coverage data for responsibility for coverage with null gender defaults to 'both'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[10]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[10]).isEqualTo("both")
+    }
+
+    @Test
+    fun `wide coverage data for responsibility for coverage with null gender defaults to 'female' when disease is 'HPV'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null, disease="HPV")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[10]).isEqualTo("gender")
+
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[10]).isEqualTo("female")
+    }
+
+    @Test
+    fun `wide coverage data for responsibility has no gender column when touchstone is pre-2019`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        val testYear = 1980
+
+        JooqContext().use {
+            addCoverageData(it, testYear = testYear, touchstoneStatus = "open", gender = 2, touchstoneName = "201810-test")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("/modelling-groups/$groupId/responsibilities/201810-test-1/$scenarioId/coverage/?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers.count()).isEqualTo(20)
+        Assertions.assertThat(headers[10]).isEqualTo("coverage_$testYear")
     }
 
     @Test
