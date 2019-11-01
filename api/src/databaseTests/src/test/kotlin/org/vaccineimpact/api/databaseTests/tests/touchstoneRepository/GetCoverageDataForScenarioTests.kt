@@ -39,7 +39,10 @@ class GetCoverageDataForScenarioTests : TouchstoneRepositoryTests()
                             "BBB", "BBB-Name", 2001, 2.toDecimal(), 2.toDecimal(), null, null, null, "both"),
                     // then by age last
                     GenderedLongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "BBB", "BBB-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null, "both")
+                            "BBB", "BBB-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null, "both"),
+                    // then by age last
+                    GenderedLongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                    "BBB", "BBB-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null, "female")
 
             ))
         }
@@ -83,6 +86,80 @@ class GetCoverageDataForScenarioTests : TouchstoneRepositoryTests()
                                     "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1500), 0.2133333333333333333.toDecimal(), "both"),
                             GenderedLongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
                                     "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), 0.123.toDecimal(), "both"))
+            )
+        }
+    }
+
+    @Test
+    fun `can get default gender of 'both' from coverage with null gender values`()
+    {
+        given {
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            it.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = setA)
+            it.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
+            it.addCountries(listOf("AAA"))
+
+            it.addCoverageRow(setA, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), "2-4", BigDecimal(600), BigDecimal(0.5), null)
+        } check {
+            val result = it.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
+            assertLongCoverageRowListEqual(
+                    result.toList(),
+                    listOf(
+                            GenderedLongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 2.toDecimal(), 4.toDecimal(), "2-4", BigDecimal(600), 0.5.toDecimal(), "both")
+                           )
+            )
+        }
+    }
+
+    @Test
+    fun `can get default gender of 'female' for HPV coverage data`()
+    {
+        given {
+            it.addTouchstoneVersion(touchstoneName, touchstoneVersion, addTouchstone = true)
+            it.addDisease("HPV", "HPV")
+            it.addScenarioDescription(scenarioId, "HPV 1", "HPV")
+            it.addVaccine("HPV", "HPV")
+
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            it.addCoverageSet(touchstoneVersionId, "First", "HPV", "without", "routine", id = setA)
+            it.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
+            it.addCountries(listOf("AAA"))
+            it.addCoverageRow(setA, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), "2-4", BigDecimal(600), BigDecimal(0.5), null)
+        } check {
+            val result = it.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
+            assertLongCoverageRowListEqual(
+                    result.toList(),
+                    listOf(
+                            GenderedLongCoverageRow(scenarioId, "First", "HPV", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 2.toDecimal(), 4.toDecimal(), "2-4", BigDecimal(600), 0.5.toDecimal(), "female")
+                    )
+            )
+        }
+    }
+
+    @Test
+    fun `can get coverage results without gender for pre-2019 touchstones`()
+    {
+        val touchstone = "201810-test"
+        val touchstoneVersion = "$touchstone-1"
+        given {
+            createTouchstoneAndScenarioDescriptions(it, touchstone)
+            it.addScenarioToTouchstone(touchstoneVersion, scenarioId)
+            it.addCoverageSet(touchstoneVersion, "First", "AF", "without", "routine", id = setA)
+            it.addCoverageSetToScenario(scenarioId, touchstoneVersion, setA, 0)
+            it.addCountries(listOf("AAA"))
+
+            it.addCoverageRow(setA, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), "2-4", BigDecimal(600), BigDecimal(0.5), null)
+        } check {
+            val result = it.getCoverageDataForScenario(touchstoneVersion, scenarioId)
+            assertLongCoverageRowListEqual(
+                    result.toList(),
+                    listOf(
+                            NoGenderLongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 2.toDecimal(), 4.toDecimal(), "2-4", BigDecimal(600), 0.5.toDecimal())
+                    )
             )
         }
     }
@@ -176,7 +253,7 @@ class GetCoverageDataForScenarioTests : TouchstoneRepositoryTests()
                     result.toList(),
                     listOf(
                             GenderedLongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(300), 0.516666666666.toDecimal(), "Both"),
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(300), 0.516666666666.toDecimal(), "both"),
                             GenderedLongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
                                     "BBB", "BBB-Name", 2002, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1000), 0.5.toDecimal(), "both"))
             )

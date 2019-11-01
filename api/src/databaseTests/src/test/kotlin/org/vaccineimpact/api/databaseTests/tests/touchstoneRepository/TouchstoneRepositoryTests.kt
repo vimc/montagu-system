@@ -8,6 +8,7 @@ import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.toDecimal
+import org.vaccineimpact.api.models.GenderedLongCoverageRow
 import org.vaccineimpact.api.models.LongCoverageRow
 import java.math.RoundingMode
 
@@ -30,9 +31,9 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
         return JooqTouchstoneRepository(db.dsl, scenarioRepository)
     }
 
-    protected fun createTouchstoneAndScenarioDescriptions(it: JooqContext)
+    protected fun createTouchstoneAndScenarioDescriptions(it: JooqContext, touchstone: String = touchstoneName)
     {
-        it.addTouchstoneVersion(touchstoneName, touchstoneVersion, addTouchstone = true)
+        it.addTouchstoneVersion(touchstone, touchstoneVersion, addTouchstone = true)
         it.addDisease("YF", "Yellow Fever")
         it.addDisease("Measles", "Measles")
         it.addScenarioDescription(scenarioId, "Yellow Fever 1", "YF")
@@ -73,6 +74,7 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
         }
 
         // adding these in jumbled up order
+        db.addCoverageRow(setC, "BBB", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null, 3)
         db.addCoverageRow(setC, "BBB", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
         db.addCoverageRow(setA, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
         db.addCoverageRow(setC, "AAA", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null)
@@ -128,6 +130,8 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
             val e = expected[i]
             val a = actual[i]
 
+            Assertions.assertThat(e::class).isEqualTo(a::class)
+
             Assertions.assertThat(a.scenario).isEqualTo(e.scenario)
             Assertions.assertThat(a.setName).isEqualTo(e.setName)
             Assertions.assertThat(a.vaccine).isEqualTo(e.vaccine)
@@ -141,6 +145,12 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
             Assertions.assertThat(a.target).isEqualTo(e.target)
             Assertions.assertThat(a.coverage?.setScale(10, RoundingMode.HALF_UP))
                     .isEqualTo(e.coverage?.setScale(10, RoundingMode.HALF_UP))
+
+            if (e is GenderedLongCoverageRow)
+            {
+                Assertions.assertThat((a as GenderedLongCoverageRow).gender).isEqualTo(e.gender)
+            }
+
         }
 
     }
