@@ -93,7 +93,7 @@ class HelpersTests : MontaguTests()
         val data = listOf(
                 NoGenderLongCoverageRow("sid", "set1", "vax1", GAVISupportLevel.GAVI_OPTIMISTIC,
                         ActivityType.CAMPAIGN, "AAA", "country-AAA",1970, BigDecimal(0),
-                        BigDecimal(10))
+                        BigDecimal(10), "0-10", BigDecimal(0.5), BigDecimal(0.1))
         )
         val sequence = data.asSequence()
         val result = getLongCoverageRowDataTable(sequence)
