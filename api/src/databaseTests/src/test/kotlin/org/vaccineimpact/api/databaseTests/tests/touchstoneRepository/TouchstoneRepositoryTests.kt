@@ -15,8 +15,11 @@ import java.math.RoundingMode
 abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>()
 {
     val touchstoneName = "touchstone"
+    val touchstoneName2019 = "2019-test-ts"
+    val touchstoneName2020 = "2020-test-ts"
     val touchstoneVersion = 1
     val touchstoneVersionId = "$touchstoneName-$touchstoneVersion"
+
     val scenarioId = "yf-1"
 
     val setA = 1
@@ -59,14 +62,15 @@ abstract class TouchstoneRepositoryTests : RepositoryTests<TouchstoneRepository>
         db.addCountries(listOf("AAA", "BBB"))
     }
 
-    protected fun giveUnorderedCoverageSetsAndDataToScenario(db: JooqContext, addCountries: Boolean = true)
+    protected fun giveUnorderedCoverageSetsAndDataToScenario(db: JooqContext, addCountries: Boolean = true,
+                                                             touchstoneVersion: String = touchstoneVersionId)
     {
-        db.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = setA)
-        db.addCoverageSet(touchstoneVersionId, "Second", "BF", "without", "campaign", id = setB)
-        db.addCoverageSet(touchstoneVersionId, "Third", "BF", "without", "routine", id = setC)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setB, 1)
-        db.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setC, 2)
+        db.addCoverageSet(touchstoneVersion, "First", "AF", "without", "routine", id = setA)
+        db.addCoverageSet(touchstoneVersion, "Second", "BF", "without", "campaign", id = setB)
+        db.addCoverageSet(touchstoneVersion, "Third", "BF", "without", "routine", id = setC)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersion, setA, 0)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersion, setB, 1)
+        db.addCoverageSetToScenario(scenarioId, touchstoneVersion, setC, 2)
 
         if (addCountries)
         {

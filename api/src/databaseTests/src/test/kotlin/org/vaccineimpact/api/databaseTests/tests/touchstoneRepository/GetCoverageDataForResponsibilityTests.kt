@@ -10,29 +10,41 @@ import org.vaccineimpact.api.models.*
 class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
 {
     @Test
-    fun `can get ordered coverage data for responsibility`()
+    fun `can get ordered coverage data for responsibility for 2019 touchstone`()
     {
+        canGetOrderedCoverageDataForResponsibility(touchstoneName2019)
+    }
+
+    @Test
+    fun `can get ordered coverage data for responsibility for 2020 touchstone`()
+    {
+        canGetOrderedCoverageDataForResponsibility(touchstoneName2020)
+    }
+
+    private fun canGetOrderedCoverageDataForResponsibility(touchstoneName: String)
+    {
+        val touchstoneVersion = "$touchstoneName-1"
         var responsibilityId = 0
         given {
             val countries = listOf("AAA", "BBB")
             it.addGroup(groupId)
-            createTouchstoneAndScenarioDescriptions(it)
-            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
-            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+            createTouchstoneAndScenarioDescriptions(it, touchstoneName)
+            it.addScenarioToTouchstone(touchstoneVersion, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersion, scenarioId)
 
             it.addCountries(countries)
-            giveUnorderedCoverageSetsAndDataToScenario(it, addCountries = false)
+            giveUnorderedCoverageSetsAndDataToScenario(it, addCountries = false, touchstoneVersion = touchstoneVersion)
             it.addExpectations(responsibilityId, countries = countries)
 
             // add extra data
             it.addGroup("bad-group")
-            it.addResponsibilityInNewSet("bad-group", touchstoneVersionId, scenarioId)
-            it.addScenarioToTouchstone(touchstoneVersionId, "yf-2")
+            it.addResponsibilityInNewSet("bad-group", touchstoneVersion, scenarioId)
+            it.addScenarioToTouchstone(touchstoneVersion, "yf-2")
             it.addTouchstoneVersion(touchstoneName, 2, addTouchstone = false)
             it.addScenarioToTouchstone("$touchstoneName-2", scenarioId)
 
         } check {
-            val result = it.getCoverageDataForResponsibility(touchstoneVersionId,
+            val result = it.getCoverageDataForResponsibility(touchstoneVersion,
                     responsibilityId,
                     scenarioId)
 
@@ -124,23 +136,35 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `can get default gender of 'both' from coverage with null gender values`()
+    fun `can get default gender of 'both' from coverage with null gender values for 2019 touchstone`()
     {
+        canGetDefaultGenderBoth(touchstoneName2019)
+    }
+
+    @Test
+    fun `can get default gender of 'both' from coverage with null gender values for 2020 touchstone`()
+    {
+        canGetDefaultGenderBoth(touchstoneName2020)
+    }
+
+    private fun canGetDefaultGenderBoth(touchstoneName: String)
+    {
+        val touchstoneVersion = "$touchstoneName-1"
         var responsibilityId = 0
         given {
             it.addGroup(groupId)
-            createTouchstoneAndScenarioDescriptions(it)
-            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
-            it.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = setA)
-            it.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
+            createTouchstoneAndScenarioDescriptions(it, touchstoneName)
+            it.addScenarioToTouchstone(touchstoneVersion, scenarioId)
+            it.addCoverageSet(touchstoneVersion, "First", "AF", "without", "routine", id = setA)
+            it.addCoverageSetToScenario(scenarioId, touchstoneVersion, setA, 0)
             val countries = listOf("AAA")
             it.addCountries(countries)
-            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersion, scenarioId)
             it.addExpectations(responsibilityId, countries = countries)
 
             it.addCoverageRow(setA, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), "2-4", BigDecimal(600), BigDecimal(0.5), null)
         } check {
-            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId)
+            val result = it.getCoverageDataForResponsibility(touchstoneVersion, responsibilityId, scenarioId)
             assertLongCoverageRowListEqual(
                     result.toList(),
                     listOf(
@@ -152,27 +176,39 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `can get default gender of 'female' for HPV coverage data`()
+    fun `can get default gender of 'female' for HPV coverage data for 2019 touchstone`()
     {
-        var responsibilityId = 0
+        canGetDefaultGenderFemale(touchstoneName2019)
+    }
+
+    @Test
+    fun `can get default gender of 'female' for HPV coverage data for 2020 touchstone`()
+    {
+        canGetDefaultGenderFemale(touchstoneName2020)
+    }
+
+    private fun canGetDefaultGenderFemale(touchstoneName: String)
+    {
+        val touchstoneVersion = "$touchstoneName-1"
+        var responsibilityId: Int
         given {
             it.addGroup(groupId)
-            it.addTouchstoneVersion(touchstoneName, touchstoneVersion, addTouchstone = true)
+            it.addTouchstoneVersion(touchstoneName, 1, addTouchstone = true)
             it.addDisease("HPV", "HPV")
             it.addScenarioDescription(scenarioId, "HPV 1", "HPV")
             it.addVaccine("HPV", "HPV")
 
-            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
-            it.addCoverageSet(touchstoneVersionId, "First", "HPV", "without", "routine", id = setA)
-            it.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
+            it.addScenarioToTouchstone(touchstoneVersion, scenarioId)
+            it.addCoverageSet(touchstoneVersion, "First", "HPV", "without", "routine", id = setA)
+            it.addCoverageSetToScenario(scenarioId, touchstoneVersion, setA, 0)
             val countries = listOf("AAA")
             it.addCountries(countries)
-            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersion, scenarioId)
             it.addExpectations(responsibilityId, countries = countries)
 
             it.addCoverageRow(setA, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), "2-4", BigDecimal(600), BigDecimal(0.5), null)
         } check {
-            val result = it.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
+            val result = it.getCoverageDataForScenario(touchstoneVersion, scenarioId)
             assertLongCoverageRowListEqual(
                     result.toList(),
                     listOf(
@@ -188,7 +224,7 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
     {
         val touchstone = "201810-test"
         val touchstoneVersion = "$touchstone-1"
-        var responsibilityId = 0
+        var responsibilityId: Int
         given {
             it.addGroup(groupId)
             createTouchstoneAndScenarioDescriptions(it, touchstone)

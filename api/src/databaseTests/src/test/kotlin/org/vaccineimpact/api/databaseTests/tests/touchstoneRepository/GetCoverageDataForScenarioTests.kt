@@ -10,14 +10,26 @@ import org.vaccineimpact.api.models.*
 class GetCoverageDataForScenarioTests : TouchstoneRepositoryTests()
 {
     @Test
-    fun `can get ordered coverage data for scenario`()
+    fun `can get ordered coverage data for scenario for 2019 touchstone`()
     {
+        canGetOrderedCoverageDataForScenario(touchstoneName2019)
+    }
+
+    @Test
+    fun `can get ordered coverage data for scenario for 2020 touchstone`()
+    {
+        canGetOrderedCoverageDataForScenario(touchstoneName2020)
+    }
+
+    private fun canGetOrderedCoverageDataForScenario(touchstoneName: String)
+    {
+        val touchstoneVersion = "$touchstoneName-1"
         given {
-            createTouchstoneAndScenarioDescriptions(it)
-            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
-            giveUnorderedCoverageSetsAndDataToScenario(it)
+            createTouchstoneAndScenarioDescriptions(it, touchstoneName)
+            it.addScenarioToTouchstone(touchstoneVersion, scenarioId)
+            giveUnorderedCoverageSetsAndDataToScenario(it, touchstoneVersion=touchstoneVersion)
         } check {
-            val result = it.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
+            val result = it.getCoverageDataForScenario(touchstoneVersion, scenarioId)
 
             assertThat(result.toList()).containsExactlyElementsOf(listOf(
                     GenderedLongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
@@ -91,18 +103,30 @@ class GetCoverageDataForScenarioTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `can get default gender of 'both' from coverage with null gender values`()
+    fun `can get default gender of 'both' from coverage with null gender values for 2019 touchstone`()
     {
+        canGetDefaultGenderBoth(touchstoneName2019)
+    }
+
+    @Test
+    fun `can get default gender of 'both' from coverage with null gender values for 2020 touchstone`()
+    {
+        canGetDefaultGenderBoth(touchstoneName2020)
+    }
+
+    private fun canGetDefaultGenderBoth(touchstoneName: String)
+    {
+        val touchstoneVersion = "$touchstoneName-1"
         given {
-            createTouchstoneAndScenarioDescriptions(it)
-            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
-            it.addCoverageSet(touchstoneVersionId, "First", "AF", "without", "routine", id = setA)
-            it.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
+            createTouchstoneAndScenarioDescriptions(it, touchstoneName)
+            it.addScenarioToTouchstone(touchstoneVersion, scenarioId)
+            it.addCoverageSet(touchstoneVersion, "First", "AF", "without", "routine", id = setA)
+            it.addCoverageSetToScenario(scenarioId, touchstoneVersion, setA, 0)
             it.addCountries(listOf("AAA"))
 
             it.addCoverageRow(setA, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), "2-4", BigDecimal(600), BigDecimal(0.5), null)
         } check {
-            val result = it.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
+            val result = it.getCoverageDataForScenario(touchstoneVersion, scenarioId)
             assertLongCoverageRowListEqual(
                     result.toList(),
                     listOf(
@@ -114,21 +138,33 @@ class GetCoverageDataForScenarioTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `can get default gender of 'female' for HPV coverage data`()
+    fun `can get default gender of 'female' for HPV coverage data for 2019 touchstone`()
     {
+        canGetDefaultGenderFemale(touchstoneName2019)
+    }
+
+    @Test
+    fun `can get default gender of 'female' for HPV coverage data for 2020 touchstone`()
+    {
+        canGetDefaultGenderFemale(touchstoneName2020)
+    }
+
+    private fun canGetDefaultGenderFemale(touchstoneName: String)
+    {
+        val touchstoneVersion = "$touchstoneName-1"
         given {
-            it.addTouchstoneVersion(touchstoneName, touchstoneVersion, addTouchstone = true)
+            it.addTouchstoneVersion(touchstoneName, 1, addTouchstone = true)
             it.addDisease("HPV", "HPV")
             it.addScenarioDescription(scenarioId, "HPV 1", "HPV")
             it.addVaccine("HPV", "HPV")
 
-            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
-            it.addCoverageSet(touchstoneVersionId, "First", "HPV", "without", "routine", id = setA)
-            it.addCoverageSetToScenario(scenarioId, touchstoneVersionId, setA, 0)
+            it.addScenarioToTouchstone(touchstoneVersion, scenarioId)
+            it.addCoverageSet(touchstoneVersion, "First", "HPV", "without", "routine", id = setA)
+            it.addCoverageSetToScenario(scenarioId, touchstoneVersion, setA, 0)
             it.addCountries(listOf("AAA"))
             it.addCoverageRow(setA, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), "2-4", BigDecimal(600), BigDecimal(0.5), null)
         } check {
-            val result = it.getCoverageDataForScenario(touchstoneVersionId, scenarioId)
+            val result = it.getCoverageDataForScenario(touchstoneVersion, scenarioId)
             assertLongCoverageRowListEqual(
                     result.toList(),
                     listOf(
