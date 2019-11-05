@@ -99,10 +99,10 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             val result = it.getScenarioAndCoverageData(touchstoneVersionId, scenarioId)
             checkScenarioIsAsExpected(result.structuredMetadata)
             assertThat(result.tableData.data.toList()).containsExactlyElementsOf(listOf(
-                    LongCoverageRow(scenarioId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                            "AAA", "AAA-Name", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), 50.5.toDecimal()),
-                    LongCoverageRow(scenarioId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
-                            "BBB", "BBB-Name", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null)
+                    GenderedLongCoverageRow(scenarioId, "YF without", "YF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                            "AAA", "AAA-Name", 2000, 10.toDecimal(), 20.toDecimal(), "10-20", 100.toDecimal(), 50.5.toDecimal(), "both"),
+                    GenderedLongCoverageRow(scenarioId, "YF with", "YF", GAVISupportLevel.WITH, ActivityType.CAMPAIGN,
+                            "BBB", "BBB-Name", 2001, 11.toDecimal(), 21.toDecimal(), null, null, null, "both")
             ))
         }
     }
@@ -120,26 +120,29 @@ class GetScenarioTests : TouchstoneRepositoryTests()
             assertThat(result.structuredMetadata.coverageSets!!.count()).isEqualTo(3)
 
             assertThat(result.tableData.data.toList()).containsExactlyElementsOf(listOf(
-                    LongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "AAA", "AAA-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null),
+                    GenderedLongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "AAA", "AAA-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null, "both"),
                     // first order by vaccine
-                    LongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
-                            "AAA", "AAA-Name", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null),
+                    GenderedLongCoverageRow(scenarioId, "Second", "BF", GAVISupportLevel.WITHOUT, ActivityType.CAMPAIGN,
+                            "AAA", "AAA-Name", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null, "both"),
                     // then by activity type
-                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "AAA", "AAA-Name", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null),
+                    GenderedLongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "AAA", "AAA-Name", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null, "both"),
                     // then by country
-                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "BBB", "BBB-Name", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null),
+                    GenderedLongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2000, 1.toDecimal(), 2.toDecimal(), null, null, null, "both"),
                     // then by year
-                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null),
+                    GenderedLongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), null, null, null, "both"),
                     // then by age first
-                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "BBB", "BBB-Name", 2001, 2.toDecimal(), 2.toDecimal(), null, null, null),
+                    GenderedLongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2001, 2.toDecimal(), 2.toDecimal(), null, null, null, "both"),
                     // then by age last
-                    LongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                            "BBB", "BBB-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+                    GenderedLongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null, "both"),
+                    // then by female
+                    GenderedLongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                            "BBB", "BBB-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null, "female")
 
             ))
         }

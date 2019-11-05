@@ -42,6 +42,102 @@ class GroupCoverageTests : CoverageTests()
     }
 
     @Test
+    fun `coverage data for responsibility returns gender`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = 2)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[13]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[13]).isEqualTo("male")
+    }
+
+    @Test
+    fun `coverage data for scenario for responsibility with null gender defaults to 'both'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[13]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[13]).isEqualTo("both")
+    }
+
+    @Test
+    fun `coverage data for responsibility for coverage with null gender defaults to 'female' when disease is 'HPV'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null, disease="HPV")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[13]).isEqualTo("gender")
+
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[13]).isEqualTo("female")
+    }
+
+    @Test
+    fun `coverage data for responsibility has no gender column when touchstone is pre-2019`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        val testYear = 1980
+
+        JooqContext().use {
+            addCoverageData(it, testYear = testYear, touchstoneStatus = "open", gender = 2, touchstoneName = "201810-test")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("/modelling-groups/$groupId/responsibilities/201810-test-1/$scenarioId/coverage/",
+                minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers.count()).isEqualTo(13)
+    }
+
+    @Test
     fun `coverage data for responsibility with subnational rows with different age_range_verbatim keeps rows separate`()
     {
         val userHelper = TestUserHelper()
@@ -74,7 +170,7 @@ class GroupCoverageTests : CoverageTests()
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
         //5: "country_code", 6: "country", 7: "year" 8: "age_first", 9: "age_last", 10: "age_range_verbatim",
-        //11: "target", 12: "coverage"
+        //11: "target", 12: "coverage" 13: "gender"
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1000"
         val expectedAggregatedCoverage = "0.9"
@@ -114,7 +210,7 @@ class GroupCoverageTests : CoverageTests()
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
         //5: "country_code", 6: "country", 7: "year" 8: "age_first", 9: "age_last", 10: "age_range_verbatim",
-        //11: "target", 12: "coverage"
+        //11: "target", 12: "coverage" 13: "gender"
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1500"
         val expectedAggregatedCoverage = "0.7"
@@ -227,7 +323,7 @@ class GroupCoverageTests : CoverageTests()
         val headers = csv.first().toList()
         val expectedHeaders = listOf("scenario", "set_name", "vaccine", "gavi_support", "activity_type",
                 "country_code", "country", "year", "age_first", "age_last", "age_range_verbatim", "target",
-                "coverage")
+                "coverage", "gender")
         headers.forEachIndexed { index, h ->
             Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
         }
@@ -239,6 +335,9 @@ class GroupCoverageTests : CoverageTests()
         //test all target values
         Assertions.assertThat(firstRow[11]).isEqualTo(expectedTarget)
         Assertions.assertThat(firstRow[12]).isEqualTo(expectedCoverage)
+
+        //gender
+        Assertions.assertThat(firstRow[13]).isEqualTo("both")
     }
 
     @Test
@@ -264,27 +363,29 @@ class GroupCoverageTests : CoverageTests()
 
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
-        //5: "country_code", 6: "country", 7: "age_first", 8: "age_last", 9: "age_range_verbatim", 10: "coverage_$testYear",
-        //11: "coverage_1985", 12: "coverage_1990", 13: "coverage_1995", 14: "coverage_2000",
-        //15: "target_$testYear", 16: "target_1985", 17: "target_1990", 18: "target_1995", 19: "target_2000"
+        //5: "country_code", 6: "country", 7: "age_first", 8: "age_last", 9: "age_range_verbatim",
+        //10: "gender"
+        //11: "coverage_$testYear",
+        //12: "coverage_1985", 13: "coverage_1990", 14: "coverage_1995", 15: "coverage_2000",
+        //16: "target_$testYear", 17: "target_1985", 18: "target_1990", 19: "target_1995", 20: "target_2000"
 
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1000"
         val expectedAggregatedCoverage = "0.9"
 
         //test all target values
-        Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[16]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[17]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[18]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[19]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[20]).isEqualTo(expectedAggregatedTarget)
 
         //test all coverage values
-        Assertions.assertThat(firstRow[10]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[11]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[12]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[13]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[14]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedCoverage)
 
     }
 
@@ -316,20 +417,116 @@ class GroupCoverageTests : CoverageTests()
         val expectedAggregatedCoverage = "0.7"
 
         //test all target values
-        Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[16]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[17]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[18]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[19]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[20]).isEqualTo(expectedAggregatedTarget)
 
         //test all coverage values
-        Assertions.assertThat(firstRow[10]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[11]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[12]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[13]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[14]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedCoverage)
 
 
+    }
+
+    @Test
+    fun `wide coverage data for responsibility returns gender`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = 2)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[10]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[10]).isEqualTo("male")
+    }
+
+    @Test
+    fun `wide coverage data for responsibility for coverage with null gender defaults to 'both'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[10]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[10]).isEqualTo("both")
+    }
+
+    @Test
+    fun `wide coverage data for responsibility for coverage with null gender defaults to 'female' when disease is 'HPV'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null, disease="HPV")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[10]).isEqualTo("gender")
+
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[10]).isEqualTo("female")
+    }
+
+    @Test
+    fun `wide coverage data for responsibility has no gender column when touchstone is pre-2019`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        val testYear = 1980
+
+        JooqContext().use {
+            addCoverageData(it, testYear = testYear, touchstoneStatus = "open", gender = 2, touchstoneName = "201810-test")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("/modelling-groups/$groupId/responsibilities/201810-test-1/$scenarioId/coverage/?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers.count()).isEqualTo(20)
+        Assertions.assertThat(headers[10]).isEqualTo("coverage_$testYear")
     }
 
     @Test
@@ -366,9 +563,10 @@ class GroupCoverageTests : CoverageTests()
 
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
-        //5: "country_code", 6: "country", 7: "age_first", 8: "age_last", 9: "age_range_verbatim", 10: "coverage_$testYear",
-        //11: "coverage_1985", 12: "coverage_1990", 13: "coverage_1995", 14: "coverage_2000",
-        //15: "target_$testYear", 16: "target_1985", 17: "target_1990", 18: "target_1995", 19: "target_2000"
+        //5: "country_code", 6: "country", 7: "age_first", 8: "age_last", 9: "age_range_verbatim",
+        //10: gender, 11: "coverage_$testYear",
+        //12: "coverage_1985", 13: "coverage_1990", 14: "coverage_1995", 15: "coverage_2000",
+        //16: "target_$testYear", 17: "target_1985", 18: "target_1990", 19: "target_1995", 20: "target_2000"
 
         val range1Row = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1000"
@@ -377,35 +575,35 @@ class GroupCoverageTests : CoverageTests()
         Assertions.assertThat(range1Row[9]).isEqualTo(age_range_1)
 
         //test all target values
-        Assertions.assertThat(range1Row[15]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range1Row[16]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range1Row[17]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range1Row[18]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range1Row[19]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(range1Row[20]).isEqualTo(expectedAggregatedTarget)
 
         //test all coverage values
-        Assertions.assertThat(range1Row[10]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range1Row[11]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range1Row[12]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range1Row[13]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range1Row[14]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(range1Row[15]).isEqualTo(expectedAggregatedCoverage)
 
         val range2Row = csv.drop(11).first().toList() //First row with the second age_range_verbatim
         Assertions.assertThat(range2Row[9]).isEqualTo(age_range_2)
 
         //test all target values
-        Assertions.assertThat(range2Row[15]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range2Row[16]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range2Row[17]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range2Row[18]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range2Row[19]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(range2Row[20]).isEqualTo(expectedAggregatedTarget)
 
         //test all coverage values
-        Assertions.assertThat(range2Row[10]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range2Row[11]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range2Row[12]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range2Row[13]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range2Row[14]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(range2Row[15]).isEqualTo(expectedAggregatedCoverage)
     }
 
     @Test
@@ -433,7 +631,8 @@ class GroupCoverageTests : CoverageTests()
         val firstRow = csv.drop(1).first().toList()
 
         val expectedHeaders = listOf("scenario", "set_name", "vaccine", "gavi_support", "activity_type",
-                "country_code", "country", "age_first", "age_last", "age_range_verbatim", "coverage_$testYear",
+                "country_code", "country", "age_first", "age_last", "age_range_verbatim",
+                "gender", "coverage_$testYear",
                 "coverage_1985", "coverage_1990", "coverage_1995", "coverage_2000",
                 "target_$testYear",
                 "target_1985", "target_1990", "target_1995", "target_2000")
@@ -442,8 +641,8 @@ class GroupCoverageTests : CoverageTests()
             Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
         }
 
-        Assertions.assertThat(firstRow[10]).isEqualTo("456.461")
-        Assertions.assertThat(firstRow[15]).isEqualTo("123.123")
+        Assertions.assertThat(firstRow[11]).isEqualTo("456.461")
+        Assertions.assertThat(firstRow[16]).isEqualTo("123.123")
 
     }
 
@@ -464,22 +663,22 @@ class GroupCoverageTests : CoverageTests()
 
         val expected = listOf(
                 TestWideCoverageRow(scenarioId, "First", "AF", "no gavi", "routine",
-                        "AAA", "AAA-Name", 2, 4, "<NA>", yearMap),
+                        "AAA", "AAA-Name", 2, 4, "<NA>", "both", yearMap),
                 // first order by vaccine
                 TestWideCoverageRow(scenarioId, "Second", "BF", "no gavi", "campaign",
-                        "AAA", "AAA-Name", 1, 2, "<NA>", yearMap),
+                        "AAA", "AAA-Name", 1, 2, "<NA>", "both", yearMap),
                 // then by activity type
                 TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
-                        "AAA", "AAA-Name", 1, 2, "<NA>", yearMap),
+                        "AAA", "AAA-Name", 1, 2, "<NA>", "both", yearMap),
                 // then by country
                 TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
-                        "BBB", "BBB-Name", 1, 2, "<NA>", yearMap),
+                        "BBB", "BBB-Name", 1, 2, "<NA>", "both", yearMap),
                 // then by age first
                 TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
-                        "BBB", "BBB-Name", 2, 2, "<NA>", yearMap),
+                        "BBB", "BBB-Name", 2, 2, "<NA>", "both", yearMap),
                 // then by age last
                 TestWideCoverageRow(scenarioId, "Third", "BF", "no gavi", "routine",
-                        "BBB", "BBB-Name", 2, 4, "<NA>", yearMap)
+                        "BBB", "BBB-Name", 2, 4, "<NA>", "both", yearMap)
         )
 
         val rows = DataTableDeserializer.deserialize(response.text, TestWideCoverageRow::class)

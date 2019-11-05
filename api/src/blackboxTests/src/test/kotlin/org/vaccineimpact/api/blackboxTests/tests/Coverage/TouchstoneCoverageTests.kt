@@ -99,29 +99,126 @@ class TouchstoneCoverageTests : CoverageTests()
 
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
-        //5: "country_code", 6: "country", 7: "age_first", 8: "age_last", 9: "age_range_verbatim", 10: "coverage_$testYear",
-        //11: "coverage_1985", 12: "coverage_1990", 13: "coverage_1995", 14: "coverage_2000",
-        //15: "target_$testYear", 16: "target_1985", 17: "target_1990", 18: "target_1995", 19: "target_2000"
+        //5: "country_code", 6: "country", 7: "age_first", 8: "age_last", 9: "age_range_verbatim",
+        //10: "gender", 11: "coverage_$testYear",
+        //12: "coverage_1985", 13: "coverage_1990", 14: "coverage_1995", 15: "coverage_2000",
+        //16: "target_$testYear", 17: "target_1985", 18: "target_1990", 19: "target_1995", 20: "target_2000"
 
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1000"
         val expectedAggregatedCoverage = "0.9"
 
         //test all target values
-        Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[16]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[17]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[18]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[19]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[20]).isEqualTo(expectedAggregatedTarget)
 
         //test all coverage values
-        Assertions.assertThat(firstRow[10]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[11]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[12]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[13]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[14]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedCoverage)
 
 
+    }
+
+    @Test
+    fun `wide coverage data for scenario returns gender`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = 2)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[10]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[10]).isEqualTo("male")
+    }
+
+    @Test
+    fun `wide coverage data for scenario for coverage with null gender defaults to 'both'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[10]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[10]).isEqualTo("both")
+    }
+
+    @Test
+    fun `wide coverage data for scenario for coverage with null gender defaults to 'female' when disease is 'HPV'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null, disease="HPV")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("$url?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[10]).isEqualTo("gender")
+
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[10]).isEqualTo("female")
+    }
+
+    @Test
+    fun `wide coverage data for scenario has no gender column when touchstone is pre-2019`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        val testYear = 1980
+
+        JooqContext().use {
+            addCoverageData(it, testYear = testYear, touchstoneStatus = "open", gender = 2, touchstoneName = "201810-test")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("/touchstones/201810-test-1/$scenarioId/coverage/?format=wide", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers.count()).isEqualTo(20)
+        Assertions.assertThat(headers[10]).isEqualTo("coverage_$testYear")
     }
 
     @Test
@@ -150,27 +247,28 @@ class TouchstoneCoverageTests : CoverageTests()
 
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
-        //5: "country_code", 6: "country", 7: "age_first", 8: "age_last", 9: "age_range_verbatim", 10: "coverage_$testYear",
-        //11: "coverage_1985", 12: "coverage_1990", 13: "coverage_1995", 14: "coverage_2000",
-        //15: "target_$testYear", 16: "target_1985", 17: "target_1990", 18: "target_1995", 19: "target_2000"
+        //5: "country_code", 6: "country", 7: "age_first", 8: "age_last", 9: "age_range_verbatim",
+        //10: "gender", 11: "coverage_$testYear",
+        //12: "coverage_1985", 13: "coverage_1990", 14: "coverage_1995", 15: "coverage_2000",
+        //16: "target_$testYear", 17: "target_1985", 18: "target_1990", 19: "target_1995", 20: "target_2000"
 
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1500"
         val expectedAggregatedCoverage = "0.7"
 
         //test all target values
-        Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[16]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[17]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[18]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(firstRow[19]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(firstRow[20]).isEqualTo(expectedAggregatedTarget)
 
         //test all coverage values
-        Assertions.assertThat(firstRow[10]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[11]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[12]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[13]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(firstRow[14]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(firstRow[15]).isEqualTo(expectedAggregatedCoverage)
 
 
     }
@@ -209,7 +307,8 @@ class TouchstoneCoverageTests : CoverageTests()
 
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
-        //5: "country_code", 6: "country", 7: "age_first", 8: "age_last", 9: "age_range_verbatim", 10: "coverage_$testYear",
+        //5: "country_code", 6: "country", 7: "age_first", 8: "age_last", 9: "age_range_verbatim",
+        //10: "gender", 11: "coverage_$testYear",
         //11: "coverage_1985", 12: "coverage_1990", 13: "coverage_1995", 14: "coverage_2000",
         //15: "target_$testYear", 16: "target_1985", 17: "target_1990", 18: "target_1995", 19: "target_2000"
 
@@ -220,35 +319,35 @@ class TouchstoneCoverageTests : CoverageTests()
         Assertions.assertThat(range1Row[9]).isEqualTo(age_range_1)
 
         //test all target values
-        Assertions.assertThat(range1Row[15]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range1Row[16]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range1Row[17]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range1Row[18]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range1Row[19]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(range1Row[20]).isEqualTo(expectedAggregatedTarget)
 
         //test all coverage values
-        Assertions.assertThat(range1Row[10]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range1Row[11]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range1Row[12]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range1Row[13]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range1Row[14]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(range1Row[15]).isEqualTo(expectedAggregatedCoverage)
 
         val range2Row = csv.drop(11).first().toList()
         Assertions.assertThat(range2Row[9]).isEqualTo(age_range_2)
 
         //test all target values
-        Assertions.assertThat(range2Row[15]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range2Row[16]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range2Row[17]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range2Row[18]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(range2Row[19]).isEqualTo(expectedAggregatedTarget)
+        Assertions.assertThat(range2Row[20]).isEqualTo(expectedAggregatedTarget)
 
         //test all coverage values
-        Assertions.assertThat(range2Row[10]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range2Row[11]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range2Row[12]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range2Row[13]).isEqualTo(expectedAggregatedCoverage)
         Assertions.assertThat(range2Row[14]).isEqualTo(expectedAggregatedCoverage)
+        Assertions.assertThat(range2Row[15]).isEqualTo(expectedAggregatedCoverage)
     }
 
     @Test
@@ -333,7 +432,7 @@ class TouchstoneCoverageTests : CoverageTests()
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
         //5: "country_code", 6: "country", 7: "year" 8: "age_first", 9: "age_last", 10: "age_range_verbatim",
-        //11: "target", 12: "coverage"
+        //11: "target", 12: "coverage"  13: "gender"
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1500"
         val expectedAggregatedCoverage = "0.7"
@@ -376,7 +475,8 @@ class TouchstoneCoverageTests : CoverageTests()
         //Headers:
         //0: "scenario", 1: "set_name", 2: "vaccine", 3: "gavi_support", 4: "activity_type",
         //5: "country_code", 6: "country", 7: "year" 8: "age_first", 9: "age_last", 10: "age_range_verbatim",
-        //11: "target", 12: "coverage"
+        //11: "target", 12: "coverage" 13: "gender"
+
         val firstRow = csv.drop(1).first().toList()
         val expectedAggregatedTarget = "1000"
         val expectedAggregatedCoverage = "0.9"
@@ -389,6 +489,101 @@ class TouchstoneCoverageTests : CoverageTests()
         Assertions.assertThat(secondRow[10]).isEqualTo(age_range_2) //The second age_range_verbatim
         Assertions.assertThat(secondRow[11]).isEqualTo(expectedAggregatedTarget)
         Assertions.assertThat(secondRow[12]).isEqualTo(expectedAggregatedCoverage)
+    }
+
+    @Test
+    fun `coverage data for scenario returns gender`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = 2)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[13]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[13]).isEqualTo("male")
+    }
+
+    @Test
+    fun `coverage data for scenario for coverage with null gender defaults to 'both'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null)
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[13]).isEqualTo("gender")
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[13]).isEqualTo("both")
+    }
+
+    @Test
+    fun `coverage data for scenario for coverage with null gender defaults to 'female' when disease is 'HPV'`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        JooqContext().use {
+            addCoverageData(it, touchstoneStatus = "open", gender = null, disease="HPV")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get(url, minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers[13]).isEqualTo("gender")
+
+
+        val firstRow = csv.drop(1).first().toList()
+
+        Assertions.assertThat(firstRow[13]).isEqualTo("female")
+    }
+
+    @Test
+    fun `coverage data for scenario has no gender column when touchstone is pre-2019`()
+    {
+        val userHelper = TestUserHelper()
+        val requestHelper = RequestHelper()
+
+        val testYear = 1980
+
+        JooqContext().use {
+            addCoverageData(it, testYear = testYear, touchstoneStatus = "open", gender = 2, touchstoneName = "201810-test")
+            userHelper.setupTestUser(it)
+        }
+
+        val response = requestHelper.get("/touchstones/201810-test-1/$scenarioId/coverage/", minimumPermissions, acceptsContentType = "text/csv")
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+
+        val headers = csv.first()
+        Assertions.assertThat(headers.count()).isEqualTo(13)
     }
 
 }

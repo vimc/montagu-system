@@ -6,6 +6,7 @@ import org.jooq.impl.DSL.*
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
+import org.vaccineimpact.api.app.getLongCoverageRowDataTable
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
@@ -140,7 +141,7 @@ class JooqTouchstoneRepository(
         val coverageData = getCoverageDataForScenario(touchstoneVersionId, scenarioDescId)
         val metadata = ScenarioAndCoverageSets(scenario, coverageSets)
 
-        return SplitData(metadata, DataTable.new(coverageData.asSequence()))
+        return SplitData(metadata, getLongCoverageRowDataTable(coverageData.asSequence()))
     }
 
     override fun getCoverageDataForScenario(
@@ -151,9 +152,11 @@ class JooqTouchstoneRepository(
         val coverageRecords = getCoverageRowsForScenario(touchstoneVersionId, scenarioDescriptionId)
                 .filter { it[COVERAGE_SET.ID] != null }
 
+        val diseaseId = getDiseaseIdForScenarioDescription(scenarioDescriptionId)
+
         return coverageRecords
                 .filter { it[COUNTRY.NAME] != null }
-                .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
+                .map { mapCoverageRow(it, scenarioDescriptionId, touchstoneVersionId, diseaseId) }.asSequence()
     }
 
     override fun getCoverageDataForResponsibility(
@@ -165,9 +168,11 @@ class JooqTouchstoneRepository(
         val coverageRecords = getCoverageRowsForResponsibility(responsibilityId, touchstoneVersionId)
                 .filter { it[COVERAGE_SET.ID] != null }
 
+        val diseaseId = getDiseaseIdForScenarioDescription(scenarioDescriptionId)
+
         return coverageRecords
                 .filter { it[COUNTRY.NAME] != null }
-                .map { mapCoverageRow(it, scenarioDescriptionId) }.asSequence()
+                .map { mapCoverageRow(it, scenarioDescriptionId, touchstoneVersionId, diseaseId) }.asSequence()
     }
 
     override fun getCoverageSetsForScenario(
@@ -256,19 +261,23 @@ class JooqTouchstoneRepository(
                 .select(coverageDimensions().toList())
                 .select(aggregatedValues())
                 .select(COUNTRY.NAME)
+                .select(GENDER.NAME)
                 .fromJoinPath(TOUCHSTONE, SCENARIO)
                 // We don't mind if there are no coverage sets, so do a left join
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
+                .joinPath(COVERAGE, GENDER, joinType = JoinType.LEFT_OUTER_JOIN)
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))
                 .groupBy(*COVERAGE_SET.fields(),
                         *coverageDimensions(),
-                        COUNTRY.NAME)
+                        COUNTRY.NAME,
+                        GENDER.NAME)
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
                         COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO,
-                        COVERAGE.AGE_RANGE_VERBATIM).fetch()
+                        COVERAGE.AGE_RANGE_VERBATIM,
+                        GENDER.NAME).fetch()
 
 
     }
@@ -289,20 +298,24 @@ class JooqTouchstoneRepository(
                 .select(coverageDimensions().toList())
                 .select(aggregatedValues())
                 .select(COUNTRY.NAME)
+                .select(GENDER.NAME)
                 .fromJoinPath(TOUCHSTONE, SCENARIO, RESPONSIBILITY)
                 // We don't mind if there are no coverage sets, so do a left join
                 .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)
                 .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)
+                .joinPath(COVERAGE, GENDER, joinType = JoinType.LEFT_OUTER_JOIN)
                 .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
                 .and(RESPONSIBILITY.ID.eq(responsibilityId))
                 .and(COUNTRY.ID.isNull.or(COUNTRY.ID.`in`(expectedCountries)))
                 .groupBy(*COVERAGE_SET.fields(),
                         *coverageDimensions(),
-                        COUNTRY.NAME)
+                        COUNTRY.NAME,
+                        GENDER.NAME)
                 .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,
                         COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO,
-                        COVERAGE.AGE_RANGE_VERBATIM).fetch()
+                        COVERAGE.AGE_RANGE_VERBATIM,
+                        GENDER.NAME).fetch()
     }
 
     private val TOUCHSTONE_SOURCES = "touchstoneSources"
@@ -464,21 +477,45 @@ class JooqTouchstoneRepository(
             mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE])
     )
 
-    private fun mapCoverageRow(record: Record, scenarioDescriptionId: String) = LongCoverageRow(
-            scenarioDescriptionId,
-            record[COVERAGE_SET.NAME],
-            record[COVERAGE_SET.VACCINE],
-            mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
-            mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),
-            record[COVERAGE.COUNTRY],
-            record[COUNTRY.NAME],
-            record[COVERAGE.YEAR],
-            record[COVERAGE.AGE_FROM],
-            record[COVERAGE.AGE_TO],
-            record[COVERAGE.AGE_RANGE_VERBATIM],
-            record[COVERAGE.TARGET],
-            record[COVERAGE.COVERAGE_]
-    )
+    private fun mapCoverageRow(record: Record, scenarioDescriptionId: String, touchstoneVersionId: String, diseaseId: String) =
+            if (includeGenderInCoverage(touchstoneVersionId))
+            {
+                GenderedLongCoverageRow(
+                        scenarioDescriptionId,
+                        record[COVERAGE_SET.NAME],
+                        record[COVERAGE_SET.VACCINE],
+                        mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
+                        mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),
+                        record[COVERAGE.COUNTRY],
+                        record[COUNTRY.NAME],
+                        record[COVERAGE.YEAR],
+                        record[COVERAGE.AGE_FROM],
+                        record[COVERAGE.AGE_TO],
+                        record[COVERAGE.AGE_RANGE_VERBATIM],
+                        record[COVERAGE.TARGET],
+                        record[COVERAGE.COVERAGE_],
+                        (record[GENDER.NAME] ?: defaultGender(diseaseId)).toLowerCase()
+                )
+            }
+            else
+            {
+                NoGenderLongCoverageRow(
+                        scenarioDescriptionId,
+                        record[COVERAGE_SET.NAME],
+                        record[COVERAGE_SET.VACCINE],
+                        mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
+                        mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),
+                        record[COVERAGE.COUNTRY],
+                        record[COUNTRY.NAME],
+                        record[COVERAGE.YEAR],
+                        record[COVERAGE.AGE_FROM],
+                        record[COVERAGE.AGE_TO],
+                        record[COVERAGE.AGE_RANGE_VERBATIM],
+                        record[COVERAGE.TARGET],
+                        record[COVERAGE.COVERAGE_]
+                )
+            }
+
 
     private fun mapDemographicRow(record: Record) = LongDemographicRow(
             record[field(name(TOUCHSTONE_COUNTRIES, "nid"), Int::class.java)],
@@ -490,4 +527,22 @@ class JooqTouchstoneRepository(
             record[GENDER.CODE],
             record[DEMOGRAPHIC_STATISTIC.VALUE]
     )
+
+    private fun getDiseaseIdForScenarioDescription(scenarioDescriptionId: String): String =
+            dsl.select(SCENARIO_DESCRIPTION.DISEASE)
+                .from(SCENARIO_DESCRIPTION)
+                .where(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
+                .fetchOne()[SCENARIO_DESCRIPTION.DISEASE]
+
+    private fun includeGenderInCoverage(touchstoneVersionId: String): Boolean = touchstoneVersionId > "2019"
+
+    private fun defaultGender(diseaseId: String): String =
+            if (diseaseId == "HPV")
+            {
+                "female"
+            }
+            else
+            {
+                "both"
+            }
 }
