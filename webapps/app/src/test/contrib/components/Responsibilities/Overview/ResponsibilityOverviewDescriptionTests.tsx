@@ -38,8 +38,8 @@ describe("Responsibility Overview Description Component", () => {
                                                                     touchstoneStatus={"open"}/>);
         const link = rendered.find(InternalLink);
 
-        expect(link.at(4).prop("href")).eq("/help/model-inputs/t1");
-        expect(link.at(5).prop("href")).eq("/help/model-outputs/t1");
+        expect(link.at(0).prop("href")).eq("/help/model-inputs/t1");
+        expect(link.at(1).prop("href")).eq("/help/model-outputs/t1");
         expect(rendered.find("a").length).eq(0);
     });
 
@@ -51,7 +51,7 @@ describe("Responsibility Overview Description Component", () => {
 
         expect(link.at(0).prop("href")).contains("guidance-2019-inputs.pdf");
         expect(link.at(1).prop("href")).contains("guidance-2019-outputs.pdf");
-        expect(rendered.find(InternalLink).length).eq(4);
+        expect(rendered.find(InternalLink).length).eq(0);
     });
 
     it("renders stochastic content when touchstone is stochastic", () => {
