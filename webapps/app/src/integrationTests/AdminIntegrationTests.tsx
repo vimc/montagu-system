@@ -297,8 +297,8 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             expect(response.status).to.equal(200);
             const result = await response.text();
 
-            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage\n"
-                + "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1970,1,2,1-2,1000,1000\n")
+            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage,gender\n"
+                + "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1970,1,2,1-2,1000,1000,both\n")
         });
 
         it("can download coverage data in wide format", async () => {
@@ -330,8 +330,8 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             expect(response.status).to.equal(200);
             const result = await response.text();
 
-            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,age_first,age_last,age_range_verbatim,coverage_1970,target_1970\n"
-                + "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1,2,1-2,1000,1000\n")
+            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,age_first,age_last,age_range_verbatim,gender,coverage_1970,target_1970\n"
+                + "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1,2,1-2,both,1000,1000\n")
         });
 
     }

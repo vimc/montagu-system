@@ -287,7 +287,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const result = await response.text();
 
             // we expect no rows, because there are no expectations for this responsibility
-            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage\n")
+            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage,gender\n")
         });
 
         it("can download coverage data for all countries", async () => {
@@ -325,8 +325,8 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const result = await response.text();
 
             // we expect one row for the country ATL, even though there are no expectations for this responsibility
-            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage\n" +
-                "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1970,1,2,1-2,1000,1000\n")
+            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage,gender\n" +
+                "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1970,1,2,1-2,1000,1000,both\n")
         });
 
         it("can download demographic data", async () => {

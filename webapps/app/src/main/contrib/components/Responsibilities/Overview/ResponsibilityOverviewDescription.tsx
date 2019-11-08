@@ -93,34 +93,22 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
                     for providing burden estimates for.
                 </li>
                 <li>
-                    Download vaccination coverage data for each scenario.&nbsp;
-                    <InternalLink href={guidanceInputsUrl}>
-                        More guidance here
-                    </InternalLink>.
+                    Download vaccination coverage data for each scenario.
                 </li>
                 <li>
                     Download demographic data which applies to all scenarios.
                     Please use the demographic datasets supplied to ensure consistency
-                    between all models.&nbsp;
-                    <InternalLink href={`${guidanceInputsUrl}#demography`}>
-                        More guidance here
-                    </InternalLink>.
+                    between all models.
                 </li>
                 {templatesInfo}
                 <li>
                     Upload central burden estimates for each scenario, and review any
-                    problems the system has detected in the uploaded data.&nbsp;
-                    <InternalLink href={guidanceOutputsUrl}>
-                        More guidance here
-                    </InternalLink>.
+                    problems the system has detected in the uploaded data.
                 </li>
                 {
                     settings.isVersionOfStochasticTouchstone(props.currentTouchstoneId) &&
                     <li>
-                        Upload your parameters file.&nbsp;
-                        <InternalLink href={guidanceOutputsUrl}>
-                            More guidance here
-                        </InternalLink>.
+                        Upload your parameters file.
                     </li>
                 }
             </ul>
