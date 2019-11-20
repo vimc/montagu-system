@@ -14,6 +14,7 @@ interface Settings {
     contrib: ContribSettings;
     test: AppSpecificSettings;
     showTouchstoneCreation: boolean;
+    hideWideFormat: (disease: string) => boolean;
     canDownloadEstimates: (groupId: string) => boolean;
 }
 
