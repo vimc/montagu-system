@@ -14,7 +14,9 @@ export const settings: Settings = {
         return !this.nonStochasticTouchstones.some((ts: string) => touchstoneId.indexOf(ts) === 0);
     },
     hideWideFormat: function (disease) {
-        return ["MenA", "JE", "YF", "HPV", "measles", "rubella"].indexOf(disease) > -1
+        return ["MenA", "JE", "YF", "HPV", "measles", "rubella"]
+            .map(d => d.toLocaleLowerCase())
+            .indexOf(disease.toLowerCase()) > -1
     },
     canDownloadEstimates: function (groupId) {
         return ["PHE-Vynnycky-WHO",
