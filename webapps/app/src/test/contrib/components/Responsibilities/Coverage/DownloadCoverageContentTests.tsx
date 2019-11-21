@@ -130,6 +130,20 @@ describe("Download Coverage Content Component", () => {
         expect(onFormatSelectStub.called).to.equal(true);
     });
 
+    it("does not show format control for prohibited diseases", () => {
+
+        const rendered = shallow(<DownloadCoverageContentComponent
+            coverageSets={[testCoverageSet]}
+            group={testGroup}
+            scenario={{...testScenario, disease: "measles"}}
+            selectedFormat={"long"}
+            setFormat={() => {
+            }}
+            touchstone={testTouchstone}/>);
+
+        expect(rendered.find(FormatControl).length).to.equal(0);
+    });
+
     it("filterToExpectations is selected by default", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
             .dive().dive().dive();
