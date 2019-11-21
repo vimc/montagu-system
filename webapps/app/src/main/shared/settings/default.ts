@@ -13,6 +13,11 @@ export const settings: Settings = {
         //is touchstone id NOT a version of any name in array of non-stochastic touchstones
         return !this.nonStochasticTouchstones.some((ts: string) => touchstoneId.indexOf(ts) === 0);
     },
+    hideWideFormat: function (disease) {
+        return ["MenA", "JE", "YF", "HPV", "measles", "rubella"]
+            .map(d => d.toLocaleLowerCase())
+            .indexOf(disease.toLowerCase()) > -1
+    },
     canDownloadEstimates: function (groupId) {
         return ["PHE-Vynnycky-WHO",
             "JHU-Lessler-WHO",

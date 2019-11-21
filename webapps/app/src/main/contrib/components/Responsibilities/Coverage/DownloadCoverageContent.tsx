@@ -13,6 +13,7 @@ import {coverageActionCreators} from "../../../actions/coverageActionCreators";
 import {withConfidentialityAgreement} from "../Overview/ConfidentialityAgreement";
 import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
 import {UncontrolledTooltip} from "reactstrap";
+import {settings} from "../../../../shared/Settings";
 
 export interface DownloadCoverageContentProps {
     group: ModellingGroup;
@@ -53,6 +54,7 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
         const url = `/modelling-groups/${group.id}/responsibilities/${touchstone.id}/${scenario.id}/coverage/csv/`
             + `?format=${selectedFormat}&all-countries=${!this.state.filterToExpectations}`;
 
+        const showWideFormat = !settings.hideWideFormat(this.props.scenario.disease);
         return <div>
             <p>
                 Each scenario is based on vaccination coverage from up to 3 different
@@ -96,13 +98,15 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
                     <CoverageSetList coverageSets={this.props.coverageSets}/>
                 </div>
             </div>
-            <div className="row mt-4">
+            {showWideFormat && <div className="row mt-4">
                 <div className="col-12 col-md-6">
                     <div>
                         <span className="smallTitle">
                             Choose format
                         </span>
-                        <a href={"#"} id={"format-tooltip"} className={"ml-1 small"} onClick={(e)=> {e.preventDefault()}}>What's this?</a>
+                        <a href={"#"} id={"format-tooltip"} className={"ml-1 small"} onClick={(e) => {
+                            e.preventDefault()
+                        }}>What's this?</a>
                         <UncontrolledTooltip target="format-tooltip" className={"text-muted"}>
                             Wide format includes coverage and target values for all years in a single row. Long format
                             includes a row for each year.
@@ -127,17 +131,22 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
                     </table>
                 </div>
             </div>
+            }
             <div className="row mt-4">
                 <div className="col-12">
-                   <label className="checkbox-inline"><input type="checkbox"
-                                                             id={"filter-countries"}
-                                                             className={"mr-1"}
-                                                             onChange={this.toggleAllCountries}
-                                                             checked={this.state.filterToExpectations} />
-                       Filter to touchstone countries</label>
-                    <a href={"#"} id={"countries-tooltip"} className={"ml-1 small"} onClick={(e)=> {e.preventDefault()}}>What's this?</a>
-                    <UncontrolledTooltip target="countries-tooltip" className={"text-muted"}>When this is checked we will only include coverage data for
-                        countries we expect burden estimates for in this touchstone. To include all the coverage data we have for this scenario, please de-select this option</UncontrolledTooltip>
+                    <label className="checkbox-inline"><input type="checkbox"
+                                                              id={"filter-countries"}
+                                                              className={"mr-1"}
+                                                              onChange={this.toggleAllCountries}
+                                                              checked={this.state.filterToExpectations}/>
+                        Filter to touchstone countries</label>
+                    <a href={"#"} id={"countries-tooltip"} className={"ml-1 small"} onClick={(e) => {
+                        e.preventDefault()
+                    }}>What's this?</a>
+                    <UncontrolledTooltip target="countries-tooltip" className={"text-muted"}>When this is checked we
+                        will only include coverage data for
+                        countries we expect burden estimates for in this touchstone. To include all the coverage data we
+                        have for this scenario, please de-select this option</UncontrolledTooltip>
                 </div>
             </div>
             <div className="mt-4">
