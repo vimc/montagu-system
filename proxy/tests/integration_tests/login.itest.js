@@ -10,6 +10,7 @@ beforeEach(async () => {
 test('is logged in if cookie is present', async () => {
 
     await TestHelper.ensureLoggedIn(browser);
+    console.log("--------logged in----------");
 
     // navigate away
     browser.get("https://google.com");
@@ -18,19 +19,22 @@ test('is logged in if cookie is present', async () => {
     browser.get("https://localhost");
 
     const loggedInBox = browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
+    console.log("--------found logged in box----------");
 
     const username = await loggedInBox.getText();
     expect(username).toBe("Logged in as test.user | Log out");
 
-});
+}, 6000);
 
 test('is not logged in if cookie is not present', async () => {
 
     await TestHelper.ensureLoggedOut(browser);
+    console.log("--------logged out----------");
 
     browser.get("https://localhost");
 
     const emailInput = browser.wait(webDriver.until.elementLocated(webDriver.By.id('email-input')));
+    console.log("--------found email input---------");
 
     expect(await emailInput.isDisplayed()).toBe(true);
 
@@ -54,7 +58,7 @@ test('can get error message on failed login', async () => {
     const errorMessage = await errorAlert.getText();
     expect(errorMessage).toBe("Your email address or password is incorrect.");
 
-});
+}, 6000);
 
 test('can login without redirect', async () => {
 

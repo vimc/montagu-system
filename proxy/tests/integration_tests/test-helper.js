@@ -88,7 +88,7 @@ const TestHelper = {
             await logout[0].click();
         }
 
-        await browser.sleep(500);
+        browser.wait(webDriver.until.elementLocated(webDriver.By.id("email-input")));
     }
 };
 
