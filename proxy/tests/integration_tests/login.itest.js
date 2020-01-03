@@ -25,7 +25,7 @@ test('is logged in if cookie is present', async () => {
     console.log(username);
     expect(username).toBe("Logged in as test.user | Log out");
 
-}, 6000);
+}, 7000);
 
 test('is not logged in if cookie is not present', async () => {
 
@@ -40,7 +40,7 @@ test('is not logged in if cookie is not present', async () => {
     console.log(await emailInput.isDisplayed())
     expect(await emailInput.isDisplayed()).toBe(true);
 
-});
+}, 7000);
 
 test('can get error message on failed login', async () => {
 
