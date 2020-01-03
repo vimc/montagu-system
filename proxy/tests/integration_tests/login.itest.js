@@ -22,6 +22,7 @@ test('is logged in if cookie is present', async () => {
     console.log("--------found logged in box----------");
 
     const username = await loggedInBox.getText();
+    console.log(username);
     expect(username).toBe("Logged in as test.user | Log out");
 
 }, 6000);
@@ -36,6 +37,7 @@ test('is not logged in if cookie is not present', async () => {
     const emailInput = browser.wait(webDriver.until.elementLocated(webDriver.By.id('email-input')));
     console.log("--------found email input---------");
 
+    console.log(await emailInput.isDisplayed())
     expect(await emailInput.isDisplayed()).toBe(true);
 
 });
