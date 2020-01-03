@@ -9,8 +9,8 @@ beforeEach(async () => {
 
 test('is logged in if cookie is present', async () => {
 
+    console.time("loggedInTest");
     await TestHelper.ensureLoggedIn(browser);
-    console.log("--------logged in----------");
 
     // navigate away
     browser.get("https://google.com");
@@ -19,25 +19,22 @@ test('is logged in if cookie is present', async () => {
     browser.get("https://localhost");
 
     const loggedInBox = browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
-    console.log("--------found logged in box----------");
 
     const username = await loggedInBox.getText();
-    console.log(username);
+    console.timeEnd("loggedInTest");
     expect(username).toBe("Logged in as test.user | Log out");
 
 }, 7000);
 
 test('is not logged in if cookie is not present', async () => {
 
+    console.time("loggedOutTest");
     await TestHelper.ensureLoggedOut(browser);
-    console.log("--------logged out----------");
-
     browser.get("https://localhost");
 
     const emailInput = browser.wait(webDriver.until.elementLocated(webDriver.By.id('email-input')));
-    console.log("--------found email input---------");
 
-    console.log(await emailInput.isDisplayed())
+    console.timeEnd("loggedOutTest");
     expect(await emailInput.isDisplayed()).toBe(true);
 
 }, 7000);
