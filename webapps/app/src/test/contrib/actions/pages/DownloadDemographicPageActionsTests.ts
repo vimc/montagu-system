@@ -8,6 +8,7 @@ import {responsibilityOverviewPageActionCreators} from "../../../../main/contrib
 import {mockContribState} from "../../../mocks/mockStates";
 import {downloadDemographicsContribPageActionCreators} from "../../../../main/contrib/actions/pages/downloadDemographicsContribPageActionCreators";
 import {DemographicTypes} from "../../../../main/shared/actionTypes/DemographicTypes";
+import {DemographicDataset} from "../../../../main/shared/models/Generated";
 
 describe("Download Demographic Contrib Page actions tests", () => {
     const sandbox = new Sandbox();
@@ -42,6 +43,7 @@ describe("Download Demographic Contrib Page actions tests", () => {
         const actions = store.getActions();
 
         const expectedPayload = [
+            {type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET, data: null as DemographicDataset},
             {type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED, data: [testDemographicDataSet]}
         ];
         expect(actions).to.eql(expectedPayload);

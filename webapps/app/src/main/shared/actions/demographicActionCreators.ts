@@ -12,6 +12,10 @@ export const demographicActionCreators = {
         return async (dispatch: Dispatch<ContribAppState | AdminAppState>, getState: () => ContribAppState | AdminAppState) => {
             const dataSets: DemographicDataset[] = await (new DemographicService(dispatch, getState))
                 .getDataSetsByTouchstoneVersionId(touchstoneVersionId);
+
+            // reset selected data set
+            await dispatch(demographicActionCreators.setDataSet(null));
+
             return dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED,
                 data: dataSets
@@ -21,8 +25,11 @@ export const demographicActionCreators = {
 
     setDataSet(dataSetId: string) {
         return (dispatch: Dispatch<ContribAppState>, getState: () => ContribAppState | AdminAppState) => {
-            const dataSets = getState().demographics.dataSets;
-            const dataSet = dataSets.find((set: DemographicDataset) => set.id === dataSetId);
+            let dataSet = null;
+            if (!!dataSetId){
+                const dataSets = getState().demographics.dataSets;
+                dataSet = dataSets.find((set: DemographicDataset) => set.id === dataSetId);
+            }
             return dispatch({
                 type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET,
                 data: dataSet
