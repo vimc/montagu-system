@@ -12,6 +12,7 @@ const TestHelper = {
         options.addArguments("--headless");
         options.addArguments("--no-sandbox");
         options.addArguments('--disable-gpu');
+        options.addArguments('--ignore-certificate-errors');
 
         return new webDriver.Builder()
             .withCapabilities(webDriver.Capabilities.chrome())
