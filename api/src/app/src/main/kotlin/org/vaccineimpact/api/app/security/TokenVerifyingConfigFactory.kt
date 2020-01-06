@@ -3,13 +3,11 @@ package org.vaccineimpact.api.app.security
 import org.pac4j.core.config.Config
 import org.pac4j.core.config.ConfigFactory
 import org.pac4j.core.context.HttpConstants
-import org.pac4j.core.profile.CommonProfile
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.models.ErrorInfo
-import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.security.WebTokenHelper
 
@@ -29,7 +27,7 @@ class TokenVerifyingConfigFactory(
     override fun build(vararg parameters: Any?): Config
     {
         clients.forEach {
-            it.addAuthorizationGenerator({ _, profile -> extractPermissionsFromToken(profile) })
+            it.addAuthorizationGenerator(MontaguAuthorizationGenerator(repositoryFactory))
         }
         return Config(clients).apply {
             setAuthorizer(MontaguAuthorizer(requiredPermissions))
@@ -40,16 +38,6 @@ class TokenVerifyingConfigFactory(
 
     fun allClients() = clients.joinToString { it::class.java.simpleName }
 
-    private fun extractPermissionsFromToken(profile: CommonProfile): CommonProfile
-    {
-        // "permissions" will exists as an attribute because profile is a JwtProfile
-        val permissions = PermissionSet((profile.getAttribute("permissions") as String)
-                .split(',')
-                .filter { it.isNotEmpty() }
-        )
-        profile.montaguPermissions = permissions
-        return profile
-    }
 }
 
 class TokenActionAdapter(wrappedClients: List<MontaguSecurityClientWrapper>, repositoryFactory: RepositoryFactory)
