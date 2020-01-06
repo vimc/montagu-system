@@ -4,7 +4,12 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 
 fun main(args: Array<String>) {
+
+
     JooqContext().use { db ->
+
+        val demographicTestData = DemographicTestData(db)
+
         db.addDisease("YF", "Yellow Fever")
         db.addVaccine("YF", "Yellow Fever")
 
@@ -18,12 +23,12 @@ fun main(args: Array<String>) {
 
         db.addTouchstone("op-2017", "Operational Forecast 2017")
 
-        addAllTestDataForOp2017v1(db)
-        addAllTestDataForOp2017v2(db)
+        addAllTestDataForOp2017v1(db, demographicTestData)
+        addAllTestDataForOp2017v2(db, demographicTestData)
 
         db.addTouchstone("op-2018", "Operational Forecast 2018")
 
-        addAllTestDataForOp2018v1(db)
+        addAllTestDataForOp2018v1(db, demographicTestData)
 
         db.addTouchstone("fake-rfp", "Fake request for proposals")
         db.addTouchstoneVersion("fake-rfp", 1, "Fake request for proposals (v1)", "finished")
@@ -36,11 +41,10 @@ fun main(args: Array<String>) {
 
 }
 
-fun addAllTestDataForOp2017v1(db: JooqContext){
+fun addAllTestDataForOp2017v1(db: JooqContext, demographicTestData: DemographicTestData){
     //Add all test data and relationships for Touchstone Version "op-2017-1"
     db.addTouchstoneVersion("op-2017", 1, "Operational Forecast 2017 (v1)", "finished")
 
-    val demographicTestData = DemographicTestData(db)
     demographicTestData.generate("op-2017-1", listOf("YF"))
 
     val yfRoutine = db.addScenarioToTouchstone("op-2017-1", "yf-routine")
@@ -64,11 +68,10 @@ fun addAllTestDataForOp2017v1(db: JooqContext){
 
 }
 
-fun addAllTestDataForOp2017v2(db: JooqContext){
+fun addAllTestDataForOp2017v2(db: JooqContext, demographicTestData: DemographicTestData){
     //Add all test data and relationships for Touchstone Version "op-2017-2"
     db.addTouchstoneVersion("op-2017", 2, "Operational Forecast 2017 (v2)", "open")
 
-    val demographicTestData = DemographicTestData(db)
     demographicTestData.generate("op-2017-2", listOf("YF"))
 
     val yfRoutine = db.addScenarioToTouchstone("op-2017-2", "yf-routine")
@@ -104,11 +107,10 @@ fun addAllTestDataForOp2017v2(db: JooqContext){
 
 }
 
-fun addAllTestDataForOp2018v1(db: JooqContext){
+fun addAllTestDataForOp2018v1(db: JooqContext, demographicTestData: DemographicTestData){
     //Add all test data and relationships for Touchstone Version "op-2018-1"
     db.addTouchstoneVersion("op-2018", 1, "Operational Forecast 2018 (v1)", "open")
 
-    val demographicTestData = DemographicTestData(db)
     demographicTestData.generate("op-2018-1", listOf("YF"))
     val yfRoutine2018 = db.addScenarioToTouchstone("op-2018-1", "yf-routine")
     val yfCampaign2018 = db.addScenarioToTouchstone("op-2018-1", "yf-campaign")

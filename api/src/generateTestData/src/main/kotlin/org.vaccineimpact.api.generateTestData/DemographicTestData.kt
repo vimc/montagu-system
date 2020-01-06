@@ -3,7 +3,6 @@ package org.vaccineimpact.api.generateTestData
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 
-
 class DemographicTestData(val db: JooqContext)
 {
     val variants = listOf("unwpp_estimates", "unwpp_medium_variant", "unwpp_high_variant")
