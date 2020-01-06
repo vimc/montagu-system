@@ -13,6 +13,7 @@ before_install:
   - docker pull vimc/montagu-migrate:master
 install:
   - npm install codecov -g
+  - ./libsodium/install-libsodium.sh
   - ./src/gradlew -p src
 before_script:
   - sudo mkdir -p /etc/montagu/api/ && sudo touch /etc/montagu/api/go_signal
