@@ -27,7 +27,7 @@ data class CountryOutcomeExpectations(
     fun expectedStochasticRows(disease: String) = expectedRows()
             .map { mapStochasticRow(disease, it.year, it.age, it.country) }
 
-    private fun expectedRows(): Sequence<RowDeterminer> = buildSequence {
+    private fun expectedRows(): Sequence<RowDeterminer> = sequence {
         for (age in ages)
         {
             for (country in countries)
