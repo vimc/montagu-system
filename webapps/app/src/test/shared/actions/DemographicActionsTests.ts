@@ -6,6 +6,7 @@ import {DemographicService} from "../../../main/shared/services/DemographicServi
 import {createMockContribStore} from "../../mocks/mockStore";
 import {mockDemographicDataset} from "../../mocks/mockModels";
 import {DemographicTypes} from "../../../main/shared/actionTypes/DemographicTypes";
+import {DemographicDataset} from "../../../main/shared/models/Generated";
 
 describe("Demographic actions tests", () => {
     const sandbox = new Sandbox();
@@ -16,19 +17,25 @@ describe("Demographic actions tests", () => {
         sandbox.restore();
     });
 
-    it("sets fetched sets", (done) => {
+    it("resets selected data set and sets fetched sets", (done) => {
         const store = createMockContribStore({});
         sandbox.setStubFunc(DemographicService.prototype, "getDataSetsByTouchstoneVersionId", () => {
             return Promise.resolve([testDemographicDataSet]);
         });
-        store.dispatch(demographicActionCreators.getDataSets('touchstone-1'))
+        store.dispatch(demographicActionCreators.getDataSets('touchstone-1'));
         setTimeout(() => {
-            const actions = store.getActions()
-            const expectedPayload = {
-                type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED,
-                data: [testDemographicDataSet]
-            }
-            expect(actions).to.eql([expectedPayload])
+            const actions = store.getActions();
+            const expectedPayloads = [
+                {
+                    type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET,
+                    data: null as DemographicDataset
+                },
+                {
+                    type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED,
+                    data: [testDemographicDataSet]
+                }
+            ];
+            expect(actions).to.eql(expectedPayloads);
             done();
         });
     });
@@ -39,6 +46,17 @@ describe("Demographic actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions()
             const expectedPayload = {type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET, data: testDemographicDataSet}
+            expect(actions).to.eql([expectedPayload])
+            done();
+        });
+    });
+
+    it("can set data set to null", (done) => {
+        const store = createMockContribStore({demographics: {dataSets: [testDemographicDataSet]}});
+        store.dispatch(demographicActionCreators.setDataSet(null))
+        setTimeout(() => {
+            const actions = store.getActions()
+            const expectedPayload = {type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET, data: null as DemographicDataset}
             expect(actions).to.eql([expectedPayload])
             done();
         });

@@ -7,6 +7,7 @@ import {downloadDemographicsAdminPageActionCreators} from "../../../../main/admi
 import {DemographicService} from "../../../../main/shared/services/DemographicService";
 import {mockDemographicDataset} from "../../../mocks/mockModels";
 import {touchstoneVersionPageActionCreators} from "../../../../main/admin/actions/pages/touchstoneVersionPageActionCreators";
+import {DemographicDataset} from "../../../../main/shared/models/Generated";
 
 describe("Download Demographic Admin Page actions tests", () => {
     const sandbox = new Sandbox();
@@ -42,8 +43,10 @@ describe("Download Demographic Admin Page actions tests", () => {
         const actions = store.getActions();
 
         const expectedPayload = [
+            {type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET, data: null as DemographicDataset},
             {type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED, data: [testDemographicDataSet]}
         ];
+
         expect(actions).to.eql(expectedPayload);
     });
 
