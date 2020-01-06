@@ -22,19 +22,19 @@ test('is logged in if cookie is present', async () => {
     const username = await loggedInBox.getText();
     expect(username).toBe("Logged in as test.user | Log out");
 
-});
+}, 9000);
 
 test('is not logged in if cookie is not present', async () => {
 
+    console.time("loggedOutTest");
     await TestHelper.ensureLoggedOut(browser);
-
     browser.get("https://localhost");
 
     const emailInput = browser.wait(webDriver.until.elementLocated(webDriver.By.id('email-input')));
 
     expect(await emailInput.isDisplayed()).toBe(true);
 
-});
+}, 7000);
 
 test('can get error message on failed login', async () => {
 
@@ -54,7 +54,7 @@ test('can get error message on failed login', async () => {
     const errorMessage = await errorAlert.getText();
     expect(errorMessage).toBe("Your email address or password is incorrect.");
 
-});
+}, 6000);
 
 test('can login without redirect', async () => {
 
