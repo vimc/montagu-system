@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompressedJWTCookieClient.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.security</a> &gt; <span class="el_source">CompressedJWTCookieClient.kt</span></div><h1>CompressedJWTCookieClient.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.security
+
+import org.pac4j.core.context.WebContext
+import org.pac4j.core.credentials.TokenCredentials
+import org.pac4j.core.credentials.extractor.HeaderExtractor
+import org.pac4j.http.client.direct.CookieClient
+import org.pac4j.http.client.direct.HeaderClient
+import org.pac4j.http.credentials.extractor.CookieExtractor
+import org.vaccineimpact.api.models.ErrorInfo
+import org.vaccineimpact.api.security.*
+
+// This client receives the token as TokenCredentials and stores the result as JwtProfile
+<span class="nc" id="L13">class CompressedJWTCookieClient(helper: WebTokenHelper)</span>
+<span class="nc" id="L14">    : CookieClient(cookie.cookieName, MontaguTokenAuthenticator(helper, TokenType.BEARER))</span>
+{
+    init
+    {
+<span class="nc" id="L18">        credentialsExtractor = CompressedCookieExtractor(cookie, name)</span>
+    }
+
+<span class="nc" id="L21">    class Wrapper(helper: WebTokenHelper) : MontaguSecurityClientWrapper</span>
+    {
+<span class="nc" id="L23">        override val client = CompressedJWTCookieClient(helper)</span>
+<span class="nc" id="L24">        override val authorizationError = ErrorInfo(</span>
+<span class="nc" id="L25">                &quot;cookie-bearer-token-invalid&quot;,</span>
+<span class="nc" id="L26">                &quot;Bearer token not supplied in cookie '${cookie.cookieName}', or bearer token was invalid&quot;</span>
+        )
+    }
+
+    companion object
+    {
+<span class="nc" id="L32">        val cookie = CookieName.Main</span>
+    }
+}
+
+<span class="nc" id="L36">class CompressedCookieExtractor(cookieName: CookieName, name: String)</span>
+<span class="nc" id="L37">    : CookieExtractor(cookieName.cookieName, name)</span>
+{
+    override fun extract(context: WebContext?): TokenCredentials?
+    {
+<span class="nc" id="L41">        val wrapped = super.extract(context)</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        return if (wrapped != null)</span>
+        {
+<span class="nc" id="L44">            TokenCredentials(inflate(wrapped.token), wrapped.clientName)</span>
+        }
+<span class="nc" id="L46">        else null</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

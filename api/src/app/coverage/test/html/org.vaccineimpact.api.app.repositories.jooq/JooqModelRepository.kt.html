@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JooqModelRepository.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.repositories.jooq</a> &gt; <span class="el_source">JooqModelRepository.kt</span></div><h1>JooqModelRepository.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.repositories.jooq
+
+import org.jooq.DSLContext
+import org.jooq.JoinType
+import org.jooq.Record
+import org.jooq.SelectConditionStep
+import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.repositories.ModelRepository
+import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.joinPath
+import org.vaccineimpact.api.models.Country
+import org.vaccineimpact.api.models.Disease
+import org.vaccineimpact.api.models.ModelVersion
+import org.vaccineimpact.api.models.ResearchModelDetails
+
+<span class="nc" id="L17">class JooqModelRepository(dsl: DSLContext) : JooqRepository(dsl), ModelRepository</span>
+{
+    override fun all(): List&lt;ResearchModelDetails&gt;
+    {
+<span class="nc" id="L21">        val modelRecords = modelQuery()</span>
+
+<span class="nc" id="L23">        val currentVersionRecords = dsl.select(</span>
+<span class="nc" id="L24">                    *MODEL_VERSION.fields(),</span>
+<span class="nc" id="L25">                    *COUNTRY.fields())</span>
+<span class="nc" id="L26">                .from(MODEL_VERSION)</span>
+<span class="nc" id="L27">                .innerJoin(MODEL)</span>
+<span class="nc" id="L28">                .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))</span>
+<span class="nc" id="L29">                .joinPath(MODEL_VERSION, MODEL_VERSION_COUNTRY, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)</span>
+
+<span class="nc" id="L31">        val currentVersions = currentVersionRecords.groupBy { it[MODEL_VERSION.ID] }</span>
+<span class="nc" id="L32">                .mapValues {</span>
+<span class="nc" id="L33">                    val countries = it.value.mapNotNull { r -&gt;</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">                        if (r[COUNTRY.ID] != null)</span>
+                        {
+<span class="nc" id="L36">                            r.into(Country::class.java)</span>
+                        }
+                        else
+                        {
+<span class="nc" id="L40">                            null</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">                        }</span>
+                    }
+
+<span class="nc" id="L44">                    it.value.first().toModelVersionWithCountries(countries)</span>
+                }
+
+<span class="nc" id="L47">        return modelRecords.map {</span>
+<span class="nc" id="L48">            val model = it.toModelWithDisease()</span>
+
+<span class="nc bnc" id="L50" title="All 2 branches missed.">            if (it[MODEL.CURRENT_VERSION] != null)</span>
+            {
+<span class="nc" id="L52">                model.currentVersion = currentVersions[it[MODEL.CURRENT_VERSION]]</span>
+            }
+<span class="nc" id="L54">            model</span>
+        }
+    }
+
+    override fun get(id: String): ResearchModelDetails
+    {
+<span class="nc" id="L60">        val modelRecord = modelQuery()</span>
+<span class="nc" id="L61">                .and(MODEL.ID.eq(id))</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">                .singleOrNull()</span>
+<span class="nc" id="L63">                ?: throw UnknownObjectError(id, ResearchModelDetails::class)</span>
+
+<span class="nc" id="L65">        val model = modelRecord.toModelWithDisease()</span>
+
+<span class="nc" id="L67">        val versionRecord = dsl.select()</span>
+<span class="nc" id="L68">                .from(MODEL_VERSION)</span>
+<span class="nc" id="L69">                .where(MODEL_VERSION.ID.eq(modelRecord[MODEL.CURRENT_VERSION]))</span>
+<span class="nc" id="L70">                .singleOrNull()</span>
+
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (versionRecord != null)</span>
+        {
+<span class="nc" id="L74">            val countries = dsl.select(*COUNTRY.fields())</span>
+<span class="nc" id="L75">                    .fromJoinPath(MODEL_VERSION_COUNTRY, COUNTRY)</span>
+<span class="nc" id="L76">                    .where(MODEL_VERSION_COUNTRY.MODEL_VERSION.eq(modelRecord[MODEL.CURRENT_VERSION]))</span>
+<span class="nc" id="L77">                    .map { it.into(Country::class.java) }</span>
+
+<span class="nc" id="L79">            model.currentVersion = versionRecord.toModelVersionWithCountries(countries)</span>
+        }
+
+<span class="nc" id="L82">        return model</span>
+    }
+
+    private fun modelQuery(): SelectConditionStep&lt;*&gt;
+    {
+<span class="nc" id="L87">        return dsl.select(</span>
+<span class="nc" id="L88">                MODEL.ID,</span>
+<span class="nc" id="L89">                MODEL.DESCRIPTION,</span>
+<span class="nc" id="L90">                MODEL.CITATION,</span>
+<span class="nc" id="L91">                MODEL.MODELLING_GROUP,</span>
+<span class="nc" id="L92">                MODEL.GENDER_SPECIFIC,</span>
+<span class="nc" id="L93">                GENDER.CODE,</span>
+<span class="nc" id="L94">                MODEL.CURRENT_VERSION,</span>
+<span class="nc" id="L95">                *DISEASE.fields())</span>
+<span class="nc" id="L96">                .fromJoinPath(MODEL, GENDER, joinType = JoinType.LEFT_OUTER_JOIN)</span>
+<span class="nc" id="L97">                .joinPath(MODEL, DISEASE)</span>
+<span class="nc" id="L98">                .where(MODEL.IS_CURRENT.eq(true))</span>
+    }
+
+    private fun Record.toModelWithDisease(): ResearchModelDetails
+    {
+<span class="nc" id="L103">        val disease = this.into(Disease::class.java)</span>
+<span class="nc" id="L104">        return ResearchModelDetails(this[MODEL.ID],</span>
+<span class="nc" id="L105">                this[MODEL.DESCRIPTION],</span>
+<span class="nc" id="L106">                this[MODEL.CITATION],</span>
+<span class="nc" id="L107">                this[MODEL.MODELLING_GROUP],</span>
+<span class="nc" id="L108">                disease,</span>
+<span class="nc" id="L109">                this[MODEL.GENDER_SPECIFIC],</span>
+<span class="nc" id="L110">                this[GENDER.CODE])</span>
+    }
+
+    private fun Record.toModelVersionWithCountries(countries: List&lt;Country&gt;): ModelVersion
+    {
+<span class="nc" id="L115">        return ModelVersion(this[MODEL_VERSION.ID],</span>
+<span class="nc" id="L116">                this[MODEL_VERSION.MODEL],</span>
+<span class="nc" id="L117">                this[MODEL_VERSION.VERSION],</span>
+<span class="nc" id="L118">                this[MODEL_VERSION.NOTE],</span>
+<span class="nc" id="L119">                this[MODEL_VERSION.FINGERPRINT],</span>
+<span class="nc" id="L120">                this[MODEL_VERSION.IS_DYNAMIC],</span>
+<span class="nc" id="L121">                this[MODEL_VERSION.CODE],</span>
+<span class="nc" id="L122">                countries)</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

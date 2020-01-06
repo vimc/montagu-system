@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OnetimeTokenController.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.controllers</a> &gt; <span class="el_source">OnetimeTokenController.kt</span></div><h1>OnetimeTokenController.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.controllers
+
+import org.vaccineimpact.api.app.app_start.Controller
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.errors.MissingRequiredParameterError
+import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
+
+<span class="fc" id="L9">class OneTimeTokenController(context: ActionContext,</span>
+                             private val oneTimeTokenGenerator: OneTimeTokenGenerator)
+<span class="fc" id="L11">    : Controller(context)</span>
+{
+<span class="nc" id="L13">    constructor(context: ActionContext,</span>
+<span class="nc" id="L14">                repositories: Repositories) : this(context, OneTimeTokenGenerator(repositories.token))</span>
+
+    fun getToken(): String
+    {
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        val url = context.queryParams(&quot;url&quot;) ?: throw MissingRequiredParameterError(&quot;url&quot;)</span>
+<span class="fc" id="L19">        val profile = context.userProfile!!</span>
+<span class="fc" id="L20">        return oneTimeTokenGenerator.getOneTimeLinkToken(url, profile)</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

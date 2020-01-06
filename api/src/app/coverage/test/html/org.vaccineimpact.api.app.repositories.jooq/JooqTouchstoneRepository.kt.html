@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JooqTouchstoneRepository.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.repositories.jooq</a> &gt; <span class="el_source">JooqTouchstoneRepository.kt</span></div><h1>JooqTouchstoneRepository.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.repositories.jooq
+
+import org.jooq.*
+import org.jooq.Result
+import org.jooq.impl.DSL.*
+import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.filters.whereMatchesFilter
+import org.vaccineimpact.api.app.getLongCoverageRowDataTable
+import org.vaccineimpact.api.app.repositories.ScenarioRepository
+import org.vaccineimpact.api.app.repositories.SimpleDataSet
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.jooq.mapping.MappingHelper
+import org.vaccineimpact.api.db.*
+import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord
+import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.serialization.DataTable
+import org.vaccineimpact.api.serialization.SplitData
+import java.math.BigDecimal
+import kotlin.sequences.Sequence
+
+<span class="nc" id="L23">class JooqTouchstoneRepository(</span>
+        dsl: DSLContext,
+        private val scenarioRepository: ScenarioRepository,
+        private val mapper: MappingHelper = MappingHelper()
+<span class="nc" id="L27">) : JooqRepository(dsl), TouchstoneRepository</span>
+{
+    override fun getTouchstones(): List&lt;Touchstone&gt;
+    {
+<span class="nc" id="L31">        return dsl.select(TOUCHSTONE_NAME.fieldsAsList())</span>
+<span class="nc" id="L32">                .select(TOUCHSTONE.fieldsAsList())</span>
+<span class="nc" id="L33">                .fromJoinPath(TOUCHSTONE_NAME, TOUCHSTONE)</span>
+<span class="nc" id="L34">                .asSequence()</span>
+<span class="nc" id="L35">                .groupBy { it[TOUCHSTONE_NAME.ID] }</span>
+<span class="nc" id="L36">                .map { mapTouchstone(it.value) }</span>
+    }
+
+    override val touchstoneVersions: SimpleDataSet&lt;TouchstoneVersion, String&gt;
+<span class="nc" id="L40">        get() = JooqSimpleDataSet.new(dsl, TOUCHSTONE, { it.ID }, { mapTouchstoneVersion(it) })</span>
+
+    override fun getDemographicData(statisticTypeCode: String,
+                                    source: String,
+                                    touchstoneVersionId: String,
+                                    gender: String): SplitData&lt;DemographicDataForTouchstone, LongDemographicRow&gt;
+    {
+<span class="nc" id="L47">        val metadata = getDemographicMetadata(statisticTypeCode, source, touchstoneVersionId, gender)</span>
+<span class="nc" id="L48">        val data = getDemographicStatistics(touchstoneVersionId, statisticTypeCode, source, gender)</span>
+<span class="nc" id="L49">                .orderBy(DEMOGRAPHIC_STATISTIC.COUNTRY, DEMOGRAPHIC_STATISTIC.YEAR, DEMOGRAPHIC_STATISTIC.AGE_FROM)</span>
+<span class="nc" id="L50">                .fetchSequence()</span>
+<span class="nc" id="L51">                .map { mapDemographicRow(it) }</span>
+<span class="nc" id="L52">        return SplitData(metadata, DataTable.new(data))</span>
+    }
+
+    private fun getDemographicMetadata(
+            statisticTypeCode: String,
+            source: String,
+            touchstoneVersionId: String,
+            gender: String
+    ): DemographicDataForTouchstone
+    {
+<span class="nc" id="L62">        val statisticType = getDemographicStatisticType(statisticTypeCode)</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">                .fetchAny() ?: throw UnknownObjectError(statisticTypeCode, &quot;demographic-statistic-type&quot;)</span>
+<span class="nc" id="L64">        val touchstoneVersion = touchstoneVersions.get(touchstoneVersionId)</span>
+<span class="nc" id="L65">        val countries = dsl.selectDistinct(TOUCHSTONE_COUNTRY.COUNTRY)</span>
+<span class="nc" id="L66">                .from(TOUCHSTONE_COUNTRY)</span>
+<span class="nc" id="L67">                .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneVersionId))</span>
+<span class="nc" id="L68">                .fetch()</span>
+<span class="nc" id="L69">                .map { it.value1() }</span>
+
+<span class="nc" id="L71">        val type = DEMOGRAPHIC_STATISTIC_TYPE</span>
+<span class="nc" id="L72">        val metadata = DemographicMetadata(</span>
+<span class="nc" id="L73">                statisticType[type.CODE],</span>
+<span class="nc" id="L74">                statisticType[type.NAME],</span>
+<span class="nc" id="L75">                Gender.ifApplicable(gender, statisticType[type.GENDER_IS_APPLICABLE]),</span>
+<span class="nc" id="L76">                countries,</span>
+<span class="nc" id="L77">                statisticType[DEMOGRAPHIC_VALUE_UNIT.NAME],</span>
+<span class="nc" id="L78">                statisticType[type.AGE_INTERPRETATION],</span>
+<span class="nc" id="L79">                source</span>
+        )
+<span class="nc" id="L81">        return DemographicDataForTouchstone(touchstoneVersion, metadata)</span>
+    }
+
+    override fun getDemographicDatasets(touchstoneVersionId: String): List&lt;DemographicDataset&gt;
+    {
+<span class="nc" id="L86">        val records = getDemographicDatasetsForTouchstone(touchstoneVersionId)</span>
+<span class="nc" id="L87">                .fetch()</span>
+
+<span class="nc" id="L89">        return records.map {</span>
+<span class="nc" id="L90">            mapDemographicDataset(it)</span>
+<span class="nc" id="L91">        }.sortedBy { it.name }</span>
+    }
+
+    override fun getScenariosAndCoverageSets(touchstoneVersionId: String, filterParams: ScenarioFilterParameters): List&lt;ScenarioAndCoverageSets&gt;
+    {
+<span class="nc" id="L96">        val records = getScenariosAndCoverageSets(touchstoneVersionId)</span>
+<span class="nc" id="L97">                .whereMatchesFilter(JooqScenarioFilter(), filterParams)</span>
+                // first by scenario, then by coverage set order within the scenario
+<span class="nc" id="L99">                .orderBy(SCENARIO_DESCRIPTION.ID, SCENARIO_COVERAGE_SET.ORDER)</span>
+<span class="nc" id="L100">                .fetch()</span>
+
+<span class="nc" id="L102">        return getScenariosFromRecords(records).map {</span>
+<span class="nc" id="L103">            ScenarioAndCoverageSets(it, getCoverageSetsFromRecord(records, it))</span>
+        }
+    }
+
+    override fun getScenarioAndCoverageSets(touchstoneVersionId: String, scenarioDescId: String): ScenarioAndCoverageSets
+    {
+<span class="nc" id="L109">        val records = getScenariosAndCoverageSets(touchstoneVersionId)</span>
+<span class="nc" id="L110">                .and(SCENARIO_DESCRIPTION.ID.eq(scenarioDescId))</span>
+<span class="nc" id="L111">                .orderBy(SCENARIO_COVERAGE_SET.ORDER)</span>
+<span class="nc" id="L112">                .fetch()</span>
+
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        val scenario = getScenariosFromRecords(records).singleOrNull()</span>
+<span class="nc" id="L115">                ?: throw UnknownObjectError(scenarioDescId, &quot;scenario&quot;)</span>
+<span class="nc" id="L116">        return ScenarioAndCoverageSets(scenario, getCoverageSetsFromRecord(records, scenario))</span>
+    }
+
+    private fun getScenariosAndCoverageSets(touchstoneVersionId: String): SelectConditionStep&lt;Record&gt;
+    {
+<span class="nc" id="L121">        return dsl</span>
+<span class="nc" id="L122">                .select(SCENARIO_DESCRIPTION.fieldsAsList())</span>
+<span class="nc" id="L123">                .select(COVERAGE_SET.fieldsAsList())</span>
+<span class="nc" id="L124">                .select(TOUCHSTONE.ID)</span>
+<span class="nc" id="L125">                .select(SCENARIO_COVERAGE_SET.ORDER)</span>
+<span class="nc" id="L126">                .fromJoinPath(TOUCHSTONE, SCENARIO, SCENARIO_DESCRIPTION)</span>
+                // We don't mind if there are no coverage sets, so do a left join
+<span class="nc" id="L128">                .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)</span>
+<span class="nc" id="L129">                .where(TOUCHSTONE.ID.eq(touchstoneVersionId))</span>
+
+    }
+
+    override fun getScenarioAndCoverageData(
+            touchstoneVersionId: String,
+            scenarioDescId: String
+    ): SplitData&lt;ScenarioAndCoverageSets, LongCoverageRow&gt;
+    {
+<span class="nc" id="L138">        val scenario = scenarioRepository.getScenarioForTouchstone(touchstoneVersionId, scenarioDescId)</span>
+
+<span class="nc" id="L140">        val coverageSets = getCoverageSetsForScenario(touchstoneVersionId, scenarioDescId)</span>
+<span class="nc" id="L141">        val coverageData = getCoverageDataForScenario(touchstoneVersionId, scenarioDescId)</span>
+<span class="nc" id="L142">        val metadata = ScenarioAndCoverageSets(scenario, coverageSets)</span>
+
+<span class="nc" id="L144">        return SplitData(metadata, getLongCoverageRowDataTable(coverageData.asSequence()))</span>
+    }
+
+    override fun getCoverageDataForScenario(
+            touchstoneVersionId: String,
+            scenarioDescriptionId: String
+    ): Sequence&lt;LongCoverageRow&gt;
+    {
+<span class="nc" id="L152">        val coverageRecords = getCoverageRowsForScenario(touchstoneVersionId, scenarioDescriptionId)</span>
+<span class="nc bnc" id="L153" title="All 4 branches missed.">                .filter { it[COVERAGE_SET.ID] != null }</span>
+
+<span class="nc" id="L155">        val diseaseId = getDiseaseIdForScenarioDescription(scenarioDescriptionId)</span>
+
+<span class="nc" id="L157">        return coverageRecords</span>
+<span class="nc bnc" id="L158" title="All 4 branches missed.">                .filter { it[COUNTRY.NAME] != null }</span>
+<span class="nc" id="L159">                .map { mapCoverageRow(it, scenarioDescriptionId, touchstoneVersionId, diseaseId) }.asSequence()</span>
+    }
+
+    override fun getCoverageDataForResponsibility(
+            touchstoneVersionId: String,
+            responsibilityId: Int,
+            scenarioDescriptionId: String
+    ): Sequence&lt;LongCoverageRow&gt;
+    {
+<span class="nc" id="L168">        val coverageRecords = getCoverageRowsForResponsibility(responsibilityId, touchstoneVersionId)</span>
+<span class="nc bnc" id="L169" title="All 4 branches missed.">                .filter { it[COVERAGE_SET.ID] != null }</span>
+
+<span class="nc" id="L171">        val diseaseId = getDiseaseIdForScenarioDescription(scenarioDescriptionId)</span>
+
+<span class="nc" id="L173">        return coverageRecords</span>
+<span class="nc bnc" id="L174" title="All 4 branches missed.">                .filter { it[COUNTRY.NAME] != null }</span>
+<span class="nc" id="L175">                .map { mapCoverageRow(it, scenarioDescriptionId, touchstoneVersionId, diseaseId) }.asSequence()</span>
+    }
+
+    override fun getCoverageSetsForScenario(
+            touchstoneVersionId: String,
+            scenarioDescriptionId: String)
+            : List&lt;CoverageSet&gt;
+    {
+<span class="nc" id="L183">        val records = dsl</span>
+<span class="nc" id="L184">                .select(COVERAGE_SET.fieldsAsList())</span>
+<span class="nc" id="L185">                .select(TOUCHSTONE.ID)</span>
+<span class="nc" id="L186">                .fromJoinPath(TOUCHSTONE, SCENARIO)</span>
+<span class="nc" id="L187">                .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET)</span>
+<span class="nc" id="L188">                .where(TOUCHSTONE.ID.eq(touchstoneVersionId))</span>
+<span class="nc" id="L189">                .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))</span>
+<span class="nc" id="L190">                .orderBy(SCENARIO_COVERAGE_SET.ORDER)</span>
+<span class="nc" id="L191">                .fetch()</span>
+
+<span class="nc" id="L193">        return records.map { mapCoverageSet(it) }</span>
+    }
+
+    private fun coverageDimensions(): Array&lt;Field&lt;*&gt;&gt;
+    {
+        //The columns in the Coverage table which the target and coverage values are grouped by
+<span class="nc" id="L199">        return arrayOf(COVERAGE.COVERAGE_SET,</span>
+<span class="nc" id="L200">                COVERAGE.YEAR,</span>
+<span class="nc" id="L201">                COVERAGE.COUNTRY,</span>
+<span class="nc" id="L202">                COVERAGE.AGE_FROM,</span>
+<span class="nc" id="L203">                COVERAGE.AGE_TO,</span>
+<span class="nc" id="L204">                COVERAGE.AGE_RANGE_VERBATIM,</span>
+<span class="nc" id="L205">                COVERAGE.GAVI_SUPPORT,</span>
+<span class="nc" id="L206">                COVERAGE.GENDER)</span>
+    }
+
+    private fun aggregatedValues(): List&lt;Field&lt;*&gt;&gt;
+    {
+<span class="nc" id="L211">        return arrayOf(</span>
+<span class="nc" id="L212">                aggregatedCoverage().`as`(&quot;coverage&quot;),</span>
+<span class="nc" id="L213">                aggregatedTarget().`as`(&quot;target&quot;)</span>
+<span class="nc" id="L214">        ).toList()</span>
+    }
+
+
+    private fun aggregatedCoverage(): Field&lt;BigDecimal?&gt;
+    {
+        //Aggregated coverage - the sum of each row's coverage * target (to get total no of fvp's across campaign)
+        //divided by the the total target population
+        //If only one row in group, pass that row's value through unchanged
+        //Danger of divide by zero error here - treat as NULL if summed target is 0
+<span class="nc" id="L224">        return `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.COVERAGE_)) //If only one row in group</span>
+<span class="nc" id="L225">                .otherwise(sum(validTargetOrNull().mul(validCoverageOrNull()))</span>
+<span class="nc" id="L226">                        .div(nullif(sum(validTargetOrNull()), 0.toDecimal())))</span>
+
+    }
+
+    private fun aggregatedTarget(): Field&lt;BigDecimal?&gt;
+    {
+        //If only one row in group, pass that row's value through unchanged
+<span class="nc" id="L233">        return `when`(count(COVERAGE.COVERAGE_SET).eq(1), max(COVERAGE.TARGET)) //If only one row in group</span>
+<span class="nc" id="L234">                .otherwise(sum(validTargetOrNull()))</span>
+    }
+
+    private fun validTargetOrNull(): Field&lt;BigDecimal?&gt;
+    {
+        //Coverage and target values only make sense if both are provided. Return the target value of a row providing
+        //coverage is not null, else return null
+<span class="nc" id="L241">        return `when`(COVERAGE.COVERAGE_.isNull(), COVERAGE.COVERAGE_) //This is actually the easiest way to get a known NULL here!</span>
+<span class="nc" id="L242">                .otherwise(COVERAGE.TARGET)</span>
+    }
+
+    private fun validCoverageOrNull(): Field&lt;BigDecimal?&gt;
+    {
+        //Coverage and target values only make sense if both are provided. Return the coverage value of a row providing
+        //target is not null, else return null
+<span class="nc" id="L249">        return `when`(COVERAGE.TARGET.isNull(), COVERAGE.TARGET) //This is actually the easiest way to get a known NULL here!</span>
+<span class="nc" id="L250">                .otherwise(COVERAGE.COVERAGE_)</span>
+    }
+
+    private fun getCoverageRowsForScenario(
+            touchstoneVersionId: String,
+            scenarioDescriptionId: String)
+            : Result&lt;Record&gt;
+    {
+        //This query is now grouped to support sub-national campaigns
+<span class="nc" id="L259">        return dsl</span>
+<span class="nc" id="L260">                .select(COVERAGE_SET.fieldsAsList())</span>
+<span class="nc" id="L261">                .select(coverageDimensions().toList())</span>
+<span class="nc" id="L262">                .select(aggregatedValues())</span>
+<span class="nc" id="L263">                .select(COUNTRY.NAME)</span>
+<span class="nc" id="L264">                .select(GENDER.NAME)</span>
+<span class="nc" id="L265">                .fromJoinPath(TOUCHSTONE, SCENARIO)</span>
+                // We don't mind if there are no coverage sets, so do a left join
+<span class="nc" id="L267">                .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)</span>
+<span class="nc" id="L268">                .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)</span>
+<span class="nc" id="L269">                .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)</span>
+<span class="nc" id="L270">                .joinPath(COVERAGE, GENDER, joinType = JoinType.LEFT_OUTER_JOIN)</span>
+<span class="nc" id="L271">                .where(TOUCHSTONE.ID.eq(touchstoneVersionId))</span>
+<span class="nc" id="L272">                .and(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))</span>
+<span class="nc" id="L273">                .groupBy(*COVERAGE_SET.fields(),</span>
+<span class="nc" id="L274">                        *coverageDimensions(),</span>
+<span class="nc" id="L275">                        COUNTRY.NAME,</span>
+<span class="nc" id="L276">                        GENDER.NAME)</span>
+<span class="nc" id="L277">                .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,</span>
+<span class="nc" id="L278">                        COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO,</span>
+<span class="nc" id="L279">                        COVERAGE.AGE_RANGE_VERBATIM,</span>
+<span class="nc" id="L280">                        GENDER.NAME).fetch()</span>
+
+
+    }
+
+    private fun getCoverageRowsForResponsibility(
+            responsibilityId: Int,
+            touchstoneVersionId: String)
+            : Result&lt;Record&gt;
+    {
+<span class="nc" id="L290">        val expectedCountries = dsl.select(COUNTRY.ID)</span>
+<span class="nc" id="L291">                .fromJoinPath(COUNTRY, BURDEN_ESTIMATE_COUNTRY_EXPECTATION, BURDEN_ESTIMATE_EXPECTATION,</span>
+<span class="nc" id="L292">                        RESPONSIBILITY)</span>
+<span class="nc" id="L293">                .where(RESPONSIBILITY.ID.eq(responsibilityId))</span>
+
+        //This query is now grouped to support sub-national campaigns
+<span class="nc" id="L296">        return dsl</span>
+<span class="nc" id="L297">                .select(COVERAGE_SET.fieldsAsList())</span>
+<span class="nc" id="L298">                .select(coverageDimensions().toList())</span>
+<span class="nc" id="L299">                .select(aggregatedValues())</span>
+<span class="nc" id="L300">                .select(COUNTRY.NAME)</span>
+<span class="nc" id="L301">                .select(GENDER.NAME)</span>
+<span class="nc" id="L302">                .fromJoinPath(TOUCHSTONE, SCENARIO, RESPONSIBILITY)</span>
+                // We don't mind if there are no coverage sets, so do a left join
+<span class="nc" id="L304">                .joinPath(SCENARIO, SCENARIO_COVERAGE_SET, COVERAGE_SET, joinType = JoinType.LEFT_OUTER_JOIN)</span>
+<span class="nc" id="L305">                .joinPath(COVERAGE_SET, COVERAGE, joinType = JoinType.LEFT_OUTER_JOIN)</span>
+<span class="nc" id="L306">                .joinPath(COVERAGE, COUNTRY, joinType = JoinType.LEFT_OUTER_JOIN)</span>
+<span class="nc" id="L307">                .joinPath(COVERAGE, GENDER, joinType = JoinType.LEFT_OUTER_JOIN)</span>
+<span class="nc" id="L308">                .where(TOUCHSTONE.ID.eq(touchstoneVersionId))</span>
+<span class="nc" id="L309">                .and(RESPONSIBILITY.ID.eq(responsibilityId))</span>
+<span class="nc" id="L310">                .and(COUNTRY.ID.isNull.or(COUNTRY.ID.`in`(expectedCountries)))</span>
+<span class="nc" id="L311">                .groupBy(*COVERAGE_SET.fields(),</span>
+<span class="nc" id="L312">                        *coverageDimensions(),</span>
+<span class="nc" id="L313">                        COUNTRY.NAME,</span>
+<span class="nc" id="L314">                        GENDER.NAME)</span>
+<span class="nc" id="L315">                .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE,</span>
+<span class="nc" id="L316">                        COVERAGE.COUNTRY, COVERAGE.YEAR, COVERAGE.AGE_FROM, COVERAGE.AGE_TO,</span>
+<span class="nc" id="L317">                        COVERAGE.AGE_RANGE_VERBATIM,</span>
+<span class="nc" id="L318">                        GENDER.NAME).fetch()</span>
+    }
+
+<span class="nc" id="L321">    private val TOUCHSTONE_SOURCES = &quot;touchstoneSources&quot;</span>
+<span class="nc" id="L322">    private val TOUCHSTONE_COUNTRIES = &quot;touchstoneCountries&quot;</span>
+
+    private fun getDemographicDatasetsForTouchstone(touchstoneVersionId: String):
+            SelectConditionStep&lt;Record5&lt;Int, String, String, Boolean, String&gt;&gt;
+    {
+
+<span class="nc" id="L328">        return dsl.select(DEMOGRAPHIC_STATISTIC_TYPE.ID,</span>
+<span class="nc" id="L329">                DEMOGRAPHIC_STATISTIC_TYPE.CODE,</span>
+<span class="nc" id="L330">                DEMOGRAPHIC_STATISTIC_TYPE.NAME,</span>
+<span class="nc" id="L331">                DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE,</span>
+<span class="nc" id="L332">                DEMOGRAPHIC_SOURCE.CODE)</span>
+<span class="nc" id="L333">                .fromJoinPath(DEMOGRAPHIC_STATISTIC_TYPE,</span>
+<span class="nc" id="L334">                        DEMOGRAPHIC_DATASET,</span>
+<span class="nc" id="L335">                        TOUCHSTONE_DEMOGRAPHIC_DATASET)</span>
+<span class="nc" id="L336">                .join(DEMOGRAPHIC_SOURCE)</span>
+<span class="nc" id="L337">                .on(DEMOGRAPHIC_SOURCE.ID.eq(DEMOGRAPHIC_DATASET.DEMOGRAPHIC_SOURCE))</span>
+<span class="nc" id="L338">                .where(TOUCHSTONE_DEMOGRAPHIC_DATASET.TOUCHSTONE.eq(touchstoneVersionId))</span>
+
+    }
+
+    private fun getDemographicStatisticType(typeCode: String):
+            Select&lt;Record5&lt;String, String, String, String, Boolean&gt;&gt;
+    {
+<span class="nc" id="L345">        return dsl.select(</span>
+<span class="nc" id="L346">                DEMOGRAPHIC_STATISTIC_TYPE.CODE,</span>
+<span class="nc" id="L347">                DEMOGRAPHIC_STATISTIC_TYPE.NAME,</span>
+<span class="nc" id="L348">                DEMOGRAPHIC_STATISTIC_TYPE.AGE_INTERPRETATION,</span>
+<span class="nc" id="L349">                DEMOGRAPHIC_VALUE_UNIT.NAME,</span>
+<span class="nc" id="L350">                DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE)</span>
+<span class="nc" id="L351">                .from(DEMOGRAPHIC_STATISTIC_TYPE)</span>
+<span class="nc" id="L352">                .join(DEMOGRAPHIC_VALUE_UNIT)</span>
+<span class="nc" id="L353">                .on(DEMOGRAPHIC_STATISTIC_TYPE.DEMOGRAPHIC_VALUE_UNIT.eq(DEMOGRAPHIC_VALUE_UNIT.ID))</span>
+<span class="nc" id="L354">                .where(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))</span>
+
+    }
+
+    private fun getDemographicStatistics(touchstoneVersionId: String,
+                                         typeCode: String,
+                                         sourceCode: String,
+                                         gender: String):
+            SelectConditionStep&lt;Record9&lt;Int, Int, String, Int, String, Int, BigDecimal, String, String&gt;&gt;
+    {
+        // we are hard coding this here for now - need to revisit data model longer term
+<span class="nc" id="L365">        val variantNames = listOf(&quot;unwpp_estimates&quot;, &quot;unwpp_medium_variant&quot;, &quot;wpp_cm_hybrid&quot;)</span>
+
+<span class="nc" id="L367">        val touchstoneSources = dsl.select(DEMOGRAPHIC_SOURCE.ID, DEMOGRAPHIC_SOURCE.CODE.`as`(&quot;sourceCode&quot;))</span>
+<span class="nc" id="L368">                .fromJoinPath(DEMOGRAPHIC_SOURCE, DEMOGRAPHIC_DATASET, TOUCHSTONE_DEMOGRAPHIC_DATASET)</span>
+<span class="nc" id="L369">                .join(DEMOGRAPHIC_STATISTIC_TYPE)</span>
+<span class="nc" id="L370">                .on(DEMOGRAPHIC_STATISTIC_TYPE.ID.eq(DEMOGRAPHIC_DATASET.DEMOGRAPHIC_STATISTIC_TYPE))</span>
+<span class="nc" id="L371">                .where(TOUCHSTONE_DEMOGRAPHIC_DATASET.TOUCHSTONE.eq(touchstoneVersionId))</span>
+<span class="nc" id="L372">                .and(DEMOGRAPHIC_SOURCE.CODE.eq(sourceCode))</span>
+<span class="nc" id="L373">                .and(DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode))</span>
+
+<span class="nc" id="L375">        val variants = dsl.select(DEMOGRAPHIC_VARIANT.ID)</span>
+<span class="nc" id="L376">                .from(DEMOGRAPHIC_VARIANT)</span>
+<span class="nc" id="L377">                .where(DEMOGRAPHIC_VARIANT.CODE.`in`(variantNames))</span>
+
+<span class="nc bnc" id="L379" title="All 2 branches missed.">        val statisticType = dsl.fetchOne(</span>
+<span class="nc" id="L380">                DEMOGRAPHIC_STATISTIC_TYPE,</span>
+<span class="nc" id="L381">                DEMOGRAPHIC_STATISTIC_TYPE.CODE.eq(typeCode)</span>
+<span class="nc" id="L382">        ) ?: throw UnknownObjectError(typeCode, &quot;demographic-statistic-type&quot;)</span>
+<span class="nc" id="L383">        val genderId = getGenderId(statisticType, gender)</span>
+
+<span class="nc" id="L385">        val countries = dsl.selectDistinct(COUNTRY.ID, COUNTRY.NID, COUNTRY.NAME)</span>
+<span class="nc" id="L386">                .fromJoinPath(COUNTRY, TOUCHSTONE_COUNTRY)</span>
+<span class="nc" id="L387">                .where(TOUCHSTONE_COUNTRY.TOUCHSTONE.eq(touchstoneVersionId))</span>
+
+<span class="nc" id="L389">        return dsl</span>
+<span class="nc" id="L390">                .with(TOUCHSTONE_SOURCES).`as`(touchstoneSources)</span>
+<span class="nc" id="L391">                .with(&quot;v&quot;).`as`(variants)</span>
+<span class="nc" id="L392">                .with(TOUCHSTONE_COUNTRIES).`as`(countries)</span>
+<span class="nc" id="L393">                .select(DEMOGRAPHIC_STATISTIC.AGE_FROM,</span>
+<span class="nc" id="L394">                        DEMOGRAPHIC_STATISTIC.AGE_TO,</span>
+<span class="nc" id="L395">                        DEMOGRAPHIC_STATISTIC.COUNTRY,</span>
+<span class="nc" id="L396">                        field(name(TOUCHSTONE_COUNTRIES, &quot;nid&quot;), Int::class.java),</span>
+<span class="nc" id="L397">                        field(name(TOUCHSTONE_COUNTRIES, &quot;name&quot;), String::class.java),</span>
+<span class="nc" id="L398">                        DEMOGRAPHIC_STATISTIC.YEAR,</span>
+<span class="nc" id="L399">                        DEMOGRAPHIC_STATISTIC.VALUE,</span>
+<span class="nc" id="L400">                        field(name(TOUCHSTONE_SOURCES, &quot;sourceCode&quot;), String::class.java),</span>
+<span class="nc" id="L401">                        GENDER.CODE)</span>
+<span class="nc" id="L402">                .from(DEMOGRAPHIC_STATISTIC)</span>
+<span class="nc" id="L403">                .join(GENDER)</span>
+<span class="nc" id="L404">                .on(GENDER.ID.eq(DEMOGRAPHIC_STATISTIC.GENDER))</span>
+<span class="nc" id="L405">                .join(table(name(TOUCHSTONE_COUNTRIES)))</span>
+<span class="nc" id="L406">                .on(field(name(TOUCHSTONE_COUNTRIES, &quot;id&quot;)).eq(DEMOGRAPHIC_STATISTIC.COUNTRY))</span>
+<span class="nc" id="L407">                .join(table(name(TOUCHSTONE_SOURCES)))</span>
+<span class="nc" id="L408">                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_SOURCE.eq(field(name(TOUCHSTONE_SOURCES, &quot;id&quot;), Int::class.java)))</span>
+<span class="nc" id="L409">                .join(table(name(&quot;v&quot;)))</span>
+<span class="nc" id="L410">                .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT.eq(field(name(&quot;v&quot;, &quot;id&quot;), Int::class.java)))</span>
+<span class="nc" id="L411">                .where(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.eq(statisticType.id))</span>
+<span class="nc" id="L412">                .and(DEMOGRAPHIC_STATISTIC.GENDER.eq(genderId))</span>
+    }
+
+    private fun getGenderId(statisticType: DemographicStatisticTypeRecord, gender: String): Int
+    {
+<span class="nc bnc" id="L417" title="All 2 branches missed.">        val genderFilter = if (statisticType[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE])</span>
+        {
+<span class="nc" id="L419">            GENDER.CODE.eq(gender)</span>
+        }
+        else
+        {
+<span class="nc" id="L423">            GENDER.CODE.eq(&quot;both&quot;)</span>
+        }
+<span class="nc" id="L425">        return dsl.fetchOne(GENDER, genderFilter).id</span>
+    }
+
+    private fun getScenariosFromRecords(records: Result&lt;Record&gt;): List&lt;Scenario&gt;
+    {
+<span class="nc" id="L430">        val scenarioIds = records.map { it[SCENARIO_DESCRIPTION.ID] }</span>
+<span class="nc" id="L431">        return scenarioRepository.getScenarios(scenarioIds)</span>
+    }
+
+    private fun getCoverageSetsFromRecord(records: Result&lt;Record&gt;, scenario: Scenario) =
+<span class="nc" id="L435">            records</span>
+<span class="nc bnc" id="L436" title="All 6 branches missed.">                    .filter { it[SCENARIO_DESCRIPTION.ID] == scenario.id &amp;&amp; it[COVERAGE_SET.ID] != null }</span>
+<span class="nc" id="L437">                    .distinctBy { it[COVERAGE_SET.ID] }</span>
+<span class="nc" id="L438">                    .map { mapCoverageSet(it) }</span>
+
+    /** Takes a list of TOUCHSTONE_NAME + TOUCHSTONE records.
+     * The TOUCHSTONE_NAME fields should be the same for each record.
+     * The TOUCHSTONE fields should be different for each record.
+     */
+    override fun mapTouchstone(records: List&lt;Record&gt;): Touchstone
+    {
+<span class="nc" id="L446">        val shared = records.first()</span>
+<span class="nc" id="L447">        return Touchstone(</span>
+<span class="nc" id="L448">                shared[TOUCHSTONE_NAME.ID],</span>
+<span class="nc" id="L449">                shared[TOUCHSTONE_NAME.DESCRIPTION],</span>
+<span class="nc" id="L450">                shared[TOUCHSTONE_NAME.COMMENT],</span>
+<span class="nc" id="L451">                versions = records.map(this::mapTouchstoneVersion).sortedByDescending { it.version }</span>
+        )
+    }
+
+<span class="nc" id="L455">    override fun mapTouchstoneVersion(record: Record) = TouchstoneVersion(</span>
+<span class="nc" id="L456">            record[TOUCHSTONE.ID],</span>
+<span class="nc" id="L457">            record[TOUCHSTONE.TOUCHSTONE_NAME],</span>
+<span class="nc" id="L458">            record[TOUCHSTONE.VERSION],</span>
+<span class="nc" id="L459">            record[TOUCHSTONE.DESCRIPTION],</span>
+<span class="nc" id="L460">            mapper.mapEnum(record[TOUCHSTONE.STATUS])</span>
+<span class="nc" id="L461">    )</span>
+
+<span class="nc" id="L463">    inline fun &lt;reified T : Any?&gt; Record.getField(name: Name): T = this.get(name, T::class.java)</span>
+
+<span class="nc" id="L465">    private fun mapDemographicDataset(record: Record) = DemographicDataset(</span>
+<span class="nc" id="L466">            record[DEMOGRAPHIC_STATISTIC_TYPE.CODE],</span>
+<span class="nc" id="L467">            record[DEMOGRAPHIC_STATISTIC_TYPE.NAME],</span>
+<span class="nc" id="L468">            record[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE],</span>
+<span class="nc" id="L469">            record[DEMOGRAPHIC_SOURCE.CODE])</span>
+
+<span class="nc" id="L471">    private fun mapCoverageSet(record: Record) = CoverageSet(</span>
+<span class="nc" id="L472">            record[COVERAGE_SET.ID],</span>
+<span class="nc" id="L473">            record[TOUCHSTONE.ID],</span>
+<span class="nc" id="L474">            record[COVERAGE_SET.NAME],</span>
+<span class="nc" id="L475">            record[COVERAGE_SET.VACCINE],</span>
+<span class="nc" id="L476">            mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),</span>
+<span class="nc" id="L477">            mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE])</span>
+<span class="nc" id="L478">    )</span>
+
+    private fun mapCoverageRow(record: Record, scenarioDescriptionId: String, touchstoneVersionId: String, diseaseId: String) =
+<span class="nc bnc" id="L481" title="All 2 branches missed.">            if (includeGenderInCoverage(touchstoneVersionId))</span>
+            {
+<span class="nc" id="L483">                GenderedLongCoverageRow(</span>
+<span class="nc" id="L484">                        scenarioDescriptionId,</span>
+<span class="nc" id="L485">                        record[COVERAGE_SET.NAME],</span>
+<span class="nc" id="L486">                        record[COVERAGE_SET.VACCINE],</span>
+<span class="nc" id="L487">                        mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),</span>
+<span class="nc" id="L488">                        mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),</span>
+<span class="nc" id="L489">                        record[COVERAGE.COUNTRY],</span>
+<span class="nc" id="L490">                        record[COUNTRY.NAME],</span>
+<span class="nc" id="L491">                        record[COVERAGE.YEAR],</span>
+<span class="nc" id="L492">                        record[COVERAGE.AGE_FROM],</span>
+<span class="nc" id="L493">                        record[COVERAGE.AGE_TO],</span>
+<span class="nc" id="L494">                        record[COVERAGE.AGE_RANGE_VERBATIM],</span>
+<span class="nc" id="L495">                        record[COVERAGE.TARGET],</span>
+<span class="nc" id="L496">                        record[COVERAGE.COVERAGE_],</span>
+<span class="nc bnc" id="L497" title="All 2 branches missed.">                        (record[GENDER.NAME] ?: defaultGender(diseaseId)).toLowerCase()</span>
+                )
+            }
+            else
+            {
+<span class="nc" id="L502">                NoGenderLongCoverageRow(</span>
+<span class="nc" id="L503">                        scenarioDescriptionId,</span>
+<span class="nc" id="L504">                        record[COVERAGE_SET.NAME],</span>
+<span class="nc" id="L505">                        record[COVERAGE_SET.VACCINE],</span>
+<span class="nc" id="L506">                        mapper.mapEnum(record[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),</span>
+<span class="nc" id="L507">                        mapper.mapEnum(record[COVERAGE_SET.ACTIVITY_TYPE]),</span>
+<span class="nc" id="L508">                        record[COVERAGE.COUNTRY],</span>
+<span class="nc" id="L509">                        record[COUNTRY.NAME],</span>
+<span class="nc" id="L510">                        record[COVERAGE.YEAR],</span>
+<span class="nc" id="L511">                        record[COVERAGE.AGE_FROM],</span>
+<span class="nc" id="L512">                        record[COVERAGE.AGE_TO],</span>
+<span class="nc" id="L513">                        record[COVERAGE.AGE_RANGE_VERBATIM],</span>
+<span class="nc" id="L514">                        record[COVERAGE.TARGET],</span>
+<span class="nc" id="L515">                        record[COVERAGE.COVERAGE_]</span>
+                )
+<span class="nc" id="L517">            }</span>
+
+
+<span class="nc" id="L520">    private fun mapDemographicRow(record: Record) = LongDemographicRow(</span>
+<span class="nc" id="L521">            record[field(name(TOUCHSTONE_COUNTRIES, &quot;nid&quot;), Int::class.java)],</span>
+<span class="nc" id="L522">            record[DEMOGRAPHIC_STATISTIC.COUNTRY],</span>
+<span class="nc" id="L523">            record[field(name(TOUCHSTONE_COUNTRIES, &quot;name&quot;), String::class.java)],</span>
+<span class="nc" id="L524">            record[DEMOGRAPHIC_STATISTIC.AGE_FROM],</span>
+<span class="nc" id="L525">            record[DEMOGRAPHIC_STATISTIC.AGE_TO],</span>
+<span class="nc" id="L526">            record[DEMOGRAPHIC_STATISTIC.YEAR],</span>
+<span class="nc" id="L527">            record[GENDER.CODE],</span>
+<span class="nc" id="L528">            record[DEMOGRAPHIC_STATISTIC.VALUE]</span>
+<span class="nc" id="L529">    )</span>
+
+    private fun getDiseaseIdForScenarioDescription(scenarioDescriptionId: String): String =
+<span class="nc" id="L532">            dsl.select(SCENARIO_DESCRIPTION.DISEASE)</span>
+<span class="nc" id="L533">                .from(SCENARIO_DESCRIPTION)</span>
+<span class="nc" id="L534">                .where(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))</span>
+<span class="nc" id="L535">                .fetchOne()[SCENARIO_DESCRIPTION.DISEASE]</span>
+
+<span class="nc bnc" id="L537" title="All 2 branches missed.">    private fun includeGenderInCoverage(touchstoneVersionId: String): Boolean = touchstoneVersionId &gt; &quot;2019&quot;</span>
+
+    private fun defaultGender(diseaseId: String): String =
+<span class="nc bnc" id="L540" title="All 2 branches missed.">            if (diseaseId == &quot;HPV&quot;)</span>
+            {
+<span class="nc" id="L542">                &quot;female&quot;</span>
+            }
+            else
+            {
+<span class="nc" id="L546">                &quot;both&quot;</span>
+<span class="nc" id="L547">            }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

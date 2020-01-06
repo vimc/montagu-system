@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GroupResponsibilityController.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.controllers</a> &gt; <span class="el_source">GroupResponsibilityController.kt</span></div><h1>GroupResponsibilityController.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.controllers
+
+import org.vaccineimpact.api.app.app_start.Controller
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.controllers.helpers.ExpectationPath
+import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
+import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.logic.ExpectationsLogic
+import org.vaccineimpact.api.app.logic.RepositoriesExpectationsLogic
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
+import org.vaccineimpact.api.app.security.filterByPermission
+import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.ExpectationMapping
+import org.vaccineimpact.api.models.expectations.ExpectedRow
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
+import org.vaccineimpact.api.serialization.NullToEmptyStringSerializer
+import org.vaccineimpact.api.serialization.FlexibleDataTable
+import org.vaccineimpact.api.serialization.StreamSerializable
+
+<span class="fc" id="L24">class GroupResponsibilityController(</span>
+        context: ActionContext,
+        private val modellingGroupRepo: ModellingGroupRepository,
+        private val touchstoneRepo: TouchstoneRepository,
+        private val expectationsLogic: ExpectationsLogic
+<span class="fc" id="L29">) : Controller(context)</span>
+{
+<span class="nc" id="L31">    constructor(context: ActionContext, repositories: Repositories): this(</span>
+<span class="nc" id="L32">            context,</span>
+<span class="nc" id="L33">            repositories.modellingGroup,</span>
+<span class="nc" id="L34">            repositories.touchstone,</span>
+<span class="nc" id="L35">            RepositoriesExpectationsLogic(repositories.responsibilities, repositories.expectations,</span>
+<span class="nc" id="L36">                    repositories.modellingGroup, repositories.touchstone)</span>
+    )
+
+    fun getResponsibleTouchstones(): List&lt;Touchstone&gt;
+    {
+<span class="fc" id="L41">        val groupId = groupId(context)</span>
+<span class="fc" id="L42">        return modellingGroupRepo.getTouchstonesByGroupId(groupId).filterByPermission(context)</span>
+    }
+
+    fun getResponsibilities(): ResponsibilitySetWithExpectations
+    {
+<span class="fc" id="L47">        val groupId = groupId(context)</span>
+<span class="fc" id="L48">        val touchstoneVersionId = context.params(&quot;:touchstone-version-id&quot;)</span>
+<span class="fc" id="L49">        val touchstone = touchstoneRepo.touchstoneVersions.get(touchstoneVersionId)</span>
+<span class="fc" id="L50">        context.checkIsAllowedToSeeTouchstone(touchstoneVersionId, touchstone.status)</span>
+<span class="fc" id="L51">        val filterParameters = ScenarioFilterParameters.fromContext(context)</span>
+<span class="fc" id="L52">        return expectationsLogic.getResponsibilitySetWithExpectations(groupId, touchstoneVersionId, filterParameters)</span>
+    }
+
+    fun getResponsibility(): ResponsibilityDetails
+    {
+<span class="fc" id="L57">        val path = ResponsibilityPath(context)</span>
+<span class="fc" id="L58">        modellingGroupRepo.getModellingGroup(path.groupId)</span>
+<span class="fc" id="L59">        val data = expectationsLogic.getResponsibilityWithExpectations(path.groupId, path.touchstoneVersionId, path.scenarioId)</span>
+<span class="fc" id="L60">        context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, data.touchstoneVersion.status)</span>
+<span class="fc" id="L61">        return data</span>
+    }
+
+    fun getTemplate(): StreamSerializable&lt;ExpectedRow&gt;
+    {
+<span class="fc" id="L66">        val path = ExpectationPath(context)</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        val type = context.queryParams(&quot;type&quot;) ?: &quot;central&quot;</span>
+<span class="fc" id="L68">        val expectationMapping = expectationsLogic.getExpectationsById(path.expectationId, path.groupId,</span>
+<span class="fc" id="L69">                path.touchstoneVersionId)</span>
+
+<span class="fc" id="L71">        context.addAttachmentHeader(getTemplateName(type, path, expectationMapping))</span>
+
+<span class="fc" id="L73">        val expectations = expectationMapping.expectation</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        return if (type == &quot;central&quot;)</span>
+        {
+<span class="fc" id="L76">            FlexibleDataTable.new(expectations.expectedCentralRows(expectationMapping.disease),</span>
+<span class="fc" id="L77">                    expectations.outcomes.map{ it.code }, NullToEmptyStringSerializer.instance)</span>
+        }
+        else
+        {
+<span class="fc" id="L81">            FlexibleDataTable.new(expectations.expectedStochasticRows(expectationMapping.disease),</span>
+<span class="pc" id="L82">                    expectations.outcomes.map{ it.code }, NullToEmptyStringSerializer.instance)</span>
+        }
+
+    }
+
+    private fun getTemplateName(type: String, path: ExpectationPath, expectationMapping: ExpectationMapping): String
+    {
+<span class="fc" id="L89">        val nameParts = listOf(</span>
+<span class="fc" id="L90">                &quot;$type-burden-template&quot;,</span>
+<span class="fc" id="L91">                path.touchstoneVersionId,</span>
+<span class="fc" id="L92">                expectationMapping.expectation.description,</span>
+<span class="fc" id="L93">                &quot;csv&quot;</span>
+        )
+<span class="fc" id="L95">        return nameParts.joinToString(&quot;.&quot;)</span>
+    }
+
+    // We are sure that this will be non-null, as its part of the URL,
+    // and Spark wouldn't have mapped us here if it were blank
+<span class="fc" id="L100">    private fun groupId(context: ActionContext): String = context.params(&quot;:group-id&quot;)</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

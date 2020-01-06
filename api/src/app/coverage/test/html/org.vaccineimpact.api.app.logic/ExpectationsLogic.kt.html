@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExpectationsLogic.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.logic</a> &gt; <span class="el_source">ExpectationsLogic.kt</span></div><h1>ExpectationsLogic.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.logic
+
+import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.repositories.ExpectationsRepository
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.models.expectations.ExpectationMapping
+import org.vaccineimpact.api.models.ModellingGroup
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityDetails
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
+
+interface ExpectationsLogic
+{
+    fun getExpectationsById(expectationId: Int, groupId: String, touchstoneVersionId: String): ExpectationMapping
+
+    fun getResponsibilityWithExpectations(groupId: String,
+                                          touchstoneVersionId: String,
+                                          scenarioId: String): ResponsibilityDetails
+
+    fun getResponsibilitySetsWithExpectations(touchstoneVersionId: String): List&lt;ResponsibilitySetWithExpectations&gt;
+
+    fun getResponsibilitySetWithExpectations(
+            groupId: String,
+            touchstoneVersionId: String,
+            filterParameters: ScenarioFilterParameters
+    ): ResponsibilitySetWithExpectations
+}
+
+<span class="fc" id="L31">class RepositoriesExpectationsLogic(private val responsibilitiesRepository: ResponsibilitiesRepository,</span>
+                                    private val expectationsRepository: ExpectationsRepository,
+                                    private val modellingGroupRepository: ModellingGroupRepository,
+                                    private val touchstoneRepository: TouchstoneRepository) : ExpectationsLogic
+{
+    override fun getExpectationsById(expectationId: Int, groupId: String, touchstoneVersionId: String):
+            ExpectationMapping
+    {
+<span class="fc" id="L39">        val group = checkGroupAndTouchstoneExist(groupId, touchstoneVersionId)</span>
+<span class="fc" id="L40">        val expectationIds = expectationsRepository.getExpectationIdsForGroupAndTouchstone(group.id, touchstoneVersionId)</span>
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (!expectationIds.contains(expectationId)){</span>
+<span class="fc" id="L43">            throw UnknownObjectError(expectationId, &quot;burden-estimate-expectation&quot;)</span>
+        }
+
+<span class="fc" id="L46">        return expectationsRepository.getExpectationsById(expectationId)</span>
+    }
+
+    override fun getResponsibilityWithExpectations(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityDetails
+    {
+<span class="fc" id="L51">        val group = checkGroupAndTouchstoneExist(groupId, touchstoneVersionId)</span>
+<span class="fc" id="L52">        val data = responsibilitiesRepository.getResponsibility(group.id, touchstoneVersionId, scenarioId)</span>
+<span class="fc" id="L53">        val expectations = expectationsRepository.getExpectationsForResponsibility(data.responsibilityId)</span>
+<span class="fc" id="L54">        return ResponsibilityDetails(data.responsibility, data.touchstoneVersion, expectations.expectation)</span>
+    }
+
+    override fun getResponsibilitySetsWithExpectations(touchstoneVersionId: String): List&lt;ResponsibilitySetWithExpectations&gt;
+    {
+<span class="fc" id="L59">        checkTouchstoneExists(touchstoneVersionId)</span>
+<span class="fc" id="L60">        val responsibilitySets = responsibilitiesRepository.getResponsibilitiesForTouchstone(touchstoneVersionId)</span>
+<span class="fc" id="L61">        return responsibilitySets.map {</span>
+<span class="fc" id="L62">            val expectations = expectationsRepository.getExpectationsForResponsibilitySet(it.modellingGroupId, touchstoneVersionId)</span>
+<span class="fc" id="L63">            ResponsibilitySetWithExpectations(it, expectations)</span>
+        }
+    }
+
+    override fun getResponsibilitySetWithExpectations(
+            groupId: String,
+            touchstoneVersionId: String,
+            filterParameters: ScenarioFilterParameters
+    ): ResponsibilitySetWithExpectations
+    {
+<span class="fc" id="L73">        val group = checkGroupAndTouchstoneExist(groupId, touchstoneVersionId)</span>
+<span class="fc" id="L74">        val responsibilitySet = responsibilitiesRepository.getResponsibilitiesForGroup(</span>
+<span class="fc" id="L75">                group.id, touchstoneVersionId, filterParameters)</span>
+<span class="fc" id="L76">        val expectations = expectationsRepository.getExpectationsForResponsibilitySet(group.id, touchstoneVersionId)</span>
+<span class="fc" id="L77">        return ResponsibilitySetWithExpectations(responsibilitySet, expectations)</span>
+    }
+
+    private fun checkGroupAndTouchstoneExist(groupId: String, touchstoneVersionId: String): ModellingGroup
+    {
+<span class="fc" id="L82">        checkTouchstoneExists(touchstoneVersionId) // throws if touchstone version does not exist</span>
+<span class="fc" id="L83">        return modellingGroupRepository.getModellingGroup(groupId) // throws if group does not exist and resolves canonical ID</span>
+    }
+
+    private fun checkTouchstoneExists(touchstoneVersionId: String)
+    {
+<span class="fc" id="L88">        touchstoneRepository.touchstoneVersions.get(touchstoneVersionId)</span>
+<span class="fc" id="L89">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

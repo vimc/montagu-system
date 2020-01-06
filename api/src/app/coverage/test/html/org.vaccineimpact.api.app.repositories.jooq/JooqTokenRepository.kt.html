@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JooqTokenRepository.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.repositories.jooq</a> &gt; <span class="el_source">JooqTokenRepository.kt</span></div><h1>JooqTokenRepository.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.repositories.jooq
+
+import org.jooq.DSLContext
+import org.vaccineimpact.api.app.repositories.TokenRepository
+import org.vaccineimpact.api.db.Tables.ONETIME_TOKEN
+import org.vaccineimpact.api.models.HasKey
+import org.vaccineimpact.api.security.inflate
+
+<span class="nc" id="L9">class JooqTokenRepository(dsl: DSLContext) : JooqRepository(dsl), TokenRepository</span>
+{
+<span class="nc" id="L11">    data class OneTimeToken(override val id: String) : HasKey&lt;String&gt;</span>
+
+    override fun storeToken(uncompressedToken: String)
+    {
+<span class="nc" id="L15">        dsl.newRecord(ONETIME_TOKEN).apply {</span>
+<span class="nc" id="L16">            this.token = uncompressedToken</span>
+<span class="nc" id="L17">        }.store()</span>
+<span class="nc" id="L18">    }</span>
+
+    override fun validateOneTimeToken(uncompressedToken: String): Boolean
+    {
+<span class="nc" id="L22">        val deletedCount = dsl.deleteFrom(ONETIME_TOKEN)</span>
+<span class="nc" id="L23">                .where(ONETIME_TOKEN.TOKEN.eq(uncompressedToken))</span>
+<span class="nc" id="L24">                .execute()</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        return deletedCount == 1</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

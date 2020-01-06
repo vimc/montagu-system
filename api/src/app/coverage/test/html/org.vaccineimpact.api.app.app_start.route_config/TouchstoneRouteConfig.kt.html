@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TouchstoneRouteConfig.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.app_start.route_config</a> &gt; <span class="el_source">TouchstoneRouteConfig.kt</span></div><h1>TouchstoneRouteConfig.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.app_start.route_config
+
+import org.vaccineimpact.api.app.app_start.*
+import org.vaccineimpact.api.app.controllers.TouchstoneController
+import org.vaccineimpact.api.app.app_start.streamed
+
+<span class="nc" id="L7">object TouchstoneRouteConfig : RouteConfig</span>
+{
+<span class="nc" id="L9">    private val baseUrl = &quot;/touchstones/&quot;</span>
+<span class="nc" id="L10">    private val controller = TouchstoneController::class</span>
+
+<span class="nc" id="L12">    private val permissions = setOf(&quot;*/touchstones.read&quot;)</span>
+<span class="nc" id="L13">    private val scenarioPermissions = permissions + setOf(&quot;*/scenarios.read&quot;)</span>
+<span class="nc" id="L14">    private val demographicPermissions = permissions + setOf(&quot;*/demographics.read&quot;)</span>
+<span class="nc" id="L15">    private val responsibilityPermissions = permissions + setOf(&quot;*/scenarios.read&quot;, &quot;*/responsibilities.read&quot;)</span>
+
+<span class="nc" id="L17">    override val endpoints: List&lt;EndpointDefinition&gt; = listOf(</span>
+<span class="nc" id="L18">            Endpoint(baseUrl, controller, &quot;getTouchstones&quot;)</span>
+<span class="nc" id="L19">                    .json()</span>
+<span class="nc" id="L20">                    .secure(permissions),</span>
+
+<span class="nc" id="L22">            Endpoint(&quot;$baseUrl:touchstone-version-id/responsibilities/&quot;, controller, &quot;getResponsibilities&quot;)</span>
+<span class="nc" id="L23">                    .json()</span>
+<span class="nc" id="L24">                    .secure(responsibilityPermissions),</span>
+
+<span class="nc" id="L26">            Endpoint(&quot;$baseUrl:touchstone-version-id/scenarios/&quot;, controller, &quot;getScenarios&quot;)</span>
+<span class="nc" id="L27">                    .json()</span>
+<span class="nc" id="L28">                    .secure(scenarioPermissions),</span>
+
+<span class="nc" id="L30">            Endpoint(&quot;$baseUrl:touchstone-version-id/scenarios/:scenario-id/&quot;, controller, &quot;getScenario&quot;)</span>
+<span class="nc" id="L31">                    .json()</span>
+<span class="nc" id="L32">                    .secure(scenarioPermissions),</span>
+
+<span class="nc" id="L34">            Endpoint(&quot;$baseUrl:touchstone-version-id/demographics/&quot;, controller, &quot;getDemographicDatasets&quot;)</span>
+<span class="nc" id="L35">                    .json()</span>
+<span class="nc" id="L36">                    .secure(demographicPermissions),</span>
+
+<span class="nc" id="L38">            Endpoint(&quot;$baseUrl:touchstone-version-id/demographics/:source-code/:type-code/&quot;, controller, &quot;getDemographicDataAndMetadata&quot;)</span>
+<span class="nc" id="L39">                    .json().streamed()</span>
+<span class="nc" id="L40">                    .secure(demographicPermissions),</span>
+
+<span class="nc" id="L42">            Endpoint(&quot;$baseUrl:touchstone-version-id/demographics/:source-code/:type-code/&quot;, controller, &quot;getDemographicData&quot;)</span>
+<span class="nc" id="L43">                    .csv().streamed()</span>
+<span class="nc" id="L44">                    .secure(demographicPermissions),</span>
+
+<span class="nc" id="L46">            Endpoint(&quot;$baseUrl:touchstone-version-id/demographics/:source-code/:type-code/csv/&quot;, controller, &quot;getDemographicData&quot;)</span>
+<span class="nc" id="L47">                    .streamed()</span>
+<span class="nc" id="L48">                    .secure(demographicPermissions)</span>
+    )
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

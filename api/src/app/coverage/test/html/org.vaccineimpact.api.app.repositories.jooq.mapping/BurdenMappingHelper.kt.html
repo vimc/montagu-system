@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BurdenMappingHelper.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.repositories.jooq.mapping</a> &gt; <span class="el_source">BurdenMappingHelper.kt</span></div><h1>BurdenMappingHelper.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.repositories.jooq.mapping
+
+import org.jooq.Record
+import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
+import org.vaccineimpact.api.db.Tables.MODEL_RUN_PARAMETER_VALUE
+import org.vaccineimpact.api.db.Tables.MODEL_RUN_PARAMETER
+import org.vaccineimpact.api.db.Tables.MODEL_RUN
+import org.vaccineimpact.api.models.*
+
+<span class="nc" id="L11">class BurdenMappingHelper : MappingHelper()</span>
+{
+    fun mapBurdenEstimateSetType(record: Record) =
+<span class="nc" id="L14">            mapBurdenEstimateSetType(</span>
+<span class="nc" id="L15">                    record[Tables.BURDEN_ESTIMATE_SET.SET_TYPE],</span>
+<span class="nc" id="L16">                    record[Tables.BURDEN_ESTIMATE_SET.SET_TYPE_DETAILS]</span>
+<span class="nc" id="L17">            )</span>
+    fun mapBurdenEstimateSetType(code: String, details: String?) =
+<span class="nc" id="L19">            BurdenEstimateSetType(mapEnum(code), details)</span>
+
+    fun mapBurdenEstimateSets(records: List&lt;Record&gt;): List&lt;BurdenEstimateSet&gt;
+    {
+<span class="nc" id="L23">        return records</span>
+<span class="nc" id="L24">                .groupBy { it[BURDEN_ESTIMATE_SET.ID] }</span>
+<span class="nc" id="L25">                .map(this::mapBurdenEstimateSet)</span>
+    }
+
+    fun mapBurdenEstimateSet(group: Map.Entry&lt;Int, List&lt;Record&gt;&gt;): BurdenEstimateSet
+    {
+<span class="nc" id="L30">        val table = BURDEN_ESTIMATE_SET</span>
+<span class="nc" id="L31">        val common = group.value.first()</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        val problems = group.value.mapNotNull { it[Tables.BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] }</span>
+<span class="nc" id="L33">        return BurdenEstimateSet(</span>
+<span class="nc" id="L34">                common[table.ID],</span>
+<span class="nc" id="L35">                common[table.UPLOADED_ON].toInstant(),</span>
+<span class="nc" id="L36">                common[table.UPLOADED_BY],</span>
+<span class="nc" id="L37">                mapBurdenEstimateSetType(common),</span>
+<span class="nc" id="L38">                mapEnum(common[table.STATUS]),</span>
+<span class="nc" id="L39">                problems,</span>
+<span class="nc" id="L40">                common[table.ORIGINAL_FILENAME]</span>
+        )
+    }
+
+    fun mapModelRunParameter(record: Record): ModelRunParameter
+    {
+<span class="nc" id="L46">        return ModelRunParameter(</span>
+<span class="nc" id="L47">                record[MODEL_RUN_PARAMETER_VALUE.ID],</span>
+<span class="nc" id="L48">                record[MODEL_RUN_PARAMETER.KEY],</span>
+<span class="nc" id="L49">                record[MODEL_RUN.RUN_ID],</span>
+<span class="nc" id="L50">                record[MODEL_RUN_PARAMETER_VALUE.VALUE]</span>
+        )
+    }
+
+    fun mapModelRun(runId: String, records: List&lt;ModelRunParameter&gt;) : ModelRun
+    {
+<span class="nc" id="L56">        val map = records.associateBy({ it.key }, { it.value})</span>
+<span class="nc" id="L57">        return ModelRun(runId, map)</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

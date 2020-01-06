@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserController.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.controllers</a> &gt; <span class="el_source">UserController.kt</span></div><h1>UserController.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.controllers
+
+import org.vaccineimpact.api.app.app_start.Controller
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.postData
+import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
+import org.vaccineimpact.api.app.models.CreateUser
+import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.security.OneTimeTokenGenerator
+import org.vaccineimpact.api.emails.EmailManager
+import org.vaccineimpact.api.emails.NewUserEmail
+import org.vaccineimpact.api.emails.getEmailManager
+import org.vaccineimpact.api.models.Scope
+import org.vaccineimpact.api.models.User
+import org.vaccineimpact.api.models.encompass
+import org.vaccineimpact.api.models.permissions.AssociateRole
+import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.models.permissions.RoleAssignment
+
+<span class="fc" id="L21">class UserController(</span>
+        context: ActionContext,
+        private val userRepository: UserRepository,
+        private val oneTimeTokenGenerator: OneTimeTokenGenerator,
+        private val emailManager: EmailManager = getEmailManager()
+<span class="fc" id="L26">) : Controller(context)</span>
+{
+
+<span class="nc" id="L29">    constructor(context: ActionContext, repositories: Repositories)</span>
+<span class="nc" id="L30">            : this(context, repositories.user, OneTimeTokenGenerator(repositories.token))</span>
+
+
+    fun saveConfidentialityAgreement(): String
+    {
+<span class="nc" id="L35">        val userName = context.username!!</span>
+<span class="nc" id="L36">        userRepository.saveConfidentialityAgreement(userName)</span>
+<span class="nc" id="L37">        return okayResponse()</span>
+    }
+
+    fun hasAgreedConfidentiality(): Boolean
+    {
+<span class="nc" id="L42">        val userName = context.username!!</span>
+<span class="nc" id="L43">        return userRepository.hasAgreedConfidentiality(userName)</span>
+    }
+
+    fun getReportReaders(): List&lt;User&gt;
+    {
+<span class="nc" id="L48">        val reportName = context.params(&quot;:report&quot;)</span>
+<span class="nc" id="L49">        return userRepository.reportReaders(reportName)</span>
+    }
+
+    fun modifyUserRole(): String
+    {
+<span class="fc" id="L54">        val userName = userName(context)</span>
+<span class="fc" id="L55">        val associateRole = context.postData&lt;AssociateRole&gt;()</span>
+
+<span class="pc bpc" id="L57" title="1 of 6 branches missed.">        val scope = if (associateRole.scopePrefix.isNullOrEmpty())</span>
+        {
+<span class="fc" id="L59">            Scope.Global()</span>
+        }
+        else
+        {
+<span class="fc" id="L63">            Scope.parse(&quot;${associateRole.scopePrefix}:${associateRole.scopeId}&quot;)</span>
+        }
+
+<span class="fc" id="L66">        val roleWritingScopes = roleWritingScopes(context)</span>
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (!roleWritingScopes.any({ it.encompasses(scope) }))</span>
+        {
+<span class="fc" id="L70">            throw MissingRequiredPermissionError(PermissionSet(&quot;$scope/roles.write&quot;))</span>
+        }
+
+<span class="fc" id="L73">        userRepository.modifyUserRole(userName, associateRole)</span>
+<span class="fc" id="L74">        return okayResponse()</span>
+    }
+
+    fun createUser(): String
+    {
+<span class="fc" id="L79">        val user = context.postData&lt;CreateUser&gt;()</span>
+<span class="fc" id="L80">        userRepository.addUser(user)</span>
+
+<span class="fc" id="L82">        val newUser = userRepository.getUserByUsername(user.username)</span>
+<span class="fc" id="L83">        val token = oneTimeTokenGenerator.getSetPasswordToken(newUser)</span>
+
+<span class="fc" id="L85">        emailManager.sendEmail(NewUserEmail(user, token), user)</span>
+<span class="fc" id="L86">        return objectCreation(context, &quot;/users/${user.username}/&quot;)</span>
+    }
+
+    fun getUser(): User
+    {
+<span class="fc" id="L91">        val userName = userName(context)</span>
+<span class="fc" id="L92">        val roleReadingScopes = roleReadingScopes(context)</span>
+
+<span class="fc" id="L94">        val internalUser = userRepository.getUserByUsername(userName)</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (roleReadingScopes.any())</span>
+        {
+<span class="fc" id="L97">            val userWithAllRoles = internalUser.toUser()</span>
+<span class="fc" id="L98">            return userWithAllRoles.copy(roles = filteredRoleAssignments(userWithAllRoles.roles, roleReadingScopes))</span>
+        }
+        else
+        {
+<span class="fc" id="L102">            return internalUser.toUser().copy(roles = null)</span>
+        }
+    }
+
+    fun getCurrentUser(): User
+    {
+<span class="fc" id="L108">        val userName = context.username!!</span>
+<span class="fc" id="L109">        val includePermissions =</span>
+<span class="fc" id="L110">                context.request.queryParamOrDefault(&quot;includePermissions&quot;, &quot;false&quot;) == &quot;true&quot;</span>
+<span class="fc" id="L111">        val internalUser = userRepository.getUserByUsername(userName)</span>
+<span class="fc" id="L112">        return internalUser.toUser(includePermissions).copy(roles = null) //don't return any role information back to the current user</span>
+    }
+
+    fun getUsers(): List&lt;User&gt;
+    {
+<span class="fc" id="L117">        val roleReadingScopes = roleReadingScopes(context)</span>
+
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (roleReadingScopes.any())</span>
+        {
+<span class="fc" id="L121">            val users = userRepository.allWithRoles().toList()</span>
+
+<span class="fc" id="L123">            return users.map {</span>
+<span class="fc" id="L124">                it.copy(roles = filteredRoleAssignments(it.roles, roleReadingScopes))</span>
+            }
+        }
+        else
+        {
+<span class="fc" id="L129">            return userRepository.all().toList()</span>
+        }
+    }
+
+    fun getGlobalRoles(): List&lt;String&gt;
+    {
+<span class="nc" id="L135">        return userRepository.globalRoles()</span>
+    }
+
+<span class="fc" id="L138">    private fun userName(context: ActionContext): String = context.params(&quot;:username&quot;)</span>
+
+<span class="fc" id="L140">    private fun roleReadingScopes(context: ActionContext) = context.permissions</span>
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">            .filter { it.name == &quot;roles.read&quot; }</span>
+<span class="fc" id="L142">            .map { it.scope }</span>
+
+<span class="fc" id="L144">    private fun roleWritingScopes(context: ActionContext) = context.permissions</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">            .filter { it.name == &quot;roles.write&quot; }</span>
+<span class="fc" id="L146">            .map { it.scope }</span>
+
+    private fun filteredRoleAssignments(allRoles: List&lt;RoleAssignment&gt;?, roleReadingScopes: Iterable&lt;Scope&gt;) =
+<span class="pc bpc" id="L149" title="1 of 4 branches missed.">            allRoles?.filter { roleReadingScopes.encompass(Scope.parse(it)) }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

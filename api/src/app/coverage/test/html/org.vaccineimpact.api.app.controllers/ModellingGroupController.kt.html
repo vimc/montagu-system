@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ModellingGroupController.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.controllers</a> &gt; <span class="el_source">ModellingGroupController.kt</span></div><h1>ModellingGroupController.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.controllers
+
+import org.vaccineimpact.api.app.app_start.Controller
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.postData
+import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
+import org.vaccineimpact.api.app.logic.ModellingGroupLogic
+import org.vaccineimpact.api.app.logic.RepositoriesModellingGroupLogic
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.permissions.PermissionSet
+
+
+<span class="fc" id="L16">open class ModellingGroupController(</span>
+        context: ActionContext,
+        private val modellingGroupRepository: ModellingGroupRepository,
+        private val userRepo: UserRepository,
+        private val groupLogic: ModellingGroupLogic
+<span class="fc" id="L21">) : Controller(context)</span>
+{
+<span class="nc" id="L23">    constructor(context: ActionContext, repositories: Repositories)</span>
+<span class="nc" id="L24">            : this(context, repositories.modellingGroup, repositories.user,</span>
+<span class="nc" id="L25">                    RepositoriesModellingGroupLogic(repositories.modellingGroup, repositories.user))</span>
+
+    fun getModellingGroups(): List&lt;ModellingGroup&gt;
+    {
+<span class="nc" id="L29">        return modellingGroupRepository.getModellingGroups().toList()</span>
+    }
+
+    fun getModellingGroup(): ModellingGroupDetails
+    {
+<span class="nc" id="L34">        val groupId = groupId(context)</span>
+<span class="nc" id="L35">        return modellingGroupRepository.getModellingGroupDetails(groupId)</span>
+    }
+
+    fun getModellingGroupsForUser() : List&lt;ModellingGroup&gt;
+    {
+<span class="fc" id="L40">        val userName = context.username!!</span>
+<span class="fc" id="L41">        return groupLogic.getModellingGroupsForUser(userName)</span>
+    }
+
+    fun modifyMembership(): String
+    {
+<span class="fc" id="L46">        val associateUser = context.postData&lt;AssociateUser&gt;()</span>
+
+<span class="fc" id="L48">        val groupId = context.params(&quot;:group-id&quot;)</span>
+<span class="fc" id="L49">        val scope = Scope.parse(&quot;modelling-group:$groupId&quot;)</span>
+
+<span class="fc" id="L51">        val managingScopes = managingScopes(context)</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (!managingScopes.any({ it.encompasses(scope) }))</span>
+        {
+<span class="fc" id="L54">            throw MissingRequiredPermissionError(PermissionSet(&quot;$scope/modelling-groups.manage-members&quot;))</span>
+        }
+
+<span class="fc" id="L57">        userRepo.modifyMembership(groupId, associateUser)</span>
+
+<span class="fc" id="L59">        return okayResponse()</span>
+    }
+
+    fun createModellingGroup(): String
+    {
+<span class="nc" id="L64">        val newGroup = context.postData&lt;ModellingGroupCreation&gt;()</span>
+
+<span class="nc" id="L66">        modellingGroupRepository.createModellingGroup(newGroup)</span>
+
+<span class="nc" id="L68">        return objectCreation(context, &quot;/modelling-group/${newGroup.id}/&quot;)</span>
+    }
+
+
+<span class="fc" id="L72">    private fun managingScopes(context: ActionContext) = context.permissions</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">            .filter { it.name == &quot;modelling-groups.manage-members&quot; }</span>
+<span class="fc" id="L74">            .map { it.scope }</span>
+
+    // We are sure that this will be non-null, as its part of the URL,
+    // and Spark wouldn't have mapped us here if it were blank
+<span class="nc" id="L78">    private fun groupId(context: ActionContext): String = context.params(&quot;:group-id&quot;)</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

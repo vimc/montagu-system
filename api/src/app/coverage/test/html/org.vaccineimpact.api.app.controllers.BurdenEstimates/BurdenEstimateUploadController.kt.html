@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BurdenEstimateUploadController.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.controllers.BurdenEstimates</a> &gt; <span class="el_source">BurdenEstimateUploadController.kt</span></div><h1>BurdenEstimateUploadController.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.controllers.BurdenEstimates
+
+import org.vaccineimpact.api.app.Cache
+import org.vaccineimpact.api.app.ChunkedFileCache
+import org.vaccineimpact.api.app.ChunkedFileManager
+import org.vaccineimpact.api.app.ChunkedFileManager.Companion.UPLOAD_DIR
+import org.vaccineimpact.api.app.asResult
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.RequestDataSource
+import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.InvalidOperationError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
+import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
+import org.vaccineimpact.api.app.logic.RepositoriesResponsibilitiesLogic
+import org.vaccineimpact.api.app.logic.ResponsibilitiesLogic
+import org.vaccineimpact.api.app.models.ChunkedFile
+import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.requests.PostDataHelper
+import org.vaccineimpact.api.app.requests.csvData
+import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.security.KeyHelper
+import org.vaccineimpact.api.security.TokenType
+import org.vaccineimpact.api.security.TokenValidationException
+import org.vaccineimpact.api.security.WebTokenHelper
+import org.vaccineimpact.api.serialization.DataTableDeserializer
+import org.vaccineimpact.api.serialization.MontaguSerializer
+import org.vaccineimpact.api.serialization.Serializer
+import java.io.File
+
+<span class="fc" id="L32">class BurdenEstimateUploadController(context: ActionContext,</span>
+                                     private val estimatesLogic: BurdenEstimateLogic,
+                                     private val responsibilitiesLogic: ResponsibilitiesLogic,
+                                     private val estimateRepository: BurdenEstimateRepository,
+                                     private val postDataHelper: PostDataHelper = PostDataHelper(),
+                                     private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair),
+                                     private val chunkedFileCache: Cache&lt;ChunkedFile&gt; = ChunkedFileCache.instance,
+                                     private val chunkedFileManager: ChunkedFileManager = ChunkedFileManager(),
+                                     private val serializer: Serializer = MontaguSerializer.instance)
+<span class="fc" id="L41">    : BaseBurdenEstimateController(context, estimatesLogic, responsibilitiesLogic)</span>
+{
+<span class="nc" id="L43">    constructor(context: ActionContext, repos: Repositories)</span>
+<span class="nc" id="L44">            : this(context,</span>
+<span class="nc" id="L45">            RepositoriesBurdenEstimateLogic(repos),</span>
+<span class="nc" id="L46">            RepositoriesResponsibilitiesLogic(repos.modellingGroup, repos.scenario, repos.touchstone),</span>
+<span class="nc" id="L47">            repos.burdenEstimates)</span>
+
+
+    fun getUploadToken(): String
+    {
+<span class="fc" id="L52">        val path = getValidResponsibilityPath()</span>
+<span class="fc" id="L53">        val setId = context.params(&quot;:set-id&quot;).toInt()</span>
+
+        // Check that this is a central estimate set
+<span class="fc" id="L56">        val metadata = estimateRepository.getBurdenEstimateSet(path.groupId,</span>
+<span class="fc" id="L57">                path.touchstoneVersionId,</span>
+<span class="fc" id="L58">                path.scenarioId,</span>
+<span class="fc" id="L59">                setId)</span>
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (metadata.isStochastic())</span>
+        {
+<span class="fc" id="L63">            throw InvalidOperationError(&quot;Stochastic estimate upload not supported&quot;)</span>
+        }
+
+<span class="fc" id="L66">        return tokenHelper.generateUploadEstimatesToken(</span>
+<span class="fc" id="L67">                context.username!!,</span>
+<span class="fc" id="L68">                path.groupId,</span>
+<span class="fc" id="L69">                path.touchstoneVersionId,</span>
+<span class="fc" id="L70">                path.scenarioId,</span>
+<span class="fc" id="L71">                setId)</span>
+    }
+
+    fun uploadBurdenEstimateFile(): String
+    {
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        val chunkNumber = context.queryParams(&quot;chunkNumber&quot;)?.toInt()</span>
+<span class="fc" id="L77">                ?: throw BadRequest(&quot;Missing required query parameter: chunkNumber&quot;)</span>
+
+<span class="fc" id="L79">        val metadata = getFileMetadata()</span>
+
+        // Get file from context (supports multi-part or octet stream)
+<span class="fc" id="L82">        val source = RequestDataSource.fromContentType(context)</span>
+<span class="fc" id="L83">        val stream = source.getContent()</span>
+
+<span class="fc" id="L85">        chunkedFileManager.writeChunk(stream, context.contentLength(), metadata, chunkNumber)</span>
+
+        //Mark as uploaded
+<span class="fc" id="L88">        metadata.uploadedChunks[chunkNumber] = true</span>
+<span class="fc" id="L89">        return okayResponse()</span>
+    }
+
+    fun populateBurdenEstimateSetFromLocalFile(): Result
+    {
+<span class="fc" id="L94">        val uploadToken = context.params(&quot;:token&quot;)</span>
+<span class="fc" id="L95">        val token = try</span>
+        {
+<span class="fc" id="L97">            tokenHelper.verify(uploadToken, TokenType.UPLOAD)</span>
+        }
+        catch (e: TokenValidationException)
+<span class="fc" id="L100">        {</span>
+<span class="fc" id="L101">            throw UnknownObjectError(uploadToken, &quot;upload-token&quot;)</span>
+        }
+
+<span class="fc" id="L104">        val path = UploadPath(token)</span>
+
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        val file = chunkedFileCache[path.uniqueIdentifier]</span>
+<span class="fc" id="L107">                ?: throw BadRequest(&quot;Unrecognised file identifier - has this token already been used?&quot;)</span>
+
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        return if (file.uploadFinished())</span>
+        {
+<span class="fc" id="L111">            chunkedFileManager.markFileAsComplete(file)</span>
+
+            // Stream estimates from file
+<span class="fc" id="L114">            val data = DataTableDeserializer.deserialize(File(&quot;$UPLOAD_DIR/${file.uniqueIdentifier}&quot;).reader(),</span>
+<span class="fc" id="L115">                    BurdenEstimate::class, serializer).map {</span>
+<span class="fc" id="L116">                BurdenEstimateWithRunId(it, runId = null)</span>
+            }
+
+<span class="fc" id="L119">            estimatesLogic.populateBurdenEstimateSet(</span>
+<span class="fc" id="L120">                    path.setId,</span>
+<span class="fc" id="L121">                    path.groupId,</span>
+<span class="fc" id="L122">                    path.touchstoneVersionId,</span>
+<span class="fc" id="L123">                    path.scenarioId,</span>
+<span class="fc" id="L124">                    data,</span>
+<span class="fc" id="L125">                    file.originalFileName)</span>
+
+<span class="fc" id="L127">            chunkedFileCache.remove(file.uniqueIdentifier)</span>
+
+<span class="fc" id="L129">            closeEstimateSetAndReturnMissingRowError(path.setId, path.groupId, path.touchstoneVersionId, path.scenarioId)</span>
+        }
+        else
+        {
+<span class="fc" id="L133">            throw InvalidOperationError(&quot;This file has not been fully uploaded&quot;)</span>
+        }
+    }
+
+<span class="fc" id="L137">    fun populateBurdenEstimateSet() = populateBurdenEstimateSet(RequestDataSource.fromContentType(context))</span>
+
+    private fun populateBurdenEstimateSet(source: RequestDataSource): Result
+    {
+        // First check if we're allowed to see this touchstoneVersion
+<span class="fc" id="L142">        val path = getValidResponsibilityPath()</span>
+
+        // Next, get the metadata that will enable us to interpret the CSV
+<span class="fc" id="L145">        val setId = context.params(&quot;:set-id&quot;).toInt()</span>
+<span class="fc" id="L146">        val metadata = estimateRepository.getBurdenEstimateSet(path.groupId,</span>
+<span class="fc" id="L147">                path.touchstoneVersionId,</span>
+<span class="fc" id="L148">                path.scenarioId,</span>
+<span class="fc" id="L149">                setId)</span>
+
+        // Then add the burden estimates
+<span class="fc" id="L152">        val data = getBurdenEstimateDataFromCSV(metadata, source)</span>
+<span class="fc" id="L153">        estimatesLogic.populateBurdenEstimateSet(</span>
+<span class="fc" id="L154">                setId,</span>
+<span class="fc" id="L155">                path.groupId,</span>
+<span class="fc" id="L156">                path.touchstoneVersionId,</span>
+<span class="fc" id="L157">                path.scenarioId,</span>
+<span class="fc" id="L158">                data,</span>
+<span class="fc" id="L159">                filename = null)</span>
+
+        // Then, maybe close the burden estimate set
+<span class="fc bfc" id="L162" title="All 2 branches covered.">        val keepOpen = context.queryParams(&quot;keepOpen&quot;)?.toBoolean() ?: false</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">        return if (!keepOpen)</span>
+        {
+<span class="fc" id="L165">            closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)</span>
+        }
+        else
+        {
+<span class="fc" id="L169">            okayResponse().asResult()</span>
+        }
+    }
+
+    private fun getFileMetadata(): ChunkedFile
+    {
+<span class="fc bfc" id="L175" title="All 2 branches covered.">        val totalChunks = context.queryParams(&quot;totalChunks&quot;)?.toInt()</span>
+<span class="fc" id="L176">                ?: throw BadRequest(&quot;Missing required query parameter: totalChunks.&quot;)</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        val totalSize = context.queryParams(&quot;totalSize&quot;)?.toLong()</span>
+<span class="fc" id="L178">                ?: throw BadRequest(&quot;Missing required query parameter: totalSize.&quot;)</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">        val chunkSize = context.queryParams(&quot;chunkSize&quot;)?.toLong()</span>
+<span class="fc" id="L180">                ?: throw BadRequest(&quot;Missing required query parameter: chunkSize.&quot;)</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">        val filename = context.queryParams(&quot;fileName&quot;)</span>
+<span class="fc" id="L182">                ?: throw BadRequest(&quot;Missing required query parameter: fileName.&quot;)</span>
+
+<span class="fc" id="L184">        val uploadToken = context.params(&quot;:token&quot;)</span>
+
+        // Note expired tokens will throw an error during verification
+<span class="fc" id="L187">        val claims = tokenHelper.verify(uploadToken, TokenType.UPLOAD)</span>
+
+<span class="fc bfc" id="L189" title="All 2 branches covered.">        if (claims[&quot;sub&quot;] != context.username!!)</span>
+        {
+<span class="fc" id="L191">            throw BadRequest(&quot;The given token has not been issued for this user&quot;)</span>
+        }
+
+<span class="fc" id="L194">        val uniqueIdentifier = claims[&quot;uid&quot;].toString()</span>
+<span class="fc" id="L195">        val cachedMetadata = chunkedFileCache[uniqueIdentifier]</span>
+<span class="fc" id="L196">        val providedMetadata = ChunkedFile(totalChunks = totalChunks, chunkSize = chunkSize,</span>
+<span class="fc" id="L197">                totalSize = totalSize, uniqueIdentifier = uniqueIdentifier, originalFileName = filename)</span>
+
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">        return if (cachedMetadata != null)</span>
+        {
+<span class="fc bfc" id="L201" title="All 2 branches covered.">            if (cachedMetadata != providedMetadata)</span>
+            {
+<span class="fc" id="L203">                throw BadRequest(&quot;The given token has already been used to upload a different file.&quot; +</span>
+                        &quot; Please request a fresh upload token.&quot;)
+            }
+<span class="fc" id="L206">            cachedMetadata</span>
+        }
+        else
+        {
+<span class="nc" id="L210">            chunkedFileCache.put(providedMetadata)</span>
+<span class="nc" id="L211">            providedMetadata</span>
+        }
+    }
+
+    private fun getBurdenEstimateDataFromCSV(
+            metadata: BurdenEstimateSet,
+            source: RequestDataSource
+    ): Sequence&lt;BurdenEstimateWithRunId&gt;
+    {
+<span class="fc bfc" id="L220" title="All 2 branches covered.">        return if (metadata.type.type == BurdenEstimateSetTypeCode.STOCHASTIC)</span>
+        {
+<span class="fc" id="L222">            postDataHelper.csvData&lt;StochasticBurdenEstimate&gt;(from = source).map {</span>
+<span class="fc" id="L223">                BurdenEstimateWithRunId(it)</span>
+            }
+        }
+        else
+        {
+<span class="fc" id="L228">            postDataHelper.csvData&lt;BurdenEstimate&gt;(from = source).map {</span>
+<span class="fc" id="L229">                BurdenEstimateWithRunId(it, runId = null)</span>
+            }
+        }
+    }
+
+<span class="fc" id="L234">    data class UploadPath(val uniqueIdentifier: String,</span>
+<span class="fc" id="L235">                          val groupId: String,</span>
+<span class="fc" id="L236">                          val touchstoneVersionId: String,</span>
+<span class="fc" id="L237">                          val scenarioId: String,</span>
+<span class="fc" id="L238">                          val setId: Int)</span>
+    {
+<span class="fc" id="L240">        constructor(claims: Map&lt;String, Any&gt;) : this(</span>
+<span class="fc" id="L241">                claims[&quot;uid&quot;].toString(),</span>
+<span class="fc" id="L242">                claims[&quot;group-id&quot;].toString(),</span>
+<span class="fc" id="L243">                claims[&quot;touchstone-id&quot;].toString(),</span>
+<span class="fc" id="L244">                claims[&quot;scenario-id&quot;].toString(),</span>
+<span class="fc" id="L245">                claims[&quot;set-id&quot;].toString().toInt())</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JooqResponsibilitiesRepository.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.repositories.jooq</a> &gt; <span class="el_source">JooqResponsibilitiesRepository.kt</span></div><h1>JooqResponsibilitiesRepository.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.repositories.jooq
+
+import org.jooq.*
+import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.filters.whereMatchesFilter
+import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
+import org.vaccineimpact.api.app.repositories.ScenarioRepository
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
+import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord
+import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.responsibilities.*
+
+<span class="nc" id="L17">class JooqResponsibilitiesRepository(</span>
+        dsl: DSLContext,
+        private val scenarioRepository: ScenarioRepository,
+        private val touchstoneRepository: TouchstoneRepository,
+        private val mapper: BurdenMappingHelper = BurdenMappingHelper()
+<span class="nc" id="L22">) : JooqRepository(dsl), ResponsibilitiesRepository</span>
+{
+
+    private fun convertScenarioToResponsibility(scenario: Scenario, responsibilityId: Int): ResponsibilityWithDatabaseId
+    {
+<span class="nc" id="L27">        val burdenEstimateSet = getCurrentBurdenEstimate(responsibilityId)</span>
+<span class="nc" id="L28">        val problems: MutableList&lt;String&gt; = mutableListOf()</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        val status = if (burdenEstimateSet == null)</span>
+        {
+<span class="nc" id="L31">            ResponsibilityStatus.EMPTY</span>
+        }
+        else
+        {
+<span class="nc bnc" id="L35" title="All 2 branches missed.">            if (burdenEstimateSet.problems.any())</span>
+            {
+<span class="nc" id="L37">                problems.addAll(burdenEstimateSet.problems)</span>
+<span class="nc" id="L38">                ResponsibilityStatus.INVALID</span>
+            }
+            else
+            {
+<span class="nc" id="L42">                ResponsibilityStatus.VALID</span>
+            }
+        }
+<span class="nc" id="L45">        return ResponsibilityWithDatabaseId(</span>
+<span class="nc" id="L46">                responsibilityId,</span>
+<span class="nc" id="L47">                Responsibility(scenario, status, problems, burdenEstimateSet)</span>
+        )
+    }
+
+    private fun getCurrentBurdenEstimate(responsibilityId: Int): BurdenEstimateSet?
+    {
+<span class="nc" id="L53">        val table = Tables.BURDEN_ESTIMATE_SET</span>
+<span class="nc" id="L54">        val records = dsl.select(Tables.BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM)</span>
+<span class="nc" id="L55">                .select(</span>
+<span class="nc" id="L56">                        table.UPLOADED_ON,</span>
+<span class="nc" id="L57">                        table.UPLOADED_BY,</span>
+<span class="nc" id="L58">                        table.SET_TYPE,</span>
+<span class="nc" id="L59">                        table.SET_TYPE_DETAILS,</span>
+<span class="nc" id="L60">                        table.STATUS,</span>
+<span class="nc" id="L61">                        table.ID,</span>
+<span class="nc" id="L62">                        table.ORIGINAL_FILENAME</span>
+                )
+<span class="nc" id="L64">                .fromJoinPath(table, Tables.BURDEN_ESTIMATE_SET_PROBLEM, joinType = JoinType.LEFT_OUTER_JOIN)</span>
+<span class="nc" id="L65">                .join(Tables.RESPONSIBILITY)</span>
+<span class="nc" id="L66">                .on(Tables.RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET.eq(Tables.BURDEN_ESTIMATE_SET.ID))</span>
+<span class="nc" id="L67">                .where(Tables.RESPONSIBILITY.ID.eq(responsibilityId))</span>
+<span class="nc" id="L68">                .fetch()</span>
+
+<span class="nc" id="L70">        return mapBurdenEstimateSet(records)</span>
+    }
+
+
+    private fun mapBurdenEstimateSet(input: List&lt;Record&gt;): BurdenEstimateSet?
+    {
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (!input.any())</span>
+        {
+<span class="nc" id="L78">            return null</span>
+        }
+
+<span class="nc" id="L81">        val first = input.first()</span>
+<span class="nc" id="L82">        val uploadedOn = first[Tables.BURDEN_ESTIMATE_SET.UPLOADED_ON].toInstant()</span>
+<span class="nc" id="L83">        return BurdenEstimateSet(</span>
+<span class="nc" id="L84">                id = first[Tables.BURDEN_ESTIMATE_SET.ID],</span>
+<span class="nc" id="L85">                uploadedBy = first[Tables.BURDEN_ESTIMATE_SET.UPLOADED_BY],</span>
+<span class="nc" id="L86">                uploadedOn = uploadedOn,</span>
+<span class="nc" id="L87">                type = mapper.mapBurdenEstimateSetType(first),</span>
+<span class="nc" id="L88">                status = mapper.mapEnum(first[Tables.BURDEN_ESTIMATE_SET.STATUS]),</span>
+<span class="nc bnc" id="L89" title="All 4 branches missed.">                problems = input.filter { it[Tables.BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] != null }</span>
+<span class="nc" id="L90">                        .map { it[Tables.BURDEN_ESTIMATE_SET_PROBLEM.PROBLEM] },</span>
+<span class="nc" id="L91">                originalFilename = first[Tables.BURDEN_ESTIMATE_SET.ORIGINAL_FILENAME]</span>
+        )
+    }
+
+    override fun getResponsibilities(responsibilitySet: ResponsibilitySetRecord?,
+                                     scenarioFilterParameters: ScenarioFilterParameters,
+                                     touchstoneVersionId: String,
+                                     modellingGroupId: String): ResponsibilitySet
+    {
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (responsibilitySet != null)</span>
+        {
+<span class="nc" id="L102">            val responsibilities = getResponsibilitiesInResponsibilitySet(responsibilitySet.id) {</span>
+<span class="nc" id="L103">                this.whereMatchesFilter(JooqScenarioFilter(), scenarioFilterParameters)</span>
+<span class="nc" id="L104">            }.map {</span>
+<span class="nc" id="L105">                it.responsibility</span>
+            }
+<span class="nc" id="L107">            val status = mapper.mapEnum&lt;ResponsibilitySetStatus&gt;(responsibilitySet.status)</span>
+<span class="nc" id="L108">            return ResponsibilitySet(touchstoneVersionId, modellingGroupId, status, responsibilities)</span>
+        }
+        else
+        {
+<span class="nc" id="L112">            return ResponsibilitySet(touchstoneVersionId, modellingGroupId, ResponsibilitySetStatus.NOT_APPLICABLE, emptyList())</span>
+        }
+    }
+
+    override fun getResponsibility(groupId: String, touchstoneVersionId: String, scenarioId: String): ResponsibilityAndTouchstone
+    {
+<span class="nc" id="L118">        val touchstoneVersion = getTouchstoneVersion(touchstoneVersionId)</span>
+<span class="nc" id="L119">        val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (responsibilitySet != null)</span>
+        {
+<span class="nc" id="L122">            val responsibility = getResponsibilitiesInResponsibilitySet(</span>
+<span class="nc" id="L123">                    responsibilitySet.id,</span>
+<span class="nc" id="L124">                    { this.and(Tables.SCENARIO_DESCRIPTION.ID.eq(scenarioId)) }</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">            ).singleOrNull() ?: throw UnknownObjectError(scenarioId, &quot;responsibility&quot;)</span>
+<span class="nc" id="L126">            return ResponsibilityAndTouchstone(responsibility.id, responsibility.responsibility, touchstoneVersion)</span>
+        }
+        else
+        {
+<span class="nc" id="L130">            throw UnknownObjectError(scenarioId, &quot;responsibility&quot;)</span>
+        }
+    }
+
+    override fun getResponsibilityId(groupId: String, touchstoneVersionId: String, scenarioId: String): Int
+    {
+<span class="nc" id="L136">        val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (responsibilitySet != null)</span>
+        {
+<span class="nc" id="L139">            val id = dsl.select(Tables.RESPONSIBILITY.ID)</span>
+<span class="nc" id="L140">                    .fromJoinPath(Tables.RESPONSIBILITY, Tables.SCENARIO, Tables.SCENARIO_DESCRIPTION)</span>
+<span class="nc" id="L141">                    .where(Tables.RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibilitySet[Tables.RESPONSIBILITY_SET.ID])</span>
+<span class="nc" id="L142">                    .and(Tables.SCENARIO_DESCRIPTION.ID.eq(scenarioId)))</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">                    .singleOrNull()</span>
+<span class="nc" id="L144">                    ?: throw UnknownObjectError(scenarioId, &quot;responsibility&quot;)</span>
+
+<span class="nc" id="L146">            return id.into(Int::class.java)</span>
+        }
+        else
+        {
+<span class="nc" id="L150">            throw UnknownObjectError(scenarioId, &quot;responsibility&quot;)</span>
+        }
+    }
+
+    override fun getResponsibilitiesForGroup(groupId: String, touchstoneVersionId: String,
+                                             scenarioFilterParameters: ScenarioFilterParameters): ResponsibilitySet
+    {
+<span class="nc" id="L157">        touchstoneRepository.touchstoneVersions.assertExists(touchstoneVersionId)</span>
+<span class="nc" id="L158">        val responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)</span>
+<span class="nc" id="L159">        return getResponsibilities(responsibilitySet, scenarioFilterParameters, touchstoneVersionId, groupId)</span>
+    }
+
+    private fun getResponsibilitySet(groupId: String, touchstoneVersionId: String): ResponsibilitySetRecord?
+    {
+<span class="nc" id="L164">        return dsl.fetchAny(Tables.RESPONSIBILITY_SET,</span>
+<span class="nc" id="L165">                Tables.RESPONSIBILITY_SET.MODELLING_GROUP.eq(groupId).and(Tables.RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId)))</span>
+    }
+
+    override fun getResponsibilitiesForTouchstone(touchstoneVersionId: String): List&lt;ResponsibilitySet&gt;
+    {
+<span class="nc" id="L170">        val results = this.dsl.select(Tables.RESPONSIBILITY_SET.ID, Tables.RESPONSIBILITY_SET.STATUS, Tables.MODELLING_GROUP.ID)</span>
+<span class="nc" id="L171">                .fromJoinPath(Tables.RESPONSIBILITY_SET, Tables.MODELLING_GROUP)</span>
+<span class="nc" id="L172">                .where(Tables.RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId))</span>
+<span class="nc" id="L173">                .fetch()</span>
+
+<span class="nc" id="L175">        return results.map {</span>
+<span class="nc" id="L176">            val id = it[Tables.RESPONSIBILITY_SET.ID] as Int</span>
+<span class="nc" id="L177">            val responsibilities = getResponsibilitiesInResponsibilitySet(id)</span>
+<span class="nc" id="L178">                    .map { it.responsibility }</span>
+<span class="nc" id="L179">            ResponsibilitySet(</span>
+<span class="nc" id="L180">                    touchstoneVersionId,</span>
+<span class="nc" id="L181">                    it[Tables.MODELLING_GROUP.ID],</span>
+<span class="nc" id="L182">                    mapper.mapEnum&lt;ResponsibilitySetStatus&gt;(it[Tables.RESPONSIBILITY_SET.STATUS]),</span>
+<span class="nc" id="L183">                    responsibilities</span>
+<span class="nc" id="L184">            )</span>
+        }
+    }
+
+<span class="nc" id="L188">    private fun getTouchstoneVersion(touchstoneVersionId: String) = touchstoneRepository.touchstoneVersions.get(touchstoneVersionId)</span>
+
+    private fun getResponsibilitiesInResponsibilitySet(
+            responsibilitySetId: Int,
+<span class="nc" id="L192">            applyWhereFilter: (SelectConditionStep&lt;Record2&lt;String, Int&gt;&gt;.() -&gt; SelectConditionStep&lt;Record2&lt;String, Int&gt;&gt;)? = null</span>
+    ): List&lt;ResponsibilityWithDatabaseId&gt;
+    {
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        val applyWhereFilterWithDefault = applyWhereFilter ?: { this }</span>
+<span class="nc" id="L196">        val records = dsl</span>
+<span class="nc" id="L197">                .select(Tables.SCENARIO_DESCRIPTION.ID, Tables.RESPONSIBILITY.ID)</span>
+<span class="nc" id="L198">                .fromJoinPath(Tables.RESPONSIBILITY_SET, Tables.RESPONSIBILITY, Tables.SCENARIO, Tables.SCENARIO_DESCRIPTION)</span>
+<span class="nc" id="L199">                .where(Tables.RESPONSIBILITY.RESPONSIBILITY_SET.eq(responsibilitySetId))</span>
+                // TODO remove this once VIMC-1240 is done
+                // this check is needed for the situation where a group has a responsibility set with
+                // multiple diseases, but we want to 'close' some and not others for a touchstoneVersion
+                // it will be obsolete when we refactor responsibility sets to be single disease only
+<span class="nc" id="L204">                .and(Tables.RESPONSIBILITY.IS_OPEN)</span>
+                .applyWhereFilterWithDefault()
+<span class="nc" id="L206">                .fetch()</span>
+<span class="nc" id="L207">                .intoMap(Tables.SCENARIO_DESCRIPTION.ID)</span>
+
+<span class="nc" id="L209">        val scenarioIds = records.keys</span>
+<span class="nc" id="L210">        val scenarios = scenarioRepository.getScenarios(scenarioIds)</span>
+<span class="nc" id="L211">        return scenarios.map {</span>
+<span class="nc" id="L212">            convertScenarioToResponsibility(it, records[it.id]!![Tables.RESPONSIBILITY.ID])</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

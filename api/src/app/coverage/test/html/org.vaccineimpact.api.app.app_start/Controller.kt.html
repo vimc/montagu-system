@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Controller.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.app_start</a> &gt; <span class="el_source">Controller.kt</span></div><h1>Controller.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.app_start
+
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.db.Config
+
+<span class="fc" id="L6">abstract class Controller(val context: ActionContext)</span>
+{
+    fun objectCreation(context: ActionContext, urlPath: String): String
+    {
+<span class="fc" id="L10">        val url = &quot;${Config[&quot;app.url&quot;]}/${Config[&quot;api.version&quot;]}$urlPath&quot;</span>
+<span class="fc" id="L11">        context.addResponseHeader(&quot;Location&quot;, url)</span>
+<span class="fc" id="L12">        context.setResponseStatus(201)</span>
+<span class="fc" id="L13">        return url</span>
+    }
+
+<span class="fc" id="L16">    fun okayResponse() = &quot;OK&quot;</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

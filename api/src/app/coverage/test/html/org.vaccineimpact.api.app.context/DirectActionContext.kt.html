@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DirectActionContext.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.context</a> &gt; <span class="el_source">DirectActionContext.kt</span></div><h1>DirectActionContext.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.context
+
+import org.apache.commons.fileupload.FileItemStream
+import org.pac4j.core.profile.CommonProfile
+import org.pac4j.core.profile.ProfileManager
+import org.pac4j.sparkjava.SparkWebContext
+import org.vaccineimpact.api.app.addDefaultResponseHeaders
+import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
+import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
+import org.vaccineimpact.api.app.requests.MultipartData
+import org.vaccineimpact.api.app.requests.MultipartDataMap
+import org.vaccineimpact.api.app.requests.contents
+import org.vaccineimpact.api.app.security.montaguPermissions
+import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.db.ConfigWrapper
+import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.security.CookieName
+import org.vaccineimpact.api.serialization.ModelBinder
+import spark.Request
+import spark.Response
+import java.io.*
+import java.util.zip.GZIPOutputStream
+
+
+<span class="fc" id="L26">class DirectActionContext(private val context: SparkWebContext) : ActionContext</span>
+{
+    override val request
+<span class="fc" id="L29">        get() = context.sparkRequest</span>
+    private val response
+<span class="fc" id="L31">        get() = context.sparkResponse</span>
+
+<span class="nc" id="L33">    constructor(request: Request, response: Response)</span>
+<span class="nc" id="L34">            : this(SparkWebContext(request, response))</span>
+
+<span class="nc" id="L36">    override fun contentType(): String = request.contentType()</span>
+<span class="nc" id="L37">    override fun contentLength() = request.raw().contentLength</span>
+<span class="nc" id="L38">    override fun queryParams(key: String): String? = request.queryParams(key)</span>
+<span class="nc" id="L39">    override fun queryString(): String? = request.queryString()</span>
+<span class="nc" id="L40">    override fun params(): Map&lt;String, String&gt; = request.params()</span>
+<span class="nc" id="L41">    override fun params(key: String): String = request.params(key)</span>
+<span class="fc" id="L42">    override fun &lt;T : Any&gt; postData(klass: Class&lt;T&gt;): T = ModelBinder().deserialize(request.body(), klass)</span>
+
+    // Return one part as a stream
+    override fun getPart(name: String, multipartData: MultipartData): InputStream
+    {
+<span class="fc" id="L47">        val parts = getPartsAsSequence(multipartData)</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        val matchingPart = parts.firstOrNull { it.fieldName == name }</span>
+<span class="fc" id="L49">                ?: throw MissingRequiredMultipartParameterError(name)</span>
+
+<span class="fc" id="L51">        return matchingPart.openStream()</span>
+    }
+
+    // Pull all parts into memory and return them as a map
+    override fun getParts(multipartData: MultipartData): MultipartDataMap
+    {
+<span class="nc" id="L57">        val map = getPartsAsSequence(multipartData)</span>
+<span class="nc" id="L58">                .map { it.fieldName to InMemoryRequestData(it.contents()) }</span>
+<span class="nc" id="L59">                .toMap()</span>
+<span class="nc" id="L60">        return MultipartDataMap(map)</span>
+    }
+
+    private fun getPartsAsSequence(multipartData: MultipartData): Sequence&lt;FileItemStream&gt;
+    {
+<span class="fc" id="L65">        val rawRequest = request.raw()</span>
+<span class="fc" id="L66">        val isMultipart = multipartData.isMultipartContent(rawRequest)</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (!isMultipart)</span>
+        {
+<span class="fc" id="L69">            throw BadRequest(&quot;Trying to extract a part from multipart/form-data &quot; +</span>
+<span class="fc" id="L70">                    &quot;but this request is of type ${request.contentType()}&quot;)</span>
+        }
+<span class="fc" id="L72">        return multipartData.parts(rawRequest)</span>
+    }
+
+<span class="nc bnc" id="L75" title="All 2 branches missed.">    override fun requestReader(): BufferedReader = request.raw().inputStream.bufferedReader()</span>
+<span class="nc" id="L76">    override fun getInputStream(): InputStream = request.raw().inputStream</span>
+
+    override fun setResponseStatus(status: Int)
+    {
+<span class="nc" id="L80">        response.status(status)</span>
+<span class="nc" id="L81">    }</span>
+
+    override fun addResponseHeader(key: String, value: String)
+    {
+<span class="fc" id="L85">        response.header(key, value)</span>
+<span class="fc" id="L86">    }</span>
+
+    override fun addAttachmentHeader(filename: String)
+    {
+<span class="nc" id="L90">        addResponseHeader(&quot;Content-Disposition&quot;, &quot;&quot;&quot;attachment; filename=&quot;$filename&quot;&quot;&quot;&quot;)</span>
+<span class="nc" id="L91">    }</span>
+
+    override fun setCookie(name: CookieName, value: String, config: ConfigWrapper)
+    {
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        val secure = if (config.getBool(&quot;allow.localhost&quot;))</span>
+        {
+<span class="fc" id="L97">            &quot;&quot;</span>
+        }
+        else
+        {
+<span class="fc" id="L101">            &quot; Secure;&quot;</span>
+        }
+        // https://www.owasp.org/index.php/SameSite
+<span class="fc" id="L104">        addResponseHeader(&quot;Set-Cookie&quot;, &quot;${name.cookieName}=$value; Path=/;$secure HttpOnly; SameSite=Strict&quot;)</span>
+<span class="fc" id="L105">    }</span>
+
+    override fun hasPermission(requirement: ReifiedPermission): Boolean
+    {
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        return if (Config.authEnabled)</span>
+        {
+<span class="fc bfc" id="L111" title="All 2 branches covered.">            permissions.any { requirement.satisfiedBy(it) }</span>
+        }
+        else
+        {
+<span class="nc" id="L115">            true</span>
+        }
+    }
+
+    override fun requirePermission(requirement: ReifiedPermission)
+    {
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        if (!hasPermission(requirement))</span>
+        {
+<span class="fc" id="L123">            throw MissingRequiredPermissionError(setOf(requirement))</span>
+        }
+<span class="fc" id="L125">    }</span>
+
+<span class="fc" id="L127">    override val permissions by lazy {</span>
+<span class="fc" id="L128">        userProfile!!.montaguPermissions</span>
+    }
+
+<span class="fc" id="L131">    override val userProfile: CommonProfile? by lazy {</span>
+<span class="fc" id="L132">        val manager = ProfileManager&lt;CommonProfile&gt;(context)</span>
+<span class="fc" id="L133">        manager.getAll(false).singleOrNull()</span>
+    }
+<span class="fc" id="L135">    override val username by lazy {</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        userProfile?.id</span>
+    }
+
+<span class="fc" id="L139">    override val redirectUrl: String? by lazy {</span>
+<span class="nc" id="L140">        queryParams(&quot;redirectUrl&quot;)</span>
+    }
+
+    override fun streamedResponse(contentType: String, work: (OutputStream) -&gt; Unit)
+    {
+<span class="nc" id="L145">        addDefaultResponseHeaders(request, response, contentType)</span>
+<span class="nc" id="L146">        val stream = response.raw().outputStream</span>
+
+<span class="nc" id="L148">        val outputStream =</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">                if (request.headers(&quot;Accept-Encoding&quot;).contains(&quot;gzip&quot;))</span>
+                {
+<span class="nc" id="L151">                    GZIPOutputStream(stream, BUFFER_SIZE)</span>
+                }
+                else
+                {
+<span class="nc" id="L155">                    BufferedOutputStream(stream)</span>
+                }
+
+<span class="nc" id="L158">        outputStream.use { out -&gt;</span>
+<span class="nc" id="L159">            work(out)</span>
+<span class="nc" id="L160">        }</span>
+<span class="nc" id="L161">    }</span>
+
+    override fun redirect(url: String)
+    {
+<span class="nc" id="L165">        this.response.redirect(url)</span>
+<span class="nc" id="L166">    }</span>
+}
+
+// https://stackoverflow.com/a/19032439/777939
+// This is the default buffer size for BufferedOutputStream; GZipOutputStream uses a smaller value
+// by default, and this leads to worse performance.
+private const val BUFFER_SIZE = 8000
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

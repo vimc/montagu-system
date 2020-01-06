@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JooqModellingGroupRepository.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.repositories.jooq</a> &gt; <span class="el_source">JooqModellingGroupRepository.kt</span></div><h1>JooqModellingGroupRepository.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.repositories.jooq
+
+import org.jooq.DSLContext
+import org.vaccineimpact.api.app.errors.DatabaseContentsError
+import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fetchInto
+import org.vaccineimpact.api.db.fieldsAsList
+import org.vaccineimpact.api.db.fromJoinPath
+import org.vaccineimpact.api.db.tables.records.ModellingGroupRecord
+import org.vaccineimpact.api.models.*
+
+<span class="nc" id="L15">class JooqModellingGroupRepository(</span>
+        dsl: DSLContext,
+        private val touchstoneRepository: TouchstoneRepository
+<span class="nc" id="L18">) : JooqRepository(dsl), ModellingGroupRepository</span>
+{
+    override fun getDiseasesForModellingGroup(groupId: String): List&lt;String&gt;
+    {
+<span class="nc" id="L22">        return dsl.select(MODEL.DISEASE)</span>
+<span class="nc" id="L23">                .fromJoinPath(MODELLING_GROUP, MODEL)</span>
+<span class="nc" id="L24">                .where(MODELLING_GROUP.ID.eq(groupId))</span>
+<span class="nc" id="L25">                .and(MODEL.IS_CURRENT)</span>
+<span class="nc" id="L26">                .fetch()</span>
+<span class="nc bnc" id="L27" title="All 2 branches missed.">                .mapNotNull { it.into(String::class.java) }</span>
+    }
+
+    override fun getLatestModelVersionForGroup(groupId: String, disease: String): Int
+    {
+<span class="nc" id="L32">        return dsl.select(MODEL_VERSION.ID)</span>
+<span class="nc" id="L33">                .fromJoinPath(MODELLING_GROUP, MODEL)</span>
+<span class="nc" id="L34">                .join(MODEL_VERSION)</span>
+<span class="nc" id="L35">                .on(MODEL_VERSION.ID.eq(MODEL.CURRENT_VERSION))</span>
+<span class="nc" id="L36">                .where(MODELLING_GROUP.ID.eq(groupId))</span>
+<span class="nc" id="L37">                .and(MODEL.DISEASE.eq(disease))</span>
+<span class="nc" id="L38">                .and(MODEL.IS_CURRENT)</span>
+<span class="nc bnc" id="L39" title="All 4 branches missed.">                .fetch().singleOrNull()?.value1()</span>
+<span class="nc" id="L40">                ?: throw DatabaseContentsError(&quot;Modelling group $groupId does not have any models/model versions in the database&quot;)</span>
+
+    }
+
+    override fun createModellingGroup(newGroup: ModellingGroupCreation)
+    {
+<span class="nc" id="L46">        dsl.newRecord(MODELLING_GROUP).apply {</span>
+<span class="nc" id="L47">            this.id = newGroup.id</span>
+<span class="nc" id="L48">            this.description = newGroup.description</span>
+<span class="nc" id="L49">            this.institution = newGroup.institution</span>
+<span class="nc" id="L50">            this.pi = newGroup.pi</span>
+<span class="nc" id="L51">        }.insert()</span>
+<span class="nc" id="L52">    }</span>
+
+    override fun getModellingGroups(): Iterable&lt;ModellingGroup&gt;
+    {
+<span class="nc" id="L56">        return dsl.select(MODELLING_GROUP.fieldsAsList())</span>
+<span class="nc" id="L57">                .from(MODELLING_GROUP)</span>
+<span class="nc" id="L58">                .where(MODELLING_GROUP.REPLACED_BY.isNull)</span>
+<span class="nc" id="L59">                .fetchInto&lt;ModellingGroupRecord&gt;()</span>
+<span class="nc" id="L60">                .map { mapModellingGroup(it) }</span>
+    }
+
+    override fun getModellingGroups(ids: Array&lt;String&gt;): Iterable&lt;ModellingGroup&gt;
+    {
+<span class="nc" id="L65">        return dsl.select(MODELLING_GROUP.fieldsAsList())</span>
+<span class="nc" id="L66">                .from(MODELLING_GROUP)</span>
+<span class="nc" id="L67">                .where(MODELLING_GROUP.ID.`in`(*ids))</span>
+<span class="nc" id="L68">                .and(MODELLING_GROUP.REPLACED_BY.isNull)</span>
+<span class="nc" id="L69">                .fetchInto&lt;ModellingGroupRecord&gt;()</span>
+<span class="nc" id="L70">                .map { mapModellingGroup(it) }</span>
+    }
+
+    override fun getModellingGroup(id: String): ModellingGroup
+    {
+        // This is a little confusing.
+        // The modelling_group table has a self-referential foreign key called 'current'.
+        // If the modelling group's ID need to change (e.g. the group moves to another
+        // institution) we insertInto a new row with the new ID. The old row remains, and
+        // has current set to point at the new ID. If we change the ID again, we update
+        // all the old rows to point at the most recent one.
+
+        // So this join says: Get me the group with the specified ID, but if current is
+        // not null, this must be an old row so join current to ID and get the row it
+        // points at instead.
+<span class="nc" id="L85">        val t1 = MODELLING_GROUP.`as`(&quot;t1&quot;)</span>
+<span class="nc" id="L86">        val t2 = MODELLING_GROUP.`as`(&quot;t2&quot;)</span>
+<span class="nc" id="L87">        val record = dsl.select(t1.REPLACED_BY, t1.ID, t1.DESCRIPTION, t2.ID, t2.DESCRIPTION)</span>
+<span class="nc" id="L88">                .from(t1)</span>
+<span class="nc" id="L89">                .leftJoin(t2).on(t1.REPLACED_BY.eq(t2.ID))</span>
+<span class="nc" id="L90">                .where(t1.ID.eq(id))</span>
+<span class="nc" id="L91">                .fetchAny()</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (record != null)</span>
+        {
+<span class="nc bnc" id="L94" title="All 2 branches missed.">            if (record.value1() == null)</span>
+            {
+<span class="nc" id="L96">                return ModellingGroup(record.value2(), record.value3())</span>
+            }
+            else
+            {
+<span class="nc" id="L100">                return ModellingGroup(record.value4(), record.value5())</span>
+            }
+        }
+        else
+        {
+<span class="nc" id="L105">            throw UnknownObjectError(id, &quot;ModellingGroup&quot;)</span>
+        }
+    }
+
+    override fun getModellingGroupDetails(groupId: String): ModellingGroupDetails
+    {
+<span class="nc" id="L111">        val group = getModellingGroup(groupId)</span>
+<span class="nc" id="L112">        val models = dsl.select(MODEL.fieldsAsList())</span>
+<span class="nc" id="L113">                .from(MODEL)</span>
+<span class="nc" id="L114">                .where(MODEL.IS_CURRENT)</span>
+<span class="nc" id="L115">                .and(MODEL.MODELLING_GROUP.eq(group.id))</span>
+<span class="nc" id="L116">                .fetch()</span>
+<span class="nc" id="L117">                .map { ResearchModel(it[MODEL.ID], it[MODEL.DESCRIPTION], it[MODEL.CITATION], group.id) }</span>
+<span class="nc" id="L118">        val users = dsl.select(APP_USER.USERNAME)</span>
+<span class="nc" id="L119">                .fromJoinPath(APP_USER, USER_GROUP_MEMBERSHIP, USER_GROUP, USER_GROUP_ROLE, ROLE)</span>
+<span class="nc" id="L120">                .where(ROLE.NAME.eq(&quot;member&quot;))</span>
+<span class="nc" id="L121">                .and(ROLE.SCOPE_PREFIX.eq(&quot;modelling-group&quot;))</span>
+<span class="nc" id="L122">                .and(USER_GROUP_ROLE.SCOPE_ID.eq(group.id))</span>
+<span class="nc" id="L123">                .fetch()</span>
+<span class="nc" id="L124">                .map { it[APP_USER.USERNAME] }</span>
+<span class="nc" id="L125">        return ModellingGroupDetails(group.id, group.description, models, users)</span>
+    }
+
+    override fun getTouchstonesByGroupId(groupId: String): List&lt;Touchstone&gt;
+    {
+<span class="nc" id="L130">        val group = getModellingGroup(groupId)</span>
+<span class="nc" id="L131">        return dsl</span>
+<span class="nc" id="L132">                .selectDistinct(TOUCHSTONE_NAME.fieldsAsList() + TOUCHSTONE.fieldsAsList())</span>
+<span class="nc" id="L133">                .fromJoinPath(TOUCHSTONE_NAME, TOUCHSTONE, RESPONSIBILITY_SET, RESPONSIBILITY)</span>
+<span class="nc" id="L134">                .where(RESPONSIBILITY.IS_OPEN).orNot(TOUCHSTONE.STATUS.eq(&quot;open&quot;))</span>
+<span class="nc" id="L135">                .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(group.id))</span>
+<span class="nc" id="L136">                .fetch()</span>
+<span class="nc" id="L137">                .groupBy { it[TOUCHSTONE_NAME.ID] }</span>
+<span class="nc" id="L138">                .map { touchstoneRepository.mapTouchstone(it.value) }</span>
+    }
+
+    override fun getModellingGroupsForScenario(scenarioDescriptionId: String, touchstoneVersionId: String):
+            List&lt;ModellingGroup&gt;
+    {
+<span class="nc" id="L144">        return dsl.select(MODELLING_GROUP.fieldsAsList())</span>
+<span class="nc" id="L145">                .fromJoinPath(MODELLING_GROUP, RESPONSIBILITY_SET, RESPONSIBILITY, SCENARIO)</span>
+<span class="nc" id="L146">                .where(SCENARIO.SCENARIO_DESCRIPTION.eq(scenarioDescriptionId))</span>
+<span class="nc" id="L147">                .and(RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId))</span>
+<span class="nc" id="L148">                .and(MODELLING_GROUP.REPLACED_BY.isNull)</span>
+<span class="nc" id="L149">                .fetchInto&lt;ModellingGroupRecord&gt;()</span>
+<span class="nc" id="L150">                .map { mapModellingGroup(it) }</span>
+    }
+
+<span class="nc" id="L153">    private fun mapModellingGroup(x: ModellingGroupRecord) = ModellingGroup(x.id, x.description)</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

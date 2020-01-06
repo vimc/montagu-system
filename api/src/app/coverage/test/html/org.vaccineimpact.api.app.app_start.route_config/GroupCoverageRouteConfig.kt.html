@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GroupCoverageRouteConfig.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.app_start.route_config</a> &gt; <span class="el_source">GroupCoverageRouteConfig.kt</span></div><h1>GroupCoverageRouteConfig.kt</h1><pre class="source lang-java linenums">
+package org.vaccineimpact.api.app.app_start.route_config
+
+import org.vaccineimpact.api.app.app_start.*
+import org.vaccineimpact.api.app.app_start.streamed
+import org.vaccineimpact.api.app.controllers.CoverageController
+
+<span class="nc" id="L8">object GroupCoverageRouteConfig : RouteConfig</span>
+{
+<span class="nc" id="L10">    private val baseUrl = &quot;/modelling-groups/:group-id/responsibilities/:touchstone-version-id/:scenario-id&quot;</span>
+<span class="nc" id="L11">    private val controller = CoverageController::class</span>
+
+<span class="nc" id="L13">    private val groupScope = &quot;modelling-group:&lt;group-id&gt;&quot;</span>
+<span class="nc" id="L14">    val permissions = setOf(</span>
+<span class="nc" id="L15">            &quot;*/scenarios.read&quot;,</span>
+<span class="nc" id="L16">            &quot;$groupScope/responsibilities.read&quot;,</span>
+<span class="nc" id="L17">            &quot;$groupScope/coverage.read&quot;</span>
+    )
+
+<span class="nc" id="L20">    override val endpoints: List&lt;EndpointDefinition&gt; = listOf(</span>
+<span class="nc" id="L21">            Endpoint(&quot;$baseUrl/coverage-sets/&quot;, controller, &quot;getCoverageSetsForGroup&quot;)</span>
+<span class="nc" id="L22">                    .json()</span>
+<span class="nc" id="L23">                    .secure(permissions),</span>
+
+<span class="nc" id="L25">            Endpoint(&quot;$baseUrl/coverage/&quot;, controller, &quot;getCoverageDataAndMetadataForGroup&quot;)</span>
+                    // TODO: Return true multipart data and change the data type
+<span class="nc" id="L27">                    .json().streamed()</span>
+<span class="nc" id="L28">                    .secure(permissions),</span>
+
+<span class="nc" id="L30">            Endpoint(&quot;$baseUrl/coverage/&quot;, controller, &quot;getCoverageDataForGroup&quot;)</span>
+<span class="nc" id="L31">                    .csv().streamed()</span>
+<span class="nc" id="L32">                    .secure(permissions),</span>
+
+<span class="nc" id="L34">            Endpoint(&quot;$baseUrl/coverage/csv/&quot;, controller, &quot;getCoverageDataForGroup&quot;)</span>
+<span class="nc" id="L35">                    .streamed()</span>
+<span class="nc" id="L36">                    .secure(permissions))</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

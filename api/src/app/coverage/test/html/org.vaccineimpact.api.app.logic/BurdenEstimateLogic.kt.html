@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BurdenEstimateLogic.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.logic</a> &gt; <span class="el_source">BurdenEstimateLogic.kt</span></div><h1>BurdenEstimateLogic.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.logic
+
+import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.InvalidOperationError
+import org.vaccineimpact.api.app.errors.MissingRowsError
+import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
+import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
+import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
+import org.vaccineimpact.api.app.validate
+import org.vaccineimpact.api.app.validateStochastic
+import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.AgeLookup
+import org.vaccineimpact.api.models.expectations.firstAgeWithMissingRows
+import org.vaccineimpact.api.models.expectations.firstMissingYear
+import org.vaccineimpact.api.models.expectations.hasMissingAges
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetStatus
+import org.vaccineimpact.api.serialization.FlexibleDataTable
+import java.time.Instant
+
+interface BurdenEstimateLogic
+{
+    fun createBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                properties: CreateBurdenEstimateSet,
+                                uploader: String, timestamp: Instant): Int
+
+    fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                  estimates: Sequence&lt;BurdenEstimateWithRunId&gt;, filename: String?)
+
+    @Throws(MissingRowsError::class)
+    fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
+
+    fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,
+                                modelRuns: List&lt;ModelRun&gt;,
+                                uploader: String, timestamp: Instant): Int
+
+    fun getEstimates(setId: Int,
+                     groupId: String,
+                     touchstoneVersionId: String,
+                     scenarioId: String,
+                     outcome: String,
+<span class="fc" id="L42">                     burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):</span>
+            BurdenEstimateDataSeries
+
+    fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List&lt;BurdenEstimateSet&gt;
+
+    fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String, setId: Int): BurdenEstimateSet
+
+    fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
+                              scenarioId: String): FlexibleDataTable&lt;BurdenEstimate&gt;
+}
+
+<span class="fc" id="L53">class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: ModellingGroupRepository,</span>
+                                      private val burdenEstimateRepository: BurdenEstimateRepository,
+                                      private val expectationsRepository: ExpectationsRepository,
+                                      private val scenarioRepository: ScenarioRepository,
+                                      private val responsibilitiesRepository: ResponsibilitiesRepository,
+                                      private val notifier: Notifier) : BurdenEstimateLogic
+{
+
+<span class="nc" id="L61">    constructor(repositories: Repositories, notifier: Notifier = SlackNotifier()) : this(</span>
+<span class="nc" id="L62">            repositories.modellingGroup,</span>
+<span class="nc" id="L63">            repositories.burdenEstimates,</span>
+<span class="nc" id="L64">            repositories.expectations,</span>
+<span class="nc" id="L65">            repositories.scenario,</span>
+<span class="nc" id="L66">            repositories.responsibilities,</span>
+<span class="nc" id="L67">            notifier)</span>
+
+    override fun createBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                         properties: CreateBurdenEstimateSet,
+                                         uploader: String, timestamp: Instant): Int
+    {
+        // Dereference modelling group IDs
+<span class="fc" id="L74">        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)</span>
+
+<span class="fc" id="L76">        val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)</span>
+<span class="fc" id="L77">        val status = responsibilityInfo.setStatus.toLowerCase()</span>
+
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if (status == ResponsibilitySetStatus.SUBMITTED.name.toLowerCase())</span>
+        {
+<span class="fc" id="L81">            throw InvalidOperationError(&quot;The burden estimates uploaded for this touchstone have been submitted &quot; +</span>
+                    &quot;for review. You cannot upload any new estimates.&quot;)
+        }
+
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (status == ResponsibilitySetStatus.APPROVED.name.toLowerCase())</span>
+        {
+<span class="fc" id="L87">            throw InvalidOperationError(&quot;The burden estimates uploaded for this touchstone have been reviewed&quot; +</span>
+                    &quot; and approved. You cannot upload any new estimates.&quot;)
+        }
+
+<span class="fc" id="L91">        val modelRunParameterSetId = properties.modelRunParameterSet</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (modelRunParameterSetId != null)</span>
+        {
+<span class="fc" id="L94">            burdenEstimateRepository.checkModelRunParameterSetExists(modelRunParameterSetId, modellingGroup.id, touchstoneVersionId)</span>
+        }
+
+<span class="fc" id="L97">        val latestModelVersion = modellingGroupRepository.getLatestModelVersionForGroup(modellingGroup.id, responsibilityInfo.disease)</span>
+
+<span class="fc" id="L99">        return burdenEstimateRepository.createBurdenEstimateSet(responsibilityInfo.id, latestModelVersion, properties, uploader, timestamp)</span>
+    }
+
+    override fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String, disease: String,
+                                         modelRuns: List&lt;ModelRun&gt;,
+                                         uploader: String, timestamp: Instant): Int
+    {
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if (!modelRuns.any())</span>
+        {
+<span class="fc" id="L108">            throw BadRequest(&quot;No model runs provided&quot;)</span>
+        }
+
+        // Dereference modelling group IDs
+<span class="fc" id="L112">        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)</span>
+<span class="fc" id="L113">        val modelVersion = modellingGroupRepository.getLatestModelVersionForGroup(modellingGroup.id, disease)</span>
+
+<span class="fc" id="L115">        return burdenEstimateRepository.addModelRunParameterSet(modellingGroup.id,</span>
+<span class="fc" id="L116">                touchstoneVersionId, modelVersion, modelRuns, uploader, timestamp)</span>
+    }
+
+    override fun getBurdenEstimateSets(groupId: String, touchstoneVersionId: String, scenarioId: String): List&lt;BurdenEstimateSet&gt;
+    {
+<span class="fc" id="L121">        scenarioRepository.checkScenarioDescriptionExists(scenarioId)</span>
+<span class="fc" id="L122">        return burdenEstimateRepository.getBurdenEstimateSets(groupId, touchstoneVersionId, scenarioId)</span>
+    }
+
+    override fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String, setId: Int): BurdenEstimateSet
+    {
+<span class="nc" id="L127">        scenarioRepository.checkScenarioDescriptionExists(scenarioId)</span>
+<span class="nc" id="L128">        return burdenEstimateRepository.getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, setId)</span>
+    }
+
+    override fun getEstimates(setId: Int, groupId: String, touchstoneVersionId: String,
+                              scenarioId: String,
+                              outcome: String,
+                              burdenEstimateGrouping: BurdenEstimateGrouping)
+            : BurdenEstimateDataSeries
+    {
+<span class="fc" id="L137">        val group = modellingGroupRepository.getModellingGroup(groupId)</span>
+<span class="fc" id="L138">        val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(group.id, touchstoneVersionId, scenarioId)</span>
+<span class="fc" id="L139">        val outcomeIds = burdenEstimateRepository.getBurdenOutcomeIds(outcome)</span>
+<span class="fc" id="L140">        return burdenEstimateRepository.getEstimates(setId, responsibilityInfo.id, outcomeIds,</span>
+<span class="fc" id="L141">                burdenEstimateGrouping)</span>
+    }
+
+    override fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
+                                       scenarioId: String): FlexibleDataTable&lt;BurdenEstimate&gt;
+    {
+<span class="fc" id="L147">        val data = burdenEstimateRepository.getBurdenEstimateOutcomesSequence(groupId,</span>
+<span class="fc" id="L148">                touchstoneVersionId, scenarioId, setId)</span>
+
+        //first, group the outcome rows by disease, year, age, country code and country name
+<span class="fc" id="L151">        val groupedRows = data</span>
+<span class="fc" id="L152">                .groupBy {</span>
+<span class="fc" id="L153">                    hashSetOf(it.disease, it.year, it.age,</span>
+<span class="fc" id="L154">                            it.country, it.countryName)</span>
+                }
+
+        //get the expected outcomes for this burden estimate set
+<span class="fc" id="L158">        val expectedOutcomes = burdenEstimateRepository.getExpectedOutcomesForBurdenEstimateSet(setId)</span>
+
+        //next, map to BurdenEstimate objects, including extracting the cohort size outcome
+<span class="fc" id="L161">        val rows = groupedRows.values</span>
+<span class="fc" id="L162">                .map {</span>
+<span class="fc" id="L163">                    mapBurdenEstimate(it)</span>
+                }
+
+<span class="fc" id="L166">        return FlexibleDataTable.new(rows.asSequence(), expectedOutcomes)</span>
+
+    }
+
+<span class="fc" id="L170">    private val COHORT_SIZE_CODE = &quot;cohort_size&quot;</span>
+    private fun mapBurdenEstimate(records: List&lt;BurdenEstimateOutcome&gt;)
+            : BurdenEstimate
+    {
+        // all records in thr parameter group should have same disease, year, age, country code and country name
+        // so use value from the first row
+<span class="fc" id="L176">        val reference = records.first()</span>
+
+        //We should find cohort size as one of the burden outcomes
+
+<span class="fc bfc" id="L180" title="All 2 branches covered.">        val cohortSize = records.firstOrNull { it.burden_outcome_code == COHORT_SIZE_CODE }?.value</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">        val burdenOutcomeRows = records.filter { it.burden_outcome_code != COHORT_SIZE_CODE }</span>
+
+<span class="fc" id="L183">        val burdenOutcomeValues =</span>
+<span class="fc" id="L184">                burdenOutcomeRows.associateBy({ it.burden_outcome_code }, { it.value })</span>
+
+<span class="fc" id="L186">        return BurdenEstimate(</span>
+<span class="fc" id="L187">                reference.disease,</span>
+<span class="fc" id="L188">                reference.year,</span>
+<span class="fc" id="L189">                reference.age,</span>
+<span class="fc" id="L190">                reference.country,</span>
+<span class="fc" id="L191">                reference.countryName,</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">                cohortSize ?: 0f,</span>
+<span class="fc" id="L193">                burdenOutcomeValues</span>
+        )
+    }
+
+    override fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
+    {
+        // Dereference modelling group IDs
+<span class="fc" id="L200">        val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)</span>
+
+        // Check all the IDs match up
+<span class="fc" id="L203">        val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)</span>
+<span class="fc" id="L204">        val set = burdenEstimateRepository.getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)</span>
+
+<span class="fc bfc" id="L206" title="All 2 branches covered.">        if (set.status == BurdenEstimateSetStatus.COMPLETE)</span>
+        {
+<span class="fc" id="L208">            throw InvalidOperationError(&quot;This burden estimate set has already been closed.&quot;)</span>
+        }
+
+<span class="fc bfc" id="L211" title="All 2 branches covered.">        if (burdenEstimateRepository.getEstimateWriter(set).isSetEmpty(setId))</span>
+        {
+<span class="fc" id="L213">            throw InvalidOperationError(&quot;This burden estimate set does not have any burden estimate data. &quot; +</span>
+                    &quot;It cannot be marked as complete&quot;)
+        }
+        else
+        {
+<span class="fc" id="L218">            val identifier = &quot;${modellingGroup.id} - ${responsibilityInfo.disease} - $scenarioId&quot;</span>
+<span class="fc" id="L219">            val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)</span>
+<span class="fc" id="L220">                    .expectation.expectedRowLookup()</span>
+<span class="fc" id="L221">            val validatedRowMap = burdenEstimateRepository.validateEstimates(set, expectedRows)</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">            val countriesWithMissingRows = validatedRowMap.filter { it.hasMissingAges() }</span>
+<span class="fc bfc" id="L223" title="All 2 branches covered.">            if (countriesWithMissingRows.any())</span>
+            {
+<span class="fc" id="L225">                burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)</span>
+<span class="fc" id="L226">                notifier.notify(&quot;A burden estimate set with missing rows has just been uploaded for $identifier&quot;)</span>
+<span class="fc" id="L227">                throw MissingRowsError(rowErrorMessage(countriesWithMissingRows))</span>
+            }
+<span class="fc" id="L229">            burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)</span>
+<span class="fc" id="L230">            notifier.notify(&quot;A complete burden estimate set has just been uploaded for $identifier&quot;)</span>
+<span class="fc" id="L231">            notifyIfResponsibilitySetIsComplete(modellingGroup.id, responsibilityInfo.disease, touchstoneVersionId)</span>
+        }
+<span class="fc" id="L233">    }</span>
+
+    private fun notifyIfResponsibilitySetIsComplete(groupId: String, disease: String, touchstoneVersionId: String)
+    {
+<span class="fc" id="L237">        val responsibilities = responsibilitiesRepository.getResponsibilitiesForGroup(groupId,</span>
+<span class="fc" id="L238">                touchstoneVersionId,</span>
+<span class="fc" id="L239">                ScenarioFilterParameters(null, disease))</span>
+
+<span class="fc" id="L241">        if (responsibilities.responsibilities.all {</span>
+                    it.currentEstimateSet != null &amp;&amp;
+<span class="pc bpc" id="L243" title="2 of 8 branches missed.">                            it.currentEstimateSet?.status == BurdenEstimateSetStatus.COMPLETE</span>
+                })
+        {
+<span class="fc" id="L246">            notifier.notify(&quot;Group $groupId have uploaded complete estimate sets for all $disease scenarios in $touchstoneVersionId&quot;)</span>
+        }
+<span class="fc" id="L248">    }</span>
+
+    private fun rowErrorMessage(countriesWithMissingRows: Map&lt;String, AgeLookup&gt;): String
+    {
+<span class="fc" id="L252">        val countries = countriesWithMissingRows.keys</span>
+<span class="fc" id="L253">        val exampleRowLookup = countriesWithMissingRows.values.first()</span>
+<span class="fc" id="L254">        val firstAgeWithMissingYears = exampleRowLookup.firstAgeWithMissingRows()</span>
+<span class="fc" id="L255">        val firstMissingYear = exampleRowLookup.getValue(firstAgeWithMissingYears).firstMissingYear()</span>
+
+<span class="fc" id="L257">        val basicMessage = &quot;Missing rows for ${countries.joinToString(&quot;, &quot;)}&quot;</span>
+<span class="fc" id="L258">        val exampleRowMessage = &quot;For example:\n${countries.first()}, age $firstAgeWithMissingYears,&quot; +</span>
+<span class="fc" id="L259">                &quot; year $firstMissingYear&quot;</span>
+<span class="fc" id="L260">        return &quot;$basicMessage\n$exampleRowMessage&quot;</span>
+    }
+
+    override fun populateBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String,
+                                           estimates: Sequence&lt;BurdenEstimateWithRunId&gt;, filename: String?)
+    {
+<span class="fc" id="L266">        val group = modellingGroupRepository.getModellingGroup(groupId)</span>
+<span class="fc" id="L267">        val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(group.id, touchstoneVersionId, scenarioId)</span>
+<span class="fc" id="L268">        val set = burdenEstimateRepository.getBurdenEstimateSetForResponsibility(setId, responsibilityInfo.id)</span>
+
+<span class="fc bfc" id="L270" title="All 2 branches covered.">        if (set.status == BurdenEstimateSetStatus.COMPLETE)</span>
+        {
+<span class="fc" id="L272">            throw InvalidOperationError(&quot;This burden estimate set has been marked as complete.&quot; +</span>
+                    &quot; You must create a new set if you want to upload any new estimates.&quot;)
+        }
+
+<span class="pc bpc" id="L276" title="1 of 2 branches missed.">        if (set.isStochastic())</span>
+        {
+<span class="nc" id="L278">            populateStochasticBurdenEstimateSet(set, responsibilityInfo, estimates)</span>
+        }
+        else
+        {
+<span class="fc" id="L282">            populateCentralBurdenEstimateSet(set, responsibilityInfo, estimates)</span>
+        }
+
+<span class="fc" id="L285">        burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.PARTIAL)</span>
+<span class="fc" id="L286">        burdenEstimateRepository.updateCurrentBurdenEstimateSet(responsibilityInfo.id, setId, set.type)</span>
+
+<span class="fc bfc" id="L288" title="All 2 branches covered.">        if (filename != null)</span>
+        {
+<span class="fc" id="L290">            burdenEstimateRepository.updateBurdenEstimateSetFilename(setId, filename)</span>
+        }
+<span class="fc" id="L292">    }</span>
+
+    private fun populateCentralBurdenEstimateSet(set: BurdenEstimateSet, responsibilityInfo: ResponsibilityInfo,
+                                                 estimates: Sequence&lt;BurdenEstimateWithRunId&gt;)
+    {
+<span class="fc" id="L297">        val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)</span>
+<span class="fc" id="L298">                .expectation.expectedRowLookup()</span>
+
+<span class="fc" id="L300">        val validatedEstimates = estimates.validate(expectedRows)</span>
+
+<span class="fc" id="L302">        burdenEstimateRepository.getEstimateWriter(set).addEstimatesToSet(set.id, validatedEstimates, responsibilityInfo.disease)</span>
+<span class="fc" id="L303">    }</span>
+
+    private fun populateStochasticBurdenEstimateSet(set: BurdenEstimateSet, responsibilityInfo: ResponsibilityInfo,
+                                                    estimates: Sequence&lt;BurdenEstimateWithRunId&gt;)
+    {
+<span class="nc" id="L308">        val validatedEstimates = estimates.validateStochastic()</span>
+<span class="nc" id="L309">        burdenEstimateRepository.getEstimateWriter(set)</span>
+<span class="nc" id="L310">                .addEstimatesToSet(set.id, validatedEstimates, responsibilityInfo.disease)</span>
+<span class="nc" id="L311">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

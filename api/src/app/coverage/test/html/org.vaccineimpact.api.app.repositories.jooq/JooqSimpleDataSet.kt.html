@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JooqSimpleDataSet.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.repositories.jooq</a> &gt; <span class="el_source">JooqSimpleDataSet.kt</span></div><h1>JooqSimpleDataSet.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.repositories.jooq
+
+import org.jooq.DSLContext
+import org.jooq.Record
+import org.jooq.TableField
+import org.jooq.impl.TableImpl
+import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.repositories.SimpleDataSet
+import org.vaccineimpact.api.models.HasKey
+
+<span class="nc" id="L11">class JooqSimpleDataSet&lt;out TModel : HasKey&lt;TKey&gt;, TKey : Any, TRepoModel : Record, TTable : TableImpl&lt;TRepoModel&gt;&gt;(</span>
+        private val dsl: DSLContext,
+        private val table: TTable,
+        primaryKey: (TTable) -&gt; TableField&lt;TRepoModel, TKey&gt;,
+        private val map: (TRepoModel) -&gt; TModel,
+        private val modelType: Class&lt;*&gt;)
+    : SimpleDataSet&lt;TModel, TKey&gt;
+{
+<span class="nc" id="L19">    private val primaryKey = primaryKey(table)</span>
+
+<span class="nc" id="L21">    override fun all(): Iterable&lt;TModel&gt; = dsl.fetch(table).map { map(it) }</span>
+<span class="nc" id="L22">    override fun get(key: TKey): TModel = map(fetch(key))</span>
+    override fun assertExists(key: TKey)
+    {
+        // This will throw an exception if the object doesn't exist
+<span class="nc" id="L26">        fetch(key)</span>
+<span class="nc" id="L27">    }</span>
+
+<span class="nc" id="L29">    private fun fetchOrNull(key: TKey): TRepoModel? = dsl.fetchAny(table, primaryKey.eq(key))</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">    private fun fetch(key: TKey) = fetchOrNull(key) ?: throw UnknownObjectError(key, modelType.simpleName)</span>
+
+    companion object
+    {
+        inline fun &lt;reified TModel : HasKey&lt;TKey&gt;, TKey : Any, TRepoModel : Record, TTable : TableImpl&lt;TRepoModel&gt;&gt;
+                new(dsl: DSLContext,
+                    table: TTable,
+                    noinline primaryKey: (TTable) -&gt; TableField&lt;TRepoModel, TKey&gt;,
+                    noinline map: (TRepoModel) -&gt; TModel)
+<span class="nc" id="L39">                = JooqSimpleDataSet(dsl, table, primaryKey, map, TModel::class.java)</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Endpoint.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">org.vaccineimpact.api.app.app_start</a> &gt; <span class="el_source">Endpoint.kt</span></div><h1>Endpoint.kt</h1><pre class="source lang-java linenums">package org.vaccineimpact.api.app.app_start
+
+import org.pac4j.http.client.direct.DirectBasicAuthClient
+import org.pac4j.sparkjava.SecurityFilter
+import org.vaccineimpact.api.app.DefaultHeadersFilter
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.repositories.RepositoryFactory
+import org.vaccineimpact.api.app.security.MontaguAuthorizer
+import org.vaccineimpact.api.app.security.PermissionRequirement
+import org.vaccineimpact.api.app.security.TokenIssuingConfigFactory
+import org.vaccineimpact.api.app.security.TokenVerifyingConfigFactory
+import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.models.helpers.ContentTypes
+import org.vaccineimpact.api.security.WebTokenHelper
+import spark.Spark
+import spark.route.HttpMethod
+import kotlin.reflect.KClass
+
+<span class="fc" id="L19">data class Endpoint(</span>
+<span class="fc" id="L20">        override val urlFragment: String,</span>
+<span class="fc" id="L21">        override val controller: KClass&lt;*&gt;,</span>
+<span class="fc" id="L22">        override val actionName: String,</span>
+<span class="nc" id="L23">        override val contentType: String = ContentTypes.json,</span>
+<span class="nc" id="L24">        override val method: HttpMethod = HttpMethod.get,</span>
+<span class="fc" id="L25">        override val postProcess: ResultProcessor = ::passThrough,</span>
+<span class="nc" id="L26">        override val requiredPermissions: List&lt;PermissionRequirement&gt; = listOf(),</span>
+<span class="nc" id="L27">        override val basicAuth: Boolean = false</span>
+
+) : EndpointDefinition
+{
+    init
+    {
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if (!urlFragment.endsWith(&quot;/&quot;))</span>
+        {
+<span class="fc" id="L35">            throw Exception(&quot;All endpoint definitions must end with a forward slash: $urlFragment&quot;)</span>
+        }
+    }
+
+    override fun additionalSetup(url: String, webTokenHelper: WebTokenHelper, repositoryFactory: RepositoryFactory)
+    {
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        if (requiredPermissions.any())</span>
+        {
+<span class="nc" id="L43">            addSecurityFilter(url, webTokenHelper, repositoryFactory)</span>
+        }
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        if (basicAuth)</span>
+        {
+<span class="nc" id="L47">            setupSecurity(url, repositoryFactory)</span>
+        }
+
+<span class="nc" id="L50">        Spark.after(url, contentType, DefaultHeadersFilter(&quot;$contentType; charset=utf-8&quot;, method))</span>
+<span class="nc" id="L51">    }</span>
+
+    private fun addSecurityFilter(url: String, webTokenHelper: WebTokenHelper, repositoryFactory: RepositoryFactory)
+    {
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (Config.authEnabled)</span>
+        {
+<span class="nc" id="L57">            val configFactory = TokenVerifyingConfigFactory(webTokenHelper,</span>
+<span class="nc" id="L58">                    requiredPermissions.toSet(), repositoryFactory)</span>
+
+<span class="nc" id="L60">            val config = configFactory.build()</span>
+
+<span class="nc" id="L62">            Spark.before(url, org.pac4j.sparkjava.SecurityFilter(</span>
+<span class="nc" id="L63">                    config,</span>
+<span class="nc" id="L64">                    configFactory.allClients(),</span>
+<span class="nc" id="L65">                    MontaguAuthorizer::class.java.simpleName,</span>
+<span class="nc" id="L66">                    &quot;method:$method&quot;</span>
+            ))
+        }
+<span class="nc" id="L69">    }</span>
+
+    private fun setupSecurity(url: String, repositoryFactory: RepositoryFactory)
+    {
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (Config.authEnabled)</span>
+        {
+<span class="nc" id="L75">            val config = TokenIssuingConfigFactory(repositoryFactory).build()</span>
+<span class="nc" id="L76">            Spark.before(url, SecurityFilter(</span>
+<span class="nc" id="L77">                    config,</span>
+<span class="nc" id="L78">                    DirectBasicAuthClient::class.java.simpleName,</span>
+<span class="nc" id="L79">                    null,</span>
+<span class="nc" id="L80">                    &quot;method:${HttpMethod.post}&quot;</span>
+            ))
+        }
+<span class="nc" id="L83">    }</span>
+
+}
+
+<span class="nc" id="L87">fun Endpoint.secure(permissions: Set&lt;String&gt; = setOf()): Endpoint</span>
+{
+<span class="nc" id="L89">    val allPermissions = (permissions + &quot;*/can-login&quot;).map {</span>
+<span class="nc" id="L90">        PermissionRequirement.parse(it)</span>
+    }
+<span class="nc" id="L92">    return this.copy(requiredPermissions = allPermissions)</span>
+}
+
+// This means that the endpoint will return JSON data, and we will only respond to requests
+// that say they accept application/json
+fun Endpoint.json(): Endpoint
+{
+<span class="nc" id="L99">    return this.copy(contentType = ContentTypes.json)</span>
+}
+
+// This means that the endpoint will return CSV data, and we will only respond to requests
+// that say they accept text/csv
+fun Endpoint.csv(): Endpoint
+{
+<span class="nc" id="L106">    return this.copy(contentType = ContentTypes.csv)</span>
+}
+
+fun Endpoint.basicAuth(): Endpoint
+{
+<span class="nc" id="L111">    return this.copy(basicAuth = true)</span>
+}
+
+fun Endpoint.post(): Endpoint
+{
+<span class="nc" id="L116">    return this.copy(method = spark.route.HttpMethod.post)</span>
+}
+
+<span class="fc" id="L119">private fun passThrough(x: Any?, @Suppress(&quot;UNUSED_PARAMETER&quot;) context: ActionContext): Any? = x</span>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>
