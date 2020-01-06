@@ -219,7 +219,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val response = RequestHelper().postFile("$setUrl$setId/actions/upload/$uploadToken/?$queryParams", csvData, token = token)
         JSONValidator().validateSuccess(response.text)
 
-        val populateResponse = populateFromFile(setId, 1, uploadToken, token)
+        val populateResponse = populateFromFile(setId, uploadToken, token)
         JSONValidator().validateSuccess(populateResponse.text)
 
         JooqContext().use { db ->
@@ -253,7 +253,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
             JSONValidator().validateSuccess(response.text)
         }
 
-        val response = populateFromFile(setId, numChunks, uploadToken, token)
+        val response = populateFromFile(setId, uploadToken, token)
         JSONValidator().validateSuccess(response.text)
 
         JooqContext().use { db ->
@@ -283,7 +283,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
             JSONValidator().validateSuccess(response.text)
         }
 
-        val response = populateFromFile(setId, numChunks, uploadToken, token)
+        val response = populateFromFile(setId, uploadToken, token)
         assertThat(response.text).contains("We are not expecting data for age 50 and year 1998")
 
         JooqContext().use { db ->
@@ -340,7 +340,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
 
         sendChunk(setId, 1, data[0], numChunks, uploadToken, token)
 
-        val response = populateFromFile(setId, numChunks, uploadToken, token)
+        val response = populateFromFile(setId, uploadToken, token)
         assertThat(response.text).contains("This file has not been fully uploaded")
         assertThat(response.statusCode).isEqualTo(400)
     }
@@ -373,7 +373,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
     }
 
     private fun populateFromFile(setId: Int,
-                                 total: Int,
                                  uploadToken: String,
                                  token: TokenLiteral): Response
     {
