@@ -80,7 +80,7 @@ sealed class Scope  (val value: String)
             else
             {
 
-                return Scope.Specific(role.scopePrefix!!, role.scopeId!!)
+                return Scope.Specific(role.scopePrefix, role.scopeId!!)
             }
         }
 
