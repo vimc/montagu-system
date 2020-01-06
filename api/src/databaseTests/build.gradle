@@ -19,8 +19,8 @@ dependencies {
 }
 
 test {
-    dependsOn 'copySpec', ':startDatabase', 'createTemplateFromDatabase'
-    finalizedBy 'restoreDatabaseFromTemplate', ':stopDatabase'
+    dependsOn 'copySpec', 'createTemplateFromDatabase'
+    finalizedBy 'restoreDatabaseFromTemplate'
 }
 
 task createTemplateFromDatabase(type: JavaExec) {
