@@ -19,12 +19,14 @@ before_script:
   - sudo mkdir -p /etc/montagu/api/ && sudo touch /etc/montagu/api/go_signal
   - ./travis/start-database.sh
 script:
-  - ./src/gradlew -p src :app:test
-  - ./src/gradlew -p src :databaseTests:test
+  - ./src/gradlew -p src :testLibrary
 after_success:
-  - ./src/gradlew -p src :app:jacocoTestReport
-  - ./src/gradlew -p src :databaseTests:jacocoTestReport
+  - ./src/gradlew -p src :jacocoTestReport
   - codecov -f src/app/coverage/test/*.xml
   - codecov -f src/databaseTests/coverage/test/*.xml
+  - codecov -f src/emails/coverage/test/*.xml
+  - codecov -f src/security/coverage/test/*.xml
+  - codecov -f src/serialization/coverage/test/*.xml
+  - codecov -f src/userCLI/coverage/test/*.xml
 services:
   - docker

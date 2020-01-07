@@ -34,3 +34,12 @@ task restoreDatabaseFromTemplate(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     args "restoreDatabaseFromTemplate"
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+    }
+
+    sourceSets project(':app').sourceSets.main
+}

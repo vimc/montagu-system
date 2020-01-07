@@ -102,14 +102,12 @@ subprojects {
         toolVersion = "0.8.3"
         reportsDir = file("$projectDir/coverage")
     }
-
+    
     jacocoTestReport {
         reports {
             xml.enabled true
             csv.enabled false
         }
-
-        sourceSets project(':app').sourceSets.main
     }
 
     compileKotlin {
