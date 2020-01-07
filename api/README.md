@@ -1,4 +1,5 @@
 # Montagu API
+[![codecov](https://codecov.io/gh/vimc/montagu-api/branch/master/graph/badge.svg)](https://codecov.io/gh/vimc/montagu-api)
 
 ## Running the app locally
 System requirements:
