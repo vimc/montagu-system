@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
-## Starts a set of containers:
-##
-##   db - main db
-##   db_annex - annex
-##
-## On the network
-##
-##   db_nw
+## Starts db containers for testing on Travis.
+## Unlike the gradle startDatabase task which uses the configured db version to run an image from the local registry
+## this file always runs master, using the image from the public docker hub. This is ok because the Travis build is
+# primarily for creating code coverage reports. The TeamCity build uses the gradle task to run all tests against the
+# configured db version.
 
 set -ex
 DB_VERSION=master
