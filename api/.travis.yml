@@ -13,16 +13,19 @@ before_install:
   - docker pull vimc/montagu-migrate:master
 install:
   - npm install codecov -g
-  - sudo ./libsodium/install-libsodium.sh
+  - travis_retry sudo ./libsodium/install-libsodium.sh
   - ./src/gradlew -p src
 before_script:
   - sudo mkdir -p /etc/montagu/api/ && sudo touch /etc/montagu/api/go_signal
   - ./travis/start-database.sh
 script:
   - ./src/gradlew -p src :testLibrary
+  - ./src/gradlew -p src :app:run
+  - ./src/gradlew -p src :blackboxTests:test
 after_success:
   - ./src/gradlew -p src :jacocoTestReport
   - codecov -f src/app/coverage/test/*.xml
+  - codecov -f src/blackboxTests/coverage/test/*.xml
   - codecov -f src/databaseTests/coverage/test/*.xml
   - codecov -f src/emails/coverage/test/*.xml
   - codecov -f src/security/coverage/test/*.xml
