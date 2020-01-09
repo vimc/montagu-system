@@ -17,11 +17,8 @@ open class OneTimeTokenGenerator(
 
     open fun getOneTimeLinkToken(url: String, profile: CommonProfile): String
     {
-        val attributes = profile.attributes
-        val permissions = attributes["permissions"].toString()
-        val roles = attributes["roles"].toString()
         val token = tokenHelper.generateOnetimeActionToken(
-                url, profile.id, permissions, roles
+                url, profile.id
         )
         tokenRepository.storeToken(token)
         return token.deflated()
@@ -31,8 +28,6 @@ open class OneTimeTokenGenerator(
     {
         val token = tokenHelper.generateOnetimeActionToken("/v1/password/set/",
                 user.username,
-                user.permissions.joinToString(","),
-                user.roles.joinToString(","),
                 Duration.ofDays(1))
         tokenRepository.storeToken(token)
         return token.deflated()

@@ -60,8 +60,6 @@ class WebTokenHelperTests : MontaguTests()
         assertThat(claims["token_type"]).isEqualTo("BEARER")
         assertThat(claims["sub"]).isEqualTo("test.user")
         assertThat(claims["exp"]).isInstanceOf(Date::class.java)
-        assertThat(claims["roles"]).isEqualTo("*/roleA,prefix:id/roleB")
-        assertThat(claims["permissions"]).isEqualTo("*/p1,prefix:id/p2")
     }
 
     @Test
@@ -185,20 +183,16 @@ class WebTokenHelperTests : MontaguTests()
     @Test
     fun `can generate new style onetime action token`()
     {
-        val permissions = "*/can-login,modelling-group:IC-Garske/estimates.read"
-        val roles = "*/user,modelling-group:IC-Garske/member"
-        val mockTokenChecker = mock<OneTimeTokenChecker> {
+       val mockTokenChecker = mock<OneTimeTokenChecker> {
             on { checkToken(any()) } doReturn true
         }
 
-        val token = sut.generateOnetimeActionToken("/some/url/", "username", permissions, roles)
+        val token = sut.generateOnetimeActionToken("/some/url/", "username")
         val claims = sut.verifyOneTimeToken(token.deflated(), mockTokenChecker)
         assertThat(claims["iss"]).isEqualTo("vaccineimpact.org")
         assertThat(claims["token_type"]).isEqualTo("ONETIME")
         assertThat(claims["sub"]).isEqualTo("username")
         assertThat(claims["exp"] as Date).isAfter(Date.from(Instant.now()))
-        assertThat(claims["permissions"]).isEqualTo(permissions)
-        assertThat(claims["roles"]).isEqualTo(roles)
         assertThat(claims["url"]).isEqualTo("/some/url/")
         assertThat(claims["nonce"]).isNotNull()
     }
@@ -209,7 +203,7 @@ class WebTokenHelperTests : MontaguTests()
         val mockTokenChecker = mock<OneTimeTokenChecker> {
             on { checkToken(any()) } doReturn false
         }
-        val token = sut.generateOnetimeActionToken("/some/url/", "username", "", "")
+        val token = sut.generateOnetimeActionToken("/some/url/", "username")
         assertThatThrownBy { sut.verifyOneTimeToken(token.deflated(), mockTokenChecker) }
     }
 
@@ -219,14 +213,14 @@ class WebTokenHelperTests : MontaguTests()
         val mockTokenChecker = mock<OneTimeTokenChecker> {
             on { checkToken(any()) } doReturn true
         }
-        val token = sut.generateOnetimeActionToken("", "username", "", "")
+        val token = sut.generateOnetimeActionToken("", "username")
         assertThatThrownBy { sut.verifyOneTimeToken(token.deflated(), mockTokenChecker) }
     }
 
     @Test
     fun `verifying a onetime token with the wrong method throws an exception`()
     {
-        val token = sut.generateOnetimeActionToken("/some/url/", "username", "", "")
+        val token = sut.generateOnetimeActionToken("/some/url/", "username")
         assertThatThrownBy { sut.verify(token.deflated(), TokenType.ONETIME) }
                 .isInstanceOf(UnsupportedOperationException::class.java)
     }
