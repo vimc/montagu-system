@@ -53,8 +53,6 @@ open class WebTokenHelper(
     open fun generateOnetimeActionToken(
             url: String,
             username: String,
-            permissions: String,
-            roles: String,
             duration: Duration? = null
     ): String
     {
@@ -63,8 +61,6 @@ open class WebTokenHelper(
                 "token_type" to TokenType.ONETIME,
                 "sub" to username,
                 "exp" to Date.from(Instant.now().plus(duration ?: oneTimeLinkLifeSpan)),
-                "permissions" to permissions,
-                "roles" to roles,
                 "url" to url,
                 "nonce" to getNonce()
         ))
@@ -86,9 +82,7 @@ open class WebTokenHelper(
                 "iss" to issuer,
                 "token_type" to TokenType.BEARER,
                 "sub" to user.username,
-                "exp" to Date.from(Instant.now().plus(lifeSpan)),
-                "permissions" to user.permissions.joinToString(","),
-                "roles" to user.roles.joinToString(",")
+                "exp" to Date.from(Instant.now().plus(lifeSpan))
         )
     }
 

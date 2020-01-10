@@ -16,7 +16,7 @@ import java.time.Duration
 class TokenGeneratorTests: MontaguTests()
 {
     private fun tokenHelperThatCanGenerateOnetimeTokens() = mock<WebTokenHelper> {
-        on { generateOnetimeActionToken(any(), any(), any(), any(), anyOrNull()) } doReturn "MY-TOKEN"
+        on { generateOnetimeActionToken(any(), any(), anyOrNull()) } doReturn "MY-TOKEN"
     }
 
     @Test
@@ -30,7 +30,7 @@ class TokenGeneratorTests: MontaguTests()
         val sut = OneTimeTokenGenerator(mock(), tokenHelper)
         sut.getOneTimeLinkToken("/some/url/", mockProfile)
 
-        verify(tokenHelper).generateOnetimeActionToken("/some/url/", "username", "perm", "roles", null)
+        verify(tokenHelper).generateOnetimeActionToken("/some/url/", "username", null)
     }
 
     @Test
@@ -46,7 +46,7 @@ class TokenGeneratorTests: MontaguTests()
 
         sut.getSetPasswordToken(testUser)
 
-        verify(tokenHelper).generateOnetimeActionToken("/v1/password/set/", "username", "*/p", "*/role",
+        verify(tokenHelper).generateOnetimeActionToken("/v1/password/set/", "username",
                 Duration.ofDays(1))
     }
 
