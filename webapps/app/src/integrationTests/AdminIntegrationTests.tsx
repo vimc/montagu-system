@@ -36,11 +36,6 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
     addTestsToMocha() {
 
-        it("can set cookies", async () => {
-            const result = await (new AuthService(this.store.dispatch, this.store.getState)).setCookies();
-            expect(result).to.be.eq("OK");
-        });
-
         it("can log out", async () => {
             const result = await (new AuthService(this.store.dispatch, this.store.getState)).logOutOfAPI();
             expect(result).to.be.eq("OK");

@@ -124,6 +124,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 .addMember(groupId, "test.user");
 
             const fetchedGroupsResult: ModellingGroup[] = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
+                .clearAllCache()
                 .getUserGroups();
 
             expect(fetchedGroupsResult).to.eql([
