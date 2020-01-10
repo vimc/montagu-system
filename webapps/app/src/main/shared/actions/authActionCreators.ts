@@ -4,7 +4,7 @@ import {AuthService} from "../services/AuthService";
 import {appSettings, settings} from "../Settings";
 import {AuthState, loadAuthState} from "../reducers/authReducer";
 import {
-    Authenticated,
+    Authenticated, AuthenticationError,
     AuthTypeKeys,
     ReceivedCookies,
     Unauthenticated
@@ -63,6 +63,13 @@ export const authActionCreators = {
     makeErrorMessage(error: string): string {
         const support = settings.supportContact;
         return `${error}. Please contact ${support} for help.`;
+    },
+
+    authenticationError(error: any) {
+        return {
+            type: AuthTypeKeys.AUTHENTICATION_ERROR,
+            error: error ? "Your username or password is incorrect" : "An error occurred logging in",
+        } as AuthenticationError;
     },
 
     logOut() {

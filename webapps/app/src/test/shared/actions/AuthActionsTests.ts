@@ -6,28 +6,21 @@ import {AuthTypeKeys} from "../../../main/shared/actionTypes/AuthTypes";
 import {createMockStore} from "../../mocks/mockStore";
 import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 import {ModellingGroupsService} from "../../../main/shared/services/ModellingGroupsService";
+import {initialAuthState} from "../../../main/shared/reducers/authReducer";
 
 describe("AuthActions", () => {
     const sandbox = new Sandbox();
     let store: any = null;
 
-    const mockUsertokenData = {
-        sub: "test.user",
-        permissions: "*/can-login,*/countries.read,*/demographics.read,*…les.write,modelling-group:test-group/users.create",
-        roles: "*/user,modelling-group:IC-Garske/member,*/user-man…/uploader,modelling-group:test-group/user-manager",
-        iss: "vaccineimpact.org",
-        exp: Math.round(Date.now() / 1000) + 1000
-    };
-
     beforeEach(() => {
-        store = createMockStore();
+        store = createMockStore({auth: initialAuthState});
     });
 
     afterEach(() => {
         sandbox.restore();
     });
 
-    it("dispatches authenticated action if can get authenticated user data from API", (done) => {
+    it("dispatches authenticated action if can get authenticated user data from API", async () => {
         const testUser = {
             username: "test-user",
             permissions: ["*/can-login"]
@@ -42,15 +35,14 @@ describe("AuthActions", () => {
             return Promise.resolve(testModellingGroups);
         });
 
-        store.dispatch(authActionCreators.loadAuthenticatedUser());
-        setTimeout(() => {
-            const actions = store.getActions();
-            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
-            expect(actions[0].data.username).to.eql("test-user");
-            expect(actions[0].data.isAccountActive).to.eql(true);
-            expect(actions[0].data.isModeller).to.eql(true);
-            done();
-        });
+        await store.dispatch(authActionCreators.loadAuthenticatedUser());
+
+        const actions = store.getActions();
+        expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
+        expect(actions[0].data.username).to.eql("test-user");
+        expect(actions[0].data.isAccountActive).to.eql(true);
+        expect(actions[0].data.isModeller).to.eql(true);
+
     });
 
     it("dispatches authentication error action if user cannot be validated", (done) => {
