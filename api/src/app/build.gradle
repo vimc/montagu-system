@@ -67,3 +67,15 @@ distDocker {
 }
 
 copyConfig.finalizedBy 'showConfig'
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+    }
+
+    sourceSets project(':app').sourceSets.main
+    sourceSets project(':security').sourceSets.main
+    sourceSets project(':emails').sourceSets.main
+    sourceSets project(':models').sourceSets.main
+}

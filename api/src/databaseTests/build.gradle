@@ -19,8 +19,8 @@ dependencies {
 }
 
 test {
-    dependsOn 'copySpec', ':startDatabase', 'createTemplateFromDatabase'
-    finalizedBy 'restoreDatabaseFromTemplate', ':stopDatabase'
+    dependsOn 'copySpec', 'createTemplateFromDatabase'
+    finalizedBy 'restoreDatabaseFromTemplate'
 }
 
 task createTemplateFromDatabase(type: JavaExec) {
@@ -33,4 +33,13 @@ task restoreDatabaseFromTemplate(type: JavaExec) {
     main = "org.vaccineimpact.api.databaseTests.AppKt"
     classpath = sourceSets.main.runtimeClasspath
     args "restoreDatabaseFromTemplate"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+    }
+
+    sourceSets project(':app').sourceSets.main
 }
