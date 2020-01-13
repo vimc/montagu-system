@@ -2,6 +2,7 @@ import { AbstractLocalService } from "./AbstractLocalService";
 
 export class AuthService extends AbstractLocalService {
 
+    // this method is used only for integration tests
     logIn(email: string, password: string) {
         return this.setOptions({
             Authorization: 'Basic ' + btoa(`${email}:${password}`),
@@ -9,12 +10,6 @@ export class AuthService extends AbstractLocalService {
             includeCredentials: false   /* Disables cookies, but allows basic auth */
         })
             .postNoProcess("/authenticate/", "grant_type=client_credentials")
-    }
-
-    setCookies(): Promise<string> {
-        return this
-            .setOptions({ includeBearerToken: true })
-            .get("/set-cookies/");
     }
 
     logOutOfAPI() {
