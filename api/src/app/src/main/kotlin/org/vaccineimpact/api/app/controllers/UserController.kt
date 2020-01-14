@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
+import org.vaccineimpact.api.app.clients.OkHttpOrderlyWebAPIClient
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
@@ -17,6 +18,7 @@ import org.vaccineimpact.api.models.encompass
 import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.RoleAssignment
+import org.vaccineimpact.api.security.CookieName
 
 class UserController(
         context: ActionContext,
@@ -83,6 +85,10 @@ class UserController(
         val token = oneTimeTokenGenerator.getSetPasswordToken(newUser)
 
         emailManager.sendEmail(NewUserEmail(user, token), user)
+
+        val montaguToken = context.request.cookie(CookieName.Main.cookieName)
+        OkHttpOrderlyWebAPIClient.create(montaguToken)
+
         return objectCreation(context, "/users/${user.username}/")
     }
 
