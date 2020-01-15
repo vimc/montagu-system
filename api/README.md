@@ -13,7 +13,7 @@ https://github.com/vimc/montagu-ci#configuring-docker-clients-to-use-the-registr
 
 Start the database by navigating to the `src` folder and running
 
-    ./gradlew :startDatabase
+    ./gradlew :startDependencies
 
 Run the app
 

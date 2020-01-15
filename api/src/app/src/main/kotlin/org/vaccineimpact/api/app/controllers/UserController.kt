@@ -86,8 +86,8 @@ class UserController(
 
         emailManager.sendEmail(NewUserEmail(user, token), user)
 
-        val montaguToken = context.request.cookie(CookieName.Main.cookieName)
-        OkHttpOrderlyWebAPIClient.create(montaguToken)
+        val montaguToken = context.authenticationToken()
+        OkHttpOrderlyWebAPIClient.create(montaguToken!!)
 
         return objectCreation(context, "/users/${user.username}/")
     }

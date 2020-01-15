@@ -50,6 +50,8 @@ interface ActionContext
     fun hasPermission(requirement: ReifiedPermission): Boolean
     fun requirePermission(requirement: ReifiedPermission): Unit
     fun redirect(url: String)
+
+    fun authenticationToken(): String?
 }
 
 inline fun <reified T : Any> ActionContext.postData() = this.postData(T::class.java)
