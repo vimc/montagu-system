@@ -22,7 +22,7 @@ describe("Touchstone version page actions tests", () => {
         sandbox.restore();
     });
 
-    it("sets current touchstone version", async () => {
+    test("sets current touchstone version", async () => {
 
         const store = createMockAdminStore(state);
 
@@ -35,7 +35,7 @@ describe("Touchstone version page actions tests", () => {
 
     });
 
-    it("creates breadcrumbs", () => {
+    test("creates breadcrumbs", () => {
 
         const result = touchstoneVersionPageActionCreators.createBreadcrumb(state);
 
@@ -43,11 +43,11 @@ describe("Touchstone version page actions tests", () => {
         expect(result.name).to.eq("t1v1");
     });
 
-    it("has touchstone details page as parent", () => {
+    test("has touchstone details page as parent", () => {
         expect(touchstoneVersionPageActionCreators.parent).to.eq(touchstoneDetailsPageActionCreators);
     });
 
-    it("has touchstone version description as title", () => {
+    test("has touchstone version description as title", () => {
         expect(touchstoneVersionPageActionCreators.title(state)).to.eq("desc");
     });
 });

@@ -17,22 +17,22 @@ describe("Responsibility Overview Description Component", () => {
     const touchstoneStatus="open";
     afterEach(() => sandbox.restore());
 
-    it("renders component on touchstone not applicants", () => {
+    test("renders component on touchstone not applicants", () => {
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId1} groupId={testGroupId} touchstoneStatus={touchstoneStatus}/>);
         expect(rendered.text().indexOf("See an overview of which scenarios") > -1).to.equal(true);
     });
 
-    it("renders component on touchstone is applicants", () => {
+    test("renders component on touchstone is applicants", () => {
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId2} groupId={testGroupId} touchstoneStatus={touchstoneStatus}/>);
         expect(rendered.text().indexOf("Access the standardised demographic") > -1).to.equal(true);
     });
 
-    it("renders component on touchstone is not open", () => {
+    test("renders component on touchstone is not open", () => {
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId2} groupId={testGroupId} touchstoneStatus="finished"/>);
         expect(rendered.text().indexOf("This touchstone is no longer open")).to.greaterThan(-1);
     });
 
-    it("renders internal links for non-2019 touchstone", () => {
+    test("renders internal links for non-2019 touchstone", () => {
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"t1"}
                                                                     groupId={testGroupId}
                                                                     touchstoneStatus={"open"}/>);
@@ -43,7 +43,7 @@ describe("Responsibility Overview Description Component", () => {
         expect(rendered.find("a").length).eq(0);
     });
 
-    it("renders external links for 2019 touchstone", () => {
+    test("renders external links for 2019 touchstone", () => {
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"201910"}
                                                                     groupId={testGroupId}
                                                                     touchstoneStatus={"open"}/>);
@@ -54,7 +54,7 @@ describe("Responsibility Overview Description Component", () => {
         expect(rendered.find(InternalLink).length).eq(0);
     });
 
-    it("renders stochastic content when touchstone is stochastic", () => {
+    test("renders stochastic content when touchstone is stochastic", () => {
         const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => true );
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId1} groupId={testGroupId} touchstoneStatus={touchstoneStatus}/>);
         expect(rendered.text().indexOf("Download csv templates for central and stochastic burden estimates")).to.greaterThan(-1);
@@ -62,13 +62,16 @@ describe("Responsibility Overview Description Component", () => {
         expect(rendered.text().indexOf("Upload your parameters file")).to.greaterThan(-1);
     });
 
-    it("does not render stochastic content when touchstone is not stochastic", () => {
-        const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => false );
-        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId1} groupId={testGroupId} touchstoneStatus={touchstoneStatus}/>);
-        expect(rendered.text().indexOf("Download csv templates for central burden estimates")).to.greaterThan(-1);
-        expect(rendered.text().indexOf("Stochastic estimates are not required for this touchstone")).to.greaterThan(-1);
-        expect(rendered.text().indexOf("upload stochastic burden estimates for each scenario")).to.eq(-1);
-        expect(rendered.text().indexOf("Upload your parameters file")).to.eq(-1);
-    });
+    test(
+        "does not render stochastic content when touchstone is not stochastic",
+        () => {
+            const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => false );
+            const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={testTouchstoneId1} groupId={testGroupId} touchstoneStatus={touchstoneStatus}/>);
+            expect(rendered.text().indexOf("Download csv templates for central burden estimates")).to.greaterThan(-1);
+            expect(rendered.text().indexOf("Stochastic estimates are not required for this touchstone")).to.greaterThan(-1);
+            expect(rendered.text().indexOf("upload stochastic burden estimates for each scenario")).to.eq(-1);
+            expect(rendered.text().indexOf("Upload your parameters file")).to.eq(-1);
+        }
+    );
 });
 

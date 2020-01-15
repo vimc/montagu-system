@@ -26,7 +26,7 @@ describe("Download Demographics Page tests", () => {
 
     afterEach(() => sandbox.restore());
 
-    it("renders component component level", () => {
+    test("renders component component level", () => {
         let testMatch = mockMatch<DownloadDemographicsPageLocationProps>({
             groupId: "g-1",
             touchstoneId: "t-1"

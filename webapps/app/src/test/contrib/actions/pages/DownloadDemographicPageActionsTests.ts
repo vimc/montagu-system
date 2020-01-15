@@ -18,18 +18,18 @@ describe("Download Demographic Contrib Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("has responsibilities overview page as parent", () => {
+    test("has responsibilities overview page as parent", () => {
         expect(downloadDemographicsContribPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators)
     });
 
-    it("creates breadcrumb", () => {
+    test("creates breadcrumb", () => {
         const state = mockContribState();
         const result = downloadDemographicsContribPageActionCreators.createBreadcrumb(state);
         expect(result.urlFragment).to.eq("demographics/");
         expect(result.name).to.eq("Download demographic data sets");
     });
 
-    it("loads demographic data sets", async () => {
+    test("loads demographic data sets", async () => {
 
         const store = createMockContribStore();
 

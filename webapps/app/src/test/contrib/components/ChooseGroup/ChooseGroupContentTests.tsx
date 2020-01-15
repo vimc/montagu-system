@@ -29,38 +29,38 @@ describe("Choose Group Content Component", () => {
     });
     afterEach(() => sandbox.restore());
 
-    it("renders Group Content on connect level", () => {
+    test("renders Group Content on connect level", () => {
         const rendered = shallow(<ChooseGroupContent/>, {context: {store}});
         expect(rendered.props().groups).to.eql(testGroups);
     });
 
-    it("renders Group Content on branch level passes", () => {
+    test("renders Group Content on branch level passes", () => {
         const rendered = shallow(<ChooseGroupContent/>, {context: {store}}).dive();
         const props = rendered.props() as ChooseGroupContentProps;
         expect(props.groups).to.eql(testGroups);
         expect(rendered.find(ChooseGroupContentComponent).length).to.eql(1);
     });
 
-    it("renders Group Content on branch level not passes", () => {
+    test("renders Group Content on branch level not passes", () => {
         store = createMockStore({groups: {userGroups: []}});
         const rendered = shallow(<ChooseGroupContent/>, {context: {store}}).dive().dive();
         expect(rendered.find(LoadingElement).length).to.eql(1);
     });
 
-    it("renders Group Content on component level", () => {
+    test("renders Group Content on component level", () => {
         const rendered = shallow(<ChooseGroupContent/>, {context: {store}}).dive().dive();
         expect(rendered.find(GroupList).length).to.eql(1);
         expect(rendered.find(GroupList).props().groups).to.eql(testGroups);
     });
 
-    it("maps state to props with groups", () => {
+    test("maps state to props with groups", () => {
         const groups :ModellingGroup[] = testGroups;
         const contribStateMock = mockContribState({ groups: { userGroups: groups } });
         const props = mapStateToProps(contribStateMock);
         expect(props.groups).to.eql(testGroups);
     });
 
-    it("maps state to props with no groups", () => {
+    test("maps state to props with no groups", () => {
         const groups: ModellingGroup[] = [];
         const contribStateMock = mockContribState({ groups: { userGroups: groups } });
         const props = mapStateToProps(contribStateMock);

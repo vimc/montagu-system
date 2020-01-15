@@ -11,23 +11,23 @@ export class UsernameFormatTests extends ValidationTest {
     makeValidator() { return Validation.usernameFormat("name") }
 
     tests() {
-        it("accepts word", () => {
+        test("accepts word", () => {
             expect(() => this.validate("word")).to.not.throw();
         });
-        it("rejects numbers", () => {
+        test("rejects numbers", () => {
             expect(() => this.validate("word123")).to.throw(Error, this.errorMessage);
             expect(() => this.validate("123")).to.throw(Error, this.errorMessage);
         });
-        it("accepts words with period separators", () => {
+        test("accepts words with period separators", () => {
             expect(() => this.validate("a.b.c")).to.not.throw();
         });
-        it("rejects multiple periods in a row", () => {
+        test("rejects multiple periods in a row", () => {
             expect(() => this.validate("a..b")).to.throw(Error, this.errorMessage);
         });
-        it("rejects capital letters", () => {
+        test("rejects capital letters", () => {
             expect(() => this.validate("Word")).to.throw(Error, this.errorMessage);
         });
-        it("rejects punctuation", () => {
+        test("rejects punctuation", () => {
             expect(() => this.validate("a-b")).to.throw(Error, this.errorMessage);
             expect(() => this.validate("a_b")).to.throw(Error, this.errorMessage);
             expect(() => this.validate("a%b")).to.throw(Error, this.errorMessage);

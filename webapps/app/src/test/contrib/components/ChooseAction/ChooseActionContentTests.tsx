@@ -37,14 +37,14 @@ describe("Choose Action Content Component", () => {
     });
     afterEach(() => sandbox.restore());
 
-    it("renders on connect level", () => {
+    test("renders on connect level", () => {
         const rendered = shallow(<ChooseActionContent/>, {context: {store}});
         const props = rendered.props() as ChooseActionContentProps;
         expect(props.group).to.eql(testCurrentGroup);
         expect(props.touchstoneVersions).to.eql(testVersions);
     });
 
-    it("renders on branch level, passes", () => {
+    test("renders on branch level, passes", () => {
         const rendered = shallow(<ChooseActionContent/>, {context: {store}}).dive();
         const props = rendered.props() as ChooseActionContentProps;
         expect(props.group).to.eql(testCurrentGroup);
@@ -52,7 +52,7 @@ describe("Choose Action Content Component", () => {
         expect(rendered.find(ChooseActionContentComponent).length).to.eql(1);
     });
 
-    it("renders on branch level, not passes", () => {
+    test("renders on branch level, not passes", () => {
         store = createMockContribStore({
             groups: {currentUserGroup: null},
             touchstones: {touchstones: []}
@@ -61,14 +61,14 @@ describe("Choose Action Content Component", () => {
         expect(rendered.find(LoadingElement).length).to.eql(1);
     });
 
-    it("renders on component level", () => {
+    test("renders on component level", () => {
         const rendered = shallow(<ChooseActionContent/>, {context: {store}}).dive().dive();
         expect(rendered.find(TouchstoneList).length).to.eql(1);
         expect(rendered.find(TouchstoneList).props().group).to.eql(testCurrentGroup);
         expect(rendered.find(TouchstoneList).props().touchstones).to.eql(testVersions);
     });
 
-    it("maps state to props with current group and touchstone", () => {
+    test("maps state to props with current group and touchstone", () => {
         const contribStateMock = mockContribState({
             groups: {currentUserGroup: testCurrentGroup},
             touchstones: {touchstones: testTouchstones}
@@ -78,7 +78,7 @@ describe("Choose Action Content Component", () => {
         expect(props.touchstoneVersions).to.eql(testVersions);
     });
 
-    it("maps state to props with no group", () => {
+    test("maps state to props with no group", () => {
         const emptyGroup: ModellingGroup = null;
         const contribStateMock = mockContribState({
             groups: {currentUserGroup: emptyGroup},

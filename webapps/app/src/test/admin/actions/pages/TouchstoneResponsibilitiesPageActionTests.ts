@@ -16,7 +16,7 @@ describe("Touchstone responsibility page actions tests", () => {
         sandbox.restore();
     });
 
-    it("loads data", (done) => {
+    test("loads data", (done) => {
         const store = createMockAdminStore({touchstones: {touchstones: [mockTouchstone()]}});
 
         const setCurrentStub = sandbox.setStubReduxAction(touchstonesActionCreators, "setCurrentTouchstoneVersion");
@@ -32,7 +32,7 @@ describe("Touchstone responsibility page actions tests", () => {
         });
     });
 
-    it("creates breadcrumbs", () => {
+    test("creates breadcrumbs", () => {
         const state = mockAdminState({
             touchstones: {
                 touchstones: [mockTouchstone()],

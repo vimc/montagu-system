@@ -21,7 +21,7 @@ describe('Auth reducer tests', () => {
         sandbox.restore();
     });
 
-    it('sets logged in user data', () => {
+    test('sets logged in user data', () => {
         expect(authReducer(undefined, {
             type: AuthTypeKeys.AUTHENTICATED,
             data: testAuthData
@@ -30,17 +30,20 @@ describe('Auth reducer tests', () => {
         )
     });
 
-    it('reverts state to initial after unauth action and redirects to Montagu', () => {
-        const redirectStub = sandbox.setStub(helpers, "redirectToMontaguLogin");
-        expect(authReducer(undefined, {
-            type: AuthTypeKeys.UNAUTHENTICATED,
-        })).to.eql(
-            initialAuthState
-        );
-        expect(redirectStub.called).to.be.true;
-    });
+    test(
+        'reverts state to initial after unauth action and redirects to Montagu',
+        () => {
+            const redirectStub = sandbox.setStub(helpers, "redirectToMontaguLogin");
+            expect(authReducer(undefined, {
+                type: AuthTypeKeys.UNAUTHENTICATED,
+            })).to.eql(
+                initialAuthState
+            );
+            expect(redirectStub.called).to.be.true;
+        }
+    );
 
-    it('sets error', () => {
+    test('sets error', () => {
         expect(authReducer(undefined, {
             type: AuthTypeKeys.AUTHENTICATION_ERROR,
             error: "Test Error"
@@ -49,7 +52,7 @@ describe('Auth reducer tests', () => {
         )
     });
 
-    it('sets loggedIn to true after receiving cookies', () => {
+    test('sets loggedIn to true after receiving cookies', () => {
         const expected: AuthState = {
             ...initialAuthState,
             loggedIn: true
@@ -60,7 +63,7 @@ describe('Auth reducer tests', () => {
 });
 
 describe ('loadAuthState tests', () => {
-    it('loads basic param values' , () => {
+    test('loads basic param values', () => {
         const result = loadAuthState({
             username: "testUser",
             loggedIn: true,
@@ -76,7 +79,7 @@ describe ('loadAuthState tests', () => {
         expect(result.modellingGroups).to.eql(["group1", "group2"]);
     });
 
-    it('sets isAccountActive correctly' , () => {
+    test('sets isAccountActive correctly', () => {
         const inactive = loadAuthState({
             username: "testUser",
             loggedIn: true,
@@ -99,7 +102,7 @@ describe ('loadAuthState tests', () => {
     });
 
 
-    it('sets isModeller correctly' , () => {
+    test('sets isModeller correctly', () => {
 
         const modeller = loadAuthState({
             username: "testUser",

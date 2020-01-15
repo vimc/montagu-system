@@ -17,7 +17,7 @@ describe("CreateGroupForm", () => {
     const sandbox = new Sandbox();
     let store: any = null;
 
-    before(() => {
+    beforeAll(() => {
         store = createMockStore(mockAdminState());
     });
 
@@ -25,7 +25,7 @@ describe("CreateGroupForm", () => {
         sandbox.restore();
     });
 
-    it("renders fields", () => {
+    test("renders fields", () => {
 
         const rendered = shallow(<CreateModellingGroupFormComponent pi={""} institution={""} errors={[]}
                                                           handleSubmit={() => null} submit={null} changeFieldValue={null}/>);
@@ -43,7 +43,7 @@ describe("CreateGroupForm", () => {
 
     });
 
-    it("sets id to suggestion when pi changes", () => {
+    test("sets id to suggestion when pi changes", () => {
 
         let fieldName = "";
         let newValue = "";
@@ -66,7 +66,7 @@ describe("CreateGroupForm", () => {
         expect(newValue).to.eq("I-Bloggs");
     });
 
-    it("sets id to suggestion when instiution changes", () => {
+    test("sets id to suggestion when instiution changes", () => {
 
         let fieldName = "";
         let newValue = "";
@@ -89,7 +89,7 @@ describe("CreateGroupForm", () => {
         expect(newValue).to.eq("I-Bloggs");
     });
 
-    it("doesnt set id to suggestion if pi is null on instiution changes", () => {
+    test("doesnt set id to suggestion if pi is null on instiution changes", () => {
 
         let fieldName = "";
         let newValue = "";
@@ -112,30 +112,33 @@ describe("CreateGroupForm", () => {
         expect(newValue).to.eq("");
     });
 
-    it("doesnt set id to suggestion if instititution is null on pi change", () => {
+    test(
+        "doesnt set id to suggestion if instititution is null on pi change",
+        () => {
 
-        let fieldName = "";
-        let newValue = "";
+            let fieldName = "";
+            let newValue = "";
 
-        const changeFieldMock = (field: string, value: string) => {
-            fieldName = field;
-            newValue = value;
-        };
+            const changeFieldMock = (field: string, value: string) => {
+                fieldName = field;
+                newValue = value;
+            };
 
-        const rendered = shallow(<CreateModellingGroupFormComponent pi={""} institution={null} errors={[]}
-                                                                    handleSubmit={() => null} submit={null}
-                                                                    changeFieldValue={changeFieldMock}/>);
+            const rendered = shallow(<CreateModellingGroupFormComponent pi={""} institution={null} errors={[]}
+                                                                        handleSubmit={() => null} submit={null}
+                                                                        changeFieldValue={changeFieldMock}/>);
 
-        const event = {target: {value: "Joe Bloggs"}};
-        const field = rendered.find(Field).at(1);
+            const event = {target: {value: "Joe Bloggs"}};
+            const field = rendered.find(Field).at(1);
 
-        field.simulate("change", event);
+            field.simulate("change", event);
 
-        expect(fieldName).to.eq("");
-        expect(newValue).to.eq("");
-    });
+            expect(fieldName).to.eq("");
+            expect(newValue).to.eq("");
+        }
+    );
 
-    it("calls creates group on form submission", () => {
+    test("calls creates group on form submission", () => {
 
         const stub = sandbox.setStubReduxAction(modellingGroupsActionCreators, "createModellingGroup");
 
@@ -150,22 +153,22 @@ describe("CreateGroupForm", () => {
     });
 
     describe("id suggestor", () => {
-        it("can handle one word", () => {
+        test("can handle one word", () => {
             expect(suggestId("joe", "imperial")).to.equal("I-Joe");
         });
-        it("can handle two words", () => {
+        test("can handle two words", () => {
             expect(suggestId("joe bloggs", "imperial college")).to.equal("IC-Bloggs");
         });
-        it("can handle many words", () => {
+        test("can handle many words", () => {
             expect(suggestId("joe samuel stephen bloggs", "london school of public health")).to.equal("LSOPH-Bloggs");
         });
-        it("strips out bad characters", () => {
+        test("strips out bad characters", () => {
             expect(suggestId("j_1-o=%_e_", "imper=-i_al")).to.equal("I-Joe");
         });
-        it("strips out numbers", () => {
+        test("strips out numbers", () => {
             expect(suggestId("1jo32e", "imperial3123l")).to.equal("I-Joe");
         });
-        it("returns null if one input is null", () => {
+        test("returns null if one input is null", () => {
             expect(suggestId(null, "imperial")).to.be.null;
             expect(suggestId("joe", null)).to.be.null;
         });

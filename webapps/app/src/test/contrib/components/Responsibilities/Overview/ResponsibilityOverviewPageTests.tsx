@@ -29,7 +29,7 @@ describe("Responsibility Overview Page Component", () => {
     });
     afterEach(() => sandbox.restore());
 
-    it("renders component component level", () => {
+    test("renders component component level", () => {
         let testMatch = mockMatch<ResponsibilityOverviewPageLocationProps>({
             groupId: "g-1",
             touchstoneId: testTouchstone.id

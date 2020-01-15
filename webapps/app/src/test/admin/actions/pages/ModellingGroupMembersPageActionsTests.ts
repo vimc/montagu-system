@@ -30,7 +30,7 @@ describe("Modelling Group Members Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("on load", async () => {
+    test("on load", async () => {
         const initialState = {
             groups: {groups: [testGroup, testGroup2], currentGroupDetails: testGroupDetails, currentGroup: testGroup},
             users: {users: [testUser, testUser2]}

@@ -45,7 +45,7 @@ describe("Model Run Parameters Status component tests", () => {
     });
     afterEach(() => sandbox.restore());
 
-    it("renders on connect level", () => {
+    test("renders on connect level", () => {
         const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}});
         expect(rendered.props().touchstone).to.eql(testTouchstone);
         expect(rendered.props().group).to.eql(testGroup);
@@ -53,39 +53,42 @@ describe("Model Run Parameters Status component tests", () => {
         expect(rendered.props().disease).to.eql(testDisease.id);
     });
 
-    it("renders on branch level, passes", () => {
+    test("renders on branch level, passes", () => {
         const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}}).dive();
         expect(rendered.find(ModelRunParametersStatusComponent).length).to.eql(1);
     });
 
-    it("renders on branch level, not passes", () => {
+    test("renders on branch level, not passes", () => {
         store = createMockStore({...testState, touchstones: {currentTouchstone: null}});
         const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}}).dive().dive();
         expect(rendered.find(LoadingElement).length).to.eql(1);
     });
 
-    it("renders on component level, shows alert if no set received ", () => {
+    test("renders on component level, shows alert if no set received ", () => {
         store = createMockStore({...testState, runParameters: {...testState.runParameters, sets: []}});
         const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}}).dive().dive();
         expect(rendered.find('Alert').find('span').text()).to
             .equal(`You have not uploaded any parameter sets for ${testDisease.id}`);
     });
 
-    it("renders on component level, shows message of downloadable files", () => {
+    test("renders on component level, shows message of downloadable files", () => {
         const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}}).dive().dive();
         expect(rendered.find("Alert").find('span').text()
             .indexOf(`You last uploaded a parameter set on ${longestTimestamp(new Date(testRunParametersSet.uploaded_on))}`))
             .to.equal(0);
     });
 
-    it("renders on component level, passes params to certificate download", () => {
-        const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}}).dive().dive();
+    test(
+        "renders on component level, passes params to certificate download",
+        () => {
+            const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}}).dive().dive();
 
-        const certificate = rendered.find(ModelRunParameterDownloadCertificate);
-        expect(certificate.props().set).to.eql(testRunParametersSet);
-    });
+            const certificate = rendered.find(ModelRunParameterDownloadCertificate);
+            expect(certificate.props().set).to.eql(testRunParametersSet);
+        }
+    );
 
-    it("renders on component level, passes URL to set download link", () => {
+    test("renders on component level, passes URL to set download link", () => {
         const props: ModelRunParametersStatusProps = {
             disease: testDisease.id,
             group: testGroup,

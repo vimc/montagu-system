@@ -16,18 +16,18 @@ describe("Download Demographic Admin Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("creates breadcrumb", () => {
+    test("creates breadcrumb", () => {
         const result = downloadDemographicsAdminPageActionCreators.createBreadcrumb();
         expect(result.urlFragment).to.eq("demographics/");
         expect(result.name).to.eq("Download demographic data sets");
     });
 
-    it("has touchstone version page as parent", () => {
+    test("has touchstone version page as parent", () => {
 
         expect(downloadDemographicsAdminPageActionCreators.parent).to.eq(touchstoneVersionPageActionCreators);
     });
 
-    it("loads demographic data sets", async () => {
+    test("loads demographic data sets", async () => {
 
         const store = createMockContribStore();
 

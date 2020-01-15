@@ -17,7 +17,7 @@ describe("Demographic actions tests", () => {
         sandbox.restore();
     });
 
-    it("resets selected data set and sets fetched sets", (done) => {
+    test("resets selected data set and sets fetched sets", (done) => {
         const store = createMockContribStore({});
         sandbox.setStubFunc(DemographicService.prototype, "getDataSetsByTouchstoneVersionId", () => {
             return Promise.resolve([testDemographicDataSet]);
@@ -40,7 +40,7 @@ describe("Demographic actions tests", () => {
         });
     });
 
-    it("set data set by id using previously loaded sets", (done) => {
+    test("set data set by id using previously loaded sets", (done) => {
         const store = createMockContribStore({demographics: {dataSets: [testDemographicDataSet]}});
         store.dispatch(demographicActionCreators.setDataSet('set-1'))
         setTimeout(() => {
@@ -51,7 +51,7 @@ describe("Demographic actions tests", () => {
         });
     });
 
-    it("can set data set to null", (done) => {
+    test("can set data set to null", (done) => {
         const store = createMockContribStore({demographics: {dataSets: [testDemographicDataSet]}});
         store.dispatch(demographicActionCreators.setDataSet(null))
         setTimeout(() => {
@@ -62,7 +62,7 @@ describe("Demographic actions tests", () => {
         });
     });
 
-    it("set gender", (done) => {
+    test("set gender", (done) => {
         const store = createMockContribStore({});
         store.dispatch(demographicActionCreators.setGender('male'))
         setTimeout(() => {
@@ -73,7 +73,7 @@ describe("Demographic actions tests", () => {
         });
     });
 
-    it("sets format", (done) => {
+    test("sets format", (done) => {
         const store = createMockContribStore({});
         store.dispatch(demographicActionCreators.setFormat('long'))
         setTimeout(() => {

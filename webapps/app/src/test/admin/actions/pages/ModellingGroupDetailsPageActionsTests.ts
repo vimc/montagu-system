@@ -33,40 +33,43 @@ describe("Modelling Group Details Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("has group list page as parent", () => {
+    test("has group list page as parent", () => {
         expect(modellingGroupDetailsPageActionCreators.parent).to.eq(modellingGroupsListPageActionCreators)
     });
 
-    it("creates breadcrumb", () => {
+    test("creates breadcrumb", () => {
         const result = modellingGroupDetailsPageActionCreators.createBreadcrumb(state);
         expect(result.name).to.eq("g1");
         expect(result.urlFragment).to.eq(`g1/`);
     });
 
-    it("loads group members, group details and sets current group on load", (done: DoneCallback) => {
+    test(
+        "loads group members, group details and sets current group on load",
+        (done: DoneCallback) => {
 
-        const getAllUsersStub = sandbox.setStubFunc(UsersService.prototype, "getAllUsers", ()=>{
-            return Promise.resolve([testUser, testUser2]);
-        });
-        const getGroupDetailsServiceStub = sandbox.setStubFunc(ModellingGroupsService.prototype, "getGroupDetails", ()=>{
-            return Promise.resolve(testGroupDetails);
-        });
+            const getAllUsersStub = sandbox.setStubFunc(UsersService.prototype, "getAllUsers", ()=>{
+                return Promise.resolve([testUser, testUser2]);
+            });
+            const getGroupDetailsServiceStub = sandbox.setStubFunc(ModellingGroupsService.prototype, "getGroupDetails", ()=>{
+                return Promise.resolve(testGroupDetails);
+            });
 
-        store.dispatch(modellingGroupDetailsPageActionCreators.loadData({groupId: testGroup.id}));
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = [
-                { type: ModellingGroupTypes.SET_CURRENT_GROUP, data: testGroup},
-                { type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
-                { type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails},
-                { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]}
-            ];
-            expect(actions).to.eql(expectedPayload);
-            expect(getAllUsersStub.called).to.be.true;
-            expect(getGroupDetailsServiceStub.called).to.be.true;
-            expect(getGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
-            done();
-        });
-    });
+            store.dispatch(modellingGroupDetailsPageActionCreators.loadData({groupId: testGroup.id}));
+            setTimeout(() => {
+                const actions = store.getActions();
+                const expectedPayload = [
+                    { type: ModellingGroupTypes.SET_CURRENT_GROUP, data: testGroup},
+                    { type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
+                    { type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails},
+                    { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]}
+                ];
+                expect(actions).to.eql(expectedPayload);
+                expect(getAllUsersStub.called).to.be.true;
+                expect(getGroupDetailsServiceStub.called).to.be.true;
+                expect(getGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
+                done();
+            });
+        }
+    );
 
 });

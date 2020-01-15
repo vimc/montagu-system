@@ -8,20 +8,20 @@ import {ModellingGroupDetailsMembers} from "../../../../../../main/admin/compone
 import {InternalLink} from "../../../../../../main/shared/components/InternalLink";
 
 describe("Modelling Group Details Members component tests", () => {
-    it("renders no members if group has no members", () => {
+    test("renders no members if group has no members", () => {
         const group = mockModellingGroupDetails({id: "group-id", members: []});
         const rendered = shallow(<ModellingGroupDetailsMembers group={group} members={[]} canEdit={false}/>);
         expect(rendered.text()).to.contain("This group does not have any members");
         expect(rendered.find(InternalLink)).to.have.length(0);
     });
 
-    it("renders add member link if group has no members", () => {
+    test("renders add member link if group has no members", () => {
         const group = mockModellingGroupDetails({id: "group-id", members: []});
         const rendered = shallow(<ModellingGroupDetailsMembers group={group} members={[]} canEdit={true}/>);
         expect(rendered.find(InternalLink).prop("href")).to.equal("/modelling-groups/group-id/admin/");
     });
 
-    it("renders members if group has members", () => {
+    test("renders members if group has members", () => {
         const users = [
             mockUser({username: "test.a"}),
             mockUser({username: "test.b"}),
@@ -32,7 +32,7 @@ describe("Modelling Group Details Members component tests", () => {
         expect(rendered.find(InternalLink).first().prop("href")).to.eql("/users/test.a/");
     });
 
-    it("renders edit members link if group has members", () => {
+    test("renders edit members link if group has members", () => {
         const users = [
             mockUser({username: "test.a"}),
             mockUser({username: "test.b"}),

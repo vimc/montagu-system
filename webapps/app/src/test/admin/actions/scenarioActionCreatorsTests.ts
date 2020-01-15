@@ -10,7 +10,7 @@ describe("scenarioActionCreators", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("invokes service and returns scenarios", async () => {
+    test("invokes service and returns scenarios", async () => {
         const store = createMockAdminStore();
         const mockServiceData = [mockScenarioAndCoverageSets()];
         const scenarios = [mockServiceData[0].scenario];

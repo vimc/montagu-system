@@ -3,7 +3,7 @@ import {mainMenuPageActionCreators} from "../../../../main/admin/actions/pages/M
 
 describe("Admin main menu page actions tests", () => {
 
-    it("creates breadcrumbs", () => {
+    test("creates breadcrumbs", () => {
 
         const result = mainMenuPageActionCreators.createBreadcrumb();
         expect(result.urlFragment).to.eq("/");
@@ -11,13 +11,13 @@ describe("Admin main menu page actions tests", () => {
 
     });
 
-    it("parent is null", () => {
+    test("parent is null", () => {
 
         expect(mainMenuPageActionCreators.parent).to.be.null;
 
     });
 
-    it("title is Main menu", () => {
+    test("title is Main menu", () => {
 
         expect(mainMenuPageActionCreators.title()).to.eq("Main menu");
 

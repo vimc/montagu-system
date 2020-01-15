@@ -36,7 +36,7 @@ describe("AddRoles", () => {
         sandbox.restore();
     });
 
-    it("populates role options from store state", () => {
+    test("populates role options from store state", () => {
 
         const rendered = shallow(<AddRoles username={"testuser"} userRoles={[]}/>, {context: {store}})
             .dive().dive();
@@ -44,7 +44,7 @@ describe("AddRoles", () => {
         expect(rendered.find("option")).to.have.lengthOf(2)
     });
 
-    it("only shows roles the user does not have", () => {
+    test("only shows roles the user does not have", () => {
 
         const rendered = shallow(<AddRolesComponent username={"testuser"}
                                                     userRoles={["role1"]}
@@ -55,7 +55,7 @@ describe("AddRoles", () => {
 
     });
 
-    it("dispatches addGlobalRoleToUser when role is added", () => {
+    test("dispatches addGlobalRoleToUser when role is added", () => {
 
         const addRoles = shallow(<AddRoles username={"testuser"} userRoles={["role1"]}/>, {context: {store}})
             .dive()

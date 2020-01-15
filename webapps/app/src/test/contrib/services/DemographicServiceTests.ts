@@ -16,7 +16,7 @@ describe('Demographic service tests', () => {
         sandbox.restore();
     });
 
-    it("fetches data sets", () => {
+    test("fetches data sets", () => {
         const demographicService = new DemographicService(store.dispatch, store.getState as () => ContribAppState);
 
         const setOptionsSpy = sandbox.setSpy(demographicService, "setOptions");

@@ -141,7 +141,7 @@ describe("ModelMetaTable tests", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("gets props from state", () => {
+    test("gets props from state", () => {
         const testState = {
             groups: {models: [testModel, testModel2], expectations: [testExpectation, testExpectation2]}
         };
@@ -151,7 +151,7 @@ describe("ModelMetaTable tests", () => {
         expect(rendered.props().models).to.eql(mappedData);
     });
 
-    it ("selects latest touchstone", () => {
+    test("selects latest touchstone", () => {
         const earlierExpectation = mockTouchstoneModelExpectations({
             disease: "d1",
             modelling_group: "ga",
@@ -185,7 +185,7 @@ describe("ModelMetaTable tests", () => {
         expect(rendered.props().models).to.eql(mappedData);
     });
 
-    it ("selects only current models if obsoleteOnly is false", () =>
+    test("selects only current models if obsoleteOnly is false", () =>
     {
         const testState = {
             groups: {
@@ -201,7 +201,7 @@ describe("ModelMetaTable tests", () => {
     });
 
 
-    it("displays table of models", () => {
+    test("displays table of models", () => {
         const testState = {
             groups: {models: [testModel, testModel2], expectations: [testExpectation, testExpectation2]}
         };
@@ -262,7 +262,7 @@ describe("ModelMetaTable tests", () => {
         expect(cellsForRow(1).at(12).text()).to.eq("No");
     });
 
-    it("does not render details links if no items to view", () => {
+    test("does not render details links if no items to view", () => {
         const minimalModel = mockModel({
             id: 'mb', modelling_group: "ga",
             gender_specific: null, gender: null,
@@ -301,74 +301,74 @@ describe("ModelMetaTable tests", () => {
         expect(cellsForRow(0).at(11).text()).to.eq(""); //outcomes
     });
 
-    it("sorts by group", () => {
+    test("sorts by group", () => {
         assertSortsBy(0, "ga", "gb")
     });
 
-    it("sorts by name", () => {
+    test("sorts by name", () => {
         assertSortsBy(1, "ma", "mb")
     });
 
-    it("sorts by disease", () => {
+    test("sorts by disease", () => {
         assertSortsBy(2, "Disease 1", "Disease 2")
     });
 
-    it("sorts by type", () => {
+    test("sorts by type", () => {
         assertSortsBy(3, "Dynamic", "Static")
     });
 
-    it("sorts by code", () => {
+    test("sorts by code", () => {
         assertSortsBy(4, "C", "R")
     });
 
-    it("sorts by gender", () => {
+    test("sorts by gender", () => {
         assertSortsBy(5, "female", "NA")
     });
 
-    it("sorts by max countries", () => {
+    test("sorts by max countries", () => {
         assertSortsBy(6, "1" + "view", "2" + "view")
     });
 
-    it("sorts by scenario", () => {
+    test("sorts by scenario", () => {
         assertSortsBy(7, "1 scenario" + "view", "2 scenarios" +  "view")
     });
 
-    it("sorts by years", () => {
+    test("sorts by years", () => {
         assertSortsBy(8, "1900 - 2000", "1950 - 2000")
     });
 
-    it("sorts by ages", () => {
+    test("sorts by ages", () => {
         assertSortsBy(9, "0 - 49", "0 - 99")
     });
 
-    it("sorts by cohorts", () => {
+    test("sorts by cohorts", () => {
         assertSortsBy(10, "1900 - 2000", "Max 2000")
     });
 
-    it("sorts by outcomes", () => {
+    test("sorts by outcomes", () => {
         assertSortsBy(11, "deaths, cases" + "definitions", "deaths, dalys" + "definitions")
     });
 
-    it("sorts by has dalys", () => {
+    test("sorts by has dalys", () => {
         assertSortsBy(12, "Yes", "No")
     });
 
-    it("shows countries tooltips", () => {
+    test("shows countries tooltips", () => {
         assertTooltip(6, 0, "countries-details-link-0", ["Country1 (AA)","Country2 (AB)"]);
         assertTooltip(6, 1, "countries-details-link-1", ["Country1 (AA)"]);
     });
 
-    it("shows scenario tooltips", () => {
+    test("shows scenario tooltips", () => {
         assertTooltip(7, 0, "scenario-details-link-0", ["scenario 1"]);
         assertTooltip(7, 1, "scenario-details-link-1", ["scenario 1","scenario 2"]);
     });
 
-    it ("shows outcomes tooltips", () => {
+    test("shows outcomes tooltips", () => {
         assertTooltip(11, 0, "outcomes-details-link-0", ["deaths: deaths name", "dalys: dalys name"]);
         assertTooltip(11, 1, "outcomes-details-link-1", ["deaths: deaths name","cases: cases name"]);
     });
 
-    it ("selects only obsolete models if obsoleteOnly is true", () =>
+    test("selects only obsolete models if obsoleteOnly is true", () =>
     {
         const testState = {
             groups: {
@@ -383,7 +383,7 @@ describe("ModelMetaTable tests", () => {
 
     });
 
-    it("displays table of obsolete models", () => {
+    test("displays table of obsolete models", () => {
         const testState = {
             groups: {models: [obsoleteTestModel, obsoleteTestModel2], expectations: [testExpectation, testExpectation2]}
         };
@@ -428,19 +428,22 @@ describe("ModelMetaTable tests", () => {
 
     });
 
-    it("does not render table or message if obsoleteOnly is true and there are none", () => {
-        const testState = {
-            groups: {models: [testModel], expectations: [testExpectation, testExpectation2]}
-        };
-        const store = createMockStore(testState);
-        const rendered = shallow(<ModelMetaTable obsoleteOnly={true}/>, {context: {store}}).dive();
+    test(
+        "does not render table or message if obsoleteOnly is true and there are none",
+        () => {
+            const testState = {
+                groups: {models: [testModel], expectations: [testExpectation, testExpectation2]}
+            };
+            const store = createMockStore(testState);
+            const rendered = shallow(<ModelMetaTable obsoleteOnly={true}/>, {context: {store}}).dive();
 
-        expect(rendered.text()).to.eql("");
+            expect(rendered.text()).to.eql("");
 
-        expect(rendered.find("table")).to.have.lengthOf(0);
-    });
+            expect(rendered.find("table")).to.have.lengthOf(0);
+        }
+    );
 
-    it("shows countries tooltips for obsolete models", () => {
+    test("shows countries tooltips for obsolete models", () => {
         assertTooltip(6, 0, "countries-details-link-0", ["Country1 (AA)","Country2 (AB)"], true);
         assertTooltip(6, 1, "countries-details-link-1", ["Country1 (AA)"], true);
     });

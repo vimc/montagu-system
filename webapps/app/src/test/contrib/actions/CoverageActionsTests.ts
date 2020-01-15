@@ -23,7 +23,7 @@ describe("Coverage actions tests", () => {
         sandbox.restore();
     });
 
-    it("data sets fetched", (done) => {
+    test("data sets fetched", (done) => {
         const store = createMockStore({});
         sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", ()=>{
             return Promise.resolve({groupId: "g1", touchstoneId: "t1", scenarioId: "s1"});
@@ -41,7 +41,7 @@ describe("Coverage actions tests", () => {
         });
     });
 
-    it("sets format", (done) => {
+    test("sets format", (done) => {
         const store = createMockStore({});
         store.dispatch(coverageActionCreators.setFormat(Coverage.SelectedFormat.long));
         setTimeout(() => {

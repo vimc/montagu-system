@@ -30,7 +30,7 @@ describe("Model Run Parameters Page tests", () => {
 
     afterEach(() => sandbox.restore());
 
-    it("renders component component level", () => {
+    test("renders component component level", () => {
         let testMatch = mockMatch<ModelRunParametersPageLocationProps>({
             groupId: "g-1",
             touchstoneId: "t-1"

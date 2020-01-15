@@ -21,12 +21,12 @@ describe("Guidance Neonatal Mortality Page Component tests", () => {
     });
     afterEach(() => sandbox.restore());
 
-    it("renders component on connect level", () => {
+    test("renders component on connect level", () => {
         const rendered = shallow(<ResponsibilityGuidanceNeonatalMortalityPage/>, {context: {store}});
         expect(typeof rendered.props().createBreadcrumbs).is.equal('function');
     });
 
-    it("renders component on component level", () => {
+    test("renders component on component level", () => {
         let store = createMockStore();
         const createBreadcrumbsStub = sandbox.setStubReduxAction(breadcrumbsActionCreators, "createBreadcrumbs");
         const rendered = shallow(<ResponsibilityGuidanceNeonatalMortalityPage/>, {context: {store}}).dive().dive().dive();

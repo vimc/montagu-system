@@ -25,7 +25,7 @@ describe("Modelling Group Details Content Component tests", () => {
         const sandbox = new Sandbox();
         afterEach(() => sandbox.restore());
 
-        it("props on connect level, can manage", () => {
+        test("props on connect level, can manage", () => {
             const testState = {
                 groups: { currentGroupDetails: testGroupDetails, currentGroupMembers: [testUser, testUser2]},
                 auth: { permissions: ["*/modelling-groups.manage-members"] }
@@ -37,7 +37,7 @@ describe("Modelling Group Details Content Component tests", () => {
             expect(rendered.props().canManageGroupMembers).to.be.true;
         });
 
-        it("props on connect level, can not manage", () => {
+        test("props on connect level, can not manage", () => {
             const testState = {
                 groups: { currentGroupDetails: testGroupDetails},
                 users: { users: [testUser, testUser2]},
@@ -51,7 +51,7 @@ describe("Modelling Group Details Content Component tests", () => {
     });
 
     describe("Component", () => {
-        it("renders group details content", () => {
+        test("renders group details content", () => {
             const rendered = shallow(<ModellingGroupDetailsContentComponent
                 group={testGroupDetails}
                 members={[testUser]}

@@ -37,7 +37,7 @@ describe("Breadcrumbs actions integration tests with store", () => {
 
     afterEach(() => sandbox.restore());
 
-    it("initializes breadcrumbs for page A", () => {
+    test("initializes breadcrumbs for page A", () => {
         const history = createMemoryHistory();
         let store = createContribStore(history);
         store.dispatch(breadcrumbsActionCreators.createBreadcrumbs(A.breadcrumb()));
@@ -48,7 +48,7 @@ describe("Breadcrumbs actions integration tests with store", () => {
         expect(breadcrumbs[0].url).to.equal("/");
     });
 
-    it("initializes breadcrumbs for page B", () => {
+    test("initializes breadcrumbs for page B", () => {
         const history = createMemoryHistory();
         let store = createContribStore(history);
         store.dispatch(breadcrumbsActionCreators.createBreadcrumbs(B.breadcrumb()));
@@ -68,7 +68,7 @@ describe("Breadcrumbs actions tests with mock store", () => {
 
     afterEach(() => sandbox.restore());
 
-    it("sets breadcrumb", (done) => {
+    test("sets breadcrumb", (done) => {
         const store = createMockStore({});
         const testBreadcrumbs = mockBreadcrumbs();
         const testPageBreadCrumb = mockPageBreadcrumb();

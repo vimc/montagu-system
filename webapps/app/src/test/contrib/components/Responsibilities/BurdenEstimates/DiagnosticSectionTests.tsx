@@ -64,7 +64,7 @@ describe("Diagnostic section", () => {
 
     afterEach(() => sandbox.restore());
 
-    it("passes props to chart", () => {
+    test("passes props to chart", () => {
 
         const rendered = shallow(<DiagnosticSection scenarioId={testScenario.id}
                                                     setId={testEstimateSet.id}/>, {context: {store}})
@@ -79,7 +79,7 @@ describe("Diagnostic section", () => {
         expect(chartProps.outcome).to.eq(BurdenOutcome.DEATHS);
     });
 
-    it("sets data to cases for scenario if chart type is cases", () => {
+    test("sets data to cases for scenario if chart type is cases", () => {
 
         const data = {} as any;
         data[testEstimateSet.id] = "TEST_DATA";
@@ -97,7 +97,7 @@ describe("Diagnostic section", () => {
         expect(chartProps.data).to.eq("TEST_DATA");
     });
 
-    it("sets data to deaths for scenario if chart type is deaths", () => {
+    test("sets data to deaths for scenario if chart type is deaths", () => {
 
         const data = {} as any;
         data[testEstimateSet.id] = "TEST_DATA";
@@ -115,7 +115,7 @@ describe("Diagnostic section", () => {
         expect(chartProps.data).to.eq("TEST_DATA");
     });
 
-    it("sets data to dalys for scenario if chart type is dalys", () => {
+    test("sets data to dalys for scenario if chart type is dalys", () => {
 
         const data = {} as any;
         data[testEstimateSet.id] = "TEST_DATA";
@@ -133,7 +133,7 @@ describe("Diagnostic section", () => {
         expect(chartProps.data).to.eq("TEST_DATA");
     });
 
-    it("fetches data on mount", () => {
+    test("fetches data on mount", () => {
 
         const getEstimatesStub = sandbox.setStubReduxAction(estimatesActionCreators, "getEstimates");
         mount(<DiagnosticSection scenarioId={testScenario.id}
@@ -144,7 +144,7 @@ describe("Diagnostic section", () => {
         expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, testEstimateSet.id)).to.be.true;
     });
 
-    it("fetches data when setId or scenarioId is updated", () => {
+    test("fetches data when setId or scenarioId is updated", () => {
 
         const store = createMockContribStore({...testState, responsibilities: {}});
         const getEstimatesStub = sandbox.setStubReduxAction(estimatesActionCreators, "getEstimates");
@@ -167,7 +167,7 @@ describe("Diagnostic section", () => {
 
     });
 
-    it("sets chart type", () => {
+    test("sets chart type", () => {
 
         const rendered = shallow(<DiagnosticSection scenarioId={testScenario.id}
                                                     setId={testEstimateSet.id}/>, {context: {store}}).dive().dive();

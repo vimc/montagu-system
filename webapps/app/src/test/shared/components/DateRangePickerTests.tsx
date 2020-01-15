@@ -23,7 +23,7 @@ describe("DateRangePicker", () => {
     const from = new Date(2016, 4, 15);
     const to = new Date(2018, 4, 15);
 
-    it("renders start date picker", () => {
+    test("renders start date picker", () => {
 
         const rendered = shallow(<DateRangePicker
             startDate={from}
@@ -40,7 +40,7 @@ describe("DateRangePicker", () => {
 
     });
 
-    it("renders end date picker", () => {
+    test("renders end date picker", () => {
 
         const rendered = shallow(<DateRangePicker
             startDate={from}
@@ -57,7 +57,7 @@ describe("DateRangePicker", () => {
 
     });
 
-    it("calls timeFromSelected when start date changes", () => {
+    test("calls timeFromSelected when start date changes", () => {
 
         const timeFromSelectedStub = sandbox.sinon.stub();
 
@@ -74,7 +74,7 @@ describe("DateRangePicker", () => {
         expect(timeFromSelectedStub.called).to.be.true;
     });
 
-    it("calls timeUntilSelected when end date changes", () => {
+    test("calls timeUntilSelected when end date changes", () => {
 
         const timeUntilSelectedStub = sandbox.sinon.stub();
 

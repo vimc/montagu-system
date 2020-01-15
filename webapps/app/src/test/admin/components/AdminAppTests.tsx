@@ -5,7 +5,7 @@ import {AdminApp, AdminAppComponent} from "../../../main/admin/components/AdminA
 import {AdminRouter} from "../../../main/admin/components/AdminRouter";
 
 describe("AdminApp", () => {
-    it("passes through loggedIn to router", () => {
+    test("passes through loggedIn to router", () => {
         const rendered = shallow(<AdminAppComponent loggedIn={ true } />);
         expect(rendered.find(AdminRouter).props()).to.eql({
             loggedIn: true,

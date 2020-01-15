@@ -11,7 +11,7 @@ describe("TouchstoneListPage", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-   it("calls onLoad when loaded", () => {
+   test("calls onLoad when loaded", () => {
        const onLoadStub = sandbox.setStubReduxAction(touchstoneListPageActionCreators, "onLoad");
        const rendered = shallowRenderPage(<TouchstoneListPage {...mockPageProperties()} />);
        expect(rendered.find(PageArticle).find(TouchstoneList)).to.have.length(1);

@@ -13,7 +13,7 @@ describe('Users service tests', () => {
         sandbox.restore();
     });
 
-    it('fetches users', () => {
+    test('fetches users', () => {
         const usersService = new UsersService(store.dispatch, store.getState);
 
         const setOptionsSpy = sandbox.setSpy(usersService, "setOptions");
@@ -28,7 +28,7 @@ describe('Users service tests', () => {
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'users' });
     });
 
-    it("sets password", () => {
+    test("sets password", () => {
         const usersService = new UsersService(store.dispatch, store.getState);
         const postStub = sandbox.setStubFunc(usersService, "post", ()=>{
             return Promise.resolve();

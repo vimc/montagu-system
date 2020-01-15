@@ -8,7 +8,7 @@ import { mockCoverageSet } from "../../../../mocks/mockModels";
 import { CoverageSetComponent } from "../../../../../main/contrib/components/Responsibilities/Coverage/CoverageSetComponent";
 
 describe("CoverageSetList", () => {
-    it("renders one coverage set per line item", () => {
+    test("renders one coverage set per line item", () => {
         const sets = [ mockCoverageSet(), mockCoverageSet() ];
         const rendered = shallow(<CoverageSetList coverageSets={ sets } />);
         expect(rendered.find(CoverageSetComponent)).to.have.length(2);

@@ -17,7 +17,7 @@ describe("Contrib touchstone actions tests", () => {
         sandbox.restore();
     });
 
-    it("touchstones fetched", (done) => {
+    test("touchstones fetched", (done) => {
         const store = createMockContribStore({});
         sandbox.setStubFunc(TouchstonesService.prototype, "getTouchstonesByGroupId", () => {
             return Promise.resolve([testTouchstone]);
@@ -31,20 +31,23 @@ describe("Contrib touchstone actions tests", () => {
         });
     });
 
-    it("set current touchstone by id using previously loaded touchstones", (done) => {
-        const testTouchstoneVersion = mockTouchstoneVersion({"id": "touchstone-1"});
-        const touchstonesState: Partial<TouchstonesState> = {
-            touchstones: [mockTouchstone({}, [testTouchstoneVersion])]
-        };
-        const store = createMockContribStore({touchstones: touchstonesState});
-        store.dispatch(contribTouchstonesActionCreators.setCurrentTouchstoneVersion("touchstone-1"));
-        setTimeout(() => {
-            const actions = store.getActions();
-            // console.log(actions);
-            const expectedPayload = {type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstoneVersion};
-            expect(actions).to.eql([expectedPayload]);
-            done();
-        });
-    });
+    test(
+        "set current touchstone by id using previously loaded touchstones",
+        (done) => {
+            const testTouchstoneVersion = mockTouchstoneVersion({"id": "touchstone-1"});
+            const touchstonesState: Partial<TouchstonesState> = {
+                touchstones: [mockTouchstone({}, [testTouchstoneVersion])]
+            };
+            const store = createMockContribStore({touchstones: touchstonesState});
+            store.dispatch(contribTouchstonesActionCreators.setCurrentTouchstoneVersion("touchstone-1"));
+            setTimeout(() => {
+                const actions = store.getActions();
+                // console.log(actions);
+                const expectedPayload = {type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstoneVersion};
+                expect(actions).to.eql([expectedPayload]);
+                done();
+            });
+        }
+    );
 
 });

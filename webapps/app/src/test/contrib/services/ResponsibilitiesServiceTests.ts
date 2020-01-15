@@ -16,7 +16,7 @@ describe('Responsibilities service tests', () => {
         sandbox.restore();
     });
 
-    it('fetches responsibilities', () => {
+    test('fetches responsibilities', () => {
         const responsibilitiesService = new ResponsibilitiesService(store.dispatch, store.getState as () => ContribAppState);
 
         const setOptionsSpy = sandbox.setSpy(responsibilitiesService, "setOptions");
@@ -30,7 +30,7 @@ describe('Responsibilities service tests', () => {
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'set' });
     });
 
-    it('clears cache for responsibilities', () => {
+    test('clears cache for responsibilities', () => {
         const responsibilitiesService = new ResponsibilitiesService(store.dispatch, store.getState as () => ContribAppState);
 
         const clearCacheStub = sandbox.setStubFunc(responsibilitiesService, "clearCache", ()=>{

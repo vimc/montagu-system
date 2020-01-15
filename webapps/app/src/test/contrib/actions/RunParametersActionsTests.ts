@@ -23,7 +23,7 @@ describe("Run Parameters actions tests", () => {
         sandbox.restore();
     });
 
-    it("clears cache for parameters set", (done) => {
+    test("clears cache for parameters set", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
@@ -39,7 +39,7 @@ describe("Run Parameters actions tests", () => {
         });
     });
 
-    it("gets parameters set", (done) => {
+    test("gets parameters set", (done) => {
         const store = createMockStore();
         sandbox.setStubFunc(RunParametersService.prototype, "getParameterSets", ()=>{
             return Promise.resolve([testModelRunParametersSet]);
@@ -53,7 +53,7 @@ describe("Run Parameters actions tests", () => {
         });
     });
 
-    it("refresh parameters sets", (done) => {
+    test("refresh parameters sets", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
@@ -72,7 +72,7 @@ describe("Run Parameters actions tests", () => {
         });
     });
 
-    it("upload parameters sets successfull", (done) => {
+    test("upload parameters sets successfull", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
@@ -108,7 +108,7 @@ describe("Run Parameters actions tests", () => {
         });
     });
 
-    it("upload parameters sets unsuccessfull", (done) => {
+    test("upload parameters sets unsuccessfull", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
@@ -143,7 +143,7 @@ describe("Run Parameters actions tests", () => {
         });
     });
 
-    it("reset upload status", (done) => {
+    test("reset upload status", (done) => {
         const resetData = {status: RunParametersUploadStatus.off, errors: null} as RunParametersUploadStatusData;
         const store = createMockContribStore();
         store.dispatch(runParametersActionCreators.resetUploadStatus());

@@ -20,7 +20,7 @@ describe("touchstoneDetailsPageActionCreators", () => {
     };
     const state = mockAdminState({touchstones: touchstoneState});
 
-    it("sets current touchstone on load", async () => {
+    test("sets current touchstone on load", async () => {
 
         const store = createMockAdminStore(state);
         await store.dispatch(touchstoneDetailsPageActionCreators.loadData({
@@ -31,7 +31,7 @@ describe("touchstoneDetailsPageActionCreators", () => {
         ]);
     });
 
-    it("creates breadcrumbs", () => {
+    test("creates breadcrumbs", () => {
 
         const result = touchstoneDetailsPageActionCreators.createBreadcrumb(state);
 
@@ -39,11 +39,11 @@ describe("touchstoneDetailsPageActionCreators", () => {
         expect(result.name).to.eq("myId");
     });
 
-    it("has TouchstoneList as parent", () => {
+    test("has TouchstoneList as parent", () => {
         expect(touchstoneDetailsPageActionCreators.parent).to.eq(touchstoneListPageActionCreators)
     });
 
-    it("has current touchstone description as title", () => {
+    test("has current touchstone description as title", () => {
         expect(touchstoneDetailsPageActionCreators.title(state)).to.eq("desc of myId")
     });
 });

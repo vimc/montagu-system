@@ -18,7 +18,7 @@ describe("CreateUserForm", () => {
     const sandbox = new Sandbox();
     let store: any = null;
 
-    before(() => {
+    beforeAll(() => {
         store = createMockStore(mockAdminState());
     });
 
@@ -26,7 +26,7 @@ describe("CreateUserForm", () => {
         sandbox.restore();
     });
 
-    it("renders fields", () => {
+    test("renders fields", () => {
 
         const rendered = shallow(<CreateUserFormComponent errors={[]}
             handleSubmit={() => null} submit={null} changeFieldValue={null}/>);
@@ -43,7 +43,7 @@ describe("CreateUserForm", () => {
         expect(fields.at(2).prop("validate")).to.have.members([validations.required, validations.username]);
     });
 
-    it("sets username to suggestion when name changes", () => {
+    test("sets username to suggestion when name changes", () => {
 
         let fieldName = "";
         let newValue = "";
@@ -65,7 +65,7 @@ describe("CreateUserForm", () => {
         expect(newValue).to.eq("joe.bloggs");
     });
 
-    it("calls creates user on form submission", () => {
+    test("calls creates user on form submission", () => {
 
         const stub = sandbox.setStubReduxAction(usersActionCreators, "createUser");
 
@@ -80,19 +80,19 @@ describe("CreateUserForm", () => {
     });
 
     describe("username suggestor", () => {
-        it("can handle one word", () => {
+        test("can handle one word", () => {
             expect(suggestUsername("joe")).to.equal("joe");
         });
-        it("can handle two words", () => {
+        test("can handle two words", () => {
             expect(suggestUsername("joe bloggs")).to.equal("joe.bloggs");
         });
-        it("can handle many words", () => {
+        test("can handle many words", () => {
             expect(suggestUsername("joe samuel stephen bloggs")).to.equal("joe.bloggs");
         });
-        it("converts to lower case", () => {
+        test("converts to lower case", () => {
             expect(suggestUsername("Joe Bloggs")).to.equal("joe.bloggs");
         });
-        it("strips out bad characters", () => {
+        test("strips out bad characters", () => {
             expect(suggestUsername("j_1-o=%_e_")).to.equal("joe");
         });
     });

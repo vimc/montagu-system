@@ -27,7 +27,7 @@ describe("Scenario chart", () => {
     const yearRange = {maximum_inclusive: 2000, minimum_inclusive: 1980};
     const data = {1: [{x: 2000, y: 1}, {x: 2001, y: 2}], 2: [{x: 2000, y: 1}, {x: 2001, y: 2}]}
 
-    it("renders age range key", () => {
+    test("renders age range key", () => {
         const rendered = shallow(<ScenarioChart data={data}
                                                 ages={ageRange}
                                                 years={yearRange}
@@ -40,7 +40,7 @@ describe("Scenario chart", () => {
         })
     });
 
-    it("renders one series for each age", () => {
+    test("renders one series for each age", () => {
         const rendered = shallow(<ScenarioChart
             data={data}
             ages={ageRange}
@@ -51,7 +51,7 @@ describe("Scenario chart", () => {
         expect(rendered.find(VerticalBarSeries)).to.have.lengthOf(2);
     });
 
-    it("renders title", () => {
+    test("renders title", () => {
         const rendered = shallow(<ScenarioChart
             data={data}
             ages={ageRange}
@@ -62,7 +62,7 @@ describe("Scenario chart", () => {
         expect(rendered.find(".chart-title").text()).to.eq("Yearly cases across all countries, disaggregated by age");
     });
 
-    it("renders axis labels", () => {
+    test("renders axis labels", () => {
         const rendered = shallow(<ScenarioChart
             data={data}
             ages={ageRange}
@@ -76,7 +76,7 @@ describe("Scenario chart", () => {
 
     describe("Scenario chart key", () => {
 
-        it("renders one key bar for each age", () => {
+        test("renders one key bar for each age", () => {
             const rendered = shallow(<ScenarioChartKey maxAge={10} ageRange={3}/>);
             expect(rendered.find(".ageKey")).to.have.lengthOf(3);
         });

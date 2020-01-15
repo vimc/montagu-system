@@ -7,7 +7,7 @@ import { mockCoverageSet } from "../../../../mocks/mockModels";
 import { CoverageSetComponent } from "../../../../../main/contrib/components/Responsibilities/Coverage/CoverageSetComponent";
 
 describe("CoverageSetComponent", () => {
-    it("renders all metadata", () => {
+    test("renders all metadata", () => {
         const set = mockCoverageSet({
             name: "my-name",
             vaccine: "my-vaccine",

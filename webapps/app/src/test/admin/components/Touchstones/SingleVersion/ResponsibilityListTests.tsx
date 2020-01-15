@@ -6,7 +6,7 @@ import {ResponsibilityList} from "../../../../../main/admin/components/Touchston
 
 describe("ResponsibilityList", () => {
 
-    it("renders headers", () => {
+    test("renders headers", () => {
         const r = [mockResponsibility()];
         const rendered = shallow(<ResponsibilityList responsibilities={r}/>);
         const cells = rendered.find("th");

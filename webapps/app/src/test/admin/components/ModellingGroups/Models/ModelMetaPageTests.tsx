@@ -13,7 +13,7 @@ describe("ModelMetaPage", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("renders page with correct action creators", () => {
+    test("renders page with correct action creators", () => {
         const onLoadStub = sandbox.setStubReduxAction(modelMetaPageActionCreators, "onLoad");
         const rendered = shallowRenderPage(<ModelMetaPage {...mockPageProperties()} />);
 

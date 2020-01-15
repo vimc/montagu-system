@@ -5,13 +5,13 @@ import {ReduxFormValidationErrors} from "../../../main/shared/components/ReduxFo
 
 describe("ReduxFormValidationErrors", () => {
 
-    it("should return null if no errors", () => {
+    test("should return null if no errors", () => {
 
         const rendered = shallow(<ReduxFormValidationErrors errors={[]}/>);
         expect(rendered.find("div")).to.have.lengthOf(0);
     });
 
-    it("should return all error messages", () => {
+    test("should return all error messages", () => {
 
         const rendered = shallow(<ReduxFormValidationErrors errors={[{message: "first error", code: "e"},
             {code: "e", message: "second error"}]}/>);

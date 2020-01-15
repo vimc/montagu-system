@@ -31,7 +31,7 @@ describe("UserDetailsPage", () => {
         sandbox.restore();
     });
 
-    it("renders page component, title and sub components", () => {
+    test("renders page component, title and sub components", () => {
         const match = mockMatch<undefined>();
 
         const onLoadStub = sandbox.setStubReduxAction(userDetailsPageActionCreators, "onLoad");

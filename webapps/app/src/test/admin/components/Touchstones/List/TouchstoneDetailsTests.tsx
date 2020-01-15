@@ -11,7 +11,7 @@ import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement
 import {mockTouchstone} from "../../../../mocks/mockModels";
 
 describe("TouchstoneDetails", () => {
-    it("renders loading element if no current touchstone", () => {
+    test("renders loading element if no current touchstone", () => {
         const touchstones: Partial<AdminTouchstoneState> = {
             currentTouchstone: null
         };
@@ -20,7 +20,7 @@ describe("TouchstoneDetails", () => {
         expect(rendered.find(LoadingElement)).to.have.length(1);
     });
 
-    it("renders content if current touchstone", () => {
+    test("renders content if current touchstone", () => {
         const touchstones: Partial<AdminTouchstoneState> = {
             currentTouchstone: mockTouchstone()
         };

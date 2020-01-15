@@ -12,7 +12,7 @@ describe("scenarioPageActionCreators", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("fetches scenarios and diseases on load", async () => {
+    test("fetches scenarios and diseases on load", async () => {
         const getScenariosStub = sandbox.setStubReduxAction(scenarioActionCreators, "getScenariosForTouchstoneVersion");
         const getDiseasesStub = sandbox.setStubReduxAction(diseasesActionCreators, "getAllDiseases");
         const store = createMockAdminStore();
@@ -26,13 +26,13 @@ describe("scenarioPageActionCreators", () => {
         expect(getDiseasesStub.getCall(0).args).to.eql([]);
     });
 
-    it("creates breadcrumbs", () => {
+    test("creates breadcrumbs", () => {
         const result = scenarioPageActionCreators.createBreadcrumb(null);
         expect(result.urlFragment).to.eq("scenarios/");
         expect(result.name).to.eq("Scenarios");
     });
 
-    it("has correct title", () => {
+    test("has correct title", () => {
         const state: RecursivePartial<AdminAppState> = {
             touchstones: {
                 currentTouchstoneVersion: mockTouchstoneVersion({ description: "Tasty" })

@@ -19,7 +19,7 @@ describe("Modelling Groups List Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("on load", async () => {
+    test("on load", async () => {
         const store = createMockStore({});
 
         sandbox.setStubFunc(ModellingGroupsService.prototype, "getAllGroups", () => {

@@ -12,30 +12,30 @@ describe("Breadcrumb Bar", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("renders link with url", () => {
+    test("renders link with url", () => {
         const rendered = shallow(makeLink({name: "Test", url:"test"}));
         expect(rendered.find('a').props().href).to.equal('test');
         expect(rendered.find('a').text()).to.equal('Test');
     });
 
-    it("renders link with no url", () => {
+    test("renders link with no url", () => {
         const rendered = shallow(makeLink({name: "Test", url: undefined}));
         expect(rendered.find('span').text()).to.equal('Test');
     });
 
-    it("maps crumbs from state", () => {
+    test("maps crumbs from state", () => {
         const state = mockContribState();
         const mappedProps = mapStateToProps(state);
         expect(mappedProps.crumbs).to.eql([]);
     });
 
-    it("passes crumbs from state to component", () => {
+    test("passes crumbs from state to component", () => {
         const store = createMockStore(mockContribState({breadcrumbs: {breadcrumbs: [{name: 'A', url: 'a'}]}}));
         const rendered = shallow(<BreadcrumbsBar />, {context: {store}});
         expect(rendered.props().crumbs).to.eql([{name: 'A', url: 'a'}])
     });
 
-    it("renders one crumb based on data from state", () => {
+    test("renders one crumb based on data from state", () => {
         const store = createMockStore(mockContribState({breadcrumbs: {breadcrumbs: [{name: 'A', url: 'a'}]}}));
         const rendered = shallow(<BreadcrumbsBar />, {context: {store}}).dive();
         const crumbs = rendered.find('div.montagu-navbar__chunk');
@@ -45,7 +45,7 @@ describe("Breadcrumb Bar", () => {
         expect(crumb.find('a').text()).to.equal('A');
     });
 
-    it("renders no crumbs", () => {
+    test("renders no crumbs", () => {
         const store = createMockStore(mockContribState({breadcrumbs: {breadcrumbs: []}}));
         const rendered = shallow(<BreadcrumbsBar />, {context: {store}}).dive();
         const crumbs = rendered.find('div.montagu-navbar__chunk');

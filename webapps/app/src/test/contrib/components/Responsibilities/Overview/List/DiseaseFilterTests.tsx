@@ -55,32 +55,32 @@ describe("Responsibility Overview Disease Filter Component tests", () => {
         sandbox.restore();
     });
 
-    it("renders on connect level no options", () => {
+    test("renders on connect level no options", () => {
         const store = createMockStore(mockNotMatchingState());
         const rendered = shallow(<DiseaseFilter/>, {context: {store}});
         expect(rendered.props().options).to.eql(null);
         expect(typeof rendered.props().setCurrentDiseaseId).to.eql("function");
     });
 
-    it("renders on connect level 1 option", () => {
+    test("renders on connect level 1 option", () => {
         const store = createMockStore(mockOneMatchState());
         const rendered = shallow(<DiseaseFilter/>, {context: {store}});
         expect(rendered.props().options).to.eql([{value: testDisease.id, text: testDisease.name}]);
     });
 
-    it("renders on branch level, 1 option, renders nothing", () => {
+    test("renders on branch level, 1 option, renders nothing", () => {
         const store = createMockStore(mockOneMatchState());
         const rendered = shallow(<DiseaseFilter/>, {context: {store}}).dive();
         expect(rendered.find('Nothing').length).to.equal(1);
     });
 
-    it("renders on branch level, 2 options, renders select box", () => {
+    test("renders on branch level, 2 options, renders select box", () => {
         const store = createMockStore(mockTwoMatchState());
         const rendered = shallow(<DiseaseFilter/>, {context: {store}}).dive();
         expect(rendered.find(DiseaseFilterComponent).length).to.equal(1);
     });
 
-    it("renders on component level, 2 options, renders select box", () => {
+    test("renders on component level, 2 options, renders select box", () => {
         const store = createMockStore(mockTwoMatchState());
         const rendered = shallow(<DiseaseFilter/>, {context: {store}}).dive().dive();
         const optionsSelector = rendered.find(OptionSelector);
@@ -90,14 +90,17 @@ describe("Responsibility Overview Disease Filter Component tests", () => {
         ]);
     });
 
-    it("renders on component level, 2 options, renders select box, emits select", () => {
-        const selectChangeStub = sandbox.setStubReduxAction(diseasesActionCreators, "setCurrentDiseaseId");
-        const state = {...mockTwoMatchState()};
-        const store = createMockStore(state);
-        const rendered = shallow(<DiseaseFilter/>, {context: {store}}).dive().dive();
-        const selectElement = rendered.find(OptionSelector).dive();
-        expect(selectChangeStub.called).to.equal(false);
-        selectElement.simulate('change', { currentTarget: {value: testDisease.id} });
-        expect(selectChangeStub.called).to.equal(true);
-    });
+    test(
+        "renders on component level, 2 options, renders select box, emits select",
+        () => {
+            const selectChangeStub = sandbox.setStubReduxAction(diseasesActionCreators, "setCurrentDiseaseId");
+            const state = {...mockTwoMatchState()};
+            const store = createMockStore(state);
+            const rendered = shallow(<DiseaseFilter/>, {context: {store}}).dive().dive();
+            const selectElement = rendered.find(OptionSelector).dive();
+            expect(selectChangeStub.called).to.equal(false);
+            selectElement.simulate('change', { currentTarget: {value: testDisease.id} });
+            expect(selectChangeStub.called).to.equal(true);
+        }
+    );
 });

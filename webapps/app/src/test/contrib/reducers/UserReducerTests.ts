@@ -5,7 +5,7 @@ import {UserActionType} from "../../../main/contrib/actionTypes/UserActionTypes"
 
 describe('User reducer tests', () => {
 
-    it('should return signed confidentiality statement true', () => {
+    test('should return signed confidentiality statement true', () => {
         expect(userReducer({
             signedConfidentialityAgreement: false
         }, {

@@ -17,13 +17,13 @@ describe("Contrib No Route Found Page Component tests", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("renders component on compose level", () => {
+    test("renders component on compose level", () => {
         let store = createMockStore();
         const rendered = shallow(<ContribNoRouteFoundPage/>, {context: {store}});
         expect(typeof rendered.props().createBreadcrumbs).is.equal('function');
     });
 
-    it("renders component on component level", () => {
+    test("renders component on component level", () => {
         let store = createMockStore();
         const createBreadcrumbsStub = sandbox.setStubReduxAction(breadcrumbsActionCreators, "createBreadcrumbs");
         const rendered = shallow(<ContribNoRouteFoundPage/>, {context: {store}}).dive().dive();

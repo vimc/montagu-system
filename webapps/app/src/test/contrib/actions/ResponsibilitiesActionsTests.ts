@@ -24,7 +24,7 @@ describe("Responsibilities actions tests", () => {
         sandbox.restore();
     });
 
-    it("clears cache for responsibility set", (done) => {
+    test("clears cache for responsibility set", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
@@ -40,7 +40,7 @@ describe("Responsibilities actions tests", () => {
         });
     });
 
-    it("gets responsibility set", (done) => {
+    test("gets responsibility set", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
@@ -57,7 +57,7 @@ describe("Responsibilities actions tests", () => {
         });
     });
 
-    it("sets current responsibility set", (done) => {
+    test("sets current responsibility set", (done) => {
         const store = createMockContribStore({
             responsibilities: {responsibilitiesSet: testExtResponsibilitySet}
         });
@@ -70,7 +70,7 @@ describe("Responsibilities actions tests", () => {
         });
     });
 
-    it("refresh responsibilities", (done) => {
+    test("refresh responsibilities", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion },

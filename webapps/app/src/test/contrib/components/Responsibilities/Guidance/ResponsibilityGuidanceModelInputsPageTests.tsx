@@ -27,7 +27,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
 
     afterEach(() => sandbox.restore());
 
-    it("renders component on connect level", () => {
+    test("renders component on connect level", () => {
 
         const testTouchstone = mockTouchstoneVersion();
 
@@ -46,7 +46,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
         expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
     });
 
-    it("renders component on component level for latest content", () => {
+    test("renders component on component level for latest content", () => {
         const testTouchstone = mockTouchstoneVersion();
 
         const store = createMockContribStore({
@@ -66,7 +66,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
         expect(content.getElements().length).is.equal(1);
     });
 
-    it("renders component for finished touchstone", () => {
+    test("renders component for finished touchstone", () => {
         const testTouchstone = mockTouchstoneVersion({status: "finished"});
 
         const store = createMockContribStore({
@@ -87,7 +87,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
 
     });
 
-    it("renders component for 2017 touchstone", () => {
+    test("renders component for 2017 touchstone", () => {
         const testTouchstone = mockTouchstoneVersion({id: "op-2017-1"});
 
         const store = createMockContribStore({
@@ -108,7 +108,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
 
     });
 
-    it("renders component for 2019 touchstone", () => {
+    test("renders component for 2019 touchstone", () => {
         const testTouchstone = mockTouchstoneVersion({id: "201910"});
 
         const store = createMockContribStore({

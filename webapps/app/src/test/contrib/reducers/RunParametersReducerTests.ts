@@ -22,35 +22,35 @@ describe('Run Parameters reducer tests', () => {
         errors: [new Error('test')]
     };
 
-    it('sets fetched model run parameters set', () => {
+    test('sets fetched model run parameters set', () => {
         expect(runParametersReducer(undefined, {
             type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED,
             data: [testModelRunParametersSet]
         })).to.eql({...runParametersInitialState, sets: [testModelRunParametersSet]});
     });
 
-    it('sets empty fetched model run parameters set', () => {
+    test('sets empty fetched model run parameters set', () => {
         expect(runParametersReducer(undefined, {
             type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED,
             data: null
         })).to.eql(runParametersInitialState);
     });
 
-    it('sets upload status in progress', () => {
+    test('sets upload status in progress', () => {
         expect(runParametersReducer(undefined, {
             type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
             data: testModelRunParametersInProgress
         })).to.eql({...runParametersInitialState, uploadStatus: {status: "in_progress", errors: null}});
     });
 
-    it('sets upload status completed no errors', () => {
+    test('sets upload status completed no errors', () => {
         expect(runParametersReducer(undefined, {
             type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
             data: testModelRunParametersCompletedNoErrors
         })).to.eql({...runParametersInitialState, uploadStatus: {status: "completed", errors: null}});
     });
 
-    it('sets upload status completed with errors', () => {
+    test('sets upload status completed with errors', () => {
         expect(runParametersReducer(undefined, {
             type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
             data: testModelRunParametersCompletedWithErrors

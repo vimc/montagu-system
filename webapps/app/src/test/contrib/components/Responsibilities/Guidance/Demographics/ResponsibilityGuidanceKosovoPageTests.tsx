@@ -21,12 +21,12 @@ describe("Guidance Kosovo Page Component tests", () => {
     });
     afterEach(() => sandbox.restore());
 
-    it("renders component on connect level", () => {
+    test("renders component on connect level", () => {
         const rendered = shallow(<ResponsibilityGuidanceKosovoPage/>, {context: {store}});
         expect(typeof rendered.props().createBreadcrumbs).is.equal('function');
     });
 
-    it("renders component on component level", () => {
+    test("renders component on component level", () => {
         let store = createMockStore();
         const createBreadcrumbsStub = sandbox.setStubReduxAction(breadcrumbsActionCreators, "createBreadcrumbs");
         const rendered = shallow(<ResponsibilityGuidanceKosovoPage/>, {context: {store}}).dive().dive().dive();

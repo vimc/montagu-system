@@ -17,7 +17,7 @@ describe("User List Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("fetches all users on load", (done: DoneCallback) => {
+    test("fetches all users on load", (done: DoneCallback) => {
         const store = createMockStore({});
 
         sandbox.setStubFunc(UsersService.prototype, "getAllUsers", () => {

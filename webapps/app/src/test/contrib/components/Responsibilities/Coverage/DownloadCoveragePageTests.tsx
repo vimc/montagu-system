@@ -27,12 +27,12 @@ describe("Download Coverage Page Component tests", () => {
     });
     afterEach(() => sandbox.restore());
 
-    it("renders component on connect level", () => {
+    test("renders component on connect level", () => {
         const rendered = shallow(<DownloadCoveragePage/>, {context: {store}});
         expect(typeof rendered.props().onLoad).is.equal('function');
     });
 
-    it("renders component component level", () => {
+    test("renders component component level", () => {
         let testMatch = mockMatch<DownloadCoveragePageLocationProps>({
             groupId: "g-1",
             touchstoneId: "t-1",

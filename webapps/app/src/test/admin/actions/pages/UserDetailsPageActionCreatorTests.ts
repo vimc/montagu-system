@@ -41,12 +41,12 @@ describe("User Details Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("has user list page as parent", async () => {
+    test("has user list page as parent", async () => {
 
         expect(userDetailsPageActionCreators.parent).to.eq(usersListPageActionCreators)
     });
 
-    it("creates breadcrumb", () => {
+    test("creates breadcrumb", () => {
 
         const mockUsersState = mockAdminUsersState({currentUser: mockUser({username: "fake.name", name: "Fake Name"})});
         const mockAdminAppState = mockAdminState({users: mockUsersState});
@@ -56,7 +56,7 @@ describe("User Details Page actions tests", () => {
         expect(breadcrumb.urlFragment).is.equal("fake.name/");
     });
 
-    it("sets current user and gets global roles on load", async () => {
+    test("sets current user and gets global roles on load", async () => {
 
         store = createMockStore(mockAdminState({auth: {permissions: ["*/roles.read"]}}));
         await store.dispatch(userDetailsPageActionCreators.loadData({username: "test.user"}));
@@ -69,15 +69,18 @@ describe("User Details Page actions tests", () => {
         expect(actions).to.eql(expectedPayload);
     });
 
-    it("does not get global roles if user does not have permission", async () => {
+    test(
+        "does not get global roles if user does not have permission",
+        async () => {
 
-        await store.dispatch(userDetailsPageActionCreators.loadData({username: "test.user"}));
+            await store.dispatch(userDetailsPageActionCreators.loadData({username: "test.user"}));
 
-        const actions = store.getActions();
-        const expectedPayload = [
-            {type: UsersTypes.SET_CURRENT_USER, data: "test.user"}
-        ];
-        expect(actions).to.eql(expectedPayload);
-    });
+            const actions = store.getActions();
+            const expectedPayload = [
+                {type: UsersTypes.SET_CURRENT_USER, data: "test.user"}
+            ];
+            expect(actions).to.eql(expectedPayload);
+        }
+    );
 
 });

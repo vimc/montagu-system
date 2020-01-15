@@ -16,12 +16,12 @@ describe("ErrorLog", () => {
     function clear() {
     }
 
-    it("is hidden when there are no errors", () => {
+    test("is hidden when there are no errors", () => {
         const rendered = shallow(<ErrorLogComponent errors={[]} clear={clear}/>);
         expect(rendered.text()).to.be.empty;
     });
 
-    it("it renders each error", () => {
+    test("it renders each error", () => {
         const errors = ["a", "b"];
         const rendered = shallow(<ErrorLogComponent errors={errors} clear={clear}/>);
         const items = rendered.find("li");
@@ -30,7 +30,7 @@ describe("ErrorLog", () => {
         expect(items.at(1).text()).to.equal("b");
     });
 
-    it("clicking clear button emits clear event", () => {
+    test("clicking clear button emits clear event", () => {
         const stub = sandbox.setStubReduxAction(notificationActionCreators, "clear");
         const notificationState: Partial<NotificationState> = {errors: ["a", "b"]};
         const store = createMockAdminStore(mockAdminState({notifications: notificationState}));
@@ -39,7 +39,7 @@ describe("ErrorLog", () => {
         expect(stub.getCall(0).args).to.eql(["error"]);
     });
 
-    it("maps state to props", () => {
+    test("maps state to props", () => {
         const notificationState: Partial<NotificationState> = {errors: ["a", "b"]};
         const props = mapStateToProps(mockAdminState({notifications: notificationState}));
         expect(props).to.eql({errors: ["a", "b"]});

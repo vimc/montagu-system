@@ -13,18 +13,18 @@ describe("ExpectationsPage actions tests", () => {
         sandbox.restore();
     });
 
-    it("has responsibilities overview page as parent", () => {
+    test("has responsibilities overview page as parent", () => {
         expect(expectationsPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators)
     });
 
-    it("creates breadcrumb", () => {
+    test("creates breadcrumb", () => {
         const state = mockContribState();
         const result = expectationsPageActionCreators.createBreadcrumb(state);
         expect(result.urlFragment).to.eq("templates/");
         expect(result.name).to.eq("Download burden estimate templates");
     });
 
-    it("loads nothing", async () => {
+    test("loads nothing", async () => {
 
         const store = createMockContribStore();
         await store.dispatch(expectationsPageActionCreators

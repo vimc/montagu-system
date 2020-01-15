@@ -14,13 +14,13 @@ describe("Choose Group Page Component", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("renders component on connect level", () => {
+    test("renders component on connect level", () => {
         let store = createMockStore();
         const rendered = shallow(<ChooseGroupPage/>, {context: {store}});
         expect(typeof rendered.props().onLoad).is.equal('function');
     });
 
-    it("renders title, description and ChooseGroupContent", () => {
+    test("renders title, description and ChooseGroupContent", () => {
         const rendered = shallow(<ChooseGroupPageComponent history={null} location={null} match={null}
                                                            router={null} title={"title"}/>);
         const pageArticle = rendered.find(PageArticle);

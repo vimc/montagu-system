@@ -20,14 +20,14 @@ describe("AdminRouter", () => {
         sandbox.restore();
     });
 
-    it("does normal routing when logged in", () => {
+    test("does normal routing when logged in", () => {
         const history = createMemoryHistory({initialEntries: ['/asd']});
         const store = createAdminStore(history);
         const rendered = mount(<Provider store={store}><AdminRouter loggedIn={true} history={history}/></Provider>);
         expect(rendered.find(AdminNoRouteFoundPage)).has.length(1, "Expected AdminNoRouteFoundPage to be rendered");
     });
 
-    it("attempts to log user in when user is logged out", () => {
+    test("attempts to log user in when user is logged out", () => {
 
         const loginStub = sandbox.setStubReduxAction(authActionCreators, "loadAuthenticatedUser");
 

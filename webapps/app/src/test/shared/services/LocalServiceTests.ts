@@ -15,6 +15,12 @@ import {mockContribState} from "../../mocks/mockStates";
 import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 
 describe('LocalService', () => {
+    let testContext: any;
+
+    beforeEach(() => {
+        testContext = {};
+    });
+
     describe("requests", () => {
 
         const sandbox = new Sandbox();
@@ -23,17 +29,17 @@ describe('LocalService', () => {
             sandbox.restore();
         });
 
-        it("can make query with basic auth credentials", () => {
+        test("can make query with basic auth credentials", () => {
             const store = createMockContribStore();
             const email = "abc@abc.com";
             const password = "abc";
 
             class TestService extends AbstractLocalService {
                 test() {
-                    this.setOptions({Authorization: 'Basic ' + btoa(`${email}:${password}`)});
+                    testContext.setOptions({Authorization: 'Basic ' + btoa(`${email}:${password}`)});
                     return {
-                        requestOptions: this.makeRequestOptions('POST'),
-                        options: this.options
+                        requestOptions: testContext.makeRequestOptions('POST'),
+                        options: testContext.options
                     };
                 }
             }
@@ -43,12 +49,12 @@ describe('LocalService', () => {
             expect(serviceData.options.Authorization).is.equal("Basic " + btoa(`${email}:${password}`));
         });
 
-        it("ordinary query includes credentials option", () => {
+        test("ordinary query includes credentials option", () => {
             const store = createMockContribStore();
 
             class TestService extends AbstractLocalService {
                 test(): RequestOptions {
-                    return this.makeRequestOptions('GET');
+                    return testContext.makeRequestOptions('GET');
                 }
             }
 
@@ -57,15 +63,14 @@ describe('LocalService', () => {
             expect(serviceData.credentials).to.equal("include");
         });
 
-        it("can send bearer token with query", () => {
+        test("can send bearer token with query", () => {
             const store = createMockContribStore({
                 auth: {bearerToken: "TOKEN"}
             });
 
             class TestService extends AbstractLocalService {
                 test(): RequestOptions {
-                    return this
-                        .setOptions({includeBearerToken: true})
+                    return testContext.setOptions({includeBearerToken: true})
                         .makeRequestOptions('GET');
                 }
             }
@@ -75,13 +80,13 @@ describe('LocalService', () => {
             expect(serviceData.headers.Authorization).to.equal("Bearer TOKEN");
         });
 
-        it('performs successful query', async () => {
+        test('performs successful query', async () => {
             sandbox.setStubFunc(settings, 'apiUrl', () => 'api.address');
             const store = createStore(state => state, mockContribState());
 
             class TestService extends AbstractLocalService {
                 test() {
-                    return this.get("/test/");
+                    return testContext.get("/test/");
                 }
             }
 
@@ -93,12 +98,12 @@ describe('LocalService', () => {
             expect(doFetch.args[0][0]).to.eql("api.address/test/");
         });
 
-        it('performs query and api says token expired', async () => {
+        test('performs query and api says token expired', async () => {
             const store = createMockStore();
 
             class TestService extends AbstractLocalService {
                 test() {
-                    return this.get("/test/");
+                    return testContext.get("/test/");
                 }
             }
 
@@ -122,12 +127,12 @@ describe('LocalService', () => {
             }
         });
 
-        it("raises error if API returns errors", async () => {
+        test("raises error if API returns errors", async () => {
             const store = createMockStore();
 
             class TestService extends AbstractLocalService {
                 test() {
-                    return this.get("/test/");
+                    return testContext.get("/test/");
                 }
             }
 
@@ -151,12 +156,12 @@ describe('LocalService', () => {
             }
         });
 
-        it("raises error if API returns badly formatted result", async () => {
+        test("raises error if API returns badly formatted result", async () => {
             const store = createMockStore();
 
             class TestService extends AbstractLocalService {
                 test() {
-                    return this.get("/test/");
+                    return testContext.get("/test/");
                 }
             }
 
@@ -229,7 +234,7 @@ describe('LocalService', () => {
             }));
         });
 
-        it('clears individual cache item by key', async () => {
+        test('clears individual cache item by key', async () => {
 
             const url = "/test/";
             const fullyQualifiedKey = ["localService", testService.constructor.name, "test",
@@ -246,7 +251,7 @@ describe('LocalService', () => {
 
         });
 
-        it('performs query without a cache', async () => {
+        test('performs query without a cache', async () => {
 
             const result = await testService.testWithoutCache();
 
@@ -256,26 +261,29 @@ describe('LocalService', () => {
             expect(result).to.equal("testData");
         });
 
-        it('performs query with the cache 2 times, first time from api, second from cache', async () => {
+        test(
+            'performs query with the cache 2 times, first time from api, second from cache',
+            async () => {
 
-            const resultFromApi = await testService.testWithCache();
+                const resultFromApi = await testService.testWithCache();
 
-            // first time it makes request and sets data to cache
-            expect(doFetchStub.called).to.equal(true);
-            expect(setCacheSpy.called).to.equal(true);
-            expect(resultFromApi).to.equal("testData");
+                // first time it makes request and sets data to cache
+                expect(doFetchStub.called).to.equal(true);
+                expect(setCacheSpy.called).to.equal(true);
+                expect(resultFromApi).to.equal("testData");
 
-            doFetchStub.reset();
+                doFetchStub.reset();
 
-            // do second request
-            const resultFromCache = await testService.testWithCache();
+                // do second request
+                const resultFromCache = await testService.testWithCache();
 
-            // second time it doesn't make a request and fetches data from cache
-            expect(doFetchStub.called).to.equal(false);
-            expect(getCacheSpy.called).to.equal(true);
-            expect(resultFromCache).to.equal("testData");
-            expect(cacheEngine.get(["localService", testService.constructor.name, "test",
-                encodeURIComponent(settings.apiUrl() + "/test/")].join("."))).to.equal("testData");
-        });
+                // second time it doesn't make a request and fetches data from cache
+                expect(doFetchStub.called).to.equal(false);
+                expect(getCacheSpy.called).to.equal(true);
+                expect(resultFromCache).to.equal("testData");
+                expect(cacheEngine.get(["localService", testService.constructor.name, "test",
+                    encodeURIComponent(settings.apiUrl() + "/test/")].join("."))).to.equal("testData");
+            }
+        );
     });
 });

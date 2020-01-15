@@ -20,7 +20,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
         const sandbox = new Sandbox();
         afterEach(() => sandbox.restore());
 
-        it("passes right props on connect level", () => {
+        test("passes right props on connect level", () => {
             const store = createMockStore();
             const testUser = mockUser();
             const rendered = shallow(<ModellingGroupMembersDeletableUser
@@ -34,7 +34,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
             expect(typeof rendered.props().removeUserFromGroup).to.eql("function");
         });
 
-        it("triggers action on remove click", () => {
+        test("triggers action on remove click", () => {
             const store = createMockStore();
             const testUser = mockUser();
             const rendered = shallow(<ModellingGroupMembersDeletableUser
@@ -62,7 +62,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
         });
         afterEach(() => sandbox.restore());
 
-        it("renders link to user page", () => {
+        test("renders link to user page", () => {
             const rendered = shallow(<ModellingGroupMembersDeletableUserComponent
                 showDelete={true}
                 groupId="group1"
@@ -72,7 +72,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
             expect(rendered.find(InternalLink).at(0).prop("href")).to.eq("/users/w.a.m/")
         });
 
-        it("renders delete link", () => {
+        test("renders delete link", () => {
             const rendered = shallow(<ModellingGroupMembersDeletableUserComponent
                 showDelete={true}
                 groupId="group1"
@@ -83,7 +83,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
             expect(deleteInternalLink.dive().text()).to.eq("Remove member")
         });
 
-        it("does not render delete link if showDelete is false", () => {
+        test("does not render delete link if showDelete is false", () => {
             const rendered = shallow(<ModellingGroupMembersDeletableUserComponent
                 showDelete={false}
                 groupId="group1"
@@ -94,7 +94,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
             expect(deleteInternalLink.length).to.equal(0);
         });
 
-        it("triggers remove function", () => {
+        test("triggers remove function", () => {
             const rendered = shallow(<ModellingGroupMembersDeletableUserComponent
                 showDelete={true}
                 groupId="group1"

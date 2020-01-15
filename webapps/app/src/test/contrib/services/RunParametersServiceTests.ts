@@ -17,7 +17,7 @@ describe('Run Parameters service tests', () => {
         sandbox.restore();
     });
 
-    it('clears cache for parameters sets', () => {
+    test('clears cache for parameters sets', () => {
         const runParametersService = new RunParametersService(store.dispatch, store.getState as () => ContribAppState);
 
         const clearCacheStub = sandbox.setStubFunc(runParametersService, "clearCache", ()=>{
@@ -30,7 +30,7 @@ describe('Run Parameters service tests', () => {
         expect(clearCacheStub.getCall(0).args[1]).to.equal("/modelling-groups/group-2/model-run-parameters/touchstone-2/");
     });
 
-    it('fetches parameters sets', () => {
+    test('fetches parameters sets', () => {
         const runParametersService = new RunParametersService(store.dispatch, store.getState as () => ContribAppState);
 
         const setOptionsSpy = sandbox.setSpy(runParametersService, "setOptions");
@@ -44,7 +44,7 @@ describe('Run Parameters service tests', () => {
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: "runParameters" });
     });
 
-    it('uploads set', () => {
+    test('uploads set', () => {
         const runParametersService = new RunParametersService(store.dispatch, store.getState as () => ContribAppState);
 
         const postStub = sandbox.setStubFunc(runParametersService, "post", ()=>{

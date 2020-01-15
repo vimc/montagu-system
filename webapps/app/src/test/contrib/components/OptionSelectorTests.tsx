@@ -14,7 +14,7 @@ function mockOptions(): Option[] {
 }
 
 describe('OptionSelector', () => {
-    it("renders option", () => {
+    test("renders option", () => {
         const callback = sinon.spy();
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption=""
                                                  onChange={ callback }  required={false} name={"fruit"}/>);
@@ -24,7 +24,7 @@ describe('OptionSelector', () => {
         expect(children.at(0).text()).to.equal("Apple");
     });
 
-    it("renders default option", () => {
+    test("renders default option", () => {
         const callback = sinon.spy();
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
                                                  onChange={ callback } required={false} name={"fruit"}/>);
@@ -34,7 +34,7 @@ describe('OptionSelector', () => {
         expect(children.at(0).text()).to.equal("Fruit");
     });
 
-    it("adds required attribute", () => {
+    test("adds required attribute", () => {
         const callback = sinon.spy();
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
                                                  onChange={ callback } required={true} name={"fruit"}/>);
@@ -42,7 +42,7 @@ describe('OptionSelector', () => {
         expect(rendered.find("select").prop("required")).to.be.true;
     });
 
-    it("does not add required attribute", () => {
+    test("does not add required attribute", () => {
         const callback = sinon.spy();
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
                                                  onChange={ callback } required={false} name={"fruit"}/>);
@@ -50,7 +50,7 @@ describe('OptionSelector', () => {
         expect(rendered.find("select").prop("required")).not.to.be.true;
     });
 
-    it("adds name attribute", () => {
+    test("adds name attribute", () => {
         const callback = sinon.spy();
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
                                                  onChange={ callback } required={false} name={"fruit"}/>);
@@ -58,7 +58,7 @@ describe('OptionSelector', () => {
         expect(rendered.find("select").prop("name")).to.equal("fruit");
     });
 
-    it("invokes the callback when an option is selected", () => {
+    test("invokes the callback when an option is selected", () => {
         const callback = sinon.spy();
         const rendered = shallow(<OptionSelector options={ [] } defaultOption="" onChange={ callback }
                                                  required={false} name={"fruit"}/>);

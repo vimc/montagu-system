@@ -18,7 +18,7 @@ describe("TouchstoneVersionPage", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("calls onLoad and renders TouchstoneVersionDetails", () => {
+    test("calls onLoad and renders TouchstoneVersionDetails", () => {
         const onLoadStub = sandbox.setStubReduxAction(touchstoneVersionPageActionCreators, "onLoad");
         sandbox.setStubReduxAction(touchstoneVersionPageActionCreators, "title");
         const rendered = shallowRenderPage(<TouchstoneVersionPage {...mockPageProperties()} />);
@@ -31,25 +31,25 @@ describe("TouchstoneVersionDetails", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("renders status", () => {
+    test("renders status", () => {
         const rendered = shallow(<TouchstoneVersionDetailsComponent touchstone={mockTouchstone()}
                                                                     touchstoneVersion={mockTouchstoneVersion({status: "open"})}/>);
         expect(rendered.find("h3").text()).to.eq("Status: open");
     });
 
-    it("renders scenarios link", () => {
+    test("renders scenarios link", () => {
         const rendered = shallow(<TouchstoneVersionDetailsComponent touchstone={mockTouchstone({id: "t1"})}
                                                                     touchstoneVersion={mockTouchstoneVersion({id: "v1", status: "open"})}/>);
         expect(rendered.find(InternalLink).at(0).prop("href")).to.eq("/touchstones/t1/v1/scenarios/");
     });
 
-    it("renders responsibilities link", () => {
+    test("renders responsibilities link", () => {
         const rendered = shallow(<TouchstoneVersionDetailsComponent touchstone={mockTouchstone({id: "t1"})}
                                                                     touchstoneVersion={mockTouchstoneVersion({id: "v1", status: "open"})}/>);
         expect(rendered.find(InternalLink).at(1).prop("href")).to.eq("/touchstones/t1/v1/responsibilities/");
     });
 
-    it("renders demographics link", () => {
+    test("renders demographics link", () => {
         const rendered = shallow(<TouchstoneVersionDetailsComponent touchstone={mockTouchstone({id: "t1"})}
                                                                     touchstoneVersion={mockTouchstoneVersion({id: "v1", status: "open"})}/>);
         expect(rendered.find(InternalLink).at(2).prop("href")).to.eq("/touchstones/t1/v1/demographics/");

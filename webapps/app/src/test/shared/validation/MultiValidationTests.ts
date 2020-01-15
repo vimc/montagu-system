@@ -8,25 +8,25 @@ export class MultiValidationTests extends ValidationTest {
     makeValidator() { return multi("name", []); }
 
     tests() {
-        it("always passes if empty", () => {
+        test("always passes if empty", () => {
             expect(() => this.validate("a string")).to.not.throw();
         });
 
-        it("rejects if any reject", () => {
+        test("rejects if any reject", () => {
             const v = (value: string) => {
                 multi("name", [acceptor, rejector, acceptor])(value);
             };
             expect(() => v("a string")).to.throw(Error, "name is bad");
         });
 
-        it("rejects if all reject", () => {
+        test("rejects if all reject", () => {
             const v = (value: string) => {
                 multi("name", [rejector, rejector, rejector])(value);
             };
             expect(() => v("a string")).to.throw(Error, "name is bad");
         });
 
-        it("accepts if all accept", () => {
+        test("accepts if all accept", () => {
             const v = (value: string) => {
                 multi("name", [acceptor, acceptor, acceptor])(value);
             };

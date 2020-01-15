@@ -5,7 +5,7 @@ import {expect} from "chai"
 
 describe('OnetimeToken reducer tests', () => {
 
-    it('adds token to token lookup keyed by url', () => {
+    test('adds token to token lookup keyed by url', () => {
 
         const fakeOldToken = "faketoken";
         const state = mockOnetimeTokenState({tokens: {"url": fakeOldToken}});
@@ -21,7 +21,7 @@ describe('OnetimeToken reducer tests', () => {
 
     });
 
-    it('removes token from token lookup for url', () => {
+    test('removes token from token lookup for url', () => {
 
         const fakeOldToken = "faketoken";
         const state = mockOnetimeTokenState({tokens: {"some/url": fakeOldToken}});

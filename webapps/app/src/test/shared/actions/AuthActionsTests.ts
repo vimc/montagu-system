@@ -39,160 +39,184 @@ describe("AuthActions", () => {
         sandbox.restore();
     });
 
-    it("dispatches authenticated action if service returned proper token", (done) => {
-        const testToken = signAndCompress(mockUsertokenData);
-        sandbox.setStubFunc(AuthService.prototype, "logIn", () => {
-            return Promise.resolve({access_token: testToken});
-        });
-        sandbox.setStub(AuthService.prototype, "setCookies");
-        store.dispatch(authActionCreators.logIn('test', 'test'));
-        setTimeout(() => {
-            const actions = store.getActions();
-            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
-            done();
-        });
-    });
-
-    it("dispatches authentication error action if service returned error", (done) => {
-        sandbox.setStubFunc(AuthService.prototype, "logIn", () => {
-            return Promise.resolve({error: 'test error'});
-        });
-        store.dispatch(authActionCreators.logIn('test', 'test'));
-        setTimeout(() => {
-            const actions = store.getActions();
-            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
-            done();
-        });
-    });
-
-    it("dispatches authentication error action if user is not active", (done) => {
-        const testToken = signAndCompress(mockUsertokenDataNotActive);
-        sandbox.setStubFunc(AuthService.prototype, "logIn", () => {
-            return Promise.resolve({access_token: testToken});
-        });
-        store.dispatch(authActionCreators.logIn('test', 'test'));
-        setTimeout(() => {
-            const actions = store.getActions();
-            expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
-            expect(actions[0].message).to.contain("Your account has been deactivated.");
-            expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
-            done();
-        });
-    });
-
-    it("dispatches authentication error action if user is not modeller", (done) => {
-        appSettings.requiresModellingGroupMembership = true;
-        const testToken = signAndCompress(mockUsertokenNotModeller);
-        sandbox.setStubFunc(AuthService.prototype, "logIn", () => {
-            return Promise.resolve({access_token: testToken});
-        });
-        store.dispatch(authActionCreators.logIn('test', 'test'));
-        setTimeout(() => {
-            const actions = store.getActions();
-
-            expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
-            expect(actions[0].message).to.contain("Only members of modelling groups can log into the contribution portal");
-            expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
-            done();
-        });
-    });
-
-    it("dispatches authenticated action if can get authenticated user data from API", (done) => {
-        const testUser = {
-            username: "test-user",
-            permissions: ["*/can-login"]
-        };
-
-        const testModellingGroups = [{id: "group1"}]
-
-        sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
-            return Promise.resolve(testUser);
-        });
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "getUserGroups", () => {
-            return Promise.resolve(testModellingGroups);
-        });
-
-        store.dispatch(authActionCreators.loadAuthenticatedUser());
-        setTimeout(() => {
-            const actions = store.getActions();
-            expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
-            expect(actions[0].data.username).to.eql("test-user");
-            expect(actions[0].data.isAccountActive).to.eql(true);
-            expect(actions[0].data.isModeller).to.eql(true);
-            done();
-        });
-    });
-
-    it("dispatches authentication error action if user cannot be validated", (done) => {
-        const testUser = {
-            username: "testuser",
-            permissions: [] as String[]
-        };
-
-        const testModellingGroups = [{id: "group1"}]
-
-        sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
-            return Promise.resolve(testUser);
-        });
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "getUserGroups", () => {
-            return Promise.resolve(testModellingGroups);
-        });
-
-        store.dispatch(authActionCreators.loadAuthenticatedUser());
-        setTimeout(() => {
-            const actions = store.getActions();
-            expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
-            expect(actions[0].message).to.contain("Your account has been deactivated");
-            expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
-            done();
-        });
-    });
-
-    it("dispatches unauthenticated action if cannot get authenticated user data from API", (done) => {
-        sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
-            return Promise.reject("failed")
-        });
-
-        sandbox.setStub(AuthService.prototype, "logOutOfAPI");
-        store.dispatch(authActionCreators.loadAuthenticatedUser());
-        setTimeout(() => {
-            const actions = store.getActions();
-            expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
-            done();
-        });
-    });
-
-    it("dispatches unauthenticated action if cannot get modelling groups data from API", (done) => {
-        const testUser = {
-            user: "testuser",
-            permissions: "*/can-login"
+    test(
+        "dispatches authenticated action if service returned proper token",
+        (done) => {
+            const testToken = signAndCompress(mockUsertokenData);
+            sandbox.setStubFunc(AuthService.prototype, "logIn", () => {
+                return Promise.resolve({access_token: testToken});
+            });
+            sandbox.setStub(AuthService.prototype, "setCookies");
+            store.dispatch(authActionCreators.logIn('test', 'test'));
+            setTimeout(() => {
+                const actions = store.getActions();
+                expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
+                done();
+            });
         }
+    );
 
-        sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
-            return Promise.resolve(testUser);
-        });
-        sandbox.setStubFunc(ModellingGroupsService.prototype, "getUserGroups", () => {
-            return Promise.reject("failed");
-        })
+    test(
+        "dispatches authentication error action if service returned error",
+        (done) => {
+            sandbox.setStubFunc(AuthService.prototype, "logIn", () => {
+                return Promise.resolve({error: 'test error'});
+            });
+            store.dispatch(authActionCreators.logIn('test', 'test'));
+            setTimeout(() => {
+                const actions = store.getActions();
+                expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+                done();
+            });
+        }
+    );
 
-        sandbox.setStub(AuthService.prototype, "logOutOfAPI");
-        store.dispatch(authActionCreators.loadAuthenticatedUser());
-        setTimeout(() => {
-            const actions = store.getActions();
-            expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
-            done();
-        });
-    });
+    test(
+        "dispatches authentication error action if user is not active",
+        (done) => {
+            const testToken = signAndCompress(mockUsertokenDataNotActive);
+            sandbox.setStubFunc(AuthService.prototype, "logIn", () => {
+                return Promise.resolve({access_token: testToken});
+            });
+            store.dispatch(authActionCreators.logIn('test', 'test'));
+            setTimeout(() => {
+                const actions = store.getActions();
+                expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
+                expect(actions[0].message).to.contain("Your account has been deactivated.");
+                expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+                done();
+            });
+        }
+    );
+
+    test(
+        "dispatches authentication error action if user is not modeller",
+        (done) => {
+            appSettings.requiresModellingGroupMembership = true;
+            const testToken = signAndCompress(mockUsertokenNotModeller);
+            sandbox.setStubFunc(AuthService.prototype, "logIn", () => {
+                return Promise.resolve({access_token: testToken});
+            });
+            store.dispatch(authActionCreators.logIn('test', 'test'));
+            setTimeout(() => {
+                const actions = store.getActions();
+
+                expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
+                expect(actions[0].message).to.contain("Only members of modelling groups can log into the contribution portal");
+                expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+                done();
+            });
+        }
+    );
+
+    test(
+        "dispatches authenticated action if can get authenticated user data from API",
+        (done) => {
+            const testUser = {
+                username: "test-user",
+                permissions: ["*/can-login"]
+            };
+
+            const testModellingGroups = [{id: "group1"}]
+
+            sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
+                return Promise.resolve(testUser);
+            });
+            sandbox.setStubFunc(ModellingGroupsService.prototype, "getUserGroups", () => {
+                return Promise.resolve(testModellingGroups);
+            });
+
+            store.dispatch(authActionCreators.loadAuthenticatedUser());
+            setTimeout(() => {
+                const actions = store.getActions();
+                expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
+                expect(actions[0].data.username).to.eql("test-user");
+                expect(actions[0].data.isAccountActive).to.eql(true);
+                expect(actions[0].data.isModeller).to.eql(true);
+                done();
+            });
+        }
+    );
+
+    test(
+        "dispatches authentication error action if user cannot be validated",
+        (done) => {
+            const testUser = {
+                username: "testuser",
+                permissions: [] as String[]
+            };
+
+            const testModellingGroups = [{id: "group1"}]
+
+            sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
+                return Promise.resolve(testUser);
+            });
+            sandbox.setStubFunc(ModellingGroupsService.prototype, "getUserGroups", () => {
+                return Promise.resolve(testModellingGroups);
+            });
+
+            store.dispatch(authActionCreators.loadAuthenticatedUser());
+            setTimeout(() => {
+                const actions = store.getActions();
+                expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
+                expect(actions[0].message).to.contain("Your account has been deactivated");
+                expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+                done();
+            });
+        }
+    );
+
+    test(
+        "dispatches unauthenticated action if cannot get authenticated user data from API",
+        (done) => {
+            sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
+                return Promise.reject("failed")
+            });
+
+            sandbox.setStub(AuthService.prototype, "logOutOfAPI");
+            store.dispatch(authActionCreators.loadAuthenticatedUser());
+            setTimeout(() => {
+                const actions = store.getActions();
+                expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
+                done();
+            });
+        }
+    );
+
+    test(
+        "dispatches unauthenticated action if cannot get modelling groups data from API",
+        (done) => {
+            const testUser = {
+                user: "testuser",
+                permissions: "*/can-login"
+            }
+
+            sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
+                return Promise.resolve(testUser);
+            });
+            sandbox.setStubFunc(ModellingGroupsService.prototype, "getUserGroups", () => {
+                return Promise.reject("failed");
+            })
+
+            sandbox.setStub(AuthService.prototype, "logOutOfAPI");
+            store.dispatch(authActionCreators.loadAuthenticatedUser());
+            setTimeout(() => {
+                const actions = store.getActions();
+                expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
+                done();
+            });
+        }
+    );
 
     describe("setCookies", () => {
-        it("does nothing if service returns failure", async () => {
+        test("does nothing if service returns failure", async () => {
             const stub = sandbox.setStubFunc(AuthService.prototype, "setCookies", () => Promise.resolve(null));
             await store.dispatch(authActionCreators.setCookies());
             expect(stub.callCount).to.equal(1, "Expected to call service once");
             expect(store.getActions()).to.have.length(0);
         });
 
-        it("dispatches action if service returns success", async () => {
+        test("dispatches action if service returns success", async () => {
             const stub = sandbox.setStubFunc(AuthService.prototype, "setCookies", () => Promise.resolve(true));
             await store.dispatch(authActionCreators.setCookies());
             expect(stub.callCount).to.equal(1, "Expected to call service once")

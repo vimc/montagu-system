@@ -8,56 +8,56 @@ describe('Demographic reducer tests', () => {
 
     const testDemographicDataSet = mockDemographicDataset({id: 'type-1'});
 
-    it('sets fetched data sets', () => {
+    test('sets fetched data sets', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED,
             data: [testDemographicDataSet]
         })).to.eql({...demographicsInitialState, dataSets: [testDemographicDataSet]});
     });
 
-    it('sets fetched empty data sets', () => {
+    test('sets fetched empty data sets', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED,
             data: null
         })).to.eql(demographicsInitialState);
     });
 
-    it('sets selected data sets', () => {
+    test('sets selected data sets', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET,
             data: testDemographicDataSet
         })).to.eql({...demographicsInitialState, selectedDataSet: testDemographicDataSet});
     });
 
-    it('sets empty selected data sets', () => {
+    test('sets empty selected data sets', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET,
             data: null
         })).to.eql(demographicsInitialState);
     });
 
-    it('sets selected format', () => {
+    test('sets selected format', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_SET_FORMAT,
             data: Demographic.SelectedFormat.wide
         })).to.eql({...demographicsInitialState, selectedFormat: 'wide'});
     });
 
-    it('sets selected empty format', () => {
+    test('sets selected empty format', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_SET_FORMAT,
             data: null
         })).to.eql(demographicsInitialState);
     });
 
-    it('sets selected gender', () => {
+    test('sets selected gender', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_SET_GENDER,
             data: Demographic.SelectedGender.female
         })).to.eql({...demographicsInitialState, selectedGender: 'female'});
     });
 
-    it('sets selected empty gender', () => {
+    test('sets selected empty gender', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_SET_GENDER,
             data: null

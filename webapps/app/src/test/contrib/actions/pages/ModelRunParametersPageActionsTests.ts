@@ -22,14 +22,14 @@ describe("Model Run Parameters Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("creates breadcrumb", () => {
+    test("creates breadcrumb", () => {
         const state = mockContribState();
         const result = modelRunParametersPageActionCreators.createBreadcrumb(state);
         expect(result.urlFragment).to.eq("parameters/");
         expect(result.name).to.eq("Upload parameters");
     });
 
-    it("loads parameter sets", async () => {
+    test("loads parameter sets", async () => {
         const touchstonesState: Partial<TouchstonesState> = {
             touchstones: [testTouchstone],
             currentTouchstoneVersion: testTouchstoneVersion
@@ -56,7 +56,7 @@ describe("Model Run Parameters Page actions tests", () => {
 
     });
 
-    it("has responsibilities overview as parent", () => {
+    test("has responsibilities overview as parent", () => {
         expect(modelRunParametersPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators);
     });
 

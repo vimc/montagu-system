@@ -36,7 +36,7 @@ describe("Guidance Content Component tests", () => {
 
     afterEach(() => sandbox.restore());
 
-    it("renders Latest Input Content component with expected content", () => {
+    test("renders Latest Input Content component with expected content", () => {
 
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsContentLatest touchstoneVersion={testTouchstone}/>, {context: {store}});
@@ -51,7 +51,7 @@ describe("Guidance Content Component tests", () => {
 
     });
 
-    it("renders Touchstone Not Open component with expected content", () => {
+    test("renders Touchstone Not Open component with expected content", () => {
 
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsContent2017 touchstoneVersion={testTouchstone}/>, {context: {store}});
@@ -66,7 +66,7 @@ describe("Guidance Content Component tests", () => {
 
     });
 
-    it("renders Touchstone Not Open component with expected content", () => {
+    test("renders Touchstone Not Open component with expected content", () => {
 
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceTouchstoneNotOpenContent touchstoneVersion={testTouchstone}/>, {context: {store}});
@@ -81,7 +81,7 @@ describe("Guidance Content Component tests", () => {
 
     });
 
-    it("renders Latest Output Content component with expected content", () => {
+    test("renders Latest Output Content component with expected content", () => {
 
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelOutputsContentLatest touchstoneVersion={testTouchstone}/>, {context: {store}});
@@ -96,7 +96,7 @@ describe("Guidance Content Component tests", () => {
 
     });
 
-    it("renders 2017 Output Content component with expected content", () => {
+    test("renders 2017 Output Content component with expected content", () => {
 
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelOutputsContent2017 touchstoneVersion={testTouchstone}/>, {context: {store}});

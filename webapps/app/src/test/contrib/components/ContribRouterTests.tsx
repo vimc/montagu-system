@@ -25,7 +25,7 @@ describe("ContribRouter", () => {
         sandbox.restore();
     });
 
-    it("attempts to log user in when user is logged out", () => {
+    test("attempts to log user in when user is logged out", () => {
         const loginStub = sandbox.setStubReduxAction(authActionCreators, "loadAuthenticatedUser");
         const history = createMemoryHistory({initialEntries: ['/help/touchstones/']});
         const store = createContribStore(history);
@@ -35,7 +35,7 @@ describe("ContribRouter", () => {
         expect(loginStub.called).to.be.true;
     });
 
-    it("does normal routing when logged in", () => {
+    test("does normal routing when logged in", () => {
         const history = createMemoryHistory({initialEntries: [ '/asd/asd/asd' ]});
         const store = createContribStore(history);
         const rendered = mount(<Provider store={store}><ContribRouter loggedIn={true} history={history} /></Provider>);

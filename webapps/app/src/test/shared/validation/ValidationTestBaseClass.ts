@@ -9,8 +9,14 @@ export abstract class ValidationTest {
 
     addTestsToMocha() {
         describe(this.name(), () => {
+            let testContext: any;
+
             beforeEach(() => {
-                this.validate = this.makeValidator();
+                testContext = {};
+            });
+
+            beforeEach(() => {
+                testContext.validate = testContext.makeValidator();
             });
 
             this.tests();

@@ -17,7 +17,7 @@ describe("Admin main menu tests", () => {
         }));
     }
 
-    it("does not show buttons if user does not have permissions", () => {
+    test("does not show buttons if user does not have permissions", () => {
 
         const store = createMockStore(mockAdminState());
         const rendered = shallow(<MainMenuList/>, {context: {store}})
@@ -26,7 +26,7 @@ describe("Admin main menu tests", () => {
 
     });
 
-    it("show touchstone button if user has permission", () => {
+    test("show touchstone button if user has permission", () => {
 
         const store = createStoreWithPermissions(["*/touchstones.read"]);
 
@@ -38,7 +38,7 @@ describe("Admin main menu tests", () => {
 
     });
 
-    it("show users button if user has permission", () => {
+    test("show users button if user has permission", () => {
 
         const store = createStoreWithPermissions(["*/users.read"]);
 
@@ -49,7 +49,7 @@ describe("Admin main menu tests", () => {
 
     });
 
-    it("show groups button if user has permission", () => {
+    test("show groups button if user has permission", () => {
 
         const store = createStoreWithPermissions(["*/modelling-groups.read"]);
 

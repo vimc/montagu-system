@@ -2,11 +2,11 @@ import { expect } from "chai";
 import {breadcrumbsModule} from "../../../main/shared/modules/breadcrumbs";
 
 describe('Breadcrumbs Module Tests', () => {
-    it('initializes empty array if null passed', () => {
+    test('initializes empty array if null passed', () => {
         expect(breadcrumbsModule.initialize(null)).to.eql([]);
     });
 
-    it('initializes breadcrumb with one element', () => {
+    test('initializes breadcrumb with one element', () => {
         expect(breadcrumbsModule.initialize({
             name: 'A',
             urlFragment: '/',
@@ -17,7 +17,7 @@ describe('Breadcrumbs Module Tests', () => {
         }]);
     });
 
-    it('initializes breadcrumb with one element', () => {
+    test('initializes breadcrumb with one element', () => {
         expect(breadcrumbsModule.initialize({
             name: 'A',
             urlFragment: '/',
@@ -28,7 +28,7 @@ describe('Breadcrumbs Module Tests', () => {
         }]);
     });
 
-    it('reformats from tree to array', () => {
+    test('reformats from tree to array', () => {
         expect(breadcrumbsModule.getParentsInOrderFromTopToBottom({
             name: 'B',
             urlFragment: 'b/',
@@ -52,7 +52,7 @@ describe('Breadcrumbs Module Tests', () => {
         }]);
     });
 
-    it('creates url adding all url fragments', () => {
+    test('creates url adding all url fragments', () => {
         expect(breadcrumbsModule.url({
             name: 'B',
             urlFragment: 'b/',

@@ -3,7 +3,7 @@ import {expect} from "chai";
 import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 
 describe("notificationReducer", () => {
-    it("adds errors to top of stack", () => {
+    test("adds errors to top of stack", () => {
         const state1: NotificationState = {
             infoMessages: [],
             errors: ["message1"]
@@ -26,7 +26,7 @@ describe("notificationReducer", () => {
         })).to.eql(state2);
     });
 
-    it("adds infos to end of queue", () => {
+    test("adds infos to end of queue", () => {
         const state1: NotificationState = {
             infoMessages: ["message1"],
             errors: []
@@ -49,7 +49,7 @@ describe("notificationReducer", () => {
         })).to.eql(state2);
     });
 
-    it("clears infos", () => {
+    test("clears infos", () => {
         const initial: NotificationState = {
             infoMessages: ["i"],
             errors: ["e"]
@@ -59,7 +59,7 @@ describe("notificationReducer", () => {
             .to.eql({infoMessages: [], errors: ["e"]});
     });
 
-    it("clears errors", () => {
+    test("clears errors", () => {
         const initial: NotificationState = {
             infoMessages: ["i"],
             errors: ["e"]

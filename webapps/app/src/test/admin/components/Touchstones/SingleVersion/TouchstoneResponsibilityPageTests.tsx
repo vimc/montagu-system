@@ -37,7 +37,7 @@ describe("ResponsibilitiesPage", () => {
         sandbox.restore();
     });
 
-    it("renders responsibility list for each responsibility set", () => {
+    test("renders responsibility list for each responsibility set", () => {
 
         const rendered = shallow(<ResponsibilitiesPage location={null} router={null} history={null}
                                                        match={mockMatch()}/>, {context: {store}})
@@ -46,7 +46,7 @@ describe("ResponsibilitiesPage", () => {
 
     });
 
-    it("renders modelling group name and set status for each set", () => {
+    test("renders modelling group name and set status for each set", () => {
 
         const rendered = shallow(<ResponsibilitiesPage location={null} router={null} history={null}
                                                        match={mockMatch()}/>, {context: {store}})

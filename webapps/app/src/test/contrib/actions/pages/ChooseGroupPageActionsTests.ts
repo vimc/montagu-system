@@ -17,7 +17,7 @@ describe("Choose Group Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("gets all groups on load", (done: DoneCallback) => {
+    test("gets all groups on load", (done: DoneCallback) => {
         const initialState = {
             auth: {modellingGroups: [testGroup.id]}
         };
@@ -33,7 +33,7 @@ describe("Choose Group Page actions tests", () => {
         })
     });
 
-    it("creates breadcrumbs", () => {
+    test("creates breadcrumbs", () => {
 
         const result = chooseGroupPageActionCreators.createBreadcrumb();
 
@@ -41,11 +41,11 @@ describe("Choose Group Page actions tests", () => {
         expect(result.name).to.eq("Modellers' contribution portal");
     });
 
-    it("has no parent", () => {
+    test("has no parent", () => {
         expect(chooseGroupPageActionCreators.parent).to.be.undefined;
     });
 
-    it("creates title", () => {
+    test("creates title", () => {
         expect(chooseGroupPageActionCreators.title()).to.eq("Modellers' contribution portal");
     });
 

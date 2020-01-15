@@ -23,7 +23,7 @@ describe("Modelling Groups List Content Component tests", () => {
         const sandbox = new Sandbox();
         afterEach(() => sandbox.restore());
 
-        it("renders on connect level", () => {
+        test("renders on connect level", () => {
             const testState = {
                 groups: {groups: [testGroup1]}
             };
@@ -32,7 +32,7 @@ describe("Modelling Groups List Content Component tests", () => {
             expect(rendered.props().groups).to.eql([testGroup1]);
         });
 
-        it("renders on connect level, passes null as groups", () => {
+        test("renders on connect level, passes null as groups", () => {
             const testState = {
                 groups: {groups: null as any}
             };
@@ -41,7 +41,7 @@ describe("Modelling Groups List Content Component tests", () => {
             expect(rendered.props().groups).to.eql([]);
         });
 
-        it("renders on connect level, check if groups are sorted correctly", () => {
+        test("renders on connect level, check if groups are sorted correctly", () => {
             const testState = {
                 groups: {groups: [testGroup1, testGroup2, testGroup3]}
             };
@@ -57,7 +57,7 @@ describe("Modelling Groups List Content Component tests", () => {
         const testGroup1 = mockModellingGroup({id: 'g-1', description: "b"});
         const testGroup2 = mockModellingGroup({id: 'g-2', description: "a"});
 
-        it("can render group item elements", () => {
+        test("can render group item elements", () => {
             const groups = [testGroup1, testGroup2];
 
             const rendered = shallow(<ModellingGroupsListContentComponent groups={ groups } />);

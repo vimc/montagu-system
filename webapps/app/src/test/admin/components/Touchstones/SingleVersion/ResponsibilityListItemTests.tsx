@@ -6,7 +6,7 @@ import {ResponsibilityListItem} from "../../../../../main/admin/components/Touch
 
 describe("ResponsibilityListItem", () => {
 
-    it("renders responsibility with no estimate set", () => {
+    test("renders responsibility with no estimate set", () => {
         const r = mockResponsibility();
         const rendered = shallow(<ResponsibilityListItem {...r}/>);
         const cells = rendered.find("td");
@@ -17,7 +17,7 @@ describe("ResponsibilityListItem", () => {
         expect(cells.at(3).text()).to.eq("None");
     });
 
-    it("renders date of last estimate set", () => {
+    test("renders date of last estimate set", () => {
         const r = mockResponsibility({current_estimate_set:
                 mockBurdenEstimateSet({uploaded_on: "2017-07-13 13:55:29 +0100"})});
         const rendered = shallow(<ResponsibilityListItem {...r}/>);

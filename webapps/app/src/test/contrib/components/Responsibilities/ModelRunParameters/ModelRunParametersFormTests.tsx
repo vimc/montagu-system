@@ -28,7 +28,7 @@ describe("Model Run Parameters Content component tests with HOCs", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("renders on connect level and receives proper props", () => {
+    test("renders on connect level and receives proper props", () => {
         const store = createMockStore({runParameters: {uploadStatus: testUploadStatusOff}});
         const rendered = shallow(<ModelRunParametersForm disease={testDisease.id}/>, {context: {store}});
         expect(rendered.props().disease).to.eql(testDisease.id);
@@ -36,7 +36,7 @@ describe("Model Run Parameters Content component tests with HOCs", () => {
         expect(rendered.props().status).to.eql("off");
     });
 
-    it("renders on component level, form with props", () => {
+    test("renders on component level, form with props", () => {
         const store = createMockStore({runParameters: {uploadStatus: testUploadStatusOff}});
         const rendered = shallow(<ModelRunParametersForm/>, {context: {store}}).dive();
         const form = rendered.find('form');
@@ -61,7 +61,7 @@ describe("Model Run Parameters Content component tests, no HOCS", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("renders initial form state", () => {
+    test("renders initial form state", () => {
         const rendered = shallow(<ModelRunParametersFormComponent {...componentDefaultProps} />);
         const errorBoxProps = rendered.find('Alert[color="danger"]').props() as any;
         const successBoxProps = rendered.find('Alert[color="success"]').props() as any;
@@ -73,14 +73,14 @@ describe("Model Run Parameters Content component tests, no HOCS", () => {
         expect(rendered.find('button[type="submit"]').props().disabled).to.equal(false);
     });
 
-    it("renders form, imitates it will start sending", () => {
+    test("renders form, imitates it will start sending", () => {
         const rendered = shallow(<ModelRunParametersFormComponent {...componentDefaultProps} />);
         rendered.setState({disabled: true});
         expect(rendered.state().disabled).to.equal(true);
         expect(rendered.find('button[type="submit"]').props().disabled).to.equal(true);
     });
 
-    it("renders form, imitates it received error, after sending", () => {
+    test("renders form, imitates it received error, after sending", () => {
         const resetSpy = sandbox.createSpy();
         const componentProps = {...componentDefaultProps, resetUploadStatus: resetSpy};
         const rendered = shallow(<ModelRunParametersFormComponent {...componentProps} />);
@@ -101,7 +101,7 @@ describe("Model Run Parameters Content component tests, no HOCS", () => {
         expect(rendered.find('Alert[color="danger"]').children().text()).to.equal(testErrorText);
     });
 
-    it("renders form, imitates it received success, after sending", () => {
+    test("renders form, imitates it received success, after sending", () => {
         const resetSpy = sandbox.createSpy();
         const componentProps = {...componentDefaultProps, resetUploadStatus: resetSpy};
         const rendered = shallow(<ModelRunParametersFormComponent {...componentProps} />);
@@ -123,7 +123,7 @@ describe("Model Run Parameters Content component tests, no HOCS", () => {
             .to.equal("Success! You have uploaded a new parameter set");
     });
 
-    it("renders form simulates change form, will reset errors", () => {
+    test("renders form simulates change form, will reset errors", () => {
         const rendered = shallow(<ModelRunParametersFormComponent {...componentDefaultProps} />);
         // initiate props change to set errors
         rendered.setProps({
@@ -138,7 +138,7 @@ describe("Model Run Parameters Content component tests, no HOCS", () => {
         expect(errorBoxProps.isOpen).to.equal(false);
     });
 
-    it("renders form simulates submit, upload button blocked", () => {
+    test("renders form simulates submit, upload button blocked", () => {
         const uploadSpy = sandbox.createSpy();
         const componentProps = {...componentDefaultProps, uploadSet: uploadSpy};
         const rendered = mount(<ModelRunParametersFormComponent {...componentProps} />);

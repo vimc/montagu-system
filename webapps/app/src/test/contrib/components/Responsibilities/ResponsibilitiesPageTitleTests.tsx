@@ -18,7 +18,7 @@ describe("ResponsibilitiesPageTitle", () => {
 
     afterEach(() => sandbox.restore());
 
-    it("renders on connect level", () => {
+    test("renders on connect level", () => {
         const store = createMockContribStore({
             groups: {currentUserGroup: testGroup},
             touchstones: {currentTouchstoneVersion: testTouchstone},
@@ -29,7 +29,7 @@ describe("ResponsibilitiesPageTitle", () => {
         expect(rendered.props().title).to.eql("test-1");
     });
 
-    it("renders on component level with back link", () => {
+    test("renders on component level with back link", () => {
         const store = createMockContribStore({
             groups: {currentUserGroup: testGroup},
             touchstones: {currentTouchstoneVersion: testTouchstone},
@@ -40,7 +40,7 @@ describe("ResponsibilitiesPageTitle", () => {
         expect(rendered.find(InternalLink).props().children).to.equal("Return to responsibilities list");
     });
 
-    it("renders on component level with no back link", () => {
+    test("renders on component level with no back link", () => {
         const store = createMockContribStore({
             groups: {currentUserGroup: testGroup},
             touchstones: {currentTouchstoneVersion: null},

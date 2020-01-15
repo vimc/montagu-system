@@ -14,7 +14,7 @@ describe("TouchstoneDetailsPage", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("calls onLoad when loaded", () => {
+    test("calls onLoad when loaded", () => {
         const touchstones: Partial<AdminTouchstoneState> = {
             currentTouchstone: mockTouchstone()
         };

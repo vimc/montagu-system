@@ -24,11 +24,11 @@ describe("Choose Action Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("has choose group page as parent", () => {
+    test("has choose group page as parent", () => {
         expect(chooseActionPageActionCreators.parent).to.eq(chooseGroupPageActionCreators)
     });
 
-    it("creates breadcrumb", () => {
+    test("creates breadcrumb", () => {
 
         const result = chooseActionPageActionCreators.createBreadcrumb(initialState);
 
@@ -36,7 +36,7 @@ describe("Choose Action Page actions tests", () => {
         expect(result.urlFragment).to.eq("g1/");
     });
 
-    it("loadData set current group and loads touchstones", async () => {
+    test("loadData set current group and loads touchstones", async () => {
 
         const store = createMockStore(initialState);
 

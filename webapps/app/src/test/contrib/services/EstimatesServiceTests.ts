@@ -17,7 +17,7 @@ describe('Estimates service tests', () => {
         sandbox.restore();
     });
 
-    it('creates burden post request', () => {
+    test('creates burden post request', () => {
         const estimatesService = new EstimatesService(store.dispatch, store.getState as () => ContribAppState);
 
         const postStub = sandbox.setStubFunc(estimatesService, "post", ()=>{

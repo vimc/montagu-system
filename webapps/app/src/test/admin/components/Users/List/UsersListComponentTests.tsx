@@ -31,7 +31,7 @@ describe("UsersListComponent", () => {
         sandbox.restore();
     });
 
-    it("renders items alphabetically", () => {
+    test("renders items alphabetically", () => {
 
         const rendered = shallow(<UsersList/>, {context: {store}}).dive();
 

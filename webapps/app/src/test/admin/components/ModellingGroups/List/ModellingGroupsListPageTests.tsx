@@ -20,13 +20,13 @@ describe("Modelling Groups List Page Component Tests", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("renders component on connect level", () => {
+    test("renders component on connect level", () => {
         let store = createMockStore();
         const rendered = shallow(<ModellingGroupsListPage/>, {context: {store}});
         expect(typeof rendered.props().onLoad).is.equal('function');
     });
 
-    it("renders page component, title and sub components", () => {
+    test("renders page component, title and sub components", () => {
         let testMatch = mockMatch<undefined>();
         let store = createMockStore();
         const onLoadStub = sandbox.setStubReduxAction(modellingGroupsListPageActionCreators, "onLoad");

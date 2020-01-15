@@ -6,11 +6,11 @@ import {mockUser} from "../../../../mocks/mockModels";
 import {User} from "../../../../../main/shared/models/Generated";
 
 describe("UserListItem", () => {
-    it("can render", () => {
+    test("can render", () => {
         shallow(<UserListItem { ...mockUser() } />);
     });
 
-    it("shows 'never' if user has not logged in", () => {
+    test("shows 'never' if user has not logged in", () => {
 
         const user: User = mockUser();
         user.last_logged_in = null;

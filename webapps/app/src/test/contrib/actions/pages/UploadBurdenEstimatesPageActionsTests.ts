@@ -25,36 +25,39 @@ describe("Upload burden estimates page actions tests", () => {
         sandbox.restore();
     });
 
-    it("has responsibilities overview as parent", () => {
+    test("has responsibilities overview as parent", () => {
         expect(uploadBurdenEstimatesPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators);
     });
 
-    it("creates breadcrumb", () => {
+    test("creates breadcrumb", () => {
 
         const result = uploadBurdenEstimatesPageActionCreators.createBreadcrumb(state);
         expect(result.name).to.eq("Upload central burden estimates for s1desc");
         expect(result.urlFragment).to.eq("burdens/s1/");
     });
 
-    it("sets current responsibility set and resets estimate populate state", async () => {
-        const store = createMockContribStore();
+    test(
+        "sets current responsibility set and resets estimate populate state",
+        async () => {
+            const store = createMockContribStore();
 
-        sandbox.stubReduxActionCreator(responsibilitiesActionCreators, "setCurrentResponsibility",
-            {type: "test-responsibility-type"});
+            sandbox.stubReduxActionCreator(responsibilitiesActionCreators, "setCurrentResponsibility",
+                {type: "test-responsibility-type"});
 
-        sandbox.stubReduxActionCreator(estimatesActionCreators, "resetPopulateState",
-            {type: "test-reset-estimate"})
+            sandbox.stubReduxActionCreator(estimatesActionCreators, "resetPopulateState",
+                {type: "test-reset-estimate"})
 
-        await store.dispatch(uploadBurdenEstimatesPageActionCreators
-            .loadData({groupId: "g1", touchstoneId: "t1", scenarioId: "s1"}));
+            await store.dispatch(uploadBurdenEstimatesPageActionCreators
+                .loadData({groupId: "g1", touchstoneId: "t1", scenarioId: "s1"}));
 
-        const actions = store.getActions();
+            const actions = store.getActions();
 
-        const expectedPayload = [
-            {type: "test-responsibility-type", props: "s1"},
-            {type: "test-reset-estimate", props: undefined}
-        ];
-        expect(actions).to.eql(expectedPayload);
+            const expectedPayload = [
+                {type: "test-responsibility-type", props: "s1"},
+                {type: "test-reset-estimate", props: undefined}
+            ];
+            expect(actions).to.eql(expectedPayload);
 
-    });
+        }
+    );
 });

@@ -32,13 +32,13 @@ function makeProps(responsibilities: Array<Responsibility>,
 
 describe('Responsibility Overview List Component tests', () => {
 
-    it("renders message when there are no responsibilities", () => {
+    test("renders message when there are no responsibilities", () => {
         const props = makeProps([]);
         const rendered = shallow(<ResponsibilityList {...props} />);
         expect(rendered.text()).to.contain("This modelling group has no responsibilities in this touchstone");
     });
 
-    it("renders one ResponsibilityComponent per responsibility", () => {
+    test("renders one ResponsibilityComponent per responsibility", () => {
         const props = makeProps([
             mockResponsibility({}, mockScenario({ id: "scenario-1", disease: "d1" })),
             mockResponsibility({}, mockScenario({ id: "scenario-2", disease: "d2" }))
@@ -51,25 +51,28 @@ describe('Responsibility Overview List Component tests', () => {
     });
 
 
-    it("renders responsibilities ordered alphabetically by scenario description", () => {
-        const props = makeProps([
-            mockResponsibility({}, mockScenario({ description: "b", disease: "d1", id: "d" })),
-            mockResponsibility({}, mockScenario({ description: "a", disease: "d2", id: "e" }))
-        ]);
-        const rendered = shallow(<ResponsibilityList {...props} />);
-        const children = rendered.find(ResponsibilityScenario);
-        expect(children).to.have.length(2);
-        expect(children.at(0).key()).to.equal("e");
-        expect(children.at(1).key()).to.equal("d");
-    });
+    test(
+        "renders responsibilities ordered alphabetically by scenario description",
+        () => {
+            const props = makeProps([
+                mockResponsibility({}, mockScenario({ description: "b", disease: "d1", id: "d" })),
+                mockResponsibility({}, mockScenario({ description: "a", disease: "d2", id: "e" }))
+            ]);
+            const rendered = shallow(<ResponsibilityList {...props} />);
+            const children = rendered.find(ResponsibilityScenario);
+            expect(children).to.have.length(2);
+            expect(children.at(0).key()).to.equal("e");
+            expect(children.at(1).key()).to.equal("d");
+        }
+    );
 
-    it("renders disease filter", () => {
+    test("renders disease filter", () => {
         const props = makeProps([ mockResponsibility() ]);
         const rendered = shallow(<ResponsibilityList {...props} />);
         expect(rendered.find(DiseaseFilter)).to.have.length(1, "Expected to render DiseaseFilter");
     });
 
-    it("can filter be filtered by diesase", () => {
+    test("can filter be filtered by diesase", () => {
         const props = makeProps([
             mockResponsibility({}, mockScenario({ id: "scenario-1", disease: "d1" })),
             mockResponsibility({}, mockScenario({ id: "scenario-2", disease: "d2" }))

@@ -78,7 +78,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
             groupId={"1"}/>);
     };
 
-    it("validates file", () => {
+    test("validates file", () => {
 
         const result = getComponent();
 
@@ -91,7 +91,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
 
     describe("selected file component", () => {
 
-        it("shows file if valid", () => {
+        test("shows file if valid", () => {
             const state: UploadEstimatesState = {
                 ...initialUploadState,
                 file: {fileName: "test.csv"} as any,
@@ -104,7 +104,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
             expect(result.find(Alert).props().isOpen).to.be.false;
         });
 
-        it("shows error if invalid", () => {
+        test("shows error if invalid", () => {
             const state: UploadEstimatesState = {
                 ...initialUploadState,
                 file: {fileName: "test.csv"} as any,
@@ -118,7 +118,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
             expect(result.find(Alert).childAt(0).text()).to.eq("some error");
         });
 
-        it("shows nothing if no file selected", () => {
+        test("shows nothing if no file selected", () => {
 
             const result = mount(<SelectedFile {...initialUploadState} />);
             expect(result.children()).to.have.lengthOf(0);
@@ -126,7 +126,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
 
     });
 
-    it("file upload is disabled if url is null", () => {
+    test("file upload is disabled if url is null", () => {
 
         const result = shallow(<UploadEstimatesFormComponent
             createUploadClient={() => fakeUploadClient as any}
@@ -147,13 +147,13 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(result.find(".submit").props().disabled).to.be.true;
     });
 
-    it("file upload is disabled if file is null", () => {
+    test("file upload is disabled if file is null", () => {
 
         const result = getComponent({metadata: {type: "central-averaged", details: "whatever"}});
         expect(result.find(".submit").props().disabled).to.be.true;
     });
 
-    it("file upload is disabled if file is invalid", () => {
+    test("file upload is disabled if file is invalid", () => {
 
         const result = getComponent();
         result.setState({
@@ -165,7 +165,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(result.find(".submit").props().disabled).to.be.true;
     });
 
-    it("file upload is disabled if metadata is missing", () => {
+    test("file upload is disabled if metadata is missing", () => {
 
         const result = getComponent();
         result.setState({file: {fileName: "test.csv"}, fileValidationResult: {isValid: true}});
@@ -173,7 +173,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(result.find(".submit").props().disabled).to.be.true;
     });
 
-    it("file upload is disabled while uploading is in progress", () => {
+    test("file upload is disabled while uploading is in progress", () => {
 
         const result = getComponent();
         result.setState({
@@ -186,7 +186,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(result.find(".submit").props().disabled).to.be.true;
     });
 
-    it("creates estimate set if metadata and file present", () => {
+    test("creates estimate set if metadata and file present", () => {
 
         const resetPopulateState = sandbox.sinon.stub();
         const createEstimateSet = sandbox.sinon.stub();
@@ -205,7 +205,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(fakeUploadClient.uploadStarted).not.to.be.true;
     });
 
-    it("uploads estimates when url changes", () => {
+    test("uploads estimates when url changes", () => {
 
         const resetPopulateState = sandbox.sinon.stub();
         const createEstimateSet = sandbox.sinon.stub();
@@ -231,7 +231,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(fakeUploadClient.uploadStarted).to.be.true;
     });
 
-    it("retries upload when url changes if file is unchanged", () => {
+    test("retries upload when url changes if file is unchanged", () => {
 
         // when file has already been uploaded, its progress will be stored in the upload client as 1
         fakeUploadClient.files[0].progress = () => 1;
@@ -260,7 +260,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(fakeUploadClient.retryStarted).to.be.true;
     });
 
-    it("shows progress bar on file upload progress", () => {
+    test("shows progress bar on file upload progress", () => {
 
         const result = getComponent();
         fakeUploadClient.emit("progress");
@@ -275,7 +275,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
 
     });
 
-    it("resets local state on file upload success", () => {
+    test("resets local state on file upload success", () => {
 
         const result = getComponent();
         result.setState({
@@ -297,7 +297,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(newState.file.fileName).to.eq("test.csv")
     });
 
-    it("populates estimates on file upload success", () => {
+    test("populates estimates on file upload success", () => {
 
         const populateEstimateSet = sandbox.sinon.stub();
         getComponent({populateEstimateSet});
@@ -306,7 +306,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(populateEstimateSet.called).to.be.true;
     });
 
-    it("shows Montagu errors on file upload error", () => {
+    test("shows Montagu errors on file upload error", () => {
 
         const result = getComponent();
         fakeUploadClient.emit("fileError", {}, JSON.stringify({
@@ -324,7 +324,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(errorAlert.text()).to.eq("test error");
     });
 
-    it("shows arbitrary errors on file upload error", () => {
+    test("shows arbitrary errors on file upload error", () => {
 
         const result = getComponent();
         fakeUploadClient.emit("fileError", "someerror");
@@ -338,7 +338,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
     });
 
 
-    it("resets local state and removes file on cancel", () => {
+    test("resets local state and removes file on cancel", () => {
 
         const result = getComponent();
         result.setState({
@@ -354,12 +354,15 @@ describe("Upload Burden Estimates Form Component tests", () => {
 
     });
 
-    it("hides buttons and displays loading element while populating is in progress", () => {
+    test(
+        "hides buttons and displays loading element while populating is in progress",
+        () => {
 
-        const result = getComponent({populatingInProgress: true});
-        expect(result.find("button")).to.have.lengthOf(0);
-        expect(result.find(LoadingElement)).to.have.lengthOf(1);
+            const result = getComponent({populatingInProgress: true});
+            expect(result.find("button")).to.have.lengthOf(0);
+            expect(result.find(LoadingElement)).to.have.lengthOf(1);
 
-    });
+        }
+    );
 
 });

@@ -31,11 +31,11 @@ describe("Download Coverage Page actions tests", () => {
         sandbox.restore();
     });
 
-    it("has responsibility overview as parent", () => {
+    test("has responsibility overview as parent", () => {
         expect(downloadCoveragePageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators);
     });
 
-    it("creates breadcrumb", () => {
+    test("creates breadcrumb", () => {
 
         const result = downloadCoveragePageActionCreators.createBreadcrumb(state);
 
@@ -43,34 +43,37 @@ describe("Download Coverage Page actions tests", () => {
         expect(result.urlFragment).to.eq("coverage/s1/");
     });
 
-    it("loadData sets current responsibility and gets coverage data sets ", async () => {
+    test(
+        "loadData sets current responsibility and gets coverage data sets ",
+        async () => {
 
-        const store = createMockContribStore(state);
-        
-        sandbox.stubReduxActionCreator(coverageActionCreators, "getDataSets", {
-            type: "TEST_GET_COV_DATA_SETS"
-        });
+            const store = createMockContribStore(state);
+            
+            sandbox.stubReduxActionCreator(coverageActionCreators, "getDataSets", {
+                type: "TEST_GET_COV_DATA_SETS"
+            });
 
-        sandbox.stubReduxActionCreator(responsibilitiesActionCreators, "setCurrentResponsibility", {
-            type: "TEST_SET_CURRENT"
-        });
+            sandbox.stubReduxActionCreator(responsibilitiesActionCreators, "setCurrentResponsibility", {
+                type: "TEST_SET_CURRENT"
+            });
 
-        await store.dispatch(downloadCoveragePageActionCreators
-            .loadData({
-                groupId: "g1",
-                touchstoneId: "t1",
-                scenarioId: "s1"
-            }));
+            await store.dispatch(downloadCoveragePageActionCreators
+                .loadData({
+                    groupId: "g1",
+                    touchstoneId: "t1",
+                    scenarioId: "s1"
+                }));
 
-        const actions = store.getActions();
+            const actions = store.getActions();
 
-        const expectedPayload = [
-            {type: "TEST_SET_CURRENT", props: "s1"},
-            {type: "TEST_GET_COV_DATA_SETS", props: undefined}
-        ];
-        expect(actions).to.eql(expectedPayload);
+            const expectedPayload = [
+                {type: "TEST_SET_CURRENT", props: "s1"},
+                {type: "TEST_GET_COV_DATA_SETS", props: undefined}
+            ];
+            expect(actions).to.eql(expectedPayload);
 
-    });
+        }
+    );
 
 
 });

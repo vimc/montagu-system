@@ -29,7 +29,7 @@ describe("UploadBurdenEstimatesPage", () => {
 
     afterEach(() => sandbox.restore());
 
-    it("calls onLoad and renders expected title and content on render", () => {
+    test("calls onLoad and renders expected title and content on render", () => {
         // Mock
         const testMatch = mockMatch<UploadBurdenEstimatesPageLocationProps>({
             groupId: "g-1",

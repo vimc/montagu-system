@@ -23,37 +23,40 @@ describe("Responsibility Overview Page actions tests", () => {
         }
     });
 
-    it("has choose action page as parent", () => {
+    test("has choose action page as parent", () => {
         expect(responsibilityOverviewPageActionCreators.parent).to.eq(chooseActionPageActionCreators)
     });
 
-    it("creates breadcrumb", () => {
+    test("creates breadcrumb", () => {
 
         const result = responsibilityOverviewPageActionCreators.createBreadcrumb(state);
         expect(result.urlFragment).to.eq("responsibilities/t2v2/");
         expect(result.name).to.eq("desc");
     });
 
-    it("loads diseases, sets current touchstone and gets responsibility set", async () => {
-        const store = createMockContribStore(state);
+    test(
+        "loads diseases, sets current touchstone and gets responsibility set",
+        async () => {
+            const store = createMockContribStore(state);
 
-        sandbox.stubReduxActionCreator(diseasesActionCreators, "getAllDiseases", {type: "disease-test"});
-        sandbox.stubReduxActionCreator(responsibilitiesActionCreators, "getResponsibilitySet", {type: "RS-test"});
-        sandbox.stubReduxActionCreator(contribTouchstonesActionCreators, "setCurrentTouchstoneVersion", {type: "TV-test"});
+            sandbox.stubReduxActionCreator(diseasesActionCreators, "getAllDiseases", {type: "disease-test"});
+            sandbox.stubReduxActionCreator(responsibilitiesActionCreators, "getResponsibilitySet", {type: "RS-test"});
+            sandbox.stubReduxActionCreator(contribTouchstonesActionCreators, "setCurrentTouchstoneVersion", {type: "TV-test"});
 
-        await store.dispatch(responsibilityOverviewPageActionCreators
-            .loadData({groupId: "g1", touchstoneId: "t1v1"}));
+            await store.dispatch(responsibilityOverviewPageActionCreators
+                .loadData({groupId: "g1", touchstoneId: "t1v1"}));
 
-        const actions = store.getActions();
+            const actions = store.getActions();
 
-        const expectedPayload = [
-            {type: "disease-test", props: undefined as any},
-            {type: "TV-test", props: "t1v1"},
-            {type: "RS-test", props: undefined},
-        ];
-        expect(actions).to.deep.eq(expectedPayload);
+            const expectedPayload = [
+                {type: "disease-test", props: undefined as any},
+                {type: "TV-test", props: "t1v1"},
+                {type: "RS-test", props: undefined},
+            ];
+            expect(actions).to.deep.eq(expectedPayload);
 
-    });
+        }
+    );
 
 
 });

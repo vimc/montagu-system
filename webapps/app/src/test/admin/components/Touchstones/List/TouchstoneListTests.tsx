@@ -8,24 +8,24 @@ import {TouchstoneTable} from "../../../../../main/admin/components/Touchstones/
 import {expect} from "chai";
 
 describe("TouchstoneList (admin)", () => {
-    it("touchstone with one open version is active", () => {
+    test("touchstone with one open version is active", () => {
         checkThatTouchstoneIsActive(true, mockTouchstone({id: "active1"}, [
             mockTouchstoneVersion({status: "open"}),
         ]));
     });
-    it("touchstone with one in-preparation version is active", () => {
+    test("touchstone with one in-preparation version is active", () => {
         checkThatTouchstoneIsActive(true, mockTouchstone({id: "active1"}, [
             mockTouchstoneVersion({status: "in-preparation"}),
         ]));
     });
-    it("touchstone with several finished and one open version is active", () => {
+    test("touchstone with several finished and one open version is active", () => {
         checkThatTouchstoneIsActive(true, mockTouchstone({id: "active3"}, [
             mockTouchstoneVersion({status: "finished"}),
             mockTouchstoneVersion({status: "finished"}),
             mockTouchstoneVersion({status: "open"}),
         ]));
     });
-    it("touchstone with only finished versions is inactive", () => {
+    test("touchstone with only finished versions is inactive", () => {
         checkThatTouchstoneIsActive(false, mockTouchstone({id: "active1"}, [
             mockTouchstoneVersion({status: "finished"}),
             mockTouchstoneVersion({status: "finished"})

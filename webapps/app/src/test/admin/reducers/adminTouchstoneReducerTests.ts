@@ -7,7 +7,7 @@ import {TouchstonesAction, TouchstoneTypes} from "../../../main/shared/actionTyp
 import {mockTouchstone} from "../../mocks/mockModels";
 
 describe("adminTouchstoneReducer", () => {
-    it("sets fetched touchstones", () => {
+    test("sets fetched touchstones", () => {
         const data = [mockTouchstone(), mockTouchstone()];
         const action: TouchstonesAction = {
             type: TouchstoneTypes.ALL_TOUCHSTONES_FETCHED,
@@ -20,7 +20,7 @@ describe("adminTouchstoneReducer", () => {
         expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
     });
 
-    it("sets current touchstone", () => {
+    test("sets current touchstone", () => {
         const data = mockTouchstone();
         const action: TouchstonesAction = {
             type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
@@ -33,7 +33,7 @@ describe("adminTouchstoneReducer", () => {
         expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
     });
 
-    it("sets create touchstone errors", () => {
+    test("sets create touchstone errors", () => {
         const errors = [{code: "e", message: "error"}];
         const action: TouchstonesAction = {
             type: TouchstoneTypes.SET_CREATE_TOUCHSTONE_ERROR,
@@ -46,7 +46,7 @@ describe("adminTouchstoneReducer", () => {
         expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
     });
 
-    it("adds new touchstone", () => {
+    test("adds new touchstone", () => {
         const touchstone = mockTouchstone();
         const action: TouchstonesAction = {
             type: TouchstoneTypes.NEW_TOUCHSTONE_CREATED,

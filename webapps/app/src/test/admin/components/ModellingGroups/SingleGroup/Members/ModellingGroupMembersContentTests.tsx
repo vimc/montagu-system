@@ -25,7 +25,7 @@ describe("Modelling Group Members Content component tests", () => {
         const sandbox = new Sandbox();
         afterEach(() => sandbox.restore());
 
-        it("connect level, can edit, there are members", () => {
+        test("connect level, can edit, there are members", () => {
             const testGroupDetails = mockModellingGroupDetails({members: [testUser.username]});
             const testState = {
                 auth: { permissions: ["*/modelling-groups.manage-members"]},
@@ -42,7 +42,7 @@ describe("Modelling Group Members Content component tests", () => {
             expect(rendered.props().canManageGroupMembers).to.be.true;
         });
 
-        it("connect level, can not edit, there are no members", () => {
+        test("connect level, can not edit, there are no members", () => {
             const testGroupDetails = mockModellingGroupDetails({members: []});
             const testState = {
                 auth: { permissions: ["test"]},
@@ -63,7 +63,7 @@ describe("Modelling Group Members Content component tests", () => {
 
     describe("Component", () => {
 
-        it("passes no members to members list if group has no members", () => {
+        test("passes no members to members list if group has no members", () => {
             const rendered = shallow(<ModellingGroupMembersContentComponent
                 canManageGroupMembers={false}
                 groupId="group1"
@@ -75,7 +75,7 @@ describe("Modelling Group Members Content component tests", () => {
             expect(membersList.props().groupId).to.equal("group1");
         });
 
-        it("passes members to members list if group has members", () => {
+        test("passes members to members list if group has members", () => {
             const rendered = shallow(<ModellingGroupMembersContentComponent
                 canManageGroupMembers={false}
                 groupId="group1"
@@ -86,7 +86,7 @@ describe("Modelling Group Members Content component tests", () => {
             expect(membersList.props().users).to.eql([testUser]);
         });
 
-        it("passes cannot edit to add members component", () => {
+        test("passes cannot edit to add members component", () => {
             const rendered = shallow(<ModellingGroupMembersContentComponent
                 canManageGroupMembers={false}
                 groupId="group1"
@@ -99,7 +99,7 @@ describe("Modelling Group Members Content component tests", () => {
             expect(addMembers.props().members).to.eql([testUser]);
         });
 
-        it("passes can edit to add members, has members", () => {
+        test("passes can edit to add members, has members", () => {
             const rendered = shallow(<ModellingGroupMembersContentComponent
                 canManageGroupMembers={true}
                 groupId="group1"
@@ -116,20 +116,23 @@ describe("Modelling Group Members Content component tests", () => {
 });
 
 describe("AddGroupMembersComponent component tests", () => {
-    it("does not render add members if user does not have manage members permission", () => {
-        const members = [
-            mockUser({ name: "Test A" }),
-            mockUser({ name: "Test B" })
-        ];
-        const rendered = shallow(<AddGroupMembersComponent
-            canManageGroupMembers={false}
-            groupId="group1"
-            members={ members }
-        />);
-        expect(rendered.find(ModellingGroupMembersAdd).length).to.eql(0);
-    });
+    test(
+        "does not render add members if user does not have manage members permission",
+        () => {
+            const members = [
+                mockUser({ name: "Test A" }),
+                mockUser({ name: "Test B" })
+            ];
+            const rendered = shallow(<AddGroupMembersComponent
+                canManageGroupMembers={false}
+                groupId="group1"
+                members={ members }
+            />);
+            expect(rendered.find(ModellingGroupMembersAdd).length).to.eql(0);
+        }
+    );
 
-    it("renders add members if user has manage members permission", () => {
+    test("renders add members if user has manage members permission", () => {
         const members = [
             mockUser({ name: "Test A" }),
             mockUser({ name: "Test B" })

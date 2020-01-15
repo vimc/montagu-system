@@ -15,7 +15,7 @@ describe("Diseases actions tests", () => {
         sandbox.restore();
     });
 
-    it("all diseases fetched", (done) => {
+    test("all diseases fetched", (done) => {
         const store = createMockStore({});
         sandbox.setStubFunc(DiseasesService.prototype, "getAllDiseases", ()=>{
           return Promise.resolve([testDisease]);
@@ -29,7 +29,7 @@ describe("Diseases actions tests", () => {
         });
     });
 
-    it("set current disease id", (done) => {
+    test("set current disease id", (done) => {
         const initialState = {
             diseases: {diseases: [testDisease]}
         };

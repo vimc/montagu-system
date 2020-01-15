@@ -82,38 +82,41 @@ describe("Abstract page action creators", () => {
         sandbox.restore();
     });
 
-    it("loads data, parent data, and creates breadcrumbs on onLoad", (done: DoneCallback) => {
+    test(
+        "loads data, parent data, and creates breadcrumbs on onLoad",
+        (done: DoneCallback) => {
 
-        store.dispatch(dummyPage.onLoad());
+            store.dispatch(dummyPage.onLoad());
 
-        const expectedBreadcrumbs: Breadcrumb[] = [
-            {
-                name: "grandparent3",
-                url: "grandparent/"
-            },
-            {
-                name: "parent3",
-                url: "grandparent/parent/"
-            }, {
-                name: "child3",
-                url: "grandparent/parent/child/"
-            }
-        ];
-
-        const expectedBreadcrumbAction: BreadcrumbsReceived = {
-            type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED,
-            data: expectedBreadcrumbs
-        };
-
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = [
-                dummyGrandparentAction, dummyParentAction, dummyAction, expectedBreadcrumbAction
+            const expectedBreadcrumbs: Breadcrumb[] = [
+                {
+                    name: "grandparent3",
+                    url: "grandparent/"
+                },
+                {
+                    name: "parent3",
+                    url: "grandparent/parent/"
+                }, {
+                    name: "child3",
+                    url: "grandparent/parent/child/"
+                }
             ];
 
-            expect(actions).to.eql(expectedPayload);
-            done();
-        })
+            const expectedBreadcrumbAction: BreadcrumbsReceived = {
+                type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED,
+                data: expectedBreadcrumbs
+            };
 
-    });
+            setTimeout(() => {
+                const actions = store.getActions();
+                const expectedPayload = [
+                    dummyGrandparentAction, dummyParentAction, dummyAction, expectedBreadcrumbAction
+                ];
+
+                expect(actions).to.eql(expectedPayload);
+                done();
+            })
+
+        }
+    );
 });

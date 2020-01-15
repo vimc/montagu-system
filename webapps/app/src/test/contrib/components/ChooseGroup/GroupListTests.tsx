@@ -8,7 +8,7 @@ import { GroupList } from "../../../../main/contrib/components/ChooseGroup/Group
 import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
 
 describe("Choose Group List", () => {
-    it("renders one group link per group", () => {
+    test("renders one group link per group", () => {
         const groups = [
             mockModellingGroup({ id: "g1" }),
             mockModellingGroup({ id: "g2" })

@@ -14,7 +14,7 @@ describe('Modelling Groups service tests', () => {
         sandbox.restore();
     });
 
-    it('fetches all groups', () => {
+    test('fetches all groups', () => {
         const groupsService = new ModellingGroupsService(store.dispatch, store.getState);
 
         const setOptionsSpy = sandbox.setSpy(groupsService, "setOptions");
@@ -29,7 +29,7 @@ describe('Modelling Groups service tests', () => {
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'groups' });
     });
 
-    it('fetches user groups',() => {
+    test('fetches user groups', () => {
         const groupsService = new ModellingGroupsService(store.dispatch, store.getState);
 
         const setOptionsSpy = sandbox.setSpy(groupsService, "setOptions");
@@ -44,7 +44,7 @@ describe('Modelling Groups service tests', () => {
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'userGroups' });
     });
 
-    it('fetches group details', () => {
+    test('fetches group details', () => {
         const groupsService = new ModellingGroupsService(store.dispatch, store.getState);
 
         const setOptionsSpy = sandbox.setSpy(groupsService, "setOptions");
@@ -59,7 +59,7 @@ describe('Modelling Groups service tests', () => {
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'groupsDetails' });
     });
 
-    it('adds member', () => {
+    test('adds member', () => {
         const groupsService = new ModellingGroupsService(store.dispatch, store.getState);
 
         const postStub = sandbox.setStubFunc(groupsService, "post", ()=>{
@@ -78,7 +78,7 @@ describe('Modelling Groups service tests', () => {
         expect(postStub.getCall(0).args[1]).to.equal(JSON.stringify(associateUser));
     });
 
-    it('removes member', () => {
+    test('removes member', () => {
         const groupsService = new ModellingGroupsService(store.dispatch, store.getState);
 
         const postStub = sandbox.setStubFunc(groupsService, "post", ()=>{
@@ -97,7 +97,7 @@ describe('Modelling Groups service tests', () => {
         expect(postStub.getCall(0).args[1]).to.equal(JSON.stringify(associateUser));
     });
 
-    it('clears cache for group details', () => {
+    test('clears cache for group details', () => {
         const groupsService = new ModellingGroupsService(store.dispatch, store.getState);
 
         const postStub = sandbox.setStubFunc(groupsService, "clearCache", () => {});

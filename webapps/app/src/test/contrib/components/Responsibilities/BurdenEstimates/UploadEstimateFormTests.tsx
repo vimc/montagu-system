@@ -21,28 +21,28 @@ describe("Upload Burden Estimates Form tests", () => {
 
     describe("mapStateToProps", () => {
 
-        it("sets url if token and populatingSetId exists", () => {
+        test("sets url if token and populatingSetId exists", () => {
 
             const mockState = mockContribState({estimates: {uploadToken: "TOKEN", populatingSetId: 1}});
             const result = mapStateToProps(mockState, {touchstoneId: "t1", scenarioId: "s1", groupId: "g1"});
             expect(result.url).to.eq("http://localhost:8080/v1/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/actions/upload/TOKEN/");
         });
 
-        it("url is null while token is null", () => {
+        test("url is null while token is null", () => {
 
             const mockState = mockContribState({estimates: {populatingSetId: 1}});
             const result = mapStateToProps(mockState, {touchstoneId: "t1", scenarioId: "s1", groupId: "g1"});
             expect(result.url).to.be.null;
         });
 
-        it("url is null while populating setId is null", () => {
+        test("url is null while populating setId is null", () => {
 
             const mockState = mockContribState({estimates: {uploadToken: "TOKEN"}});
             const result = mapStateToProps(mockState, {touchstoneId: "t1", scenarioId: "s1", groupId: "g1"});
             expect(result.url).to.be.null;
         });
 
-        it("properties are set from state", () => {
+        test("properties are set from state", () => {
 
             const mockState = mockContribState({
                 estimates: {
@@ -61,7 +61,7 @@ describe("Upload Burden Estimates Form tests", () => {
 
     describe("mapDispatchToProps", () => {
 
-        it("can dispatch createBurdenEstimateSet", () => {
+        test("can dispatch createBurdenEstimateSet", () => {
             const dispatchStub = sandbox.sinon.stub();
             sandbox.setStubFunc(estimatesActionCreators, "createBurden", () => "TEST");
 
@@ -71,7 +71,7 @@ describe("Upload Burden Estimates Form tests", () => {
             expect(dispatchStub.calledWith("TEST")).to.be.true;
         });
 
-        it("can dispatch populateEstimateSet", () => {
+        test("can dispatch populateEstimateSet", () => {
             const dispatchStub = sandbox.sinon.stub();
             sandbox.setStubFunc(estimatesActionCreators, "populateEstimateSet", (token: String) => token);
 
@@ -81,7 +81,7 @@ describe("Upload Burden Estimates Form tests", () => {
             expect(dispatchStub.calledWith("TOKEN")).to.be.true;
         });
 
-        it("can dispatch resetPopulateState", () => {
+        test("can dispatch resetPopulateState", () => {
             const dispatchStub = sandbox.sinon.stub();
             sandbox.setStubFunc(estimatesActionCreators, "resetPopulateState", () => "TEST");
 

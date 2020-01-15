@@ -13,7 +13,7 @@ describe("User actions tests", () => {
         sandbox.restore();
     });
 
-    it("gets user ConfidentialityAgreement", (done) => {
+    test("gets user ConfidentialityAgreement", (done) => {
         const store = createMockStore({});
         sandbox.setStubFunc(UserService.prototype, "getConfidentiality", ()=>{
             return Promise.resolve(true);
@@ -27,7 +27,7 @@ describe("User actions tests", () => {
         });
     });
 
-    it("signs Confidentiality Agreement", (done) => {
+    test("signs Confidentiality Agreement", (done) => {
         const store = createMockStore({});
         sandbox.setStubFunc(UserService.prototype, "signConfidentiality", ()=>{
             return Promise.resolve('OK');

@@ -12,7 +12,7 @@ describe('Touchstones service tests', () => {
     const history = createMemoryHistory();
     const store = createContribStore(history);
 
-    it('fetches touchstones', () => {
+    test('fetches touchstones', () => {
         const touchstoneService = new TouchstonesService(store.dispatch, store.getState);
 
         const setOptionsSpy = sandbox.setSpy(touchstoneService, "setOptions");
@@ -26,7 +26,7 @@ describe('Touchstones service tests', () => {
         expect(setOptionsSpy.getCall(0).args[0]).to.eql({cacheKey: 'touchstones'});
     });
 
-    it("fetches scenarios", () => {
+    test("fetches scenarios", () => {
         const service = new TouchstonesService(store.dispatch, store.getState);
 
         const setOptionsSpy = sandbox.setSpy(service, "setOptions");

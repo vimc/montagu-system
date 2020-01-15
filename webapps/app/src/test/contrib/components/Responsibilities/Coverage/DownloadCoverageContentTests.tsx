@@ -56,7 +56,7 @@ describe("Download Coverage Content Component", () => {
     });
     afterEach(() => sandbox.restore());
 
-    it("renders on connect level", () => {
+    test("renders on connect level", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}});
         expect(rendered.props().touchstone).to.eql(testTouchstone);
         expect(rendered.props().coverageSets).to.eql([testCoverageSet]);
@@ -65,7 +65,7 @@ describe("Download Coverage Content Component", () => {
         expect(typeof rendered.props().setFormat).to.eql("function");
     });
 
-    it("renders loading element if current touchstone is null", () => {
+    test("renders loading element if current touchstone is null", () => {
         store = createMockContribStore({
             groups: {currentUserGroup: mockModellingGroup()},
             touchstones: {currentTouchstoneVersion: null},
@@ -76,26 +76,35 @@ describe("Download Coverage Content Component", () => {
         expect(rendered.find(LoadingElement).length).to.eql(1);
     });
 
-    it("does not render loading element if touchstone and scenario are present", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement).length).to.eql(0);
-    });
+    test(
+        "does not render loading element if touchstone and scenario are present",
+        () => {
+            const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive();
+            expect(rendered.find(LoadingElement).length).to.eql(0);
+        }
+    );
 
-    it("renders component on confidentiality level if not rfp touchstone", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive()
-            .dive().dive();
-        expect(rendered.find(CoverageSetList).length).to.eql(1);
-    });
+    test(
+        "renders component on confidentiality level if not rfp touchstone",
+        () => {
+            const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive()
+                .dive().dive();
+            expect(rendered.find(CoverageSetList).length).to.eql(1);
+        }
+    );
 
-    it("renders confidentiality agreement confidentiality level if rfp touchstone", () => {
-        const anotherState = {...testState, touchstones: {currentTouchstoneVersion: rfpTouchstone}};
-        store = createMockContribStore(anotherState);
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive()
-            .dive().dive();
-        expect(rendered.find(ConfidentialityAgreementComponent).length).to.eql(1);
-    });
+    test(
+        "renders confidentiality agreement confidentiality level if rfp touchstone",
+        () => {
+            const anotherState = {...testState, touchstones: {currentTouchstoneVersion: rfpTouchstone}};
+            store = createMockContribStore(anotherState);
+            const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive().dive()
+                .dive().dive();
+            expect(rendered.find(ConfidentialityAgreementComponent).length).to.eql(1);
+        }
+    );
 
-    it("renders on component level touchstone and scenario table", () => {
+    test("renders on component level touchstone and scenario table", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}})
             .dive().dive().dive().dive().dive().dive();
         const firstTable = rendered.find('table.specialColumn').at(0);
@@ -103,7 +112,7 @@ describe("Download Coverage Content Component", () => {
         expect(firstTable.find('tr').at(1).find('div.col').at(1).text(), testScenario.description);
     });
 
-    it("renders on component level coverage set list and format control", () => {
+    test("renders on component level coverage set list and format control", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
             .dive().dive().dive();
         expect(rendered.find(CoverageSetList).length).to.equal(1);
@@ -112,7 +121,7 @@ describe("Download Coverage Content Component", () => {
         expect(rendered.find(FormatControl).props().value).to.eql(testState.coverage.selectedFormat);
     });
 
-    it("renders tooltips", () => {
+    test("renders tooltips", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
             .dive().dive().dive();
         const tooltips = rendered.find(UncontrolledTooltip);
@@ -121,7 +130,7 @@ describe("Download Coverage Content Component", () => {
         expect(tooltips.at(1).props().target).to.eql("countries-tooltip");
     });
 
-    it("calling onSelectFormat triggers set format", () => {
+    test("calling onSelectFormat triggers set format", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
             .dive().dive().dive();
         const downloadCoverageContentComponentInstance = rendered.instance() as DownloadCoverageContentComponent;
@@ -130,7 +139,7 @@ describe("Download Coverage Content Component", () => {
         expect(onFormatSelectStub.called).to.equal(true);
     });
 
-    it("does not show format control for prohibited diseases", () => {
+    test("does not show format control for prohibited diseases", () => {
 
         const rendered = shallow(<DownloadCoverageContentComponent
             coverageSets={[testCoverageSet]}
@@ -144,13 +153,13 @@ describe("Download Coverage Content Component", () => {
         expect(rendered.find(FormatControl).length).to.equal(0);
     });
 
-    it("filterToExpectations is selected by default", () => {
+    test("filterToExpectations is selected by default", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
             .dive().dive().dive();
         expect(rendered.find("#filter-countries").props().checked).to.be.true;
     });
 
-    it("url has all-countries query parameter set to false by default", () => {
+    test("url has all-countries query parameter set to false by default", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
             .dive().dive().dive();
 
@@ -158,13 +167,16 @@ describe("Download Coverage Content Component", () => {
         expect(rendered.find(FileDownloadButton).props().href).to.eq(expected)
     });
 
-    it("url has all-countries query parameter set to true when filterToExpectations is de-selected", () => {
-        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
-            .dive().dive().dive();
+    test(
+        "url has all-countries query parameter set to true when filterToExpectations is de-selected",
+        () => {
+            const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
+                .dive().dive().dive();
 
-        rendered.find("#filter-countries").simulate("change");
-        const expected = "/modelling-groups/group-186/responsibilities/touchstone-188/scenario-190/coverage/csv/?format=long&all-countries=true";
-        expect(rendered.find(FileDownloadButton).props().href).to.eq(expected)
-    });
+            rendered.find("#filter-countries").simulate("change");
+            const expected = "/modelling-groups/group-186/responsibilities/touchstone-188/scenario-190/coverage/csv/?format=long&all-countries=true";
+            expect(rendered.find(FileDownloadButton).props().href).to.eq(expected)
+        }
+    );
 
 });

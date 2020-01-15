@@ -26,14 +26,14 @@ describe("Modelling Group Details Page Component Tests", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("renders component on connect level", () => {
+    test("renders component on connect level", () => {
         let store = createMockStore(testState);
         const rendered = shallow(<ModellingGroupDetailsPage/>, {context: {store}});
         expect(rendered.props().groupDescription).is.equal(testGroup.description);
         expect(typeof rendered.props().onLoad).is.equal('function');
     });
 
-    it("renders page component, title and sub component", () => {
+    test("renders page component, title and sub component", () => {
         let testMatch = mockMatch<ModellingGroupDetailsPageLocationProps>({groupId: testGroup.id});
         let store = createMockStore(testState);
         const onLoadStub = sandbox.setStubReduxAction(modellingGroupDetailsPageActionCreators, "onLoad");

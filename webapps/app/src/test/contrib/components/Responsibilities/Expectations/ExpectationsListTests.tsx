@@ -20,7 +20,7 @@ import {mockContribState} from "../../../../mocks/mockStates";
 import {ModellingGroupsState} from "../../../../../main/contrib/reducers/modellingGroupsReducer";
 import {TouchstonesState} from "../../../../../main/contrib/reducers/contribTouchstonesReducer";
 
-describe("ExpectationsList", function () {
+describe("ExpectationsList", () => {
     const currentUserGroup = mockModellingGroup();
     const currentTouchstoneVersion = mockTouchstoneVersion();
     const responsibilitiesSet = mockExtendedResponsibilitySet();
@@ -29,24 +29,27 @@ describe("ExpectationsList", function () {
     const touchstones: Partial<TouchstonesState> = {currentTouchstoneVersion};
     const responsibilities: Partial<ResponsibilitiesState> = {responsibilitiesSet};
 
-    it("renders one ExpectationsDescription for each expectation mapping in the responsibility set", () => {
-        const expectations: Array<ExpectationMapping> = [
-            mockExpectationMapping(),
-            mockExpectationMapping(),
-            mockExpectationMapping(),
-        ];
-        const responsibilitiesState: Partial<ResponsibilitiesState> = {
-            responsibilitiesSet: mockExtendedResponsibilitySet({expectations})
-        };
-        const store = createMockContribStore({
-            responsibilities: responsibilitiesState,
-            groups, touchstones
-        });
-        const rendered = shallow(<ExpectationsList/>, {context: {store}}).dive().dive();
-        expect(rendered.find(ExpectationsDescription)).to.have.length(3);
-    });
+    test(
+        "renders one ExpectationsDescription for each expectation mapping in the responsibility set",
+        () => {
+            const expectations: Array<ExpectationMapping> = [
+                mockExpectationMapping(),
+                mockExpectationMapping(),
+                mockExpectationMapping(),
+            ];
+            const responsibilitiesState: Partial<ResponsibilitiesState> = {
+                responsibilitiesSet: mockExtendedResponsibilitySet({expectations})
+            };
+            const store = createMockContribStore({
+                responsibilities: responsibilitiesState,
+                groups, touchstones
+            });
+            const rendered = shallow(<ExpectationsList/>, {context: {store}}).dive().dive();
+            expect(rendered.find(ExpectationsDescription)).to.have.length(3);
+        }
+    );
 
-    it("renders loading element if responsibilitiesSet is null", () => {
+    test("renders loading element if responsibilitiesSet is null", () => {
         const responsibilitiesState: Partial<ResponsibilitiesState> = {
             responsibilitiesSet: null
         };
@@ -58,7 +61,7 @@ describe("ExpectationsList", function () {
         expect(rendered.find(LoadingElement)).to.have.length(1);
     });
 
-    it("maps state to props correctly", () => {
+    test("maps state to props correctly", () => {
         const state = mockContribState({groups, touchstones, responsibilities});
         expect(mapStateToProps(state)).to.eql({
             responsibilitySet: responsibilitiesSet,

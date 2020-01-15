@@ -10,14 +10,14 @@ describe('Modelling groups reducer tests', () => {
 
     const testModellingGroup = {id: "test1", description: "Test 1"};
 
-    it('sets fetched user groups', () => {
+    test('sets fetched user groups', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.USER_GROUPS_FETCHED,
             data: [testModellingGroup]
         })).to.eql({...modellingGroupInitialState, userGroups: [testModellingGroup]});
     });
 
-    it('sets empty user groups', () => {
+    test('sets empty user groups', () => {
         expect(modellingGroupsReducer({
             userGroups: [testModellingGroup],
             currentUserGroup: null
@@ -27,14 +27,14 @@ describe('Modelling groups reducer tests', () => {
         })).to.eql(modellingGroupInitialState);
     });
 
-    it('sets current user group', () => {
+    test('sets current user group', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.SET_CURRENT_USER_GROUP,
             data: testModellingGroup
         })).to.eql({...modellingGroupInitialState, currentUserGroup: testModellingGroup});
     });
 
-    it('sets current empty user group', () => {
+    test('sets current empty user group', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.SET_CURRENT_USER_GROUP,
             data: null

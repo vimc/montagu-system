@@ -23,7 +23,7 @@ describe("UserRole", () => {
         store = createMockStore(mockAdminAppState);
     });
 
-    it("does not show scope if global", () => {
+    test("does not show scope if global", () => {
 
         const rendered = shallow(<UserRoleComponent removeRoleFromUser={null}
                                                     { ...fakeRole} username="testuser" showdelete={true}/>);
@@ -32,7 +32,7 @@ describe("UserRole", () => {
         expect(text).to.eq("rolename")
     });
 
-    it("shows scope if not global", () => {
+    test("shows scope if not global", () => {
 
         const role: RoleAssignment = mockRole({name: "rolename", scope_prefix: "group", scope_id: "fake"});
         const rendered = shallow(<UserRoleComponent removeRoleFromUser={null}
@@ -43,7 +43,7 @@ describe("UserRole", () => {
     });
 
 
-    it("shows delete button", () => {
+    test("shows delete button", () => {
 
         const rendered = shallow(<UserRoleComponent removeRoleFromUser={null}
                                                     { ...fakeRole} username="testuser" showdelete={true}/>);
@@ -53,7 +53,7 @@ describe("UserRole", () => {
 
     });
 
-    it("does not show delete button", () => {
+    test("does not show delete button", () => {
 
         const rendered = shallow(<UserRoleComponent removeRoleFromUser={null}
                                                     { ...fakeRole} username="testuser" showdelete={false}/>);

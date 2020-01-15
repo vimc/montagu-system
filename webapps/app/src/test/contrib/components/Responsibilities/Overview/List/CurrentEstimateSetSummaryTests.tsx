@@ -17,34 +17,40 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
                                                   estimateSet={set} canUpload={canUpload}/>);
     };
 
-    it("displays no estimates message if current estimate is null", () => {
+    test("displays no estimates message if current estimate is null", () => {
         const rendered = render(null, true);
         expect(rendered.text()).to.contain("No central burden estimate sets have been uploaded");
     });
 
-    it("does not display download button if current estimate is null", () => {
+    test("does not display download button if current estimate is null", () => {
         const rendered = render(null, true);
         expect(rendered.find(FileDownloadButton)).to.have.lengthOf(0);
     });
 
-    it("does not display download button if current estimate set is empty", () => {
-        const rendered = render(mockBurdenEstimateSet({
-            status: "empty",
-            uploaded_on: "2017-07-13 13:55:29 +0100"
-        }), true);
-        expect(rendered.find(FileDownloadButton)).to.have.lengthOf(0);
-    });
+    test(
+        "does not display download button if current estimate set is empty",
+        () => {
+            const rendered = render(mockBurdenEstimateSet({
+                status: "empty",
+                uploaded_on: "2017-07-13 13:55:29 +0100"
+            }), true);
+            expect(rendered.find(FileDownloadButton)).to.have.lengthOf(0);
+        }
+    );
 
-    it("does not display download button if group cannot download estimates", () => {
-        const rendered = render(mockBurdenEstimateSet({
-            id: 1,
-            status: "complete",
-            uploaded_on: "2017-07-13 13:55:29 +0100"
-        }), true, "Li");
-        expect(rendered.find(FileDownloadButton)).to.have.lengthOf(0);
-    });
+    test(
+        "does not display download button if group cannot download estimates",
+        () => {
+            const rendered = render(mockBurdenEstimateSet({
+                id: 1,
+                status: "complete",
+                uploaded_on: "2017-07-13 13:55:29 +0100"
+            }), true, "Li");
+            expect(rendered.find(FileDownloadButton)).to.have.lengthOf(0);
+        }
+    );
 
-    it("displays download button if current estimate set is invalid", () => {
+    test("displays download button if current estimate set is invalid", () => {
         const rendered = render(mockBurdenEstimateSet({
             id: 1,
             status: "invalid",
@@ -53,7 +59,7 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
         expect(rendered.find(FileDownloadButton).props().href).to.eq("/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/estimates/")
     });
 
-    it("displays download button if current estimate set is complete", () => {
+    test("displays download button if current estimate set is complete", () => {
         const rendered = render(mockBurdenEstimateSet({
             id: 1,
             status: "complete",
@@ -62,7 +68,7 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
         expect(rendered.find(FileDownloadButton).props().href).to.eq("/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/estimates/")
     });
 
-    it("displays empty set message if current estimate is empty", () => {
+    test("displays empty set message if current estimate is empty", () => {
         const rendered = render(mockBurdenEstimateSet({
             status: "empty",
             uploaded_on: "2017-07-13 13:55:29 +0100"
@@ -70,7 +76,7 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
         expect(rendered.text()).to.contain("You registered how you calculated your central estimates on Thu Jul 13");
     });
 
-    it("displays complete set message if current estimate is complete", () => {
+    test("displays complete set message if current estimate is complete", () => {
         const rendered = render(mockBurdenEstimateSet({
             status: "complete",
             uploaded_on: "2017-07-13 13:55:29 +0100",
@@ -82,7 +88,7 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
         expect(div.hasClass("alert-warning")).to.eq(true);
     });
 
-    it("does not display filename for complete set if it doesn't exist", () => {
+    test("does not display filename for complete set if it doesn't exist", () => {
         const rendered = render(mockBurdenEstimateSet({
             status: "complete",
             uploaded_on: "2017-07-13 13:55:29 +0100",
@@ -92,7 +98,7 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
         expect(rendered.text()).not.to.contain("with filename \"file.csv\"");
     });
 
-    it("displays fallback message for unknown status", () => {
+    test("displays fallback message for unknown status", () => {
         const rendered = render(mockBurdenEstimateSet({
             status: "foo" as any,
             uploaded_on: "2017-07-13 13:55:29 +0100"
@@ -101,12 +107,15 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
         expect(rendered.text()).to.contain("Thu Jul 13");
     });
 
-    it("displays standard reviewed and approved message when uploads are not allowed", () => {
-        const rendered = render(mockBurdenEstimateSet(), false);
-        expect(rendered.find(ReviewedAndApprovedMessage)).to.have.length(1);
-    });
+    test(
+        "displays standard reviewed and approved message when uploads are not allowed",
+        () => {
+            const rendered = render(mockBurdenEstimateSet(), false);
+            expect(rendered.find(ReviewedAndApprovedMessage)).to.have.length(1);
+        }
+    );
 
-    it("displays error alert when set is invalid", () => {
+    test("displays error alert when set is invalid", () => {
         const rendered = render(mockBurdenEstimateSet({
             status: "invalid",
             uploaded_on: "2017-07-13 13:55:29 +0100",
@@ -120,7 +129,7 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
         expect(div.hasClass("alert-danger")).to.eq(true);
     });
 
-    it("does not display filename for invalid set if it doesn't exist", () => {
+    test("does not display filename for invalid set if it doesn't exist", () => {
         const rendered = render(mockBurdenEstimateSet({
             status: "invalid",
             uploaded_on: "2017-07-13 13:55:29 +0100",

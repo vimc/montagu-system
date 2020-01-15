@@ -10,7 +10,7 @@ describe("touchstoneListPageActionCreators", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it("gets touchstones on load", async () => {
+    test("gets touchstones on load", async () => {
         const getAllTouchstones = sandbox.setStubFunc(adminTouchstoneActionCreators, "getAllTouchstones", mockAction);
 
         const store = createMockAdminStore();
@@ -19,7 +19,7 @@ describe("touchstoneListPageActionCreators", () => {
         expect(getAllTouchstones.called).to.be.true;
     });
 
-    it("creates breadcrumbs", () => {
+    test("creates breadcrumbs", () => {
 
         const result = touchstoneListPageActionCreators.createBreadcrumb();
 
@@ -27,12 +27,12 @@ describe("touchstoneListPageActionCreators", () => {
         expect(result.name).to.eq("Touchstones");
     });
 
-    it("has MainMenu as parent", () => {
+    test("has MainMenu as parent", () => {
 
         expect(touchstoneListPageActionCreators.parent).to.eq(mainMenuPageActionCreators)
     });
 
-    it("creates title", () => {
+    test("creates title", () => {
         expect(touchstoneListPageActionCreators.title()).to.eq("Touchstones")
     });
 });

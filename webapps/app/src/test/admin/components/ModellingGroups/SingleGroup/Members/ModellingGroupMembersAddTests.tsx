@@ -26,7 +26,7 @@ describe("Modelling Group Members Add component tests", () => {
 
         afterEach(() => sandbox.restore());
 
-        it("render on connect level", () => {
+        test("render on connect level", () => {
             const store = createMockStore(testState);
             const rendered = shallow(
                 <ModellingGroupMembersAdd
@@ -42,7 +42,7 @@ describe("Modelling Group Members Add component tests", () => {
             expect(typeof rendered.props().addUserToGroup).to.equal("function");
         });
 
-        it("when user clicks Add, emits correct actions", () => {
+        test("when user clicks Add, emits correct actions", () => {
             const store = createMockStore(testState);
             const addUserToGroupStub = sandbox.setStubReduxAction(modellingGroupsActionCreators, "addUserToGroup");
             const rendered = shallow(
@@ -63,21 +63,24 @@ describe("Modelling Group Members Add component tests", () => {
 
         afterEach(() => sandbox.restore());
 
-        it("empty add member has no selected user and renders helpful message", () => {
+        test(
+            "empty add member has no selected user and renders helpful message",
+            () => {
 
-            const addSpy = sandbox.createSpy();
-            const rendered = shallow(<ModellingGroupMembersAddComponent members={[]} users={[]} groupId={groupId} addUserToGroup={addSpy}/>);
+                const addSpy = sandbox.createSpy();
+                const rendered = shallow(<ModellingGroupMembersAddComponent members={[]} users={[]} groupId={groupId} addUserToGroup={addSpy}/>);
 
-            const expectedState: ModellingGroupMembersAddState = {
-                selectedUser: "",
-                options: []
-            };
-            expect(rendered.instance().state).to.eql(expectedState);
-            expect(rendered.text()).to.contain("No more users available to add");
-            expect(rendered.find("form")).to.have.length(0, "Expected there to be no form elements");
-        });
+                const expectedState: ModellingGroupMembersAddState = {
+                    selectedUser: "",
+                    options: []
+                };
+                expect(rendered.instance().state).to.eql(expectedState);
+                expect(rendered.text()).to.contain("No more users available to add");
+                expect(rendered.find("form")).to.have.length(0, "Expected there to be no form elements");
+            }
+        );
 
-        it("renders options alphabetically", () => {
+        test("renders options alphabetically", () => {
             const addSpy = sandbox.createSpy();
             const a = mockUser({username: "apple"});
             const b = mockUser({username: "banana"});
@@ -97,7 +100,7 @@ describe("Modelling Group Members Add component tests", () => {
             ]);
         });
 
-        it("does not show options that are already members", () => {
+        test("does not show options that are already members", () => {
             const addSpy = sandbox.createSpy();
             const a = mockUser({username: "a"});
             const b = mockUser({username: "b"});
@@ -111,7 +114,7 @@ describe("Modelling Group Members Add component tests", () => {
             expect(rendered.find("option")).to.have.length(1);
         });
 
-        it("when user selects option, selectedUser changes state", () => {
+        test("when user selects option, selectedUser changes state", () => {
             const addSpy = sandbox.createSpy();
             const a = mockUser({username: "a"});
             const b = mockUser({username: "b"});
@@ -121,7 +124,7 @@ describe("Modelling Group Members Add component tests", () => {
             expect(rendered.instance().state.selectedUser).to.equal("b");
         });
 
-        it("when user clicks Add, emits correct actions", () => {
+        test("when user clicks Add, emits correct actions", () => {
             // Mocks
             const addSpy = sandbox.createSpy();
             const a = mockUser({username: "a"});

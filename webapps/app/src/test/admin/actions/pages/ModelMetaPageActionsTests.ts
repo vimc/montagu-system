@@ -16,7 +16,7 @@ describe("modelMetaPageActionCreators", () => {
 
     const state = mockAdminState({groups: {models: [model, model2]}});
 
-    it("fetches models on load", async () => {
+    test("fetches models on load", async () => {
 
         sandbox.setStubReduxAction(modellingGroupsActionCreators, "getAllModelsAndExpectations");
         const store = createMockAdminStore(state);
@@ -26,7 +26,7 @@ describe("modelMetaPageActionCreators", () => {
         ]);
     });
 
-    it("creates breadcrumbs", () => {
+    test("creates breadcrumbs", () => {
 
         const result = modelMetaPageActionCreators.createBreadcrumb(state);
 
@@ -34,11 +34,11 @@ describe("modelMetaPageActionCreators", () => {
         expect(result.name).to.eq("Model Metadata");
     });
 
-    it("has ModellingGroupsListPage as parent", () => {
+    test("has ModellingGroupsListPage as parent", () => {
         expect(modelMetaPageActionCreators.parent).to.eq(modellingGroupsListPageActionCreators)
     });
 
-    it("has title", () => {
+    test("has title", () => {
         expect(modelMetaPageActionCreators.title()).to.eq("Model Metadata")
     });
 });

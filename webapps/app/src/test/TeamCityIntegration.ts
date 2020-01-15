@@ -9,10 +9,10 @@ function fullTestName(test: TestContext): string {
 }
 
 export function addTeamCityHooks() {
-    beforeEach(function () {
+    beforeEach(() => {
         handleTeamCityEvent('before', fullTestName(this.currentTest), null);
     });
-    afterEach(function () {
+    afterEach(() => {
         if (this.currentTest != null) {
             const testName: string = fullTestName(this.currentTest);
             if (this.currentTest.state == "failed") {
@@ -63,5 +63,5 @@ function escape(text: string) {
         .replace(/\r/g, "|r")
         .replace(/\n/g, "|n")
         .replace(/\[/g, "|[")
-        .replace(/]/g, "|]")
+        .replace(/]/g, "|]");
 }

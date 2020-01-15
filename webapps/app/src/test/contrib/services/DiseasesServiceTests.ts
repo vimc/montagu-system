@@ -16,7 +16,7 @@ describe('Diseases service tests', () => {
         sandbox.restore();
     });
 
-    it('fetches diseases', () => {
+    test('fetches diseases', () => {
         const diseaseService = new DiseasesService(store.dispatch, store.getState as () => ContribAppState);
 
         const setOptionsSpy = sandbox.setSpy(diseaseService, "setOptions");

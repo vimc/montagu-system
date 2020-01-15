@@ -16,7 +16,7 @@ describe('Coverage service tests', () => {
         sandbox.restore();
     });
 
-    it('fetches data sets', () => {
+    test('fetches data sets', () => {
         const coverageService = new CoverageService(store.dispatch, store.getState as () => ContribAppState);
 
         const setOptionsSpy = sandbox.setSpy(coverageService, "setOptions");

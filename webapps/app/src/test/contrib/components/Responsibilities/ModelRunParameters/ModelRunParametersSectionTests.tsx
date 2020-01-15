@@ -10,7 +10,7 @@ import {ModelRunParametersStatus} from "../../../../../main/contrib/components/R
 describe('Model Run Parameter Section Component tests', () => {
     let rendered: ShallowWrapper<any, any>;
 
-    it("renders Form", () => {
+    test("renders Form", () => {
 
         rendered = shallow(<ModelRunParametersSection
             disease={"d1"}
@@ -20,7 +20,7 @@ describe('Model Run Parameter Section Component tests', () => {
         expect(form).to.have.lengthOf(1);
     });
 
-    it("renders status", () => {
+    test("renders status", () => {
 
         rendered = shallow(<ModelRunParametersSection
             disease={"d1"}

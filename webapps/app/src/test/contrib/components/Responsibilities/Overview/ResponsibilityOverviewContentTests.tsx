@@ -50,32 +50,35 @@ describe("Responsibility Overview Content Component", () => {
     });
     afterEach(() => sandbox.restore());
 
-    it("renders on connect level", () => {
+    test("renders on connect level", () => {
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}});
         expect(rendered.props().modellingGroup).to.eql(testCurrentGroup);
         expect(rendered.props().currentDiseaseId).to.eql(testDiseaseId);
         expect(rendered.props().responsibilitySet).to.eql(testResponsibilitiesSet);
     });
 
-    it("renders loading element if responsibilitiesSet is null", () => {
+    test("renders loading element if responsibilitiesSet is null", () => {
         const anotherState = {...state, responsibilities: {responsibilitiesSet: null as any}};
         store = createMockStore(anotherState);
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive();
         expect(rendered.find(LoadingElement).length).to.eql(1);
     });
 
-    it("does not render loading element if responsibilitiesSet is present", () => {
-        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement).length).to.eql(0);
-    });
+    test(
+        "does not render loading element if responsibilitiesSet is present",
+        () => {
+            const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive();
+            expect(rendered.find(LoadingElement).length).to.eql(0);
+        }
+    );
 
-    it("renders on confidentiality level, passes", () => {
+    test("renders on confidentiality level, passes", () => {
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
             .dive().dive().dive().dive();
         expect(rendered.find(ResponsibilitySetStatusMessage).length).to.eql(1);
     });
 
-    it("renders on confidentiality level, not passes", () => {
+    test("renders on confidentiality level, not passes", () => {
         const anotherState = {...state, touchstones: {currentTouchstoneVersion: testTouchstone2}};
         store = createMockContribStore(anotherState);
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}})
@@ -83,7 +86,7 @@ describe("Responsibility Overview Content Component", () => {
         expect(rendered.find(ConfidentialityAgreementComponent).length).to.eql(1);
     });
 
-    it("renders on component level", () => {
+    test("renders on component level", () => {
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
             .dive().dive().dive().dive();
         expect(rendered.find(ResponsibilitySetStatusMessage).length).to.eql(1);
@@ -98,7 +101,7 @@ describe("Responsibility Overview Content Component", () => {
 
      });
 
-    it("maps state to props", () => {
+    test("maps state to props", () => {
         const contribStateMock = mockContribState({
             groups: {currentUserGroup: testCurrentGroup},
             diseases: {currentDiseaseId: testDiseaseId},
@@ -111,7 +114,7 @@ describe("Responsibility Overview Content Component", () => {
         expect(props.responsibilitySet).to.eql(testResponsibilitiesSet);
     });
 
-    it("renders description", function(){
+    test("renders description", () => {
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
             .dive().dive().dive().dive();
         expect(rendered.find(ResponsibilityOverviewDescription).length).is.equal(1);
@@ -119,7 +122,7 @@ describe("Responsibility Overview Content Component", () => {
             .is.equal(testTouchstone.id);
     })
 
-    it("renders parameters section when stochastic", function(){
+    test("renders parameters section when stochastic", () => {
         const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => true );
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
             .dive().dive().dive().dive();
@@ -127,7 +130,7 @@ describe("Responsibility Overview Content Component", () => {
 
     })
 
-    it("does not render parameters section when not stochastic", function(){
+    test("does not render parameters section when not stochastic", () => {
         const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => false);
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
             .dive().dive().dive().dive();

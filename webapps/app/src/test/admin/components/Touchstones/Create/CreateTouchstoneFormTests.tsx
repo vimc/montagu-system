@@ -19,7 +19,7 @@ describe("CreateTouchstoneForm", () => {
     const sandbox = new Sandbox();
     let store: any = null;
 
-    before(() => {
+    beforeAll(() => {
         store = createMockStore(mockAdminState());
     });
 
@@ -27,7 +27,7 @@ describe("CreateTouchstoneForm", () => {
         sandbox.restore();
     });
 
-    it("renders fields", () => {
+    test("renders fields", () => {
 
         const rendered = shallow(<CreateTouchstoneFormComponent errors={[]}
                                                                 handleSubmit={() => null} submit={null}
@@ -45,7 +45,7 @@ describe("CreateTouchstoneForm", () => {
         expect(fields.at(2).prop("validate")).to.be.undefined;
     });
 
-    it("calls creates touchstone on form submission", () => {
+    test("calls creates touchstone on form submission", () => {
 
         const stub = sandbox.setStubReduxAction(adminTouchstoneActionCreators, "createTouchstone");
 
@@ -59,7 +59,7 @@ describe("CreateTouchstoneForm", () => {
         expect(stub.called).to.be.true;
     });
 
-    it("renders createTouchstoneErrors from state", () => {
+    test("renders createTouchstoneErrors from state", () => {
         const errors = [{
             code: "e",
             message: "error message"
