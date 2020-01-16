@@ -71,11 +71,12 @@ docker run \
   -v montagu_emails:/tmp/montagu_emails \
   montagu-api-blackbox-tests
 
+#TODO: Might not need this if docker-compose OW
+docker kill orderly-web
+docker rm orderly-web
+
 # Tear down
 docker-compose --project-name montagu down
 
-#TODO: pull into script and share with stopDependencies - or add to montagu dockerfile!
-docker kill orderly-web
-docker rm orderly-web
 
 
