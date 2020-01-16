@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.clients.OkHttpOrderlyWebAPIClient
+import org.vaccineimpact.api.app.clients.OrderlyWebAPIClient
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
@@ -24,7 +25,8 @@ class UserController(
         context: ActionContext,
         private val userRepository: UserRepository,
         private val oneTimeTokenGenerator: OneTimeTokenGenerator,
-        private val emailManager: EmailManager = getEmailManager()
+        private val emailManager: EmailManager = getEmailManager(),
+        private val orderlyWebAPIClient: OrderlyWebAPIClient = OkHttpOrderlyWebAPIClient.create(context.authenticationToken()!!)
 ) : Controller(context)
 {
 
@@ -86,9 +88,7 @@ class UserController(
 
         emailManager.sendEmail(NewUserEmail(user, token), user)
 
-        val montaguToken = context.authenticationToken()
-        val orderlyWeb = OkHttpOrderlyWebAPIClient.create(montaguToken!!)
-        orderlyWeb.addUser(user.email, user.username, user.name)
+        orderlyWebAPIClient.addUser(user.email, user.username, user.name)
 
         return objectCreation(context, "/users/${user.username}/")
     }

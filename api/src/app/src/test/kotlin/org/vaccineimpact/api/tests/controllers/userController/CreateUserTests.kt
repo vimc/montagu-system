@@ -84,7 +84,8 @@ class CreateUserTests : MontaguTests()
         val sut = UserController(context,
                 userRepo,
                 tokenGenerator,
-                emailManager)
+                emailManager,
+                mock())
 
         return sut.createUser()
     }
