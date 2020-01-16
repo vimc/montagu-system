@@ -38,6 +38,7 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String): Orde
     private val serializer = MontaguSerializer.instance
 
     override fun addUser(email: String, username: String, displayName: String) {
+        println("adding user with base url $baseUrl")
         val orderlyWebToken = getOrderlyWebToken()
         val userDetails = OrderlyWebUserDetails(email, username, displayName, "Montagu")
         val postBody = serializer.gson.toJson(userDetails)
@@ -47,16 +48,27 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String): Orde
     private fun getOrderlyWebToken(): String
     {
         if (orderlyWebToken == null) {
-            getHttpResponse("$baseUrl/login", mapOf("Authorization" to "token $montaguToken"))
+            println("adding user with montagu token: " + montaguToken)
+            val requestHeaders = mapOf(
+                    "Authorization" to "token $montaguToken-invalid",
+                    "Accept" to "application/json"
+            )
+
+            post("$baseUrl/login", requestHeaders, "")
                     .use { response ->
-                        val loginResult = parseLoginResult(response.body!!.string())
+                        println("login response status: " + response.code.toString())
+                        val body = response.body!!.string()
+                        println("login response body: " + body)
+
+                        val loginResult = parseLoginResult(body)
                         orderlyWebToken = loginResult.access_token;
                     }
         }
+        println("got orderly web token: " + orderlyWebToken)
         return orderlyWebToken!!
     }
 
-    private fun post(url: String, headersMap: Map<String, String>, body: String)
+    private fun post(url: String, headersMap: Map<String, String>, body: String): Response
     {
         val client = getHttpClient();
         val headers = buildHeaders(headersMap);
@@ -67,11 +79,12 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String): Orde
                 .headers(headers)
                 .post(requestBody)
                 .build()
-        client.newCall(request).execute()
+        return client.newCall(request).execute()
     }
 
     private fun getHttpResponse(url: String, headersMap: Map<String, String>): Response
     {
+        println("getting HttpResponse for $url")
         val client = getHttpClient();
         val headers = buildHeaders(headersMap)
 

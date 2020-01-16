@@ -26,6 +26,30 @@ docker exec montagu_db_1 psql -U vimc -d montagu -c \
        "CREATE USER MAPPING FOR vimc SERVER montagu_db_annex OPTIONS (user 'vimc', password 'changeme');"
 # -------------------------------------------------------------
 
+#
+#start orderly-web: TODO: pull this out into separate script and call from here and startDependencies.sh IF it needs
+#no changes
+ORDERLY_IMAGE="vimc/orderly:master"
+OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
+ORDERLY_WEB_IMAGE="vimc/orderly-web:vimc-3230_debug"
+
+# create orderly db
+docker pull $ORDERLY_IMAGE
+docker run --rm --entrypoint create_orderly_demo.sh -v "$PROJECT_DIR:/orderly" -w /orderly $ORDERLY_IMAGE .
+
+# migrate to add orderlyweb tables
+docker pull $OW_MIGRATE_IMAGE
+docker run --rm -v "$PROJECT_DIR/demo:/orderly" $OW_MIGRATE_IMAGE
+
+# start orderlyweb
+docker pull $ORDERLY_WEB_IMAGE
+docker run -d -v "$PROJECT_DIR/demo:/orderly" -p 8888:8888 --net=host --name orderly-web $ORDERLY_WEB_IMAGE
+
+docker exec orderly-web mkdir -p /etc/orderly/web
+docker exec orderly-web touch /etc/orderly/web/go_signal
+#end start orderly-web
+
+
 # Build and image that can run blackbox tests
 docker build -f blackbox.Dockerfile -t montagu-api-blackbox-tests .
 

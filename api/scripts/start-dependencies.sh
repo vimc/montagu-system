@@ -23,7 +23,7 @@ echo "Annex database is accessible at port $ANNEX_PORT"
 #start orderly-web
 ORDERLY_IMAGE="vimc/orderly:master"
 OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
-ORDERLY_WEB_IMAGE="vimc/orderly-web:master"
+ORDERLY_WEB_IMAGE="vimc/orderly-web:vimc-3230_debug"
 
 # create orderly db
 docker pull $ORDERLY_IMAGE
@@ -35,5 +35,8 @@ docker run --rm -v "$PROJECT_DIR/demo:/orderly" $OW_MIGRATE_IMAGE
 
 # start orderlyweb
 docker pull $ORDERLY_WEB_IMAGE
-docker run -d -v "$PROJECT_DIR/demo:/orderly" -p 8888:8888 --name orderly-web $ORDERLY_WEB_IMAGE
+docker run -d -v "$PROJECT_DIR/demo:/orderly" -p 8888:8888 --net=host --name orderly-web $ORDERLY_WEB_IMAGE
+
+docker exec orderly-web mkdir -p /etc/orderly/web
+docker exec orderly-web touch /etc/orderly/web/go_signal
 
