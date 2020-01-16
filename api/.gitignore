@@ -34,7 +34,10 @@ src/.idea/workspace.xml
 src/build/*
 src/config/users/current_user
 src/config/users/martin\.properties
+src/config/blackboxTests/orderlyweb/go_signal
 src/out
+src/demo
+src/git
 test-data\.bin
 test-data\.sql
 docs/.idea

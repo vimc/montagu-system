@@ -6,3 +6,4 @@ $here/../db/scripts/stop.sh
 
 docker kill orderly-web
 docker rm orderly-web
+

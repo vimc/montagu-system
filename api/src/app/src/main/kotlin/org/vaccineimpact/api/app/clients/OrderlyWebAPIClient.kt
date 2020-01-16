@@ -25,6 +25,7 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String): Orde
     {
         fun create(montaguToken: String): OkHttpOrderlyWebAPIClient
         {
+
             return if (Config.getBool("allow.localhost"))
                 LocalOkHttpMontaguApiClient(montaguToken)
             else
