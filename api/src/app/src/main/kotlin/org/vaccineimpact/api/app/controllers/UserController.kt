@@ -95,8 +95,6 @@ class UserController(
 
     fun getUser(): User
     {
-        println("getting current user...")
-
         val userName = userName(context)
         val roleReadingScopes = roleReadingScopes(context)
 
@@ -114,16 +112,12 @@ class UserController(
 
     fun getCurrentUser(): User
     {
-        println("getting user...")
         val userName = context.username!!
-        println("username: " + context.username)
         val includePermissions =
                 context.request.queryParamOrDefault("includePermissions", "false") == "true"
         val internalUser = userRepository.getUserByUsername(userName)
 
-        println("internal user: " + internalUser.username)
         val user = internalUser.toUser(includePermissions).copy(roles = null)
-        println("user: " + user.email)
 
         return internalUser.toUser(includePermissions).copy(roles = null) //don't return any role information back to the current user
     }
