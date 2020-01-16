@@ -29,7 +29,7 @@ export abstract class IntegrationTestSuite {
 
     store: any;
 
-    abstract addTestsToMocha(): void;
+    abstract runTests(): void;
 
     db: Client;
 
@@ -38,7 +38,7 @@ export abstract class IntegrationTestSuite {
 
             const sandbox = new Sandbox();
 
-            beforeEach((done: DoneCallback) => {
+            beforeEach(async (done: DoneCallback) => {
                 queryAgainstRootDb(`CREATE DATABASE ${dbName} TEMPLATE ${dbTemplateName};`)
                     .then(() => {
                         this.db = new Client({});
@@ -67,7 +67,7 @@ export abstract class IntegrationTestSuite {
                 await this.store.dispatch(authActionCreators.loadAuthenticatedUser());
             });
 
-            this.addTestsToMocha();
+            this.runTests();
         });
     }
 }

@@ -34,6 +34,7 @@ export const authActionCreators = {
                 });
 
                 const error: string = this.validateAuthResult(user);
+
                 if (!error) {
                     dispatch({
                         type: AuthTypeKeys.AUTHENTICATED,

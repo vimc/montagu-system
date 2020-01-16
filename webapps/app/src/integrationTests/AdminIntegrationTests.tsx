@@ -34,7 +34,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         return createAdminStore(createMemoryHistory());
     }
 
-    addTestsToMocha() {
+    runTests() {
 
         it("can log out", async () => {
             const result = await (new AuthService(this.store.dispatch, this.store.getState)).logOutOfAPI();
@@ -171,7 +171,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
             const user = users.find((u: User) => u.username == "bob");
             expect(user.roles.map((r: RoleAssignment) => r.name))
-                .toContain(['reports-reader', 'member', 'user-manager'])
+                .toEqual(['reports-reader', 'member', 'user-manager'])
         });
 
         it("can remove role from a user", async () => {
@@ -185,7 +185,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const user = users.find((u: User) => u.username == "bob");
 
             expect(user.roles.map((r: RoleAssignment) => r.name))
-                .toContain(['member'])
+                .toEqual(['member'])
         });
 
         it("can fetch users", async () => {

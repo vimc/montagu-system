@@ -54,7 +54,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         return createContribStore(createMemoryHistory());
     }
 
-    addTestsToMocha() {
+    runTests() {
 
         const sandbox = new Sandbox();
 
@@ -376,7 +376,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const response: String = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .getUploadToken(groupId, touchstoneVersionId, scenarioId, setId);
 
-            expect(response.length).to.be.greaterThan(1)
+            expect(response.length).toBeGreaterThan(1)
         });
 
         it("can populate estimates from file", async () => {

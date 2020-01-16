@@ -19,7 +19,7 @@ module.exports = {
         "tsx",
         "ts"
     ],
-    "testRegex": "(/test/(.*)Tests)\\.[jt]sx?$",
+    "testRegex": "/test.*Tests\\.[jt]sx?$",
     "transform": {
         ".+\\.(css|style|less|sass|scss|png|jpg|ttf|woff|woff2|gif|pdf|csv)$": "<rootDir>/src/main/shared/assetTransformer.js",
         "^.+\\.(ts)x?$": "ts-jest",
