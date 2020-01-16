@@ -1,15 +1,16 @@
 import thunk from 'redux-thunk';
 import {AdminAppState} from "../../main/admin/reducers/adminAppReducers";
 import {ContribAppState} from "../../main/contrib/reducers/contribAppReducers";
-import {mockAdminState, RecursivePartial} from "./mockStates";
+import {mockAdminState, mockContribState, RecursivePartial} from "./mockStates";
 import {MockStore} from "redux-mock-store";
+import {GlobalState} from "../../main/shared/reducers/GlobalState";
 const configureReduxMockStore  = require('redux-mock-store');
 
 export function createMockAdminStore(initialState?: RecursivePartial<AdminAppState>) {
     return createMockStore(mockAdminState(initialState));
 }
 export function createMockContribStore(initialState?: RecursivePartial<ContribAppState>) {
-    return createMockStore(initialState);
+    return createMockStore(mockContribState(initialState));
 }
 
 /** This method is deprecated. Use the more specific versions above to get compile-time

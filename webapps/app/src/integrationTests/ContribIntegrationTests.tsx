@@ -1,5 +1,4 @@
 import * as React from "react";
-import {expect} from "chai"
 import {Client, QueryResult} from "pg";
 import {createMemoryHistory} from 'history';
 
@@ -124,6 +123,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 .addMember(groupId, "test.user");
 
             const fetchedGroupsResult: ModellingGroup[] = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
+                .clearAllCache()
                 .getUserGroups();
 
             expect(fetchedGroupsResult).toEqual([

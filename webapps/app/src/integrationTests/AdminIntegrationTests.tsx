@@ -36,11 +36,6 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
     addTestsToMocha() {
 
-        it("can set cookies", async () => {
-            const result = await (new AuthService(this.store.dispatch, this.store.getState)).setCookies();
-            expect(result).toBe("OK");
-        });
-
         it("can log out", async () => {
             const result = await (new AuthService(this.store.dispatch, this.store.getState)).logOutOfAPI();
             expect(result).toBe("OK");
@@ -54,7 +49,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         it("can get current user details", async () => {
             const result = await (new AuthService(this.store.dispatch, this.store.getState)).getCurrentUser();
             expect(result.username).toBe("test.user");
-            expect(result.permissions).to.include("*/can-login");
+            expect(result.permissions).toContain("*/can-login");
         });
 
         it("can fetch groups", async () => {
@@ -213,7 +208,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const roles: string[] = await (new UsersService(this.store.dispatch, this.store.getState))
                 .getGlobalRoles();
 
-            expect(roles).to.have.length(12)
+            expect(roles).toHaveLength(12)
         });
 
         it("can create a user", async () => {

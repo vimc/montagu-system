@@ -1,12 +1,10 @@
 import {Dispatch} from "redux";
 
-import {jwtTokenAuth} from "../modules/jwtTokenAuth";
 import {AuthService} from "../services/AuthService";
 import {appSettings, settings} from "../Settings";
 import {AuthState, loadAuthState} from "../reducers/authReducer";
 import {
-    Authenticated,
-    AuthenticationError,
+    Authenticated, AuthenticationError,
     AuthTypeKeys,
     ReceivedCookies,
     Unauthenticated
@@ -17,21 +15,6 @@ import {ModellingGroup} from "../models/Generated";
 import {ModellingGroupsService} from "../services/ModellingGroupsService";
 
 export const authActionCreators = {
-
-    logIn(email: string, password: string) {
-        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            try {
-                const response = await (new AuthService(dispatch, getState)).logIn(email, password);
-                if (response.error) {
-                    dispatch(this.authenticationError(response.error));
-                } else {
-                    await dispatch(this.receivedCompressedToken(response.access_token));
-                }
-            } catch (error) {
-                dispatch(notificationActionCreators.notify(this.makeErrorMessage("Server error"), "error"));
-            }
-        }
-    },
 
     loadAuthenticatedUser() {
         // fetch details of currently logged in user from API.
@@ -45,7 +28,7 @@ export const authActionCreators = {
                 const user: AuthState = loadAuthState({
                     username: userResponse.username,
                     loggedIn: true,
-                    bearerToken: null, //bearerToken - shouldn't need this since already logged in with cookies if successful response
+                    bearerToken: getState().auth.bearerToken, // this will be null except when running integration tests
                     permissions: userResponse.permissions,
                     modellingGroups: allGroups.map(x => x.id)
                 });
@@ -82,32 +65,6 @@ export const authActionCreators = {
         return `${error}. Please contact ${support} for help.`;
     },
 
-    receivedCompressedToken(token: string) {
-        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            const user: AuthState = jwtTokenAuth.getDataFromCompressedToken(token);
-            const error: string = this.validateAuthResult(user);
-            if (!error) {
-                dispatch({
-                    type: AuthTypeKeys.AUTHENTICATED,
-                    data: user,
-                } as Authenticated);
-                await dispatch(this.setCookies());
-            } else {
-                dispatch(notificationActionCreators.notify(error, "error"));
-                dispatch(this.authenticationError(error));
-            }
-        }
-    },
-
-    setCookies() {
-        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            const result = await new AuthService(dispatch, getState).setCookies();
-            if (result) {
-                dispatch({type: AuthTypeKeys.RECEIVED_COOKIES} as ReceivedCookies);
-            }
-        }
-    },
-
     authenticationError(error: any) {
         return {
             type: AuthTypeKeys.AUTHENTICATION_ERROR,
@@ -123,18 +80,6 @@ export const authActionCreators = {
             dispatch({
                 type: AuthTypeKeys.UNAUTHENTICATED,
             } as Unauthenticated);
-        }
-    },
-
-    forgotPassword(email: string) {
-        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            const result = await (new AuthService(dispatch, getState)).forgotPassword(email);
-            if (result) {
-                dispatch(notificationActionCreators.notify(
-                    "Thank you. If we have an account registered for this email address you will receive a reset password link",
-                    "info"
-                ));
-            }
         }
     }
 };

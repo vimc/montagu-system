@@ -1,15 +1,13 @@
 import {Client, QueryResult} from "pg";
-
 import {Sandbox} from "../test/Sandbox";
 
 import {authActionCreators} from "../main/shared/actions/authActionCreators";
 
 import {singletonVariableCache} from "../main/shared/modules/cache/singletonVariableCache";
-import {jwtTokenAuth} from "../main/shared/modules/jwtTokenAuth";
-import {ReactWrapper} from "enzyme";
 import {AbstractLocalService} from "../main/shared/services/AbstractLocalService";
-
-const jwt_decode = require('jwt-decode');
+import {AuthService} from "../main/shared/services/AuthService";
+import {initialAuthState} from "../main/shared/reducers/authReducer";
+import DoneCallback = jest.DoneCallback;
 
 const dbName = process.env.PGDATABASE;
 const dbTemplateName = process.env.PGTEMPLATE;
@@ -23,11 +21,7 @@ export class TestService extends AbstractLocalService {
 
 export abstract class IntegrationTestSuite {
 
-    private user : string = "test.user@example.com";
-
-    protected setUser(user: string) {
-        this.user = user;
-    }
+    private user: string = "test.user@example.com";
 
     abstract description(): string;
 
@@ -61,60 +55,21 @@ export abstract class IntegrationTestSuite {
                     .catch(e => done(e));
             });
 
-            beforeEach((done: DoneCallback) => {
+            beforeEach(async () => {
                 (global as any).fetch = require('node-fetch');
                 singletonVariableCache.clearAll();
-                // Note that this will always trigger an authActions.logIn, which will result in all three login
-                // stores recording the user to some extent
 
                 this.store = this.createStore();
-                this.store.dispatch(authActionCreators.logIn(this.user, "password"));
-                let unsubscribe = this.store.subscribe(handleChange);
-                let that = this;
+                const response = await (new AuthService(this.store.dispatch, this.store.getState))
+                    .logIn(this.user, "password");
 
-                function handleChange() {
-                    const token = that.store.getState().auth.bearerToken;
-
-                    unsubscribe();
-                    done();
-                }
+                initialAuthState.bearerToken = response.access_token;
+                await this.store.dispatch(authActionCreators.loadAuthenticatedUser());
             });
 
             this.addTestsToMocha();
         });
     }
-}
-
-export async function firstDownloadPromise(rendered: ReactWrapper) {
-    let url = null;
-
-    // until onetime token has been fetched url will be null
-    while (url == null) {
-        await timeout(50);
-        rendered.update(); // mounted component won't update with new props automatically
-        const link = rendered.find("a").first();
-        url = link.prop("href");
-        console.log(url)
-    }
-
-    return fetch(url)
-}
-
-export async function lastDownloadPromise(rendered: ReactWrapper) {
-    let url = null;
-    // until onetime token has been fetched url will be null
-    while (url == null) {
-        await timeout(50);
-        rendered.update(); // mounted component won't update with new props automatically
-        const link = rendered.find("a").last();
-        url = link.prop("href");
-    }
-
-    return fetch(url)
-}
-
-async function timeout(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function queryAgainstRootDb(query: string): Promise<void> {
@@ -146,16 +101,6 @@ export function addGroups(db: Client, groupId: String): Promise<QueryResult> {
         INSERT INTO modelling_group (id, description, institution, pi) VALUES ('${groupId}', 'Group 1', '', '');
         INSERT INTO modelling_group (id, description, institution, pi) VALUES ('Fake', 'Group 2', '', '');
     `);
-}
-
-export function expectSameElements<Any>(actual: Any[], expected: Any[]) {
-    const failMessage = `Expected ${JSON.stringify(actual, null, 4)} to have same members as ${JSON.stringify(expected, null, 4)}`;
-    expect(actual).toContain(expected, failMessage);
-    expect(expected).toContain(actual, failMessage);
-}
-
-export function inflateAndDecode(token: string): any {
-    return jwt_decode(jwtTokenAuth.inflateToken(token));
 }
 
 export function addScenario(db:Client, scenarioId: String, touchstoneVersionId: String) : Promise<QueryResult>{
@@ -202,7 +147,7 @@ export function addResponsibilities(db: Client, scenarioId: String, touchstoneVe
 }
 
 export function addCoverageSetsForGroup(db: Client, scenarioId: String, touchstoneVersionId: String, groupId: String)
-        : Promise<number> {
+    : Promise<number> {
     return addResponsibilities(db, scenarioId, touchstoneVersionId, groupId)
         .then(() => addCoverageSets(db, scenarioId, touchstoneVersionId));
 }
@@ -216,7 +161,7 @@ export function addCoverageSetsForScenario(db: Client, scenarioId: String, touch
 
 export function addCoverageSets(db: Client, scenarioId: String, touchstoneVersionId: String)
     : Promise<number> {
-    return  (db.query(`
+    return (db.query(`
             DO $$
                 DECLARE coverage_set_id integer;
                 DECLARE scenario_id integer;
