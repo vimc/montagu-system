@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../Sandbox";
 import {responsibilitiesActionCreators} from "../../../main/contrib/actions/responsibilitiesActionCreators";
@@ -24,7 +24,7 @@ describe("Responsibilities actions tests", () => {
         sandbox.restore();
     });
 
-    test("clears cache for responsibility set", (done) => {
+    it("clears cache for responsibility set", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
@@ -35,12 +35,12 @@ describe("Responsibilities actions tests", () => {
         store.dispatch(responsibilitiesActionCreators.clearCacheForResponsibilitySet());
         setTimeout(() => {
             const actions = store.getActions();
-            expect(actions).to.eql([]);
+            expect(actions).toEqual([]);
             done();
         });
     });
 
-    test("gets responsibility set", (done) => {
+    it("gets responsibility set", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
@@ -52,12 +52,12 @@ describe("Responsibilities actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    test("sets current responsibility set", (done) => {
+    it("sets current responsibility set", (done) => {
         const store = createMockContribStore({
             responsibilities: {responsibilitiesSet: testExtResponsibilitySet}
         });
@@ -65,12 +65,12 @@ describe("Responsibilities actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    test("refresh responsibilities", (done) => {
+    it("refresh responsibilities", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion },
@@ -95,7 +95,7 @@ describe("Responsibilities actions tests", () => {
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
                 { type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility},
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
             done();
         });
     });

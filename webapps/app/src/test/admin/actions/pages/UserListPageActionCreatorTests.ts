@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
@@ -17,7 +17,7 @@ describe("User List Page actions tests", () => {
         sandbox.restore();
     });
 
-    test("fetches all users on load", (done: DoneCallback) => {
+    it("fetches all users on load", (done: DoneCallback) => {
         const store = createMockStore({});
 
         sandbox.setStubFunc(UsersService.prototype, "getAllUsers", () => {
@@ -30,7 +30,7 @@ describe("User List Page actions tests", () => {
             const expectedPayload = [
                 {type: UsersTypes.ALL_USERS_FETCHED, data: [testUser]}
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
             done();
         });
     });

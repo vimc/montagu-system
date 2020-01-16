@@ -1,5 +1,5 @@
 import {Sandbox} from "../../../../Sandbox";
-import {expect} from "chai";
+
 import {mockMatch} from "../../../../mocks/mocks";
 import * as React from "react";
 import {createMockStore} from "../../../../mocks/mockStore";
@@ -31,7 +31,7 @@ describe("UserDetailsPage", () => {
         sandbox.restore();
     });
 
-    test("renders page component, title and sub components", () => {
+    it("renders page component, title and sub components", () => {
         const match = mockMatch<undefined>();
 
         const onLoadStub = sandbox.setStubReduxAction(userDetailsPageActionCreators, "onLoad");
@@ -40,9 +40,9 @@ describe("UserDetailsPage", () => {
             {context: {store}}).dive();
 
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).is.equal(true);
-        expect(pageArticle.props().title).is.equal("Fake Name");
-        expect(pageArticle.find(UserDetailsContent).length).is.equal(1);
+        expect(onLoadStub.called).toBe(true);
+        expect(pageArticle.props().title).toBe("Fake Name");
+        expect(pageArticle.find(UserDetailsContent).length).toBe(1);
     });
 
 });

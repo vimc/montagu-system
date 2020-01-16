@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {mount, shallow} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {
@@ -26,24 +26,24 @@ describe("CreateUserForm", () => {
         sandbox.restore();
     });
 
-    test("renders fields", () => {
+    it("renders fields", () => {
 
         const rendered = shallow(<CreateUserFormComponent errors={[]}
             handleSubmit={() => null} submit={null} changeFieldValue={null}/>);
 
         const fields = rendered.find(Field);
 
-        expect(fields.at(0).prop("name")).to.eq("name");
-        expect(fields.at(0).prop("validate")).to.have.members([validations.required]);
+        expect(fields.at(0).prop("name")).toEqual("name");
+        expect(fields.at(0).prop("validate")).toEqual([validations.required]);
 
-        expect(fields.at(1).prop("name")).to.eq("email");
-        expect(fields.at(1).prop("validate")).to.have.members([validations.required, validations.email]);
+        expect(fields.at(1).prop("name")).toEqual("email");
+        expect(fields.at(1).prop("validate")).toEqual([validations.required, validations.email]);
 
-        expect(fields.at(2).prop("name")).to.eq("username");
-        expect(fields.at(2).prop("validate")).to.have.members([validations.required, validations.username]);
+        expect(fields.at(2).prop("name")).toEqual("username");
+        expect(fields.at(2).prop("validate")).toEqual([validations.required, validations.username]);
     });
 
-    test("sets username to suggestion when name changes", () => {
+    it("sets username to suggestion when name changes", () => {
 
         let fieldName = "";
         let newValue = "";
@@ -61,11 +61,11 @@ describe("CreateUserForm", () => {
 
         field.simulate("change", event);
 
-        expect(fieldName).to.eq("username");
-        expect(newValue).to.eq("joe.bloggs");
+        expect(fieldName).toEqual("username");
+        expect(newValue).toEqual("joe.bloggs");
     });
 
-    test("calls creates user on form submission", () => {
+    it("calls creates user on form submission", () => {
 
         const stub = sandbox.setStubReduxAction(usersActionCreators, "createUser");
 
@@ -76,24 +76,24 @@ describe("CreateUserForm", () => {
         );
 
         mounted.simulate("submit");
-        expect(stub.called).to.be.true;
+        expect(stub.called).toBe(true);
     });
 
     describe("username suggestor", () => {
-        test("can handle one word", () => {
-            expect(suggestUsername("joe")).to.equal("joe");
+        it("can handle one word", () => {
+            expect(suggestUsername("joe")).toEqual("joe");
         });
-        test("can handle two words", () => {
-            expect(suggestUsername("joe bloggs")).to.equal("joe.bloggs");
+        it("can handle two words", () => {
+            expect(suggestUsername("joe bloggs")).toEqual("joe.bloggs");
         });
-        test("can handle many words", () => {
-            expect(suggestUsername("joe samuel stephen bloggs")).to.equal("joe.bloggs");
+        it("can handle many words", () => {
+            expect(suggestUsername("joe samuel stephen bloggs")).toEqual("joe.bloggs");
         });
-        test("converts to lower case", () => {
-            expect(suggestUsername("Joe Bloggs")).to.equal("joe.bloggs");
+        it("converts to lower case", () => {
+            expect(suggestUsername("Joe Bloggs")).toEqual("joe.bloggs");
         });
-        test("strips out bad characters", () => {
-            expect(suggestUsername("j_1-o=%_e_")).to.equal("joe");
+        it("strips out bad characters", () => {
+            expect(suggestUsername("j_1-o=%_e_")).toEqual("joe");
         });
     });
 });

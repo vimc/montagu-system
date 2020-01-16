@@ -1,16 +1,16 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { expect } from "chai";
+
 import {UserListItem} from "../../../../../main/admin/components/Users/List/UserListItem";
 import {mockUser} from "../../../../mocks/mockModels";
 import {User} from "../../../../../main/shared/models/Generated";
 
 describe("UserListItem", () => {
-    test("can render", () => {
+    it("can render", () => {
         shallow(<UserListItem { ...mockUser() } />);
     });
 
-    test("shows 'never' if user has not logged in", () => {
+    it("shows 'never' if user has not logged in", () => {
 
         const user: User = mockUser();
         user.last_logged_in = null;
@@ -18,7 +18,7 @@ describe("UserListItem", () => {
         const cells = rendered.find('td');
 
         const lastLoggedIn = cells.at(3).text();
-        expect(lastLoggedIn).to.eq("never")
+        expect(lastLoggedIn).toEqual("never")
     });
 
 });

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import {Store} from "redux";
 
 import "../../../../helper";
@@ -45,50 +45,49 @@ describe("Model Run Parameters Status component tests", () => {
     });
     afterEach(() => sandbox.restore());
 
-    test("renders on connect level", () => {
+    it("renders on connect level", () => {
         const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}});
-        expect(rendered.props().touchstone).to.eql(testTouchstone);
-        expect(rendered.props().group).to.eql(testGroup);
-        expect(rendered.props().set).to.eql(testRunParametersSet);
-        expect(rendered.props().disease).to.eql(testDisease.id);
+        expect(rendered.props().touchstone).toEqual(testTouchstone);
+        expect(rendered.props().group).toEqual(testGroup);
+        expect(rendered.props().set).toEqual(testRunParametersSet);
+        expect(rendered.props().disease).toEqual(testDisease.id);
     });
 
-    test("renders on branch level, passes", () => {
+    it("renders on branch level, passes", () => {
         const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}}).dive();
-        expect(rendered.find(ModelRunParametersStatusComponent).length).to.eql(1);
+        expect(rendered.find(ModelRunParametersStatusComponent).length).toEqual(1);
     });
 
-    test("renders on branch level, not passes", () => {
+    it("renders on branch level, not passes", () => {
         store = createMockStore({...testState, touchstones: {currentTouchstone: null}});
         const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement).length).to.eql(1);
+        expect(rendered.find(LoadingElement).length).toEqual(1);
     });
 
-    test("renders on component level, shows alert if no set received ", () => {
+    it("renders on component level, shows alert if no set received ", () => {
         store = createMockStore({...testState, runParameters: {...testState.runParameters, sets: []}});
         const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}}).dive().dive();
-        expect(rendered.find('Alert').find('span').text()).to
-            .equal(`You have not uploaded any parameter sets for ${testDisease.id}`);
+        expect(rendered.find('Alert').find('span').text()).toBe(`You have not uploaded any parameter sets for ${testDisease.id}`);
     });
 
-    test("renders on component level, shows message of downloadable files", () => {
+    it("renders on component level, shows message of downloadable files", () => {
         const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}}).dive().dive();
         expect(rendered.find("Alert").find('span').text()
             .indexOf(`You last uploaded a parameter set on ${longestTimestamp(new Date(testRunParametersSet.uploaded_on))}`))
-            .to.equal(0);
+            .toEqual(0);
     });
 
-    test(
+    it(
         "renders on component level, passes params to certificate download",
         () => {
             const rendered = shallow(<ModelRunParametersStatus disease={testDisease.id}/>, {context: {store}}).dive().dive();
 
             const certificate = rendered.find(ModelRunParameterDownloadCertificate);
-            expect(certificate.props().set).to.eql(testRunParametersSet);
+            expect(certificate.props().set).toEqual(testRunParametersSet);
         }
     );
 
-    test("renders on component level, passes URL to set download link", () => {
+    it("renders on component level, passes URL to set download link", () => {
         const props: ModelRunParametersStatusProps = {
             disease: testDisease.id,
             group: testGroup,
@@ -97,6 +96,6 @@ describe("Model Run Parameters Status component tests", () => {
         };
         const rendered = shallow(<ModelRunParametersStatus {...props}/>, {context: {store}}).dive().dive();
         const button = rendered.find(FileDownloadLink);
-        expect(button.prop("href")).to.equal("/modelling-groups/group-1/model-run-parameters/touchstone-1/1/");
+        expect(button.prop("href")).toEqual("/modelling-groups/group-1/model-run-parameters/touchstone-1/1/");
     });
 });

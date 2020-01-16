@@ -1,6 +1,5 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { expect } from "chai";
 import { Store } from "redux";
 
 import "../../../../helper";
@@ -29,7 +28,7 @@ describe("Responsibility Overview Page Component", () => {
     });
     afterEach(() => sandbox.restore());
 
-    test("renders component component level", () => {
+    it("renders component component level", () => {
         let testMatch = mockMatch<ResponsibilityOverviewPageLocationProps>({
             groupId: "g-1",
             touchstoneId: testTouchstone.id
@@ -40,9 +39,9 @@ describe("Responsibility Overview Page Component", () => {
             match={testMatch}
         />, {context: {store}}).dive().dive().dive();
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).is.equal(true);
-        expect(pageArticle.props().title).is.equal(testResponsibilityOverviewPageTitle);
-        expect(pageArticle.find(ResponsibilityOverviewContent).length).is.equal(1);
+        expect(onLoadStub.called).toBe(true);
+        expect(pageArticle.props().title).toBe(testResponsibilityOverviewPageTitle);
+        expect(pageArticle.find(ResponsibilityOverviewContent).length).toBe(1);
     });
 });
 

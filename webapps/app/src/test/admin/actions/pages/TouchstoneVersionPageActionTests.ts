@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockAdminStore} from "../../../mocks/mockStore";
@@ -22,7 +22,7 @@ describe("Touchstone version page actions tests", () => {
         sandbox.restore();
     });
 
-    test("sets current touchstone version", async () => {
+    it("sets current touchstone version", async () => {
 
         const store = createMockAdminStore(state);
 
@@ -31,23 +31,23 @@ describe("Touchstone version page actions tests", () => {
         await store.dispatch(touchstoneVersionPageActionCreators
             .loadData({touchstoneVersionId: "t1", touchstoneId: "whatever"}));
 
-        expect(setCurrentStub.called).to.be.true;
+        expect(setCurrentStub.called).toBe(true);
 
     });
 
-    test("creates breadcrumbs", () => {
+    it("creates breadcrumbs", () => {
 
         const result = touchstoneVersionPageActionCreators.createBreadcrumb(state);
 
-        expect(result.urlFragment).to.eq("t1v1/");
-        expect(result.name).to.eq("t1v1");
+        expect(result.urlFragment).toEqual("t1v1/");
+        expect(result.name).toEqual("t1v1");
     });
 
-    test("has touchstone details page as parent", () => {
-        expect(touchstoneVersionPageActionCreators.parent).to.eq(touchstoneDetailsPageActionCreators);
+    it("has touchstone details page as parent", () => {
+        expect(touchstoneVersionPageActionCreators.parent).toEqual(touchstoneDetailsPageActionCreators);
     });
 
-    test("has touchstone version description as title", () => {
-        expect(touchstoneVersionPageActionCreators.title(state)).to.eq("desc");
+    it("has touchstone version description as title", () => {
+        expect(touchstoneVersionPageActionCreators.title(state)).toEqual("desc");
     });
 });

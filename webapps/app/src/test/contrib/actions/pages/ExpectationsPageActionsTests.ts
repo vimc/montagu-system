@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
@@ -13,18 +13,18 @@ describe("ExpectationsPage actions tests", () => {
         sandbox.restore();
     });
 
-    test("has responsibilities overview page as parent", () => {
-        expect(expectationsPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators)
+    it("has responsibilities overview page as parent", () => {
+        expect(expectationsPageActionCreators.parent).toEqual(responsibilityOverviewPageActionCreators)
     });
 
-    test("creates breadcrumb", () => {
+    it("creates breadcrumb", () => {
         const state = mockContribState();
         const result = expectationsPageActionCreators.createBreadcrumb(state);
-        expect(result.urlFragment).to.eq("templates/");
-        expect(result.name).to.eq("Download burden estimate templates");
+        expect(result.urlFragment).toEqual("templates/");
+        expect(result.name).toEqual("Download burden estimate templates");
     });
 
-    test("loads nothing", async () => {
+    it("loads nothing", async () => {
 
         const store = createMockContribStore();
         await store.dispatch(expectationsPageActionCreators
@@ -34,7 +34,7 @@ describe("ExpectationsPage actions tests", () => {
             }));
 
         const actions = store.getActions();
-        expect(actions).to.eql([]);
+        expect(actions).toEqual([]);
 
     });
 

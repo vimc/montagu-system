@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
@@ -31,19 +31,19 @@ describe("Download Coverage Page actions tests", () => {
         sandbox.restore();
     });
 
-    test("has responsibility overview as parent", () => {
-        expect(downloadCoveragePageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators);
+    it("has responsibility overview as parent", () => {
+        expect(downloadCoveragePageActionCreators.parent).toEqual(responsibilityOverviewPageActionCreators);
     });
 
-    test("creates breadcrumb", () => {
+    it("creates breadcrumb", () => {
 
         const result = downloadCoveragePageActionCreators.createBreadcrumb(state);
 
-        expect(result.name).to.eq("Download coverage for s1desc");
-        expect(result.urlFragment).to.eq("coverage/s1/");
+        expect(result.name).toEqual("Download coverage for s1desc");
+        expect(result.urlFragment).toEqual("coverage/s1/");
     });
 
-    test(
+    it(
         "loadData sets current responsibility and gets coverage data sets ",
         async () => {
 
@@ -70,7 +70,7 @@ describe("Download Coverage Page actions tests", () => {
                 {type: "TEST_SET_CURRENT", props: "s1"},
                 {type: "TEST_GET_COV_DATA_SETS", props: undefined}
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
 
         }
     );

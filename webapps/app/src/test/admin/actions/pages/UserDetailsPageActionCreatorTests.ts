@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import * as Sinon from "sinon"
 
 import {Sandbox} from "../../../Sandbox";
@@ -41,22 +41,22 @@ describe("User Details Page actions tests", () => {
         sandbox.restore();
     });
 
-    test("has user list page as parent", async () => {
+    it("has user list page as parent", async () => {
 
-        expect(userDetailsPageActionCreators.parent).to.eq(usersListPageActionCreators)
+        expect(userDetailsPageActionCreators.parent).toEqual(usersListPageActionCreators)
     });
 
-    test("creates breadcrumb", () => {
+    it("creates breadcrumb", () => {
 
         const mockUsersState = mockAdminUsersState({currentUser: mockUser({username: "fake.name", name: "Fake Name"})});
         const mockAdminAppState = mockAdminState({users: mockUsersState});
         const breadcrumb = userDetailsPageActionCreators.createBreadcrumb(mockAdminAppState);
 
-        expect(breadcrumb.name).is.equal("fake.name");
-        expect(breadcrumb.urlFragment).is.equal("fake.name/");
+        expect(breadcrumb.name).toBe("fake.name");
+        expect(breadcrumb.urlFragment).toBe("fake.name/");
     });
 
-    test("sets current user and gets global roles on load", async () => {
+    it("sets current user and gets global roles on load", async () => {
 
         store = createMockStore(mockAdminState({auth: {permissions: ["*/roles.read"]}}));
         await store.dispatch(userDetailsPageActionCreators.loadData({username: "test.user"}));
@@ -66,10 +66,10 @@ describe("User Details Page actions tests", () => {
             {type: UsersTypes.SET_CURRENT_USER, data: "test.user"},
             {type: UsersTypes.ALL_GLOBAL_ROLES_FETCHED,data: [testRole]}
         ];
-        expect(actions).to.eql(expectedPayload);
+        expect(actions).toEqual(expectedPayload);
     });
 
-    test(
+    it(
         "does not get global roles if user does not have permission",
         async () => {
 
@@ -79,7 +79,7 @@ describe("User Details Page actions tests", () => {
             const expectedPayload = [
                 {type: UsersTypes.SET_CURRENT_USER, data: "test.user"}
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
         }
     );
 

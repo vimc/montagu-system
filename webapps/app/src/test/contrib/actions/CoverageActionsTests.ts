@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import { Sandbox } from "../../Sandbox";
 import { coverageActionCreators } from "../../../main/contrib/actions/coverageActionCreators";
@@ -23,7 +23,7 @@ describe("Coverage actions tests", () => {
         sandbox.restore();
     });
 
-    test("data sets fetched", (done) => {
+    it("data sets fetched", (done) => {
         const store = createMockStore({});
         sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", ()=>{
             return Promise.resolve({groupId: "g1", touchstoneId: "t1", scenarioId: "s1"});
@@ -36,18 +36,18 @@ describe("Coverage actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: CoverageTypes.COVERAGE_DATA_SETS_FETCHED, data: [testCoverageSet] };
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    test("sets format", (done) => {
+    it("sets format", (done) => {
         const store = createMockStore({});
         store.dispatch(coverageActionCreators.setFormat(Coverage.SelectedFormat.long));
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: CoverageTypes.COVERAGE_SET_FORMAT, data: "long" };
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });

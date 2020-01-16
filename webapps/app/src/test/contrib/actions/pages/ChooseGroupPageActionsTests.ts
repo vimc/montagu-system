@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
@@ -17,7 +17,7 @@ describe("Choose Group Page actions tests", () => {
         sandbox.restore();
     });
 
-    test("gets all groups on load", (done: DoneCallback) => {
+    it("gets all groups on load", (done: DoneCallback) => {
         const initialState = {
             auth: {modellingGroups: [testGroup.id]}
         };
@@ -33,20 +33,20 @@ describe("Choose Group Page actions tests", () => {
         })
     });
 
-    test("creates breadcrumbs", () => {
+    it("creates breadcrumbs", () => {
 
         const result = chooseGroupPageActionCreators.createBreadcrumb();
 
-        expect(result.urlFragment).to.eq("/");
-        expect(result.name).to.eq("Modellers' contribution portal");
+        expect(result.urlFragment).toEqual("/");
+        expect(result.name).toEqual("Modellers' contribution portal");
     });
 
-    test("has no parent", () => {
-        expect(chooseGroupPageActionCreators.parent).to.be.undefined;
+    it("has no parent", () => {
+        expect(chooseGroupPageActionCreators.parent).toBeUndefined();
     });
 
-    test("creates title", () => {
-        expect(chooseGroupPageActionCreators.title()).to.eq("Modellers' contribution portal");
+    it("creates title", () => {
+        expect(chooseGroupPageActionCreators.title()).toEqual("Modellers' contribution portal");
     });
 
 });

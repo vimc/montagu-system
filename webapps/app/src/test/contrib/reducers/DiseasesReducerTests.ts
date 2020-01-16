@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import {diseasesInitialState, diseasesReducer} from "../../../main/shared/reducers/diseasesReducer";
 import { DiseasesTypes } from "../../../main/shared/actionTypes/DiseasesTypes";
@@ -8,14 +8,14 @@ describe('Diseases reducer tests', () => {
 
     const testDisease = {id: "disease-1", name: "Test 1"};
 
-    test('sets fetched diseases', () => {
+    it('sets fetched diseases', () => {
         expect(diseasesReducer(undefined, {
             type: DiseasesTypes.DISEASES_FETCHED,
             data: [testDisease]
-        })).to.eql({...diseasesInitialState, diseases: [testDisease]});
+        })).toEqual({...diseasesInitialState, diseases: [testDisease]});
     });
 
-    test('orders diseases by name', () => {
+    it('orders diseases by name', () => {
         const a = mockDisease({ name: "A" });
         const b = mockDisease({ name: "B" });
         const c = mockDisease({ name: "C" });
@@ -23,27 +23,27 @@ describe('Diseases reducer tests', () => {
         expect(diseasesReducer(undefined, {
             type: DiseasesTypes.DISEASES_FETCHED,
             data: [b, c, a]
-        })).to.eql({...diseasesInitialState, diseases: [a, b, c]});
+        })).toEqual({...diseasesInitialState, diseases: [a, b, c]});
     });
 
-    test('sets empty diseases', () => {
+    it('sets empty diseases', () => {
         expect(diseasesReducer(undefined, {
             type: DiseasesTypes.DISEASES_FETCHED,
             data: null
-        })).to.eql(diseasesInitialState);
+        })).toEqual(diseasesInitialState);
     });
 
-    test('sets current disease id', () => {
+    it('sets current disease id', () => {
         expect(diseasesReducer(undefined, {
             type: DiseasesTypes.DISEASES_SET_CURRENT_DISEASE_ID,
             data: testDisease.id
-        })).to.eql({...diseasesInitialState, currentDiseaseId: testDisease.id});
+        })).toEqual({...diseasesInitialState, currentDiseaseId: testDisease.id});
     });
 
-    test('sets current disease id empty', () => {
+    it('sets current disease id empty', () => {
         expect(diseasesReducer(undefined, {
             type: DiseasesTypes.DISEASES_SET_CURRENT_DISEASE_ID,
             data: null
-        })).to.eql(diseasesInitialState);
+        })).toEqual(diseasesInitialState);
     })
 });

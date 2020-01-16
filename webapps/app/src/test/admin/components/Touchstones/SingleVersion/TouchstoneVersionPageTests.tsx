@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../../Sandbox";
 import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
@@ -18,12 +18,12 @@ describe("TouchstoneVersionPage", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    test("calls onLoad and renders TouchstoneVersionDetails", () => {
+    it("calls onLoad and renders TouchstoneVersionDetails", () => {
         const onLoadStub = sandbox.setStubReduxAction(touchstoneVersionPageActionCreators, "onLoad");
         sandbox.setStubReduxAction(touchstoneVersionPageActionCreators, "title");
         const rendered = shallowRenderPage(<TouchstoneVersionPage {...mockPageProperties()} />);
-        expect(rendered.find(PageArticle).find(TouchstoneVersionDetails)).to.have.length(1);
-        expect(onLoadStub.called).is.equal(true);
+        expect(rendered.find(PageArticle).find(TouchstoneVersionDetails)).toHaveLength(1);
+        expect(onLoadStub.called).toBe(true);
     });
 });
 
@@ -31,27 +31,27 @@ describe("TouchstoneVersionDetails", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    test("renders status", () => {
+    it("renders status", () => {
         const rendered = shallow(<TouchstoneVersionDetailsComponent touchstone={mockTouchstone()}
                                                                     touchstoneVersion={mockTouchstoneVersion({status: "open"})}/>);
-        expect(rendered.find("h3").text()).to.eq("Status: open");
+        expect(rendered.find("h3").text()).toEqual("Status: open");
     });
 
-    test("renders scenarios link", () => {
+    it("renders scenarios link", () => {
         const rendered = shallow(<TouchstoneVersionDetailsComponent touchstone={mockTouchstone({id: "t1"})}
                                                                     touchstoneVersion={mockTouchstoneVersion({id: "v1", status: "open"})}/>);
-        expect(rendered.find(InternalLink).at(0).prop("href")).to.eq("/touchstones/t1/v1/scenarios/");
+        expect(rendered.find(InternalLink).at(0).prop("href")).toEqual("/touchstones/t1/v1/scenarios/");
     });
 
-    test("renders responsibilities link", () => {
+    it("renders responsibilities link", () => {
         const rendered = shallow(<TouchstoneVersionDetailsComponent touchstone={mockTouchstone({id: "t1"})}
                                                                     touchstoneVersion={mockTouchstoneVersion({id: "v1", status: "open"})}/>);
-        expect(rendered.find(InternalLink).at(1).prop("href")).to.eq("/touchstones/t1/v1/responsibilities/");
+        expect(rendered.find(InternalLink).at(1).prop("href")).toEqual("/touchstones/t1/v1/responsibilities/");
     });
 
-    test("renders demographics link", () => {
+    it("renders demographics link", () => {
         const rendered = shallow(<TouchstoneVersionDetailsComponent touchstone={mockTouchstone({id: "t1"})}
                                                                     touchstoneVersion={mockTouchstoneVersion({id: "v1", status: "open"})}/>);
-        expect(rendered.find(InternalLink).at(2).prop("href")).to.eq("/touchstones/t1/v1/demographics/");
+        expect(rendered.find(InternalLink).at(2).prop("href")).toEqual("/touchstones/t1/v1/demographics/");
     });
 });

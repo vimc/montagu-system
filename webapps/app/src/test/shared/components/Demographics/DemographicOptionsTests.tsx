@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow} from "enzyme";
-import { expect } from "chai";
+
 import { Store } from "redux";
 
 import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";
@@ -40,82 +40,82 @@ describe("DemographicOptions", () => {
     });
     afterEach(() => sandbox.restore());
 
-    test("renders on connect level", () => {
+    it("renders on connect level", () => {
         const rendered = shallow(<DemographicOptions/>, {context: {store}});
-        expect(rendered.props().dataSets).to.eql([testDemographicSet]);
-        expect(rendered.props().selectedDataSet).to.eql(testDemographicSet);
-        expect(rendered.props().selectedGender).to.eql("both");
-        expect(rendered.props().selectedFormat).to.eql("long");
-        expect(typeof rendered.props().onSelectDataSet).to.eql("function");
-        expect(typeof rendered.props().onSelectGender).to.eql("function");
-        expect(typeof rendered.props().onSelectFormat).to.eql("function");
+        expect(rendered.props().dataSets).toEqual([testDemographicSet]);
+        expect(rendered.props().selectedDataSet).toEqual(testDemographicSet);
+        expect(rendered.props().selectedGender).toEqual("both");
+        expect(rendered.props().selectedFormat).toEqual("long");
+        expect(typeof rendered.props().onSelectDataSet).toEqual("function");
+        expect(typeof rendered.props().onSelectGender).toEqual("function");
+        expect(typeof rendered.props().onSelectFormat).toEqual("function");
     });
 
-    test("renders on branch level, passes", () => {
+    it("renders on branch level, passes", () => {
         const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive();
-        expect(rendered.find(DemographicOptionsComponent).length).to.eql(1);
+        expect(rendered.find(DemographicOptionsComponent).length).toEqual(1);
     });
 
-    test("renders on branch level, not passes", () => {
+    it("renders on branch level, not passes", () => {
         store = createMockContribStore({...testState, demographics: {...testState.demographics, dataSets: []}});
         const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement).length).to.eql(1);
+        expect(rendered.find(LoadingElement).length).toEqual(1);
     });
 
-    test("renders on component level, renders data sets selection", () => {
+    it("renders on component level, renders data sets selection", () => {
         const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
         const dataSetSelect = rendered.find('select.form-control');
-        expect(dataSetSelect.length).to.equal(1);
-        expect(dataSetSelect.props().value).to.equal(testDemographicSet.id);
+        expect(dataSetSelect.length).toEqual(1);
+        expect(dataSetSelect.props().value).toEqual(testDemographicSet.id);
         const options = dataSetSelect.children();
-        expect(options.at(0).props().value).to.equal("");
-        expect(options.at(0).props().children).to.equal("- Select -");
-        expect(options.at(1).props().value).to.equal(testDemographicSet.id);
-        expect(options.at(1).props().children).to.equal(testDemographicSet.name);
+        expect(options.at(0).props().value).toEqual("");
+        expect(options.at(0).props().children).toEqual("- Select -");
+        expect(options.at(1).props().value).toEqual(testDemographicSet.id);
+        expect(options.at(1).props().children).toEqual(testDemographicSet.name);
     });
 
-    test(
+    it(
         "renders on component level, on data sets selection, triggers actions",
         () => {
             const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
             const dataSetSelect = rendered.find('select.form-control');
             const setDataSetStub = sandbox.setStubReduxAction(demographicActionCreators, "setDataSet");
             dataSetSelect.simulate('change', { target: {value: testDemographicSet.id} });
-            expect(setDataSetStub.called).to.equal(true);
-            expect(setDataSetStub.getCall(0).args[0]).to.equal(testDemographicSet.id);
+            expect(setDataSetStub.called).toEqual(true);
+            expect(setDataSetStub.getCall(0).args[0]).toEqual(testDemographicSet.id);
         }
     );
 
-    test(
+    it(
         "renders on component level, renders gender selection component and its props",
         () => {
             const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
             const genderControl = rendered.find(GenderControl);
-            expect(genderControl.length).to.equal(1);
-            expect(genderControl.props().dataSet).to.eql(testDemographicSet);
-            expect(genderControl.props().value).to.eql("both");
-            expect(typeof genderControl.props().onSelectGender).to.eql("function");
+            expect(genderControl.length).toEqual(1);
+            expect(genderControl.props().dataSet).toEqual(testDemographicSet);
+            expect(genderControl.props().value).toEqual("both");
+            expect(typeof genderControl.props().onSelectGender).toEqual("function");
         }
     );
 
-    test(
+    it(
         "renders on component level, renders gender selection disabled, if no set selected",
         () => {
             store = createMockContribStore({...testState, demographics: {...testState.demographics, selectedDataSet: null}});
             const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
             const genderControl = rendered.find(GenderControl);
-            expect(genderControl.dive().text()).to.equal("Gender is not applicable / no gender options available");
+            expect(genderControl.dive().text()).toEqual("Gender is not applicable / no gender options available");
         }
     );
 
-    test(
+    it(
         "renders on component level, renders gender selection enabled, if set selected",
         () => {
             const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
             const genderControl = rendered.find(GenderControl);
             const genderControlProps = genderControl.dive().props() as RadioButtonGroupProperties;
-            expect(genderControlProps.options.length).to.equal(3);
-            expect(genderControlProps.options).to.eql([
+            expect(genderControlProps.options.length).toEqual(3);
+            expect(genderControlProps.options).toEqual([
                 { value: 'both', label: 'Both' },
                 { value: 'male', label: 'Male' },
                 { value: 'female', label: 'Female' }
@@ -123,7 +123,7 @@ describe("DemographicOptions", () => {
         }
     );
 
-    test(
+    it(
         "renders on component level, on gender selection, triggers actions",
         () => {
             const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
@@ -132,40 +132,40 @@ describe("DemographicOptions", () => {
             const genderControlRadioGroupItems = genderControlRadioGroup.dive();
             const genderControlRadioGroupItems1 = genderControlRadioGroupItems.find('ReactRadioButton').at(0);
             genderControlRadioGroupItems1.simulate('change', { target: {value: "both"} });
-            expect(setGenderStub.called).to.equal(true);
-            expect(setGenderStub.getCall(0).args[0]).to.equal("both");
+            expect(setGenderStub.called).toEqual(true);
+            expect(setGenderStub.getCall(0).args[0]).toEqual("both");
         }
     );
 
-    test(
+    it(
         "renders on component level, renders format selection component and its props",
         () => {
             const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
             const formatControl = rendered.find(FormatControl);
-            expect(formatControl.length).to.equal(1);
-            expect(formatControl.props().value).to.eql(testState.demographics.selectedFormat);
-            expect(typeof formatControl.props().onSelectFormat).to.eql("function");
+            expect(formatControl.length).toEqual(1);
+            expect(formatControl.props().value).toEqual(testState.demographics.selectedFormat);
+            expect(typeof formatControl.props().onSelectFormat).toEqual("function");
         }
     );
 
-    test("renders on component level, renders format items", () => {
+    it("renders on component level, renders format items", () => {
         const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
         const formatControl = rendered.find(FormatControl);
         const formatControlProps = formatControl.dive().props() as RadioButtonGroupProperties;
-        expect(formatControlProps.options.length).to.equal(2);
-        expect(formatControlProps.options).to.eql([
+        expect(formatControlProps.options.length).toEqual(2);
+        expect(formatControlProps.options).toEqual([
             { value: 'long', label: 'Long' },
             { value: 'wide', label: 'Wide' }
         ]);
     });
 
-    test("renders on component level, renders format tooltip", () => {
+    it("renders on component level, renders format tooltip", () => {
         const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
         const tooltip = rendered.find(UncontrolledTooltip);
-        expect(tooltip.props().target).to.equal("format-tooltip");
+        expect(tooltip.props().target).toEqual("format-tooltip");
     });
 
-    test(
+    it(
         "renders on component level, on format selection, triggers actions",
         () => {
             const rendered = shallow(<DemographicOptions/>, {context: {store}}).dive().dive();
@@ -174,8 +174,8 @@ describe("DemographicOptions", () => {
             const formatControlRadioGroupItems = formatControlRadioGroup.dive();
             const formatControlRadioGroupItems1 = formatControlRadioGroupItems.find('ReactRadioButton').at(0);
             formatControlRadioGroupItems1.simulate('change', { target: {value: "long"} });
-            expect(setFormatStub.called).to.equal(true);
-            expect(setFormatStub.getCall(0).args[0]).to.equal("long");
+            expect(setFormatStub.called).toEqual(true);
+            expect(setFormatStub.getCall(0).args[0]).toEqual("long");
         }
     );
 });

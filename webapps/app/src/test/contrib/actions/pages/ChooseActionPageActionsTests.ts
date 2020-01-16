@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
@@ -24,19 +24,19 @@ describe("Choose Action Page actions tests", () => {
         sandbox.restore();
     });
 
-    test("has choose group page as parent", () => {
-        expect(chooseActionPageActionCreators.parent).to.eq(chooseGroupPageActionCreators)
+    it("has choose group page as parent", () => {
+        expect(chooseActionPageActionCreators.parent).toEqual(chooseGroupPageActionCreators)
     });
 
-    test("creates breadcrumb", () => {
+    it("creates breadcrumb", () => {
 
         const result = chooseActionPageActionCreators.createBreadcrumb(initialState);
 
-        expect(result.name).to.eq("desc");
-        expect(result.urlFragment).to.eq("g1/");
+        expect(result.name).toEqual("desc");
+        expect(result.urlFragment).toEqual("g1/");
     });
 
-    test("loadData set current group and loads touchstones", async () => {
+    it("loadData set current group and loads touchstones", async () => {
 
         const store = createMockStore(initialState);
 
@@ -52,7 +52,7 @@ describe("Choose Action Page actions tests", () => {
             {type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup},
             {type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]}
         ];
-        expect(actions).to.eql(expectedPayload);
+        expect(actions).toEqual(expectedPayload);
 
     });
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import {Store} from "redux";
 
 import "../../../../helper";
@@ -65,7 +65,7 @@ describe("UploadBurdenEstimatesContent", () => {
     });
     afterEach(() => sandbox.restore());
 
-    test("renders on connect level and receives proper props", () => {
+    it("renders on connect level and receives proper props", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}});
         const expectedProps: UploadBurdenEstimatesContentProps = {
             touchstone: testTouchstone,
@@ -75,46 +75,46 @@ describe("UploadBurdenEstimatesContent", () => {
             responsibility: testResponsibility,
             canUpload: true
         };
-        expect(rendered.props()).to.eql(expectedProps)
+        expect(rendered.props()).toEqual(expectedProps)
     });
 
-    test("renders on branch level, passes", () => {
+    it("renders on branch level, passes", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive();
-        expect(rendered.find(UploadBurdenEstimatesContentComponent).length).to.eql(1);
+        expect(rendered.find(UploadBurdenEstimatesContentComponent).length).toEqual(1);
     });
 
-    test("renders on branch level, not passes", () => {
+    it("renders on branch level, not passes", () => {
         store = createMockStore({
             ...testState,
             responsibilities: {...testState.responsibilities, currentResponsibility: null}
         });
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement).length).to.eql(1);
+        expect(rendered.find(LoadingElement).length).toEqual(1);
     });
 
-    test("renders touchstone and scenario message", () => {
+    it("renders touchstone and scenario message", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const subheading = rendered.find("h5").at(0);
-        expect(subheading.find('span').at(0).text(), testTouchstone.description);
-        expect(subheading.find('span').at(1).text(), testScenario.description);
+        expect(subheading.find('span').at(0).text().trim()).toBe(testTouchstone.description);
+        expect(subheading.find('span').at(1).text().trim()).toBe(testScenario.description);
     });
 
-    test("renders link to template download page", () => {
+    it("renders link to template download page", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const link = rendered.find(InternalLink);
-        expect(link.prop("href")).to.eql(`/${testGroup.id}/responsibilities/${testTouchstone.id}/templates/`);
+        expect(link.prop("href")).toEqual(`/${testGroup.id}/responsibilities/${testTouchstone.id}/templates/`);
     });
 
-    test(
+    it(
         "renders diagnostic section if latest burden estimate set exists and is populated",
         () => {
             const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
             const section = rendered.find(DiagnosticSection);
-            expect(section).to.have.lengthOf(1);
+            expect(section).toHaveLength(1);
         }
     );
 
-    test(
+    it(
         "does not render diagnostic section if no latest burden estimate set",
         () => {
             store = createMockContribStore({
@@ -129,11 +129,11 @@ describe("UploadBurdenEstimatesContent", () => {
 
             const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
             const section = rendered.find(DiagnosticSection);
-            expect(section).to.have.lengthOf(0);
+            expect(section).toHaveLength(0);
         }
     );
 
-    test(
+    it(
         "does not render diagnostic section if latest burden estimate set is empty",
         () => {
             store = createMockContribStore({
@@ -148,11 +148,11 @@ describe("UploadBurdenEstimatesContent", () => {
 
             const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
             const section = rendered.find(DiagnosticSection);
-            expect(section).to.have.lengthOf(0);
+            expect(section).toHaveLength(0);
         }
     );
 
-    test(
+    it(
         "renders on component level, passes right params to CurrentEstimateSetSummary",
         () => {
             const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
@@ -164,25 +164,25 @@ describe("UploadBurdenEstimatesContent", () => {
                 canUpload: true,
                 estimateSet: testEstimateSet
             };
-            expect(currentEstimateSetSummary.length).to.equal(1);
-            expect(currentEstimateSetSummary.props()).to.eql(expectedProps);
+            expect(currentEstimateSetSummary.length).toEqual(1);
+            expect(currentEstimateSetSummary.props()).toEqual(expectedProps);
         }
     );
 
-    test("renders UploadEstimatesForm if canUpload is true", () => {
+    it("renders UploadEstimatesForm if canUpload is true", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const uploadBurdenEstimatesForm = rendered.find(UploadEstimatesForm);
-        expect(uploadBurdenEstimatesForm.length).to.equal(1);
+        expect(uploadBurdenEstimatesForm.length).toEqual(1);
 
         const expected: Partial<UploadEstimatesPublicProps> = {
             groupId: testGroup.id,
             scenarioId: testScenario.id,
             touchstoneId: testTouchstone.id
         };
-        expect(uploadBurdenEstimatesForm.props()).to.eql(expected);
+        expect(uploadBurdenEstimatesForm.props()).toEqual(expected);
     });
 
-    test("does not render UploadEstimatesForm if canUpload is false", () => {
+    it("does not render UploadEstimatesForm if canUpload is false", () => {
 
         store = createMockStore({
             ...testState,
@@ -191,7 +191,7 @@ describe("UploadBurdenEstimatesContent", () => {
 
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const uploadBurdenEstimatesForm = rendered.find(UploadEstimatesForm);
-        expect(uploadBurdenEstimatesForm.length).to.equal(0);
+        expect(uploadBurdenEstimatesForm.length).toEqual(0);
 
     });
 });

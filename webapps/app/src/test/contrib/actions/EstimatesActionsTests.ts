@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../Sandbox";
 import {estimatesActionCreators} from "../../../main/contrib/actions/estimatesActionCreators";
@@ -41,7 +41,7 @@ describe("Estimates actions tests", () => {
         sandbox.restore();
     });
 
-    test("creates set chart type action", async () => {
+    it("creates set chart type action", async () => {
         const store = createStore();
 
         await store.dispatch(estimatesActionCreators.setChartType(BurdenOutcome.CASES));
@@ -53,10 +53,10 @@ describe("Estimates actions tests", () => {
                 data: BurdenOutcome.CASES
             }
         ];
-        expect(actions).to.eql(expectedPayload);
+        expect(actions).toEqual(expectedPayload);
     });
 
-    test(
+    it(
         "gets burden estimates and dispatches action containing data, type and set id",
         async () => {
 
@@ -77,13 +77,13 @@ describe("Estimates actions tests", () => {
                     data: {burdens: "TEST", type: outcome, setId: setId}
                 }
             ];
-            expect(actions).to.eql(expectedPayload);
-            expect(getEstimatesEndpoint.calledOnce).to.be.true;
+            expect(actions).toEqual(expectedPayload);
+            expect(getEstimatesEndpoint.calledOnce).toBe(true);
 
         }
     );
 
-    test(
+    it(
         "creates burden estimate set and fetches upload token on success",
         (done: DoneCallback) => {
             const store = createStore();
@@ -112,8 +112,8 @@ describe("Estimates actions tests", () => {
                     {type: EstimateTypes.SET_CREATED, data: "1"},
                     {type: EstimateTypes.UPLOAD_TOKEN_FETCHED, data: "TOKEN"}
                 ];
-                expect(actions).to.eql(expectedPayload);
-                expect(createBurdenEndpoint.calledOnce).to.be.true;
+                expect(actions).toEqual(expectedPayload);
+                expect(createBurdenEndpoint.calledOnce).toBe(true);
                 done();
             })
 
@@ -122,7 +122,7 @@ describe("Estimates actions tests", () => {
 
     describe("populating estimate sets", () => {
 
-        test(
+        it(
             "setStatus is complete if estimates populated without error",
             async () => {
                 const store = createStore();
@@ -153,11 +153,11 @@ describe("Estimates actions tests", () => {
                         type: "test"
                     }
                 ];
-                expect(actions).to.eql(expectedPayload);
+                expect(actions).toEqual(expectedPayload);
             }
         );
 
-        test("setStatus is invalid if there is a missing rows error", async () => {
+        it("setStatus is invalid if there is a missing rows error", async () => {
             const store = createStore();
 
             sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", () => {
@@ -185,10 +185,10 @@ describe("Estimates actions tests", () => {
                     type: "test"
                 }
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
         });
 
-        test("setStatus is empty if there is an unexpected error", async () => {
+        it("setStatus is empty if there is an unexpected error", async () => {
             const store = createStore();
 
             sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", () => {
@@ -216,10 +216,10 @@ describe("Estimates actions tests", () => {
                     type: "test"
                 }
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
         });
 
-        test("refreshes responsibilities after set population", async () => {
+        it("refreshes responsibilities after set population", async () => {
             const store = createStore();
 
             sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", () => {
@@ -233,16 +233,16 @@ describe("Estimates actions tests", () => {
 
             await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
 
-            expect(refreshResponsibilitiesStub.called).to.be.true;
+            expect(refreshResponsibilitiesStub.called).toBe(true);
         });
 
-        test("can reset PopulateState", () => {
+        it("can reset PopulateState", () => {
             const result = estimatesActionCreators.resetPopulateState();
-            expect(result.type).to.eq(EstimateTypes.RESET_POPULATE_STATE);
-            expect(result.data).to.be.true;
+            expect(result.type).toEqual(EstimateTypes.RESET_POPULATE_STATE);
+            expect(result.data).toBe(true);
         });
 
-        test("can get upload token", async () => {
+        it("can get upload token", async () => {
             const store = createStore();
 
             sandbox.setStubFunc(mapStateToPropsHelper, "getResponsibilityIds", () => {
@@ -261,7 +261,7 @@ describe("Estimates actions tests", () => {
                     data: "TOKEN"
                 }
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
         })
 
     });

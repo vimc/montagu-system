@@ -2,11 +2,11 @@ import {RecursivePartial} from "../../mocks/mockStates";
 import {CommonState} from "../../../main/shared/reducers/CommonState";
 import {AppProps, mapStateToAppProps} from "../../../main/shared/components/App";
 import {initialAuthState} from "../../../main/shared/reducers/authReducer";
-import {expect} from "chai";
+
 import {mockHistory} from "../../mocks/mocks";
 
 describe('App', () => {
-    test("loggedIn is false initially", () => {
+    it("loggedIn is false initially", () => {
         const state: RecursivePartial<CommonState> = {
             auth: initialAuthState
         };
@@ -15,10 +15,10 @@ describe('App', () => {
             loggedIn: false,
             history
         };
-        expect(mapStateToAppProps(state as CommonState, {history})).to.eql(expected);
+        expect(mapStateToAppProps(state as CommonState, {history})).toEqual(expected);
     });
 
-    test("gets loggedIn from auth state", () => {
+    it("gets loggedIn from auth state", () => {
         const state: RecursivePartial<CommonState> = {
             auth: {...initialAuthState, loggedIn: true}
         };
@@ -27,6 +27,6 @@ describe('App', () => {
             loggedIn: true,
             history
         };
-        expect(mapStateToAppProps(state as CommonState, {history})).to.eql(expected);
+        expect(mapStateToAppProps(state as CommonState, {history})).toEqual(expected);
     });
 });

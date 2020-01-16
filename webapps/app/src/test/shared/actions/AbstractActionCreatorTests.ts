@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import {Dispatch} from "redux";
 import {AbstractPageActionCreators} from "../../../main/shared/actions/AbstractPageActionCreators";
 import {PageBreadcrumb} from "../../../main/shared/components/PageWithHeader/PageProperties";
@@ -82,7 +82,7 @@ describe("Abstract page action creators", () => {
         sandbox.restore();
     });
 
-    test(
+    it(
         "loads data, parent data, and creates breadcrumbs on onLoad",
         (done: DoneCallback) => {
 
@@ -113,7 +113,7 @@ describe("Abstract page action creators", () => {
                     dummyGrandparentAction, dummyParentAction, dummyAction, expectedBreadcrumbAction
                 ];
 
-                expect(actions).to.eql(expectedPayload);
+                expect(actions).toEqual(expectedPayload);
                 done();
             })
 

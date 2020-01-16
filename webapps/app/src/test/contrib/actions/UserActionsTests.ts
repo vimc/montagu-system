@@ -1,5 +1,3 @@
-import { expect } from "chai";
-
 import { Sandbox } from "../../Sandbox";
 import { userActionCreators } from "../../../main/contrib/actions/userActionCreators";
 import {createMockStore} from "../../mocks/mockStore";
@@ -13,7 +11,7 @@ describe("User actions tests", () => {
         sandbox.restore();
     });
 
-    test("gets user ConfidentialityAgreement", (done) => {
+    it("gets user ConfidentialityAgreement", (done) => {
         const store = createMockStore({});
         sandbox.setStubFunc(UserService.prototype, "getConfidentiality", ()=>{
             return Promise.resolve(true);
@@ -22,12 +20,12 @@ describe("User actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: UserActionType.CONFIDENTIALITY_RETRIEVED, data: true};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    test("signs Confidentiality Agreement", (done) => {
+    it("signs Confidentiality Agreement", (done) => {
         const store = createMockStore({});
         sandbox.setStubFunc(UserService.prototype, "signConfidentiality", ()=>{
             return Promise.resolve('OK');
@@ -36,7 +34,7 @@ describe("User actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: UserActionType.CONFIDENTIALITY_SIGNED};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });

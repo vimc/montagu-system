@@ -1,5 +1,5 @@
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import * as React from "react";
 import {
     TouchstoneDetails,
@@ -11,21 +11,21 @@ import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement
 import {mockTouchstone} from "../../../../mocks/mockModels";
 
 describe("TouchstoneDetails", () => {
-    test("renders loading element if no current touchstone", () => {
+    it("renders loading element if no current touchstone", () => {
         const touchstones: Partial<AdminTouchstoneState> = {
             currentTouchstone: null
         };
         const store = createMockAdminStore({ touchstones: touchstones});
         const rendered = shallow(<TouchstoneDetails />, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement)).to.have.length(1);
+        expect(rendered.find(LoadingElement)).toHaveLength(1);
     });
 
-    test("renders content if current touchstone", () => {
+    it("renders content if current touchstone", () => {
         const touchstones: Partial<AdminTouchstoneState> = {
             currentTouchstone: mockTouchstone()
         };
         const store = createMockAdminStore({ touchstones: touchstones});
         const rendered = shallow(<TouchstoneDetails />, {context: {store}}).dive();
-        expect(rendered.find(TouchstoneDetailsComponent)).to.have.length(1);
+        expect(rendered.find(TouchstoneDetailsComponent)).toHaveLength(1);
     });
 });

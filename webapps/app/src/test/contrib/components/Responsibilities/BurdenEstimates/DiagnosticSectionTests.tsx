@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {mount, shallow} from "enzyme";
 import {
     mockBurdenEstimateSet,
@@ -64,7 +64,7 @@ describe("Diagnostic section", () => {
 
     afterEach(() => sandbox.restore());
 
-    test("passes props to chart", () => {
+    it("passes props to chart", () => {
 
         const rendered = shallow(<DiagnosticSection scenarioId={testScenario.id}
                                                     setId={testEstimateSet.id}/>, {context: {store}})
@@ -72,14 +72,14 @@ describe("Diagnostic section", () => {
             .dive();
 
         const chartProps = rendered.find(ScenarioChart).props();
-        expect(chartProps.ages).to.eq(testExpectations.ages);
-        expect(chartProps.years).to.eq(testExpectations.years);
-        expect(chartProps.setId).to.eq(testEstimateSet.id);
-        expect(chartProps.scenarioId).to.eq(testScenario.id);
-        expect(chartProps.outcome).to.eq(BurdenOutcome.DEATHS);
+        expect(chartProps.ages).toEqual(testExpectations.ages);
+        expect(chartProps.years).toEqual(testExpectations.years);
+        expect(chartProps.setId).toEqual(testEstimateSet.id);
+        expect(chartProps.scenarioId).toEqual(testScenario.id);
+        expect(chartProps.outcome).toEqual(BurdenOutcome.DEATHS);
     });
 
-    test("sets data to cases for scenario if chart type is cases", () => {
+    it("sets data to cases for scenario if chart type is cases", () => {
 
         const data = {} as any;
         data[testEstimateSet.id] = "TEST_DATA";
@@ -94,10 +94,10 @@ describe("Diagnostic section", () => {
             .dive();
 
         const chartProps = rendered.find(ScenarioChart).props();
-        expect(chartProps.data).to.eq("TEST_DATA");
+        expect(chartProps.data).toEqual("TEST_DATA");
     });
 
-    test("sets data to deaths for scenario if chart type is deaths", () => {
+    it("sets data to deaths for scenario if chart type is deaths", () => {
 
         const data = {} as any;
         data[testEstimateSet.id] = "TEST_DATA";
@@ -112,10 +112,10 @@ describe("Diagnostic section", () => {
             .dive();
 
         const chartProps = rendered.find(ScenarioChart).props();
-        expect(chartProps.data).to.eq("TEST_DATA");
+        expect(chartProps.data).toEqual("TEST_DATA");
     });
 
-    test("sets data to dalys for scenario if chart type is dalys", () => {
+    it("sets data to dalys for scenario if chart type is dalys", () => {
 
         const data = {} as any;
         data[testEstimateSet.id] = "TEST_DATA";
@@ -130,59 +130,59 @@ describe("Diagnostic section", () => {
             .dive();
 
         const chartProps = rendered.find(ScenarioChart).props();
-        expect(chartProps.data).to.eq("TEST_DATA");
+        expect(chartProps.data).toEqual("TEST_DATA");
     });
 
-    test("fetches data on mount", () => {
+    it("fetches data on mount", () => {
 
         const getEstimatesStub = sandbox.setStubReduxAction(estimatesActionCreators, "getEstimates");
         mount(<DiagnosticSection scenarioId={testScenario.id}
                                  setId={testEstimateSet.id}/>, {context: {store}});
 
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, testScenario.id, testEstimateSet.id)).to.be.true;
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, testScenario.id, testEstimateSet.id)).to.be.true;
-        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, testEstimateSet.id)).to.be.true;
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, testScenario.id, testEstimateSet.id)).toBe(true);
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, testScenario.id, testEstimateSet.id)).toBe(true);
+        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, testEstimateSet.id)).toBe(true);
     });
 
-    test("fetches data when setId or scenarioId is updated", () => {
+    it("fetches data when setId or scenarioId is updated", () => {
 
         const store = createMockContribStore({...testState, responsibilities: {}});
         const getEstimatesStub = sandbox.setStubReduxAction(estimatesActionCreators, "getEstimates");
         const rendered = mount(<DiagnosticSection scenarioId={testScenario.id}
                                                   setId={testEstimateSet.id}/>, {context: {store}});
 
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, testScenario.id, testEstimateSet.id)).to.be.true;
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, testScenario.id, testEstimateSet.id)).to.be.true;
-        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, testEstimateSet.id)).to.be.true;
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, testScenario.id, testEstimateSet.id)).toBe(true);
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, testScenario.id, testEstimateSet.id)).toBe(true);
+        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, testEstimateSet.id)).toBe(true);
 
         rendered.setProps({setId: 123});
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, testScenario.id, 123)).to.be.true;
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, testScenario.id, 123)).to.be.true;
-        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, 123)).to.be.true;
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, testScenario.id, 123)).toBe(true);
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, testScenario.id, 123)).toBe(true);
+        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, 123)).toBe(true);
 
         rendered.setProps({scenarioId: 456});
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, 456, 123)).to.be.true;
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, 456, 123)).to.be.true;
-        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, 456, 123)).to.be.true;
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, 456, 123)).toBe(true);
+        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, 456, 123)).toBe(true);
+        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, 456, 123)).toBe(true);
 
     });
 
-    test("sets chart type", () => {
+    it("sets chart type", () => {
 
         const rendered = shallow(<DiagnosticSection scenarioId={testScenario.id}
                                                     setId={testEstimateSet.id}/>, {context: {store}}).dive().dive();
 
         const outcomeDropDown = rendered.find("#outcome");
         const options = outcomeDropDown.find("option");
-        expect(options).to.have.lengthOf(3);
-        expect(options.at(0).prop("value")).to.eq("deaths");
-        expect(options.at(1).prop("value")).to.eq("cases");
-        expect(options.at(2).prop("value")).to.eq("dalys");
+        expect(options).toHaveLength(3);
+        expect(options.at(0).prop("value")).toEqual("deaths");
+        expect(options.at(1).prop("value")).toEqual("cases");
+        expect(options.at(2).prop("value")).toEqual("dalys");
 
         outcomeDropDown.simulate("change", {target: {value: "cases"}});
 
         const actions = store.getActions();
-        expect(actions).to.have.deep.members([{type: EstimateTypes.SET_CHART_TYPE, data: BurdenOutcome.CASES}]);
+        expect(actions).toEqual([{type: EstimateTypes.SET_CHART_TYPE, data: BurdenOutcome.CASES}]);
     })
 
 });

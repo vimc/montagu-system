@@ -1,41 +1,41 @@
-import {expect} from "chai";
+
 import {encodeFilename, helpers, titleCase} from "../../../main/shared/Helpers";
 
 describe("Helpers", () => {
-    test("formats links to files in subdirectories", () => {
+    it("formats links to files in subdirectories", () => {
 
         const fileName = "dir/subdir/subsubdir/filename.csv";
         const result = encodeFilename(fileName);
 
-        expect(result).to.equal("dir:subdir:subsubdir:filename.csv");
+        expect(result).toEqual("dir:subdir:subsubdir:filename.csv");
     });
 
 
     describe("titlecase", () => {
-        test("can handle one word", () => {
-            expect(titleCase("joe")).to.equal("Joe");
+        it("can handle one word", () => {
+            expect(titleCase("joe")).toEqual("Joe");
         });
-        test("can handle numbers", () => {
-            expect(titleCase("1joe")).to.equal("1joe");
+        it("can handle numbers", () => {
+            expect(titleCase("1joe")).toEqual("1joe");
         });
-        test("can handle two words", () => {
-            expect(titleCase("joe bloggs")).to.equal("Joe Bloggs");
+        it("can handle two words", () => {
+            expect(titleCase("joe bloggs")).toEqual("Joe Bloggs");
         });
-        test("can handle null", () => {
-            expect(titleCase(null)).to.be.null;
+        it("can handle null", () => {
+            expect(titleCase(null)).toBe(null);
         });
-        test("can handle empty", () => {
-            expect(titleCase("")).to.eq("")
+        it("can handle empty", () => {
+            expect(titleCase("")).toEqual("")
         });
     });
 
-    test("removes query string from URL", () => {
+    it("removes query string from URL", () => {
         const url = "http://example.com/?foo=bar&toast=fork";
-        expect(helpers.urlWithoutQueryString(url)).to.equal("http://example.com/")
+        expect(helpers.urlWithoutQueryString(url)).toEqual("http://example.com/")
     });
 
-    test("leaves URL without query string unchanged", () => {
+    it("leaves URL without query string unchanged", () => {
         const url = "http://example.com/page/";
-        expect(helpers.urlWithoutQueryString(url)).to.equal("http://example.com/page/")
+        expect(helpers.urlWithoutQueryString(url)).toEqual("http://example.com/page/")
     });
 });

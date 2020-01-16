@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import * as React from "react";
 
 import {checkAsync} from "../../testHelpers";
@@ -42,69 +42,69 @@ describe("OneTimeLinkContext", () => {
 
     const Class = OneTimeLinkContext(EmptyComponent);
 
-    test(
+    it(
         "if store does not contain matching token, href passed to child is null",
         (done: DoneCallback) => {
             const rendered = render(<Class href="/orange/"/>);
             const child = rendered.find(EmptyComponent);
             checkAsync(done, () => {
-                expect(child.prop("href")).to.equal(null);
+                expect(child.prop("href")).toEqual(null);
             });
         }
     );
 
-    test(
+    it(
         "can get properties from store with matching token",
         (done: DoneCallback) => {
             const rendered = render(<Class href="/banana/"/>);
             const child = rendered.find(EmptyComponent);
             checkAsync(done, () => {
-                expect(child.prop("href")).to.equal("http://localhost:8080/v1/banana/?access_token=" + token);
+                expect(child.prop("href")).toEqual("http://localhost:8080/v1/banana/?access_token=" + token);
             });
         }
     );
 
-    test("can handle url with query string", (done: DoneCallback) => {
+    it("can handle url with query string", (done: DoneCallback) => {
         const Class = OneTimeLinkContext(EmptyComponent);
         const url = "/banana/?query=whatevs";
         tokens[url] = token;
         const rendered = render(<Class href={url}/>);
         checkAsync(done, () => {
             const child = rendered.find(EmptyComponent);
-            expect(child.prop("href")).to.equal("http://localhost:8080/v1/banana/?query=whatevs&access_token=" + token);
+            expect(child.prop("href")).toEqual("http://localhost:8080/v1/banana/?query=whatevs&access_token=" + token);
         });
     });
 
-    test("triggers fetchToken on mount", (done: DoneCallback) => {
+    it("triggers fetchToken on mount", (done: DoneCallback) => {
         render(<Class href="/banana/"/>);
         checkAsync(done, () => {
-            expect(fetchTokenStub.called).to.equal(true, "Expected fetchToken to be called");
-            expect(fetchTokenStub.getCall(0).args).to.eql(["/banana/"]);
+            expect(fetchTokenStub.called).toEqual(true);
+            expect(fetchTokenStub.getCall(0).args).toEqual(["/banana/"]);
         });
     });
 
-    test("does not trigger fetchToken if href is null", (done: DoneCallback) => {
+    it("does not trigger fetchToken if href is null", (done: DoneCallback) => {
         render(<Class href={null}/>);
         checkAsync(done, () => {
-            expect(fetchTokenStub.notCalled).to.equal(true, "Expected fetchToken to not be called");
+            expect(fetchTokenStub.notCalled).toEqual(true);
         });
     });
 
-    test(
+    it(
         "triggers fetchToken when wrapped component consumes token",
         (done: DoneCallback) => {
             const url = "/table/";
             const element = render(<Class href={url}/>);
             element.find(EmptyComponent).dive().find("button").simulate("click");
             checkAsync(done, () => {
-                expect(fetchTokenStub.callCount).to.equal(2, "Expected fetchToken to be called twice");
-                expect(fetchTokenStub.getCall(0).args[0]).to.equal(url, "Expected first call to be called with url");
-                expect(fetchTokenStub.getCall(1).args[0]).to.equal(url, "Expected second call to be called with url");
+                expect(fetchTokenStub.callCount).toEqual(2);
+                expect(fetchTokenStub.getCall(0).args[0]).toEqual(url);
+                expect(fetchTokenStub.getCall(1).args[0]).toEqual(url);
             });
         }
     );
 
-    test(
+    it(
         "it does not trigger fetchToken on properties change if href is the same",
         (done: DoneCallback) => {
             const url = "/bamboo";
@@ -112,13 +112,13 @@ describe("OneTimeLinkContext", () => {
             element.setProps({href: url});
 
             checkAsync(done, () => {
-                expect(fetchTokenStub.callCount).to.equal(1, "Expected fetchToken to be called once");
-                expect(fetchTokenStub.getCall(0).args[0]).to.equal(url, "Expected fetchToken to be called with old url");
+                expect(fetchTokenStub.callCount).toEqual(1);
+                expect(fetchTokenStub.getCall(0).args[0]).toEqual(url);
             });
         }
     );
 
-    test(
+    it(
         "it does trigger fetchToken on properties change if href is different",
         (done: DoneCallback) => {
             const url = "/bamboo";
@@ -128,77 +128,77 @@ describe("OneTimeLinkContext", () => {
             element.setProps({href: newUrl});
 
             checkAsync(done, () => {
-                expect(fetchTokenStub.callCount).to.equal(2, "Expected fetchToken to be called twice");
-                expect(fetchTokenStub.getCall(0).args[0]).to.equal(url, "Expected fetchToken to be called with old url");
-                expect(fetchTokenStub.getCall(1).args[0]).to.equal(newUrl, "Expected fetchToken to be called with new url");
+                expect(fetchTokenStub.callCount).toEqual(2);
+                expect(fetchTokenStub.getCall(0).args[0]).toEqual(url);
+                expect(fetchTokenStub.getCall(1).args[0]).toEqual(newUrl);
             });
         }
     );
 
-    test(
+    it(
         "triggers fetchToken when href becomes not null",
         (done: DoneCallback) => {
             const url = "/bamboo";
             const element = render(<Class href={null}/>);
             element.setProps({href: url});
             checkAsync(done, () => {
-                expect(fetchTokenStub.calledOnce).to.equal(true, "Expected fetchToken to be called once");
+                expect(fetchTokenStub.calledOnce).toEqual(true);
             });
         }
     );
 
-    test("is loading when href is not null and token is null", () => {
+    it("is loading when href is not null and token is null", () => {
         const url = "/url-with-no-token";
         const element = render(<Class href={url}/>);
-        expect(element.find(EmptyComponent).prop("loading")).to.be.true;
+        expect(element.find(EmptyComponent).prop("loading")).toBe(true);
     });
 
-    test("is not loading when href is null", () => {
+    it("is not loading when href is null", () => {
         const element = render(<Class href={null}/>);
-        expect(element.find(EmptyComponent).prop("loading")).to.be.false;
+        expect(element.find(EmptyComponent).prop("loading")).toBe(false);
     });
 
-    test("is not loading when token is present", (done: DoneCallback) => {
+    it("is not loading when token is present", (done: DoneCallback) => {
         const url = "/bamboo";
         const element = render(<Class href={url}/>);
 
         checkAsync(done, () => {
-            expect(element.find(EmptyComponent).prop("loading")).to.be.true;
+            expect(element.find(EmptyComponent).prop("loading")).toBe(true);
         });
     });
 
     describe("enablement", () => {
 
-        test("by default, stays enabled after clicking", (done: DoneCallback) => {
+        it("by default, stays enabled after clicking", (done: DoneCallback) => {
             const element = render(<Class href="/url/"/>);
             const wrapped = element.find(EmptyComponent);
             wrapped.dive().find("button").simulate("click");
-            checkAsync(done, () => expect(wrapped.prop("enabled")).to.be.true);
+            checkAsync(done, () => expect(wrapped.prop("enabled")).toBe(true));
         });
 
-        test("when state.enabled is false, wrapped component is disabled", () => {
+        it("when state.enabled is false, wrapped component is disabled", () => {
             const element = render(<Class href="/url/"/>);
             element.instance().setState({enabled: false});
             element.update();
-            expect(element.find(EmptyComponent).prop("enabled")).to.be.false;
+            expect(element.find(EmptyComponent).prop("enabled")).toBe(false);
         });
 
-        test("when href is null, wrapped component is disabled", () => {
+        it("when href is null, wrapped component is disabled", () => {
             const element = render(<Class href={null}/>);
-            expect(element.find(EmptyComponent).prop("enabled")).to.be.false;
+            expect(element.find(EmptyComponent).prop("enabled")).toBe(false);
         });
 
-        test(
+        it(
             "with delayBeforeReenable, disables temporarily after clicking",
             (done: DoneCallback) => {
                 const element = render(<Class href="/url/" delayBeforeReenable={0.25}/>);
                 element.find(EmptyComponent).dive().find("button").simulate("click");
                 setTimeout(() => {
                     element.update();
-                    expect(element.find(EmptyComponent).prop("enabled")).to.be.false;
+                    expect(element.find(EmptyComponent).prop("enabled")).toBe(false);
                     setTimeout(() => {
                         element.update();
-                        expect(element.find(EmptyComponent).prop("enabled")).to.be.true;
+                        expect(element.find(EmptyComponent).prop("enabled")).toBe(true);
                         done();
                     }, 300);
                 });

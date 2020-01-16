@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {Store} from "redux";
 
 import "../../../../helper";
@@ -30,7 +30,7 @@ describe("Model Run Parameters Page tests", () => {
 
     afterEach(() => sandbox.restore());
 
-    test("renders component component level", () => {
+    it("renders component component level", () => {
         let testMatch = mockMatch<ModelRunParametersPageLocationProps>({
             groupId: "g-1",
             touchstoneId: "t-1"
@@ -43,10 +43,10 @@ describe("Model Run Parameters Page tests", () => {
         /></Provider>);
 
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).is.equal(true);
-        expect(pageArticle.find(ModelRunParametersContent).length).is.equal(1);
+        expect(onLoadStub.called).toBe(true);
+        expect(pageArticle.find(ModelRunParametersContent).length).toBe(1);
         const titleComponent = pageArticle.find(ResponsibilitiesPageTitle);
-        expect(titleComponent.props().title).is.equal("Upload parameters");
+        expect(titleComponent.props().title).toBe("Upload parameters");
     });
 });
 

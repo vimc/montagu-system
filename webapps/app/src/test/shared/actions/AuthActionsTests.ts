@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import * as jwt from "jsonwebtoken";
 import {Sandbox} from "../../Sandbox";
 import {authActionCreators} from "../../../main/shared/actions/authActionCreators";
@@ -39,7 +39,7 @@ describe("AuthActions", () => {
         sandbox.restore();
     });
 
-    test(
+    it(
         "dispatches authenticated action if service returned proper token",
         (done) => {
             const testToken = signAndCompress(mockUsertokenData);
@@ -50,13 +50,13 @@ describe("AuthActions", () => {
             store.dispatch(authActionCreators.logIn('test', 'test'));
             setTimeout(() => {
                 const actions = store.getActions();
-                expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
+                expect(actions[0].type).toEqual(AuthTypeKeys.AUTHENTICATED);
                 done();
             });
         }
     );
 
-    test(
+    it(
         "dispatches authentication error action if service returned error",
         (done) => {
             sandbox.setStubFunc(AuthService.prototype, "logIn", () => {
@@ -65,13 +65,13 @@ describe("AuthActions", () => {
             store.dispatch(authActionCreators.logIn('test', 'test'));
             setTimeout(() => {
                 const actions = store.getActions();
-                expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+                expect(actions[0].type).toEqual(AuthTypeKeys.AUTHENTICATION_ERROR);
                 done();
             });
         }
     );
 
-    test(
+    it(
         "dispatches authentication error action if user is not active",
         (done) => {
             const testToken = signAndCompress(mockUsertokenDataNotActive);
@@ -81,15 +81,15 @@ describe("AuthActions", () => {
             store.dispatch(authActionCreators.logIn('test', 'test'));
             setTimeout(() => {
                 const actions = store.getActions();
-                expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
-                expect(actions[0].message).to.contain("Your account has been deactivated.");
-                expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+                expect(actions[0].type).toEqual(NotificationTypeKeys.NOTIFY);
+                expect(actions[0].message).toContain("Your account has been deactivated.");
+                expect(actions[1].type).toEqual(AuthTypeKeys.AUTHENTICATION_ERROR);
                 done();
             });
         }
     );
 
-    test(
+    it(
         "dispatches authentication error action if user is not modeller",
         (done) => {
             appSettings.requiresModellingGroupMembership = true;
@@ -101,15 +101,15 @@ describe("AuthActions", () => {
             setTimeout(() => {
                 const actions = store.getActions();
 
-                expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
-                expect(actions[0].message).to.contain("Only members of modelling groups can log into the contribution portal");
-                expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+                expect(actions[0].type).toEqual(NotificationTypeKeys.NOTIFY);
+                expect(actions[0].message).toContain("Only members of modelling groups can log into the contribution portal");
+                expect(actions[1].type).toEqual(AuthTypeKeys.AUTHENTICATION_ERROR);
                 done();
             });
         }
     );
 
-    test(
+    it(
         "dispatches authenticated action if can get authenticated user data from API",
         (done) => {
             const testUser = {
@@ -129,16 +129,16 @@ describe("AuthActions", () => {
             store.dispatch(authActionCreators.loadAuthenticatedUser());
             setTimeout(() => {
                 const actions = store.getActions();
-                expect(actions[0].type).to.eql(AuthTypeKeys.AUTHENTICATED);
-                expect(actions[0].data.username).to.eql("test-user");
-                expect(actions[0].data.isAccountActive).to.eql(true);
-                expect(actions[0].data.isModeller).to.eql(true);
+                expect(actions[0].type).toEqual(AuthTypeKeys.AUTHENTICATED);
+                expect(actions[0].data.username).toEqual("test-user");
+                expect(actions[0].data.isAccountActive).toEqual(true);
+                expect(actions[0].data.isModeller).toEqual(true);
                 done();
             });
         }
     );
 
-    test(
+    it(
         "dispatches authentication error action if user cannot be validated",
         (done) => {
             const testUser = {
@@ -158,15 +158,15 @@ describe("AuthActions", () => {
             store.dispatch(authActionCreators.loadAuthenticatedUser());
             setTimeout(() => {
                 const actions = store.getActions();
-                expect(actions[0].type).to.eql(NotificationTypeKeys.NOTIFY);
-                expect(actions[0].message).to.contain("Your account has been deactivated");
-                expect(actions[1].type).to.eql(AuthTypeKeys.AUTHENTICATION_ERROR);
+                expect(actions[0].type).toEqual(NotificationTypeKeys.NOTIFY);
+                expect(actions[0].message).toContain("Your account has been deactivated");
+                expect(actions[1].type).toEqual(AuthTypeKeys.AUTHENTICATION_ERROR);
                 done();
             });
         }
     );
 
-    test(
+    it(
         "dispatches unauthenticated action if cannot get authenticated user data from API",
         (done) => {
             sandbox.setStubFunc(AuthService.prototype, "getCurrentUser", () => {
@@ -177,13 +177,13 @@ describe("AuthActions", () => {
             store.dispatch(authActionCreators.loadAuthenticatedUser());
             setTimeout(() => {
                 const actions = store.getActions();
-                expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
+                expect(actions[0].type).toEqual(AuthTypeKeys.UNAUTHENTICATED);
                 done();
             });
         }
     );
 
-    test(
+    it(
         "dispatches unauthenticated action if cannot get modelling groups data from API",
         (done) => {
             const testUser = {
@@ -202,25 +202,25 @@ describe("AuthActions", () => {
             store.dispatch(authActionCreators.loadAuthenticatedUser());
             setTimeout(() => {
                 const actions = store.getActions();
-                expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
+                expect(actions[0].type).toEqual(AuthTypeKeys.UNAUTHENTICATED);
                 done();
             });
         }
     );
 
     describe("setCookies", () => {
-        test("does nothing if service returns failure", async () => {
+        it("does nothing if service returns failure", async () => {
             const stub = sandbox.setStubFunc(AuthService.prototype, "setCookies", () => Promise.resolve(null));
             await store.dispatch(authActionCreators.setCookies());
-            expect(stub.callCount).to.equal(1, "Expected to call service once");
-            expect(store.getActions()).to.have.length(0);
+            expect(stub.callCount).toEqual(1);
+            expect(store.getActions()).toHaveLength(0);
         });
 
-        test("dispatches action if service returns success", async () => {
+        it("dispatches action if service returns success", async () => {
             const stub = sandbox.setStubFunc(AuthService.prototype, "setCookies", () => Promise.resolve(true));
             await store.dispatch(authActionCreators.setCookies());
-            expect(stub.callCount).to.equal(1, "Expected to call service once")
-            expect(store.getActions()).to.eql([
+            expect(stub.callCount).toEqual(1);
+            expect(store.getActions()).toEqual([
                 { type: AuthTypeKeys.RECEIVED_COOKIES }
             ])
         });

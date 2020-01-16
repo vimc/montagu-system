@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {shallow} from "enzyme";
 
 import "../../../../helper";
@@ -14,69 +14,69 @@ import {AddRoles} from "../../../../../main/admin/components/Users/SingleUser/Ad
 
 describe("UserDetailsContent", () => {
 
-    test("passes props to UserRoles component", () => {
+    it("passes props to UserRoles component", () => {
         const user = mockUser({username: "tets.user"});
         const rendered = shallow(<UserDetailsContentComponent user={user} canReadRoles={true} canWriteRoles={true}/>);
         const userRoles = rendered.find(UserRoles);
-        expect(userRoles.prop("user")).to.deep.equal(user);
-        expect(userRoles.prop("canWriteRoles")).to.be.true;
+        expect(userRoles.prop("user")).toEqual(user);
+        expect(userRoles.prop("canWriteRoles")).toBe(true);
     });
 
-    test("does not render UserRoles if canReadRoles is false", () => {
+    it("does not render UserRoles if canReadRoles is false", () => {
         const user = mockUser({username: "tets.user"});
         const rendered = shallow(<UserDetailsContentComponent user={user} canReadRoles={false} canWriteRoles={false}/>);
         const userRoles = rendered.find(UserRoles);
-        expect(userRoles).to.have.lengthOf(0);
+        expect(userRoles).toHaveLength(0);
     });
 
-    test(
+    it(
         "maps canReadRoles property to true if user has '*roles.read' permission",
         () => {
             const adminStateMock = mockAdminState({auth: mockAuthState({permissions: ["*/roles.read"]})});
             const props = mapStateToProps(adminStateMock);
-            expect(props.canReadRoles).to.eq(true);
+            expect(props.canReadRoles).toEqual(true);
         }
     );
 
-    test(
+    it(
         "maps canReadRoles property to false if user does not have '*roles.read' permission",
         () => {
             const adminStateMock = mockAdminState();
             const props = mapStateToProps(adminStateMock);
-            expect(props.canReadRoles).to.eq(false);
+            expect(props.canReadRoles).toEqual(false);
         }
     );
 
-    test(
+    it(
         "maps canWriteRoles property to true if user has '*roles.write' permission",
         () => {
             const adminStateMock = mockAdminState({auth: mockAuthState({permissions: ["*/roles.write"]})});
             const props = mapStateToProps(adminStateMock);
-            expect(props.canWriteRoles).to.eq(true);
+            expect(props.canWriteRoles).toEqual(true);
         }
     );
 
-    test(
+    it(
         "maps canWriteRoles property to false if user does not have '*roles.write' permission",
         () => {
             const adminStateMock = mockAdminState();
             const props = mapStateToProps(adminStateMock);
-            expect(props.canWriteRoles).to.eq(false);
+            expect(props.canWriteRoles).toEqual(false);
         }
     );
 
 });
 
 describe("UserDetailRoles", () => {
-    test("does not show add role widget if canWriteRoles is false", () => {
+    it("does not show add role widget if canWriteRoles is false", () => {
         const user = mockUser();
         const result = shallow(<UserRoles user={user} canWriteRoles={false}/>);
-        expect(result.find(AddRoles).length).to.eq(0)
+        expect(result.find(AddRoles).length).toEqual(0)
     });
 
-    test("does show add role widget if canWriteRoles is true", () => {
+    it("does show add role widget if canWriteRoles is true", () => {
         const user = mockUser();
         const result = shallow(<UserRoles user={user} canWriteRoles={true}/>);
-        expect(result.find(AddRoles).length).to.eq(1);
+        expect(result.find(AddRoles).length).toEqual(1);
     });
 });

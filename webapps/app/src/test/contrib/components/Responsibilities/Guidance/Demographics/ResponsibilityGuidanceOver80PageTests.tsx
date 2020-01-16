@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { expect } from "chai";
+
 import { Store } from "redux";
 
 import "../../../../../helper";
@@ -21,20 +21,20 @@ describe("Guidance Over 80 Page Component tests", () => {
     });
     afterEach(() => sandbox.restore());
 
-    test("renders component on connect level", () => {
+    it("renders component on connect level", () => {
         const rendered = shallow(<ResponsibilityGuidanceOver80Page/>, {context: {store}});
-        expect(typeof rendered.props().createBreadcrumbs).is.equal('function');
+        expect(typeof rendered.props().createBreadcrumbs).toBe('function');
     });
 
-    test("renders component on component level", () => {
+    it("renders component on component level", () => {
         let store = createMockStore();
         const createBreadcrumbsStub = sandbox.setStubReduxAction(breadcrumbsActionCreators, "createBreadcrumbs");
         const rendered = shallow(<ResponsibilityGuidanceOver80Page/>, {context: {store}}).dive().dive().dive();
-        expect(createBreadcrumbsStub.called).is.equal(true);
+        expect(createBreadcrumbsStub.called).toBe(true);
         const pageArticle = rendered.find(PageArticle);
         const pageArticleProps = pageArticle.props() as PageArticleProps;
-        expect(pageArticleProps.hideTitle).is.equal(true);
-        expect(pageArticleProps.title).is.equal(undefined);
+        expect(pageArticleProps.hideTitle).toBe(true);
+        expect(pageArticleProps.title).toBe(undefined);
     });
 });
 

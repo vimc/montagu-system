@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 import { createMemoryHistory } from 'history';
 
 import {createContribStore} from "../../../main/contrib/createStore";
@@ -16,7 +16,7 @@ describe('Demographic service tests', () => {
         sandbox.restore();
     });
 
-    test("fetches data sets", () => {
+    it("fetches data sets", () => {
         const demographicService = new DemographicService(store.dispatch, store.getState as () => ContribAppState);
 
         const setOptionsSpy = sandbox.setSpy(demographicService, "setOptions");
@@ -26,7 +26,7 @@ describe('Demographic service tests', () => {
 
         demographicService.getDataSetsByTouchstoneVersionId("touchstone-1");
 
-        expect(getStub.getCall(0).args[0]).to.equal("/touchstones/touchstone-1/demographics/");
-        expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'sets' });
+        expect(getStub.getCall(0).args[0]).toEqual("/touchstones/touchstone-1/demographics/");
+        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'sets' });
     });
 });

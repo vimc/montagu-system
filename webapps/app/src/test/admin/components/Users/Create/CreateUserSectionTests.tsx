@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {shallow} from "enzyme";
 import {CreateUserSection} from "../../../../../main/admin/components/Users/Create/CreateUserSection";
 import {Sandbox} from "../../../../Sandbox";
@@ -12,7 +12,7 @@ describe("CreateUserSectionComponenent", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    test(
+    it(
         "renders form when 'showCreateUser' is true and user has 'users-create' permission",
         () => {
             const store = createMockStore(mockAdminState({
@@ -22,12 +22,12 @@ describe("CreateUserSectionComponenent", () => {
                 })
             }));
             const rendered = shallow(<CreateUserSection/>, {context: {store}}).dive().dive();
-            expect(rendered.find(CreateUserForm)).to.have.length(1);
-            expect(rendered.find("button")).to.have.length(0);
+            expect(rendered.find(CreateUserForm)).toHaveLength(1);
+            expect(rendered.find("button")).toHaveLength(0);
         }
     );
 
-    test(
+    it(
         "renders button when 'showCreateUser' is false and user has 'users-create' permission",
         () => {
             const store = createMockStore(mockAdminState({
@@ -37,22 +37,22 @@ describe("CreateUserSectionComponenent", () => {
                 })
             }));
             const rendered = shallow(<CreateUserSection/>, {context: {store}}).dive().dive();
-            expect(rendered.find(CreateUserForm)).to.have.length(0);
-            expect(rendered.find("button")).to.have.length(1);
+            expect(rendered.find(CreateUserForm)).toHaveLength(0);
+            expect(rendered.find("button")).toHaveLength(1);
         }
     );
 
-    test(
+    it(
         "renders nothing when user does not have 'users-create' permission",
         () => {
             const store = createMockStore(mockAdminState({users: mockAdminUsersState({showCreateUser: false})}));
             const rendered = shallow(<CreateUserSection/>, {context: {store}}).dive().dive();
-            expect(rendered.find("button")).to.have.length(0);
-            expect(rendered.find("div")).to.have.length(0);
+            expect(rendered.find("button")).toHaveLength(0);
+            expect(rendered.find("div")).toHaveLength(0);
         }
     );
 
-    test("button triggers setShowCreateUser", () => {
+    it("button triggers setShowCreateUser", () => {
         const store = createMockStore(mockAdminState({
             users: mockAdminUsersState({showCreateUser: false}),
             auth: mockAuthState({
@@ -62,6 +62,6 @@ describe("CreateUserSectionComponenent", () => {
         const spy = sandbox.setStubReduxAction(usersActionCreators, "setShowCreateUser");
         const rendered = shallow(<CreateUserSection/>, {context: {store}}).dive().dive();
         rendered.find("button").simulate("click");
-        expect(spy.calledWith(true)).to.be.true;
+        expect(spy.calledWith(true)).toBe(true);
     });
 });

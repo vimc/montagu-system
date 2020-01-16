@@ -1,5 +1,5 @@
 import * as React from "react";
-import { expect } from "chai";
+
 import { shallow } from "enzyme";
 
 import "../../../../helper";
@@ -7,7 +7,7 @@ import { mockCoverageSet } from "../../../../mocks/mockModels";
 import { CoverageSetComponent } from "../../../../../main/contrib/components/Responsibilities/Coverage/CoverageSetComponent";
 
 describe("CoverageSetComponent", () => {
-    test("renders all metadata", () => {
+    it("renders all metadata", () => {
         const set = mockCoverageSet({
             name: "my-name",
             vaccine: "my-vaccine",
@@ -23,7 +23,7 @@ describe("CoverageSetComponent", () => {
             "no vaccine"
         ];
         expectedCellContentsInOrder.forEach((expected, i) => {
-            expect(cells.at(i).text()).to.equal(expected);
+            expect(cells.at(i).text()).toEqual(expected);
         });
     });
 });

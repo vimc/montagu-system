@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
@@ -22,14 +22,14 @@ describe("Model Run Parameters Page actions tests", () => {
         sandbox.restore();
     });
 
-    test("creates breadcrumb", () => {
+    it("creates breadcrumb", () => {
         const state = mockContribState();
         const result = modelRunParametersPageActionCreators.createBreadcrumb(state);
-        expect(result.urlFragment).to.eq("parameters/");
-        expect(result.name).to.eq("Upload parameters");
+        expect(result.urlFragment).toEqual("parameters/");
+        expect(result.name).toEqual("Upload parameters");
     });
 
-    test("loads parameter sets", async () => {
+    it("loads parameter sets", async () => {
         const touchstonesState: Partial<TouchstonesState> = {
             touchstones: [testTouchstone],
             currentTouchstoneVersion: testTouchstoneVersion
@@ -52,12 +52,12 @@ describe("Model Run Parameters Page actions tests", () => {
         const expectedPayload = [
             {type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet]}
         ];
-        expect(actions).to.eql(expectedPayload);
+        expect(actions).toEqual(expectedPayload);
 
     });
 
-    test("has responsibilities overview as parent", () => {
-        expect(modelRunParametersPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators);
+    it("has responsibilities overview as parent", () => {
+        expect(modelRunParametersPageActionCreators.parent).toEqual(responsibilityOverviewPageActionCreators);
     });
 
 });

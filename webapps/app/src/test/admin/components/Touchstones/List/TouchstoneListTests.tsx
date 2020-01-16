@@ -5,27 +5,27 @@ import {TouchstoneList} from "../../../../../main/admin/components/Touchstones/L
 import {shallow} from "enzyme";
 import * as React from "react";
 import {TouchstoneTable} from "../../../../../main/admin/components/Touchstones/List/TouchstoneTable";
-import {expect} from "chai";
+
 
 describe("TouchstoneList (admin)", () => {
-    test("touchstone with one open version is active", () => {
+    it("touchstone with one open version is active", () => {
         checkThatTouchstoneIsActive(true, mockTouchstone({id: "active1"}, [
             mockTouchstoneVersion({status: "open"}),
         ]));
     });
-    test("touchstone with one in-preparation version is active", () => {
+    it("touchstone with one in-preparation version is active", () => {
         checkThatTouchstoneIsActive(true, mockTouchstone({id: "active1"}, [
             mockTouchstoneVersion({status: "in-preparation"}),
         ]));
     });
-    test("touchstone with several finished and one open version is active", () => {
+    it("touchstone with several finished and one open version is active", () => {
         checkThatTouchstoneIsActive(true, mockTouchstone({id: "active3"}, [
             mockTouchstoneVersion({status: "finished"}),
             mockTouchstoneVersion({status: "finished"}),
             mockTouchstoneVersion({status: "open"}),
         ]));
     });
-    test("touchstone with only finished versions is inactive", () => {
+    it("touchstone with only finished versions is inactive", () => {
         checkThatTouchstoneIsActive(false, mockTouchstone({id: "active1"}, [
             mockTouchstoneVersion({status: "finished"}),
             mockTouchstoneVersion({status: "finished"})
@@ -38,10 +38,10 @@ describe("TouchstoneList (admin)", () => {
         const sections = rendered.find(TouchstoneTable);
         const expectedSection = sections.at(isActive ? 0 : 1);
         const wrongSection = sections.at(isActive ? 1 : 0);
-        expect(expectedSection.props()).to.eql({
+        expect(expectedSection.props()).toEqual({
             touchstones: [touchstone]
         });
-        expect(wrongSection.props()).to.eql({
+        expect(wrongSection.props()).toEqual({
             touchstones: []
         });
     }

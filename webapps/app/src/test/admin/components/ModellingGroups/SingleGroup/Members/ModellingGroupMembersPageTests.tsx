@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {shallow} from "enzyme";
 
 import "../../../../../helper";
@@ -26,14 +26,14 @@ describe("Modelling Group Members Page Component Tests", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    test("renders component on connect level", () => {
+    it("renders component on connect level", () => {
         let store = createMockStore(testState);
         const rendered = shallow(<ModellingGroupMembersPage/>, {context: {store}});
-        expect(rendered.props().groupDescription).is.equal(testGroup.description);
-        expect(typeof rendered.props().onLoad).is.equal('function');
+        expect(rendered.props().groupDescription).toBe(testGroup.description);
+        expect(typeof rendered.props().onLoad).toBe('function');
     });
 
-    test("renders page component, title and sub component", () => {
+    it("renders page component, title and sub component", () => {
         let testMatch = mockMatch<ModellingGroupMembersPageLocationProps>({groupId: testGroup.id});
         let store = createMockStore(testState);
         const onLoadStub = sandbox.setStubReduxAction(modellingGroupMembersPageActionCreators, "onLoad");
@@ -41,10 +41,10 @@ describe("Modelling Group Members Page Component Tests", () => {
             match={testMatch}
         />, {context: {store}}).dive();
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).is.equal(true);
-        expect(onLoadStub.getCall(0).args[0].groupId).is.equal(testGroup.id);
-        expect(pageArticle.props().title).is.equal(`Manage membership for ${testGroup.description}`);
-        expect(pageArticle.find(ModellingGroupMembersContent).length).is.equal(1);
+        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.getCall(0).args[0].groupId).toBe(testGroup.id);
+        expect(pageArticle.props().title).toBe(`Manage membership for ${testGroup.description}`);
+        expect(pageArticle.find(ModellingGroupMembersContent).length).toBe(1);
     });
 
 });

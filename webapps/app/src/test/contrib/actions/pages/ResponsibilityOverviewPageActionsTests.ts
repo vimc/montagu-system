@@ -1,5 +1,3 @@
-import {expect} from "chai";
-
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
 import {mockTouchstoneVersion} from "../../../mocks/mockModels";
@@ -23,18 +21,18 @@ describe("Responsibility Overview Page actions tests", () => {
         }
     });
 
-    test("has choose action page as parent", () => {
-        expect(responsibilityOverviewPageActionCreators.parent).to.eq(chooseActionPageActionCreators)
+    it("has choose action page as parent", () => {
+        expect(responsibilityOverviewPageActionCreators.parent).toEqual(chooseActionPageActionCreators)
     });
 
-    test("creates breadcrumb", () => {
+    it("creates breadcrumb", () => {
 
         const result = responsibilityOverviewPageActionCreators.createBreadcrumb(state);
-        expect(result.urlFragment).to.eq("responsibilities/t2v2/");
-        expect(result.name).to.eq("desc");
+        expect(result.urlFragment).toEqual("responsibilities/t2v2/");
+        expect(result.name).toEqual("desc");
     });
 
-    test(
+    it(
         "loads diseases, sets current touchstone and gets responsibility set",
         async () => {
             const store = createMockContribStore(state);
@@ -53,8 +51,7 @@ describe("Responsibility Overview Page actions tests", () => {
                 {type: "TV-test", props: "t1v1"},
                 {type: "RS-test", props: undefined},
             ];
-            expect(actions).to.deep.eq(expectedPayload);
-
+            expect(actions).toEqual(expectedPayload);
         }
     );
 

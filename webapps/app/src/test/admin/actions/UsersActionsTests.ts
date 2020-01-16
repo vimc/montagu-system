@@ -1,5 +1,3 @@
-import {expect} from "chai";
-
 import {Sandbox} from "../../Sandbox";
 import {usersActionCreators} from "../../../main/admin/actions/usersActionCreators";
 import {createMockAdminStore, createMockStore} from "../../mocks/mockStore";
@@ -46,7 +44,7 @@ describe("Admin Users actions tests", () => {
         });
     }
 
-    test("gets all users", (done) => {
+    it("gets all users", (done) => {
 
         setUpSuccessfulStubs();
 
@@ -54,12 +52,12 @@ describe("Admin Users actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = {type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    test("gets global roles", (done) => {
+    it("gets global roles", (done) => {
 
         sandbox.setStubFunc(UsersService.prototype, "getGlobalRoles", () => {
             return Promise.resolve(["role1"]);
@@ -69,12 +67,12 @@ describe("Admin Users actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = {type: UsersTypes.ALL_GLOBAL_ROLES_FETCHED, data: ["role1"]};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    test(
+    it(
         "clears user list cache and fetches users if role added to user",
         async () => {
 
@@ -86,15 +84,15 @@ describe("Admin Users actions tests", () => {
             const actions = store.getActions();
             const expectedPayload = [{type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
                 {type: UsersTypes.SET_CURRENT_USER, data: "user"}];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
 
             expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
-                .to.be.true;
+                .toBe(true);
 
         }
     );
 
-    test(
+    it(
         "clears user list cache and fetches users if role removed from user",
         async () => {
 
@@ -105,15 +103,15 @@ describe("Admin Users actions tests", () => {
             const actions = store.getActions();
             const expectedPayload = [{type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]},
                 {type: UsersTypes.SET_CURRENT_USER, data: "user"}];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
 
             expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
-                .to.be.true;
+                .toBe(true);
 
         }
     );
 
-    test("fetches all users after successful user creation", async () => {
+    it("fetches all users after successful user creation", async () => {
 
         setUpSuccessfulStubs();
 
@@ -123,14 +121,14 @@ describe("Admin Users actions tests", () => {
             username: "joe.b"
         }));
 
-        expect(createUserStub.calledWith("joe bloggs", "joe@email.com", "joe.b")).to.be.true;
+        expect(createUserStub.calledWith("joe bloggs", "joe@email.com", "joe.b")).toBe(true);
         const actions = store.getActions();
         const expectedPayload = {type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]};
-        expect(actions).to.deep.include.members([expectedPayload]);
+        expect(actions).toContainEqual(expectedPayload);
 
     });
 
-    test("dispatches error if user creation fails", async () => {
+    it("dispatches error if user creation fails", async () => {
 
         sandbox.setStubFunc(UsersService.prototype, "createUser", () => {
             return Promise.resolve(mockResult(null, [{code: "e", message: "error message"}]));
@@ -142,11 +140,11 @@ describe("Admin Users actions tests", () => {
             type: UsersTypes.SET_CREATE_USER_ERRORS,
             errors: [{message: "error message", code: "e"}]
         };
-        expect(actions).to.eql([expectedPayload]);
+        expect(actions).toEqual([expectedPayload]);
 
     });
 
-    test('should clear users cache when user is created', async () => {
+    it('should clear users cache when user is created', async () => {
 
         const cacheStub = sandbox.setStub(UsersService.prototype, "clearCache");
 
@@ -159,10 +157,10 @@ describe("Admin Users actions tests", () => {
         }));
 
         expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
-            .to.be.true
+            .toBe(true)
     });
 
-    test('createUser should set show create user to false', async () => {
+    it('createUser should set show create user to false', async () => {
 
         const stub = sandbox.setStubReduxAction(usersActionCreators, "setShowCreateUser");
 
@@ -174,19 +172,19 @@ describe("Admin Users actions tests", () => {
             username: "joe.b"
         }));
 
-        expect(stub.calledWith(false)).to.be.true
+        expect(stub.calledWith(false)).toBe(true)
     });
 
-    test('setShowCreateUser dispatches SHOW_CREATE_USER', async () => {
+    it('setShowCreateUser dispatches SHOW_CREATE_USER', async () => {
 
         const result = usersActionCreators.setShowCreateUser(true);
-        expect(result).to.eql({
+        expect(result).toEqual({
             type: UsersTypes.SHOW_CREATE_USER,
             data: true
         })
     });
 
-    test('should set current user', (done) => {
+    it('should set current user', (done) => {
 
         const store = createMockStore({});
         store.dispatch(usersActionCreators.setCurrentUser("joe.bloggs"));
@@ -194,12 +192,12 @@ describe("Admin Users actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = {type: UsersTypes.SET_CURRENT_USER, data: "joe.bloggs"};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    test(
+    it(
         "setPassword issues notification if service returns success",
         (done: DoneCallback) => {
             sandbox.stubService(UsersService.prototype, "setPassword", mockResult(true));
@@ -207,7 +205,7 @@ describe("Admin Users actions tests", () => {
 
             const promise = store.dispatch(usersActionCreators.setPassword("TOKEN", "password"));
             checkPromise(done, promise, () => {
-                expect(store.getActions()).to.eql([
+                expect(store.getActions()).toEqual([
                     {
                         type: NotificationTypeKeys.NOTIFY,
                         "message": "Your password has been set. You are now being redirected to the Montagu homepage...",
@@ -218,7 +216,7 @@ describe("Admin Users actions tests", () => {
         }
     );
 
-    test(
+    it(
         "setPassword sets errors if service returns errors",
         (done: DoneCallback) => {
             const errors = [mockError("code", "message")];
@@ -227,14 +225,14 @@ describe("Admin Users actions tests", () => {
 
             const promise = store.dispatch(usersActionCreators.setPassword("TOKEN", "password"));
             checkPromise(done, promise, () => {
-                expect(store.getActions()).to.eql([
+                expect(store.getActions()).toEqual([
                     {type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS, errors: errors}
                 ]);
             });
         }
     );
 
-    test(
+    it(
         "setPassword clears token if service returns invalid token error",
         (done: DoneCallback) => {
             const errors = [mockError("onetime-token-invalid", "message")];
@@ -243,7 +241,7 @@ describe("Admin Users actions tests", () => {
 
             const promise = store.dispatch(usersActionCreators.setPassword("TOKEN", "password"));
             checkPromise(done, promise, () => {
-                expect(store.getActions()).to.eql([
+                expect(store.getActions()).toEqual([
                     {type: UsersTypes.CHANGE_SET_PASSWORD_TOKEN, token: null} as ChangeSetPasswordToken,
                     {type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS, errors: errors}
                 ]);
@@ -251,13 +249,13 @@ describe("Admin Users actions tests", () => {
         }
     );
 
-    test("setPassword sets errors if sevice fails", (done: DoneCallback) => {
+    it("setPassword sets errors if sevice fails", (done: DoneCallback) => {
         sandbox.stubService(UsersService.prototype, "setPassword", null);
         const store = createMockAdminStore({});
 
         const promise = store.dispatch(usersActionCreators.setPassword("TOKEN", "password"));
         checkPromise(done, promise, () => {
-            expect(store.getActions()).to.eql([
+            expect(store.getActions()).toEqual([
                 {
                     type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS,
                     errors: [{message: "An error occurred setting your password"}]

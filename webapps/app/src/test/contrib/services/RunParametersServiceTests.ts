@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 import { createMemoryHistory } from 'history';
 
 import {createContribStore} from "../../../main/contrib/createStore";
@@ -17,7 +17,7 @@ describe('Run Parameters service tests', () => {
         sandbox.restore();
     });
 
-    test('clears cache for parameters sets', () => {
+    it('clears cache for parameters sets', () => {
         const runParametersService = new RunParametersService(store.dispatch, store.getState as () => ContribAppState);
 
         const clearCacheStub = sandbox.setStubFunc(runParametersService, "clearCache", ()=>{
@@ -26,11 +26,11 @@ describe('Run Parameters service tests', () => {
 
         runParametersService.clearCacheForGetParameterSets("group-2", "touchstone-2");
 
-        expect(clearCacheStub.getCall(0).args[0]).to.equal("runParameters");
-        expect(clearCacheStub.getCall(0).args[1]).to.equal("/modelling-groups/group-2/model-run-parameters/touchstone-2/");
+        expect(clearCacheStub.getCall(0).args[0]).toEqual("runParameters");
+        expect(clearCacheStub.getCall(0).args[1]).toEqual("/modelling-groups/group-2/model-run-parameters/touchstone-2/");
     });
 
-    test('fetches parameters sets', () => {
+    it('fetches parameters sets', () => {
         const runParametersService = new RunParametersService(store.dispatch, store.getState as () => ContribAppState);
 
         const setOptionsSpy = sandbox.setSpy(runParametersService, "setOptions");
@@ -40,11 +40,11 @@ describe('Run Parameters service tests', () => {
 
         runParametersService.getParameterSets("group-3", "touchstone-3");
 
-        expect(getStub.getCall(0).args[0]).to.equal("/modelling-groups/group-3/model-run-parameters/touchstone-3/");
-        expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: "runParameters" });
+        expect(getStub.getCall(0).args[0]).toEqual("/modelling-groups/group-3/model-run-parameters/touchstone-3/");
+        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: "runParameters" });
     });
 
-    test('uploads set', () => {
+    it('uploads set', () => {
         const runParametersService = new RunParametersService(store.dispatch, store.getState as () => ContribAppState);
 
         const postStub = sandbox.setStubFunc(runParametersService, "post", ()=>{
@@ -53,7 +53,7 @@ describe('Run Parameters service tests', () => {
 
         runParametersService.uploadSet("group-3", "touchstone-3", {} as FormData);
 
-        expect(postStub.getCall(0).args[0]).to.equal("/modelling-groups/group-3/model-run-parameters/touchstone-3/");
+        expect(postStub.getCall(0).args[0]).toEqual("/modelling-groups/group-3/model-run-parameters/touchstone-3/");
     });
 
 });

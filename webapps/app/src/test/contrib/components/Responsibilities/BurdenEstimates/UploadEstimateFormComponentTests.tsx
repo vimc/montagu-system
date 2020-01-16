@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import "../../../../helper";
 import {Sandbox} from "../../../../Sandbox";
 import {
@@ -78,20 +78,20 @@ describe("Upload Burden Estimates Form Component tests", () => {
             groupId={"1"}/>);
     };
 
-    test("validates file", () => {
+    it("validates file", () => {
 
         const result = getComponent();
 
         fakeUploadClient.emit("fileAdded", {fileName: "wrongfile.png"});
-        expect(result.state().fileValidationResult.isValid).to.be.false;
+        expect(result.state().fileValidationResult.isValid).toBe(false);
 
         fakeUploadClient.emit("fileAdded", {fileName: "goodfile.csv"});
-        expect(result.state().fileValidationResult.isValid).to.be.true;
+        expect(result.state().fileValidationResult.isValid).toBe(true);
     });
 
     describe("selected file component", () => {
 
-        test("shows file if valid", () => {
+        it("shows file if valid", () => {
             const state: UploadEstimatesState = {
                 ...initialUploadState,
                 file: {fileName: "test.csv"} as any,
@@ -100,11 +100,11 @@ describe("Upload Burden Estimates Form Component tests", () => {
 
             const result = mount(<SelectedFile {...state} />);
 
-            expect(result.childAt(0).childAt(0).text()).to.eq("File selected: test.csv");
-            expect(result.find(Alert).props().isOpen).to.be.false;
+            expect(result.childAt(0).childAt(0).text()).toEqual("File selected: test.csv");
+            expect(result.find(Alert).props().isOpen).toBe(false);
         });
 
-        test("shows error if invalid", () => {
+        it("shows error if invalid", () => {
             const state: UploadEstimatesState = {
                 ...initialUploadState,
                 file: {fileName: "test.csv"} as any,
@@ -113,20 +113,20 @@ describe("Upload Burden Estimates Form Component tests", () => {
 
             const result = mount(<SelectedFile {...state} />);
 
-            expect(result.childAt(0).childAt(0).text()).to.eq("File selected: test.csv");
-            expect(result.find(Alert).props().isOpen).to.be.true;
-            expect(result.find(Alert).childAt(0).text()).to.eq("some error");
+            expect(result.childAt(0).childAt(0).text()).toEqual("File selected: test.csv");
+            expect(result.find(Alert).props().isOpen).toBe(true);
+            expect(result.find(Alert).childAt(0).text()).toEqual("some error");
         });
 
-        test("shows nothing if no file selected", () => {
+        it("shows nothing if no file selected", () => {
 
             const result = mount(<SelectedFile {...initialUploadState} />);
-            expect(result.children()).to.have.lengthOf(0);
+            expect(result.children()).toHaveLength(0);
         });
 
     });
 
-    test("file upload is disabled if url is null", () => {
+    it("file upload is disabled if url is null", () => {
 
         const result = shallow(<UploadEstimatesFormComponent
             createUploadClient={() => fakeUploadClient as any}
@@ -144,16 +144,16 @@ describe("Upload Burden Estimates Form Component tests", () => {
 
         result.setState({file: {fileName: "test.csv"}});
 
-        expect(result.find(".submit").props().disabled).to.be.true;
+        expect(result.find(".submit").props().disabled).toBe(true);
     });
 
-    test("file upload is disabled if file is null", () => {
+    it("file upload is disabled if file is null", () => {
 
         const result = getComponent({metadata: {type: "central-averaged", details: "whatever"}});
-        expect(result.find(".submit").props().disabled).to.be.true;
+        expect(result.find(".submit").props().disabled).toBe(true);
     });
 
-    test("file upload is disabled if file is invalid", () => {
+    it("file upload is disabled if file is invalid", () => {
 
         const result = getComponent();
         result.setState({
@@ -162,18 +162,18 @@ describe("Upload Burden Estimates Form Component tests", () => {
             fileValidationResult: {isValid: false}
         });
 
-        expect(result.find(".submit").props().disabled).to.be.true;
+        expect(result.find(".submit").props().disabled).toBe(true);
     });
 
-    test("file upload is disabled if metadata is missing", () => {
+    it("file upload is disabled if metadata is missing", () => {
 
         const result = getComponent();
         result.setState({file: {fileName: "test.csv"}, fileValidationResult: {isValid: true}});
 
-        expect(result.find(".submit").props().disabled).to.be.true;
+        expect(result.find(".submit").props().disabled).toBe(true);
     });
 
-    test("file upload is disabled while uploading is in progress", () => {
+    it("file upload is disabled while uploading is in progress", () => {
 
         const result = getComponent();
         result.setState({
@@ -183,10 +183,10 @@ describe("Upload Burden Estimates Form Component tests", () => {
             validationResult: {isValid: true},
         });
 
-        expect(result.find(".submit").props().disabled).to.be.true;
+        expect(result.find(".submit").props().disabled).toBe(true);
     });
 
-    test("creates estimate set if metadata and file present", () => {
+    it("creates estimate set if metadata and file present", () => {
 
         const resetPopulateState = sandbox.sinon.stub();
         const createEstimateSet = sandbox.sinon.stub();
@@ -199,13 +199,13 @@ describe("Upload Burden Estimates Form Component tests", () => {
             file: {fileName: "test.csv"}
         });
         result.find(".submit").simulate("click");
-        expect(resetPopulateState.called).to.be.true;
-        expect(createEstimateSet.called).to.be.true;
-        expect(result.state().isUploading).to.be.true;
-        expect(fakeUploadClient.uploadStarted).not.to.be.true;
+        expect(resetPopulateState.called).toBe(true);
+        expect(createEstimateSet.called).toBe(true);
+        expect(result.state().isUploading).toBe(true);
+        expect(fakeUploadClient.uploadStarted).not.toBe(true);
     });
 
-    test("uploads estimates when url changes", () => {
+    it("uploads estimates when url changes", () => {
 
         const resetPopulateState = sandbox.sinon.stub();
         const createEstimateSet = sandbox.sinon.stub();
@@ -222,16 +222,16 @@ describe("Upload Burden Estimates Form Component tests", () => {
             file: {fileName: "test.csv"}
         });
         result.find(".submit").simulate("click");
-        expect(resetPopulateState.called).to.be.true;
-        expect(createEstimateSet.called).to.be.true;
+        expect(resetPopulateState.called).toBe(true);
+        expect(createEstimateSet.called).toBe(true);
 
         result.setProps({url: "URL"});
         result.update();
 
-        expect(fakeUploadClient.uploadStarted).to.be.true;
+        expect(fakeUploadClient.uploadStarted).toBe(true);
     });
 
-    test("retries upload when url changes if file is unchanged", () => {
+    it("retries upload when url changes if file is unchanged", () => {
 
         // when file has already been uploaded, its progress will be stored in the upload client as 1
         fakeUploadClient.files[0].progress = () => 1;
@@ -251,31 +251,31 @@ describe("Upload Burden Estimates Form Component tests", () => {
             file: {fileName: "test.csv"}
         });
         result.find(".submit").simulate("click");
-        expect(resetPopulateState.called).to.be.true;
-        expect(createEstimateSet.called).to.be.true;
+        expect(resetPopulateState.called).toBe(true);
+        expect(createEstimateSet.called).toBe(true);
 
         result.setProps({url: "URL"});
         result.update();
 
-        expect(fakeUploadClient.retryStarted).to.be.true;
+        expect(fakeUploadClient.retryStarted).toBe(true);
     });
 
-    test("shows progress bar on file upload progress", () => {
+    it("shows progress bar on file upload progress", () => {
 
         const result = getComponent();
         fakeUploadClient.emit("progress");
-        expect(result.state().isUploading).to.be.true;
-        expect(result.find(".progress").first().props().style).to.have.property("display", "block");
+        expect(result.state().isUploading).toBe(true);
+        expect(result.find(".progress").first().props().style["display"]).toBe("block");
         const progressBar = result.find(".progress-bar").first();
-        expect(progressBar.props().style).to.have.property("width", "27%");
-        expect(progressBar.props().className).to.eq("progress-bar bg-success");
+        expect(progressBar.props().style["width"]).toBe("27%");
+        expect(progressBar.props().className).toEqual("progress-bar bg-success");
 
         const uploadButton = result.find(".submit.start").first();
-        expect(uploadButton.props().disabled).to.be.true;
+        expect(uploadButton.props().disabled).toBe(true);
 
     });
 
-    test("resets local state on file upload success", () => {
+    it("resets local state on file upload success", () => {
 
         const result = getComponent();
         result.setState({
@@ -289,24 +289,24 @@ describe("Upload Burden Estimates Form Component tests", () => {
 
         const newState = result.state();
 
-        expect(newState.isUploading).to.be.false;
-        expect(newState.progress).to.eq(0);
-        expect(newState.uploadErrors).to.have.lengthOf(0);
+        expect(newState.isUploading).toBe(false);
+        expect(newState.progress).toEqual(0);
+        expect(newState.uploadErrors).toHaveLength(0);
 
         // it should retain the current file though
-        expect(newState.file.fileName).to.eq("test.csv")
+        expect(newState.file.fileName).toEqual("test.csv")
     });
 
-    test("populates estimates on file upload success", () => {
+    it("populates estimates on file upload success", () => {
 
         const populateEstimateSet = sandbox.sinon.stub();
         getComponent({populateEstimateSet});
 
         fakeUploadClient.emit("fileSuccess");
-        expect(populateEstimateSet.called).to.be.true;
+        expect(populateEstimateSet.called).toBe(true);
     });
 
-    test("shows Montagu errors on file upload error", () => {
+    it("shows Montagu errors on file upload error", () => {
 
         const result = getComponent();
         fakeUploadClient.emit("fileError", {}, JSON.stringify({
@@ -316,29 +316,29 @@ describe("Upload Burden Estimates Form Component tests", () => {
         }));
 
         const allOpenAlerts = result.find(Alert).filterWhere((alert) => alert.props().isOpen);
-        expect(allOpenAlerts).to.have.lengthOf(1);
+        expect(allOpenAlerts).toHaveLength(1);
 
         const errorAlert = result.find(Alert).filterWhere((alert) => alert.props().id == "upload-errors")
             .childAt(0);
 
-        expect(errorAlert.text()).to.eq("test error");
+        expect(errorAlert.text()).toEqual("test error");
     });
 
-    test("shows arbitrary errors on file upload error", () => {
+    it("shows arbitrary errors on file upload error", () => {
 
         const result = getComponent();
         fakeUploadClient.emit("fileError", "someerror");
 
         const allOpenAlerts = result.find(Alert).filterWhere((alert) => alert.props().isOpen);
-        expect(allOpenAlerts).to.have.lengthOf(1);
+        expect(allOpenAlerts).toHaveLength(1);
 
         const errorAlert = result.find(Alert).filterWhere((alert) => alert.props().id == "upload-errors")
             .childAt(0);
-        expect(errorAlert.text()).to.eq("Error contacting server");
+        expect(errorAlert.text()).toEqual("Error contacting server");
     });
 
 
-    test("resets local state and removes file on cancel", () => {
+    it("resets local state and removes file on cancel", () => {
 
         const result = getComponent();
         result.setState({
@@ -349,18 +349,18 @@ describe("Upload Burden Estimates Form Component tests", () => {
         });
 
         result.find(".cancel").simulate("click");
-        expect(result.state()).to.deep.eq(initialUploadState);
-        expect(fakeUploadClient.cancelled).to.be.true;
+        expect(result.state()).toEqual(initialUploadState);
+        expect(fakeUploadClient.cancelled).toBe(true);
 
     });
 
-    test(
+    it(
         "hides buttons and displays loading element while populating is in progress",
         () => {
 
             const result = getComponent({populatingInProgress: true});
-            expect(result.find("button")).to.have.lengthOf(0);
-            expect(result.find(LoadingElement)).to.have.lengthOf(1);
+            expect(result.find("button")).toHaveLength(0);
+            expect(result.find(LoadingElement)).toHaveLength(1);
 
         }
     );

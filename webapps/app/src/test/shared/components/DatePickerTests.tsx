@@ -1,5 +1,5 @@
 import * as React from "react";
-import { expect } from "chai";
+
 import { shallow} from "enzyme";
 
 import "../../helper";
@@ -12,7 +12,7 @@ const localeUtilsMock = {
 
 describe("DatePicker", () => {
 
-    test(
+    it(
         "renders datepicker caption with given current date and months locales",
         () => {
             const rendered = shallow(<DatePickerMonthYearForm
@@ -24,22 +24,22 @@ describe("DatePicker", () => {
             />);
             const months = rendered.find('select[name="month"]');
             // selected month is may
-            expect(months.props().value).to.equal(4);
+            expect(months.props().value).toEqual(4);
             const monthsOptions = months.find('option');
             // months in select box
-            expect(monthsOptions.length).to.equal(12);
+            expect(monthsOptions.length).toEqual(12);
             for (let m = 0; m < 12; m++) {
-                expect(monthsOptions.at(m).props().value).to.equal(m);
-                expect(monthsOptions.at(m).props().children).to.equal(monthsLocale[m]);
+                expect(monthsOptions.at(m).props().value).toEqual(m);
+                expect(monthsOptions.at(m).props().children).toEqual(monthsLocale[m]);
             }
             const years = rendered.find('select[name="year"]');
             // selected year value is 2017
-            expect(years.props().value).to.equal(2017);
+            expect(years.props().value).toEqual(2017);
             const yearsOptions = years.find('option');
-            expect(yearsOptions.length).to.equal(3);
-            expect(yearsOptions.at(0).props().value).to.equal(2016);
-            expect(yearsOptions.at(1).props().value).to.equal(2017);
-            expect(yearsOptions.at(2).props().value).to.equal(2018);
+            expect(yearsOptions.length).toEqual(3);
+            expect(yearsOptions.at(0).props().value).toEqual(2016);
+            expect(yearsOptions.at(1).props().value).toEqual(2017);
+            expect(yearsOptions.at(2).props().value).toEqual(2018);
         }
     );
 

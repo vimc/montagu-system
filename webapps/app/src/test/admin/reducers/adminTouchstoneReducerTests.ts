@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import {
     adminTouchstoneReducer,
     adminTouchstonesInitialState, AdminTouchstoneState
@@ -7,7 +7,7 @@ import {TouchstonesAction, TouchstoneTypes} from "../../../main/shared/actionTyp
 import {mockTouchstone} from "../../mocks/mockModels";
 
 describe("adminTouchstoneReducer", () => {
-    test("sets fetched touchstones", () => {
+    it("sets fetched touchstones", () => {
         const data = [mockTouchstone(), mockTouchstone()];
         const action: TouchstonesAction = {
             type: TouchstoneTypes.ALL_TOUCHSTONES_FETCHED,
@@ -17,10 +17,10 @@ describe("adminTouchstoneReducer", () => {
             ...adminTouchstonesInitialState,
             touchstones: data
         };
-        expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
+        expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
     });
 
-    test("sets current touchstone", () => {
+    it("sets current touchstone", () => {
         const data = mockTouchstone();
         const action: TouchstonesAction = {
             type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
@@ -30,10 +30,10 @@ describe("adminTouchstoneReducer", () => {
             ...adminTouchstonesInitialState,
             currentTouchstone: data
         };
-        expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
+        expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
     });
 
-    test("sets create touchstone errors", () => {
+    it("sets create touchstone errors", () => {
         const errors = [{code: "e", message: "error"}];
         const action: TouchstonesAction = {
             type: TouchstoneTypes.SET_CREATE_TOUCHSTONE_ERROR,
@@ -43,10 +43,10 @@ describe("adminTouchstoneReducer", () => {
             ...adminTouchstonesInitialState,
             createTouchstoneErrors: errors
         };
-        expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
+        expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
     });
 
-    test("adds new touchstone", () => {
+    it("adds new touchstone", () => {
         const touchstone = mockTouchstone();
         const action: TouchstonesAction = {
             type: TouchstoneTypes.NEW_TOUCHSTONE_CREATED,
@@ -56,6 +56,6 @@ describe("adminTouchstoneReducer", () => {
             ...adminTouchstonesInitialState,
             touchstones: [touchstone]
         };
-        expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
+        expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
     });
 });

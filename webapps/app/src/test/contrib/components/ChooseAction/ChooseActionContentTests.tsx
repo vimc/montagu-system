@@ -1,6 +1,6 @@
 import * as React from "react";
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import {Store} from "redux";
 
 import "../../../helper";
@@ -37,55 +37,55 @@ describe("Choose Action Content Component", () => {
     });
     afterEach(() => sandbox.restore());
 
-    test("renders on connect level", () => {
+    it("renders on connect level", () => {
         const rendered = shallow(<ChooseActionContent/>, {context: {store}});
         const props = rendered.props() as ChooseActionContentProps;
-        expect(props.group).to.eql(testCurrentGroup);
-        expect(props.touchstoneVersions).to.eql(testVersions);
+        expect(props.group).toEqual(testCurrentGroup);
+        expect(props.touchstoneVersions).toEqual(testVersions);
     });
 
-    test("renders on branch level, passes", () => {
+    it("renders on branch level, passes", () => {
         const rendered = shallow(<ChooseActionContent/>, {context: {store}}).dive();
         const props = rendered.props() as ChooseActionContentProps;
-        expect(props.group).to.eql(testCurrentGroup);
-        expect(props.touchstoneVersions).to.eql(testVersions);
-        expect(rendered.find(ChooseActionContentComponent).length).to.eql(1);
+        expect(props.group).toEqual(testCurrentGroup);
+        expect(props.touchstoneVersions).toEqual(testVersions);
+        expect(rendered.find(ChooseActionContentComponent).length).toEqual(1);
     });
 
-    test("renders on branch level, not passes", () => {
+    it("renders on branch level, not passes", () => {
         store = createMockContribStore({
             groups: {currentUserGroup: null},
             touchstones: {touchstones: []}
         });
         const rendered = shallow(<ChooseActionContent/>, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement).length).to.eql(1);
+        expect(rendered.find(LoadingElement).length).toEqual(1);
     });
 
-    test("renders on component level", () => {
+    it("renders on component level", () => {
         const rendered = shallow(<ChooseActionContent/>, {context: {store}}).dive().dive();
-        expect(rendered.find(TouchstoneList).length).to.eql(1);
-        expect(rendered.find(TouchstoneList).props().group).to.eql(testCurrentGroup);
-        expect(rendered.find(TouchstoneList).props().touchstones).to.eql(testVersions);
+        expect(rendered.find(TouchstoneList).length).toEqual(1);
+        expect(rendered.find(TouchstoneList).props().group).toEqual(testCurrentGroup);
+        expect(rendered.find(TouchstoneList).props().touchstones).toEqual(testVersions);
     });
 
-    test("maps state to props with current group and touchstone", () => {
+    it("maps state to props with current group and touchstone", () => {
         const contribStateMock = mockContribState({
             groups: {currentUserGroup: testCurrentGroup},
             touchstones: {touchstones: testTouchstones}
         });
         const props = mapStateToProps(contribStateMock);
-        expect(props.group).to.eql(testCurrentGroup);
-        expect(props.touchstoneVersions).to.eql(testVersions);
+        expect(props.group).toEqual(testCurrentGroup);
+        expect(props.touchstoneVersions).toEqual(testVersions);
     });
 
-    test("maps state to props with no group", () => {
+    it("maps state to props with no group", () => {
         const emptyGroup: ModellingGroup = null;
         const contribStateMock = mockContribState({
             groups: {currentUserGroup: emptyGroup},
             touchstones: {touchstones: testTouchstones}
         });
         const props = mapStateToProps(contribStateMock);
-        expect(props.group).to.eql(emptyGroup);
-        expect(props.touchstoneVersions).to.eql(testVersions);
+        expect(props.group).toEqual(emptyGroup);
+        expect(props.touchstoneVersions).toEqual(testVersions);
     });
 });

@@ -1,34 +1,34 @@
-import { expect } from "chai";
+
 import {breadcrumbsModule} from "../../../main/shared/modules/breadcrumbs";
 
 describe('Breadcrumbs Module Tests', () => {
-    test('initializes empty array if null passed', () => {
-        expect(breadcrumbsModule.initialize(null)).to.eql([]);
+    it('initializes empty array if null passed', () => {
+        expect(breadcrumbsModule.initialize(null)).toEqual([]);
     });
 
-    test('initializes breadcrumb with one element', () => {
+    it('initializes breadcrumb with one element', () => {
         expect(breadcrumbsModule.initialize({
             name: 'A',
             urlFragment: '/',
             parent: null
-        })).to.eql([{
+        })).toEqual([{
             name: 'A',
             url: '/',
         }]);
     });
 
-    test('initializes breadcrumb with one element', () => {
+    it('initializes breadcrumb with one element', () => {
         expect(breadcrumbsModule.initialize({
             name: 'A',
             urlFragment: '/',
             parent: null
-        })).to.eql([{
+        })).toEqual([{
             name: 'A',
             url: '/',
         }]);
     });
 
-    test('reformats from tree to array', () => {
+    it('reformats from tree to array', () => {
         expect(breadcrumbsModule.getParentsInOrderFromTopToBottom({
             name: 'B',
             urlFragment: 'b/',
@@ -37,7 +37,7 @@ describe('Breadcrumbs Module Tests', () => {
                 urlFragment: '/',
                 parent: null
             }
-        })).to.eql([{
+        })).toEqual([{
             name: 'A',
             urlFragment: '/',
             parent: null
@@ -52,7 +52,7 @@ describe('Breadcrumbs Module Tests', () => {
         }]);
     });
 
-    test('creates url adding all url fragments', () => {
+    it('creates url adding all url fragments', () => {
         expect(breadcrumbsModule.url({
             name: 'B',
             urlFragment: 'b/',
@@ -61,6 +61,6 @@ describe('Breadcrumbs Module Tests', () => {
                 urlFragment: '/',
                 parent: null
             }
-        })).to.equal("/b/");
+        })).toEqual("/b/");
     });
 });

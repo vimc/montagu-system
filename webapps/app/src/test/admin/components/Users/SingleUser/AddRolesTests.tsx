@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import * as Sinon from "sinon";
 import {AddRoles, AddRolesComponent} from "../../../../../main/admin/components/Users/SingleUser/AddRoles";
 import {Sandbox} from "../../../../Sandbox";
@@ -36,26 +36,26 @@ describe("AddRoles", () => {
         sandbox.restore();
     });
 
-    test("populates role options from store state", () => {
+    it("populates role options from store state", () => {
 
         const rendered = shallow(<AddRoles username={"testuser"} userRoles={[]}/>, {context: {store}})
             .dive().dive();
 
-        expect(rendered.find("option")).to.have.lengthOf(2)
+        expect(rendered.find("option")).toHaveLength(2)
     });
 
-    test("only shows roles the user does not have", () => {
+    it("only shows roles the user does not have", () => {
 
         const rendered = shallow(<AddRolesComponent username={"testuser"}
                                                     userRoles={["role1"]}
                                                     allRoles={["role1", "role2"]}
                                                     addRoleToUser={null}/>);
 
-        expect(rendered.find("option")).to.have.lengthOf(1);
+        expect(rendered.find("option")).toHaveLength(1);
 
     });
 
-    test("dispatches addGlobalRoleToUser when role is added", () => {
+    it("dispatches addGlobalRoleToUser when role is added", () => {
 
         const addRoles = shallow(<AddRoles username={"testuser"} userRoles={["role1"]}/>, {context: {store}})
             .dive()
@@ -69,7 +69,7 @@ describe("AddRoles", () => {
             }
         });
 
-        expect(addRoleStub.calledWith("testuser", "rolename")).to.be.true;
+        expect(addRoleStub.calledWith("testuser", "rolename")).toBe(true);
 
     })
 });

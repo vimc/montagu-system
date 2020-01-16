@@ -1,6 +1,6 @@
 import * as React from "react";
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import {
     NotificationArea,
     NotificationAreaComponent
@@ -11,10 +11,10 @@ describe("NotificationArea", () => {
     function clear() {
     }
 
-    test("only renders first message", () => {
+    it("only renders first message", () => {
         const rendered = shallow(<NotificationAreaComponent infoMessages={["XXXX", "YYYY"]} clear={clear}/>);
         const text = rendered.find(CSSTransitionGroup).render().text();
-        expect(text).to.contain("XXXX");
-        expect(text).to.not.contain("YYYY");
+        expect(text).toContain("XXXX");
+        expect(text).not.toContain("YYYY");
     });
 });

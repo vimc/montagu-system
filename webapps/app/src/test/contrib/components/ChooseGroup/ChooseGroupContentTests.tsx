@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow} from "enzyme";
-import { expect } from "chai";
+
 import { Store } from "redux";
 
 import "../../../helper";
@@ -29,41 +29,41 @@ describe("Choose Group Content Component", () => {
     });
     afterEach(() => sandbox.restore());
 
-    test("renders Group Content on connect level", () => {
+    it("renders Group Content on connect level", () => {
         const rendered = shallow(<ChooseGroupContent/>, {context: {store}});
-        expect(rendered.props().groups).to.eql(testGroups);
+        expect(rendered.props().groups).toEqual(testGroups);
     });
 
-    test("renders Group Content on branch level passes", () => {
+    it("renders Group Content on branch level passes", () => {
         const rendered = shallow(<ChooseGroupContent/>, {context: {store}}).dive();
         const props = rendered.props() as ChooseGroupContentProps;
-        expect(props.groups).to.eql(testGroups);
-        expect(rendered.find(ChooseGroupContentComponent).length).to.eql(1);
+        expect(props.groups).toEqual(testGroups);
+        expect(rendered.find(ChooseGroupContentComponent).length).toEqual(1);
     });
 
-    test("renders Group Content on branch level not passes", () => {
+    it("renders Group Content on branch level not passes", () => {
         store = createMockStore({groups: {userGroups: []}});
         const rendered = shallow(<ChooseGroupContent/>, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement).length).to.eql(1);
+        expect(rendered.find(LoadingElement).length).toEqual(1);
     });
 
-    test("renders Group Content on component level", () => {
+    it("renders Group Content on component level", () => {
         const rendered = shallow(<ChooseGroupContent/>, {context: {store}}).dive().dive();
-        expect(rendered.find(GroupList).length).to.eql(1);
-        expect(rendered.find(GroupList).props().groups).to.eql(testGroups);
+        expect(rendered.find(GroupList).length).toEqual(1);
+        expect(rendered.find(GroupList).props().groups).toEqual(testGroups);
     });
 
-    test("maps state to props with groups", () => {
+    it("maps state to props with groups", () => {
         const groups :ModellingGroup[] = testGroups;
         const contribStateMock = mockContribState({ groups: { userGroups: groups } });
         const props = mapStateToProps(contribStateMock);
-        expect(props.groups).to.eql(testGroups);
+        expect(props.groups).toEqual(testGroups);
     });
 
-    test("maps state to props with no groups", () => {
+    it("maps state to props with no groups", () => {
         const groups: ModellingGroup[] = [];
         const contribStateMock = mockContribState({ groups: { userGroups: groups } });
         const props = mapStateToProps(contribStateMock);
-        expect(props.groups).to.eql(groups);
+        expect(props.groups).toEqual(groups);
     });
 });

@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import { Sandbox } from "../../Sandbox";
 import { diseasesActionCreators } from "../../../main/shared/actions/diseasesActionCreators";
@@ -15,7 +15,7 @@ describe("Diseases actions tests", () => {
         sandbox.restore();
     });
 
-    test("all diseases fetched", (done) => {
+    it("all diseases fetched", (done) => {
         const store = createMockStore({});
         sandbox.setStubFunc(DiseasesService.prototype, "getAllDiseases", ()=>{
           return Promise.resolve([testDisease]);
@@ -24,12 +24,12 @@ describe("Diseases actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease] };
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    test("set current disease id", (done) => {
+    it("set current disease id", (done) => {
         const initialState = {
             diseases: {diseases: [testDisease]}
         };
@@ -38,7 +38,7 @@ describe("Diseases actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: DiseasesTypes.DISEASES_SET_CURRENT_DISEASE_ID, data: testDisease.id };
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });

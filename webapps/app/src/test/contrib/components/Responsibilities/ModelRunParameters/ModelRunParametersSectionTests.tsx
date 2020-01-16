@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {shallow, ShallowWrapper} from "enzyme";
 
 import "../../../../helper";
@@ -10,23 +10,23 @@ import {ModelRunParametersStatus} from "../../../../../main/contrib/components/R
 describe('Model Run Parameter Section Component tests', () => {
     let rendered: ShallowWrapper<any, any>;
 
-    test("renders Form", () => {
+    it("renders Form", () => {
 
         rendered = shallow(<ModelRunParametersSection
             disease={"d1"}
         />);
 
         const form = rendered.find(ModelRunParametersForm);
-        expect(form).to.have.lengthOf(1);
+        expect(form).toHaveLength(1);
     });
 
-    test("renders status", () => {
+    it("renders status", () => {
 
         rendered = shallow(<ModelRunParametersSection
             disease={"d1"}
         />);
 
         const input = rendered.find(ModelRunParametersStatus);
-        expect(input).to.have.lengthOf(1);
+        expect(input).toHaveLength(1);
     });
 });

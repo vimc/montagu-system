@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { expect } from "chai";
+
 
 import "../../../../helper";
 import { Sandbox } from "../../../../Sandbox";
@@ -27,7 +27,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
 
     afterEach(() => sandbox.restore());
 
-    test("renders component on connect level", () => {
+    it("renders component on connect level", () => {
 
         const testTouchstone = mockTouchstoneVersion();
 
@@ -43,10 +43,10 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}});
 
         const props = rendered.props();
-        expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
+        expect(props.touchstoneVersion.name).toBe(testTouchstone.name);
     });
 
-    test("renders component on component level for latest content", () => {
+    it("renders component on component level for latest content", () => {
         const testTouchstone = mockTouchstoneVersion();
 
         const store = createMockContribStore({
@@ -60,13 +60,13 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
-        expect(onLoadStub.called).is.equal(true);
+        expect(onLoadStub.called).toBe(true);
 
         const content = rendered.find(ResponsibilityGuidanceModelInputsContentLatest);
-        expect(content.getElements().length).is.equal(1);
+        expect(content.getElements().length).toBe(1);
     });
 
-    test("renders component for finished touchstone", () => {
+    it("renders component for finished touchstone", () => {
         const testTouchstone = mockTouchstoneVersion({status: "finished"});
 
         const store = createMockContribStore({
@@ -80,14 +80,14 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
-        expect(onLoadStub.called).is.equal(true);
+        expect(onLoadStub.called).toBe(true);
 
         const content = rendered.find(ResponsibilityGuidanceTouchstoneNotOpenContent);
-        expect(content.getElements().length).is.equal(1);
+        expect(content.getElements().length).toBe(1);
 
     });
 
-    test("renders component for 2017 touchstone", () => {
+    it("renders component for 2017 touchstone", () => {
         const testTouchstone = mockTouchstoneVersion({id: "op-2017-1"});
 
         const store = createMockContribStore({
@@ -101,14 +101,14 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
-        expect(onLoadStub.called).is.equal(true);
+        expect(onLoadStub.called).toBe(true);
 
         const content = rendered.find(ResponsibilityGuidanceModelInputsContent2017);
-        expect(content.getElements().length).is.equal(1);
+        expect(content.getElements().length).toBe(1);
 
     });
 
-    test("renders component for 2019 touchstone", () => {
+    it("renders component for 2019 touchstone", () => {
         const testTouchstone = mockTouchstoneVersion({id: "201910"});
 
         const store = createMockContribStore({
@@ -122,10 +122,10 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
-        expect(onLoadStub.called).is.equal(true);
+        expect(onLoadStub.called).toBe(true);
 
         const link = rendered.find("a");
-        expect(link.prop("href")).contains("guidance-2019-inputs.pdf");
+        expect(link.prop("href")).toContain("guidance-2019-inputs.pdf");
     });
 
 });

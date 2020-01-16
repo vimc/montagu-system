@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import {createMockAdminStore} from "../../../mocks/mockStore";
 import {Sandbox} from "../../../Sandbox";
 import {touchstoneDetailsPageActionCreators} from "../../../../main/admin/actions/pages/touchstoneDetailsPageActionCreators";
@@ -20,30 +20,30 @@ describe("touchstoneDetailsPageActionCreators", () => {
     };
     const state = mockAdminState({touchstones: touchstoneState});
 
-    test("sets current touchstone on load", async () => {
+    it("sets current touchstone on load", async () => {
 
         const store = createMockAdminStore(state);
         await store.dispatch(touchstoneDetailsPageActionCreators.loadData({
             touchstoneId: "tB"
         }));
-        expect(store.getActions()).to.eql([
+        expect(store.getActions()).toEqual([
             {type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE, data: tB}
         ]);
     });
 
-    test("creates breadcrumbs", () => {
+    it("creates breadcrumbs", () => {
 
         const result = touchstoneDetailsPageActionCreators.createBreadcrumb(state);
 
-        expect(result.urlFragment).to.eq("myId/");
-        expect(result.name).to.eq("myId");
+        expect(result.urlFragment).toEqual("myId/");
+        expect(result.name).toEqual("myId");
     });
 
-    test("has TouchstoneList as parent", () => {
-        expect(touchstoneDetailsPageActionCreators.parent).to.eq(touchstoneListPageActionCreators)
+    it("has TouchstoneList as parent", () => {
+        expect(touchstoneDetailsPageActionCreators.parent).toEqual(touchstoneListPageActionCreators)
     });
 
-    test("has current touchstone description as title", () => {
-        expect(touchstoneDetailsPageActionCreators.title(state)).to.eq("desc of myId")
+    it("has current touchstone description as title", () => {
+        expect(touchstoneDetailsPageActionCreators.title(state)).toEqual("desc of myId")
     });
 });

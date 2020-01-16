@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import { createMemoryHistory } from 'history';
 
 import {Sandbox} from "../../Sandbox";
@@ -37,28 +37,28 @@ describe("Breadcrumbs actions integration tests with store", () => {
 
     afterEach(() => sandbox.restore());
 
-    test("initializes breadcrumbs for page A", () => {
+    it("initializes breadcrumbs for page A", () => {
         const history = createMemoryHistory();
         let store = createContribStore(history);
         store.dispatch(breadcrumbsActionCreators.createBreadcrumbs(A.breadcrumb()));
         const state = store.getState() as ContribAppState;
         const breadcrumbs = state.breadcrumbs.breadcrumbs;
-        expect(breadcrumbs.length).to.equal(1);
-        expect(breadcrumbs[0].name).to.equal("A");
-        expect(breadcrumbs[0].url).to.equal("/");
+        expect(breadcrumbs.length).toEqual(1);
+        expect(breadcrumbs[0].name).toEqual("A");
+        expect(breadcrumbs[0].url).toEqual("/");
     });
 
-    test("initializes breadcrumbs for page B", () => {
+    it("initializes breadcrumbs for page B", () => {
         const history = createMemoryHistory();
         let store = createContribStore(history);
         store.dispatch(breadcrumbsActionCreators.createBreadcrumbs(B.breadcrumb()));
         const state = store.getState() as ContribAppState;
         const breadcrumbs = state.breadcrumbs.breadcrumbs;
-        expect(breadcrumbs.length).to.equal(2);
-        expect(breadcrumbs[0].name).to.equal("A");
-        expect(breadcrumbs[0].url).to.equal("/");
-        expect(breadcrumbs[1].name).to.equal("B");
-        expect(breadcrumbs[1].url).to.equal("/b/");
+        expect(breadcrumbs.length).toEqual(2);
+        expect(breadcrumbs[0].name).toEqual("A");
+        expect(breadcrumbs[0].url).toEqual("/");
+        expect(breadcrumbs[1].name).toEqual("B");
+        expect(breadcrumbs[1].url).toEqual("/b/");
     });
 });
 
@@ -68,7 +68,7 @@ describe("Breadcrumbs actions tests with mock store", () => {
 
     afterEach(() => sandbox.restore());
 
-    test("sets breadcrumb", (done) => {
+    it("sets breadcrumb", (done) => {
         const store = createMockStore({});
         const testBreadcrumbs = mockBreadcrumbs();
         const testPageBreadCrumb = mockPageBreadcrumb();
@@ -80,7 +80,7 @@ describe("Breadcrumbs actions tests with mock store", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs };
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });

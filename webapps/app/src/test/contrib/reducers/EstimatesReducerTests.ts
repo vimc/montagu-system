@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {estimatesInitialState, estimatesReducer} from "../../../main/contrib/reducers/estimatesReducer";
 import {BurdenOutcome, EstimateTypes} from "../../../main/contrib/actionTypes/EstimateTypes";
@@ -14,7 +14,7 @@ describe('Estimates reducer tests', () => {
         };
     };
 
-    test('adds deaths to estimates lookup', () => {
+    it('adds deaths to estimates lookup', () => {
 
         const fakeData = makeFakeData(BurdenOutcome.DEATHS);
 
@@ -23,13 +23,13 @@ describe('Estimates reducer tests', () => {
             data: fakeData
         });
 
-        expect(Object.keys(result.deaths)).to.have.lengthOf(1);
-        expect(result.deaths[2]).to.eq(fakeBurdens);
-        expect(result.dalys).to.be.null;
-        expect(result.cases).to.be.null;
+        expect(Object.keys(result.deaths)).toHaveLength(1);
+        expect(result.deaths[2]).toEqual(fakeBurdens);
+        expect(result.dalys).toBe(null);
+        expect(result.cases).toBe(null);
     });
 
-    test('adds cases to estimates lookup', () => {
+    it('adds cases to estimates lookup', () => {
 
         const fakeData = makeFakeData(BurdenOutcome.CASES);
 
@@ -38,13 +38,13 @@ describe('Estimates reducer tests', () => {
             data: fakeData
         });
 
-        expect(Object.keys(result.cases)).to.have.lengthOf(1);
-        expect(result.cases[2]).to.eq(fakeBurdens);
-        expect(result.dalys).to.be.null;
-        expect(result.deaths).to.be.null;
+        expect(Object.keys(result.cases)).toHaveLength(1);
+        expect(result.cases[2]).toEqual(fakeBurdens);
+        expect(result.dalys).toBe(null);
+        expect(result.deaths).toBe(null);
     });
 
-    test('adds dalys to estimates lookup', () => {
+    it('adds dalys to estimates lookup', () => {
 
         const fakeData = makeFakeData(BurdenOutcome.DALYS);
 
@@ -53,32 +53,32 @@ describe('Estimates reducer tests', () => {
             data: fakeData
         });
 
-        expect(Object.keys(result.dalys)).to.have.lengthOf(1);
-        expect(result.dalys[2]).to.eq(fakeBurdens);
-        expect(result.deaths).to.be.null;
-        expect(result.cases).to.be.null;
+        expect(Object.keys(result.dalys)).toHaveLength(1);
+        expect(result.dalys[2]).toEqual(fakeBurdens);
+        expect(result.deaths).toBe(null);
+        expect(result.cases).toBe(null);
     });
 
-    test('sets chart type', () => {
+    it('sets chart type', () => {
 
         const result = estimatesReducer(estimatesInitialState, {
             type: EstimateTypes.SET_CHART_TYPE,
             data: BurdenOutcome.CASES
         });
 
-        expect(result.chartType).to.eq(BurdenOutcome.CASES);
+        expect(result.chartType).toEqual(BurdenOutcome.CASES);
     });
 
-    test("records that estimate set populating in progress", () => {
+    it("records that estimate set populating in progress", () => {
         const result = estimatesReducer(estimatesInitialState, {
             type: EstimateTypes.POPULATING_ESTIMATES,
             data: true
         });
 
-        expect(result.populatingInProgress).to.be.true;
+        expect(result.populatingInProgress).toBe(true);
     });
 
-    test("sets populate state after set is populated with errors", () => {
+    it("sets populate state after set is populated with errors", () => {
 
         const mockErrors = [{code: "e", message: "e"}];
         const mockState = {...estimatesInitialState, populatingInProgress: true};
@@ -87,13 +87,13 @@ describe('Estimates reducer tests', () => {
             data: {setStatus: "invalid", errors: mockErrors}
         });
 
-        expect(result.populateErrors).to.have.members(mockErrors);
-        expect(result.hasPopulateSuccess).to.be.false;
-        expect(result.populatingInProgress).to.be.false;
-        expect(result.populatingSetId).to.be.null;
+        expect(result.populateErrors).toEqual(mockErrors);
+        expect(result.hasPopulateSuccess).toBe(false);
+        expect(result.populatingInProgress).toBe(false);
+        expect(result.populatingSetId).toBe(null);
     });
 
-    test("sets populate state after set is populated successfully", () => {
+    it("sets populate state after set is populated successfully", () => {
 
         const mockState = {
             ...estimatesInitialState,
@@ -107,14 +107,14 @@ describe('Estimates reducer tests', () => {
             data: {setStatus: "complete", errors: []}
         });
 
-        expect(result.populateErrors).to.have.lengthOf(0);
-        expect(result.hasPopulateSuccess).to.be.true;
-        expect(result.populatingInProgress).to.be.false;
-        expect(result.populatingSetId).to.be.null;
-        expect(result.uploadToken).to.be.null;
+        expect(result.populateErrors).toHaveLength(0);
+        expect(result.hasPopulateSuccess).toBe(true);
+        expect(result.populatingInProgress).toBe(false);
+        expect(result.populatingSetId).toBe(null);
+        expect(result.uploadToken).toBe(null);
     });
 
-    test("resets populate state", () => {
+    it("resets populate state", () => {
 
         const mockState = {
             ...estimatesInitialState,
@@ -129,30 +129,30 @@ describe('Estimates reducer tests', () => {
             data: true
         });
 
-        expect(result.hasPopulateSuccess).to.be.false;
-        expect(result.populatingSetId).to.be.null;
-        expect(result.populateErrors).to.have.lengthOf(0);
-        expect(result.uploadToken).to.be.null;
+        expect(result.hasPopulateSuccess).toBe(false);
+        expect(result.populatingSetId).toBe(null);
+        expect(result.populateErrors).toHaveLength(0);
+        expect(result.uploadToken).toBe(null);
     });
 
-    test("sets upload token", () => {
+    it("sets upload token", () => {
 
         const result = estimatesReducer(estimatesInitialState, {
             type: EstimateTypes.UPLOAD_TOKEN_FETCHED,
             data: "TOKEN"
         });
 
-        expect(result.uploadToken).to.eq("TOKEN");
+        expect(result.uploadToken).toEqual("TOKEN");
     });
 
-    test("sets populatingSetId", () => {
+    it("sets populatingSetId", () => {
 
         const result = estimatesReducer(estimatesInitialState, {
             type: EstimateTypes.SET_CREATED,
             data: 1
         });
 
-        expect(result.populatingSetId).to.eq(1);
+        expect(result.populatingSetId).toEqual(1);
     });
 
 });

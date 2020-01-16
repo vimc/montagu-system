@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import { responsibilitiesReducer, responsibilitiesInitialState } from "../../../main/contrib/reducers/responsibilitiesReducer";
 import { ResponsibilitiesTypes } from "../../../main/contrib/actionTypes/ResponsibilitiesTypes";
@@ -9,31 +9,31 @@ describe('Responsibilities reducer tests', () => {
     const testExtResponsibilitySet = mockExtendedResponsibilitySet();
     const testExtResponsibility = mockExtendedResponsibility();
 
-    test('sets responsibility set', () => {
+    it('sets responsibility set', () => {
         expect(responsibilitiesReducer(undefined, {
             type: ResponsibilitiesTypes.SET_RESPONSIBILITIES,
             data: testExtResponsibilitySet
-        })).to.eql({...responsibilitiesInitialState, responsibilitiesSet: testExtResponsibilitySet});
+        })).toEqual({...responsibilitiesInitialState, responsibilitiesSet: testExtResponsibilitySet});
     });
 
-    test('sets empty responsibility set', () => {
+    it('sets empty responsibility set', () => {
         expect(responsibilitiesReducer(undefined, {
             type: ResponsibilitiesTypes.SET_RESPONSIBILITIES,
             data: null
-        })).to.eql(responsibilitiesInitialState);
+        })).toEqual(responsibilitiesInitialState);
     });
 
-    test('set current responsibility', () => {
+    it('set current responsibility', () => {
         expect(responsibilitiesReducer(undefined, {
             type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY,
             data: testExtResponsibility
-        })).to.eql({...responsibilitiesInitialState, currentResponsibility: testExtResponsibility});
+        })).toEqual({...responsibilitiesInitialState, currentResponsibility: testExtResponsibility});
     });
 
-    test('set empty current responsibility', () => {
+    it('set empty current responsibility', () => {
         expect(responsibilitiesReducer(undefined, {
             type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY,
             data: null
-        })).to.eql(responsibilitiesInitialState);
+        })).toEqual(responsibilitiesInitialState);
     });
 });

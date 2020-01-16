@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {shallow} from "enzyme";
 
 import "../../helper";
@@ -23,7 +23,7 @@ describe("DateRangePicker", () => {
     const from = new Date(2016, 4, 15);
     const to = new Date(2018, 4, 15);
 
-    test("renders start date picker", () => {
+    it("renders start date picker", () => {
 
         const rendered = shallow(<DateRangePicker
             startDate={from}
@@ -34,13 +34,13 @@ describe("DateRangePicker", () => {
 
         const startDatePicker = rendered.find(DatePicker).first();
 
-        expect(startDatePicker.first().prop("value")).to.eql(value.start);
-        expect(startDatePicker.first().prop("fromMonth")).to.eql(from);
-        expect(startDatePicker.first().prop("toMonth")).to.eql(to);
+        expect(startDatePicker.first().prop("value")).toEqual(value.start);
+        expect(startDatePicker.first().prop("fromMonth")).toEqual(from);
+        expect(startDatePicker.first().prop("toMonth")).toEqual(to);
 
     });
 
-    test("renders end date picker", () => {
+    it("renders end date picker", () => {
 
         const rendered = shallow(<DateRangePicker
             startDate={from}
@@ -51,13 +51,13 @@ describe("DateRangePicker", () => {
 
         const startDatePicker = rendered.find(DatePicker).last();
 
-        expect(startDatePicker.first().prop("value")).to.eql(value.end);
-        expect(startDatePicker.first().prop("fromMonth")).to.eql(from);
-        expect(startDatePicker.first().prop("toMonth")).to.eql(to);
+        expect(startDatePicker.first().prop("value")).toEqual(value.end);
+        expect(startDatePicker.first().prop("fromMonth")).toEqual(from);
+        expect(startDatePicker.first().prop("toMonth")).toEqual(to);
 
     });
 
-    test("calls timeFromSelected when start date changes", () => {
+    it("calls timeFromSelected when start date changes", () => {
 
         const timeFromSelectedStub = sandbox.sinon.stub();
 
@@ -71,10 +71,10 @@ describe("DateRangePicker", () => {
         const startDatePicker = rendered.find(DatePicker).first();
         startDatePicker.simulate("change");
 
-        expect(timeFromSelectedStub.called).to.be.true;
+        expect(timeFromSelectedStub.called).toBe(true);
     });
 
-    test("calls timeUntilSelected when end date changes", () => {
+    it("calls timeUntilSelected when end date changes", () => {
 
         const timeUntilSelectedStub = sandbox.sinon.stub();
 
@@ -88,7 +88,7 @@ describe("DateRangePicker", () => {
         const startDatePicker = rendered.find(DatePicker).last();
         startDatePicker.simulate("change");
 
-        expect(timeUntilSelectedStub.called).to.be.true;
+        expect(timeUntilSelectedStub.called).toBe(true);
     });
 
 });

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { expect } from "chai";
+
 import { shallow } from "enzyme";
 
 import "../../../../helper";
@@ -23,31 +23,31 @@ describe("Modelling Groups List Content Component tests", () => {
         const sandbox = new Sandbox();
         afterEach(() => sandbox.restore());
 
-        test("renders on connect level", () => {
+        it("renders on connect level", () => {
             const testState = {
                 groups: {groups: [testGroup1]}
             };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupsListContent/>, {context: {store}});
-            expect(rendered.props().groups).to.eql([testGroup1]);
+            expect(rendered.props().groups).toEqual([testGroup1]);
         });
 
-        test("renders on connect level, passes null as groups", () => {
+        it("renders on connect level, passes null as groups", () => {
             const testState = {
                 groups: {groups: null as any}
             };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupsListContent/>, {context: {store}});
-            expect(rendered.props().groups).to.eql([]);
+            expect(rendered.props().groups).toEqual([]);
         });
 
-        test("renders on connect level, check if groups are sorted correctly", () => {
+        it("renders on connect level, check if groups are sorted correctly", () => {
             const testState = {
                 groups: {groups: [testGroup1, testGroup2, testGroup3]}
             };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupsListContent/>, {context: {store}});
-            expect(rendered.props().groups).to.eql([testGroup2, testGroup1, testGroup3]);
+            expect(rendered.props().groups).toEqual([testGroup2, testGroup1, testGroup3]);
         })
 
     });
@@ -57,14 +57,14 @@ describe("Modelling Groups List Content Component tests", () => {
         const testGroup1 = mockModellingGroup({id: 'g-1', description: "b"});
         const testGroup2 = mockModellingGroup({id: 'g-2', description: "a"});
 
-        test("can render group item elements", () => {
+        it("can render group item elements", () => {
             const groups = [testGroup1, testGroup2];
 
             const rendered = shallow(<ModellingGroupsListContentComponent groups={ groups } />);
             const items = rendered.find(ModellingGroupListItem);
-            expect(items).to.have.length(2);
-            expect(items.at(0).prop("description")).to.equal("b");
-            expect(items.at(1).prop("description")).to.equal("a");
+            expect(items).toHaveLength(2);
+            expect(items.at(0).prop("description")).toEqual("b");
+            expect(items.at(1).prop("description")).toEqual("a");
         });
     });
 });

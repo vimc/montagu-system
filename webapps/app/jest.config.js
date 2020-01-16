@@ -9,15 +9,21 @@ module.exports = {
         }
     },
     "testResultsProcessor": "jest-teamcity-reporter",
+    "moduleNameMapper": {
+        "environmentSettings": `<rootDir>/src/main/shared/settings/${process.env.MONTAGU_PORTAL_PROFILE || "development"}`,
+        "appName": "<rootDir>/src/main/shared/settings/app/test.ts"
+    },
     "moduleFileExtensions": [
         "js",
         "json",
         "tsx",
         "ts"
     ],
+    "testRegex": "(/test/(.*)Tests)\\.[jt]sx?$",
     "transform": {
-        "^.+\\.ts?$": "ts-jest",
-        "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
+        ".+\\.(css|style|less|sass|scss|png|jpg|ttf|woff|woff2|gif|pdf|csv)$": "<rootDir>/src/main/shared/assetTransformer.js",
+        "^.+\\.(ts)x?$": "ts-jest",
+        "^.+\\.js$": "babel-jest",
     },
     "coverageDirectory": "./coverage/",
     "collectCoverage": true,
@@ -25,7 +31,6 @@ module.exports = {
         "/node_modules/",
         "./tests/Sandbox.ts",
         "./test/testHelpers.ts",
-        "./test/helper.ts",
-        "./test/TeamCityIntegration.ts"
+        "./test/helper.ts"
     ]
 };

@@ -1,39 +1,33 @@
-import { expect } from "chai";
-import { ValidationTest } from "./ValidationTestBaseClass";
-import { multi, Validator } from "../../../main/shared/validation/Validation";
+import {multi, Validator} from "../../../main/shared/validation/Validation";
 
-export class MultiValidationTests extends ValidationTest {
-    name() { return "multi"; }
+describe("Multi rule validation", () => {
+    const validate = multi("name", []);
 
-    makeValidator() { return multi("name", []); }
+    it("always passes if empty", () => {
+        expect(() => validate("a string")).not.toThrow();
+    });
 
-    tests() {
-        test("always passes if empty", () => {
-            expect(() => this.validate("a string")).to.not.throw();
-        });
+    it("rejects if any reject", () => {
+        const v = (value: string) => {
+            multi("name", [acceptor, rejector, acceptor])(value);
+        };
+        expect(() => v("a string")).toThrow(Error);
+    });
 
-        test("rejects if any reject", () => {
-            const v = (value: string) => {
-                multi("name", [acceptor, rejector, acceptor])(value);
-            };
-            expect(() => v("a string")).to.throw(Error, "name is bad");
-        });
+    it("rejects if all reject", () => {
+        const v = (value: string) => {
+            multi("name", [rejector, rejector, rejector])(value);
+        };
+        expect(() => v("a string")).toThrow(Error);
+    });
 
-        test("rejects if all reject", () => {
-            const v = (value: string) => {
-                multi("name", [rejector, rejector, rejector])(value);
-            };
-            expect(() => v("a string")).to.throw(Error, "name is bad");
-        });
-
-        test("accepts if all accept", () => {
-            const v = (value: string) => {
-                multi("name", [acceptor, acceptor, acceptor])(value);
-            };
-            expect(() => v("a string")).to.not.throw();
-        });
-    }
-}
+    it("accepts if all accept", () => {
+        const v = (value: string) => {
+            multi("name", [acceptor, acceptor, acceptor])(value);
+        };
+        expect(() => v("a string")).not.toThrow();
+    });
+});
 
 function acceptor(name: string): Validator {
     return (value: string) => {

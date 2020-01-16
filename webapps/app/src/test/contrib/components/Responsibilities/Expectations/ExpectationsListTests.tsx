@@ -12,7 +12,7 @@ import {
 } from "../../../../../main/contrib/components/Responsibilities/Expectations/ExpectationsList";
 import {createMockContribStore} from "../../../../mocks/mockStore";
 import * as React from "react";
-import {expect} from "chai";
+
 import {ExpectationsDescription} from "../../../../../main/contrib/components/Responsibilities/Expectations/ExpectationsDescription";
 import {ExpectationMapping} from "../../../../../main/shared/models/Generated";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
@@ -29,7 +29,7 @@ describe("ExpectationsList", () => {
     const touchstones: Partial<TouchstonesState> = {currentTouchstoneVersion};
     const responsibilities: Partial<ResponsibilitiesState> = {responsibilitiesSet};
 
-    test(
+    it(
         "renders one ExpectationsDescription for each expectation mapping in the responsibility set",
         () => {
             const expectations: Array<ExpectationMapping> = [
@@ -45,11 +45,11 @@ describe("ExpectationsList", () => {
                 groups, touchstones
             });
             const rendered = shallow(<ExpectationsList/>, {context: {store}}).dive().dive();
-            expect(rendered.find(ExpectationsDescription)).to.have.length(3);
+            expect(rendered.find(ExpectationsDescription)).toHaveLength(3);
         }
     );
 
-    test("renders loading element if responsibilitiesSet is null", () => {
+    it("renders loading element if responsibilitiesSet is null", () => {
         const responsibilitiesState: Partial<ResponsibilitiesState> = {
             responsibilitiesSet: null
         };
@@ -58,12 +58,12 @@ describe("ExpectationsList", () => {
             groups, touchstones
         });
         const rendered = shallow(<ExpectationsList/>, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement)).to.have.length(1);
+        expect(rendered.find(LoadingElement)).toHaveLength(1);
     });
 
-    test("maps state to props correctly", () => {
+    it("maps state to props correctly", () => {
         const state = mockContribState({groups, touchstones, responsibilities});
-        expect(mapStateToProps(state)).to.eql({
+        expect(mapStateToProps(state)).toEqual({
             responsibilitySet: responsibilitiesSet,
             group: currentUserGroup,
             touchstoneVersion: currentTouchstoneVersion

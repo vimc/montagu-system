@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { expect } from "chai";
+
 
 import "../../../../../helper";
 import { Sandbox } from "../../../../../Sandbox";
@@ -55,42 +55,42 @@ describe("Responsibility Overview Disease Filter Component tests", () => {
         sandbox.restore();
     });
 
-    test("renders on connect level no options", () => {
+    it("renders on connect level no options", () => {
         const store = createMockStore(mockNotMatchingState());
         const rendered = shallow(<DiseaseFilter/>, {context: {store}});
-        expect(rendered.props().options).to.eql(null);
-        expect(typeof rendered.props().setCurrentDiseaseId).to.eql("function");
+        expect(rendered.props().options).toEqual(null);
+        expect(typeof rendered.props().setCurrentDiseaseId).toEqual("function");
     });
 
-    test("renders on connect level 1 option", () => {
+    it("renders on connect level 1 option", () => {
         const store = createMockStore(mockOneMatchState());
         const rendered = shallow(<DiseaseFilter/>, {context: {store}});
-        expect(rendered.props().options).to.eql([{value: testDisease.id, text: testDisease.name}]);
+        expect(rendered.props().options).toEqual([{value: testDisease.id, text: testDisease.name}]);
     });
 
-    test("renders on branch level, 1 option, renders nothing", () => {
+    it("renders on branch level, 1 option, renders nothing", () => {
         const store = createMockStore(mockOneMatchState());
         const rendered = shallow(<DiseaseFilter/>, {context: {store}}).dive();
-        expect(rendered.find('Nothing').length).to.equal(1);
+        expect(rendered.find('Nothing').length).toEqual(1);
     });
 
-    test("renders on branch level, 2 options, renders select box", () => {
+    it("renders on branch level, 2 options, renders select box", () => {
         const store = createMockStore(mockTwoMatchState());
         const rendered = shallow(<DiseaseFilter/>, {context: {store}}).dive();
-        expect(rendered.find(DiseaseFilterComponent).length).to.equal(1);
+        expect(rendered.find(DiseaseFilterComponent).length).toEqual(1);
     });
 
-    test("renders on component level, 2 options, renders select box", () => {
+    it("renders on component level, 2 options, renders select box", () => {
         const store = createMockStore(mockTwoMatchState());
         const rendered = shallow(<DiseaseFilter/>, {context: {store}}).dive().dive();
         const optionsSelector = rendered.find(OptionSelector);
-        expect(optionsSelector.props().options).to.eql([
+        expect(optionsSelector.props().options).toEqual([
             {value: testDisease.id, text: testDisease.name},
             {value: testDisease2.id, text: testDisease2.name}
         ]);
     });
 
-    test(
+    it(
         "renders on component level, 2 options, renders select box, emits select",
         () => {
             const selectChangeStub = sandbox.setStubReduxAction(diseasesActionCreators, "setCurrentDiseaseId");
@@ -98,9 +98,9 @@ describe("Responsibility Overview Disease Filter Component tests", () => {
             const store = createMockStore(state);
             const rendered = shallow(<DiseaseFilter/>, {context: {store}}).dive().dive();
             const selectElement = rendered.find(OptionSelector).dive();
-            expect(selectChangeStub.called).to.equal(false);
+            expect(selectChangeStub.called).toEqual(false);
             selectElement.simulate('change', { currentTarget: {value: testDisease.id} });
-            expect(selectChangeStub.called).to.equal(true);
+            expect(selectChangeStub.called).toEqual(true);
         }
     );
 });

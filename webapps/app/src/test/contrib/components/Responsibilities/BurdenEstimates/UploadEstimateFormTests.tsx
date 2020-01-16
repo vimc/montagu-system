@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 
 import "../../../../helper";
 import {
@@ -21,28 +21,28 @@ describe("Upload Burden Estimates Form tests", () => {
 
     describe("mapStateToProps", () => {
 
-        test("sets url if token and populatingSetId exists", () => {
+        it("sets url if token and populatingSetId exists", () => {
 
             const mockState = mockContribState({estimates: {uploadToken: "TOKEN", populatingSetId: 1}});
             const result = mapStateToProps(mockState, {touchstoneId: "t1", scenarioId: "s1", groupId: "g1"});
-            expect(result.url).to.eq("http://localhost:8080/v1/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/actions/upload/TOKEN/");
+            expect(result.url).toEqual("http://localhost:8080/v1/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/actions/upload/TOKEN/");
         });
 
-        test("url is null while token is null", () => {
+        it("url is null while token is null", () => {
 
             const mockState = mockContribState({estimates: {populatingSetId: 1}});
             const result = mapStateToProps(mockState, {touchstoneId: "t1", scenarioId: "s1", groupId: "g1"});
-            expect(result.url).to.be.null;
+            expect(result.url).toBe(null);
         });
 
-        test("url is null while populating setId is null", () => {
+        it("url is null while populating setId is null", () => {
 
             const mockState = mockContribState({estimates: {uploadToken: "TOKEN"}});
             const result = mapStateToProps(mockState, {touchstoneId: "t1", scenarioId: "s1", groupId: "g1"});
-            expect(result.url).to.be.null;
+            expect(result.url).toBe(null);
         });
 
-        test("properties are set from state", () => {
+        it("properties are set from state", () => {
 
             const mockState = mockContribState({
                 estimates: {
@@ -52,43 +52,43 @@ describe("Upload Burden Estimates Form tests", () => {
                 }
             });
             const result = mapStateToProps(mockState, {touchstoneId: "t1", scenarioId: "s1", groupId: "g1"});
-            expect(result.populateErrors).to.have.members(["error"]);
-            expect(result.populatingInProgress).to.be.true;
-            expect(result.hasPopulateSuccess).to.be.true;
+            expect(result.populateErrors).toEqual(["error"]);
+            expect(result.populatingInProgress).toBe(true);
+            expect(result.hasPopulateSuccess).toBe(true);
         });
 
     });
 
     describe("mapDispatchToProps", () => {
 
-        test("can dispatch createBurdenEstimateSet", () => {
+        it("can dispatch createBurdenEstimateSet", () => {
             const dispatchStub = sandbox.sinon.stub();
             sandbox.setStubFunc(estimatesActionCreators, "createBurden", () => "TEST");
 
             const result = mapDispatchToProps(dispatchStub, {});
             result.createBurdenEstimateSet({type: "central-averaged", details: ""});
 
-            expect(dispatchStub.calledWith("TEST")).to.be.true;
+            expect(dispatchStub.calledWith("TEST")).toBe(true);
         });
 
-        test("can dispatch populateEstimateSet", () => {
+        it("can dispatch populateEstimateSet", () => {
             const dispatchStub = sandbox.sinon.stub();
             sandbox.setStubFunc(estimatesActionCreators, "populateEstimateSet", (token: String) => token);
 
             const result = mapDispatchToProps(dispatchStub, {});
             result.populateEstimateSet("TOKEN");
 
-            expect(dispatchStub.calledWith("TOKEN")).to.be.true;
+            expect(dispatchStub.calledWith("TOKEN")).toBe(true);
         });
 
-        test("can dispatch resetPopulateState", () => {
+        it("can dispatch resetPopulateState", () => {
             const dispatchStub = sandbox.sinon.stub();
             sandbox.setStubFunc(estimatesActionCreators, "resetPopulateState", () => "TEST");
 
             const result = mapDispatchToProps(dispatchStub, {});
             result.resetPopulateState();
 
-            expect(dispatchStub.calledWith("TEST")).to.be.true;
+            expect(dispatchStub.calledWith("TEST")).toBe(true);
         })
 
     });

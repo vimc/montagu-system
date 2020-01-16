@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { expect } from "chai";
+
 
 import "../../../helper";
 import { Sandbox } from "../../../Sandbox";
@@ -19,7 +19,7 @@ describe("Choose Action Page", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    test(
+    it(
         "renders component on component level, renders title and sub component",
         () => {
             let testMatch = mockMatch<ChooseActionPageLocationProps>({groupId: "g-1"});
@@ -29,9 +29,9 @@ describe("Choose Action Page", () => {
                 match={testMatch}
             />, {context: {store}}).dive().dive();
             const pageArticle = rendered.find(PageArticle);
-            expect(onLoadStub.called).is.equal(true);
-            expect(pageArticle.props().title).is.equal("What do you want to do?");
-            expect(pageArticle.find(ChooseActionContent).length).is.equal(1);
+            expect(onLoadStub.called).toBe(true);
+            expect(pageArticle.props().title).toBe("What do you want to do?");
+            expect(pageArticle.find(ChooseActionContent).length).toBe(1);
         }
     );
 });

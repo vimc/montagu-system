@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../Sandbox";
 import {contribTouchstonesActionCreators} from "../../../main/contrib/actions/contribTouchstonesActionCreators";
@@ -17,7 +17,7 @@ describe("Contrib touchstone actions tests", () => {
         sandbox.restore();
     });
 
-    test("touchstones fetched", (done) => {
+    it("touchstones fetched", (done) => {
         const store = createMockContribStore({});
         sandbox.setStubFunc(TouchstonesService.prototype, "getTouchstonesByGroupId", () => {
             return Promise.resolve([testTouchstone]);
@@ -26,12 +26,12 @@ describe("Contrib touchstone actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = {type: TouchstoneTypes.TOUCHSTONES_FETCHED_FOR_GROUP, data: [testTouchstone]};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    test(
+    it(
         "set current touchstone by id using previously loaded touchstones",
         (done) => {
             const testTouchstoneVersion = mockTouchstoneVersion({"id": "touchstone-1"});
@@ -44,7 +44,7 @@ describe("Contrib touchstone actions tests", () => {
                 const actions = store.getActions();
                 // console.log(actions);
                 const expectedPayload = {type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_VERSION, data: testTouchstoneVersion};
-                expect(actions).to.eql([expectedPayload]);
+                expect(actions).toEqual([expectedPayload]);
                 done();
             });
         }

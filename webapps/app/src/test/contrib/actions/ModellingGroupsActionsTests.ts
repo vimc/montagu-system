@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import { Sandbox } from "../../Sandbox";
 import { modellingGroupsActionCreators } from "../../../main/contrib/actions/modellingGroupsActionCreators";
@@ -15,7 +15,7 @@ describe("Modelling groups actions tests", () => {
         sandbox.restore();
     });
 
-    test("groups fetched", (done) => {
+    it("groups fetched", (done) => {
         const initialState = {
             auth: {modellingGroups: "test1"}
         };
@@ -27,12 +27,12 @@ describe("Modelling groups actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup1] };
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    test(
+    it(
         "set current group by group id using previously loaded groups",
         (done) => {
             const initialState = {
@@ -43,7 +43,7 @@ describe("Modelling groups actions tests", () => {
             setTimeout(() => {
                 const actions = store.getActions();
                 const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup1 };
-                expect(actions).to.eql([expectedPayload]);
+                expect(actions).toEqual([expectedPayload]);
                 done();
             });
         }

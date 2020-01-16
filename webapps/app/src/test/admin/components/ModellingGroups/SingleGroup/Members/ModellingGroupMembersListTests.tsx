@@ -1,5 +1,5 @@
 import * as React from "react";
-import { expect } from "chai";
+
 import { shallow } from "enzyme";
 
 import "../../../../../helper";
@@ -24,7 +24,7 @@ describe("Modelling Group Members List component tests", () => {
         const sandbox = new Sandbox();
         afterEach(() => sandbox.restore());
 
-        test("connect level, there are users and can manage", () => {
+        it("connect level, there are users and can manage", () => {
             const testState = {
                 auth: { permissions: ["*/modelling-groups.manage-members"]},
             };
@@ -34,12 +34,12 @@ describe("Modelling Group Members List component tests", () => {
                 users={[testUser]}
                 groupId={"g-1"}
             />, {context: {store}});
-            expect(rendered.props().users).to.eql([testUser]);
-            expect(rendered.props().groupId).to.equal("g-1");
-            expect(rendered.props().isAdmin).to.be.true;
+            expect(rendered.props().users).toEqual([testUser]);
+            expect(rendered.props().groupId).toEqual("g-1");
+            expect(rendered.props().isAdmin).toBe(true);
         });
 
-        test("connect level, there are no users and can not manage", () => {
+        it("connect level, there are no users and can not manage", () => {
             const testState = {
                 auth: { permissions: ["*/test"]},
             };
@@ -49,12 +49,12 @@ describe("Modelling Group Members List component tests", () => {
                 users={[]}
                 groupId={"g-1"}
             />, {context: {store}});
-            expect(rendered.props().users).to.eql([]);
-            expect(rendered.props().groupId).to.equal("g-1");
-            expect(rendered.props().isAdmin).to.be.false;
+            expect(rendered.props().users).toEqual([]);
+            expect(rendered.props().groupId).toEqual("g-1");
+            expect(rendered.props().isAdmin).toBe(false);
         });
 
-        test("connect level, there are users and they are sorted", () => {
+        it("connect level, there are users and they are sorted", () => {
             const testState = {
                 auth: {permissions: ["*/modelling-groups.manage-members"]},
             };
@@ -64,30 +64,30 @@ describe("Modelling Group Members List component tests", () => {
                 users={[testUser, testUser2, testUser3]}
                 groupId={"g-1"}
             />, {context: {store}});
-            expect(rendered.props().users).to.eql([testUser2, testUser, testUser3]);
+            expect(rendered.props().users).toEqual([testUser2, testUser, testUser3]);
         });
     });
 
     describe("Component", () => {
-        test("renders messages no users if null is passed for users", () => {
+        it("renders messages no users if null is passed for users", () => {
             const rendered = shallow(<ModellingGroupMembersListComponent
                 users={null}
                 groupId={"g-1"}
                 isAdmin={false}
             />);
-            expect(rendered.text()).to.equal("This group does not have any members.");
+            expect(rendered.text()).toEqual("This group does not have any members.");
         });
 
-        test("renders messages no users if empty array is passed for users", () => {
+        it("renders messages no users if empty array is passed for users", () => {
             const rendered = shallow(<ModellingGroupMembersListComponent
                 users={[]}
                 groupId={"g-1"}
                 isAdmin={false}
             />);
-            expect(rendered.text()).to.equal("This group does not have any members.");
+            expect(rendered.text()).toEqual("This group does not have any members.");
         });
 
-        test(
+        it(
             "renders passed users as deletable user components but cannot edit",
             () => {
                 const rendered = shallow(<ModellingGroupMembersListComponent
@@ -96,22 +96,22 @@ describe("Modelling Group Members List component tests", () => {
                     isAdmin={false}
                 />);
                 const deletableUsers = rendered.find(ModellingGroupMembersDeletableUser);
-                expect(deletableUsers.length).to.equal(2);
-                expect(deletableUsers.at(0).props().user).to.eql(testUser);
-                expect(deletableUsers.at(0).props().showDelete).to.be.false;
+                expect(deletableUsers.length).toEqual(2);
+                expect(deletableUsers.at(0).props().user).toEqual(testUser);
+                expect(deletableUsers.at(0).props().showDelete).toBe(false);
             }
         );
 
-        test("renders passed users as deletable user components and can edit", () => {
+        it("renders passed users as deletable user components and can edit", () => {
             const rendered = shallow(<ModellingGroupMembersListComponent
                 users={[testUser, testUser2]}
                 groupId={"g-1"}
                 isAdmin={true}
             />);
             const deletableUsers = rendered.find(ModellingGroupMembersDeletableUser);
-            expect(deletableUsers.length).to.equal(2);
-            expect(deletableUsers.at(0).props().user).to.eql(testUser);
-            expect(deletableUsers.at(0).props().showDelete).to.be.true;
+            expect(deletableUsers.length).toEqual(2);
+            expect(deletableUsers.at(0).props().user).toEqual(testUser);
+            expect(deletableUsers.at(0).props().showDelete).toBe(true);
         });
 
     });

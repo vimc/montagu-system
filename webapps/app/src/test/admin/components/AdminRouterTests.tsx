@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {mount} from "enzyme";
 import {Provider} from "react-redux";
 import {createMemoryHistory} from 'history';
@@ -20,22 +20,22 @@ describe("AdminRouter", () => {
         sandbox.restore();
     });
 
-    test("does normal routing when logged in", () => {
+    it("does normal routing when logged in", () => {
         const history = createMemoryHistory({initialEntries: ['/asd']});
         const store = createAdminStore(history);
         const rendered = mount(<Provider store={store}><AdminRouter loggedIn={true} history={history}/></Provider>);
-        expect(rendered.find(AdminNoRouteFoundPage)).has.length(1, "Expected AdminNoRouteFoundPage to be rendered");
+        expect(rendered.find(AdminNoRouteFoundPage)).toHaveLength(1);
     });
 
-    test("attempts to log user in when user is logged out", () => {
+    it("attempts to log user in when user is logged out", () => {
 
         const loginStub = sandbox.setStubReduxAction(authActionCreators, "loadAuthenticatedUser");
 
         const history = createMemoryHistory({initialEntries: ['/users/']});
         const store = createAdminStore(history);
         const rendered = mount(<Provider store={store}><AdminRouter loggedIn={false} history={history}/></Provider>);
-        expect(rendered.find(LoginPage)).has.length(1, "Expected AdminLoginPage to be rendered");
-        expect(loginStub.called).to.be.true;
+        expect(rendered.find(LoginPage)).toHaveLength(1);
+        expect(loginStub.called).toBe(true);
     });
 
 });

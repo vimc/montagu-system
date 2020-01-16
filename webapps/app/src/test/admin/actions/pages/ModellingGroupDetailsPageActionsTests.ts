@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import { Sandbox } from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
@@ -33,17 +33,17 @@ describe("Modelling Group Details Page actions tests", () => {
         sandbox.restore();
     });
 
-    test("has group list page as parent", () => {
-        expect(modellingGroupDetailsPageActionCreators.parent).to.eq(modellingGroupsListPageActionCreators)
+    it("has group list page as parent", () => {
+        expect(modellingGroupDetailsPageActionCreators.parent).toEqual(modellingGroupsListPageActionCreators)
     });
 
-    test("creates breadcrumb", () => {
+    it("creates breadcrumb", () => {
         const result = modellingGroupDetailsPageActionCreators.createBreadcrumb(state);
-        expect(result.name).to.eq("g1");
-        expect(result.urlFragment).to.eq(`g1/`);
+        expect(result.name).toEqual("g1");
+        expect(result.urlFragment).toEqual(`g1/`);
     });
 
-    test(
+    it(
         "loads group members, group details and sets current group on load",
         (done: DoneCallback) => {
 
@@ -63,10 +63,10 @@ describe("Modelling Group Details Page actions tests", () => {
                     { type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails},
                     { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]}
                 ];
-                expect(actions).to.eql(expectedPayload);
-                expect(getAllUsersStub.called).to.be.true;
-                expect(getGroupDetailsServiceStub.called).to.be.true;
-                expect(getGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
+                expect(actions).toEqual(expectedPayload);
+                expect(getAllUsersStub.called).toBe(true);
+                expect(getGroupDetailsServiceStub.called).toBe(true);
+                expect(getGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
                 done();
             });
         }

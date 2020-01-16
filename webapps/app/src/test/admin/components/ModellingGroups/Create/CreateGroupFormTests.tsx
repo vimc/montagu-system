@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {mount, shallow} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {mockAdminState} from "../../../../mocks/mockStates";
@@ -25,25 +25,25 @@ describe("CreateGroupForm", () => {
         sandbox.restore();
     });
 
-    test("renders fields", () => {
+    it("renders fields", () => {
 
         const rendered = shallow(<CreateModellingGroupFormComponent pi={""} institution={""} errors={[]}
                                                           handleSubmit={() => null} submit={null} changeFieldValue={null}/>);
 
         const fields = rendered.find(Field);
 
-        expect(fields.at(0).prop("name")).to.eq("institution");
-        expect(fields.at(0).prop("validate")).to.have.members([validations.required]);
+        expect(fields.at(0).prop("name")).toEqual("institution");
+        expect(fields.at(0).prop("validate")).toEqual([validations.required]);
 
-        expect(fields.at(1).prop("name")).to.eq("pi");
-        expect(fields.at(1).prop("validate")).to.have.members([validations.required]);
+        expect(fields.at(1).prop("name")).toEqual("pi");
+        expect(fields.at(1).prop("validate")).toEqual([validations.required]);
 
-        expect(fields.at(2).prop("name")).to.eq("id");
-        expect(fields.at(2).prop("validate")).to.have.members([validations.required, validations.id]);
+        expect(fields.at(2).prop("name")).toEqual("id");
+        expect(fields.at(2).prop("validate")).toEqual([validations.required, validations.id]);
 
     });
 
-    test("sets id to suggestion when pi changes", () => {
+    it("sets id to suggestion when pi changes", () => {
 
         let fieldName = "";
         let newValue = "";
@@ -62,11 +62,11 @@ describe("CreateGroupForm", () => {
 
         field.simulate("change", event);
 
-        expect(fieldName).to.eq("id");
-        expect(newValue).to.eq("I-Bloggs");
+        expect(fieldName).toEqual("id");
+        expect(newValue).toEqual("I-Bloggs");
     });
 
-    test("sets id to suggestion when instiution changes", () => {
+    it("sets id to suggestion when instiution changes", () => {
 
         let fieldName = "";
         let newValue = "";
@@ -85,11 +85,11 @@ describe("CreateGroupForm", () => {
 
         field.simulate("change", event);
 
-        expect(fieldName).to.eq("id");
-        expect(newValue).to.eq("I-Bloggs");
+        expect(fieldName).toEqual("id");
+        expect(newValue).toEqual("I-Bloggs");
     });
 
-    test("doesnt set id to suggestion if pi is null on instiution changes", () => {
+    it("doesnt set id to suggestion if pi is null on instiution changes", () => {
 
         let fieldName = "";
         let newValue = "";
@@ -108,11 +108,11 @@ describe("CreateGroupForm", () => {
 
         field.simulate("change", event);
 
-        expect(fieldName).to.eq("");
-        expect(newValue).to.eq("");
+        expect(fieldName).toEqual("");
+        expect(newValue).toEqual("");
     });
 
-    test(
+    it(
         "doesnt set id to suggestion if instititution is null on pi change",
         () => {
 
@@ -133,12 +133,12 @@ describe("CreateGroupForm", () => {
 
             field.simulate("change", event);
 
-            expect(fieldName).to.eq("");
-            expect(newValue).to.eq("");
+            expect(fieldName).toEqual("");
+            expect(newValue).toEqual("");
         }
     );
 
-    test("calls creates group on form submission", () => {
+    it("calls creates group on form submission", () => {
 
         const stub = sandbox.setStubReduxAction(modellingGroupsActionCreators, "createModellingGroup");
 
@@ -149,28 +149,28 @@ describe("CreateGroupForm", () => {
         );
 
         mounted.simulate("submit");
-        expect(stub.called).to.be.true;
+        expect(stub.called).toBe(true);
     });
 
     describe("id suggestor", () => {
-        test("can handle one word", () => {
-            expect(suggestId("joe", "imperial")).to.equal("I-Joe");
+        it("can handle one word", () => {
+            expect(suggestId("joe", "imperial")).toEqual("I-Joe");
         });
-        test("can handle two words", () => {
-            expect(suggestId("joe bloggs", "imperial college")).to.equal("IC-Bloggs");
+        it("can handle two words", () => {
+            expect(suggestId("joe bloggs", "imperial college")).toEqual("IC-Bloggs");
         });
-        test("can handle many words", () => {
-            expect(suggestId("joe samuel stephen bloggs", "london school of public health")).to.equal("LSOPH-Bloggs");
+        it("can handle many words", () => {
+            expect(suggestId("joe samuel stephen bloggs", "london school of public health")).toEqual("LSOPH-Bloggs");
         });
-        test("strips out bad characters", () => {
-            expect(suggestId("j_1-o=%_e_", "imper=-i_al")).to.equal("I-Joe");
+        it("strips out bad characters", () => {
+            expect(suggestId("j_1-o=%_e_", "imper=-i_al")).toEqual("I-Joe");
         });
-        test("strips out numbers", () => {
-            expect(suggestId("1jo32e", "imperial3123l")).to.equal("I-Joe");
+        it("strips out numbers", () => {
+            expect(suggestId("1jo32e", "imperial3123l")).toEqual("I-Joe");
         });
-        test("returns null if one input is null", () => {
-            expect(suggestId(null, "imperial")).to.be.null;
-            expect(suggestId("joe", null)).to.be.null;
+        it("returns null if one input is null", () => {
+            expect(suggestId(null, "imperial")).toBe(null);
+            expect(suggestId("joe", null)).toBe(null);
         });
     });
 });

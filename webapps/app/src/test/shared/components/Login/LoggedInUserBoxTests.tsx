@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Sandbox} from "../../../Sandbox";
-import {expect} from "chai";
+
 import {mount, shallow} from "enzyme";
 import {Provider} from "react-redux";
 import {MemoryRouter as Router} from 'react-router-dom';
@@ -22,33 +22,33 @@ describe("LoggedInUserBoxComponent", () => {
 
     afterEach(() => sandbox.restore());
 
-    test("renders nothing when the user is not logged in", () => {
+    it("renders nothing when the user is not logged in", () => {
         const rendered = shallow(<LoggedInUserBoxComponent
             loggedIn={initialAuthState.loggedIn}
             username={initialAuthState.username}
             logOut={() => ({})}
         />);
-        expect(rendered.text()).to.be.empty;
+        expect(rendered.text()).toBe("");
     });
 
-    test("renders log out link", () => {
+    it("renders log out link", () => {
         const rendered = shallow(<LoggedInUserBoxComponent
             loggedIn={true}
             username="test.user"
             logOut={() => ({})}
         />);
-        expect(rendered.text()).to.contain("Logged in as test.user");
-        expect(rendered.find(InternalLink)).to.have.length(1);
+        expect(rendered.text()).toContain("Logged in as test.user");
+        expect(rendered.find(InternalLink)).toHaveLength(1);
     });
 
-    test("maps state to props", () => {
+    it("maps state to props", () => {
         const contribStateMock = mockContribState({auth: {loggedIn: true, username: "test.user"}});
         const props = mapStateToProps(contribStateMock);
-        expect(props.username).to.eq("test.user");
-        expect(props.loggedIn).to.eq(true);
+        expect(props.username).toEqual("test.user");
+        expect(props.loggedIn).toEqual(true);
     });
 
-    test(
+    it(
         "clicking log out dispatches unauthenticated action",
         (done: DoneCallback) => {
             const store = createMockContribStore({auth: {loggedIn: true}});
@@ -56,7 +56,7 @@ describe("LoggedInUserBoxComponent", () => {
             const rendered = mount(<Provider store={store}><Router><LoggedInUserBox/></Router></Provider>);
             rendered.find(InternalLink).simulate("click");
             const actions = store.getActions();
-            expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
+            expect(actions[0].type).toEqual(AuthTypeKeys.UNAUTHENTICATED);
             done();
         }
     );

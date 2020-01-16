@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
@@ -25,18 +25,18 @@ describe("Upload burden estimates page actions tests", () => {
         sandbox.restore();
     });
 
-    test("has responsibilities overview as parent", () => {
-        expect(uploadBurdenEstimatesPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators);
+    it("has responsibilities overview as parent", () => {
+        expect(uploadBurdenEstimatesPageActionCreators.parent).toEqual(responsibilityOverviewPageActionCreators);
     });
 
-    test("creates breadcrumb", () => {
+    it("creates breadcrumb", () => {
 
         const result = uploadBurdenEstimatesPageActionCreators.createBreadcrumb(state);
-        expect(result.name).to.eq("Upload central burden estimates for s1desc");
-        expect(result.urlFragment).to.eq("burdens/s1/");
+        expect(result.name).toEqual("Upload central burden estimates for s1desc");
+        expect(result.urlFragment).toEqual("burdens/s1/");
     });
 
-    test(
+    it(
         "sets current responsibility set and resets estimate populate state",
         async () => {
             const store = createMockContribStore();
@@ -56,7 +56,7 @@ describe("Upload burden estimates page actions tests", () => {
                 {type: "test-responsibility-type", props: "s1"},
                 {type: "test-reset-estimate", props: undefined}
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
 
         }
     );

@@ -8,7 +8,7 @@ import {
 import {Sandbox} from "../../../../Sandbox";
 import {createMockStore} from "../../../../mocks/mockStore";
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import * as React from "react";
 import {
     ModelMetaRow,
@@ -141,17 +141,17 @@ describe("ModelMetaTable tests", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    test("gets props from state", () => {
+    it("gets props from state", () => {
         const testState = {
             groups: {models: [testModel, testModel2], expectations: [testExpectation, testExpectation2]}
         };
         const store = createMockStore(testState);
         const rendered = shallow(<ModelMetaTable obsoleteOnly={false}/>, {context: {store}});
 
-        expect(rendered.props().models).to.eql(mappedData);
+        expect(rendered.props().models).toEqual(mappedData);
     });
 
-    test("selects latest touchstone", () => {
+    it("selects latest touchstone", () => {
         const earlierExpectation = mockTouchstoneModelExpectations({
             disease: "d1",
             modelling_group: "ga",
@@ -182,10 +182,10 @@ describe("ModelMetaTable tests", () => {
         const store = createMockStore(testState);
         const rendered = shallow(<ModelMetaTable obsoleteOnly={false}/>, {context: {store}});
 
-        expect(rendered.props().models).to.eql(mappedData);
+        expect(rendered.props().models).toEqual(mappedData);
     });
 
-    test("selects only current models if obsoleteOnly is false", () =>
+    it("selects only current models if obsoleteOnly is false", () =>
     {
         const testState = {
             groups: {
@@ -196,73 +196,73 @@ describe("ModelMetaTable tests", () => {
         const store = createMockStore(testState);
         const rendered = shallow(<ModelMetaTable obsoleteOnly={false}/>, {context: {store}});
 
-        expect(rendered.props().models).to.eql(mappedData);
+        expect(rendered.props().models).toEqual(mappedData);
 
     });
 
 
-    test("displays table of models", () => {
+    it("displays table of models", () => {
         const testState = {
             groups: {models: [testModel, testModel2], expectations: [testExpectation, testExpectation2]}
         };
         const store = createMockStore(testState);
         const rendered = shallow(<ModelMetaTable obsoleteOnly={false}/>, {context: {store}}).dive();
 
-        expect(rendered.text()).to.not.satisfy((s: string) => s.startsWith("The following obsolete models were also found."));
+        expect(rendered.text()).not.toContain("The following obsolete models were also found.");
 
-        expect(rendered.find("th")).to.have.lengthOf(13);
-        expect(rendered.find("th").at(0).text()).to.eq("Group");
-        expect(rendered.find("th").at(1).text()).to.eq("Model Name");
-        expect(rendered.find("th").at(2).text()).to.eq("Disease");
-        expect(rendered.find("th").at(3).text()).to.eq("Model Type");
-        expect(rendered.find("th").at(4).text()).to.eq("Code");
-        expect(rendered.find("th").at(5).text()).to.eq("Gender");
-        expect(rendered.find("th").at(6).text()).to.eq("Max Countries");
-        expect(rendered.find("th").at(7).text()).to.eq("Scenarios");
-        expect(rendered.find("th").at(8).text()).to.eq("Years");
-        expect(rendered.find("th").at(9).text()).to.eq("Ages");
-        expect(rendered.find("th").at(10).text()).to.eq("Cohorts");
-        expect(rendered.find("th").at(11).text()).to.eq("Outcomes");
-        expect(rendered.find("th").at(12).text()).to.eq("DALYs");
+        expect(rendered.find("th")).toHaveLength(13);
+        expect(rendered.find("th").at(0).text()).toEqual("Group");
+        expect(rendered.find("th").at(1).text()).toEqual("Model Name");
+        expect(rendered.find("th").at(2).text()).toEqual("Disease");
+        expect(rendered.find("th").at(3).text()).toEqual("Model Type");
+        expect(rendered.find("th").at(4).text()).toEqual("Code");
+        expect(rendered.find("th").at(5).text()).toEqual("Gender");
+        expect(rendered.find("th").at(6).text()).toEqual("Max Countries");
+        expect(rendered.find("th").at(7).text()).toEqual("Scenarios");
+        expect(rendered.find("th").at(8).text()).toEqual("Years");
+        expect(rendered.find("th").at(9).text()).toEqual("Ages");
+        expect(rendered.find("th").at(10).text()).toEqual("Cohorts");
+        expect(rendered.find("th").at(11).text()).toEqual("Outcomes");
+        expect(rendered.find("th").at(12).text()).toEqual("DALYs");
 
         const body = rendered.find("tbody");
 
-        expect(body.find("tr")).to.have.lengthOf(2);
+        expect(body.find("tr")).toHaveLength(2);
 
         function cellsForRow(i: number) {
             return body.find("tr").at(i).find("td");
         }
 
-        expect(cellsForRow(0).at(0).text()).to.eq("ga");
-        expect(cellsForRow(0).at(1).text()).to.eq("mb");
-        expect(cellsForRow(0).at(2).text()).to.eq("Disease 1");
-        expect(cellsForRow(0).at(3).text()).to.eq("Static");
-        expect(cellsForRow(0).at(4).text()).to.eq("R");
-        expect(cellsForRow(0).at(5).text()).to.eq("NA");
-        expect(cellsForRow(0).at(6).text()).to.eq("2" + "view");
-        expect(cellsForRow(0).at(7).text()).to.eq("1 scenario" + "view");
-        expect(cellsForRow(0).at(8).text()).to.eq("1900 - 2000");
-        expect(cellsForRow(0).at(9).text()).to.eq("0 - 99");
-        expect(cellsForRow(0).at(10).text()).to.eq("Max 2000");
-        expect(cellsForRow(0).at(11).text()).to.eq("deaths, dalys" + "definitions");
-        expect(cellsForRow(0).at(12).text()).to.eq("Yes");
+        expect(cellsForRow(0).at(0).text()).toEqual("ga");
+        expect(cellsForRow(0).at(1).text()).toEqual("mb");
+        expect(cellsForRow(0).at(2).text()).toEqual("Disease 1");
+        expect(cellsForRow(0).at(3).text()).toEqual("Static");
+        expect(cellsForRow(0).at(4).text()).toEqual("R");
+        expect(cellsForRow(0).at(5).text()).toEqual("NA");
+        expect(cellsForRow(0).at(6).text()).toEqual("2" + "view");
+        expect(cellsForRow(0).at(7).text()).toEqual("1 scenario" + "view");
+        expect(cellsForRow(0).at(8).text()).toEqual("1900 - 2000");
+        expect(cellsForRow(0).at(9).text()).toEqual("0 - 99");
+        expect(cellsForRow(0).at(10).text()).toEqual("Max 2000");
+        expect(cellsForRow(0).at(11).text()).toEqual("deaths, dalys" + "definitions");
+        expect(cellsForRow(0).at(12).text()).toEqual("Yes");
 
-        expect(cellsForRow(1).at(0).text()).to.eq("gb");
-        expect(cellsForRow(1).at(1).text()).to.eq("ma");
-        expect(cellsForRow(1).at(2).text()).to.eq("Disease 2");
-        expect(cellsForRow(1).at(3).text()).to.eq("Dynamic");
-        expect(cellsForRow(1).at(4).text()).to.eq("C");
-        expect(cellsForRow(1).at(5).text()).to.eq("female");
-        expect(cellsForRow(1).at(6).text()).to.eq("1" + "view");
-        expect(cellsForRow(1).at(7).text()).to.eq("2 scenarios" + "view");
-        expect(cellsForRow(1).at(8).text()).to.eq("1950 - 2000");
-        expect(cellsForRow(1).at(9).text()).to.eq("0 - 49");
-        expect(cellsForRow(1).at(10).text()).to.eq("1900 - 2000");
-        expect(cellsForRow(1).at(11).text()).to.eq("deaths, cases" + "definitions");
-        expect(cellsForRow(1).at(12).text()).to.eq("No");
+        expect(cellsForRow(1).at(0).text()).toEqual("gb");
+        expect(cellsForRow(1).at(1).text()).toEqual("ma");
+        expect(cellsForRow(1).at(2).text()).toEqual("Disease 2");
+        expect(cellsForRow(1).at(3).text()).toEqual("Dynamic");
+        expect(cellsForRow(1).at(4).text()).toEqual("C");
+        expect(cellsForRow(1).at(5).text()).toEqual("female");
+        expect(cellsForRow(1).at(6).text()).toEqual("1" + "view");
+        expect(cellsForRow(1).at(7).text()).toEqual("2 scenarios" + "view");
+        expect(cellsForRow(1).at(8).text()).toEqual("1950 - 2000");
+        expect(cellsForRow(1).at(9).text()).toEqual("0 - 49");
+        expect(cellsForRow(1).at(10).text()).toEqual("1900 - 2000");
+        expect(cellsForRow(1).at(11).text()).toEqual("deaths, cases" + "definitions");
+        expect(cellsForRow(1).at(12).text()).toEqual("No");
     });
 
-    test("does not render details links if no items to view", () => {
+    it("does not render details links if no items to view", () => {
         const minimalModel = mockModel({
             id: 'mb', modelling_group: "ga",
             gender_specific: null, gender: null,
@@ -296,79 +296,79 @@ describe("ModelMetaTable tests", () => {
             return body.find("tr").at(i).find("td");
         }
 
-        expect(cellsForRow(0).at(6).text()).to.eq("0"); //max countries
-        expect(cellsForRow(0).at(7).text()).to.eq("0 scenarios");
-        expect(cellsForRow(0).at(11).text()).to.eq(""); //outcomes
+        expect(cellsForRow(0).at(6).text()).toEqual("0"); //max countries
+        expect(cellsForRow(0).at(7).text()).toEqual("0 scenarios");
+        expect(cellsForRow(0).at(11).text()).toEqual(""); //outcomes
     });
 
-    test("sorts by group", () => {
+    it("sorts by group", () => {
         assertSortsBy(0, "ga", "gb")
     });
 
-    test("sorts by name", () => {
+    it("sorts by name", () => {
         assertSortsBy(1, "ma", "mb")
     });
 
-    test("sorts by disease", () => {
+    it("sorts by disease", () => {
         assertSortsBy(2, "Disease 1", "Disease 2")
     });
 
-    test("sorts by type", () => {
+    it("sorts by type", () => {
         assertSortsBy(3, "Dynamic", "Static")
     });
 
-    test("sorts by code", () => {
+    it("sorts by code", () => {
         assertSortsBy(4, "C", "R")
     });
 
-    test("sorts by gender", () => {
+    it("sorts by gender", () => {
         assertSortsBy(5, "female", "NA")
     });
 
-    test("sorts by max countries", () => {
+    it("sorts by max countries", () => {
         assertSortsBy(6, "1" + "view", "2" + "view")
     });
 
-    test("sorts by scenario", () => {
+    it("sorts by scenario", () => {
         assertSortsBy(7, "1 scenario" + "view", "2 scenarios" +  "view")
     });
 
-    test("sorts by years", () => {
+    it("sorts by years", () => {
         assertSortsBy(8, "1900 - 2000", "1950 - 2000")
     });
 
-    test("sorts by ages", () => {
+    it("sorts by ages", () => {
         assertSortsBy(9, "0 - 49", "0 - 99")
     });
 
-    test("sorts by cohorts", () => {
+    it("sorts by cohorts", () => {
         assertSortsBy(10, "1900 - 2000", "Max 2000")
     });
 
-    test("sorts by outcomes", () => {
+    it("sorts by outcomes", () => {
         assertSortsBy(11, "deaths, cases" + "definitions", "deaths, dalys" + "definitions")
     });
 
-    test("sorts by has dalys", () => {
+    it("sorts by has dalys", () => {
         assertSortsBy(12, "Yes", "No")
     });
 
-    test("shows countries tooltips", () => {
+    it("shows countries tooltips", () => {
         assertTooltip(6, 0, "countries-details-link-0", ["Country1 (AA)","Country2 (AB)"]);
         assertTooltip(6, 1, "countries-details-link-1", ["Country1 (AA)"]);
     });
 
-    test("shows scenario tooltips", () => {
+    it("shows scenario tooltips", () => {
         assertTooltip(7, 0, "scenario-details-link-0", ["scenario 1"]);
         assertTooltip(7, 1, "scenario-details-link-1", ["scenario 1","scenario 2"]);
     });
 
-    test("shows outcomes tooltips", () => {
+    it("shows outcomes tooltips", () => {
         assertTooltip(11, 0, "outcomes-details-link-0", ["deaths: deaths name", "dalys: dalys name"]);
         assertTooltip(11, 1, "outcomes-details-link-1", ["deaths: deaths name","cases: cases name"]);
     });
 
-    test("selects only obsolete models if obsoleteOnly is true", () =>
+    it("selects only obsolete models if obsoleteOnly is true", () =>
     {
         const testState = {
             groups: {
@@ -379,56 +379,56 @@ describe("ModelMetaTable tests", () => {
         const store = createMockStore(testState);
         const rendered = shallow(<ModelMetaTable obsoleteOnly={true}/>, {context: {store}});
 
-        expect(rendered.props().models).to.eql(obsoleteMappedData);
+        expect(rendered.props().models).toEqual(obsoleteMappedData);
 
     });
 
-    test("displays table of obsolete models", () => {
+    it("displays table of obsolete models", () => {
         const testState = {
             groups: {models: [obsoleteTestModel, obsoleteTestModel2], expectations: [testExpectation, testExpectation2]}
         };
         const store = createMockStore(testState);
         const rendered = shallow(<ModelMetaTable obsoleteOnly={true}/>, {context: {store}}).dive();
 
-        expect(rendered.text()).to.satisfy((s: string) => s.startsWith("The following obsolete models were also found."));
+        expect(rendered.text().startsWith("The following obsolete models were also found.")).toBe(true);
 
-        expect(rendered.find("th")).to.have.lengthOf(7);
-        expect(rendered.find("th").at(0).text()).to.eq("Group");
-        expect(rendered.find("th").at(1).text()).to.eq("Model Name");
-        expect(rendered.find("th").at(2).text()).to.eq("Disease");
-        expect(rendered.find("th").at(3).text()).to.eq("Model Type");
-        expect(rendered.find("th").at(4).text()).to.eq("Code");
-        expect(rendered.find("th").at(5).text()).to.eq("Gender");
-        expect(rendered.find("th").at(6).text()).to.eq("Max Countries");
+        expect(rendered.find("th")).toHaveLength(7);
+        expect(rendered.find("th").at(0).text()).toEqual("Group");
+        expect(rendered.find("th").at(1).text()).toEqual("Model Name");
+        expect(rendered.find("th").at(2).text()).toEqual("Disease");
+        expect(rendered.find("th").at(3).text()).toEqual("Model Type");
+        expect(rendered.find("th").at(4).text()).toEqual("Code");
+        expect(rendered.find("th").at(5).text()).toEqual("Gender");
+        expect(rendered.find("th").at(6).text()).toEqual("Max Countries");
 
 
         const body = rendered.find("tbody");
 
-        expect(body.find("tr")).to.have.lengthOf(2);
+        expect(body.find("tr")).toHaveLength(2);
 
         function cellsForRow(i: number) {
             return body.find("tr").at(i).find("td");
         }
 
-        expect(cellsForRow(0).at(0).text()).to.eq("oga");
-        expect(cellsForRow(0).at(1).text()).to.eq("omb");
-        expect(cellsForRow(0).at(2).text()).to.eq("Disease 1");
-        expect(cellsForRow(0).at(3).text()).to.eq("Static");
-        expect(cellsForRow(0).at(4).text()).to.eq("R");
-        expect(cellsForRow(0).at(5).text()).to.eq("NA");
-        expect(cellsForRow(0).at(6).text()).to.eq("2" + "view");
+        expect(cellsForRow(0).at(0).text()).toEqual("oga");
+        expect(cellsForRow(0).at(1).text()).toEqual("omb");
+        expect(cellsForRow(0).at(2).text()).toEqual("Disease 1");
+        expect(cellsForRow(0).at(3).text()).toEqual("Static");
+        expect(cellsForRow(0).at(4).text()).toEqual("R");
+        expect(cellsForRow(0).at(5).text()).toEqual("NA");
+        expect(cellsForRow(0).at(6).text()).toEqual("2" + "view");
 
-        expect(cellsForRow(1).at(0).text()).to.eq("ogb");
-        expect(cellsForRow(1).at(1).text()).to.eq("omb2");
-        expect(cellsForRow(1).at(2).text()).to.eq("Disease 3");
-        expect(cellsForRow(1).at(3).text()).to.eq("Dynamic");
-        expect(cellsForRow(1).at(4).text()).to.eq("C");
-        expect(cellsForRow(1).at(5).text()).to.eq("female");
-        expect(cellsForRow(1).at(6).text()).to.eq("1" + "view");
+        expect(cellsForRow(1).at(0).text()).toEqual("ogb");
+        expect(cellsForRow(1).at(1).text()).toEqual("omb2");
+        expect(cellsForRow(1).at(2).text()).toEqual("Disease 3");
+        expect(cellsForRow(1).at(3).text()).toEqual("Dynamic");
+        expect(cellsForRow(1).at(4).text()).toEqual("C");
+        expect(cellsForRow(1).at(5).text()).toEqual("female");
+        expect(cellsForRow(1).at(6).text()).toEqual("1" + "view");
 
     });
 
-    test(
+    it(
         "does not render table or message if obsoleteOnly is true and there are none",
         () => {
             const testState = {
@@ -437,13 +437,13 @@ describe("ModelMetaTable tests", () => {
             const store = createMockStore(testState);
             const rendered = shallow(<ModelMetaTable obsoleteOnly={true}/>, {context: {store}}).dive();
 
-            expect(rendered.text()).to.eql("");
+            expect(rendered.text()).toEqual("");
 
-            expect(rendered.find("table")).to.have.lengthOf(0);
+            expect(rendered.find("table")).toHaveLength(0);
         }
     );
 
-    test("shows countries tooltips for obsolete models", () => {
+    it("shows countries tooltips for obsolete models", () => {
         assertTooltip(6, 0, "countries-details-link-0", ["Country1 (AA)","Country2 (AB)"], true);
         assertTooltip(6, 1, "countries-details-link-1", ["Country1 (AA)"], true);
     });
@@ -459,16 +459,16 @@ describe("ModelMetaTable tests", () => {
         rendered.find("th").at(colIndex).simulate("click");
 
         // ascending
-        expect(getFirstRowValue()).to.eq(ascValue);
-        expect(rendered.find("th").at(colIndex).hasClass("asc")).to.eq(true);
-        expect(rendered.find("th").at(colIndex).hasClass("desc")).to.eq(false);
+        expect(getFirstRowValue()).toEqual(ascValue);
+        expect(rendered.find("th").at(colIndex).hasClass("asc")).toEqual(true);
+        expect(rendered.find("th").at(colIndex).hasClass("desc")).toEqual(false);
 
         rendered.find("th").at(colIndex).simulate("click");
 
         // descending
-        expect(getFirstRowValue()).to.eq(descValue);
-        expect(rendered.find("th").at(colIndex).hasClass("asc")).to.eq(false);
-        expect(rendered.find("th").at(colIndex).hasClass("desc")).to.eq(true);
+        expect(getFirstRowValue()).toEqual(descValue);
+        expect(rendered.find("th").at(colIndex).hasClass("asc")).toEqual(false);
+        expect(rendered.find("th").at(colIndex).hasClass("desc")).toEqual(true);
     }
 
     function assertTooltip(colIndex: number, rowIndex: number, target: string, contents: string[], obsoleteModels:boolean=false) {
@@ -482,16 +482,16 @@ describe("ModelMetaTable tests", () => {
 
         const cell = row.find("td").at(colIndex);
         const link = cell.find("a");
-        expect(link.prop("id")).to.eql(target);
+        expect(link.prop("id")).toEqual(target);
 
         const tooltip = row.find(UncontrolledTooltip).find(`[target="${target}"]`).dive();
 
-        expect(tooltip.prop("target")).to.eql(target);
-        expect(tooltip.prop("className")).to.eql("model-meta-tooltip");
-        expect(tooltip.prop("autohide")).to.eql(false);
+        expect(tooltip.prop("target")).toEqual(target);
+        expect(tooltip.prop("className")).toEqual("model-meta-tooltip");
+        expect(tooltip.prop("autohide")).toEqual(false);
 
         for (let i: number = 0; i < contents.length; i++) {
-            expect(tooltip.childAt(i).text()).to.eql(contents[i]);
+            expect(tooltip.childAt(i).text()).toEqual(contents[i]);
         }
     }
 

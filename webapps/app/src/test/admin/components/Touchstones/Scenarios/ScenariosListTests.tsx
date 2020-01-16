@@ -7,11 +7,11 @@ import {
     ScenariosListProps
 } from "../../../../../main/admin/components/Touchstones/Scenarios/ScenariosList";
 import * as React from "react";
-import {expect} from "chai";
+
 import {ScenarioGroup} from "../../../../../main/admin/components/Touchstones/Scenarios/ScenarioGroup";
 
 describe("ScenariosList", () => {
-    test("maps state to props filters scenarios to current touchstone", () => {
+    it("maps state to props filters scenarios to current touchstone", () => {
         const touchstoneVersionId = "t1";
         const scenarioGood1 = mockScenario({id: "good-1", touchstones: ["t1", "t2"]});
         const scenarioGood2 = mockScenario({id: "good-2", touchstones: ["t1", "t3"]});
@@ -29,10 +29,10 @@ describe("ScenariosList", () => {
             touchstoneVersionId,
             canDownloadCoverage: false
         };
-        expect(rendered.find(ScenariosListComponent).props()).to.eql(expectedProps);
+        expect(rendered.find(ScenariosListComponent).props()).toEqual(expectedProps);
     });
 
-    test(
+    it(
         "canDownloadCoverage is true when user has global coverage reading permission",
         () => {
             const touchstoneVersionId = "t1";
@@ -53,11 +53,11 @@ describe("ScenariosList", () => {
                 scenarios, diseases, touchstoneVersionId,
                 canDownloadCoverage: true
             };
-            expect(rendered.find(ScenariosListComponent).props()).to.eql(expectedProps);
+            expect(rendered.find(ScenariosListComponent).props()).toEqual(expectedProps);
         }
     );
 
-    test(
+    it(
         "renders one ScenarioGroup per disease, and passes the relevant scenarios in",
         () => {
             const touchstoneVersionId = "t1";
@@ -77,12 +77,12 @@ describe("ScenariosList", () => {
             });
             const rendered = shallow(<ScenariosList/>, {context: {store}}).dive();
             const groups = rendered.find(ScenarioGroup);
-            expect(groups).to.have.length(2);
-            expect(groups.at(0).props()).to.eql({
+            expect(groups).toHaveLength(2);
+            expect(groups.at(0).props()).toEqual({
                 disease: disease1, scenarios: d1scenarios, touchstoneVersionId,
                 canDownloadCoverage: false
             });
-            expect(groups.at(1).props()).to.eql({
+            expect(groups.at(1).props()).toEqual({
                 disease: disease2, scenarios: d2scenarios, touchstoneVersionId,
                 canDownloadCoverage: false
             });

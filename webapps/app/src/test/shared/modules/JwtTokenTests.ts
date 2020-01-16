@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import * as jwt from "jsonwebtoken";
 
 import {jwtTokenAuth} from "../../../main/shared/modules/jwtTokenAuth";
@@ -17,15 +17,15 @@ describe('JwtTokenAuth Module Tests', () => {
         sandbox.restore()
     });
 
-    test('checks is expired', () => {
-        expect(jwtTokenAuth.isExpired(0)).to.equal(true);
-        expect(jwtTokenAuth.isExpired(Math.round(Date.now() / 1000))).to.equal(true);
+    it('checks is expired', () => {
+        expect(jwtTokenAuth.isExpired(0)).toEqual(true);
+        expect(jwtTokenAuth.isExpired(Math.round(Date.now() / 1000))).toEqual(true);
         const now = new Date();
         const expired = new Date(now.getTime() + (5 * 60 * 1000) + 1000).getTime();
-        expect(jwtTokenAuth.isExpired(Math.round(expired / 1000))).to.equal(false);
+        expect(jwtTokenAuth.isExpired(Math.round(expired / 1000))).toEqual(false);
     });
 
-    test('decodes token data', () => {
+    it('decodes token data', () => {
         const testData = {
             sub: "test.user",
             permissions: "test.permissions",
@@ -35,18 +35,18 @@ describe('JwtTokenAuth Module Tests', () => {
         };
         const testToken = jwt.sign(testData, "secret");
         const decoded = jwtTokenAuth.decodeToken(testToken);
-        expect(decoded.sub).to.eql(testData.sub);
-        expect(decoded.permissions).to.eql(testData.permissions);
-        expect(decoded.sub).to.eql(testData.sub);
-        expect(decoded.roles).to.eql(testData.roles);
+        expect(decoded.sub).toEqual(testData.sub);
+        expect(decoded.permissions).toEqual(testData.permissions);
+        expect(decoded.sub).toEqual(testData.sub);
+        expect(decoded.roles).toEqual(testData.roles);
     });
 
-    test('parses roles to modelling groups', () => {
+    it('parses roles to modelling groups', () => {
         const modellingGroups = jwtTokenAuth.parseModellingGroups(roles);
-        expect(modellingGroups).to.eql(['IC-Garske', 'test-group']);
+        expect(modellingGroups).toEqual(['IC-Garske', 'test-group']);
     });
 
-    test(
+    it(
         'decodes token data and formats it as AuthState, account active, modeller',
         () => {
             const testData = {
@@ -59,18 +59,18 @@ describe('JwtTokenAuth Module Tests', () => {
             const testToken = signAndCompress(testData, "secret");
             const authData: AuthState = jwtTokenAuth.getDataFromCompressedToken(testToken);
 
-            expect(authData.loggedIn).to.eql(false);
-            expect(authData.bearerToken).to.eql(testToken);
-            expect(authData.isAccountActive).to.eql(true);
-            expect(authData.isModeller).to.eql(true);
-            expect(authData.username).to.eql(testData.sub);
-            expect(Array.isArray(authData.permissions)).to.eql(true);
-            expect(authData.permissions.length).to.eql(31);
+            expect(authData.loggedIn).toEqual(false);
+            expect(authData.bearerToken).toEqual(testToken);
+            expect(authData.isAccountActive).toEqual(true);
+            expect(authData.isModeller).toEqual(true);
+            expect(authData.username).toEqual(testData.sub);
+            expect(Array.isArray(authData.permissions)).toEqual(true);
+            expect(authData.permissions.length).toEqual(31);
 
         }
     );
 
-    test(
+    it(
         'decodes token data and formats it as AuthState, account not active, not modeller',
         () => {
             const testData = {
@@ -83,41 +83,41 @@ describe('JwtTokenAuth Module Tests', () => {
             const testToken = signAndCompress(testData, "secret");
             const authData: AuthState = jwtTokenAuth.getDataFromCompressedToken(testToken);
 
-            expect(authData.isAccountActive).to.eql(false);
-            expect(authData.isModeller).to.eql(false);
+            expect(authData.isAccountActive).toEqual(false);
+            expect(authData.isModeller).toEqual(false);
         }
     );
 
-    test("can inflate token", () => {
+    it("can inflate token", () => {
         const token = {a: "a", b: 1};
         const signed = jwt.sign(token, "secret");
         const compressed = compress(signed);
-        expect(jwtTokenAuth.inflateToken(compressed)).to.eql(signed);
+        expect(jwtTokenAuth.inflateToken(compressed)).toEqual(signed);
     });
 
-    test("isCompressedTokenValid returns false for non-compressed token", () => {
+    it("isCompressedTokenValid returns false for non-compressed token", () => {
         const token = {exp: Date.now()};
         const signed = jwt.sign(token, "secret");
-        expect(jwtTokenAuth.isCompressedTokenValid(signed)).to.be.false;
+        expect(jwtTokenAuth.isCompressedTokenValid(signed)).toBe(false);
     });
 
-    test("isCompressedTokenValid returns false for compressed garbage", () => {
+    it("isCompressedTokenValid returns false for compressed garbage", () => {
         const token = "TOKEN";
         const compressed = compress(token);
-        expect(jwtTokenAuth.isCompressedTokenValid(compressed)).to.be.false;
+        expect(jwtTokenAuth.isCompressedTokenValid(compressed)).toBe(false);
     });
 
-    test("isCompressedTokenValid returns false for expired token", () => {
+    it("isCompressedTokenValid returns false for expired token", () => {
         const token = {exp: 0};
         const signed = jwt.sign(token, "secret");
         const compressed = compress(signed);
-        expect(jwtTokenAuth.isCompressedTokenValid(compressed)).to.be.false;
+        expect(jwtTokenAuth.isCompressedTokenValid(compressed)).toBe(false);
     });
 
-    test("isCompressedTokenValid returns true for non-expired token", () => {
+    it("isCompressedTokenValid returns true for non-expired token", () => {
         const token = {exp: Date.now()};
         const signed = jwt.sign(token, "secret");
         const compressed = compress(signed);
-        expect(jwtTokenAuth.isCompressedTokenValid(compressed)).to.be.true;
+        expect(jwtTokenAuth.isCompressedTokenValid(compressed)).toBe(true);
     });
 });

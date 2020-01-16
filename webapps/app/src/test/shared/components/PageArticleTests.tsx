@@ -1,5 +1,5 @@
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import {
     PageArticle
 } from "../../../main/shared/components/PageWithHeader/PageArticle";
@@ -10,19 +10,19 @@ describe("PageArticle", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    test("renders a fluid container if isFluid", () => {
+    it("renders a fluid container if isFluid", () => {
         const rendered = shallow(<PageArticle title={"test title"} isFluid={true} children={"test content"}/>);
         const article = rendered.find("article");
-        expect(article.hasClass("container-fluid")).to.equal(true);
-        expect(article.hasClass("container-fit")).to.equal(true);
-        expect(article.hasClass("container")).to.equal(false);
+        expect(article.hasClass("container-fluid")).toEqual(true);
+        expect(article.hasClass("container-fit")).toEqual(true);
+        expect(article.hasClass("container")).toEqual(false);
     });
 
-    test("renders nonfluid container if not isFluid", () => {
+    it("renders nonfluid container if not isFluid", () => {
         const rendered = shallow(<PageArticle title={"test title"} isFluid={false} children={"test content"}/>);
         const article = rendered.find("article");
-        expect(article.hasClass("container-fluid")).to.equal(false);
-        expect(article.hasClass("container-fit")).to.equal(false);
-        expect(article.hasClass("container")).to.equal(true);
+        expect(article.hasClass("container-fluid")).toEqual(false);
+        expect(article.hasClass("container-fit")).toEqual(false);
+        expect(article.hasClass("container")).toEqual(true);
     });
 });

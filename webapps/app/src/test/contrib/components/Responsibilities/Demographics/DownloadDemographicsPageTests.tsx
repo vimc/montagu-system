@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { expect } from "chai";
+
 import { Store } from "redux";
 
 import "../../../../helper";
@@ -26,7 +26,7 @@ describe("Download Demographics Page tests", () => {
 
     afterEach(() => sandbox.restore());
 
-    test("renders component component level", () => {
+    it("renders component component level", () => {
         let testMatch = mockMatch<DownloadDemographicsPageLocationProps>({
             groupId: "g-1",
             touchstoneId: "t-1"
@@ -34,10 +34,10 @@ describe("Download Demographics Page tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(downloadDemographicsContribPageActionCreators, "onLoad");
         const rendered = shallow(<DownloadDemographicsPage match={testMatch} />, {context: {store}}).dive().dive();
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).is.equal(true);
-        expect(pageArticle.find(DownloadDemographicsContent).length).is.equal(1);
+        expect(onLoadStub.called).toBe(true);
+        expect(pageArticle.find(DownloadDemographicsContent).length).toBe(1);
         const titleComponent = pageArticle.dive().find(ResponsibilitiesPageTitle);
-        expect(titleComponent.props().title).is.equal("Download demographic data sets");
+        expect(titleComponent.props().title).toBe("Download demographic data sets");
     });
 });
 

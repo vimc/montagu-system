@@ -1,5 +1,5 @@
 import {Client, QueryResult} from "pg";
-import {expect} from "chai";
+
 import {Sandbox} from "../test/Sandbox";
 
 import {authActionCreators} from "../main/shared/actions/authActionCreators";
@@ -150,8 +150,8 @@ export function addGroups(db: Client, groupId: String): Promise<QueryResult> {
 
 export function expectSameElements<Any>(actual: Any[], expected: Any[]) {
     const failMessage = `Expected ${JSON.stringify(actual, null, 4)} to have same members as ${JSON.stringify(expected, null, 4)}`;
-    expect(actual).to.have.members(expected, failMessage);
-    expect(expected).to.have.members(actual, failMessage);
+    expect(actual).toContain(expected, failMessage);
+    expect(expected).toContain(actual, failMessage);
 }
 
 export function inflateAndDecode(token: string): any {

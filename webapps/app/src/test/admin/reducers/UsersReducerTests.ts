@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import {usersInitialState, usersReducer} from "../../../main/admin/reducers/usersReducer";
 import {UsersTypes} from "../../../main/admin/actionTypes/UsersTypes";
@@ -10,58 +10,58 @@ describe('Admin Users reducer tests', () => {
     const testUser = mockUser();
     const testUser2 = mockUser();
 
-    test('sets fetched users', () => {
+    it('sets fetched users', () => {
         expect(usersReducer(undefined, {
             type: UsersTypes.ALL_USERS_FETCHED,
             data: [testUser, testUser2]
-        })).to.eql({...usersInitialState, users: [testUser, testUser2]});
+        })).toEqual({...usersInitialState, users: [testUser, testUser2]});
     });
 
-    test('sets fetched users empty ', () => {
+    it('sets fetched users empty ', () => {
         expect(usersReducer(undefined, {
             type: UsersTypes.ALL_USERS_FETCHED,
             data: null
-        })).to.eql(usersInitialState);
+        })).toEqual(usersInitialState);
     });
 
-    test('sets showCreateUser ', () => {
+    it('sets showCreateUser ', () => {
         expect(usersReducer(undefined, {
             type: UsersTypes.SHOW_CREATE_USER,
             data: true
-        })).to.eql({...usersInitialState, showCreateUser: true});
+        })).toEqual({...usersInitialState, showCreateUser: true});
 
         expect(usersReducer(undefined, {
             type: UsersTypes.SHOW_CREATE_USER,
             data: false
-        })).to.eql({...usersInitialState, showCreateUser: false});
+        })).toEqual({...usersInitialState, showCreateUser: false});
     });
 
-    test('sets createUserErrors ', () => {
+    it('sets createUserErrors ', () => {
         expect(usersReducer(undefined, {
             type: UsersTypes.SET_CREATE_USER_ERRORS,
             errors: [{code: "e", message: "error"}]
-        })).to.eql({...usersInitialState, createUserErrors:  [{code: "e", message: "error"}]});
+        })).toEqual({...usersInitialState, createUserErrors:  [{code: "e", message: "error"}]});
     });
 
-    test('sets global roles ', () => {
+    it('sets global roles ', () => {
         expect(usersReducer(undefined, {
             type: UsersTypes.ALL_GLOBAL_ROLES_FETCHED,
             data: ["role1", "role2"]
-        })).to.eql({...usersInitialState, globalRoles: ["role1", "role2"]});
+        })).toEqual({...usersInitialState, globalRoles: ["role1", "role2"]});
     });
 
-    test("changes set password errors", () => {
+    it("changes set password errors", () => {
         const errors = [mockError("a", "A"), mockError("b", "B")];
         expect(usersReducer(undefined, {
             type: UsersTypes.CHANGE_SET_PASSWORD_ERRORS,
             errors: errors
-        })).to.eql({...usersInitialState, setPasswordErrors: errors})
+        })).toEqual({...usersInitialState, setPasswordErrors: errors})
     });
 
-    test("changes set password token", () => {
+    it("changes set password token", () => {
         expect(usersReducer(undefined, {
             type: UsersTypes.CHANGE_SET_PASSWORD_TOKEN,
             token: "TOKEN"
-        })).to.eql({...usersInitialState, setPasswordToken: "TOKEN"})
+        })).toEqual({...usersInitialState, setPasswordToken: "TOKEN"})
     });
 });

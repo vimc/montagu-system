@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../Sandbox";
 import {runParametersActionCreators} from "../../../main/contrib/actions/runParametersActionCreators";
@@ -23,7 +23,7 @@ describe("Run Parameters actions tests", () => {
         sandbox.restore();
     });
 
-    test("clears cache for parameters set", (done) => {
+    it("clears cache for parameters set", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
@@ -34,12 +34,12 @@ describe("Run Parameters actions tests", () => {
         store.dispatch(runParametersActionCreators.clearCacheForGetParameterSets(testGroup.id, testTouchstoneVersion.id));
         setTimeout(() => {
             const actions = store.getActions();
-            expect(actions).to.eql([]);
+            expect(actions).toEqual([]);
             done();
         });
     });
 
-    test("gets parameters set", (done) => {
+    it("gets parameters set", (done) => {
         const store = createMockStore();
         sandbox.setStubFunc(RunParametersService.prototype, "getParameterSets", ()=>{
             return Promise.resolve([testModelRunParametersSet]);
@@ -48,12 +48,12 @@ describe("Run Parameters actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet]};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    test("refresh parameters sets", (done) => {
+    it("refresh parameters sets", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
@@ -67,12 +67,12 @@ describe("Run Parameters actions tests", () => {
             const expectedPayload = [
                 { type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet] }
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
             done();
         });
     });
 
-    test("upload parameters sets successfull", (done) => {
+    it("upload parameters sets successfull", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
@@ -103,12 +103,12 @@ describe("Run Parameters actions tests", () => {
                 },
                 { type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet] }
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
             done();
         });
     });
 
-    test("upload parameters sets unsuccessfull", (done) => {
+    it("upload parameters sets unsuccessfull", (done) => {
         const store = createMockContribStore({
             groups: { currentUserGroup: testGroup },
             touchstones: { currentTouchstoneVersion: testTouchstoneVersion }
@@ -138,12 +138,12 @@ describe("Run Parameters actions tests", () => {
                     } as RunParametersUploadStatusData
                 }
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
             done();
         });
     });
 
-    test("reset upload status", (done) => {
+    it("reset upload status", (done) => {
         const resetData = {status: RunParametersUploadStatus.off, errors: null} as RunParametersUploadStatusData;
         const store = createMockContribStore();
         store.dispatch(runParametersActionCreators.resetUploadStatus());
@@ -152,7 +152,7 @@ describe("Run Parameters actions tests", () => {
             const expectedPayload = [
                 { type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS, data: resetData}
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
             done();
         });
     });

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { expect } from "chai";
+
 import { shallow } from "enzyme";
 
 import ReactRadioButtonGroup from "react-radio-button-group";
@@ -7,26 +7,26 @@ import {GenderControl} from "../../../../main/shared/components/Demographics/Gen
 import {mockDemographicDataset} from "../../../mocks/mockModels";
 
 describe("GenderControl", () => {
-    test(
+    it(
         "gender is applicable when data set is selected and that gender has gender applicable",
         () => {
             const f = GenderControl.genderApplicable;
-            expect(f(null)).to.be.false;
-            expect(f(mockDemographicDataset({ gender_is_applicable: false }))).to.be.false;
-            expect(f(mockDemographicDataset({ gender_is_applicable: true }))).to.be.true;
+            expect(f(null)).toBe(false);
+            expect(f(mockDemographicDataset({ gender_is_applicable: false }))).toBe(false);
+            expect(f(mockDemographicDataset({ gender_is_applicable: true }))).toBe(true);
         }
     );
 
-    test("renders radio buttons when gender is applicable", () => {
+    it("renders radio buttons when gender is applicable", () => {
         const set = mockDemographicDataset({ gender_is_applicable: true });
         const rendered = shallow(<GenderControl dataSet={set} value="" onSelectGender={null} />);
-        expect(rendered.find(ReactRadioButtonGroup)).to.have.length(1);
+        expect(rendered.find(ReactRadioButtonGroup)).toHaveLength(1);
     });
 
-    test("renders message when gender is not applicable", () => {
+    it("renders message when gender is not applicable", () => {
         const set = mockDemographicDataset({ gender_is_applicable: false });
         const rendered = shallow(<GenderControl dataSet={set} value="" onSelectGender={null} />);
-        expect(rendered.find(ReactRadioButtonGroup)).to.have.length(0);
-        expect(rendered.text()).to.contain("Gender is not applicable");
+        expect(rendered.find(ReactRadioButtonGroup)).toHaveLength(0);
+        expect(rendered.text()).toContain("Gender is not applicable");
     });
 });

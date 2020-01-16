@@ -1,5 +1,5 @@
 import * as React from "react";
-import { expect } from "chai";
+
 import { shallow } from "enzyme";
 
 import "../../../../../helper";
@@ -20,7 +20,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
         const sandbox = new Sandbox();
         afterEach(() => sandbox.restore());
 
-        test("passes right props on connect level", () => {
+        it("passes right props on connect level", () => {
             const store = createMockStore();
             const testUser = mockUser();
             const rendered = shallow(<ModellingGroupMembersDeletableUser
@@ -28,13 +28,13 @@ describe("Modelling Group Members Deletable User Component tests", () => {
                 groupId={"g-1"}
                 showDelete={true}
             />, {context: {store}});
-            expect(rendered.props().user).to.eql(testUser);
-            expect(rendered.props().groupId).to.eql("g-1");
-            expect(rendered.props().showDelete).to.be.true;
-            expect(typeof rendered.props().removeUserFromGroup).to.eql("function");
+            expect(rendered.props().user).toEqual(testUser);
+            expect(rendered.props().groupId).toEqual("g-1");
+            expect(rendered.props().showDelete).toBe(true);
+            expect(typeof rendered.props().removeUserFromGroup).toEqual("function");
         });
 
-        test("triggers action on remove click", () => {
+        it("triggers action on remove click", () => {
             const store = createMockStore();
             const testUser = mockUser();
             const rendered = shallow(<ModellingGroupMembersDeletableUser
@@ -45,9 +45,9 @@ describe("Modelling Group Members Deletable User Component tests", () => {
             const deleteLink = rendered.find(".text-danger").dive();
             const removeActionStub = sandbox.setStubReduxAction(modellingGroupsActionCreators, "removeUserFromGroup");
             deleteLink.simulate("click");
-            expect(removeActionStub.called).to.be.true;
-            expect(removeActionStub.getCall(0).args[0]).to.equal("g-1");
-            expect(removeActionStub.getCall(0).args[1]).to.equal(testUser.username);
+            expect(removeActionStub.called).toBe(true);
+            expect(removeActionStub.getCall(0).args[0]).toEqual("g-1");
+            expect(removeActionStub.getCall(0).args[1]).toEqual(testUser.username);
         });
     });
 
@@ -62,17 +62,17 @@ describe("Modelling Group Members Deletable User Component tests", () => {
         });
         afterEach(() => sandbox.restore());
 
-        test("renders link to user page", () => {
+        it("renders link to user page", () => {
             const rendered = shallow(<ModellingGroupMembersDeletableUserComponent
                 showDelete={true}
                 groupId="group1"
                 user={testUser}
                 removeUserFromGroup={removeSpy}
             />);
-            expect(rendered.find(InternalLink).at(0).prop("href")).to.eq("/users/w.a.m/")
+            expect(rendered.find(InternalLink).at(0).prop("href")).toEqual("/users/w.a.m/")
         });
 
-        test("renders delete link", () => {
+        it("renders delete link", () => {
             const rendered = shallow(<ModellingGroupMembersDeletableUserComponent
                 showDelete={true}
                 groupId="group1"
@@ -80,10 +80,10 @@ describe("Modelling Group Members Deletable User Component tests", () => {
                 removeUserFromGroup={removeSpy}
             />);
             const deleteInternalLink = rendered.find(".text-danger");
-            expect(deleteInternalLink.dive().text()).to.eq("Remove member")
+            expect(deleteInternalLink.dive().text()).toEqual("Remove member")
         });
 
-        test("does not render delete link if showDelete is false", () => {
+        it("does not render delete link if showDelete is false", () => {
             const rendered = shallow(<ModellingGroupMembersDeletableUserComponent
                 showDelete={false}
                 groupId="group1"
@@ -91,10 +91,10 @@ describe("Modelling Group Members Deletable User Component tests", () => {
                 removeUserFromGroup={removeSpy}
             />);
             const deleteInternalLink = rendered.find(".text-danger");
-            expect(deleteInternalLink.length).to.equal(0);
+            expect(deleteInternalLink.length).toEqual(0);
         });
 
-        test("triggers remove function", () => {
+        it("triggers remove function", () => {
             const rendered = shallow(<ModellingGroupMembersDeletableUserComponent
                 showDelete={true}
                 groupId="group1"
@@ -103,9 +103,9 @@ describe("Modelling Group Members Deletable User Component tests", () => {
             />);
             const deleteLink = rendered.find(".text-danger").dive();
             deleteLink.simulate("click");
-            expect(removeSpy.called).to.be.true;
-            expect(removeSpy.getCall(0).args[0]).to.equal("group1");
-            expect(removeSpy.getCall(0).args[1]).to.equal(testUser.username);
+            expect(removeSpy.called).toBe(true);
+            expect(removeSpy.getCall(0).args[0]).toEqual("group1");
+            expect(removeSpy.getCall(0).args[1]).toEqual(testUser.username);
         });
 
     });

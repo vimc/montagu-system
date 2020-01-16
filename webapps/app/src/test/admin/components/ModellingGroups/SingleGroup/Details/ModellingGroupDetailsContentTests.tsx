@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow} from "enzyme";
-import { expect } from "chai";
+
 
 import "../../../../../helper";
 import {mockModellingGroup, mockModellingGroupDetails, mockUser} from "../../../../../mocks/mockModels";
@@ -25,19 +25,19 @@ describe("Modelling Group Details Content Component tests", () => {
         const sandbox = new Sandbox();
         afterEach(() => sandbox.restore());
 
-        test("props on connect level, can manage", () => {
+        it("props on connect level, can manage", () => {
             const testState = {
                 groups: { currentGroupDetails: testGroupDetails, currentGroupMembers: [testUser, testUser2]},
                 auth: { permissions: ["*/modelling-groups.manage-members"] }
             };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupDetailsContent/>, {context: {store}});
-            expect(rendered.props().group).to.equal(testGroupDetails);
-            expect(rendered.props().members).to.eql([testUser, testUser2]);
-            expect(rendered.props().canManageGroupMembers).to.be.true;
+            expect(rendered.props().group).toEqual(testGroupDetails);
+            expect(rendered.props().members).toEqual([testUser, testUser2]);
+            expect(rendered.props().canManageGroupMembers).toBe(true);
         });
 
-        test("props on connect level, can not manage", () => {
+        it("props on connect level, can not manage", () => {
             const testState = {
                 groups: { currentGroupDetails: testGroupDetails},
                 users: { users: [testUser, testUser2]},
@@ -45,25 +45,25 @@ describe("Modelling Group Details Content Component tests", () => {
             };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupDetailsContent/>, {context: {store}});
-            expect(rendered.props().canManageGroupMembers).to.be.false;
+            expect(rendered.props().canManageGroupMembers).toBe(false);
         });
 
     });
 
     describe("Component", () => {
-        test("renders group details content", () => {
+        it("renders group details content", () => {
             const rendered = shallow(<ModellingGroupDetailsContentComponent
                 group={testGroupDetails}
                 members={[testUser]}
                 canManageGroupMembers={true}
             />);
             const rows = rendered.find('tr');
-            expect(rows.at(0).find('td').at(1).text()).to.equal(testGroupDetails.id);
+            expect(rows.at(0).find('td').at(1).text()).toEqual(testGroupDetails.id);
             const summary = rows.at(1).find(ModellingGroupDetailsMembers);
-            expect(summary.length).to.equal(1);
-            expect(summary.props().group).to.eql(testGroupDetails);
-            expect(summary.props().members).to.eql([testUser]);
-            expect(summary.props().canEdit).to.be.true;
+            expect(summary.length).toEqual(1);
+            expect(summary.props().group).toEqual(testGroupDetails);
+            expect(summary.props().members).toEqual([testUser]);
+            expect(summary.props().canEdit).toBe(true);
         });
 
     });

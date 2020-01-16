@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 import { createMemoryHistory } from 'history';
 
 import {createContribStore} from "../../../main/contrib/createStore";
@@ -16,7 +16,7 @@ describe('Responsibilities service tests', () => {
         sandbox.restore();
     });
 
-    test('fetches responsibilities', () => {
+    it('fetches responsibilities', () => {
         const responsibilitiesService = new ResponsibilitiesService(store.dispatch, store.getState as () => ContribAppState);
 
         const setOptionsSpy = sandbox.setSpy(responsibilitiesService, "setOptions");
@@ -26,11 +26,11 @@ describe('Responsibilities service tests', () => {
 
         responsibilitiesService.getResponsibilities("group-2", "touchstone-2");
 
-        expect(getStub.getCall(0).args[0]).to.equal("/modelling-groups/group-2/responsibilities/touchstone-2/");
-        expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'set' });
+        expect(getStub.getCall(0).args[0]).toEqual("/modelling-groups/group-2/responsibilities/touchstone-2/");
+        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'set' });
     });
 
-    test('clears cache for responsibilities', () => {
+    it('clears cache for responsibilities', () => {
         const responsibilitiesService = new ResponsibilitiesService(store.dispatch, store.getState as () => ContribAppState);
 
         const clearCacheStub = sandbox.setStubFunc(responsibilitiesService, "clearCache", ()=>{
@@ -39,8 +39,8 @@ describe('Responsibilities service tests', () => {
 
         responsibilitiesService.clearCacheForResponsibilities("group-2", "touchstone-2");
 
-        expect(clearCacheStub.getCall(0).args[0]).to.equal("set");
-        expect(clearCacheStub.getCall(0).args[1]).to.equal("/modelling-groups/group-2/responsibilities/touchstone-2/");
+        expect(clearCacheStub.getCall(0).args[0]).toEqual("set");
+        expect(clearCacheStub.getCall(0).args[1]).toEqual("/modelling-groups/group-2/responsibilities/touchstone-2/");
     });
 
 });
