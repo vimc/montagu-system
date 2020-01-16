@@ -1,3 +1,5 @@
+import DoneCallback = jest.DoneCallback;
+
 type AfterWaitCallback = (done: DoneCallback, then: () => void) => void;
 
 function afterWait(done: DoneCallback, then: () => void): void {

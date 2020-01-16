@@ -16,6 +16,7 @@ import {BreadcrumbsTypes} from "../../../main/shared/actionTypes/BreadrumbsTypes
 import {mockPageBreadcrumb} from "../../mocks/mockModels";
 import {PageBreadcrumb} from "../../../main/shared/components/PageWithHeader/PageProperties";
 import {AdminAppState} from "../../../main/admin/reducers/adminAppReducers";
+import DoneCallback = jest.DoneCallback;
 
 class DummyPageComponent extends React.Component<PageProperties<undefined>> {
     render(): JSX.Element {

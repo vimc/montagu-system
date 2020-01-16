@@ -8,6 +8,7 @@ import * as Sinon from "sinon"
 import {checkPromise} from "../../testHelpers";
 import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 import {mockError, mockResult} from "../../mocks/mockResult";
+import DoneCallback = jest.DoneCallback;
 
 describe("Admin Users actions tests", () => {
     const sandbox = new Sandbox();
@@ -133,7 +134,11 @@ describe("Admin Users actions tests", () => {
         sandbox.setStubFunc(UsersService.prototype, "createUser", () => {
             return Promise.resolve(mockResult(null, [{code: "e", message: "error message"}]));
         });
-        await store.dispatch(usersActionCreators.createUser({name: "joe bloggs", email: "joe@email.com", username: "joe.b"}));
+        await store.dispatch(usersActionCreators.createUser({
+            name: "joe bloggs",
+            email: "joe@email.com",
+            username: "joe.b"
+        }));
 
         const actions = store.getActions();
         const expectedPayload = {
@@ -197,8 +202,7 @@ describe("Admin Users actions tests", () => {
         });
     });
 
-    it(
-        "setPassword issues notification if service returns success",
+    it("setPassword issues notification if service returns success",
         (done: DoneCallback) => {
             sandbox.stubService(UsersService.prototype, "setPassword", mockResult(true));
             const store = createMockAdminStore({});

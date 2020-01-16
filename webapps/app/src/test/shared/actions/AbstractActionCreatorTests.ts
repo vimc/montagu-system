@@ -1,4 +1,3 @@
-
 import {Dispatch} from "redux";
 import {AbstractPageActionCreators} from "../../../main/shared/actions/AbstractPageActionCreators";
 import {PageBreadcrumb} from "../../../main/shared/components/PageWithHeader/PageProperties";
@@ -7,6 +6,7 @@ import {mockAdminState} from "../../mocks/mockStates";
 import {Sandbox} from "../../Sandbox";
 import {BreadcrumbsReceived, BreadcrumbsTypes} from "../../../main/shared/actionTypes/BreadrumbsTypes";
 import {Breadcrumb} from "../../../main/shared/models/Breadcrumb";
+import DoneCallback = jest.DoneCallback;
 
 let fakeGlobalState = 0;
 const dummyAction = {type: "test", data: "testdata"};
@@ -82,8 +82,7 @@ describe("Abstract page action creators", () => {
         sandbox.restore();
     });
 
-    it(
-        "loads data, parent data, and creates breadcrumbs on onLoad",
+    it("loads data, parent data, and creates breadcrumbs on onLoad",
         (done: DoneCallback) => {
 
             store.dispatch(dummyPage.onLoad());

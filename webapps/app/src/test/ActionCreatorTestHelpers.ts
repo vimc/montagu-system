@@ -2,6 +2,7 @@ import {createMockStore} from "./mocks/mockStore";
 
 import {MockStore} from "redux-mock-store";
 import {ThunkAction} from "redux-thunk";
+import DoneCallback = jest.DoneCallback;
 
 export interface VerifyActionThatCallsServiceProperties {
     mockServices: () => void;
@@ -23,12 +24,14 @@ export function verifyActionThatCallsService(
 ) {
     props.mockServices();
     const store = props.store || createMockStore({});
+
     store.dispatch(props.callActionCreator());
+
     setTimeout(() => {
         const actions = store.getActions();
         expect(actions).toEqual(props.expectTheseActions);
         done();
-    });
+    })
 }
 
 export function verifyActionThatCallsServiceAndReturnsResult(

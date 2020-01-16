@@ -1,9 +1,6 @@
-
-
 import {Sandbox} from "../../Sandbox";
 import {estimatesActionCreators} from "../../../main/contrib/actions/estimatesActionCreators";
 import {EstimatesService} from "../../../main/contrib/services/EstimatesService";
-import {ResponsibilitiesService} from "../../../main/contrib/services/ResponsibilitiesService";
 import {createMockContribStore} from "../../mocks/mockStore";
 import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPropsHelper";
 import {mockModellingGroup, mockResponsibilitySetWithExpectations, mockTouchstone} from "../../mocks/mockModels";
@@ -11,6 +8,7 @@ import {ExtendedResponsibilitySet} from "../../../main/contrib/models/Responsibi
 import {BurdenEstimateSetType, ErrorInfo} from "../../../main/shared/models/Generated";
 import {BurdenOutcome, EstimateTypes} from "../../../main/contrib/actionTypes/EstimateTypes";
 import {responsibilitiesActionCreators} from "../../../main/contrib/actions/responsibilitiesActionCreators";
+import DoneCallback = jest.DoneCallback;
 
 describe("Estimates actions tests", () => {
     const sandbox = new Sandbox();
@@ -83,8 +81,7 @@ describe("Estimates actions tests", () => {
         }
     );
 
-    it(
-        "creates burden estimate set and fetches upload token on success",
+    it("creates burden estimate set and fetches upload token on success",
         (done: DoneCallback) => {
             const store = createStore();
             const createBurdenEndpoint = sandbox.setStubFunc(EstimatesService.prototype, "createBurden", () => {

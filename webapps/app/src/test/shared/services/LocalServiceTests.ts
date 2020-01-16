@@ -14,11 +14,6 @@ import {mockContribState} from "../../mocks/mockStates";
 import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 
 describe('LocalService', () => {
-    let testContext: any;
-
-    beforeEach(() => {
-        testContext = {};
-    });
 
     describe("requests", () => {
 
@@ -35,10 +30,10 @@ describe('LocalService', () => {
 
             class TestService extends AbstractLocalService {
                 test() {
-                    testContext.setOptions({Authorization: 'Basic ' + btoa(`${email}:${password}`)});
+                    this.setOptions({Authorization: 'Basic ' + btoa(`${email}:${password}`)});
                     return {
-                        requestOptions: testContext.makeRequestOptions('POST'),
-                        options: testContext.options
+                        requestOptions: this.makeRequestOptions('POST'),
+                        options: this.options
                     };
                 }
             }
@@ -53,7 +48,7 @@ describe('LocalService', () => {
 
             class TestService extends AbstractLocalService {
                 test(): RequestOptions {
-                    return testContext.makeRequestOptions('GET');
+                    return this.makeRequestOptions('GET');
                 }
             }
 
@@ -69,7 +64,7 @@ describe('LocalService', () => {
 
             class TestService extends AbstractLocalService {
                 test(): RequestOptions {
-                    return testContext.setOptions({includeBearerToken: true})
+                    return this.setOptions({includeBearerToken: true})
                         .makeRequestOptions('GET');
                 }
             }
@@ -85,7 +80,7 @@ describe('LocalService', () => {
 
             class TestService extends AbstractLocalService {
                 test() {
-                    return testContext.get("/test/");
+                    return this.get("/test/");
                 }
             }
 
@@ -102,7 +97,7 @@ describe('LocalService', () => {
 
             class TestService extends AbstractLocalService {
                 test() {
-                    return testContext.get("/test/");
+                    return this.get("/test/");
                 }
             }
 
@@ -131,7 +126,7 @@ describe('LocalService', () => {
 
             class TestService extends AbstractLocalService {
                 test() {
-                    return testContext.get("/test/");
+                    return this.get("/test/");
                 }
             }
 
@@ -160,7 +155,7 @@ describe('LocalService', () => {
 
             class TestService extends AbstractLocalService {
                 test() {
-                    return testContext.get("/test/");
+                    return this.get("/test/");
                 }
             }
 

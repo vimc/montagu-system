@@ -53,8 +53,8 @@ describe("Admin Modelling groups actions tests", () => {
         });
         const getAllExpectationsServiceStub = sandbox.setStubFunc(ExpectationsService.prototype, "getAllExpectations",
             () => {
-           return Promise.resolve( [testExpectation, testExpectation2] );
-        });
+                return Promise.resolve([testExpectation, testExpectation2]);
+            });
 
         await store.dispatch(modellingGroupsActionCreators.getAllModelsAndExpectations());
 
@@ -63,8 +63,10 @@ describe("Admin Modelling groups actions tests", () => {
         expect(getAllGroupsServiceStub.called).toBe(true);
         expect(getAllExpectationsServiceStub.called).toBe(true);
 
-        const expectedPayload = {type: ModellingGroupTypes.MODELS_FETCHED, models: [testModel, testModel2],
-                                    expectations: [testExpectation, testExpectation2]};
+        const expectedPayload = {
+            type: ModellingGroupTypes.MODELS_FETCHED, models: [testModel, testModel2],
+            expectations: [testExpectation, testExpectation2]
+        };
         expect(actions).toEqual([expectedPayload]);
 
     });
@@ -249,7 +251,10 @@ describe("Admin Modelling groups actions tests", () => {
     it(
         "sets current members for current group details, empty if no match",
         (done) => {
-            const store = createMockStore({groups: {currentGroupDetails: testGroupDetails}, users: {users: [testUser2]}});
+            const store = createMockStore({
+                groups: {currentGroupDetails: testGroupDetails},
+                users: {users: [testUser2]}
+            });
             store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
             setTimeout(() => {
                 const actions = store.getActions();
@@ -263,7 +268,10 @@ describe("Admin Modelling groups actions tests", () => {
     it(
         "sets current members for current group details, data if match",
         (done) => {
-            const store = createMockStore({groups: {currentGroupDetails: testGroupDetails}, users: {users: [testUser]}});
+            const store = createMockStore({
+                groups: {currentGroupDetails: testGroupDetails},
+                users: {users: [testUser]}
+            });
             store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
             setTimeout(() => {
                 const actions = store.getActions();
@@ -321,16 +329,18 @@ describe("Admin Modelling groups actions tests", () => {
         });
     });
 
-    // it("dispatches nothing on failed group creation", (done) => {
-    //
-    //     verifyActionThatCallsService(done, {
-    //         mockServices: () => {
-    //             sandbox.stubServiceWithFailure(ModellingGroupsService.prototype, "createGroup");
-    //             sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
-    //         },
-    //         callActionCreator: () => modellingGroupsActionCreators.createModellingGroup(mockModellingGroupCreation()),
-    //         expectTheseActions: []
-    //     })
-    // });
+    it("dispatches nothing on failed group creation", async () => {
+        const store = createMockStore({});
+        sandbox.stubServiceWithFailure(ModellingGroupsService.prototype, "createGroup");
+        sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
+
+        try {
+            await store.dispatch(modellingGroupsActionCreators.createModellingGroup(mockModellingGroupCreation()))
+        } catch {
+
+        }
+        const actions = store.getActions();
+        expect(actions).toEqual([]);
+    });
 
 });

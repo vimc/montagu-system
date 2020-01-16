@@ -16,6 +16,7 @@ import {mockContribState} from "../../../mocks/mockStates";
 import {createMockContribStore} from "../../../mocks/mockStore";
 import {AuthTypeKeys} from "../../../../main/shared/actionTypes/AuthTypes";
 import {AuthService} from "../../../../main/shared/services/AuthService";
+import DoneCallback = jest.DoneCallback;
 
 describe("LoggedInUserBoxComponent", () => {
     const sandbox = new Sandbox();

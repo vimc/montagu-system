@@ -1,4 +1,3 @@
-
 import * as React from "react";
 
 import {checkAsync} from "../../testHelpers";
@@ -12,6 +11,7 @@ import {MockStore} from "redux-mock-store";
 import * as Sinon from "sinon"
 import {ContribAppState} from "../../../main/contrib/reducers/contribAppReducers";
 import {createMockContribStore} from "../../mocks/mockStore";
+import DoneCallback = jest.DoneCallback;
 
 describe("OneTimeLinkContext", () => {
     const sandbox = new Sandbox();
@@ -30,9 +30,9 @@ describe("OneTimeLinkContext", () => {
     });
 
     afterEach(() => {
-            fetchTokenStub.restore();
-            sandbox.restore();
-        });
+        fetchTokenStub.restore();
+        sandbox.restore();
+    });
 
     class EmptyComponent extends React.Component<OneTimeLinkProps, undefined> {
         render(): JSX.Element {
@@ -42,8 +42,7 @@ describe("OneTimeLinkContext", () => {
 
     const Class = OneTimeLinkContext(EmptyComponent);
 
-    it(
-        "if store does not contain matching token, href passed to child is null",
+    it("if store does not contain matching token, href passed to child is null",
         (done: DoneCallback) => {
             const rendered = render(<Class href="/orange/"/>);
             const child = rendered.find(EmptyComponent);

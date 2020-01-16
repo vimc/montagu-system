@@ -1,4 +1,3 @@
-
 import * as Sinon from "sinon"
 
 import {Sandbox} from "../../../Sandbox";

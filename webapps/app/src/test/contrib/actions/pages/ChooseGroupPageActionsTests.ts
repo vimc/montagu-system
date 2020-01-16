@@ -1,5 +1,3 @@
-
-
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
 import {chooseGroupPageActionCreators} from "../../../../main/contrib/actions/pages/chooseGroupPageActionCreators";
@@ -7,6 +5,7 @@ import {ModellingGroupsService} from "../../../../main/shared/services/Modelling
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
 import {mockModellingGroup} from "../../../mocks/mockModels";
 import {verifyActionThatCallsService} from "../../../ActionCreatorTestHelpers";
+import DoneCallback = jest.DoneCallback;
 
 describe("Choose Group Page actions tests", () => {
     const sandbox = new Sandbox();
