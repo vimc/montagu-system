@@ -21,7 +21,8 @@ module.exports = {
     ],
     "testRegex": "/test.*Tests\\.[jt]sx?$",
     "transform": {
-        ".+\\.(css|style|less|sass|scss|png|jpg|ttf|woff|woff2|gif|pdf|csv)$": "<rootDir>/src/main/shared/assetTransformer.js",
+        ".+\\.(css|style|less|sass|scss|png|jpg|ttf|woff|woff2|gif|pdf|csv)$":
+                "<rootDir>/src/main/shared/assetTransformer.js", // mock imports of static files
         "^.+\\.(ts)x?$": "ts-jest",
         "^.+\\.js$": "babel-jest",
     },
