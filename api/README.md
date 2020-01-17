@@ -13,7 +13,8 @@ https://github.com/vimc/montagu-ci#configuring-docker-clients-to-use-the-registr
 
 Start the dependencies (the database and orderly web) by navigating to the `src` folder and running
 
-    ./gradlew :startDependencies
+    ./gradlew :startDatabase
+    ./gradlew :startOrderlyWeb
 
 Run the app
 

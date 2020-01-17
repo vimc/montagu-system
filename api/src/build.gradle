@@ -65,7 +65,7 @@ task loadPropertiesTask() {
     }
 }
 
-task startDependencies(type: Exec, dependsOn: ':loadPropertiesTask') {
+task startDatabase(type: Exec, dependsOn: ':loadPropertiesTask') {
     doFirst {
         String dbVersion = file("config/db_version").text
         environment([
@@ -75,11 +75,19 @@ task startDependencies(type: Exec, dependsOn: ':loadPropertiesTask') {
                 'ANNEX_PORT': rootProject.ext.props.get('testannex_port')
         ])
     }
-    commandLine 'bash', '../scripts/start-dependencies.sh'
+    commandLine 'bash', '../scripts/start-database.sh'
 }
 
-task stopDependencies(type: Exec) {
-    commandLine 'bash', '../scripts/stop-dependencies.sh'
+task startOrderlyWeb(type: Exec) {
+    commandLine 'bash', '../scripts/start-orderly-web.sh'
+}
+
+task stopDatabases(type: Exec) {
+    commandLine 'bash', '../scripts/stop-databases.sh'
+}
+
+task stopOrderlyWeb(type: Exec) {
+    commandLine 'bash', '../scripts/stop-orderly-web.sh'
 }
 
 subprojects {
