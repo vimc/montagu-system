@@ -82,8 +82,8 @@ task startOrderlyWeb(type: Exec) {
     commandLine 'bash', '../scripts/start-orderly-web.sh'
 }
 
-task stopDatabases(type: Exec) {
-    commandLine 'bash', '../scripts/stop-databases.sh'
+task stopDatabase(type: Exec) {
+    commandLine 'bash', '../scripts/stop-database.sh'
 }
 
 task stopOrderlyWeb(type: Exec) {
