@@ -1,5 +1,5 @@
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import * as React from "react";
 import {
     TouchstoneDetails,
@@ -17,7 +17,7 @@ describe("TouchstoneDetails", () => {
         };
         const store = createMockAdminStore({ touchstones: touchstones});
         const rendered = shallow(<TouchstoneDetails />, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement)).to.have.length(1);
+        expect(rendered.find(LoadingElement)).toHaveLength(1);
     });
 
     it("renders content if current touchstone", () => {
@@ -26,6 +26,6 @@ describe("TouchstoneDetails", () => {
         };
         const store = createMockAdminStore({ touchstones: touchstones});
         const rendered = shallow(<TouchstoneDetails />, {context: {store}}).dive();
-        expect(rendered.find(TouchstoneDetailsComponent)).to.have.length(1);
+        expect(rendered.find(TouchstoneDetailsComponent)).toHaveLength(1);
     });
 });

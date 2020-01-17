@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import { runParametersReducer, runParametersInitialState } from "../../../main/contrib/reducers/runParametersReducer";
 import {
@@ -26,35 +26,35 @@ describe('Run Parameters reducer tests', () => {
         expect(runParametersReducer(undefined, {
             type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED,
             data: [testModelRunParametersSet]
-        })).to.eql({...runParametersInitialState, sets: [testModelRunParametersSet]});
+        })).toEqual({...runParametersInitialState, sets: [testModelRunParametersSet]});
     });
 
     it('sets empty fetched model run parameters set', () => {
         expect(runParametersReducer(undefined, {
             type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED,
             data: null
-        })).to.eql(runParametersInitialState);
+        })).toEqual(runParametersInitialState);
     });
 
     it('sets upload status in progress', () => {
         expect(runParametersReducer(undefined, {
             type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
             data: testModelRunParametersInProgress
-        })).to.eql({...runParametersInitialState, uploadStatus: {status: "in_progress", errors: null}});
+        })).toEqual({...runParametersInitialState, uploadStatus: {status: "in_progress", errors: null}});
     });
 
     it('sets upload status completed no errors', () => {
         expect(runParametersReducer(undefined, {
             type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
             data: testModelRunParametersCompletedNoErrors
-        })).to.eql({...runParametersInitialState, uploadStatus: {status: "completed", errors: null}});
+        })).toEqual({...runParametersInitialState, uploadStatus: {status: "completed", errors: null}});
     });
 
     it('sets upload status completed with errors', () => {
         expect(runParametersReducer(undefined, {
             type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS,
             data: testModelRunParametersCompletedWithErrors
-        })).to.eql({...runParametersInitialState, uploadStatus: {status: "completed", errors: [new Error('test')]}});
+        })).toEqual({...runParametersInitialState, uploadStatus: {status: "completed", errors: [new Error('test')]}});
     });
 
 });

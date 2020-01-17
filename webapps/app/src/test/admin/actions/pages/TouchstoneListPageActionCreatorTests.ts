@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import {createMockAdminStore} from "../../../mocks/mockStore";
 import {touchstoneListPageActionCreators} from "../../../../main/admin/actions/pages/TouchstoneListPageActionCreators";
 import {Sandbox} from "../../../Sandbox";
@@ -16,23 +16,23 @@ describe("touchstoneListPageActionCreators", () => {
         const store = createMockAdminStore();
         await store.dispatch(touchstoneListPageActionCreators.loadData());
 
-        expect(getAllTouchstones.called).to.be.true;
+        expect(getAllTouchstones.called).toBe(true);
     });
 
     it("creates breadcrumbs", () => {
 
         const result = touchstoneListPageActionCreators.createBreadcrumb();
 
-        expect(result.urlFragment).to.eq("touchstones/");
-        expect(result.name).to.eq("Touchstones");
+        expect(result.urlFragment).toEqual("touchstones/");
+        expect(result.name).toEqual("Touchstones");
     });
 
     it("has MainMenu as parent", () => {
 
-        expect(touchstoneListPageActionCreators.parent).to.eq(mainMenuPageActionCreators)
+        expect(touchstoneListPageActionCreators.parent).toEqual(mainMenuPageActionCreators)
     });
 
     it("creates title", () => {
-        expect(touchstoneListPageActionCreators.title()).to.eq("Touchstones")
+        expect(touchstoneListPageActionCreators.title()).toEqual("Touchstones")
     });
 });

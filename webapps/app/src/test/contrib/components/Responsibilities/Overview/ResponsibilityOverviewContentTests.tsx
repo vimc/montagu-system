@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow} from "enzyme";
-import { expect } from "chai";
+
 import { Store } from "redux";
 
 import "../../../../helper";
@@ -26,17 +26,17 @@ import {settings} from "../../../../../main/shared/Settings";
 
 describe("Responsibility Overview Content Component", () => {
 
-    const testTouchstone = mockTouchstoneVersion();
-    const testTouchstone2 = mockTouchstoneVersion({id: "rfp-1"});
-    const testCurrentGroup = mockModellingGroup();
-    const testResponsibilitiesSet = mockExtendedResponsibilitySet();
-    const testDiseaseId = "d-1";
+    const itTouchstone = mockTouchstoneVersion();
+    const itTouchstone2 = mockTouchstoneVersion({id: "rfp-1"});
+    const itCurrentGroup = mockModellingGroup();
+    const itResponsibilitiesSet = mockExtendedResponsibilitySet();
+    const itDiseaseId = "d-1";
 
     const state: RecursivePartial<ContribAppState> = {
-        touchstones: {currentTouchstoneVersion: testTouchstone},
-        groups: {currentUserGroup: testCurrentGroup},
-        diseases: {currentDiseaseId: testDiseaseId},
-        responsibilities: {responsibilitiesSet: testResponsibilitiesSet},
+        touchstones: {currentTouchstoneVersion: itTouchstone},
+        groups: {currentUserGroup: itCurrentGroup},
+        diseases: {currentDiseaseId: itDiseaseId},
+        responsibilities: {responsibilitiesSet: itResponsibilitiesSet},
         user: {signedConfidentialityAgreement: false}
     };
 
@@ -52,86 +52,89 @@ describe("Responsibility Overview Content Component", () => {
 
     it("renders on connect level", () => {
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}});
-        expect(rendered.props().modellingGroup).to.eql(testCurrentGroup);
-        expect(rendered.props().currentDiseaseId).to.eql(testDiseaseId);
-        expect(rendered.props().responsibilitySet).to.eql(testResponsibilitiesSet);
+        expect(rendered.props().modellingGroup).toEqual(itCurrentGroup);
+        expect(rendered.props().currentDiseaseId).toEqual(itDiseaseId);
+        expect(rendered.props().responsibilitySet).toEqual(itResponsibilitiesSet);
     });
 
     it("renders loading element if responsibilitiesSet is null", () => {
         const anotherState = {...state, responsibilities: {responsibilitiesSet: null as any}};
         store = createMockStore(anotherState);
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement).length).to.eql(1);
+        expect(rendered.find(LoadingElement).length).toEqual(1);
     });
 
-    it("does not render loading element if responsibilitiesSet is present", () => {
-        const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement).length).to.eql(0);
-    });
+    it(
+        "does not render loading element if responsibilitiesSet is present",
+        () => {
+            const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive();
+            expect(rendered.find(LoadingElement).length).toEqual(0);
+        }
+    );
 
     it("renders on confidentiality level, passes", () => {
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
             .dive().dive().dive().dive();
-        expect(rendered.find(ResponsibilitySetStatusMessage).length).to.eql(1);
+        expect(rendered.find(ResponsibilitySetStatusMessage).length).toEqual(1);
     });
 
     it("renders on confidentiality level, not passes", () => {
-        const anotherState = {...state, touchstones: {currentTouchstoneVersion: testTouchstone2}};
+        const anotherState = {...state, touchstones: {currentTouchstoneVersion: itTouchstone2}};
         store = createMockContribStore(anotherState);
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}})
             .dive().dive().dive().dive().dive().dive();
-        expect(rendered.find(ConfidentialityAgreementComponent).length).to.eql(1);
+        expect(rendered.find(ConfidentialityAgreementComponent).length).toEqual(1);
     });
 
     it("renders on component level", () => {
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
             .dive().dive().dive().dive();
-        expect(rendered.find(ResponsibilitySetStatusMessage).length).to.eql(1);
-        expect(rendered.find(ResponsibilitySetStatusMessage).props().status).to.eql(testResponsibilitiesSet.status);
+        expect(rendered.find(ResponsibilitySetStatusMessage).length).toEqual(1);
+        expect(rendered.find(ResponsibilitySetStatusMessage).props().status).toEqual(itResponsibilitiesSet.status);
         const responsibilityList = rendered.find(ResponsibilityList);
-        expect(responsibilityList.length).to.eql(1);
-        expect(responsibilityList.props().currentDiseaseId).to.eql(testDiseaseId);
-        expect(responsibilityList.props().modellingGroup).to.eql(testCurrentGroup);
-        expect(responsibilityList.props().responsibilitySet).to.eql(testResponsibilitiesSet);
+        expect(responsibilityList.length).toEqual(1);
+        expect(responsibilityList.props().currentDiseaseId).toEqual(itDiseaseId);
+        expect(responsibilityList.props().modellingGroup).toEqual(itCurrentGroup);
+        expect(responsibilityList.props().responsibilitySet).toEqual(itResponsibilitiesSet);
 
-        expect(rendered.find(ButtonLink).length).to.equal(3);
+        expect(rendered.find(ButtonLink).length).toEqual(3);
 
      });
 
     it("maps state to props", () => {
         const contribStateMock = mockContribState({
-            groups: {currentUserGroup: testCurrentGroup},
-            diseases: {currentDiseaseId: testDiseaseId},
-            responsibilities: {responsibilitiesSet: testResponsibilitiesSet},
-            touchstones: {currentTouchstoneVersion: testTouchstone}
+            groups: {currentUserGroup: itCurrentGroup},
+            diseases: {currentDiseaseId: itDiseaseId},
+            responsibilities: {responsibilitiesSet: itResponsibilitiesSet},
+            touchstones: {currentTouchstoneVersion: itTouchstone}
         });
         const props = mapStateToProps(contribStateMock);
-        expect(props.modellingGroup).to.eql(testCurrentGroup);
-        expect(props.currentDiseaseId).to.eql(testDiseaseId);
-        expect(props.responsibilitySet).to.eql(testResponsibilitiesSet);
+        expect(props.modellingGroup).toEqual(itCurrentGroup);
+        expect(props.currentDiseaseId).toEqual(itDiseaseId);
+        expect(props.responsibilitySet).toEqual(itResponsibilitiesSet);
     });
 
-    it("renders description", function(){
+    it("renders description", () => {
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
             .dive().dive().dive().dive();
-        expect(rendered.find(ResponsibilityOverviewDescription).length).is.equal(1);
+        expect(rendered.find(ResponsibilityOverviewDescription).length).toBe(1);
         expect(rendered.find(ResponsibilityOverviewDescription).props().currentTouchstoneId)
-            .is.equal(testTouchstone.id);
-    })
+            .toBe(itTouchstone.id);
+    });
 
-    it("renders parameters section when stochastic", function(){
+    it("renders parameters section when stochastic", () => {
         const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => true );
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
             .dive().dive().dive().dive();
-        expect(rendered.find("#params-section").length).is.equal(1);
+        expect(rendered.find("#params-section").length).toBe(1);
 
     })
 
-    it("does not render parameters section when not stochastic", function(){
+    it("does not render parameters section when not stochastic", () => {
         const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => false);
         const rendered = shallow(<ResponsibilityOverviewContent/>, {context: {store}}).dive().dive()
             .dive().dive().dive().dive();
-        expect(rendered.find("#params-section").length).is.equal(0);
+        expect(rendered.find("#params-section").length).toBe(0);
 
     })
 });

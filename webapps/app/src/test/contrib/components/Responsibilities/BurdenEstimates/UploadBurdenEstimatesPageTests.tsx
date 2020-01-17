@@ -1,6 +1,6 @@
 import * as React from "react";
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import {Store} from "redux";
 
 import "../../../../helper";
@@ -46,11 +46,11 @@ describe("UploadBurdenEstimatesPage", () => {
         />, {context: {store}}).dive().dive();
 
         // Expectations
-        expect(onLoadStub.called).is.equal(true);
+        expect(onLoadStub.called).toBe(true);
         const pageArticle = rendered.find(PageArticle);
-        expect(pageArticle.find(UploadBurdenEstimatesContent)).to.have.length(1);
+        expect(pageArticle.find(UploadBurdenEstimatesContent)).toHaveLength(1);
         const titleComponent = pageArticle.dive().find(ResponsibilitiesPageTitle);
-        expect(titleComponent.props().title).is.equal("Upload central burden estimates");
+        expect(titleComponent.props().title).toBe("Upload central burden estimates");
     });
 });
 

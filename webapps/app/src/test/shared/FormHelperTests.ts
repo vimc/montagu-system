@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 import { justState } from "../../main/shared/FormHelpers";
 
 describe("FormHelpers", () => {
@@ -7,7 +7,7 @@ describe("FormHelpers", () => {
             foo: "bar",
             errors: true
         };
-        expect(justState(state)).to.eql({
+        expect(justState(state)).toEqual({
             foo: "bar"
         })
     });

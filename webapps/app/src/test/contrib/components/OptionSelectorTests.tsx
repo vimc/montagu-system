@@ -1,5 +1,5 @@
 import * as React from "react";
-import { expect } from "chai";
+
 import { shallow } from "enzyme";
 import * as sinon from "sinon";
 
@@ -19,9 +19,9 @@ describe('OptionSelector', () => {
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption=""
                                                  onChange={ callback }  required={false} name={"fruit"}/>);
         const children = rendered.find("option");
-        expect(children).to.have.length(2);
-        expect(children.at(0).prop("value")).to.equal("apple");
-        expect(children.at(0).text()).to.equal("Apple");
+        expect(children).toHaveLength(2);
+        expect(children.at(0).prop("value")).toEqual("apple");
+        expect(children.at(0).text()).toEqual("Apple");
     });
 
     it("renders default option", () => {
@@ -29,9 +29,9 @@ describe('OptionSelector', () => {
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
                                                  onChange={ callback } required={false} name={"fruit"}/>);
         const children = rendered.find("option");
-        expect(children).to.have.length(3);
-        expect(children.at(0).prop("value")).to.equal("");
-        expect(children.at(0).text()).to.equal("Fruit");
+        expect(children).toHaveLength(3);
+        expect(children.at(0).prop("value")).toEqual("");
+        expect(children.at(0).text()).toEqual("Fruit");
     });
 
     it("adds required attribute", () => {
@@ -39,7 +39,7 @@ describe('OptionSelector', () => {
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
                                                  onChange={ callback } required={true} name={"fruit"}/>);
 
-        expect(rendered.find("select").prop("required")).to.be.true;
+        expect(rendered.find("select").prop("required")).toBe(true);
     });
 
     it("does not add required attribute", () => {
@@ -47,7 +47,7 @@ describe('OptionSelector', () => {
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
                                                  onChange={ callback } required={false} name={"fruit"}/>);
 
-        expect(rendered.find("select").prop("required")).not.to.be.true;
+        expect(rendered.find("select").prop("required")).not.toBe(true);
     });
 
     it("adds name attribute", () => {
@@ -55,7 +55,7 @@ describe('OptionSelector', () => {
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
                                                  onChange={ callback } required={false} name={"fruit"}/>);
 
-        expect(rendered.find("select").prop("name")).to.equal("fruit");
+        expect(rendered.find("select").prop("name")).toEqual("fruit");
     });
 
     it("invokes the callback when an option is selected", () => {
@@ -69,7 +69,7 @@ describe('OptionSelector', () => {
             preventDefault: () => {
             }
         });
-        expect(callback.called).to.be.equal(true, "Expected callback to be called");
-        expect(callback.args[ 0 ][ 0 ]).to.equal("test");
+        expect(callback.called).toBe(true);
+        expect(callback.args[ 0 ][ 0 ]).toEqual("test");
     });
 });

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { expect } from "chai";
+
 import { Sandbox } from "../../../../Sandbox";
 import {mockMatch} from "../../../../mocks/mocks";
 
@@ -25,9 +25,9 @@ describe("UserListPageTests", () => {
             {context: {store}}).dive();
 
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).is.equal(true);
-        expect(pageArticle.props().title).is.equal(UsersListPageComponent.title);
-        expect(pageArticle.find(UsersList).length).is.equal(1);
-        expect(pageArticle.find(CreateUserSection).length).is.equal(1);
+        expect(onLoadStub.called).toBe(true);
+        expect(pageArticle.props().title).toBe(UsersListPageComponent.title);
+        expect(pageArticle.find(UsersList).length).toBe(1);
+        expect(pageArticle.find(CreateUserSection).length).toBe(1);
     });
 });

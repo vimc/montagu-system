@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import {Sandbox} from "../../../../Sandbox";
 import {TouchstoneListPage} from "../../../../../main/admin/components/Touchstones/List/TouchstoneListPage";
 import * as React from "react";
@@ -14,7 +14,7 @@ describe("TouchstoneListPage", () => {
    it("calls onLoad when loaded", () => {
        const onLoadStub = sandbox.setStubReduxAction(touchstoneListPageActionCreators, "onLoad");
        const rendered = shallowRenderPage(<TouchstoneListPage {...mockPageProperties()} />);
-       expect(rendered.find(PageArticle).find(TouchstoneList)).to.have.length(1);
-       expect(onLoadStub.called).is.equal(true);
+       expect(rendered.find(PageArticle).find(TouchstoneList)).toHaveLength(1);
+       expect(onLoadStub.called).toBe(true);
    });
 });

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { expect } from "chai";
+
 
 import "../../../../helper";
 import { Sandbox } from "../../../../Sandbox";
@@ -43,7 +43,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}});
 
         const props = rendered.props();
-        expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
+        expect(props.touchstoneVersion.name).toBe(testTouchstone.name);
     });
 
     it("renders component on component level for latest content", () => {
@@ -60,10 +60,10 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
-        expect(onLoadStub.called).is.equal(true);
+        expect(onLoadStub.called).toBe(true);
 
         const content = rendered.find(ResponsibilityGuidanceModelInputsContentLatest);
-        expect(content.getElements().length).is.equal(1);
+        expect(content.getElements().length).toBe(1);
     });
 
     it("renders component for finished touchstone", () => {
@@ -80,10 +80,10 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
-        expect(onLoadStub.called).is.equal(true);
+        expect(onLoadStub.called).toBe(true);
 
         const content = rendered.find(ResponsibilityGuidanceTouchstoneNotOpenContent);
-        expect(content.getElements().length).is.equal(1);
+        expect(content.getElements().length).toBe(1);
 
     });
 
@@ -101,10 +101,10 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
-        expect(onLoadStub.called).is.equal(true);
+        expect(onLoadStub.called).toBe(true);
 
         const content = rendered.find(ResponsibilityGuidanceModelInputsContent2017);
-        expect(content.getElements().length).is.equal(1);
+        expect(content.getElements().length).toBe(1);
 
     });
 
@@ -122,10 +122,10 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
-        expect(onLoadStub.called).is.equal(true);
+        expect(onLoadStub.called).toBe(true);
 
         const link = rendered.find("a");
-        expect(link.prop("href")).contains("guidance-2019-inputs.pdf");
+        expect(link.prop("href")).toContain("guidance-2019-inputs.pdf");
     });
 
 });

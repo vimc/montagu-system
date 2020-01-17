@@ -1,5 +1,5 @@
 import * as React from "react";
-import { expect } from "chai";
+
 import { shallow } from "enzyme";
 
 import "../../../../helper";
@@ -29,7 +29,7 @@ describe("Modelling Groups List Content Component tests", () => {
             };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupsListContent/>, {context: {store}});
-            expect(rendered.props().groups).to.eql([testGroup1]);
+            expect(rendered.props().groups).toEqual([testGroup1]);
         });
 
         it("renders on connect level, passes null as groups", () => {
@@ -38,7 +38,7 @@ describe("Modelling Groups List Content Component tests", () => {
             };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupsListContent/>, {context: {store}});
-            expect(rendered.props().groups).to.eql([]);
+            expect(rendered.props().groups).toEqual([]);
         });
 
         it("renders on connect level, check if groups are sorted correctly", () => {
@@ -47,7 +47,7 @@ describe("Modelling Groups List Content Component tests", () => {
             };
             const store = createMockStore(testState);
             const rendered = shallow(<ModellingGroupsListContent/>, {context: {store}});
-            expect(rendered.props().groups).to.eql([testGroup2, testGroup1, testGroup3]);
+            expect(rendered.props().groups).toEqual([testGroup2, testGroup1, testGroup3]);
         })
 
     });
@@ -62,9 +62,9 @@ describe("Modelling Groups List Content Component tests", () => {
 
             const rendered = shallow(<ModellingGroupsListContentComponent groups={ groups } />);
             const items = rendered.find(ModellingGroupListItem);
-            expect(items).to.have.length(2);
-            expect(items.at(0).prop("description")).to.equal("b");
-            expect(items.at(1).prop("description")).to.equal("a");
+            expect(items).toHaveLength(2);
+            expect(items.at(0).prop("description")).toEqual("b");
+            expect(items.at(1).prop("description")).toEqual("a");
         });
     });
 });

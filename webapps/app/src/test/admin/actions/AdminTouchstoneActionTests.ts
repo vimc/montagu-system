@@ -9,7 +9,8 @@ import {
 import {touchstonesActionCreators} from "../../../main/shared/actions/touchstoneActionCreators";
 import {mockTouchstone} from "../../mocks/mockModels";
 import {createMockAdminStore} from "../../mocks/mockStore";
-import {expect} from "chai";
+import DoneCallback = jest.DoneCallback;
+
 
 describe("Admin touchstone action tests", () => {
     const sandbox = new Sandbox();
@@ -36,38 +37,48 @@ describe("Admin touchstone action tests", () => {
         const touchstone = mockTouchstone({id: "tId"});
         verifyActionThatCallsService(done, {
             store: createMockAdminStore({touchstones: {touchstones: []}}),
-            mockServices: () => {}, // right now this isn't wired up to a service
+            mockServices: () => {
+            }, // right now this isn't wired up to a service
             callActionCreator: () => adminTouchstoneActionCreators.createTouchstone(touchstone),
             expectTheseActions: [{type: TouchstoneTypes.NEW_TOUCHSTONE_CREATED, data: {...touchstone, versions: []}}]
         })
     });
 
-    it("returns error if duplicate touchstone id is added", (done: DoneCallback) => {
+    it("returns error if duplicate touchstone id is added",
+        (done: DoneCallback) => {
 
-        const touchstone = mockTouchstone({id: "tId"});
-        const store = createMockAdminStore({touchstones: {touchstones: [touchstone]}});
+            const touchstone = mockTouchstone({id: "tId"});
+            const store = createMockAdminStore({touchstones: {touchstones: [touchstone]}});
 
-        store.dispatch(adminTouchstoneActionCreators.createTouchstone(touchstone));
+            store.dispatch(adminTouchstoneActionCreators.createTouchstone(touchstone));
 
-        setTimeout(() => {
-            const actions = store.getActions();
-            expect(actions).to.deep.eq([{type: TouchstoneTypes.SET_CREATE_TOUCHSTONE_ERROR,
-                data: [{code: "error", message: "Touchstone with id tId already exists. Please choose a unique id."}]}]);
-            done();
-        });
-    });
+            setTimeout(() => {
+                const actions = store.getActions();
+                expect(actions).toEqual([{
+                    type: TouchstoneTypes.SET_CREATE_TOUCHSTONE_ERROR,
+                    data: [{
+                        code: "error",
+                        message: "Touchstone with id tId already exists. Please choose a unique id."
+                    }]
+                }]);
+                done();
+            });
+        }
+    );
 
     it("sets current touchstone if exists", async () => {
         const touchstone = mockTouchstone({id: "tId"});
         const options = [touchstone, mockTouchstone()];
-        expect(touchstonesActionCreators.setCurrentTouchstone("tId", options)).to.eql({
+        expect(touchstonesActionCreators.setCurrentTouchstone("tId", options)).toEqual({
             type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE,
             data: touchstone
         });
     });
 
-    it("setCurrentTouchstone throws exception if touchstone does not exist", async () => {
-        const options = [mockTouchstone(), mockTouchstone()];
-        expect(() => touchstonesActionCreators.setCurrentTouchstone("tId", options)).to.throw;
-    });
+    it("setCurrentTouchstone throws exception if touchstone does not exist",
+        async () => {
+            const options = [mockTouchstone(), mockTouchstone()];
+            expect(() => touchstonesActionCreators.setCurrentTouchstone("tId", options)).toThrow();
+        }
+    );
 });

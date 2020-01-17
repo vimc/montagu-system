@@ -1,7 +1,6 @@
 import {mockOnetimeTokenState} from "../../mocks/mockStates";
 import {onetimeTokenReducer} from "../../../main/shared/reducers/oneTimeTokenReducer";
 import {OnetimeTokenActionType} from "../../../main/shared/actionTypes/OnetimeTokenActions";
-import {expect} from "chai"
 
 describe('OnetimeToken reducer tests', () => {
 
@@ -16,8 +15,8 @@ describe('OnetimeToken reducer tests', () => {
             }
         });
 
-        expect(result.tokens["url"]).to.eq(fakeOldToken);
-        expect(result.tokens["some/url"]).to.eq(fakeNewToken);
+        expect(result.tokens["url"]).toEqual(fakeOldToken);
+        expect(result.tokens["some/url"]).toEqual(fakeNewToken);
 
     });
 
@@ -30,7 +29,7 @@ describe('OnetimeToken reducer tests', () => {
             type: OnetimeTokenActionType.TOKEN_INVALIDATED, data: "some/url"
         });
 
-        expect(result.tokens["some/url"]).to.be.null;
+        expect(result.tokens["some/url"]).toBe(null);
 
     });
 });

@@ -2,7 +2,7 @@ import * as React from "react";
 import {createMemoryHistory} from 'history';
 
 import {addCoverageData, addCoverageSetsForScenario, IntegrationTestSuite, TestService} from "./IntegrationTest";
-import {expect} from "chai";
+
 import {shallow} from "enzyme";
 import {Client, QueryResult} from "pg";
 import {
@@ -34,28 +34,28 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         return createAdminStore(createMemoryHistory());
     }
 
-    addTestsToMocha() {
+    runTests() {
 
         it("can log out", async () => {
             const result = await (new AuthService(this.store.dispatch, this.store.getState)).logOutOfAPI();
-            expect(result).to.be.eq("OK");
+            expect(result).toBe("OK");
         });
 
         it("forgot password", async () => {
             const result = await (new AuthService(this.store.dispatch, this.store.getState)).forgotPassword("test@test.com");
-            expect(result).to.be.eq("OK");
+            expect(result).toBe("OK");
         });
 
         it("can get current user details", async () => {
             const result = await (new AuthService(this.store.dispatch, this.store.getState)).getCurrentUser();
-            expect(result.username).to.be.eq("test.user");
-            expect(result.permissions).to.include("*/can-login");
+            expect(result.username).toBe("test.user");
+            expect(result.permissions).toContain("*/can-login");
         });
 
         it("can fetch groups", async () => {
             await addGroups(this.db);
             const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState)).getAllGroups();
-            expect(result).to.eql([
+            expect(result).toEqual([
                 {id: "g1", description: "Group 1"},
                 {id: "g2", description: "Group 2"}
             ]);
@@ -64,7 +64,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         it("can fetch models", async () => {
             await addGroups(this.db);
             const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState)).getAllModels();
-            expect(result).to.eql([
+            expect(result).toEqual([
                 {
                     citation: "Citation",
                     description: "A model",
@@ -97,7 +97,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         it("can fetch expectations", async () => {
             await addResponsibilities(this.db);
             const result = await (new ExpectationsService(this.store.dispatch, this.store.getState)).getAllExpectations();
-            expect(result).to.eql([{
+            expect(result).toEqual([{
                 touchstone_version: touchstoneVersionId,
                 modelling_group: "g1",
                 disease: "yf",
@@ -125,7 +125,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         it("can fetch group details", async () => {
             await addGroups(this.db);
             const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState)).getGroupDetails('g1');
-            expect(result).to.eql({
+            expect(result).toEqual({
                 id: "g1",
                 description: "Group 1",
                 members: ['bob'],
@@ -144,55 +144,55 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             await addGroups(this.db);
             const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
                 .addMember("g1", "test.user");
-            expect(result).to.equal("OK");
+            expect(result).toEqual("OK");
             const groupDetails = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
                 .getGroupDetails('g1');
-            expect(groupDetails.members.indexOf("test.user") > -1).to.be.true;
+            expect(groupDetails.members.indexOf("test.user") > -1).toBe(true);
         });
 
         it("can remove member from a group", async () => {
             await addGroups(this.db);
             const result = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
                 .removeMember("g1", "bob");
-            expect(result).to.equal("OK");
+            expect(result).toEqual("OK");
             const groupDetails = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
                 .getGroupDetails('g1');
-            expect(groupDetails.members.indexOf("bob") === -1).to.be.true;
+            expect(groupDetails.members.indexOf("bob") === -1).toBe(true);
         });
 
         it("can add a global role to a user", async () => {
             await addUsers(this.db);
             const result = await (new UsersService(this.store.dispatch, this.store.getState))
                 .addGlobalRoleToUser("bob", "reports-reader");
-            expect(result).to.equal("OK");
+            expect(result).toEqual("OK");
 
             const users = await (new UsersService(this.store.dispatch, this.store.getState))
                 .getAllUsers();
 
             const user = users.find((u: User) => u.username == "bob");
             expect(user.roles.map((r: RoleAssignment) => r.name))
-                .to.have.members(['reports-reader', 'member', 'user-manager'])
+                .toEqual(['reports-reader', 'member', 'user-manager'])
         });
 
         it("can remove role from a user", async () => {
             await addUsers(this.db);
             const result = await (new UsersService(this.store.dispatch, this.store.getState))
                 .removeRoleFromUser("bob", "user-manager", null, null);
-            expect(result).to.equal("OK");
+            expect(result).toEqual("OK");
 
             const users = await (new UsersService(this.store.dispatch, this.store.getState))
                 .getAllUsers();
             const user = users.find((u: User) => u.username == "bob");
 
             expect(user.roles.map((r: RoleAssignment) => r.name))
-                .to.have.members(['member'])
+                .toEqual(['member'])
         });
 
         it("can fetch users", async () => {
             await addUsers(this.db);
             const users: User[] = await (new UsersService(this.store.dispatch, this.store.getState)).getAllUsers();
             const bob: User = users.find(x => x.username == 'bob');
-            expect(bob).to.eql({
+            expect(bob).toEqual({
                 username: "bob",
                 name: "Bob Jones",
                 email: "bob@example.com",
@@ -208,7 +208,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const roles: string[] = await (new UsersService(this.store.dispatch, this.store.getState))
                 .getGlobalRoles();
 
-            expect(roles).to.have.length(12)
+            expect(roles).toHaveLength(12)
         });
 
         it("can create a user", async () => {
@@ -217,9 +217,9 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const result = await usersService
                 .createUser("new user", "user@example.com", "new.user");
 
-            expect(result).to.match(new RegExp("/v1/users/new.user/$"));
+            expect(result).toMatch(new RegExp("/v1/users/new.user/$"));
             const allUsers = await usersService.getAllUsers();
-            expect(allUsers.map((u: User) => u.username).indexOf("new.user") > -1).to.be.true;
+            expect(allUsers.map((u: User) => u.username).indexOf("new.user") > -1).toBe(true);
         });
 
 
@@ -229,9 +229,9 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const result = await groupService
                 .createGroup(mockModellingGroupCreation({id: "test-group"}));
 
-            expect(result).to.match(new RegExp("/v1/modelling-group/test-group/$"));
+            expect(result).toMatch(new RegExp("/v1/modelling-group/test-group/$"));
             const allGroups = await groupService.getAllGroups();
-            expect(allGroups.map((g: ModellingGroup) => g.id).indexOf("test-group") > -1).to.be.true;
+            expect(allGroups.map((g: ModellingGroup) => g.id).indexOf("test-group") > -1).toBe(true);
         });
 
         it("can get responsibilities for touchstone", async () => {
@@ -241,14 +241,14 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const result = await touchstoneService
                 .getResponsibilitiesForTouchstoneVersion(touchstoneVersionId);
 
-            expect(result).to.eql(expectedResponsibilitySets)
+            expect(result).toEqual(expectedResponsibilitySets)
         });
 
         it("can get scenarios for touchstone", async () => {
             await addResponsibilities(this.db);
             const touchstoneService = new TouchstonesService(this.store.dispatch, this.store.getState);
             const result = await touchstoneService.getScenariosForTouchstoneVersion(touchstoneVersionId);
-            expect(result).to.eql([
+            expect(result).toEqual([
                 {
                     "coverage_sets": [],
                     "scenario": {
@@ -289,10 +289,10 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const response = await new TestService(this.store.dispatch, this.store.getState)
                 .getAnyUrl(href);
 
-            expect(response.status).to.equal(200);
+            expect(response.status).toEqual(200);
             const result = await response.text();
 
-            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage,gender\n"
+            expect(result).toEqual("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage,gender\n"
                 + "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1970,1,2,1-2,1000,1000,both\n")
         });
 
@@ -322,10 +322,10 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const response = await new TestService(this.store.dispatch, this.store.getState)
                 .getAnyUrl(href);
 
-            expect(response.status).to.equal(200);
+            expect(response.status).toEqual(200);
             const result = await response.text();
 
-            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,age_first,age_last,age_range_verbatim,gender,coverage_1970,target_1970\n"
+            expect(result).toEqual("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,age_first,age_last,age_range_verbatim,gender,coverage_1970,target_1970\n"
                 + "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1,2,1-2,both,1000,1000\n")
         });
 

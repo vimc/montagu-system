@@ -1,6 +1,6 @@
 import * as React from "react";
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import {Store} from "redux";
 
 import "../../../../helper";
@@ -75,12 +75,12 @@ describe("UploadBurdenEstimatesContent", () => {
             responsibility: testResponsibility,
             canUpload: true
         };
-        expect(rendered.props()).to.eql(expectedProps)
+        expect(rendered.props()).toEqual(expectedProps)
     });
 
     it("renders on branch level, passes", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive();
-        expect(rendered.find(UploadBurdenEstimatesContentComponent).length).to.eql(1);
+        expect(rendered.find(UploadBurdenEstimatesContentComponent).length).toEqual(1);
     });
 
     it("renders on branch level, not passes", () => {
@@ -89,85 +89,97 @@ describe("UploadBurdenEstimatesContent", () => {
             responsibilities: {...testState.responsibilities, currentResponsibility: null}
         });
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement).length).to.eql(1);
+        expect(rendered.find(LoadingElement).length).toEqual(1);
     });
 
     it("renders touchstone and scenario message", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const subheading = rendered.find("h5").at(0);
-        expect(subheading.find('span').at(0).text(), testTouchstone.description);
-        expect(subheading.find('span').at(1).text(), testScenario.description);
+        expect(subheading.find('span').at(0).text().trim()).toBe(testTouchstone.description);
+        expect(subheading.find('span').at(1).text().trim()).toBe(testScenario.description);
     });
 
     it("renders link to template download page", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const link = rendered.find(InternalLink);
-        expect(link.prop("href")).to.eql(`/${testGroup.id}/responsibilities/${testTouchstone.id}/templates/`);
+        expect(link.prop("href")).toEqual(`/${testGroup.id}/responsibilities/${testTouchstone.id}/templates/`);
     });
 
-    it("renders diagnostic section if latest burden estimate set exists and is populated", () => {
-        const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-        const section = rendered.find(DiagnosticSection);
-        expect(section).to.have.lengthOf(1);
-    });
+    it(
+        "renders diagnostic section if latest burden estimate set exists and is populated",
+        () => {
+            const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
+            const section = rendered.find(DiagnosticSection);
+            expect(section).toHaveLength(1);
+        }
+    );
 
-    it("does not render diagnostic section if no latest burden estimate set", () => {
-        store = createMockContribStore({
-            ...testState,
-            responsibilities: {
-                ...testState.responsibilities, currentResponsibility: {
-                    ...testResponsibility,
-                    current_estimate_set: null
+    it(
+        "does not render diagnostic section if no latest burden estimate set",
+        () => {
+            store = createMockContribStore({
+                ...testState,
+                responsibilities: {
+                    ...testState.responsibilities, currentResponsibility: {
+                        ...testResponsibility,
+                        current_estimate_set: null
+                    }
                 }
-            }
-        });
+            });
 
-        const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-        const section = rendered.find(DiagnosticSection);
-        expect(section).to.have.lengthOf(0);
-    });
+            const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
+            const section = rendered.find(DiagnosticSection);
+            expect(section).toHaveLength(0);
+        }
+    );
 
-    it("does not render diagnostic section if latest burden estimate set is empty", () => {
-        store = createMockContribStore({
-            ...testState,
-            responsibilities: {
-                ...testState.responsibilities, currentResponsibility: {
-                    ...testResponsibility,
-                    current_estimate_set: {...testResponsibility.current_estimate_set, status: "empty"}
+    it(
+        "does not render diagnostic section if latest burden estimate set is empty",
+        () => {
+            store = createMockContribStore({
+                ...testState,
+                responsibilities: {
+                    ...testState.responsibilities, currentResponsibility: {
+                        ...testResponsibility,
+                        current_estimate_set: {...testResponsibility.current_estimate_set, status: "empty"}
+                    }
                 }
-            }
-        });
+            });
 
-        const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-        const section = rendered.find(DiagnosticSection);
-        expect(section).to.have.lengthOf(0);
-    });
+            const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
+            const section = rendered.find(DiagnosticSection);
+            expect(section).toHaveLength(0);
+        }
+    );
 
-    it("renders on component level, passes right params to CurrentEstimateSetSummary", () => {
-        const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
-        const currentEstimateSetSummary = rendered.find(CurrentEstimateSetSummary);
-        const expectedProps: CurrentEstimateSetSummaryProps = {
-            groupId: testGroup.id,
-            scenarioId: testScenario.id,
-            touchstoneId: testTouchstone.id,
-            canUpload: true,
-            estimateSet: testEstimateSet
-        };
-        expect(currentEstimateSetSummary.length).to.equal(1);
-        expect(currentEstimateSetSummary.props()).to.eql(expectedProps);
-    });
+    it(
+        "renders on component level, passes right params to CurrentEstimateSetSummary",
+        () => {
+            const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
+            const currentEstimateSetSummary = rendered.find(CurrentEstimateSetSummary);
+            const expectedProps: CurrentEstimateSetSummaryProps = {
+                groupId: testGroup.id,
+                scenarioId: testScenario.id,
+                touchstoneId: testTouchstone.id,
+                canUpload: true,
+                estimateSet: testEstimateSet
+            };
+            expect(currentEstimateSetSummary.length).toEqual(1);
+            expect(currentEstimateSetSummary.props()).toEqual(expectedProps);
+        }
+    );
 
     it("renders UploadEstimatesForm if canUpload is true", () => {
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const uploadBurdenEstimatesForm = rendered.find(UploadEstimatesForm);
-        expect(uploadBurdenEstimatesForm.length).to.equal(1);
+        expect(uploadBurdenEstimatesForm.length).toEqual(1);
 
         const expected: Partial<UploadEstimatesPublicProps> = {
             groupId: testGroup.id,
             scenarioId: testScenario.id,
             touchstoneId: testTouchstone.id
         };
-        expect(uploadBurdenEstimatesForm.props()).to.eql(expected);
+        expect(uploadBurdenEstimatesForm.props()).toEqual(expected);
     });
 
     it("does not render UploadEstimatesForm if canUpload is false", () => {
@@ -179,7 +191,7 @@ describe("UploadBurdenEstimatesContent", () => {
 
         const rendered = shallow(<UploadBurdenEstimatesContent/>, {context: {store}}).dive().dive();
         const uploadBurdenEstimatesForm = rendered.find(UploadEstimatesForm);
-        expect(uploadBurdenEstimatesForm.length).to.equal(0);
+        expect(uploadBurdenEstimatesForm.length).toEqual(0);
 
     });
 });

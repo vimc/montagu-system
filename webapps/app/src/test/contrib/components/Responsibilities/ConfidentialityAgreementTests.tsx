@@ -1,7 +1,6 @@
 import * as React from "react";
 import {Sandbox} from "../../../Sandbox";
 import {shallow} from "enzyme";
-import {expect} from "chai"
 import {Store} from "redux";
 
 import "../../../helper";
@@ -46,55 +45,58 @@ describe('Confidentiality Agreement Component tests', () => {
 
     it("renders on connect level", () => {
         const rendered = shallow(<TestComponent/>, {context: {store}});
-        expect(rendered.props().touchstoneId).to.equal("rfp-1");
-        expect(rendered.props().signed).to.equal(false);
-        expect(typeof rendered.props().signAgreement).to.equal("function");
+        expect(rendered.props().touchstoneId).toEqual("rfp-1");
+        expect(rendered.props().signed).toEqual(false);
+        expect(typeof rendered.props().signAgreement).toBe("function");
     });
 
     it("renders loading element if touchstone is rfp and signed is null", () => {
         const anotherState = {...testState, user: {signedConfidentialityAgreement: null as any}};
         store = createMockStore(anotherState);
         const rendered = shallow(<TestComponent/>, {context: {store}}).dive().dive().dive();
-        expect(rendered.find(LoadingElement).length).to.equal(1);
+        expect(rendered.find(LoadingElement).length).toBe(1);
     });
 
-    it("renders ConfidentialityAgreement if touchstone is rfp and not signed", () => {
-        const rendered = shallow(<TestComponent/>, {context: {store}}).dive().dive().dive().dive();
-        const agreement = rendered.find(ConfidentialityAgreementComponent);
-        expect(agreement.length).to.eql(1);
-        expect(agreement.props().touchstoneId).to.equal("rfp-1");
-        expect(agreement.props().signed).to.equal(false);
-        expect(typeof agreement.props().signAgreement).to.equal("function");
-    });
+    it(
+        "renders ConfidentialityAgreement if touchstone is rfp and not signed",
+        () => {
+            const rendered = shallow(<TestComponent/>, {context: {store}}).dive().dive().dive().dive();
+            const agreement = rendered.find(ConfidentialityAgreementComponent);
+            expect(agreement.length).toEqual(1);
+            expect(agreement.props().touchstoneId).toBe("rfp-1");
+            expect(agreement.props().signed).toBe(false);
+            expect(typeof agreement.props().signAgreement).toEqual("function");
+        }
+    );
 
     it("renders wrapped component if touchstone is not rfp", () => {
         const anotherState = {...testState, touchstones: {currentTouchstoneVersion: testTouchstone}};
         store = createMockContribStore(anotherState);
         const rendered = shallow(<TestComponent/>, {context: {store}}).dive().dive().dive().dive();
-        expect(rendered.find('div').text()).to.equal("Test");
+        expect(rendered.find('div').text()).toEqual("Test");
     });
 
     it("renders wrapped component if signed is true", () => {
         const anotherState = {...testState, user: {signedConfidentialityAgreement: true}};
         store = createMockContribStore(anotherState);
         const rendered = shallow(<TestComponent/>, {context: {store}}).dive().dive().dive().dive();
-        expect(rendered.find('div').text()).to.equal("Test");
+        expect(rendered.find('div').text()).toBe("Test");
     });
 
     it("renders checkbox if touchstone is rfp and signed is false", () => {
         const rendered = shallow(<TestComponent/>, {context: {store}}).dive().dive().dive().dive().dive();
-        expect(rendered.find('input[type="checkbox"]')).to.have.lengthOf(1);
+        expect(rendered.find('input[type="checkbox"]')).toHaveLength(1);
     });
 
     it("renders submit button if input checked", () => {
         const rendered = shallow(<TestComponent/>, {context: {store}}).dive().dive().dive().dive().dive();
         rendered.find('input[type="checkbox"]').simulate("change", {target: {checked: true}});
-        expect(rendered.find("button")).to.have.lengthOf(1);
+        expect(rendered.find("button")).toHaveLength(1);
     });
 
     it("does not renders submit button if input not checked", () => {
         const rendered = shallow(<TestComponent/>, {context: {store}}).dive().dive().dive().dive().dive();
-        expect(rendered.find("button")).to.have.lengthOf(0);
+        expect(rendered.find("button")).toHaveLength(0);
     });
 
     it("dispatches signConfidentialityAgreement on submit", () => {
@@ -105,7 +107,7 @@ describe('Confidentiality Agreement Component tests', () => {
         rendered.setState({checked: true});
         rendered.find("button").simulate("click");
 
-        expect(signStub.called).to.be.true;
+        expect(signStub.called).toBe(true);
     });
 
     it("dispatches getConfidentialityAgreement onMount", () => {
@@ -113,7 +115,7 @@ describe('Confidentiality Agreement Component tests', () => {
         shallow(<TestComponent touchstoneId={"rfp1"}/>,
             {context: {store}}).dive().dive();
 
-        expect(getStub.called).to.be.true;
+        expect(getStub.called).toBe(true);
     });
 
 });

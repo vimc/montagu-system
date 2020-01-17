@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import {
     adminTouchstoneReducer,
     adminTouchstonesInitialState, AdminTouchstoneState
@@ -17,7 +17,7 @@ describe("adminTouchstoneReducer", () => {
             ...adminTouchstonesInitialState,
             touchstones: data
         };
-        expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
+        expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
     });
 
     it("sets current touchstone", () => {
@@ -30,7 +30,7 @@ describe("adminTouchstoneReducer", () => {
             ...adminTouchstonesInitialState,
             currentTouchstone: data
         };
-        expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
+        expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
     });
 
     it("sets create touchstone errors", () => {
@@ -43,7 +43,7 @@ describe("adminTouchstoneReducer", () => {
             ...adminTouchstonesInitialState,
             createTouchstoneErrors: errors
         };
-        expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
+        expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
     });
 
     it("adds new touchstone", () => {
@@ -56,6 +56,6 @@ describe("adminTouchstoneReducer", () => {
             ...adminTouchstonesInitialState,
             touchstones: [touchstone]
         };
-        expect(adminTouchstoneReducer(undefined, action)).to.eql(expected);
+        expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
     });
 });

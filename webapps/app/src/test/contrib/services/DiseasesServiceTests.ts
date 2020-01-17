@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 import { createMemoryHistory } from 'history';
 
 import {createContribStore} from "../../../main/contrib/createStore";
@@ -26,8 +26,8 @@ describe('Diseases service tests', () => {
 
         diseaseService.getAllDiseases();
 
-        expect(getStub.getCall(0).args[0]).to.equal('/diseases/');
-        expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'diseases' });
+        expect(getStub.getCall(0).args[0]).toEqual('/diseases/');
+        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'diseases' });
     });
 
 });

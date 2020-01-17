@@ -1,5 +1,3 @@
-import {expect} from "chai";
-
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
 import {chooseGroupPageActionCreators} from "../../../../main/contrib/actions/pages/chooseGroupPageActionCreators";
@@ -7,6 +5,7 @@ import {ModellingGroupsService} from "../../../../main/shared/services/Modelling
 import {ModellingGroupTypes} from "../../../../main/contrib/actionTypes/ModellingGroupsTypes";
 import {mockModellingGroup} from "../../../mocks/mockModels";
 import {verifyActionThatCallsService} from "../../../ActionCreatorTestHelpers";
+import DoneCallback = jest.DoneCallback;
 
 describe("Choose Group Page actions tests", () => {
     const sandbox = new Sandbox();
@@ -37,16 +36,16 @@ describe("Choose Group Page actions tests", () => {
 
         const result = chooseGroupPageActionCreators.createBreadcrumb();
 
-        expect(result.urlFragment).to.eq("/");
-        expect(result.name).to.eq("Modellers' contribution portal");
+        expect(result.urlFragment).toEqual("/");
+        expect(result.name).toEqual("Modellers' contribution portal");
     });
 
     it("has no parent", () => {
-        expect(chooseGroupPageActionCreators.parent).to.be.undefined;
+        expect(chooseGroupPageActionCreators.parent).toBeUndefined();
     });
 
     it("creates title", () => {
-        expect(chooseGroupPageActionCreators.title()).to.eq("Modellers' contribution portal");
+        expect(chooseGroupPageActionCreators.title()).toEqual("Modellers' contribution portal");
     });
 
 });

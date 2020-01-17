@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import {userReducer} from "../../../main/contrib/reducers/userReducer";
 import {UserActionType} from "../../../main/contrib/actionTypes/UserActionTypes";
@@ -10,7 +10,7 @@ describe('User reducer tests', () => {
             signedConfidentialityAgreement: false
         }, {
             type: UserActionType.CONFIDENTIALITY_SIGNED
-        })).to.eql(
+        })).toEqual(
             {
                 signedConfidentialityAgreement: true
             }

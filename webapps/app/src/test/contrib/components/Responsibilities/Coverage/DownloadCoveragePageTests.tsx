@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { expect } from "chai";
+
 import { Store } from "redux";
 
 import "../../../../helper";
@@ -29,7 +29,7 @@ describe("Download Coverage Page Component tests", () => {
 
     it("renders component on connect level", () => {
         const rendered = shallow(<DownloadCoveragePage/>, {context: {store}});
-        expect(typeof rendered.props().onLoad).is.equal('function');
+        expect(typeof rendered.props().onLoad).toBe('function');
     });
 
     it("renders component component level", () => {
@@ -43,10 +43,10 @@ describe("Download Coverage Page Component tests", () => {
             match={testMatch}
         />, {context: {store}}).dive().dive();
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).is.equal(true);
-        expect(pageArticle.find(DownloadCoverageContent).length).is.equal(1);
+        expect(onLoadStub.called).toBe(true);
+        expect(pageArticle.find(DownloadCoverageContent).length).toBe(1);
         const titleComponent = pageArticle.dive().find(ResponsibilitiesPageTitle);
-        expect(titleComponent.props().title).is.equal("Download coverage data");
+        expect(titleComponent.props().title).toBe("Download coverage data");
     });
 });
 

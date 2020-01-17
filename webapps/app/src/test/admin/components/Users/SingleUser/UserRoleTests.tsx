@@ -1,6 +1,6 @@
 import * as React from "react";
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import {UserRole, UserRoleComponent} from "../../../../../main/admin/components/Users/SingleUser/UserRole";
 import {RoleAssignment} from "../../../../../main/shared/models/Generated";
 import {mockRole, mockUser} from "../../../../mocks/mockModels";
@@ -29,7 +29,7 @@ describe("UserRole", () => {
                                                     { ...fakeRole} username="testuser" showdelete={true}/>);
         const text = rendered.find('.role-name').text();
 
-        expect(text).to.eq("rolename")
+        expect(text).toEqual("rolename")
     });
 
     it("shows scope if not global", () => {
@@ -39,7 +39,7 @@ describe("UserRole", () => {
                                                     { ...role} username="testuser" showdelete={true}/>);
         const text = rendered.find('.role-name').text();
 
-        expect(text).to.eq("rolename / group:fake")
+        expect(text).toEqual("rolename / group:fake")
     });
 
 
@@ -49,7 +49,7 @@ describe("UserRole", () => {
                                                     { ...fakeRole} username="testuser" showdelete={true}/>);
 
         const text = rendered.find(InternalLink).dive().text();
-        expect(text).to.eq("Remove role");
+        expect(text).toEqual("Remove role");
 
     });
 
@@ -57,7 +57,7 @@ describe("UserRole", () => {
 
         const rendered = shallow(<UserRoleComponent removeRoleFromUser={null}
                                                     { ...fakeRole} username="testuser" showdelete={false}/>);
-        expect(rendered.find(InternalLink).length).to.eq(0);
+        expect(rendered.find(InternalLink).length).toEqual(0);
     });
 
 });

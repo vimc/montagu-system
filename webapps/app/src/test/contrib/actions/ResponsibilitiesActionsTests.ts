@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../Sandbox";
 import {responsibilitiesActionCreators} from "../../../main/contrib/actions/responsibilitiesActionCreators";
@@ -35,7 +35,7 @@ describe("Responsibilities actions tests", () => {
         store.dispatch(responsibilitiesActionCreators.clearCacheForResponsibilitySet());
         setTimeout(() => {
             const actions = store.getActions();
-            expect(actions).to.eql([]);
+            expect(actions).toEqual([]);
             done();
         });
     });
@@ -52,7 +52,7 @@ describe("Responsibilities actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
@@ -65,7 +65,7 @@ describe("Responsibilities actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
@@ -95,7 +95,7 @@ describe("Responsibilities actions tests", () => {
                 { type: ResponsibilitiesTypes.SET_RESPONSIBILITIES, data: testExtResponsibilitySet},
                 { type: ResponsibilitiesTypes.SET_CURRENT_RESPONSIBILITY, data: testResponsibility},
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
             done();
         });
     });

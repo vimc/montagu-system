@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
@@ -26,35 +26,38 @@ describe("Upload burden estimates page actions tests", () => {
     });
 
     it("has responsibilities overview as parent", () => {
-        expect(uploadBurdenEstimatesPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators);
+        expect(uploadBurdenEstimatesPageActionCreators.parent).toEqual(responsibilityOverviewPageActionCreators);
     });
 
     it("creates breadcrumb", () => {
 
         const result = uploadBurdenEstimatesPageActionCreators.createBreadcrumb(state);
-        expect(result.name).to.eq("Upload central burden estimates for s1desc");
-        expect(result.urlFragment).to.eq("burdens/s1/");
+        expect(result.name).toEqual("Upload central burden estimates for s1desc");
+        expect(result.urlFragment).toEqual("burdens/s1/");
     });
 
-    it("sets current responsibility set and resets estimate populate state", async () => {
-        const store = createMockContribStore();
+    it(
+        "sets current responsibility set and resets estimate populate state",
+        async () => {
+            const store = createMockContribStore();
 
-        sandbox.stubReduxActionCreator(responsibilitiesActionCreators, "setCurrentResponsibility",
-            {type: "test-responsibility-type"});
+            sandbox.stubReduxActionCreator(responsibilitiesActionCreators, "setCurrentResponsibility",
+                {type: "test-responsibility-type"});
 
-        sandbox.stubReduxActionCreator(estimatesActionCreators, "resetPopulateState",
-            {type: "test-reset-estimate"})
+            sandbox.stubReduxActionCreator(estimatesActionCreators, "resetPopulateState",
+                {type: "test-reset-estimate"})
 
-        await store.dispatch(uploadBurdenEstimatesPageActionCreators
-            .loadData({groupId: "g1", touchstoneId: "t1", scenarioId: "s1"}));
+            await store.dispatch(uploadBurdenEstimatesPageActionCreators
+                .loadData({groupId: "g1", touchstoneId: "t1", scenarioId: "s1"}));
 
-        const actions = store.getActions();
+            const actions = store.getActions();
 
-        const expectedPayload = [
-            {type: "test-responsibility-type", props: "s1"},
-            {type: "test-reset-estimate", props: undefined}
-        ];
-        expect(actions).to.eql(expectedPayload);
+            const expectedPayload = [
+                {type: "test-responsibility-type", props: "s1"},
+                {type: "test-reset-estimate", props: undefined}
+            ];
+            expect(actions).toEqual(expectedPayload);
 
-    });
+        }
+    );
 });

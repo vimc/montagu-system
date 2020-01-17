@@ -1,6 +1,6 @@
 import {Sandbox} from "../../../../Sandbox";
 import {mockPageProperties, shallowRenderPage} from "../../../../mocks/mockPages";
-import {expect} from "chai";
+
 import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
 import * as React from "react";
 import {modelMetaPageActionCreators} from "../../../../../main/admin/actions/pages/ModelMetaPageActionCreators";
@@ -17,9 +17,9 @@ describe("ModelMetaPage", () => {
         const onLoadStub = sandbox.setStubReduxAction(modelMetaPageActionCreators, "onLoad");
         const rendered = shallowRenderPage(<ModelMetaPage {...mockPageProperties()} />);
 
-        expect(rendered.find(PageArticle).props().title).to.eq("Model Metadata");
-        expect(rendered.find(PageArticle).find(ModelMetaTable)).to.have.length(2);
-        expect(onLoadStub.called).is.equal(true);
+        expect(rendered.find(PageArticle).props().title).toEqual("Model Metadata");
+        expect(rendered.find(PageArticle).find(ModelMetaTable)).toHaveLength(2);
+        expect(onLoadStub.called).toBe(true);
     });
 
 });

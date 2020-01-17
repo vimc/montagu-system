@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import "../../helper";
 import {
     PageProperties,
@@ -16,6 +16,7 @@ import {BreadcrumbsTypes} from "../../../main/shared/actionTypes/BreadrumbsTypes
 import {mockPageBreadcrumb} from "../../mocks/mockModels";
 import {PageBreadcrumb} from "../../../main/shared/components/PageWithHeader/PageProperties";
 import {AdminAppState} from "../../../main/admin/reducers/adminAppReducers";
+import DoneCallback = jest.DoneCallback;
 
 class DummyPageComponent extends React.Component<PageProperties<undefined>> {
     render(): JSX.Element {
@@ -62,7 +63,7 @@ describe('Page HOC', () => {
             const actions = store.getActions();
 
             const expectedActionTypes = [BreadcrumbsTypes.BREADCRUMBS_RECEIVED, fakeAction.type];
-            expect(actions.map(a => a.type)).to.have.members(expectedActionTypes);
+            expect(actions.map(a => a.type).sort()).toEqual(expectedActionTypes.sort());
         });
     });
 
@@ -71,7 +72,7 @@ describe('Page HOC', () => {
         const rendered = shallow(<DummyPage match={mockMatch()}/>, {context: {store}})
             .dive().dive();
 
-        expect(rendered.find("div").text()).to.eq("test")
+        expect(rendered.find("div").text()).toEqual("test")
 
     });
 

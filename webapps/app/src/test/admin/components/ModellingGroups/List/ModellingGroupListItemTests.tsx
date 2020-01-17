@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow } from "enzyme";
-import { expect } from "chai";
+
 
 import "../../../../helper";
 import { mockModellingGroup } from "../../../../mocks/mockModels";
@@ -13,7 +13,7 @@ describe("ModellingGroupListItem component tests", () => {
 
     it("can render", () => {
         const rendered = shallow(<ModellingGroupListItem {...testGroup} />);
-        expect(rendered.props().href).to.equal(`/modelling-groups/${testGroup.id}/`);
-        expect(rendered.props().children).to.equal(testGroup.description);
+        expect(rendered.props().href).toEqual(`/modelling-groups/${testGroup.id}/`);
+        expect(rendered.props().children).toEqual(testGroup.description);
     });
 });

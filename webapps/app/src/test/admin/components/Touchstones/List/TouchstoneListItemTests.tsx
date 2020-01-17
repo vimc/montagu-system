@@ -1,6 +1,6 @@
 import {mockTouchstone, mockTouchstoneVersion} from "../../../../mocks/mockModels";
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import {TouchstoneListItem} from "../../../../../main/admin/components/Touchstones/List/TouchstoneListItem";
 import * as React from "react";
 import {InternalLink} from "../../../../../main/shared/components/InternalLink";
@@ -13,15 +13,15 @@ describe("TouchstoneListItem", () => {
         const rendered = shallow(<TouchstoneListItem {...t}/>);
         const cells = rendered.find("td");
 
-        expect(cells.length).to.eq(4);
+        expect(cells.length).toEqual(4);
 
         const descriptionCell = cells.at(1);
-        expect(descriptionCell.find(InternalLink).dive().text()).to.eql("desc1");
-        expect(descriptionCell.find(InternalLink).prop("href")).to.eql("/touchstones/t1/");
+        expect(descriptionCell.find(InternalLink).dive().text()).toEqual("desc1");
+        expect(descriptionCell.find(InternalLink).prop("href")).toEqual("/touchstones/t1/");
 
         const latestVersionCell = cells.at(3);
-        expect(latestVersionCell.find(InternalLink).dive().text()).to.eql(v1.id);
-        expect(latestVersionCell.find(InternalLink).prop("href")).to.eql("/touchstones/t1/v1/");
+        expect(latestVersionCell.find(InternalLink).dive().text()).toEqual(v1.id);
+        expect(latestVersionCell.find(InternalLink).prop("href")).toEqual("/touchstones/t1/v1/");
     });
 
     it("latest version cell is empty where no versions exist yet", () => {
@@ -30,9 +30,9 @@ describe("TouchstoneListItem", () => {
         const rendered = shallow(<TouchstoneListItem {...t}/>);
         const cells = rendered.find("td");
 
-        expect(cells.length).to.eq(4);
+        expect(cells.length).toEqual(4);
 
         const latestVersionCell = cells.at(3);
-        expect(latestVersionCell.find(InternalLink)).to.have.lengthOf(0);
+        expect(latestVersionCell.find(InternalLink)).toHaveLength(0);
     });
 });

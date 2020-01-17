@@ -1,7 +1,7 @@
 import {mockDisease, mockScenario} from "../../../../mocks/mockModels";
 import {shallow} from "enzyme";
 import * as React from "react";
-import {expect} from "chai";
+
 import {
     ScenarioGroup, ScenarioGroupComponent,
     ScenarioGroupProps
@@ -18,32 +18,35 @@ describe("ScenarioGroup", () => {
             scenarios: [mockScenario(), mockScenario()]
         };
         const rendered = shallow(<ScenarioGroupComponent {...props}/>);
-        expect(rendered.find("h3").text()).to.equal("Chicken pox");
+        expect(rendered.find("h3").text()).toEqual("Chicken pox");
         const rows = rendered.find("li");
-        expect(rows).to.have.length(2);
+        expect(rows).toHaveLength(2);
     });
 
-    it("disables button and shows permission tooltip if canDownloadCoverage is false", () => {
-        const props: ScenarioGroupProps = {
-            touchstoneVersionId: "t1",
-            canDownloadCoverage: false,
-            disease: mockDisease({name: "Chicken pox"}),
-            scenarios: [mockScenario()]
-        };
-        const rendered = shallow(<ScenarioGroupComponent {...props}/>);
-        expect(rendered.find("h3").text()).to.equal("Chicken pox");
-        const row = rendered.find("li").at(0);
-        const buttons = row.find(FileDownloadButton);
+    it(
+        "disables button and shows permission tooltip if canDownloadCoverage is false",
+        () => {
+            const props: ScenarioGroupProps = {
+                touchstoneVersionId: "t1",
+                canDownloadCoverage: false,
+                disease: mockDisease({name: "Chicken pox"}),
+                scenarios: [mockScenario()]
+            };
+            const rendered = shallow(<ScenarioGroupComponent {...props}/>);
+            expect(rendered.find("h3").text()).toEqual("Chicken pox");
+            const row = rendered.find("li").at(0);
+            const buttons = row.find(FileDownloadButton);
 
-        expect(buttons).to.have.lengthOf(2);
+            expect(buttons).toHaveLength(2);
 
-        buttons.forEach(button =>
-            { expect(button.prop("href")).to.be.null; }
-        );
+            buttons.forEach(button =>
+                { expect(button.prop("href")).toBe(null); }
+            );
 
-        expect(row.find('.download-permission-tooltip')).to.have.lengthOf(1)
+            expect(row.find('.download-permission-tooltip')).toHaveLength(1)
 
-    });
+        }
+    );
 
 
     it("does not show format tooltips if canDownloadCoverage is false", () => {
@@ -54,30 +57,33 @@ describe("ScenarioGroup", () => {
             scenarios: [mockScenario()]
         };
         const rendered = shallow(<ScenarioGroupComponent {...props}/>);
-        expect(rendered.find("h3").text()).to.equal("Chicken pox");
+        expect(rendered.find("h3").text()).toEqual("Chicken pox");
         const row = rendered.find("li").at(0);
 
-        expect(row.find('.download-format-tooltip')).to.have.lengthOf(0);
+        expect(row.find('.download-format-tooltip')).toHaveLength(0);
 
     });
 
-    it("enables button and does not show permission tooltip if canDownloadCoverage is true", () => {
-        const props: ScenarioGroupProps = {
-            touchstoneVersionId: "t1",
-            canDownloadCoverage: true,
-            disease: mockDisease({name: "Chicken pox"}),
-            scenarios: [mockScenario({id: "s1"})]
-        };
-        const rendered = shallow(<ScenarioGroupComponent {...props}/>);
-        expect(rendered.find("h3").text()).to.equal("Chicken pox");
-        const row = rendered.find("li").at(0);
-        const buttons = row.find(FileDownloadButton);
+    it(
+        "enables button and does not show permission tooltip if canDownloadCoverage is true",
+        () => {
+            const props: ScenarioGroupProps = {
+                touchstoneVersionId: "t1",
+                canDownloadCoverage: true,
+                disease: mockDisease({name: "Chicken pox"}),
+                scenarios: [mockScenario({id: "s1"})]
+            };
+            const rendered = shallow(<ScenarioGroupComponent {...props}/>);
+            expect(rendered.find("h3").text()).toEqual("Chicken pox");
+            const row = rendered.find("li").at(0);
+            const buttons = row.find(FileDownloadButton);
 
-        expect(buttons.at(0).prop("href")).to.eq("/touchstones/t1/s1/coverage/csv/?format=long");
-        expect(buttons.at(1).prop("href")).to.eq("/touchstones/t1/s1/coverage/csv/?format=wide");
-        expect(row.find('.download-permission-tooltip')).to.have.lengthOf(0);
+            expect(buttons.at(0).prop("href")).toEqual("/touchstones/t1/s1/coverage/csv/?format=long");
+            expect(buttons.at(1).prop("href")).toEqual("/touchstones/t1/s1/coverage/csv/?format=wide");
+            expect(row.find('.download-permission-tooltip')).toHaveLength(0);
 
-    });
+        }
+    );
 
     it("shows format tooltips if canDownloadCoverage is true", () => {
         const props: ScenarioGroupProps = {
@@ -87,9 +93,9 @@ describe("ScenarioGroup", () => {
             scenarios: [mockScenario({id: "s1"})]
         };
         const rendered = shallow(<ScenarioGroupComponent {...props}/>);
-        expect(rendered.find("h3").text()).to.equal("Chicken pox");
+        expect(rendered.find("h3").text()).toEqual("Chicken pox");
         const row = rendered.find("li").at(0);
-        expect(row.find('.download-format-tooltip')).to.have.lengthOf(2);
+        expect(row.find('.download-format-tooltip')).toHaveLength(2);
 
     });
 
@@ -101,7 +107,7 @@ describe("ScenarioGroup", () => {
             scenarios: [mockScenario({id: "s1"})]
         };
         const rendered = shallow(<ScenarioGroup {...props}/>);
-        expect(rendered.find(ScenarioGroupComponent)).to.have.lengthOf(1);
+        expect(rendered.find(ScenarioGroupComponent)).toHaveLength(1);
     });
 
     it("render nothing if there are no scenarios", () => {
@@ -112,7 +118,7 @@ describe("ScenarioGroup", () => {
             scenarios: []
         };
         const rendered = shallow(<ScenarioGroup {...props}/>);
-        expect(rendered.find(ScenarioGroupComponent)).to.have.lengthOf(0);
+        expect(rendered.find(ScenarioGroupComponent)).toHaveLength(0);
     });
 
 });

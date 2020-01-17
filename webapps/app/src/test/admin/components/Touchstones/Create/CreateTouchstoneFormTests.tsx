@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {mount, shallow} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 
@@ -19,7 +19,7 @@ describe("CreateTouchstoneForm", () => {
     const sandbox = new Sandbox();
     let store: any = null;
 
-    before(() => {
+    beforeAll(() => {
         store = createMockStore(mockAdminState());
     });
 
@@ -35,14 +35,14 @@ describe("CreateTouchstoneForm", () => {
 
         const fields = rendered.find(Field);
 
-        expect(fields.at(0).prop("name")).to.eq("id");
-        expect(fields.at(0).prop("validate")).to.have.members([validations.required, validations.id]);
+        expect(fields.at(0).prop("name")).toEqual("id");
+        expect(fields.at(0).prop("validate")).toEqual([validations.required, validations.id]);
 
-        expect(fields.at(1).prop("name")).to.eq("description");
-        expect(fields.at(1).prop("validate")).to.have.members([validations.required]);
+        expect(fields.at(1).prop("name")).toEqual("description");
+        expect(fields.at(1).prop("validate")).toEqual([validations.required]);
 
-        expect(fields.at(2).prop("name")).to.eq("comment");
-        expect(fields.at(2).prop("validate")).to.be.undefined;
+        expect(fields.at(2).prop("name")).toEqual("comment");
+        expect(fields.at(2).prop("validate")).toBeUndefined();
     });
 
     it("calls creates touchstone on form submission", () => {
@@ -56,7 +56,7 @@ describe("CreateTouchstoneForm", () => {
         );
 
         mounted.simulate("submit");
-        expect(stub.called).to.be.true;
+        expect(stub.called).toBe(true);
     });
 
     it("renders createTouchstoneErrors from state", () => {
@@ -72,7 +72,7 @@ describe("CreateTouchstoneForm", () => {
         }));
 
         const rendered = shallow(<CreateTouchstoneForm/>, {context: {store}}).dive().dive().dive().dive();
-        expect(rendered.find(ReduxFormValidationErrors).prop("errors")).to.have.members(errors);
+        expect(rendered.find(ReduxFormValidationErrors).prop("errors")).toEqual(errors);
 
     });
 });

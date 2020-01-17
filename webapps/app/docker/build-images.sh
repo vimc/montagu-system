@@ -13,7 +13,7 @@ echo "Commit hash: $git_id"
 
 export MONTAGU_PORTAL_PROFILE=teamcity
 npm run test
-npm run integration_tests
+./scripts/run-integration-tests-with-apis.sh
 
 export MONTAGU_PORTAL_PROFILE=docker
 webpack

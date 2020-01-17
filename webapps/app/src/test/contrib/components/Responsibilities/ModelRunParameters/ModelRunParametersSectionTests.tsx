@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {shallow, ShallowWrapper} from "enzyme";
 
 import "../../../../helper";
@@ -17,7 +17,7 @@ describe('Model Run Parameter Section Component tests', () => {
         />);
 
         const form = rendered.find(ModelRunParametersForm);
-        expect(form).to.have.lengthOf(1);
+        expect(form).toHaveLength(1);
     });
 
     it("renders status", () => {
@@ -27,6 +27,6 @@ describe('Model Run Parameter Section Component tests', () => {
         />);
 
         const input = rendered.find(ModelRunParametersStatus);
-        expect(input).to.have.lengthOf(1);
+        expect(input).toHaveLength(1);
     });
 });

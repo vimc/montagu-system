@@ -1,5 +1,4 @@
 import * as React from "react";
-import {expect} from "chai"
 import {Client, QueryResult} from "pg";
 import {createMemoryHistory} from 'history';
 
@@ -55,7 +54,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
         return createContribStore(createMemoryHistory());
     }
 
-    addTestsToMocha() {
+    runTests() {
 
         const sandbox = new Sandbox();
 
@@ -71,7 +70,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const uploadResult: Result = await (new RunParametersService(this.store.dispatch, this.store.getState))
                 .uploadSet(groupId, touchstoneVersionId, form);
 
-            expect(uploadResult.errors[0].message).to.eq("You must supply a \'file\' parameter in the multipart body")
+            expect(uploadResult.errors[0].message).toEqual("You must supply a \'file\' parameter in the multipart body")
         });
 
         it("fetches diseases", async () => {
@@ -83,7 +82,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const fetchedDiseasesResult: Disease[] = await (new DiseasesService(this.store.dispatch, this.store.getState))
                 .getAllDiseases();
 
-            expect(fetchedDiseasesResult).to.eql([
+            expect(fetchedDiseasesResult).toEqual([
                 {id: "d1", name: "Disease 1"},
                 {id: "d2", name: "Disease 2"}
             ]);
@@ -93,7 +92,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             const result = await (new UserService(this.store.dispatch, this.store.getState))
                 .signConfidentiality();
-            expect(result).to.eq("OK");
+            expect(result).toEqual("OK");
 
         });
 
@@ -101,7 +100,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             const result = await (new UserService(this.store.dispatch, this.store.getState))
                 .getConfidentiality();
-            expect(result).to.eq(false);
+            expect(result).toEqual(false);
 
         });
 
@@ -111,7 +110,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const fetchedGroupsResult: ModellingGroup[] = await (new ModellingGroupsService(this.store.dispatch, this.store.getState))
                 .getAllGroups();
 
-            expect(fetchedGroupsResult).to.eql([
+            expect(fetchedGroupsResult).toEqual([
                 {id: groupId, description: "Group 1"},
                 {id: "Fake", description: "Group 2"}
             ]);
@@ -127,7 +126,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                 .clearAllCache()
                 .getUserGroups();
 
-            expect(fetchedGroupsResult).to.eql([
+            expect(fetchedGroupsResult).toEqual([
                 {id: groupId, description: "Group 1"}
             ]);
         });
@@ -150,7 +149,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     status: "open"
                 }]
             };
-            expect(fetchedTouchstonesResult).to.eql([touchstone]);
+            expect(fetchedTouchstonesResult).toEqual([touchstone]);
         });
 
         it("fetches responsibilities", async () => {
@@ -161,7 +160,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const responsibilities: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
                 .getResponsibilities(groupId, touchstoneVersionId);
 
-            expect(responsibilities).to.eql(expectedResponsibilitiesResponse());
+            expect(responsibilities).toEqual(expectedResponsibilitiesResponse());
         });
 
         it("fetches coverage sets", async () => {
@@ -195,7 +194,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     }
                 ]
             };
-            expect(coverageSets).to.eql(expectedCoverageSets);
+            expect(coverageSets).toEqual(expectedCoverageSets);
         });
 
         it("fetches demographic data sets", async () => {
@@ -212,7 +211,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     source: "source"
                 }
             ];
-            expect(demographicDataSets).to.eql(expectedDataSets)
+            expect(demographicDataSets).toEqual(expectedDataSets)
         });
 
         it("fetches model run parameter sets", async () => {
@@ -230,7 +229,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
                     uploaded_by: 'test.user'
                 }
             ];
-            expect(runParametersSets).to.eql(expectedSet);
+            expect(runParametersSets).toEqual(expectedSet);
         });
 
         it("creates burden estimates set", async () => {
@@ -247,12 +246,12 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const responsibilitiesInitial: ResponsibilitySetWithExpectations = await (new ResponsibilitiesService(this.store.dispatch, this.store.getState))
                 .getResponsibilities(groupId, touchstoneVersionId);
 
-            expect(responsibilitiesInitial.responsibilities[0].current_estimate_set).to.equal(null);
+            expect(responsibilitiesInitial.responsibilities[0].current_estimate_set).toEqual(null);
 
             const result = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .createBurden(groupId, touchstoneVersionId, scenarioId, data);
 
-            expect(result.endsWith("/v1/modelling-groups/test-group/responsibilities/test-1/yf-1/estimate-sets/1/")).to.be.true;
+            expect(result.endsWith("/v1/modelling-groups/test-group/responsibilities/test-1/yf-1/estimate-sets/1/")).toBe(true);
         });
 
         it("can download coverage data", async () => {
@@ -284,11 +283,11 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const response = await new TestService(this.store.dispatch, this.store.getState)
                 .getAnyUrl(href);
 
-            expect(response.status).to.equal(200);
+            expect(response.status).toEqual(200);
             const result = await response.text();
 
             // we expect no rows, because there are no expectations for this responsibility
-            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage,gender\n")
+            expect(result).toEqual("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage,gender\n")
         });
 
         it("can download coverage data for all countries", async () => {
@@ -322,11 +321,11 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const response = await new TestService(this.store.dispatch, this.store.getState)
                 .getAnyUrl(href);
 
-            expect(response.status).to.equal(200);
+            expect(response.status).toEqual(200);
             const result = await response.text();
 
             // we expect one row for the country ATL, even though there are no expectations for this responsibility
-            expect(result).to.eq("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage,gender\n" +
+            expect(result).toEqual("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,year,age_first,age_last,age_range_verbatim,target,coverage,gender\n" +
                 "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1970,1,2,1-2,1000,1000,both\n")
         });
 
@@ -354,7 +353,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const response = await new TestService(this.store.dispatch, this.store.getState)
                 .getAnyUrl(href);
 
-            expect(response.status).to.equal(200)
+            expect(response.status).toEqual(200)
         });
 
         it("can get burden estimates", async () => {
@@ -366,7 +365,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             await addBurdenEstimate(this.db, setId, value);
             const response: ILookup<DataPoint[]> = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .getEstimates(groupId, touchstoneVersionId, scenarioId, setId, "cases");
-            expect(response).to.eql({"1": [{"x": 2000, "y": value}]});
+            expect(response).toEqual({"1": [{"x": 2000, "y": value}]});
         });
 
         it("can get burden estimate upload token", async () => {
@@ -377,7 +376,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const response: String = await (new EstimatesService(this.store.dispatch, this.store.getState))
                 .getUploadToken(groupId, touchstoneVersionId, scenarioId, setId);
 
-            expect(response.length).to.be.greaterThan(1)
+            expect(response.length).toBeGreaterThan(1)
         });
 
         it("can populate estimates from file", async () => {
@@ -390,7 +389,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
 
             // this will error as not a real token, but that's fine, we just want to verify that we have the correct
             // endpoint here
-            expect(response.errors[0].code).to.eq("unknown-upload-token");
+            expect(response.errors[0].code).toEqual("unknown-upload-token");
         });
 
         it("can download burden estimates", async () => {
@@ -411,13 +410,13 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const response = await new TestService(this.store.dispatch, this.store.getState)
                 .getAnyUrl(href);
 
-            expect(response.status).to.equal(200);
+            expect(response.status).toEqual(200);
 
             const result = await response.text();
             const headers = result.split("\n")[0];
 
             // just check it's the format we're expecting
-            expect(headers).to.eq("disease,year,age,country,country_name,cohort_size")
+            expect(headers).toEqual("disease,year,age,country,country_name,cohort_size")
         })
 
     }

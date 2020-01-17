@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import {mainMenuPageActionCreators} from "../../../../main/admin/actions/pages/MainMenuPageActionCreators";
 
 describe("Admin main menu page actions tests", () => {
@@ -6,20 +6,20 @@ describe("Admin main menu page actions tests", () => {
     it("creates breadcrumbs", () => {
 
         const result = mainMenuPageActionCreators.createBreadcrumb();
-        expect(result.urlFragment).to.eq("/");
-        expect(result.name).to.eq("Main menu");
+        expect(result.urlFragment).toEqual("/");
+        expect(result.name).toEqual("Main menu");
 
     });
 
     it("parent is null", () => {
 
-        expect(mainMenuPageActionCreators.parent).to.be.null;
+        expect(mainMenuPageActionCreators.parent).toBe(null);
 
     });
 
     it("title is Main menu", () => {
 
-        expect(mainMenuPageActionCreators.title()).to.eq("Main menu");
+        expect(mainMenuPageActionCreators.title()).toEqual("Main menu");
 
     });
 

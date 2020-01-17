@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {mount, shallow} from "enzyme";
 import {Sandbox} from "../../../../Sandbox";
 import {
@@ -18,7 +18,7 @@ describe("CreateUserForm", () => {
     const sandbox = new Sandbox();
     let store: any = null;
 
-    before(() => {
+    beforeAll(() => {
         store = createMockStore(mockAdminState());
     });
 
@@ -33,14 +33,14 @@ describe("CreateUserForm", () => {
 
         const fields = rendered.find(Field);
 
-        expect(fields.at(0).prop("name")).to.eq("name");
-        expect(fields.at(0).prop("validate")).to.have.members([validations.required]);
+        expect(fields.at(0).prop("name")).toEqual("name");
+        expect(fields.at(0).prop("validate")).toEqual([validations.required]);
 
-        expect(fields.at(1).prop("name")).to.eq("email");
-        expect(fields.at(1).prop("validate")).to.have.members([validations.required, validations.email]);
+        expect(fields.at(1).prop("name")).toEqual("email");
+        expect(fields.at(1).prop("validate")).toEqual([validations.required, validations.email]);
 
-        expect(fields.at(2).prop("name")).to.eq("username");
-        expect(fields.at(2).prop("validate")).to.have.members([validations.required, validations.username]);
+        expect(fields.at(2).prop("name")).toEqual("username");
+        expect(fields.at(2).prop("validate")).toEqual([validations.required, validations.username]);
     });
 
     it("sets username to suggestion when name changes", () => {
@@ -61,8 +61,8 @@ describe("CreateUserForm", () => {
 
         field.simulate("change", event);
 
-        expect(fieldName).to.eq("username");
-        expect(newValue).to.eq("joe.bloggs");
+        expect(fieldName).toEqual("username");
+        expect(newValue).toEqual("joe.bloggs");
     });
 
     it("calls creates user on form submission", () => {
@@ -76,24 +76,24 @@ describe("CreateUserForm", () => {
         );
 
         mounted.simulate("submit");
-        expect(stub.called).to.be.true;
+        expect(stub.called).toBe(true);
     });
 
     describe("username suggestor", () => {
         it("can handle one word", () => {
-            expect(suggestUsername("joe")).to.equal("joe");
+            expect(suggestUsername("joe")).toEqual("joe");
         });
         it("can handle two words", () => {
-            expect(suggestUsername("joe bloggs")).to.equal("joe.bloggs");
+            expect(suggestUsername("joe bloggs")).toEqual("joe.bloggs");
         });
         it("can handle many words", () => {
-            expect(suggestUsername("joe samuel stephen bloggs")).to.equal("joe.bloggs");
+            expect(suggestUsername("joe samuel stephen bloggs")).toEqual("joe.bloggs");
         });
         it("converts to lower case", () => {
-            expect(suggestUsername("Joe Bloggs")).to.equal("joe.bloggs");
+            expect(suggestUsername("Joe Bloggs")).toEqual("joe.bloggs");
         });
         it("strips out bad characters", () => {
-            expect(suggestUsername("j_1-o=%_e_")).to.equal("joe");
+            expect(suggestUsername("j_1-o=%_e_")).toEqual("joe");
         });
     });
 });

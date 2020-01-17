@@ -3,7 +3,7 @@ import {mockCountry, mockExpectationMapping, mockExpectations, mockScenario} fro
 import {ExpectationsDescription} from "../../../../../main/contrib/components/Responsibilities/Expectations/ExpectationsDescription";
 import {shallow} from "enzyme";
 import * as React from "react";
-import {expect} from "chai";
+
 import {FileDownloadButton} from "../../../../../main/shared/components/FileDownloadLink";
 import {CountriesList} from "../../../../../main/contrib/components/Responsibilities/Expectations/CountriesList";
 import {ModellingGroupsService} from "../../../../../main/shared/services/ModellingGroupsService";
@@ -36,7 +36,7 @@ describe("ExpectationsDescription", () => {
             groupId="gId"
         />);
 
-        expect(rendered.find(".h3").text()).to.equal("description");
+        expect(rendered.find(".h3").text()).toEqual("description");
 
     });
 
@@ -56,10 +56,10 @@ describe("ExpectationsDescription", () => {
             groupId="gId"
         />);
 
-        expect(rendered.find("#scenarios").find("li")).to.have.lengthOf(3);
-        expect(rendered.find("#scenarios").find("li").at(0).text()).to.eq("Best case (b)");
-        expect(rendered.find("#scenarios").find("li").at(1).text()).to.eq("Campaign (c)");
-        expect(rendered.find("#scenarios").find("li").at(2).text()).to.eq("Routine (a)");
+        expect(rendered.find("#scenarios").find("li")).toHaveLength(3);
+        expect(rendered.find("#scenarios").find("li").at(0).text()).toEqual("Best case (b)");
+        expect(rendered.find("#scenarios").find("li").at(1).text()).toEqual("Campaign (c)");
+        expect(rendered.find("#scenarios").find("li").at(2).text()).toEqual("Routine (a)");
     });
 
     it("renders number of years", () => {
@@ -72,7 +72,7 @@ describe("ExpectationsDescription", () => {
                                                           allScenarios={mockScenarios}
                                                           touchstoneVersionId="tId"
                                                           groupId="gId"/>);
-        expect(rendered.find("#years").text()).to.equal("2 years: 1999 - 2000");
+        expect(rendered.find("#years").text()).toEqual("2 years: 1999 - 2000");
     });
 
     it("renders number of ages", () => {
@@ -85,7 +85,7 @@ describe("ExpectationsDescription", () => {
                                                           allScenarios={mockScenarios}
                                                           touchstoneVersionId="tId"
                                                           groupId="gId"/>);
-        expect(rendered.find("#ages").text()).to.equal("10 ages: 0 - 9");
+        expect(rendered.find("#ages").text()).toEqual("10 ages: 0 - 9");
     });
 
     it("renders cohort range if both min and max present", () => {
@@ -98,7 +98,7 @@ describe("ExpectationsDescription", () => {
                                                           touchstoneVersionId="tId"
                                                           allScenarios={mockScenarios}
                                                           groupId="gId"/>);
-        expect(rendered.find("#cohorts").text()).to.equal("Not including cohorts born before 1980 or after 1982");
+        expect(rendered.find("#cohorts").text()).toEqual("Not including cohorts born before 1980 or after 1982");
     });
 
     it("renders no cohort message if both null", () => {
@@ -111,7 +111,7 @@ describe("ExpectationsDescription", () => {
                                                           touchstoneVersionId="tId"
                                                           allScenarios={mockScenarios}
                                                           groupId="gId"/>);
-        expect(rendered.find("#cohorts")).to.have.lengthOf(0);
+        expect(rendered.find("#cohorts")).toHaveLength(0);
     });
 
     it("renders min cohort message if not null", () => {
@@ -124,7 +124,7 @@ describe("ExpectationsDescription", () => {
                                                           touchstoneVersionId="tId"
                                                           allScenarios={mockScenarios}
                                                           groupId="gId"/>);
-        expect(rendered.find("#cohorts").text()).to.equal("Not including cohorts born before 1980");
+        expect(rendered.find("#cohorts").text()).toEqual("Not including cohorts born before 1980");
     });
 
     it("renders max cohort message if not null", () => {
@@ -137,7 +137,7 @@ describe("ExpectationsDescription", () => {
                                                           touchstoneVersionId="tId"
                                                           allScenarios={mockScenarios}
                                                           groupId="gId"/>);
-        expect(rendered.find("#cohorts").text()).to.equal("Not including cohorts born after 1982");
+        expect(rendered.find("#cohorts").text()).toEqual("Not including cohorts born after 1982");
     });
 
     it("renders outcomes", () => {
@@ -152,7 +152,7 @@ describe("ExpectationsDescription", () => {
                                                           allScenarios={mockScenarios}
                                                           groupId="gId"/>);
         // The extra li is for cohort_size, which is hardcoded
-        expect(rendered.find("#outcomes").find("li")).to.have.lengthOf(2 + 1);
+        expect(rendered.find("#outcomes").find("li")).toHaveLength(2 + 1);
     });
 
     it("renders countries list", () => {
@@ -166,7 +166,7 @@ describe("ExpectationsDescription", () => {
                                                           touchstoneVersionId="tId"
                                                           allScenarios={mockScenarios}
                                                           groupId="gId"/>);
-        expect(rendered.find(CountriesList).prop("countries")).to.have.members(countries)
+        expect(rendered.find(CountriesList).prop("countries").sort()).toEqual(countries.sort())
     });
 
 
@@ -179,38 +179,44 @@ describe("ExpectationsDescription", () => {
             groupId="gId"
         />);
         expect(rendered.find(FileDownloadButton).at(0).prop("href"))
-            .to.equal(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/`);
+            .toEqual(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/`);
     });
 
-    it("renders FileDownloadButton for stochastic template for 2017 touchstone", () => {
-        const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => true )
+    it(
+        "renders FileDownloadButton for stochastic template for 2017 touchstone",
+        () => {
+            const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => true )
 
-        const em = mockExpectationMapping({},[]);
-        const rendered = shallow(<ExpectationsDescription
-            expectationMapping={em}
-            touchstoneVersionId="tId"
-            allScenarios={mockScenarios}
-            groupId="gId"
-        />);
-        expect(stub.called).to.be.true;
-        expect(rendered.find(FileDownloadButton).at(1).prop("href"))
-            .to.equal(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/?type=stochastic`);
-    });
+            const em = mockExpectationMapping({},[]);
+            const rendered = shallow(<ExpectationsDescription
+                expectationMapping={em}
+                touchstoneVersionId="tId"
+                allScenarios={mockScenarios}
+                groupId="gId"
+            />);
+            expect(stub.called).toBe(true);
+            expect(rendered.find(FileDownloadButton).at(1).prop("href"))
+                .toEqual(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/?type=stochastic`);
+        }
+    );
 
-    it("does not render FileDownloadButton for stochastic template for non-2017 touchstone", () => {
-        const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => false )
+    it(
+        "does not render FileDownloadButton for stochastic template for non-2017 touchstone",
+        () => {
+            const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => false )
 
-        const em = mockExpectationMapping({},[]);
-        const rendered = shallow(<ExpectationsDescription
-            expectationMapping={em}
-            touchstoneVersionId="tId"
-            allScenarios={mockScenarios}
-            groupId="gId"
-        />);
-        expect(stub.called).to.be.true;
-        expect(rendered.find(FileDownloadButton).length).to.eq(1);
-        expect(rendered.find(FileDownloadButton).at(0).prop("href"))
-            .to.equal(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/`); //single button is for central
+            const em = mockExpectationMapping({},[]);
+            const rendered = shallow(<ExpectationsDescription
+                expectationMapping={em}
+                touchstoneVersionId="tId"
+                allScenarios={mockScenarios}
+                groupId="gId"
+            />);
+            expect(stub.called).toBe(true);
+            expect(rendered.find(FileDownloadButton).length).toEqual(1);
+            expect(rendered.find(FileDownloadButton).at(0).prop("href"))
+                .toEqual(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/`); //single button is for central
 
-    });
+        }
+    );
 });

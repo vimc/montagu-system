@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
@@ -25,8 +25,8 @@ describe("Model Run Parameters Page actions tests", () => {
     it("creates breadcrumb", () => {
         const state = mockContribState();
         const result = modelRunParametersPageActionCreators.createBreadcrumb(state);
-        expect(result.urlFragment).to.eq("parameters/");
-        expect(result.name).to.eq("Upload parameters");
+        expect(result.urlFragment).toEqual("parameters/");
+        expect(result.name).toEqual("Upload parameters");
     });
 
     it("loads parameter sets", async () => {
@@ -52,12 +52,12 @@ describe("Model Run Parameters Page actions tests", () => {
         const expectedPayload = [
             {type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet]}
         ];
-        expect(actions).to.eql(expectedPayload);
+        expect(actions).toEqual(expectedPayload);
 
     });
 
     it("has responsibilities overview as parent", () => {
-        expect(modelRunParametersPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators);
+        expect(modelRunParametersPageActionCreators.parent).toEqual(responsibilityOverviewPageActionCreators);
     });
 
 });

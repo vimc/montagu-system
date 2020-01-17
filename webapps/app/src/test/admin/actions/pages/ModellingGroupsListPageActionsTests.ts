@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
@@ -36,7 +36,7 @@ describe("Modelling Groups List Page actions tests", () => {
             {type: ModellingGroupTypes.GROUPS_FETCHED, data: [testGroup]},
             {type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs}
         ];
-        expect(actions).to.eql(expectedPayload);
+        expect(actions).toEqual(expectedPayload);
     });
 
 });

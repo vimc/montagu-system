@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {mockUser} from "../../../../mocks/mockModels";
 import {shallow} from "enzyme";
 
@@ -36,9 +36,9 @@ describe("UsersListComponent", () => {
         const rendered = shallow(<UsersList/>, {context: {store}}).dive();
 
         const items = rendered.find(UserListItem);
-        expect(items).to.have.length(3);
-        expect(items.at(0).prop("username")).to.equal("a");
-        expect(items.at(1).prop("username")).to.equal("m");
-        expect(items.at(2).prop("username")).to.equal("z");
+        expect(items).toHaveLength(3);
+        expect(items.at(0).prop("username")).toEqual("a");
+        expect(items.at(1).prop("username")).toEqual("m");
+        expect(items.at(2).prop("username")).toEqual("z");
     });
 });

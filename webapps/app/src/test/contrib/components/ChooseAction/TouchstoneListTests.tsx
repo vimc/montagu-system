@@ -1,5 +1,5 @@
 import * as React from "react";
-import { expect } from "chai";
+
 import { shallow } from "enzyme";
 
 import "../../../helper";
@@ -26,7 +26,7 @@ describe('TouchstoneListComponent renders', () => {
     it("message when there are no finished touchstones", () => {
         const props = makeProps();
         const rendered = shallow(<TouchstoneList {...props} />);
-        expect(rendered.find(".finishedTouchstones").text()).to.contain("There are no past touchstones.");
+        expect(rendered.find(".finishedTouchstones").text()).toContain("There are no past touchstones.");
     });
 
     it("one button per finished touchstone", () => {
@@ -37,21 +37,21 @@ describe('TouchstoneListComponent renders', () => {
         const props = makeProps(touchstones);
         const rendered = shallow(<TouchstoneList {...props} />);
         const children = rendered.find(".finishedTouchstones").find("li");
-        expect(children).to.have.length(2);
+        expect(children).toHaveLength(2);
 
         // Check the first link in detail
         const first = children.at(0);
-        expect(first.key()).to.equal("touchstone-2"); //Expect reverse alphabetical order
-        expect(first.find(ButtonLink).prop("href")).to.eql("/gId/responsibilities/touchstone-2/");
+        expect(first.key()).toEqual("touchstone-2"); //Expect reverse alphabetical order
+        expect(first.find(ButtonLink).prop("href")).toEqual("/gId/responsibilities/touchstone-2/");
 
         // Also do a basic test on the other one, to make sure it's different
-        expect(children.at(1).key()).to.equal("touchstone-1");
+        expect(children.at(1).key()).toEqual("touchstone-1");
     });
 
     it("message when there is no open touchstone", () => {
         const props = makeProps();
         const rendered = shallow(<TouchstoneList {...props} />);
-        expect(rendered.find(".openTouchstones").text()).to.contain("There is no open touchstone currently.");
+        expect(rendered.find(".openTouchstones").text()).toContain("There is no open touchstone currently.");
     });
 
     it("one button per open touchstone", () => {
@@ -62,15 +62,15 @@ describe('TouchstoneListComponent renders', () => {
         const props = makeProps(touchstones);
         const rendered = shallow(<TouchstoneList {...props} />);
         const children = rendered.find(".openTouchstones").find("li");
-        expect(children).to.have.length(2);
+        expect(children).toHaveLength(2);
 
         // Check the first link in detail
         const first = children.at(0);
-        expect(first.key()).to.equal("touchstone-2"); //Expect reverse alphabetical order
-        expect(first.find(ButtonLink).prop("href")).to.eql("/gId/responsibilities/touchstone-2/");
+        expect(first.key()).toEqual("touchstone-2"); //Expect reverse alphabetical order
+        expect(first.find(ButtonLink).prop("href")).toEqual("/gId/responsibilities/touchstone-2/");
 
         // Also do a basic test on the other one, to make sure it's different
-        expect(children.at(1).key()).to.equal("touchstone-1");
+        expect(children.at(1).key()).toEqual("touchstone-1");
     });
 
     it("open touchstones are in expected order", () => {
@@ -84,12 +84,12 @@ describe('TouchstoneListComponent renders', () => {
         const props = makeProps(touchstones);
         const rendered = shallow(<TouchstoneList {...props} />);
         const children = rendered.find(".openTouchstones").find("li");
-        expect(children).to.have.length(4);
+        expect(children).toHaveLength(4);
 
-        expect(children.at(0).key()).to.equal("201810synthetic-2"); //Expect reverse alphabetical order
-        expect(children.at(1).key()).to.equal("201810synthetic-1");
-        expect(children.at(2).key()).to.equal("201710gavi-5");
-        expect(children.at(3).key()).to.equal("201710gavi-1");
+        expect(children.at(0).key()).toEqual("201810synthetic-2"); //Expect reverse alphabetical order
+        expect(children.at(1).key()).toEqual("201810synthetic-1");
+        expect(children.at(2).key()).toEqual("201710gavi-5");
+        expect(children.at(3).key()).toEqual("201710gavi-1");
 
     });
 });

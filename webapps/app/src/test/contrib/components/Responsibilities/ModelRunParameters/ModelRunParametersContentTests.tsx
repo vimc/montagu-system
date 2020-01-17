@@ -1,6 +1,6 @@
 import * as React from "react";
 import { shallow} from "enzyme";
-import { expect } from "chai";
+
 import { Store } from "redux";
 
 import "../../../../helper";
@@ -46,26 +46,26 @@ describe("Model Run Parameters Content component tests", () => {
 
     it("renders on connect level and receives proper props", () => {
         const rendered = shallow(<ModelRunParametersContent/>, {context: {store}});
-        expect(rendered.props().touchstone).to.eql(testTouchstone);
-        expect(rendered.props().diseases).to.eql([testDisease.id, testDisease2.id]);
+        expect(rendered.props().touchstone).toEqual(testTouchstone);
+        expect(rendered.props().diseases).toEqual([testDisease.id, testDisease2.id]);
     });
 
     it("renders on branch level, passes", () => {
         const rendered = shallow(<ModelRunParametersContent/>, {context: {store}}).dive();
-        expect(rendered.find(ModelRunParametersContentComponent).length).to.eql(1);
+        expect(rendered.find(ModelRunParametersContentComponent).length).toEqual(1);
     });
 
     it("renders on branch level, not passes", () => {
         store = createMockStore({...testState, touchstones: {currentTouchstone: null}});
         const rendered = shallow(<ModelRunParametersContent/>, {context: {store}}).dive().dive();
-        expect(rendered.find(LoadingElement).length).to.eql(1);
+        expect(rendered.find(LoadingElement).length).toEqual(1);
     });
 
     it("renders on component level, sections list", () => {
         const rendered = shallow(<ModelRunParametersContent/>, {context: {store}}).dive().dive();
         const sections = rendered.find(ModelRunParametersSection);
-        expect(sections.length).to.equal(2);
-        expect(sections.at(0).props().disease).to.equal(testDisease.id);
-        expect(sections.at(1).props().disease).to.equal(testDisease2.id);
+        expect(sections.length).toEqual(2);
+        expect(sections.at(0).props().disease).toEqual(testDisease.id);
+        expect(sections.at(1).props().disease).toEqual(testDisease2.id);
     });
 });

@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import {createMockStore} from "../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../main/shared/services/ModellingGroupsService";
@@ -25,11 +25,11 @@ describe('Modelling Groups service tests', () => {
         groupsService.getAllGroups();
 
         expect(getStub.getCall(0).args[0])
-            .to.equal("/modelling-groups/");
-        expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'groups' });
+            .toEqual("/modelling-groups/");
+        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'groups' });
     });
 
-    it('fetches user groups',() => {
+    it('fetches user groups', () => {
         const groupsService = new ModellingGroupsService(store.dispatch, store.getState);
 
         const setOptionsSpy = sandbox.setSpy(groupsService, "setOptions");
@@ -40,8 +40,8 @@ describe('Modelling Groups service tests', () => {
         groupsService.getUserGroups();
 
         expect(getStub.getCall(0).args[0])
-            .to.equal("/user/modelling-groups/");
-        expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'userGroups' });
+            .toEqual("/user/modelling-groups/");
+        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'userGroups' });
     });
 
     it('fetches group details', () => {
@@ -55,8 +55,8 @@ describe('Modelling Groups service tests', () => {
         groupsService.getGroupDetails("g-1");
 
         expect(getStub.getCall(0).args[0])
-            .to.equal("/modelling-groups/g-1/");
-        expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'groupsDetails' });
+            .toEqual("/modelling-groups/g-1/");
+        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'groupsDetails' });
     });
 
     it('adds member', () => {
@@ -74,8 +74,8 @@ describe('Modelling Groups service tests', () => {
         groupsService.addMember("g-1", "u1");
 
         expect(postStub.getCall(0).args[0])
-            .to.equal("/modelling-groups/g-1/actions/associate-member/");
-        expect(postStub.getCall(0).args[1]).to.equal(JSON.stringify(associateUser));
+            .toEqual("/modelling-groups/g-1/actions/associate-member/");
+        expect(postStub.getCall(0).args[1]).toEqual(JSON.stringify(associateUser));
     });
 
     it('removes member', () => {
@@ -93,8 +93,8 @@ describe('Modelling Groups service tests', () => {
         groupsService.removeMember("g-1", "u1");
 
         expect(postStub.getCall(0).args[0])
-            .to.equal("/modelling-groups/g-1/actions/associate-member/");
-        expect(postStub.getCall(0).args[1]).to.equal(JSON.stringify(associateUser));
+            .toEqual("/modelling-groups/g-1/actions/associate-member/");
+        expect(postStub.getCall(0).args[1]).toEqual(JSON.stringify(associateUser));
     });
 
     it('clears cache for group details', () => {
@@ -104,8 +104,8 @@ describe('Modelling Groups service tests', () => {
 
         groupsService.clearCacheForGroupDetails("g-1");
 
-        expect(postStub.getCall(0).args[0]).to.equal("groupsDetails");
-        expect(postStub.getCall(0).args[1]).to.equal("/modelling-groups/g-1/");
+        expect(postStub.getCall(0).args[0]).toEqual("groupsDetails");
+        expect(postStub.getCall(0).args[1]).toEqual("/modelling-groups/g-1/");
     });
 
 });

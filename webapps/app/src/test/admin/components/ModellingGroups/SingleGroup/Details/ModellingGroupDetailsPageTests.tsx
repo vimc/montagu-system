@@ -1,5 +1,5 @@
 import * as React from "react";
-import { expect } from "chai";
+
 import {shallow} from "enzyme";
 
 import "../../../../../helper";
@@ -29,8 +29,8 @@ describe("Modelling Group Details Page Component Tests", () => {
     it("renders component on connect level", () => {
         let store = createMockStore(testState);
         const rendered = shallow(<ModellingGroupDetailsPage/>, {context: {store}});
-        expect(rendered.props().groupDescription).is.equal(testGroup.description);
-        expect(typeof rendered.props().onLoad).is.equal('function');
+        expect(rendered.props().groupDescription).toBe(testGroup.description);
+        expect(typeof rendered.props().onLoad).toBe('function');
     });
 
     it("renders page component, title and sub component", () => {
@@ -41,9 +41,9 @@ describe("Modelling Group Details Page Component Tests", () => {
             match={testMatch}
         />, {context: {store}}).dive();
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).is.equal(true);
-        expect(pageArticle.props().title).is.equal(testGroup.description);
-        expect(pageArticle.find(ModellingGroupDetailsContent).length).is.equal(1);
+        expect(onLoadStub.called).toBe(true);
+        expect(pageArticle.props().title).toBe(testGroup.description);
+        expect(pageArticle.find(ModellingGroupDetailsContent).length).toBe(1);
     });
 });
 

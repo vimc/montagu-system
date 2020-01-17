@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import {modellingGroupInitialState, modellingGroupsReducer} from "../../../main/admin/reducers/modellingGroupsReducer";
 import {AddModellingGroup, ModellingGroupTypes} from "../../../main/admin/actionTypes/ModellingGroupsTypes";
@@ -21,7 +21,7 @@ describe('Admin Modelling Groups reducer tests', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.GROUPS_FETCHED,
             data: [testGroup, testGroup2]
-        })).to.eql({...modellingGroupInitialState, groups: [testGroup, testGroup2]});
+        })).toEqual({...modellingGroupInitialState, groups: [testGroup, testGroup2]});
     });
 
     it('sets fetched models', () => {
@@ -33,7 +33,7 @@ describe('Admin Modelling Groups reducer tests', () => {
             type: ModellingGroupTypes.MODELS_FETCHED,
             models: [model1, model2],
             expectations: [expectation1, expectation2]
-        })).to.eql({...modellingGroupInitialState, models: [model1, model2],
+        })).toEqual({...modellingGroupInitialState, models: [model1, model2],
             expectations: [expectation1, expectation2]});
     });
 
@@ -42,49 +42,49 @@ describe('Admin Modelling Groups reducer tests', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.GROUPS_FETCHED,
             data: null
-        })).to.eql(modellingGroupInitialState);
+        })).toEqual(modellingGroupInitialState);
     });
 
     it('sets current group', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.SET_CURRENT_GROUP,
             data: testGroup
-        })).to.eql({...modellingGroupInitialState, currentGroup: testGroup});
+        })).toEqual({...modellingGroupInitialState, currentGroup: testGroup});
     });
 
     it('sets current group empty', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.SET_CURRENT_GROUP,
             data: null
-        })).to.eql(modellingGroupInitialState);
+        })).toEqual(modellingGroupInitialState);
     });
 
     it('sets current group members', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS,
             data: [testUser]
-        })).to.eql({...modellingGroupInitialState, currentGroupMembers: [testUser]});
+        })).toEqual({...modellingGroupInitialState, currentGroupMembers: [testUser]});
     });
 
     it('sets current group members empty', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS,
             data: null
-        })).to.eql(modellingGroupInitialState);
+        })).toEqual(modellingGroupInitialState);
     });
 
     it('sets current group details', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.GROUP_DETAILS_FETCHED,
             data: testGroupDetails
-        })).to.eql({...modellingGroupInitialState, currentGroupDetails: testGroupDetails});
+        })).toEqual({...modellingGroupInitialState, currentGroupDetails: testGroupDetails});
     });
 
     it('sets current group details empty', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.GROUP_DETAILS_FETCHED,
             data: null
-        })).to.eql(modellingGroupInitialState);
+        })).toEqual(modellingGroupInitialState);
     });
 
     it('adds new group', () => {
@@ -95,7 +95,7 @@ describe('Admin Modelling Groups reducer tests', () => {
         };
 
         const result = modellingGroupsReducer(undefined, addGroupAction);
-        expect(result.groups).to.have.members([newGroup])
+        expect(result.groups).toContain(newGroup)
     });
 
 });

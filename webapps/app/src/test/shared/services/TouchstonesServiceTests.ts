@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import {createMemoryHistory} from 'history';
 
 import {createContribStore} from "../../../main/contrib/createStore";
@@ -22,8 +22,8 @@ describe('Touchstones service tests', () => {
 
         touchstoneService.getTouchstonesByGroupId('group-1');
 
-        expect(getStub.getCall(0).args[0]).to.equal('/modelling-groups/group-1/responsibilities/');
-        expect(setOptionsSpy.getCall(0).args[0]).to.eql({cacheKey: 'touchstones'});
+        expect(getStub.getCall(0).args[0]).toEqual('/modelling-groups/group-1/responsibilities/');
+        expect(setOptionsSpy.getCall(0).args[0]).toEqual({cacheKey: 'touchstones'});
     });
 
     it("fetches scenarios", () => {
@@ -35,7 +35,7 @@ describe('Touchstones service tests', () => {
         });
 
         service.getScenariosForTouchstoneVersion("touchstone-1");
-        expect(getStub.getCall(0).args).to.eql(['/touchstones/touchstone-1/scenarios/']);
-        expect(setOptionsSpy.getCall(0).args).to.eql([{cacheKey: 'touchstones'}]);
+        expect(getStub.getCall(0).args).toEqual(['/touchstones/touchstone-1/scenarios/']);
+        expect(setOptionsSpy.getCall(0).args).toEqual([{cacheKey: 'touchstones'}]);
     });
 });

@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
@@ -19,14 +19,14 @@ describe("Download Demographic Contrib Page actions tests", () => {
     });
 
     it("has responsibilities overview page as parent", () => {
-        expect(downloadDemographicsContribPageActionCreators.parent).to.eq(responsibilityOverviewPageActionCreators)
+        expect(downloadDemographicsContribPageActionCreators.parent).toEqual(responsibilityOverviewPageActionCreators)
     });
 
     it("creates breadcrumb", () => {
         const state = mockContribState();
         const result = downloadDemographicsContribPageActionCreators.createBreadcrumb(state);
-        expect(result.urlFragment).to.eq("demographics/");
-        expect(result.name).to.eq("Download demographic data sets");
+        expect(result.urlFragment).toEqual("demographics/");
+        expect(result.name).toEqual("Download demographic data sets");
     });
 
     it("loads demographic data sets", async () => {
@@ -46,7 +46,7 @@ describe("Download Demographic Contrib Page actions tests", () => {
             {type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET, data: null as DemographicDataset},
             {type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED, data: [testDemographicDataSet]}
         ];
-        expect(actions).to.eql(expectedPayload);
+        expect(actions).toEqual(expectedPayload);
     });
 
 

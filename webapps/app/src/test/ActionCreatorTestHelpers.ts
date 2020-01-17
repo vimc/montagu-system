@@ -1,7 +1,8 @@
 import {createMockStore} from "./mocks/mockStore";
-import {expect} from "chai";
+
 import {MockStore} from "redux-mock-store";
 import {ThunkAction} from "redux-thunk";
+import DoneCallback = jest.DoneCallback;
 
 export interface VerifyActionThatCallsServiceProperties {
     mockServices: () => void;
@@ -23,12 +24,14 @@ export function verifyActionThatCallsService(
 ) {
     props.mockServices();
     const store = props.store || createMockStore({});
+
     store.dispatch(props.callActionCreator());
+
     setTimeout(() => {
         const actions = store.getActions();
-        expect(actions).to.eql(props.expectTheseActions);
+        expect(actions).toEqual(props.expectTheseActions);
         done();
-    });
+    })
 }
 
 export function verifyActionThatCallsServiceAndReturnsResult(
@@ -40,9 +43,9 @@ export function verifyActionThatCallsServiceAndReturnsResult(
     store.dispatch(props.callActionCreator());
     setTimeout(() => {
         const actions = store.getActions();
-        expect(actions.map((x: any) => x.type)).to.eql(props.expectTheseActionTypes);
+        expect(actions.map((x: any) => x.type)).toEqual(props.expectTheseActionTypes);
         props.expectTheseActionTypes.forEach((expectedAction, i) => {
-            expect(actions[i]).to.eql({
+            expect(actions[i]).toEqual({
                 type: expectedAction,
                 data: "default_result"
             });

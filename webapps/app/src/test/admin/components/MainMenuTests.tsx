@@ -1,6 +1,6 @@
 import {shallow} from "enzyme";
 import * as React from "react";
-import {expect} from "chai";
+
 import {MainMenuList} from "../../../main/admin/components/MainMenu/MainMenu";
 import {createMockStore} from "../../mocks/mockStore";
 import {mockAdminState, mockAuthState} from "../../mocks/mockStates";
@@ -22,7 +22,7 @@ describe("Admin main menu tests", () => {
         const store = createMockStore(mockAdminState());
         const rendered = shallow(<MainMenuList/>, {context: {store}})
             .dive();
-        expect(rendered.find(ButtonLink).length).to.eq(0);
+        expect(rendered.find(ButtonLink).length).toEqual(0);
 
     });
 
@@ -33,8 +33,8 @@ describe("Admin main menu tests", () => {
         const rendered = shallow(<MainMenuList/>, {context: {store}})
             .dive();
         const buttons = rendered.find(ButtonLink);
-        expect(buttons.length).to.eq(1);
-        expect(buttons.first().prop("href")).to.eq("/touchstones/");
+        expect(buttons.length).toEqual(1);
+        expect(buttons.first().prop("href")).toEqual("/touchstones/");
 
     });
 
@@ -44,8 +44,8 @@ describe("Admin main menu tests", () => {
 
         const rendered = shallow(<MainMenuList/>, {context: {store}})
             .dive(); const buttons = rendered.find(ButtonLink);
-        expect(buttons.length).to.eq(1);
-        expect(buttons.first().prop("href")).to.eq("/users/");
+        expect(buttons.length).toEqual(1);
+        expect(buttons.first().prop("href")).toEqual("/users/");
 
     });
 
@@ -56,8 +56,8 @@ describe("Admin main menu tests", () => {
         const rendered = shallow(<MainMenuList/>, {context: {store}})
             .dive();
         const buttons = rendered.find(ButtonLink);
-        expect(buttons.length).to.eq(1);
-        expect(buttons.first().prop("href")).to.eq("/modelling-groups/");
+        expect(buttons.length).toEqual(1);
+        expect(buttons.first().prop("href")).toEqual("/modelling-groups/");
 
     });
 

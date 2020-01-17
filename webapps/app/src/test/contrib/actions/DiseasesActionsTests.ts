@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import { Sandbox } from "../../Sandbox";
 import { diseasesActionCreators } from "../../../main/shared/actions/diseasesActionCreators";
@@ -24,7 +24,7 @@ describe("Diseases actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: DiseasesTypes.DISEASES_FETCHED, data: [testDisease] };
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
@@ -38,7 +38,7 @@ describe("Diseases actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: DiseasesTypes.DISEASES_SET_CURRENT_DISEASE_ID, data: testDisease.id };
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });

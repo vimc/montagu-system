@@ -1,11 +1,10 @@
-import {expect} from "chai";
-
 import {Sandbox} from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
 import {mockBreadcrumbs, mockUser} from "../../../mocks/mockModels";
 import {usersListPageActionCreators} from "../../../../main/admin/actions/pages/UsersListPageActionCreators";
 import {UsersTypes} from "../../../../main/admin/actionTypes/UsersTypes";
 import {UsersService} from "../../../../main/admin/services/UsersService";
+import DoneCallback = jest.DoneCallback;
 
 describe("User List Page actions tests", () => {
     const sandbox = new Sandbox();
@@ -30,7 +29,7 @@ describe("User List Page actions tests", () => {
             const expectedPayload = [
                 {type: UsersTypes.ALL_USERS_FETCHED, data: [testUser]}
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
             done();
         });
     });

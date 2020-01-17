@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockAdminStore} from "../../../mocks/mockStore";
@@ -26,8 +26,8 @@ describe("Touchstone responsibility page actions tests", () => {
         store.dispatch(touchstoneResponsibilitiesPageActionCreators
             .loadData({touchstoneVersionId: "t1", touchstoneId: "whatever"}));
         setTimeout(() => {
-            expect(setCurrentStub.called).to.be.true;
-            expect(responsibilitiesStub.called).to.be.true;
+            expect(setCurrentStub.called).toBe(true);
+            expect(responsibilitiesStub.called).toBe(true);
             done();
         });
     });
@@ -41,8 +41,8 @@ describe("Touchstone responsibility page actions tests", () => {
         });
         const result = touchstoneResponsibilitiesPageActionCreators.createBreadcrumb(state);
 
-        expect(result.urlFragment).to.eq("t1/responsibilities/");
-        expect(result.name).to.eq("Responsibility Sets in t1");
+        expect(result.urlFragment).toEqual("t1/responsibilities/");
+        expect(result.name).toEqual("Responsibility Sets in t1");
     });
 
 

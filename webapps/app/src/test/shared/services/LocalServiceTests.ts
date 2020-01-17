@@ -1,4 +1,3 @@
-import {expect} from "chai";
 import {createStore} from "redux";
 
 import {Sandbox} from "../../Sandbox";
@@ -15,6 +14,7 @@ import {mockContribState} from "../../mocks/mockStates";
 import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 
 describe('LocalService', () => {
+
     describe("requests", () => {
 
         const sandbox = new Sandbox();
@@ -40,7 +40,7 @@ describe('LocalService', () => {
 
             const testService = new TestService(store.dispatch, store.getState);
             const serviceData = testService.test();
-            expect(serviceData.options.Authorization).is.equal("Basic " + btoa(`${email}:${password}`));
+            expect(serviceData.options.Authorization).toBe("Basic " + btoa(`${email}:${password}`));
         });
 
         it("ordinary query includes credentials option", () => {
@@ -54,7 +54,7 @@ describe('LocalService', () => {
 
             const testService = new TestService(store.dispatch, store.getState);
             const serviceData = testService.test();
-            expect(serviceData.credentials).to.equal("include");
+            expect(serviceData.credentials).toEqual("include");
         });
 
         it("can send bearer token with query", () => {
@@ -64,15 +64,14 @@ describe('LocalService', () => {
 
             class TestService extends AbstractLocalService {
                 test(): RequestOptions {
-                    return this
-                        .setOptions({includeBearerToken: true})
+                    return this.setOptions({includeBearerToken: true})
                         .makeRequestOptions('GET');
                 }
             }
 
             const testService = new TestService(store.dispatch, store.getState);
             const serviceData = testService.test();
-            expect(serviceData.headers.Authorization).to.equal("Bearer TOKEN");
+            expect(serviceData.headers.Authorization).toEqual("Bearer TOKEN");
         });
 
         it('performs successful query', async () => {
@@ -89,8 +88,8 @@ describe('LocalService', () => {
             const doFetch = sandbox.setStubFunc(testService, "doFetch", () => Promise.resolve());
             sandbox.setStubFunc(testService, "processResponse", () => Promise.resolve("testData"));
             const serviceData = await testService.test();
-            expect(serviceData).to.equal("testData");
-            expect(doFetch.args[0][0]).to.eql("api.address/test/");
+            expect(serviceData).toEqual("testData");
+            expect(doFetch.args[0][0]).toEqual("api.address/test/");
         });
 
         it('performs query and api says token expired', async () => {
@@ -115,10 +114,10 @@ describe('LocalService', () => {
                 await testService.test();
             } catch (e) {
                 const actions = store.getActions();
-                expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
-                expect(actions[1].type).to.eql(NotificationTypeKeys.NOTIFY);
-                expect(actions[1].severity).to.eql("error");
-                expect(actions[1].message).to.contain("You will need to log in again");
+                expect(actions[0].type).toEqual(AuthTypeKeys.UNAUTHENTICATED);
+                expect(actions[1].type).toEqual(NotificationTypeKeys.NOTIFY);
+                expect(actions[1].severity).toEqual("error");
+                expect(actions[1].message).toContain("You will need to log in again");
             }
         });
 
@@ -144,10 +143,10 @@ describe('LocalService', () => {
                 await testService.test();
             } catch (e) {
                 const actions = store.getActions();
-                expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
-                expect(actions[1].type).to.eql(NotificationTypeKeys.NOTIFY);
-                expect(actions[1].severity).to.eql("error");
-                expect(actions[1].message).to.contain("some message");
+                expect(actions[0].type).toEqual(AuthTypeKeys.UNAUTHENTICATED);
+                expect(actions[1].type).toEqual(NotificationTypeKeys.NOTIFY);
+                expect(actions[1].severity).toEqual("error");
+                expect(actions[1].message).toContain("some message");
             }
         });
 
@@ -168,10 +167,10 @@ describe('LocalService', () => {
                 await testService.test();
             } catch (e) {
                 const actions = store.getActions();
-                expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
-                expect(actions[1].type).to.eql(NotificationTypeKeys.NOTIFY);
-                expect(actions[1].severity).to.eql("error");
-                expect(actions[1].message).to.contain("The server response was not correctly formatted");
+                expect(actions[0].type).toEqual(AuthTypeKeys.UNAUTHENTICATED);
+                expect(actions[1].type).toEqual(NotificationTypeKeys.NOTIFY);
+                expect(actions[1].severity).toEqual("error");
+                expect(actions[1].message).toContain("The server response was not correctly formatted");
             }
         });
     });
@@ -237,12 +236,12 @@ describe('LocalService', () => {
 
             // first set the cache
             await testService.testWithCache();
-            expect(cacheEngine.get(fullyQualifiedKey)).to.not.be.undefined;
+            expect(cacheEngine.get(fullyQualifiedKey)).toBeDefined();
 
             // now clear
             testService.publicClearCache("test", url);
 
-            expect(cacheEngine.get(fullyQualifiedKey)).to.be.undefined;
+            expect(cacheEngine.get(fullyQualifiedKey)).toBeUndefined();
 
         });
 
@@ -250,32 +249,35 @@ describe('LocalService', () => {
 
             const result = await testService.testWithoutCache();
 
-            expect(doFetchStub.called).to.equal(true);
-            expect(setCacheSpy.called).to.equal(false);
-            expect(getCacheSpy.called).to.equal(false);
-            expect(result).to.equal("testData");
+            expect(doFetchStub.called).toEqual(true);
+            expect(setCacheSpy.called).toEqual(false);
+            expect(getCacheSpy.called).toEqual(false);
+            expect(result).toEqual("testData");
         });
 
-        it('performs query with the cache 2 times, first time from api, second from cache', async () => {
+        it(
+            'performs query with the cache 2 times, first time from api, second from cache',
+            async () => {
 
-            const resultFromApi = await testService.testWithCache();
+                const resultFromApi = await testService.testWithCache();
 
-            // first time it makes request and sets data to cache
-            expect(doFetchStub.called).to.equal(true);
-            expect(setCacheSpy.called).to.equal(true);
-            expect(resultFromApi).to.equal("testData");
+                // first time it makes request and sets data to cache
+                expect(doFetchStub.called).toEqual(true);
+                expect(setCacheSpy.called).toEqual(true);
+                expect(resultFromApi).toEqual("testData");
 
-            doFetchStub.reset();
+                doFetchStub.reset();
 
-            // do second request
-            const resultFromCache = await testService.testWithCache();
+                // do second request
+                const resultFromCache = await testService.testWithCache();
 
-            // second time it doesn't make a request and fetches data from cache
-            expect(doFetchStub.called).to.equal(false);
-            expect(getCacheSpy.called).to.equal(true);
-            expect(resultFromCache).to.equal("testData");
-            expect(cacheEngine.get(["localService", testService.constructor.name, "test",
-                encodeURIComponent(settings.apiUrl() + "/test/")].join("."))).to.equal("testData");
-        });
+                // second time it doesn't make a request and fetches data from cache
+                expect(doFetchStub.called).toEqual(false);
+                expect(getCacheSpy.called).toEqual(true);
+                expect(resultFromCache).toEqual("testData");
+                expect(cacheEngine.get(["localService", testService.constructor.name, "test",
+                    encodeURIComponent(settings.apiUrl() + "/test/")].join("."))).toEqual("testData");
+            }
+        );
     });
 });

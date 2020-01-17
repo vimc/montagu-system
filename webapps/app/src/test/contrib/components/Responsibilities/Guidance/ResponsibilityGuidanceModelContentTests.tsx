@@ -1,9 +1,7 @@
 import {Sandbox} from "../../../../Sandbox";
 import {mockTouchstoneVersion} from "../../../../mocks/mockModels";
 import {createMockContribStore} from "../../../../mocks/mockStore";
-import {mockMatch} from "../../../../mocks/mocks";
 import {TouchstoneVersion} from "../../../../../main/shared/models/Generated";
-import {ResponsibilityGuidanceContentProps} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceContentProps";
 import {responsibilityGuidanceModelInputsPageActionCreators} from "../../../../../main/contrib/actions/pages/responsibilityGuidancePageActionCreators";
 import {shallow} from "enzyme";
 import {ResponsibilityGuidanceModelInputsContentLatest} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceModelInputsContentLatest";
@@ -12,9 +10,8 @@ import {ResponsibilityGuidanceModelOutputsContentLatest} from "../../../../../ma
 import {ResponsibilityGuidanceModelOutputsContent2017} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceModelOutputsContent2017";
 
 import {ResponsibilityGuidanceTouchstoneNotOpenContent} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceTouchstoneNotOpenContent";
-import {expect} from "chai";
+
 import * as React from "react";
-import {match} from 'react-router';
 import { Store } from "redux";
 import {ContribAppState} from "../../../../../main/contrib/reducers/contribAppReducers";
 import {PageArticle} from "../../../../../main/shared/components/PageWithHeader/PageArticle";
@@ -42,12 +39,12 @@ describe("Guidance Content Component tests", () => {
         const rendered = shallow(<ResponsibilityGuidanceModelInputsContentLatest touchstoneVersion={testTouchstone}/>, {context: {store}});
 
         const props = rendered.props();
-        expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
+        expect(props.touchstoneVersion.name).toBe(testTouchstone.name);
         const pageArticle = rendered.dive().find(PageArticle);
-        expect(pageArticle.props().title).is.equal("Guidance on model inputs: coverage and demographic data");
+        expect(pageArticle.props().title).toBe("Guidance on model inputs: coverage and demographic data");
 
         const alert = rendered.dive().find('.alert-primary');
-        expect(alert.getElements().length).is.equal(1);
+        expect(alert.getElements().length).toBe(1);
 
     });
 
@@ -57,12 +54,12 @@ describe("Guidance Content Component tests", () => {
         const rendered = shallow(<ResponsibilityGuidanceModelInputsContent2017 touchstoneVersion={testTouchstone}/>, {context: {store}});
 
         const props = rendered.props();
-        expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
+        expect(props.touchstoneVersion.name).toBe(testTouchstone.name);
         const pageArticle = rendered.dive().find(PageArticle);
-        expect(pageArticle.props().title).is.equal("Guidance on model inputs: coverage and demographic data");
+        expect(pageArticle.props().title).toBe("Guidance on model inputs: coverage and demographic data");
 
         const alert = rendered.dive().find('.alert-primary');
-        expect(alert.getElements().length).is.equal(1);
+        expect(alert.getElements().length).toBe(1);
 
     });
 
@@ -72,12 +69,12 @@ describe("Guidance Content Component tests", () => {
         const rendered = shallow(<ResponsibilityGuidanceTouchstoneNotOpenContent touchstoneVersion={testTouchstone}/>, {context: {store}});
 
         const props = rendered.props();
-        expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
+        expect(props.touchstoneVersion.name).toBe(testTouchstone.name);
         const pageArticle = rendered.dive().find(PageArticle);
-        expect(pageArticle.props().title).is.equal("Touchstone is not open");
+        expect(pageArticle.props().title).toBe("Touchstone is not open");
 
         const alert = rendered.dive().find('.alert-danger');
-        expect(alert.getElements().length).is.equal(1);
+        expect(alert.getElements().length).toBe(1);
 
     });
 
@@ -87,12 +84,12 @@ describe("Guidance Content Component tests", () => {
         const rendered = shallow(<ResponsibilityGuidanceModelOutputsContentLatest touchstoneVersion={testTouchstone}/>, {context: {store}});
 
         const props = rendered.props();
-        expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
+        expect(props.touchstoneVersion.name).toBe(testTouchstone.name);
         const pageArticle = rendered.dive().find(PageArticle);
-        expect(pageArticle.props().title).is.equal("Guidance on model outputs: how to generate and upload central estimates");
+        expect(pageArticle.props().title).toBe("Guidance on model outputs: how to generate and upload central estimates");
 
         const alert = rendered.dive().find('.alert-primary');
-        expect(alert.getElements().length).is.equal(1);
+        expect(alert.getElements().length).toBe(1);
 
     });
 
@@ -102,12 +99,12 @@ describe("Guidance Content Component tests", () => {
         const rendered = shallow(<ResponsibilityGuidanceModelOutputsContent2017 touchstoneVersion={testTouchstone}/>, {context: {store}});
 
         const props = rendered.props();
-        expect(props.touchstoneVersion.name).is.equal(testTouchstone.name);
+        expect(props.touchstoneVersion.name).toBe(testTouchstone.name);
         const pageArticle = rendered.dive().find(PageArticle);
-        expect(pageArticle.props().title).is.equal("Guidance on model outputs: how to generate and upload central and stochastic estimates");
+        expect(pageArticle.props().title).toBe("Guidance on model outputs: how to generate and upload central and stochastic estimates");
 
         const alert = rendered.dive().find('.alert-primary');
-        expect(alert.getElements().length).is.equal(1);
+        expect(alert.getElements().length).toBe(1);
 
     });
 

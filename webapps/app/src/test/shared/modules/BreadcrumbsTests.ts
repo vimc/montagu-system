@@ -1,9 +1,9 @@
-import { expect } from "chai";
+
 import {breadcrumbsModule} from "../../../main/shared/modules/breadcrumbs";
 
 describe('Breadcrumbs Module Tests', () => {
     it('initializes empty array if null passed', () => {
-        expect(breadcrumbsModule.initialize(null)).to.eql([]);
+        expect(breadcrumbsModule.initialize(null)).toEqual([]);
     });
 
     it('initializes breadcrumb with one element', () => {
@@ -11,7 +11,7 @@ describe('Breadcrumbs Module Tests', () => {
             name: 'A',
             urlFragment: '/',
             parent: null
-        })).to.eql([{
+        })).toEqual([{
             name: 'A',
             url: '/',
         }]);
@@ -22,7 +22,7 @@ describe('Breadcrumbs Module Tests', () => {
             name: 'A',
             urlFragment: '/',
             parent: null
-        })).to.eql([{
+        })).toEqual([{
             name: 'A',
             url: '/',
         }]);
@@ -37,7 +37,7 @@ describe('Breadcrumbs Module Tests', () => {
                 urlFragment: '/',
                 parent: null
             }
-        })).to.eql([{
+        })).toEqual([{
             name: 'A',
             urlFragment: '/',
             parent: null
@@ -61,6 +61,6 @@ describe('Breadcrumbs Module Tests', () => {
                 urlFragment: '/',
                 parent: null
             }
-        })).to.equal("/b/");
+        })).toEqual("/b/");
     });
 });

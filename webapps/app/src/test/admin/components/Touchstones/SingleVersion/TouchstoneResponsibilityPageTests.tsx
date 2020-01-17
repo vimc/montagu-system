@@ -3,7 +3,7 @@ import {
     mockResponsibilitySetWithExpectations
 } from "../../../../mocks/mockModels";
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 import * as React from "react";
 import {createMockAdminStore} from "../../../../mocks/mockStore";
 import {mockAdminState} from "../../../../mocks/mockStates";
@@ -42,7 +42,7 @@ describe("ResponsibilitiesPage", () => {
         const rendered = shallow(<ResponsibilitiesPage location={null} router={null} history={null}
                                                        match={mockMatch()}/>, {context: {store}})
             .dive();
-        expect(rendered.find(ResponsibilityList)).to.have.lengthOf(2);
+        expect(rendered.find(ResponsibilityList)).toHaveLength(2);
 
     });
 
@@ -52,7 +52,7 @@ describe("ResponsibilitiesPage", () => {
                                                        match={mockMatch()}/>, {context: {store}})
             .dive();
 
-        expect(rendered.find("h4").at(0).text()).to.eq("g1 (incomplete)");
+        expect(rendered.find("h4").at(0).text()).toEqual("g1 (incomplete)");
 
 
     });

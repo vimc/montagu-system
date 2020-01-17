@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import {mockDemographicDataset} from "../../mocks/mockModels";
 import {Demographic, DemographicTypes} from "../../../main/shared/actionTypes/DemographicTypes";
@@ -12,55 +12,55 @@ describe('Demographic reducer tests', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED,
             data: [testDemographicDataSet]
-        })).to.eql({...demographicsInitialState, dataSets: [testDemographicDataSet]});
+        })).toEqual({...demographicsInitialState, dataSets: [testDemographicDataSet]});
     });
 
     it('sets fetched empty data sets', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED,
             data: null
-        })).to.eql(demographicsInitialState);
+        })).toEqual(demographicsInitialState);
     });
 
     it('sets selected data sets', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET,
             data: testDemographicDataSet
-        })).to.eql({...demographicsInitialState, selectedDataSet: testDemographicDataSet});
+        })).toEqual({...demographicsInitialState, selectedDataSet: testDemographicDataSet});
     });
 
     it('sets empty selected data sets', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_SET_DATA_SET,
             data: null
-        })).to.eql(demographicsInitialState);
+        })).toEqual(demographicsInitialState);
     });
 
     it('sets selected format', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_SET_FORMAT,
             data: Demographic.SelectedFormat.wide
-        })).to.eql({...demographicsInitialState, selectedFormat: 'wide'});
+        })).toEqual({...demographicsInitialState, selectedFormat: 'wide'});
     });
 
     it('sets selected empty format', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_SET_FORMAT,
             data: null
-        })).to.eql(demographicsInitialState);
+        })).toEqual(demographicsInitialState);
     });
 
     it('sets selected gender', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_SET_GENDER,
             data: Demographic.SelectedGender.female
-        })).to.eql({...demographicsInitialState, selectedGender: 'female'});
+        })).toEqual({...demographicsInitialState, selectedGender: 'female'});
     });
 
     it('sets selected empty gender', () => {
         expect(demographicsReducer(undefined, {
             type: DemographicTypes.DEMOGRAPHIC_SET_GENDER,
             data: null
-        })).to.eql(demographicsInitialState);
+        })).toEqual(demographicsInitialState);
     });
 });

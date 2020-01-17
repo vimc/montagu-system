@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import { Sandbox } from "../../Sandbox";
 import { modellingGroupsActionCreators } from "../../../main/contrib/actions/modellingGroupsActionCreators";
@@ -27,23 +27,26 @@ describe("Modelling groups actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: ModellingGroupTypes.USER_GROUPS_FETCHED, data: [testGroup1] };
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    it("set current group by group id using previously loaded groups", (done) => {
-        const initialState = {
-            groups: {userGroups: [testGroup1]}
-        };
-        const store = createMockStore(initialState);
-        store.dispatch(modellingGroupsActionCreators.setCurrentGroup("test1"));
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup1 };
-            expect(actions).to.eql([expectedPayload]);
-            done();
-        });
-    });
+    it(
+        "set current group by group id using previously loaded groups",
+        (done) => {
+            const initialState = {
+                groups: {userGroups: [testGroup1]}
+            };
+            const store = createMockStore(initialState);
+            store.dispatch(modellingGroupsActionCreators.setCurrentGroup("test1"));
+            setTimeout(() => {
+                const actions = store.getActions();
+                const expectedPayload = { type: ModellingGroupTypes.SET_CURRENT_USER_GROUP, data: testGroup1 };
+                expect(actions).toEqual([expectedPayload]);
+                done();
+            });
+        }
+    );
 
 });

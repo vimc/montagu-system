@@ -1,5 +1,5 @@
 import {notificationReducer, NotificationState} from "../../../main/shared/reducers/notificationReducer";
-import {expect} from "chai";
+
 import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 
 describe("notificationReducer", () => {
@@ -17,13 +17,13 @@ describe("notificationReducer", () => {
             type: NotificationTypeKeys.NOTIFY,
             message: "message1",
             severity: "error"
-        })).to.eql(state1);
+        })).toEqual(state1);
 
         expect(notificationReducer(state1, {
             type: NotificationTypeKeys.NOTIFY,
             message: "message2",
             severity: "error"
-        })).to.eql(state2);
+        })).toEqual(state2);
     });
 
     it("adds infos to end of queue", () => {
@@ -40,13 +40,13 @@ describe("notificationReducer", () => {
             type: NotificationTypeKeys.NOTIFY,
             message: "message1",
             severity: "info"
-        })).to.eql(state1);
+        })).toEqual(state1);
 
         expect(notificationReducer(state1, {
             type: NotificationTypeKeys.NOTIFY,
             message: "message2",
             severity: "info"
-        })).to.eql(state2);
+        })).toEqual(state2);
     });
 
     it("clears infos", () => {
@@ -56,7 +56,7 @@ describe("notificationReducer", () => {
         };
 
         expect(notificationReducer(initial, {type: NotificationTypeKeys.CLEAR, severity: "info"}))
-            .to.eql({infoMessages: [], errors: ["e"]});
+            .toEqual({infoMessages: [], errors: ["e"]});
     });
 
     it("clears errors", () => {
@@ -66,6 +66,6 @@ describe("notificationReducer", () => {
         };
 
         expect(notificationReducer(initial, {type: NotificationTypeKeys.CLEAR, severity: "error"}))
-            .to.eql({infoMessages: ["i"], errors: []});
+            .toEqual({infoMessages: ["i"], errors: []});
     });
 });

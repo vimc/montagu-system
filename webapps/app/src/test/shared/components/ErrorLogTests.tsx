@@ -1,6 +1,6 @@
 import * as React from "react";
 import {shallow} from "enzyme";
-import {expect} from "chai";
+
 
 import {ErrorLog, ErrorLogComponent, mapStateToProps} from "../../../main/shared/components/ErrorLog/ErrorLog";
 import {Sandbox} from "../../Sandbox";
@@ -18,16 +18,16 @@ describe("ErrorLog", () => {
 
     it("is hidden when there are no errors", () => {
         const rendered = shallow(<ErrorLogComponent errors={[]} clear={clear}/>);
-        expect(rendered.text()).to.be.empty;
+        expect(rendered.text()).toBe("");
     });
 
     it("it renders each error", () => {
         const errors = ["a", "b"];
         const rendered = shallow(<ErrorLogComponent errors={errors} clear={clear}/>);
         const items = rendered.find("li");
-        expect(items).to.have.length(2);
-        expect(items.at(0).text()).to.equal("a");
-        expect(items.at(1).text()).to.equal("b");
+        expect(items).toHaveLength(2);
+        expect(items.at(0).text()).toEqual("a");
+        expect(items.at(1).text()).toEqual("b");
     });
 
     it("clicking clear button emits clear event", () => {
@@ -36,12 +36,12 @@ describe("ErrorLog", () => {
         const store = createMockAdminStore(mockAdminState({notifications: notificationState}));
         const rendered = shallow(<ErrorLog/>, {context: {store}}).dive();
         rendered.find("button").simulate("click");
-        expect(stub.getCall(0).args).to.eql(["error"]);
+        expect(stub.getCall(0).args).toEqual(["error"]);
     });
 
     it("maps state to props", () => {
         const notificationState: Partial<NotificationState> = {errors: ["a", "b"]};
         const props = mapStateToProps(mockAdminState({notifications: notificationState}));
-        expect(props).to.eql({errors: ["a", "b"]});
+        expect(props).toEqual({errors: ["a", "b"]});
     });
 });

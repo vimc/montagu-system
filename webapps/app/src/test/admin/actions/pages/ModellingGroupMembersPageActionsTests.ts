@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import { Sandbox } from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
@@ -61,11 +61,11 @@ describe("Modelling Group Members Page actions tests", () => {
             { type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]},
             { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs }
         ];
-        expect(actions).to.eql(expectedPayload);
-        expect(getAllGroupsStub.called).to.be.true;
-        expect(getAllUsersStub.called).to.be.true;
-        expect(getGroupDetailsServiceStub.called).to.be.true;
-        expect(getGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
+        expect(actions).toEqual(expectedPayload);
+        expect(getAllGroupsStub.called).toBe(true);
+        expect(getAllUsersStub.called).toBe(true);
+        expect(getGroupDetailsServiceStub.called).toBe(true);
+        expect(getGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
 
     });
 

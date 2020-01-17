@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 import { createMemoryHistory } from 'history';
 
 import {createContribStore} from "../../../main/contrib/createStore";
@@ -26,8 +26,8 @@ describe('Run Parameters service tests', () => {
 
         runParametersService.clearCacheForGetParameterSets("group-2", "touchstone-2");
 
-        expect(clearCacheStub.getCall(0).args[0]).to.equal("runParameters");
-        expect(clearCacheStub.getCall(0).args[1]).to.equal("/modelling-groups/group-2/model-run-parameters/touchstone-2/");
+        expect(clearCacheStub.getCall(0).args[0]).toEqual("runParameters");
+        expect(clearCacheStub.getCall(0).args[1]).toEqual("/modelling-groups/group-2/model-run-parameters/touchstone-2/");
     });
 
     it('fetches parameters sets', () => {
@@ -40,8 +40,8 @@ describe('Run Parameters service tests', () => {
 
         runParametersService.getParameterSets("group-3", "touchstone-3");
 
-        expect(getStub.getCall(0).args[0]).to.equal("/modelling-groups/group-3/model-run-parameters/touchstone-3/");
-        expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: "runParameters" });
+        expect(getStub.getCall(0).args[0]).toEqual("/modelling-groups/group-3/model-run-parameters/touchstone-3/");
+        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: "runParameters" });
     });
 
     it('uploads set', () => {
@@ -53,7 +53,7 @@ describe('Run Parameters service tests', () => {
 
         runParametersService.uploadSet("group-3", "touchstone-3", {} as FormData);
 
-        expect(postStub.getCall(0).args[0]).to.equal("/modelling-groups/group-3/model-run-parameters/touchstone-3/");
+        expect(postStub.getCall(0).args[0]).toEqual("/modelling-groups/group-3/model-run-parameters/touchstone-3/");
     });
 
 });

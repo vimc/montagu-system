@@ -21,3 +21,4 @@ src/webmodels/build/**
 src/webmodels/generate/build/**
 src/webmodels/.idea
 token_key/*
+coverage/*

@@ -2,7 +2,7 @@ import {Sandbox} from "../../../Sandbox";
 import {mockModel} from "../../../mocks/mockModels";
 import {mockAdminState} from "../../../mocks/mockStates";
 import {createMockAdminStore} from "../../../mocks/mockStore";
-import {expect} from "chai";
+
 import {modelMetaPageActionCreators} from "../../../../main/admin/actions/pages/ModelMetaPageActionCreators";
 import {modellingGroupsListPageActionCreators} from "../../../../main/admin/actions/pages/ModellingGroupsListPageActionCreators";
 import {modellingGroupsActionCreators} from "../../../../main/admin/actions/modellingGroupsActionCreators";
@@ -21,7 +21,7 @@ describe("modelMetaPageActionCreators", () => {
         sandbox.setStubReduxAction(modellingGroupsActionCreators, "getAllModelsAndExpectations");
         const store = createMockAdminStore(state);
         await store.dispatch(modelMetaPageActionCreators.loadData());
-        expect(store.getActions()).to.eql([
+        expect(store.getActions()).toEqual([
             {type: 'test'}
         ]);
     });
@@ -30,15 +30,15 @@ describe("modelMetaPageActionCreators", () => {
 
         const result = modelMetaPageActionCreators.createBreadcrumb(state);
 
-        expect(result.urlFragment).to.eq("models/");
-        expect(result.name).to.eq("Model Metadata");
+        expect(result.urlFragment).toEqual("models/");
+        expect(result.name).toEqual("Model Metadata");
     });
 
     it("has ModellingGroupsListPage as parent", () => {
-        expect(modelMetaPageActionCreators.parent).to.eq(modellingGroupsListPageActionCreators)
+        expect(modelMetaPageActionCreators.parent).toEqual(modellingGroupsListPageActionCreators)
     });
 
     it("has title", () => {
-        expect(modelMetaPageActionCreators.title()).to.eq("Model Metadata")
+        expect(modelMetaPageActionCreators.title()).toEqual("Model Metadata")
     });
 });

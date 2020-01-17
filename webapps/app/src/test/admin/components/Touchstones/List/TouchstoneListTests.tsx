@@ -5,7 +5,7 @@ import {TouchstoneList} from "../../../../../main/admin/components/Touchstones/L
 import {shallow} from "enzyme";
 import * as React from "react";
 import {TouchstoneTable} from "../../../../../main/admin/components/Touchstones/List/TouchstoneTable";
-import {expect} from "chai";
+
 
 describe("TouchstoneList (admin)", () => {
     it("touchstone with one open version is active", () => {
@@ -38,10 +38,10 @@ describe("TouchstoneList (admin)", () => {
         const sections = rendered.find(TouchstoneTable);
         const expectedSection = sections.at(isActive ? 0 : 1);
         const wrongSection = sections.at(isActive ? 1 : 0);
-        expect(expectedSection.props()).to.eql({
+        expect(expectedSection.props()).toEqual({
             touchstones: [touchstone]
         });
-        expect(wrongSection.props()).to.eql({
+        expect(wrongSection.props()).toEqual({
             touchstones: []
         });
     }

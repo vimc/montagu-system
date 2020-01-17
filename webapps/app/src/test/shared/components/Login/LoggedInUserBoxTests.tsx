@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Sandbox} from "../../../Sandbox";
-import {expect} from "chai";
+
 import {mount, shallow} from "enzyme";
 import {Provider} from "react-redux";
 import {MemoryRouter as Router} from 'react-router-dom';
@@ -16,6 +16,7 @@ import {mockContribState} from "../../../mocks/mockStates";
 import {createMockContribStore} from "../../../mocks/mockStore";
 import {AuthTypeKeys} from "../../../../main/shared/actionTypes/AuthTypes";
 import {AuthService} from "../../../../main/shared/services/AuthService";
+import DoneCallback = jest.DoneCallback;
 
 describe("LoggedInUserBoxComponent", () => {
     const sandbox = new Sandbox();
@@ -28,7 +29,7 @@ describe("LoggedInUserBoxComponent", () => {
             username={initialAuthState.username}
             logOut={() => ({})}
         />);
-        expect(rendered.text()).to.be.empty;
+        expect(rendered.text()).toBe("");
     });
 
     it("renders log out link", () => {
@@ -37,25 +38,28 @@ describe("LoggedInUserBoxComponent", () => {
             username="test.user"
             logOut={() => ({})}
         />);
-        expect(rendered.text()).to.contain("Logged in as test.user");
-        expect(rendered.find(InternalLink)).to.have.length(1);
+        expect(rendered.text()).toContain("Logged in as test.user");
+        expect(rendered.find(InternalLink)).toHaveLength(1);
     });
 
     it("maps state to props", () => {
         const contribStateMock = mockContribState({auth: {loggedIn: true, username: "test.user"}});
         const props = mapStateToProps(contribStateMock);
-        expect(props.username).to.eq("test.user");
-        expect(props.loggedIn).to.eq(true);
+        expect(props.username).toEqual("test.user");
+        expect(props.loggedIn).toEqual(true);
     });
 
-    it("clicking log out dispatches unauthenticated action", (done: DoneCallback) => {
-        const store = createMockContribStore({auth: {loggedIn: true}});
-        sandbox.setStub(AuthService.prototype, "logOutOfAPI");
-        const rendered = mount(<Provider store={store}><Router><LoggedInUserBox/></Router></Provider>);
-        rendered.find(InternalLink).simulate("click");
-        const actions = store.getActions();
-        expect(actions[0].type).to.eql(AuthTypeKeys.UNAUTHENTICATED);
-        done();
-    });
+    it(
+        "clicking log out dispatches unauthenticated action",
+        (done: DoneCallback) => {
+            const store = createMockContribStore({auth: {loggedIn: true}});
+            sandbox.setStub(AuthService.prototype, "logOutOfAPI");
+            const rendered = mount(<Provider store={store}><Router><LoggedInUserBox/></Router></Provider>);
+            rendered.find(InternalLink).simulate("click");
+            const actions = store.getActions();
+            expect(actions[0].type).toEqual(AuthTypeKeys.UNAUTHENTICATED);
+            done();
+        }
+    );
 
 });

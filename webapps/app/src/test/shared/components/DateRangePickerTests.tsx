@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {shallow} from "enzyme";
 
 import "../../helper";
@@ -34,9 +34,9 @@ describe("DateRangePicker", () => {
 
         const startDatePicker = rendered.find(DatePicker).first();
 
-        expect(startDatePicker.first().prop("value")).to.eql(value.start);
-        expect(startDatePicker.first().prop("fromMonth")).to.eql(from);
-        expect(startDatePicker.first().prop("toMonth")).to.eql(to);
+        expect(startDatePicker.first().prop("value")).toEqual(value.start);
+        expect(startDatePicker.first().prop("fromMonth")).toEqual(from);
+        expect(startDatePicker.first().prop("toMonth")).toEqual(to);
 
     });
 
@@ -51,9 +51,9 @@ describe("DateRangePicker", () => {
 
         const startDatePicker = rendered.find(DatePicker).last();
 
-        expect(startDatePicker.first().prop("value")).to.eql(value.end);
-        expect(startDatePicker.first().prop("fromMonth")).to.eql(from);
-        expect(startDatePicker.first().prop("toMonth")).to.eql(to);
+        expect(startDatePicker.first().prop("value")).toEqual(value.end);
+        expect(startDatePicker.first().prop("fromMonth")).toEqual(from);
+        expect(startDatePicker.first().prop("toMonth")).toEqual(to);
 
     });
 
@@ -71,7 +71,7 @@ describe("DateRangePicker", () => {
         const startDatePicker = rendered.find(DatePicker).first();
         startDatePicker.simulate("change");
 
-        expect(timeFromSelectedStub.called).to.be.true;
+        expect(timeFromSelectedStub.called).toBe(true);
     });
 
     it("calls timeUntilSelected when end date changes", () => {
@@ -88,7 +88,7 @@ describe("DateRangePicker", () => {
         const startDatePicker = rendered.find(DatePicker).last();
         startDatePicker.simulate("change");
 
-        expect(timeUntilSelectedStub.called).to.be.true;
+        expect(timeUntilSelectedStub.called).toBe(true);
     });
 
 });

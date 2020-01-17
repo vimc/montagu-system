@@ -1,5 +1,3 @@
-import {expect} from "chai";
-
 import {Sandbox} from "../../Sandbox";
 import {modellingGroupsActionCreators} from "../../../main/admin/actions/modellingGroupsActionCreators";
 import {createMockAdminStore, createMockStore} from "../../mocks/mockStore";
@@ -38,8 +36,8 @@ describe("Admin Modelling groups actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = {type: ModellingGroupTypes.GROUPS_FETCHED, data: [testGroup, testGroup2]};
-            expect(actions).to.eql([expectedPayload]);
-            expect(getAllGroupsServiceStub.called).to.be.true;
+            expect(actions).toEqual([expectedPayload]);
+            expect(getAllGroupsServiceStub.called).toBe(true);
             done();
         });
     });
@@ -55,19 +53,21 @@ describe("Admin Modelling groups actions tests", () => {
         });
         const getAllExpectationsServiceStub = sandbox.setStubFunc(ExpectationsService.prototype, "getAllExpectations",
             () => {
-           return Promise.resolve( [testExpectation, testExpectation2] );
-        });
+                return Promise.resolve([testExpectation, testExpectation2]);
+            });
 
         await store.dispatch(modellingGroupsActionCreators.getAllModelsAndExpectations());
 
         const actions = store.getActions();
 
-        expect(getAllGroupsServiceStub.called).to.be.true;
-        expect(getAllExpectationsServiceStub.called).to.be.true;
+        expect(getAllGroupsServiceStub.called).toBe(true);
+        expect(getAllExpectationsServiceStub.called).toBe(true);
 
-        const expectedPayload = {type: ModellingGroupTypes.MODELS_FETCHED, models: [testModel, testModel2],
-                                    expectations: [testExpectation, testExpectation2]};
-        expect(actions).to.eql([expectedPayload]);
+        const expectedPayload = {
+            type: ModellingGroupTypes.MODELS_FETCHED, models: [testModel, testModel2],
+            expectations: [testExpectation, testExpectation2]
+        };
+        expect(actions).toEqual([expectedPayload]);
 
     });
 
@@ -80,9 +80,9 @@ describe("Admin Modelling groups actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = {type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails};
-            expect(actions).to.eql([expectedPayload]);
-            expect(getGroupDetailsServiceStub.called).to.be.true;
-            expect(getGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
+            expect(actions).toEqual([expectedPayload]);
+            expect(getGroupDetailsServiceStub.called).toBe(true);
+            expect(getGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
             done();
         });
     });
@@ -93,21 +93,24 @@ describe("Admin Modelling groups actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP, data: testGroup};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
 
-    it("sets current group as null if not found in loaded in state groups", (done) => {
-        const store = createMockStore({groups: {groups: [testGroup]}});
-        store.dispatch(modellingGroupsActionCreators.setCurrentGroup(testGroup2.id));
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP, data: null as any};
-            expect(actions).to.eql([expectedPayload]);
-            done();
-        });
-    });
+    it(
+        "sets current group as null if not found in loaded in state groups",
+        (done) => {
+            const store = createMockStore({groups: {groups: [testGroup]}});
+            store.dispatch(modellingGroupsActionCreators.setCurrentGroup(testGroup2.id));
+            setTimeout(() => {
+                const actions = store.getActions();
+                const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP, data: null as any};
+                expect(actions).toEqual([expectedPayload]);
+                done();
+            });
+        }
+    );
 
 
     it("adds member to group, successfully", (done) => {
@@ -127,14 +130,14 @@ describe("Admin Modelling groups actions tests", () => {
                 {type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails},
                 {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]}
             ];
-            expect(actions).to.eql(expectedPayload);
-            expect(addMemberServiceStub.called).to.be.true;
-            expect(addMemberServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
-            expect(addMemberServiceStub.getCall(0).args[1]).to.equal(testUser.username);
-            expect(clearCacheForGroupDetailsServiceStub.called).to.be.true;
-            expect(clearCacheForGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
-            expect(getGroupDetailsServiceStub.called).to.be.true;
-            expect(getGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
+            expect(actions).toEqual(expectedPayload);
+            expect(addMemberServiceStub.called).toBe(true);
+            expect(addMemberServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
+            expect(addMemberServiceStub.getCall(0).args[1]).toEqual(testUser.username);
+            expect(clearCacheForGroupDetailsServiceStub.called).toBe(true);
+            expect(clearCacheForGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
+            expect(getGroupDetailsServiceStub.called).toBe(true);
+            expect(getGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
             done();
         });
     });
@@ -149,10 +152,10 @@ describe("Admin Modelling groups actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = [] as any;
-            expect(actions).to.eql(expectedPayload);
-            expect(addMemberServiceStub.called).to.be.true;
-            expect(addMemberServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
-            expect(addMemberServiceStub.getCall(0).args[1]).to.equal(testUser.username);
+            expect(actions).toEqual(expectedPayload);
+            expect(addMemberServiceStub.called).toBe(true);
+            expect(addMemberServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
+            expect(addMemberServiceStub.getCall(0).args[1]).toEqual(testUser.username);
             done();
         });
     });
@@ -174,14 +177,14 @@ describe("Admin Modelling groups actions tests", () => {
                 {type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails},
                 {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]}
             ];
-            expect(actions).to.eql(expectedPayload);
-            expect(removeMemberServiceStub.called).to.be.true;
-            expect(removeMemberServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
-            expect(removeMemberServiceStub.getCall(0).args[1]).to.equal(testUser.username);
-            expect(clearCacheForGroupDetailsServiceStub.called).to.be.true;
-            expect(clearCacheForGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
-            expect(getGroupDetailsServiceStub.called).to.be.true;
-            expect(getGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
+            expect(actions).toEqual(expectedPayload);
+            expect(removeMemberServiceStub.called).toBe(true);
+            expect(removeMemberServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
+            expect(removeMemberServiceStub.getCall(0).args[1]).toEqual(testUser.username);
+            expect(clearCacheForGroupDetailsServiceStub.called).toBe(true);
+            expect(clearCacheForGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
+            expect(getGroupDetailsServiceStub.called).toBe(true);
+            expect(getGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
             done();
         });
     });
@@ -195,10 +198,10 @@ describe("Admin Modelling groups actions tests", () => {
         store.dispatch(modellingGroupsActionCreators.removeUserFromGroup(testGroup.id, testUser.username));
         setTimeout(() => {
             const actions = store.getActions();
-            expect(actions).to.eql([]);
-            expect(removeMemberServiceStub.called).to.be.true;
-            expect(removeMemberServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
-            expect(removeMemberServiceStub.getCall(0).args[1]).to.equal(testUser.username);
+            expect(actions).toEqual([]);
+            expect(removeMemberServiceStub.called).toBe(true);
+            expect(removeMemberServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
+            expect(removeMemberServiceStub.getCall(0).args[1]).toEqual(testUser.username);
             done();
         });
     });
@@ -210,56 +213,74 @@ describe("Admin Modelling groups actions tests", () => {
         store.dispatch(modellingGroupsActionCreators.clearCacheForGroupDetails(testGroup.id));
         setTimeout(() => {
             const actions = store.getActions();
-            expect(actions).to.eql([]);
-            expect(clearCacheForGroupDetailsServiceStub.called).to.be.true;
-            expect(clearCacheForGroupDetailsServiceStub.getCall(0).args[0]).to.equal(testGroup.id);
+            expect(actions).toEqual([]);
+            expect(clearCacheForGroupDetailsServiceStub.called).toBe(true);
+            expect(clearCacheForGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
             done();
         });
     });
 
-    it("sets current members for current group details, empty if no users", (done) => {
-        const store = createMockStore({groups: {currentGroupDetails: testGroupDetails}, users: {users: []}});
-        store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [] as any};
-            expect(actions).to.eql([expectedPayload]);
-            done();
-        });
-    });
+    it(
+        "sets current members for current group details, empty if no users",
+        (done) => {
+            const store = createMockStore({groups: {currentGroupDetails: testGroupDetails}, users: {users: []}});
+            store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
+            setTimeout(() => {
+                const actions = store.getActions();
+                const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [] as any};
+                expect(actions).toEqual([expectedPayload]);
+                done();
+            });
+        }
+    );
 
-    it("sets current members for current group details, empty if no group details", (done) => {
-        const store = createMockStore({groups: {currentGroupDetails: null}, users: {users: [testUser]}});
-        store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [] as any};
-            expect(actions).to.eql([expectedPayload]);
-            done();
-        });
-    });
+    it(
+        "sets current members for current group details, empty if no group details",
+        (done) => {
+            const store = createMockStore({groups: {currentGroupDetails: null}, users: {users: [testUser]}});
+            store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
+            setTimeout(() => {
+                const actions = store.getActions();
+                const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [] as any};
+                expect(actions).toEqual([expectedPayload]);
+                done();
+            });
+        }
+    );
 
-    it("sets current members for current group details, empty if no match", (done) => {
-        const store = createMockStore({groups: {currentGroupDetails: testGroupDetails}, users: {users: [testUser2]}});
-        store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [] as any};
-            expect(actions).to.eql([expectedPayload]);
-            done();
-        });
-    });
+    it(
+        "sets current members for current group details, empty if no match",
+        (done) => {
+            const store = createMockStore({
+                groups: {currentGroupDetails: testGroupDetails},
+                users: {users: [testUser2]}
+            });
+            store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
+            setTimeout(() => {
+                const actions = store.getActions();
+                const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [] as any};
+                expect(actions).toEqual([expectedPayload]);
+                done();
+            });
+        }
+    );
 
-    it("sets current members for current group details, data if match", (done) => {
-        const store = createMockStore({groups: {currentGroupDetails: testGroupDetails}, users: {users: [testUser]}});
-        store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
-        setTimeout(() => {
-            const actions = store.getActions();
-            const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]};
-            expect(actions).to.eql([expectedPayload]);
-            done();
-        });
-    });
+    it(
+        "sets current members for current group details, data if match",
+        (done) => {
+            const store = createMockStore({
+                groups: {currentGroupDetails: testGroupDetails},
+                users: {users: [testUser]}
+            });
+            store.dispatch(modellingGroupsActionCreators.setCurrentGroupMembers());
+            setTimeout(() => {
+                const actions = store.getActions();
+                const expectedPayload = {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]};
+                expect(actions).toEqual([expectedPayload]);
+                done();
+            });
+        }
+    );
 
     it("dispatches ADD_MODELLING_GROUP on group creation", (done) => {
 
@@ -303,21 +324,23 @@ describe("Admin Modelling groups actions tests", () => {
 
         store.dispatch(modellingGroupsActionCreators.createModellingGroup(mockModellingGroupCreation()));
         setTimeout(() => {
-            expect(clearCacheStub.called).to.be.true;
+            expect(clearCacheStub.called).toBe(true);
             done();
         });
     });
 
-    it("dispatches nothing on failed group creation", (done) => {
+    it("dispatches nothing on failed group creation", async () => {
+        const store = createMockStore({});
+        sandbox.stubServiceWithFailure(ModellingGroupsService.prototype, "createGroup");
+        sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
 
-        verifyActionThatCallsService(done, {
-            mockServices: () => {
-                sandbox.stubServiceWithFailure(ModellingGroupsService.prototype, "createGroup");
-                sandbox.setStubReduxAction(ModellingGroupsService.prototype, "clearGroupListCache");
-            },
-            callActionCreator: () => modellingGroupsActionCreators.createModellingGroup(mockModellingGroupCreation()),
-            expectTheseActions: []
-        })
+        try {
+            await store.dispatch(modellingGroupsActionCreators.createModellingGroup(mockModellingGroupCreation()))
+        } catch {
+
+        }
+        const actions = store.getActions();
+        expect(actions).toEqual([]);
     });
 
 });

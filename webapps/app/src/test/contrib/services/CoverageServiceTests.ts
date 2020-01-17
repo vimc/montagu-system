@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 import { createMemoryHistory } from 'history';
 
 import {createContribStore} from "../../../main/contrib/createStore";
@@ -27,7 +27,7 @@ describe('Coverage service tests', () => {
         coverageService.getDataSets("group-1", "touchstone-1", "scenario-1");
 
         expect(getStub.getCall(0).args[0])
-            .to.equal("/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/coverage-sets/");
-        expect(setOptionsSpy.getCall(0).args[0]).to.eql({ cacheKey: 'sets' });
+            .toEqual("/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/coverage-sets/");
+        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'sets' });
     });
 });

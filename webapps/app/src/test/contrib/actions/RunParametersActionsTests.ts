@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../Sandbox";
 import {runParametersActionCreators} from "../../../main/contrib/actions/runParametersActionCreators";
@@ -34,7 +34,7 @@ describe("Run Parameters actions tests", () => {
         store.dispatch(runParametersActionCreators.clearCacheForGetParameterSets(testGroup.id, testTouchstoneVersion.id));
         setTimeout(() => {
             const actions = store.getActions();
-            expect(actions).to.eql([]);
+            expect(actions).toEqual([]);
             done();
         });
     });
@@ -48,7 +48,7 @@ describe("Run Parameters actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             const expectedPayload = { type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet]};
-            expect(actions).to.eql([expectedPayload]);
+            expect(actions).toEqual([expectedPayload]);
             done();
         });
     });
@@ -67,7 +67,7 @@ describe("Run Parameters actions tests", () => {
             const expectedPayload = [
                 { type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet] }
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
             done();
         });
     });
@@ -103,7 +103,7 @@ describe("Run Parameters actions tests", () => {
                 },
                 { type: RunParametersTypes.RUN_PARAMETERS_SETS_FETCHED, data: [testModelRunParametersSet] }
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
             done();
         });
     });
@@ -138,7 +138,7 @@ describe("Run Parameters actions tests", () => {
                     } as RunParametersUploadStatusData
                 }
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
             done();
         });
     });
@@ -152,7 +152,7 @@ describe("Run Parameters actions tests", () => {
             const expectedPayload = [
                 { type: RunParametersTypes.RUN_PARAMETERS_SET_UPLOAD_STATUS, data: resetData}
             ];
-            expect(actions).to.eql(expectedPayload);
+            expect(actions).toEqual(expectedPayload);
             done();
         });
     });

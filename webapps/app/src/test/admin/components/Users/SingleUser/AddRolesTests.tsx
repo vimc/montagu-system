@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import * as Sinon from "sinon";
 import {AddRoles, AddRolesComponent} from "../../../../../main/admin/components/Users/SingleUser/AddRoles";
 import {Sandbox} from "../../../../Sandbox";
@@ -41,7 +41,7 @@ describe("AddRoles", () => {
         const rendered = shallow(<AddRoles username={"testuser"} userRoles={[]}/>, {context: {store}})
             .dive().dive();
 
-        expect(rendered.find("option")).to.have.lengthOf(2)
+        expect(rendered.find("option")).toHaveLength(2)
     });
 
     it("only shows roles the user does not have", () => {
@@ -51,7 +51,7 @@ describe("AddRoles", () => {
                                                     allRoles={["role1", "role2"]}
                                                     addRoleToUser={null}/>);
 
-        expect(rendered.find("option")).to.have.lengthOf(1);
+        expect(rendered.find("option")).toHaveLength(1);
 
     });
 
@@ -69,7 +69,7 @@ describe("AddRoles", () => {
             }
         });
 
-        expect(addRoleStub.calledWith("testuser", "rolename")).to.be.true;
+        expect(addRoleStub.calledWith("testuser", "rolename")).toBe(true);
 
     })
 });

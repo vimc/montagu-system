@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 import {shallow} from "enzyme";
 
 import "../../../../helper";
@@ -23,7 +23,7 @@ describe("Modelling Groups List Page Component Tests", () => {
     it("renders component on connect level", () => {
         let store = createMockStore();
         const rendered = shallow(<ModellingGroupsListPage/>, {context: {store}});
-        expect(typeof rendered.props().onLoad).is.equal('function');
+        expect(typeof rendered.props().onLoad).toBe('function');
     });
 
     it("renders page component, title and sub components", () => {
@@ -34,9 +34,9 @@ describe("Modelling Groups List Page Component Tests", () => {
             match={testMatch}
         />, {context: {store}}).dive();
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).is.equal(true);
-        expect(pageArticle.props().title).is.equal(ModellingGroupsListPageComponent.title);
-        expect(pageArticle.find(ModellingGroupsListContent).length).is.equal(1);
-        expect(pageArticle.find(ButtonLink).prop("href")).is.equal("/modelling-groups/models")
+        expect(onLoadStub.called).toBe(true);
+        expect(pageArticle.props().title).toBe(ModellingGroupsListPageComponent.title);
+        expect(pageArticle.find(ModellingGroupsListContent).length).toBe(1);
+        expect(pageArticle.find(ButtonLink).prop("href")).toBe("/modelling-groups/models")
     });
 });

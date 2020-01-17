@@ -78,7 +78,7 @@ export abstract class AbstractLocalService {
             this.options.Authorization = 'Bearer ' + this.bearerToken;
         }
         // If we're not running in a browser, manually add the cookie (for integration tests)
-        if (navigator.userAgent.startsWith("Node.js")) {
+        if (navigator.userAgent.includes("jsdom")) {
             headers.Cookie = `montagu_jwt_token=${this.bearerToken}`;
         }
         if (this.options.Authorization) headers.Authorization = this.options.Authorization;

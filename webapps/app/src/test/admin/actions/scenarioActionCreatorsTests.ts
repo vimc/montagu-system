@@ -3,7 +3,7 @@ import {TouchstonesService} from "../../../main/shared/services/TouchstonesServi
 import {mockScenarioAndCoverageSets} from "../../mocks/mockModels";
 import {createMockAdminStore} from "../../mocks/mockStore";
 import {scenarioActionCreators} from "../../../main/admin/actions/scenarioActionCreators";
-import {expect} from "chai";
+
 import {ScenarioTypes} from "../../../main/admin/actionTypes/ScenarioTypes";
 
 describe("scenarioActionCreators", () => {
@@ -22,9 +22,9 @@ describe("scenarioActionCreators", () => {
         );
         await store.dispatch(scenarioActionCreators.getScenariosForTouchstoneVersion("touchstone-1"));
 
-        expect(serviceStub.callCount).to.equal(1, "Expected service to be called once");
-        expect(serviceStub.getCall(0).args).to.eql(["touchstone-1"]);
-        expect(store.getActions()).to.eql([
+        expect(serviceStub.callCount).toEqual(1);
+        expect(serviceStub.getCall(0).args).toEqual(["touchstone-1"]);
+        expect(store.getActions()).toEqual([
             {type: ScenarioTypes.SOME_SCENARIOS_FETCHED, data: scenarios}
         ]);
     });

@@ -1,4 +1,4 @@
-import { expect } from "chai";
+
 
 import {
     modellingGroupInitialState,
@@ -14,7 +14,7 @@ describe('Modelling groups reducer tests', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.USER_GROUPS_FETCHED,
             data: [testModellingGroup]
-        })).to.eql({...modellingGroupInitialState, userGroups: [testModellingGroup]});
+        })).toEqual({...modellingGroupInitialState, userGroups: [testModellingGroup]});
     });
 
     it('sets empty user groups', () => {
@@ -24,20 +24,20 @@ describe('Modelling groups reducer tests', () => {
         }, {
             type: ModellingGroupTypes.USER_GROUPS_FETCHED,
             data: []
-        })).to.eql(modellingGroupInitialState);
+        })).toEqual(modellingGroupInitialState);
     });
 
     it('sets current user group', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.SET_CURRENT_USER_GROUP,
             data: testModellingGroup
-        })).to.eql({...modellingGroupInitialState, currentUserGroup: testModellingGroup});
+        })).toEqual({...modellingGroupInitialState, currentUserGroup: testModellingGroup});
     });
 
     it('sets current empty user group', () => {
         expect(modellingGroupsReducer(undefined, {
             type: ModellingGroupTypes.SET_CURRENT_USER_GROUP,
             data: null
-        })).to.eql(modellingGroupInitialState);
+        })).toEqual(modellingGroupInitialState);
     });
 });

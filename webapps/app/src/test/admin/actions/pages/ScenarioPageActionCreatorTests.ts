@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 import {createMockAdminStore} from "../../../mocks/mockStore";
 import {Sandbox} from "../../../Sandbox";
 import {RecursivePartial} from "../../../mocks/mockStates";
@@ -20,16 +20,16 @@ describe("scenarioPageActionCreators", () => {
             touchstoneId: "touchstone",
             touchstoneVersionId: "touchstone-1"
         }));
-        expect(getScenariosStub.callCount).to.equal(1, "Expected stub to be called once");
-        expect(getScenariosStub.getCall(0).args).to.eql(["touchstone-1"]);
-        expect(getDiseasesStub.callCount).to.equal(1, "Expected stub to be called once");
-        expect(getDiseasesStub.getCall(0).args).to.eql([]);
+        expect(getScenariosStub.callCount).toEqual(1);
+        expect(getScenariosStub.getCall(0).args).toEqual(["touchstone-1"]);
+        expect(getDiseasesStub.callCount).toEqual(1);
+        expect(getDiseasesStub.getCall(0).args).toEqual([]);
     });
 
     it("creates breadcrumbs", () => {
         const result = scenarioPageActionCreators.createBreadcrumb(null);
-        expect(result.urlFragment).to.eq("scenarios/");
-        expect(result.name).to.eq("Scenarios");
+        expect(result.urlFragment).toEqual("scenarios/");
+        expect(result.name).toEqual("Scenarios");
     });
 
     it("has correct title", () => {
@@ -38,6 +38,6 @@ describe("scenarioPageActionCreators", () => {
                 currentTouchstoneVersion: mockTouchstoneVersion({ description: "Tasty" })
             }
         };
-        expect(scenarioPageActionCreators.title(state as AdminAppState)).to.eq("Scenarios in Tasty");
+        expect(scenarioPageActionCreators.title(state as AdminAppState)).toEqual("Scenarios in Tasty");
     });
 });

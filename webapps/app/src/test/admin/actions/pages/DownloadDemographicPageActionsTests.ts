@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
@@ -18,13 +18,13 @@ describe("Download Demographic Admin Page actions tests", () => {
 
     it("creates breadcrumb", () => {
         const result = downloadDemographicsAdminPageActionCreators.createBreadcrumb();
-        expect(result.urlFragment).to.eq("demographics/");
-        expect(result.name).to.eq("Download demographic data sets");
+        expect(result.urlFragment).toEqual("demographics/");
+        expect(result.name).toEqual("Download demographic data sets");
     });
 
     it("has touchstone version page as parent", () => {
 
-        expect(downloadDemographicsAdminPageActionCreators.parent).to.eq(touchstoneVersionPageActionCreators);
+        expect(downloadDemographicsAdminPageActionCreators.parent).toEqual(touchstoneVersionPageActionCreators);
     });
 
     it("loads demographic data sets", async () => {
@@ -47,7 +47,7 @@ describe("Download Demographic Admin Page actions tests", () => {
             {type: DemographicTypes.DEMOGRAPHIC_DATA_SETS_FETCHED, data: [testDemographicDataSet]}
         ];
 
-        expect(actions).to.eql(expectedPayload);
+        expect(actions).toEqual(expectedPayload);
     });
 
 

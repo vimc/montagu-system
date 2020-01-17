@@ -1,4 +1,4 @@
-import {expect} from "chai";
+
 
 import {authReducer, AuthState, initialAuthState, loadAuthState} from "../../../main/shared/reducers/authReducer";
 import {AuthTypeKeys} from "../../../main/shared/actionTypes/AuthTypes";
@@ -25,26 +25,29 @@ describe('Auth reducer tests', () => {
         expect(authReducer(undefined, {
             type: AuthTypeKeys.AUTHENTICATED,
             data: testAuthData
-        })).to.eql(
+        })).toEqual(
             testAuthData
         )
     });
 
-    it('reverts state to initial after unauth action and redirects to Montagu', () => {
-        const redirectStub = sandbox.setStub(helpers, "redirectToMontaguLogin");
-        expect(authReducer(undefined, {
-            type: AuthTypeKeys.UNAUTHENTICATED,
-        })).to.eql(
-            initialAuthState
-        );
-        expect(redirectStub.called).to.be.true;
-    });
+    it(
+        'reverts state to initial after unauth action and redirects to Montagu',
+        () => {
+            const redirectStub = sandbox.setStub(helpers, "redirectToMontaguLogin");
+            expect(authReducer(undefined, {
+                type: AuthTypeKeys.UNAUTHENTICATED,
+            })).toEqual(
+                initialAuthState
+            );
+            expect(redirectStub.called).toBe(true);
+        }
+    );
 
     it('sets error', () => {
         expect(authReducer(undefined, {
             type: AuthTypeKeys.AUTHENTICATION_ERROR,
             error: "Test Error"
-        })).to.eql(
+        })).toEqual(
             Object.assign({}, initialAuthState, {errorMessage: "Test Error"})
         )
     });
@@ -55,12 +58,12 @@ describe('Auth reducer tests', () => {
             loggedIn: true
         };
         const actual = authReducer(undefined, {type: AuthTypeKeys.RECEIVED_COOKIES});
-        expect(actual).to.eql(expected)
+        expect(actual).toEqual(expected)
     })
 });
 
 describe ('loadAuthState tests', () => {
-    it('loads basic param values' , () => {
+    it('loads basic param values', () => {
         const result = loadAuthState({
             username: "testUser",
             loggedIn: true,
@@ -69,14 +72,14 @@ describe ('loadAuthState tests', () => {
             modellingGroups: ["group1", "group2"]
             });
 
-        expect(result.username).to.eql("testUser");
-        expect(result.loggedIn).to.eql(true);
-        expect(result.bearerToken).to.eql("testToken");
-        expect(result.permissions).to.eql(["perm1", "perm2"]);
-        expect(result.modellingGroups).to.eql(["group1", "group2"]);
+        expect(result.username).toEqual("testUser");
+        expect(result.loggedIn).toEqual(true);
+        expect(result.bearerToken).toEqual("testToken");
+        expect(result.permissions).toEqual(["perm1", "perm2"]);
+        expect(result.modellingGroups).toEqual(["group1", "group2"]);
     });
 
-    it('sets isAccountActive correctly' , () => {
+    it('sets isAccountActive correctly', () => {
         const inactive = loadAuthState({
             username: "testUser",
             loggedIn: true,
@@ -85,7 +88,7 @@ describe ('loadAuthState tests', () => {
             modellingGroups: ["group1", "group2"]
         });
 
-        expect(inactive.isAccountActive).to.eql(false);
+        expect(inactive.isAccountActive).toEqual(false);
 
         const active = loadAuthState({
             username: "testUser",
@@ -95,11 +98,11 @@ describe ('loadAuthState tests', () => {
             modellingGroups: ["group1", "group2"]
         });
 
-        expect(active.isAccountActive).to.eql(true)
+        expect(active.isAccountActive).toEqual(true)
     });
 
 
-    it('sets isModeller correctly' , () => {
+    it('sets isModeller correctly', () => {
 
         const modeller = loadAuthState({
             username: "testUser",
@@ -108,7 +111,7 @@ describe ('loadAuthState tests', () => {
             permissions: ["perm1", "perm2"],
             modellingGroups: ["group1", "group2"]
         });
-        expect(modeller.isModeller).to.eql(true);
+        expect(modeller.isModeller).toEqual(true);
 
         const nonModeller = loadAuthState({
             username: "testUser",
@@ -117,7 +120,7 @@ describe ('loadAuthState tests', () => {
             permissions: ["perm1", "perm2"],
             modellingGroups: [] as string[]
         });
-        expect(nonModeller.isModeller).to.eql(false);
+        expect(nonModeller.isModeller).toEqual(false);
     });
 
 

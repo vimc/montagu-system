@@ -1,6 +1,6 @@
 import {shallow} from "enzyme";
 import * as React from "react";
-import {expect} from "chai";
+
 
 import "../../../../../helper";
 import {
@@ -35,11 +35,11 @@ describe("Modelling Group Members Add component tests", () => {
                 />,
                 {context: {store}}
             );
-            expect(rendered.find(ModellingGroupMembersAddComponent).length).to.equal(1);
-            expect(rendered.props().members).to.eql([testUser1.username]);
-            expect(rendered.props().users).to.eql([testUser1, testUser2]);
-            expect(rendered.props().groupId).to.equal(groupId);
-            expect(typeof rendered.props().addUserToGroup).to.equal("function");
+            expect(rendered.find(ModellingGroupMembersAddComponent).length).toEqual(1);
+            expect(rendered.props().members).toEqual([testUser1.username]);
+            expect(rendered.props().users).toEqual([testUser1, testUser2]);
+            expect(rendered.props().groupId).toEqual(groupId);
+            expect(typeof rendered.props().addUserToGroup).toEqual("function");
         });
 
         it("when user clicks Add, emits correct actions", () => {
@@ -50,9 +50,9 @@ describe("Modelling Group Members Add component tests", () => {
                 {context: {store}}
             ).dive();
             rendered.find("button.btn-success").simulate("click", mockEvent());
-            expect(addUserToGroupStub.called).to.be.true;
-            expect(addUserToGroupStub.getCall(0).args[0]).to.equal("group-1");
-            expect(addUserToGroupStub.getCall(0).args[1]).to.equal("a");
+            expect(addUserToGroupStub.called).toBe(true);
+            expect(addUserToGroupStub.getCall(0).args[0]).toEqual("group-1");
+            expect(addUserToGroupStub.getCall(0).args[1]).toEqual("a");
         });
     });
 
@@ -63,19 +63,22 @@ describe("Modelling Group Members Add component tests", () => {
 
         afterEach(() => sandbox.restore());
 
-        it("empty add member has no selected user and renders helpful message", () => {
+        it(
+            "empty add member has no selected user and renders helpful message",
+            () => {
 
-            const addSpy = sandbox.createSpy();
-            const rendered = shallow(<ModellingGroupMembersAddComponent members={[]} users={[]} groupId={groupId} addUserToGroup={addSpy}/>);
+                const addSpy = sandbox.createSpy();
+                const rendered = shallow(<ModellingGroupMembersAddComponent members={[]} users={[]} groupId={groupId} addUserToGroup={addSpy}/>);
 
-            const expectedState: ModellingGroupMembersAddState = {
-                selectedUser: "",
-                options: []
-            };
-            expect(rendered.instance().state).to.eql(expectedState);
-            expect(rendered.text()).to.contain("No more users available to add");
-            expect(rendered.find("form")).to.have.length(0, "Expected there to be no form elements");
-        });
+                const expectedState: ModellingGroupMembersAddState = {
+                    selectedUser: "",
+                    options: []
+                };
+                expect(rendered.instance().state).toEqual(expectedState);
+                expect(rendered.text()).toContain("No more users available to add");
+                expect(rendered.find("form")).toHaveLength(0);
+            }
+        );
 
         it("renders options alphabetically", () => {
             const addSpy = sandbox.createSpy();
@@ -87,10 +90,10 @@ describe("Modelling Group Members Add component tests", () => {
                 selectedUser: "apple",
                 options: [a, b, c]
             };
-            expect(rendered.instance().state).to.eql(expectedState);
-            expect(rendered.text()).to.not.contain("No more users available to add");
-            expect(rendered.find("form")).to.have.length(1, "Expected there to be 1 form element");
-            expect(rendered.find("option").getElements().map(e => e.props.value)).to.eql([
+            expect(rendered.instance().state).toEqual(expectedState);
+            expect(rendered.text()).not.toContain("No more users available to add");
+            expect(rendered.find("form")).toHaveLength(1);
+            expect(rendered.find("option").getElements().map(e => e.props.value)).toEqual([
                 "apple",
                 "banana",
                 "clementine"
@@ -107,8 +110,8 @@ describe("Modelling Group Members Add component tests", () => {
                 selectedUser: "b",
                 options: [b]
             };
-            expect(rendered.instance().state).to.eql(expectedState);
-            expect(rendered.find("option")).to.have.length(1);
+            expect(rendered.instance().state).toEqual(expectedState);
+            expect(rendered.find("option")).toHaveLength(1);
         });
 
         it("when user selects option, selectedUser changes state", () => {
@@ -116,9 +119,9 @@ describe("Modelling Group Members Add component tests", () => {
             const a = mockUser({username: "a"});
             const b = mockUser({username: "b"});
             const rendered = shallow(<ModellingGroupMembersAddComponent members={[]} users={[a, b]} groupId={groupId} addUserToGroup={addSpy}/>);
-            expect(rendered.instance().state.selectedUser).to.equal("a");
+            expect(rendered.instance().state.selectedUser).toEqual("a");
             rendered.find("select").simulate("change", { target: { value: "b" } });
-            expect(rendered.instance().state.selectedUser).to.equal("b");
+            expect(rendered.instance().state.selectedUser).toEqual("b");
         });
 
         it("when user clicks Add, emits correct actions", () => {
@@ -130,9 +133,9 @@ describe("Modelling Group Members Add component tests", () => {
             // Subject
             const rendered = shallow(<ModellingGroupMembersAddComponent members={[]} users={[a, b]} groupId={groupId} addUserToGroup={addSpy}/>);
             rendered.find("button.btn-success").simulate("click", mockEvent());
-            expect(addSpy.called).to.be.true;
-            expect(addSpy.getCall(0).args[0]).to.equal("group-1");
-            expect(addSpy.getCall(0).args[1]).to.equal("a");
+            expect(addSpy.called).toBe(true);
+            expect(addSpy.getCall(0).args[0]).toEqual("group-1");
+            expect(addSpy.getCall(0).args[1]).toEqual("a");
         });
     });
 });

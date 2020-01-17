@@ -2,9 +2,8 @@
 set -ex
 # Note: PGHOST environment variable must be set; see below
 
-# Either specify a portal with "Admin" or "Contrib", or fall back to *, which 
-# will run all tests
-export portal=${1:-*}
+# Optionally specify a portal with "Admin" or "Contrib"
+export portal=${1}
 
 # Set database variables (the names here are used by the Node pg library,
 # and shouldn't be changed)
@@ -23,10 +22,7 @@ docker exec montagu_db_1 psql -U vimc -d postgres -c \
 
 # Run the tests
 set +e
-./node_modules/mocha-webpack/bin/mocha-webpack \
-    --webpack-config webpack-test.config.js \
-    --timeout 5000 \
-    "src/integrationTests/{helper,${portal}IntegrationTests}.tsx"
+npm run integration-test $portal
 result=$?
 
 # ------- Teardown -----------

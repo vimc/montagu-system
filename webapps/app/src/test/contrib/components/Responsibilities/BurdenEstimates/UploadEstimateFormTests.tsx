@@ -1,5 +1,5 @@
 import * as React from "react";
-import {expect} from "chai";
+
 
 import "../../../../helper";
 import {
@@ -25,21 +25,21 @@ describe("Upload Burden Estimates Form tests", () => {
 
             const mockState = mockContribState({estimates: {uploadToken: "TOKEN", populatingSetId: 1}});
             const result = mapStateToProps(mockState, {touchstoneId: "t1", scenarioId: "s1", groupId: "g1"});
-            expect(result.url).to.eq("http://localhost:8080/v1/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/actions/upload/TOKEN/");
+            expect(result.url).toEqual("http://localhost:8080/v1/modelling-groups/g1/responsibilities/t1/s1/estimate-sets/1/actions/upload/TOKEN/");
         });
 
         it("url is null while token is null", () => {
 
             const mockState = mockContribState({estimates: {populatingSetId: 1}});
             const result = mapStateToProps(mockState, {touchstoneId: "t1", scenarioId: "s1", groupId: "g1"});
-            expect(result.url).to.be.null;
+            expect(result.url).toBe(null);
         });
 
         it("url is null while populating setId is null", () => {
 
             const mockState = mockContribState({estimates: {uploadToken: "TOKEN"}});
             const result = mapStateToProps(mockState, {touchstoneId: "t1", scenarioId: "s1", groupId: "g1"});
-            expect(result.url).to.be.null;
+            expect(result.url).toBe(null);
         });
 
         it("properties are set from state", () => {
@@ -52,9 +52,9 @@ describe("Upload Burden Estimates Form tests", () => {
                 }
             });
             const result = mapStateToProps(mockState, {touchstoneId: "t1", scenarioId: "s1", groupId: "g1"});
-            expect(result.populateErrors).to.have.members(["error"]);
-            expect(result.populatingInProgress).to.be.true;
-            expect(result.hasPopulateSuccess).to.be.true;
+            expect(result.populateErrors).toEqual(["error"]);
+            expect(result.populatingInProgress).toBe(true);
+            expect(result.hasPopulateSuccess).toBe(true);
         });
 
     });
@@ -68,7 +68,7 @@ describe("Upload Burden Estimates Form tests", () => {
             const result = mapDispatchToProps(dispatchStub, {});
             result.createBurdenEstimateSet({type: "central-averaged", details: ""});
 
-            expect(dispatchStub.calledWith("TEST")).to.be.true;
+            expect(dispatchStub.calledWith("TEST")).toBe(true);
         });
 
         it("can dispatch populateEstimateSet", () => {
@@ -78,7 +78,7 @@ describe("Upload Burden Estimates Form tests", () => {
             const result = mapDispatchToProps(dispatchStub, {});
             result.populateEstimateSet("TOKEN");
 
-            expect(dispatchStub.calledWith("TOKEN")).to.be.true;
+            expect(dispatchStub.calledWith("TOKEN")).toBe(true);
         });
 
         it("can dispatch resetPopulateState", () => {
@@ -88,7 +88,7 @@ describe("Upload Burden Estimates Form tests", () => {
             const result = mapDispatchToProps(dispatchStub, {});
             result.resetPopulateState();
 
-            expect(dispatchStub.calledWith("TEST")).to.be.true;
+            expect(dispatchStub.calledWith("TEST")).toBe(true);
         })
 
     });

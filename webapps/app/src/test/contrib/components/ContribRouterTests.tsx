@@ -1,6 +1,6 @@
 import * as React from "react";
 import {mount} from "enzyme";
-import {expect} from "chai";
+
 import {Provider} from "react-redux";
 import {createMemoryHistory} from 'history';
 
@@ -31,14 +31,14 @@ describe("ContribRouter", () => {
         const store = createContribStore(history);
         const rendered = mount(<Provider store={store}><ContribRouter loggedIn={false} history={history}/></Provider>);
 
-        expect(rendered.find(LoginPage)).has.length(1, "Expected LoginPage to be rendered");
-        expect(loginStub.called).to.be.true;
+        expect(rendered.find(LoginPage)).toHaveLength(1);
+        expect(loginStub.called).toBe(true);
     });
 
     it("does normal routing when logged in", () => {
         const history = createMemoryHistory({initialEntries: [ '/asd/asd/asd' ]});
         const store = createContribStore(history);
         const rendered = mount(<Provider store={store}><ContribRouter loggedIn={true} history={history} /></Provider>);
-        expect(rendered.find(ContribNoRouteFoundPage)).has.length(1, "Expected ContribNoRouteFoundPage to be rendered");
+        expect(rendered.find(ContribNoRouteFoundPage)).toHaveLength(1);
     });
 });
