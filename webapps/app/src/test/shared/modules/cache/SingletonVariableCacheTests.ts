@@ -1,5 +1,4 @@
-
-import { SingletonVariableCache } from "../../../../main/shared/modules/cache/singletonVariableCache";
+import {SingletonVariableCache} from "../../../../main/shared/modules/cache/singletonVariableCache";
 
 describe('Singleton variable cache tests', () => {
 
@@ -15,7 +14,7 @@ describe('Singleton variable cache tests', () => {
     it('sets data to a prop by path and gets data of parent prop', () => {
         const cache = new SingletonVariableCache();
         cache.set(key, "testData");
-        expect(cache.get("test.test1")).to.have.key("test2");
+        expect(cache.get("test.test1")["test2"]).toBeDefined();
         expect(cache.get("test.test1").test2).toEqual("testData");
     });
 
@@ -27,8 +26,7 @@ describe('Singleton variable cache tests', () => {
         expect(cache.get(key)).toEqual(undefined);
     });
 
-    it(
-        'sets data to a prop by path and clears by parent segment from path',
+    it('sets data to a prop by path and clears by parent segment from path',
         () => {
             const cache = new SingletonVariableCache();
             cache.set(key, "testData");
