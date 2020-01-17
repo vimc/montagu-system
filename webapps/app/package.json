@@ -18,7 +18,12 @@
     "type": "git",
     "url": "git+ssh://git@github.com/vimc/montagu-webapps.git"
   },
-  "contributors": ["Martin Eden", "Alex Hill", "Emma Russell", "Juri Kalinin"],
+  "contributors": [
+    "Martin Eden",
+    "Alex Hill",
+    "Emma Russell",
+    "Juri Kalinin"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/vimc/montagu-webapps/issues"
