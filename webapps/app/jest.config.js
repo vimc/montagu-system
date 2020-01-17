@@ -30,8 +30,6 @@ module.exports = {
     "collectCoverage": true,
     "coveragePathIgnorePatterns": [
         "/node_modules/",
-        "./tests/Sandbox.ts",
-        "./test/testHelpers.ts",
-        "./test/helper.ts"
+        "./test/.*"
     ]
 };
