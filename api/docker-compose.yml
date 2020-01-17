@@ -19,7 +19,7 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - "$PWD/src/demo:/orderly"
-      - "$PWD/src/config/blackboxTests/orderlyweb:/etc/orderly/web"
+      - ${PWD}/src/demo:/orderly
+      - ${PWD}/src/config/blackboxTests/orderlyweb:/etc/orderly/web
 volumes:
   emails:

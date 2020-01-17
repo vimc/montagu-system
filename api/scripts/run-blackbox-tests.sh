@@ -7,7 +7,12 @@ MONTAGU_API_BRANCH=$(git symbolic-ref --short HEAD)
 registry=docker.montagu.dide.ic.ac.uk:5000
 migrate_image=$registry/montagu-migrate:$MONTAGU_DB_VERSION
 
-# Run API and DB
+# Clear orderly web demo folder
+rm $PWD/src/demo -rf
+rm $PWD/src/git -rf
+mkdir $PWD/src/demo
+
+# Run API, DB and orderlyweb
 docker-compose pull
 docker-compose --project-name montagu up -d
 docker exec montagu_api_1 mkdir -p /etc/montagu/api/
@@ -33,8 +38,6 @@ OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
 #ORDERLY_WEB_IMAGE="vimc/orderly-web:master"
 
 # create orderly db
-rm $PWD/src/demo -rf
-rm $PWD/src/git -rf
 docker pull $ORDERLY_IMAGE
 docker run --rm --entrypoint create_orderly_demo.sh -v "$PWD/src:/orderly" -u $UID -w /orderly $ORDERLY_IMAGE .
 
