@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -ex
 
+echo "Running in $(pwd)"
+
 #start database
 here=$(dirname $0)
 
@@ -27,6 +29,14 @@ ORDERLY_WEB_IMAGE="vimc/orderly-web:master"
 # create orderly db
 rm $PWD/demo -rf
 rm $PWD/git -rf
+
+#extra logging for teamcity
+ls $PWD
+
+SRC=$(realpath $here/../src)
+echo "SRC: $SRC"
+ls $SRC
+
 docker pull $ORDERLY_IMAGE
 docker run --rm --entrypoint create_orderly_demo.sh -v "$PWD:/orderly" -u $UID -w /orderly $ORDERLY_IMAGE .
 
