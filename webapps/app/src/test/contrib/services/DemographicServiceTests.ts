@@ -1,4 +1,3 @@
-
 import { createMemoryHistory } from 'history';
 
 import {createContribStore} from "../../../main/contrib/createStore";
@@ -26,7 +25,7 @@ describe('Demographic service tests', () => {
 
         demographicService.getDataSetsByTouchstoneVersionId("touchstone-1");
 
-        expect(getStub.getCall(0).args[0]).toEqual("/touchstones/touchstone-1/demographics/");
-        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'sets' });
+        expect(getStub.mock.calls[0][0]).toEqual("/touchstones/touchstone-1/demographics/");
+        expect(setOptionsSpy.mock.calls[0][0]).toEqual({ cacheKey: 'sets' });
     });
 });

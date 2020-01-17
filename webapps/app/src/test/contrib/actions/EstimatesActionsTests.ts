@@ -76,7 +76,7 @@ describe("Estimates actions tests", () => {
                 }
             ];
             expect(actions).toEqual(expectedPayload);
-            expect(getEstimatesEndpoint.calledOnce).toBe(true);
+            expect(getEstimatesEndpoint.mock.calls.length).toBe(1);
 
         }
     );
@@ -110,7 +110,7 @@ describe("Estimates actions tests", () => {
                     {type: EstimateTypes.UPLOAD_TOKEN_FETCHED, data: "TOKEN"}
                 ];
                 expect(actions).toEqual(expectedPayload);
-                expect(createBurdenEndpoint.calledOnce).toBe(true);
+                expect(createBurdenEndpoint.mock.calls.length).toBe(1);
                 done();
             })
 
@@ -230,7 +230,7 @@ describe("Estimates actions tests", () => {
 
             await store.dispatch(estimatesActionCreators.populateEstimateSet("token"));
 
-            expect(refreshResponsibilitiesStub.called).toBe(true);
+            expect(refreshResponsibilitiesStub.mock.calls.length).toBe(1);
         });
 
         it("can reset PopulateState", () => {

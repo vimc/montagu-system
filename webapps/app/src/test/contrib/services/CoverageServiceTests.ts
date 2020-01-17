@@ -26,8 +26,8 @@ describe('Coverage service tests', () => {
 
         coverageService.getDataSets("group-1", "touchstone-1", "scenario-1");
 
-        expect(getStub.getCall(0).args[0])
+        expect(getStub.mock.calls[0][0])
             .toEqual("/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/coverage-sets/");
-        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'sets' });
+        expect(setOptionsSpy.mock.calls[0][0]).toEqual({ cacheKey: 'sets' });
     });
 });

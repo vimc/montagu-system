@@ -46,7 +46,7 @@ describe("UploadBurdenEstimatesPage", () => {
         />, {context: {store}}).dive().dive();
 
         // Expectations
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
         const pageArticle = rendered.find(PageArticle);
         expect(pageArticle.find(UploadBurdenEstimatesContent)).toHaveLength(1);
         const titleComponent = pageArticle.dive().find(ResponsibilitiesPageTitle);

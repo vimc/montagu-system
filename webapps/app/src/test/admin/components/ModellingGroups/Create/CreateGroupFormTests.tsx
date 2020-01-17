@@ -149,7 +149,7 @@ describe("CreateGroupForm", () => {
         );
 
         mounted.simulate("submit");
-        expect(stub.called).toBe(true);
+        expect(stub.mock.calls.length).toBe(1);
     });
 
     describe("id suggestor", () => {

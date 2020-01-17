@@ -62,10 +62,10 @@ describe("Modelling Group Members Page actions tests", () => {
             { type: BreadcrumbsTypes.BREADCRUMBS_RECEIVED, data: testBreadcrumbs }
         ];
         expect(actions).toEqual(expectedPayload);
-        expect(getAllGroupsStub.called).toBe(true);
-        expect(getAllUsersStub.called).toBe(true);
-        expect(getGroupDetailsServiceStub.called).toBe(true);
-        expect(getGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
+        expect(getAllGroupsStub.mock.calls.length).toBe(1);
+        expect(getAllUsersStub.mock.calls.length).toBe(1);
+        expect(getGroupDetailsServiceStub.mock.calls.length).toBe(1);
+        expect(getGroupDetailsServiceStub.mock.calls[0][0]).toEqual(testGroup.id);
 
     });
 

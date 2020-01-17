@@ -81,8 +81,8 @@ describe("DemographicOptions", () => {
             const dataSetSelect = rendered.find('select.form-control');
             const setDataSetStub = sandbox.setStubReduxAction(demographicActionCreators, "setDataSet");
             dataSetSelect.simulate('change', { target: {value: testDemographicSet.id} });
-            expect(setDataSetStub.called).toEqual(true);
-            expect(setDataSetStub.getCall(0).args[0]).toEqual(testDemographicSet.id);
+            expect(setDataSetStub.mock.calls.length).toBe(1);
+            expect(setDataSetStub.mock.calls[0][0]).toEqual(testDemographicSet.id);
         }
     );
 
@@ -132,8 +132,8 @@ describe("DemographicOptions", () => {
             const genderControlRadioGroupItems = genderControlRadioGroup.dive();
             const genderControlRadioGroupItems1 = genderControlRadioGroupItems.find('ReactRadioButton').at(0);
             genderControlRadioGroupItems1.simulate('change', { target: {value: "both"} });
-            expect(setGenderStub.called).toEqual(true);
-            expect(setGenderStub.getCall(0).args[0]).toEqual("both");
+            expect(setGenderStub.mock.calls.length).toBe(1);
+            expect(setGenderStub.mock.calls[0][0]).toEqual("both");
         }
     );
 
@@ -174,8 +174,8 @@ describe("DemographicOptions", () => {
             const formatControlRadioGroupItems = formatControlRadioGroup.dive();
             const formatControlRadioGroupItems1 = formatControlRadioGroupItems.find('ReactRadioButton').at(0);
             formatControlRadioGroupItems1.simulate('change', { target: {value: "long"} });
-            expect(setFormatStub.called).toEqual(true);
-            expect(setFormatStub.getCall(0).args[0]).toEqual("long");
+            expect(setFormatStub.mock.calls.length).toBe(1);
+            expect(setFormatStub.mock.calls[0][0]).toEqual("long");
         }
     );
 });

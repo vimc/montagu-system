@@ -8,7 +8,6 @@ import {mockContribState, mockOnetimeTokenState} from "../../mocks/mockStates";
 import {ILookup} from "../../../main/shared/models/Lookup";
 import {shallow} from "enzyme";
 import {MockStore} from "redux-mock-store";
-import * as Sinon from "sinon"
 import {ContribAppState} from "../../../main/contrib/reducers/contribAppReducers";
 import {createMockContribStore} from "../../mocks/mockStore";
 import DoneCallback = jest.DoneCallback;
@@ -16,7 +15,7 @@ import DoneCallback = jest.DoneCallback;
 describe("OneTimeLinkContext", () => {
     const sandbox = new Sandbox();
     let store: MockStore<ContribAppState> = null,
-        fetchTokenStub: Sinon.SinonStub = null;
+        fetchTokenStub: jest.SpyInstance = null;
 
     const url = "/banana/";
     const token = "TOKEN";
@@ -25,12 +24,11 @@ describe("OneTimeLinkContext", () => {
 
     beforeEach(() => {
         store = createMockContribStore(mockContribState({onetimeTokens: mockOnetimeTokenState({tokens})}));
-        fetchTokenStub = sandbox.sinon.stub(OneTimeTokenService.prototype, "fetchToken")
-            .returns(Promise.resolve("token"))
+        fetchTokenStub = sandbox.setStubFunc(OneTimeTokenService.prototype, "fetchToken", () => Promise.resolve("token"))
     });
 
     afterEach(() => {
-        fetchTokenStub.restore();
+        fetchTokenStub.mockRestore();
         sandbox.restore();
     });
 
@@ -77,15 +75,15 @@ describe("OneTimeLinkContext", () => {
     it("triggers fetchToken on mount", (done: DoneCallback) => {
         render(<Class href="/banana/"/>);
         checkAsync(done, () => {
-            expect(fetchTokenStub.called).toEqual(true);
-            expect(fetchTokenStub.getCall(0).args).toEqual(["/banana/"]);
+            expect(fetchTokenStub.mock.calls.length).toBe(1);
+            expect(fetchTokenStub.mock.calls[0]).toEqual(["/banana/"]);
         });
     });
 
     it("does not trigger fetchToken if href is null", (done: DoneCallback) => {
         render(<Class href={null}/>);
         checkAsync(done, () => {
-            expect(fetchTokenStub.notCalled).toEqual(true);
+            expect(fetchTokenStub.mock.calls.length).toBe(0);
         });
     });
 
@@ -96,9 +94,9 @@ describe("OneTimeLinkContext", () => {
             const element = render(<Class href={url}/>);
             element.find(EmptyComponent).dive().find("button").simulate("click");
             checkAsync(done, () => {
-                expect(fetchTokenStub.callCount).toEqual(2);
-                expect(fetchTokenStub.getCall(0).args[0]).toEqual(url);
-                expect(fetchTokenStub.getCall(1).args[0]).toEqual(url);
+                expect(fetchTokenStub.mock.calls.length).toEqual(2);
+                expect(fetchTokenStub.mock.calls[0][0]).toEqual(url);
+                expect(fetchTokenStub.mock.calls[1][0]).toEqual(url);
             });
         }
     );
@@ -111,8 +109,8 @@ describe("OneTimeLinkContext", () => {
             element.setProps({href: url});
 
             checkAsync(done, () => {
-                expect(fetchTokenStub.callCount).toEqual(1);
-                expect(fetchTokenStub.getCall(0).args[0]).toEqual(url);
+                expect(fetchTokenStub.mock.calls.length).toEqual(1);
+                expect(fetchTokenStub.mock.calls[0][0]).toEqual(url);
             });
         }
     );
@@ -127,9 +125,9 @@ describe("OneTimeLinkContext", () => {
             element.setProps({href: newUrl});
 
             checkAsync(done, () => {
-                expect(fetchTokenStub.callCount).toEqual(2);
-                expect(fetchTokenStub.getCall(0).args[0]).toEqual(url);
-                expect(fetchTokenStub.getCall(1).args[0]).toEqual(newUrl);
+                expect(fetchTokenStub.mock.calls.length).toEqual(2);
+                expect(fetchTokenStub.mock.calls[0][0]).toEqual(url);
+                expect(fetchTokenStub.mock.calls[1][0]).toEqual(newUrl);
             });
         }
     );
@@ -141,7 +139,7 @@ describe("OneTimeLinkContext", () => {
             const element = render(<Class href={null}/>);
             element.setProps({href: url});
             checkAsync(done, () => {
-                expect(fetchTokenStub.calledOnce).toEqual(true);
+                expect(fetchTokenStub.mock.calls.length).toBe(1);
             });
         }
     );

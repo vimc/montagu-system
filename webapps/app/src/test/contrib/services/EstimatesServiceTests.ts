@@ -34,9 +34,9 @@ describe('Estimates service tests', () => {
 
         estimatesService.createBurden("group-1", "touchstone-1", "scenario-1", testEstimatesBurden);
 
-        expect(postStub.getCall(0).args[0])
+        expect(postStub.mock.calls[0][0])
             .toEqual("/modelling-groups/group-1/responsibilities/touchstone-1/scenario-1/estimate-sets/");
-        expect(postStub.getCall(0).args[1])
+        expect(postStub.mock.calls[0][1])
             .toEqual(JSON.stringify(testEstimatesBurden));
     });
 

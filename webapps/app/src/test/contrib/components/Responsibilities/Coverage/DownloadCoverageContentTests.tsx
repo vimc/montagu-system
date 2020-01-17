@@ -136,7 +136,7 @@ describe("Download Coverage Content Component", () => {
         const downloadCoverageContentComponentInstance = rendered.instance() as DownloadCoverageContentComponent;
         const onFormatSelectStub = sandbox.setStubReduxAction(coverageActionCreators, "setFormat");
         downloadCoverageContentComponentInstance.onSelectFormat("long");
-        expect(onFormatSelectStub.called).toEqual(true);
+        expect(onFormatSelectStub.mock.calls.length).toBe(1);
     });
 
     it("does not show format control for prohibited diseases", () => {

@@ -39,7 +39,7 @@ describe("Responsibility Overview Page Component", () => {
             match={testMatch}
         />, {context: {store}}).dive().dive().dive();
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
         expect(pageArticle.props().title).toBe(testResponsibilityOverviewPageTitle);
         expect(pageArticle.find(ResponsibilityOverviewContent).length).toBe(1);
     });

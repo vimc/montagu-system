@@ -37,7 +37,7 @@ describe("Admin Modelling groups actions tests", () => {
             const actions = store.getActions();
             const expectedPayload = {type: ModellingGroupTypes.GROUPS_FETCHED, data: [testGroup, testGroup2]};
             expect(actions).toEqual([expectedPayload]);
-            expect(getAllGroupsServiceStub.called).toBe(true);
+            expect(getAllGroupsServiceStub.mock.calls.length).toBe(1);
             done();
         });
     });
@@ -60,8 +60,8 @@ describe("Admin Modelling groups actions tests", () => {
 
         const actions = store.getActions();
 
-        expect(getAllGroupsServiceStub.called).toBe(true);
-        expect(getAllExpectationsServiceStub.called).toBe(true);
+        expect(getAllGroupsServiceStub.mock.calls.length).toBe(1);
+        expect(getAllExpectationsServiceStub.mock.calls.length).toBe(1);
 
         const expectedPayload = {
             type: ModellingGroupTypes.MODELS_FETCHED, models: [testModel, testModel2],
@@ -81,8 +81,8 @@ describe("Admin Modelling groups actions tests", () => {
             const actions = store.getActions();
             const expectedPayload = {type: ModellingGroupTypes.GROUP_DETAILS_FETCHED, data: testGroupDetails};
             expect(actions).toEqual([expectedPayload]);
-            expect(getGroupDetailsServiceStub.called).toBe(true);
-            expect(getGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
+            expect(getGroupDetailsServiceStub.mock.calls.length).toBe(1);
+            expect(getGroupDetailsServiceStub.mock.calls[0][0]).toEqual(testGroup.id);
             done();
         });
     });
@@ -131,13 +131,13 @@ describe("Admin Modelling groups actions tests", () => {
                 {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]}
             ];
             expect(actions).toEqual(expectedPayload);
-            expect(addMemberServiceStub.called).toBe(true);
-            expect(addMemberServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
-            expect(addMemberServiceStub.getCall(0).args[1]).toEqual(testUser.username);
-            expect(clearCacheForGroupDetailsServiceStub.called).toBe(true);
-            expect(clearCacheForGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
-            expect(getGroupDetailsServiceStub.called).toBe(true);
-            expect(getGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
+            expect(addMemberServiceStub.mock.calls.length).toBe(1);
+            expect(addMemberServiceStub.mock.calls[0][0]).toEqual(testGroup.id);
+            expect(addMemberServiceStub.mock.calls[0][1]).toEqual(testUser.username);
+            expect(clearCacheForGroupDetailsServiceStub.mock.calls.length).toBe(1);
+            expect(clearCacheForGroupDetailsServiceStub.mock.calls[0][0]).toEqual(testGroup.id);
+            expect(getGroupDetailsServiceStub.mock.calls.length).toBe(1);
+            expect(getGroupDetailsServiceStub.mock.calls[0][0]).toEqual(testGroup.id);
             done();
         });
     });
@@ -153,9 +153,9 @@ describe("Admin Modelling groups actions tests", () => {
             const actions = store.getActions();
             const expectedPayload = [] as any;
             expect(actions).toEqual(expectedPayload);
-            expect(addMemberServiceStub.called).toBe(true);
-            expect(addMemberServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
-            expect(addMemberServiceStub.getCall(0).args[1]).toEqual(testUser.username);
+            expect(addMemberServiceStub.mock.calls.length).toBe(1);
+            expect(addMemberServiceStub.mock.calls[0][0]).toEqual(testGroup.id);
+            expect(addMemberServiceStub.mock.calls[0][1]).toEqual(testUser.username);
             done();
         });
     });
@@ -178,13 +178,13 @@ describe("Admin Modelling groups actions tests", () => {
                 {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]}
             ];
             expect(actions).toEqual(expectedPayload);
-            expect(removeMemberServiceStub.called).toBe(true);
-            expect(removeMemberServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
-            expect(removeMemberServiceStub.getCall(0).args[1]).toEqual(testUser.username);
-            expect(clearCacheForGroupDetailsServiceStub.called).toBe(true);
-            expect(clearCacheForGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
-            expect(getGroupDetailsServiceStub.called).toBe(true);
-            expect(getGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
+            expect(removeMemberServiceStub.mock.calls.length).toBe(1);
+            expect(removeMemberServiceStub.mock.calls[0][0]).toEqual(testGroup.id);
+            expect(removeMemberServiceStub.mock.calls[0][1]).toEqual(testUser.username);
+            expect(clearCacheForGroupDetailsServiceStub.mock.calls.length).toBe(1);
+            expect(clearCacheForGroupDetailsServiceStub.mock.calls[0][0]).toEqual(testGroup.id);
+            expect(getGroupDetailsServiceStub.mock.calls.length).toBe(1);
+            expect(getGroupDetailsServiceStub.mock.calls[0][0]).toEqual(testGroup.id);
             done();
         });
     });
@@ -199,9 +199,9 @@ describe("Admin Modelling groups actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions).toEqual([]);
-            expect(removeMemberServiceStub.called).toBe(true);
-            expect(removeMemberServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
-            expect(removeMemberServiceStub.getCall(0).args[1]).toEqual(testUser.username);
+            expect(removeMemberServiceStub.mock.calls.length).toBe(1);
+            expect(removeMemberServiceStub.mock.calls[0][0]).toEqual(testGroup.id);
+            expect(removeMemberServiceStub.mock.calls[0][1]).toEqual(testUser.username);
             done();
         });
     });
@@ -214,8 +214,8 @@ describe("Admin Modelling groups actions tests", () => {
         setTimeout(() => {
             const actions = store.getActions();
             expect(actions).toEqual([]);
-            expect(clearCacheForGroupDetailsServiceStub.called).toBe(true);
-            expect(clearCacheForGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
+            expect(clearCacheForGroupDetailsServiceStub.mock.calls.length).toBe(1);
+            expect(clearCacheForGroupDetailsServiceStub.mock.calls[0][0]).toEqual(testGroup.id);
             done();
         });
     });
@@ -324,7 +324,7 @@ describe("Admin Modelling groups actions tests", () => {
 
         store.dispatch(modellingGroupsActionCreators.createModellingGroup(mockModellingGroupCreation()));
         setTimeout(() => {
-            expect(clearCacheStub.called).toBe(true);
+            expect(clearCacheStub.mock.calls.length).toBe(1);
             done();
         });
     });

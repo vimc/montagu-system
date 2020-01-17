@@ -28,7 +28,7 @@ describe("Contrib No Route Found Page Component tests", () => {
         const createBreadcrumbsStub = sandbox.setStubReduxAction(breadcrumbsActionCreators, "createBreadcrumbs");
         const rendered = shallow(<ContribNoRouteFoundPage/>, {context: {store}}).dive().dive();
         const pageArticle = rendered.find(PageArticle);
-        expect(createBreadcrumbsStub.called).toBe(true);
+        expect(createBreadcrumbsStub.mock.calls.length).toBe(1);
         expect(pageArticle.props().title).toBe(NoRouteFound.title());
     });
 });
