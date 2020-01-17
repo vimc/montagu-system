@@ -27,8 +27,8 @@ OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
 ORDERLY_WEB_IMAGE="vimc/orderly-web:master"
 
 # create orderly db
-rm $PWD/demo -rf
-rm $PWD/git -rf
+rm  -rf -v $PWD/demo
+rm  -rf -v $PWD/git
 
 #extra logging for teamcity
 ls $PWD
