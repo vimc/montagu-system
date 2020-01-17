@@ -24,8 +24,8 @@ If you need more rules to check against, add them in file tslint.json, under sec
 
 # Testing
 1. `npm test` runs all the tests
-2. `npm run watch_tests` keeps watching the source for changes, and reruns only
-   those tests that have changed.
+2. `npm test Foo` runs all tests in files with names that match "Foo".
+3. `npm test -- -t "foo bar"` runs just the individual test called "foo bar".
 
 ## Integration tests
 Run `npm run integration-test` to run all integration tests. The version of
