@@ -25,10 +25,8 @@ OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
 ORDERLY_WEB_IMAGE="vimc/orderly-web:master"
 
 # create orderly db
-echo "Removing demo subdir"
-rm $PWD/demo -rf -v
-echo "Removing git subdir"
-rm $PWD/git -rf -v
+rm $PWD/demo -rf
+rm $PWD/git -rf
 docker pull $ORDERLY_IMAGE
 docker run --rm --entrypoint create_orderly_demo.sh -v "$PWD:/orderly" -u $UID -w /orderly $ORDERLY_IMAGE .
 
