@@ -30,7 +30,7 @@ docker exec montagu_db_1 psql -U vimc -d montagu -c \
 #start orderly-web: TODO: do this through docker compose
 ORDERLY_IMAGE="vimc/orderly:master"
 OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
-ORDERLY_WEB_IMAGE="vimc/orderly-web:vimc-3230_debug"
+#ORDERLY_WEB_IMAGE="vimc/orderly-web:master"
 
 # create orderly db
 rm $PWD/src/demo -rf
@@ -43,11 +43,11 @@ docker pull $OW_MIGRATE_IMAGE
 docker run --rm -v "$PWD/src/demo:/orderly" $OW_MIGRATE_IMAGE
 
 # start orderlyweb
-docker pull $ORDERLY_WEB_IMAGE
-docker run -d -v "$PWD/src/demo:/orderly" -v "$PWD/src/config/blackboxTests/orderlyweb:/etc/orderly/web" -p 8888:8888 --network=montagu_default --name orderly-web $ORDERLY_WEB_IMAGE
+#docker pull $ORDERLY_WEB_IMAGE
+#docker run -d -v "$PWD/src/demo:/orderly" -v "$PWD/src/config/blackboxTests/orderlyweb:/etc/orderly/web" -p 8888:8888 --network=montagu_default --name orderly-web $ORDERLY_WEB_IMAGE
 
-docker exec orderly-web mkdir -p /etc/orderly/web
-docker exec orderly-web touch /etc/orderly/web/go_signal
+docker exec montagu_orderly_web_1 mkdir -p /etc/orderly/web
+docker exec montagu_orderly_web_1 touch /etc/orderly/web/go_signal
 #end start orderly-web
 
 
@@ -72,8 +72,8 @@ docker run \
   montagu-api-blackbox-tests
 
 #TODO: Might not need this if docker-compose OW
-docker kill orderly-web
-docker rm orderly-web
+#docker kill orderly-web
+#docker rm orderly-web
 
 # Tear down
 docker-compose --project-name montagu down

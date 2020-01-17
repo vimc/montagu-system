@@ -1,7 +1,4 @@
 set -e
-
-echo "running build app with working dir $PWD"
-
 git_id=$(git rev-parse --short=7 HEAD)
 git_branch=$(git symbolic-ref --short HEAD)
 

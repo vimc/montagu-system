@@ -15,7 +15,7 @@ docker run --rm -v "$PWD/demo:/orderly" $OW_MIGRATE_IMAGE
 
 # start orderlyweb
 docker pull $ORDERLY_WEB_IMAGE
-docker run -d -v "$PWD/demo:/orderly" -p 8888:8888 --net=host --name orderly-web $ORDERLY_WEB_IMAGE
+docker run -d -v "$PWD/demo:/orderly" --net=host --name orderly-web $ORDERLY_WEB_IMAGE
 
 docker exec orderly-web mkdir -p /etc/orderly/web
 docker exec orderly-web touch /etc/orderly/web/go_signal
