@@ -34,6 +34,7 @@ docker exec montagu_db_1 psql -U vimc -d montagu -c \
 
 ORDERLY_IMAGE="vimc/orderly:master"
 OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
+OW_CLI_IMAGE="vimc/orderly-web-user-cli:master"
 
 # create orderly db
 docker pull $ORDERLY_IMAGE
@@ -46,6 +47,9 @@ docker run --rm -v "$PWD/src/demo:/orderly" $OW_MIGRATE_IMAGE
 docker exec montagu_orderly_web_1 mkdir -p /etc/orderly/web
 docker exec montagu_orderly_web_1 touch /etc/orderly/web/go_signal
 
+#Add users manage permission to test user for Orderly Web
+docker run -v $PWD/src/demo:/orderly $OW_CLI_IMAGE add-users user@test.com
+docker run -v $PWD/src/demo:/orderly $OW_CLI_IMAGE grant user@test.com */users.manage
 
 # Build an image that can run blackbox tests
 docker build -f blackbox.Dockerfile -t montagu-api-blackbox-tests .
