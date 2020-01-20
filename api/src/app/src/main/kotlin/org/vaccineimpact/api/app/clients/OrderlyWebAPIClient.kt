@@ -40,10 +40,14 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String,
     private val serializer = MontaguSerializer.instance
 
     override fun addUser(email: String, username: String, displayName: String) {
+        println("addUser $email - getting ow token")
         val orderlyWebToken = getOrderlyWebToken()
+        println("addUser- creating userDetails")
         val userDetails = OrderlyWebUserDetails(email, username, displayName, "Montagu")
         val postBody = serializer.gson.toJson(userDetails)
+        println("addUser- posting to $baseUrl/user/add")
         post("$baseUrl/user/add", mapOf("Authorization" to "Bearer $orderlyWebToken"), postBody)
+        println("finished add user $email")
     }
 
     private fun getOrderlyWebToken(): String
