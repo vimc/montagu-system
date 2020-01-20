@@ -5,6 +5,7 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import java.io.IOException
 import java.security.cert.X509Certificate
@@ -19,13 +20,13 @@ interface OrderlyWebAPIClient
 data class OrderlyWebLoginResult(val access_token: String, val token_type: String, val expires_in: Int)
 data class OrderlyWebUserDetails(val email: String, val username: String, val displayName: String, val source: String)
 
-abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String): OrderlyWebAPIClient {
+abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String,
+                                         private val config: ConfigWrapper = Config): OrderlyWebAPIClient {
 
     companion object
     {
         fun create(montaguToken: String): OkHttpOrderlyWebAPIClient
         {
-
             return if (Config.getBool("allow.localhost"))
                 LocalOkHttpMontaguApiClient(montaguToken)
             else
@@ -33,7 +34,7 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String): Orde
         }
     }
 
-    private val baseUrl = Config["orderlyweb.api.url"];
+    private val baseUrl = config["orderlyweb.api.url"];
     private var orderlyWebToken: String? = null;
 
     private val serializer = MontaguSerializer.instance
@@ -49,7 +50,7 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String): Orde
     {
         if (orderlyWebToken == null) {
             val requestHeaders = mapOf(
-                    "Authorization" to "token $montaguToken-invalid",
+                    "Authorization" to "token $montaguToken",
                     "Accept" to "application/json"
             )
 
@@ -76,19 +77,6 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String): Orde
                 .post(requestBody)
                 .build()
         return client.newCall(request).execute()
-    }
-
-    private fun getHttpResponse(url: String, headersMap: Map<String, String>): Response
-    {
-        val client = getHttpClient();
-        val headers = buildHeaders(headersMap)
-
-        val request = Request.Builder()
-                .url(url)
-                .headers(headers)
-                .build()
-        return client.newCall(request).execute()
-
     }
 
     private fun buildHeaders(headersMap: Map<String, String>): Headers
