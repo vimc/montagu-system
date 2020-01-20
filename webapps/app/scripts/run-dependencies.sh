@@ -44,7 +44,7 @@ migrate_image=$registry/montagu-migrate:$MONTAGU_DB_VERSION
 docker pull $migrate_image
 docker run --network=montagu_default $migrate_image
 
-#Add users manage permission to test uesr for Orderly Web
+#Add users manage permission to test user for Orderly Web
 docker run -v $PWD/demo:/orderly $OW_CLI_IMAGE add-users test.user@example.com
 docker run -v $PWD/demo:/orderly $OW_CLI_IMAGE grant test.user@example.com */users.manage
 
