@@ -167,6 +167,38 @@ class DirectActionContextTests : MontaguTests()
         verify(mockResponse).header(eq("Set-Cookie"), eq("jwt_token=TOKEN; Path=/; HttpOnly; SameSite=Strict"))
     }
 
+    @Test
+    fun `can get auth token from cookie`()
+    {
+        val mockRequest = mock<Request> {
+            on { it.cookie("montagu_jwt_token") } doReturn "test_montagu_cookie_token"
+        }
+        val webContext = mock<SparkWebContext> {
+            on { it.sparkRequest } doReturn mockRequest
+        }
+
+        val sut = DirectActionContext(webContext)
+        val authToken = sut.authenticationToken()
+
+        assertThat(authToken).isEqualTo("test_montagu_cookie_token")
+    }
+
+    @Test
+    fun `can get auth token from header`()
+    {
+        val mockRequest = mock<Request> {
+            on { it.headers("Authorization") } doReturn "Bearer test_montagu_header_token"
+        }
+        val webContext = mock<SparkWebContext> {
+            on { it.sparkRequest } doReturn mockRequest
+        }
+
+        val sut = DirectActionContext(webContext)
+        val authToken = sut.authenticationToken()
+
+        assertThat(authToken).isEqualTo("test_montagu_header_token")
+    }
+
     private fun mockFileItem(name: String, contents: String, contentType: String): FileItemStream
     {
         return mock {
