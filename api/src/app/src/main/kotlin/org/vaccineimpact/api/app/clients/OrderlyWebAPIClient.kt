@@ -4,6 +4,7 @@ import com.google.gson.JsonSyntaxException
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.vaccineimpact.api.app.errors.OrderlyWebError
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.serialization.MontaguSerializer
@@ -46,8 +47,16 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String,
         val userDetails = OrderlyWebUserDetails(email, username, displayName, "Montagu")
         val postBody = serializer.gson.toJson(userDetails)
         println("addUser- posting to $baseUrl/user/add")
-        post("$baseUrl/user/add", mapOf("Authorization" to "Bearer $orderlyWebToken"), postBody)
+        val postResponse = post("$baseUrl/user/add", mapOf("Authorization" to "Bearer $orderlyWebToken"), postBody)
         println("finished add user $email")
+        if (postResponse.code != 200) {
+            var error = ""
+            if (postResponse.body != null)
+            {
+                error = postResponse.body!!.string()
+            }
+            throw OrderlyWebError("Error adding user to OrderlyWeb. Code: $postResponse.code, Error: $error")
+        }
     }
 
     private fun getOrderlyWebToken(): String
