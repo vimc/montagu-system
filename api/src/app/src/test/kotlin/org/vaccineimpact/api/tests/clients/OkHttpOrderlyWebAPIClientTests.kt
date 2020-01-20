@@ -84,7 +84,7 @@ class OkHttpOrderlyWebAPIClientTests: MontaguTests()
         val userDetailsJson = JsonLoader.fromString(postUserBodyString)
         Assertions.assertThat(userDetailsJson["email"].asText()).isEqualTo("test@example.com")
         Assertions.assertThat(userDetailsJson["username"].asText()).isEqualTo("test.user")
-        Assertions.assertThat(userDetailsJson["display_name"].asText()).isEqualTo("Test User")
+        Assertions.assertThat(userDetailsJson["displayName"].asText()).isEqualTo("Test User")
         Assertions.assertThat(userDetailsJson["source"].asText()).isEqualTo("Montagu")
     }
 }

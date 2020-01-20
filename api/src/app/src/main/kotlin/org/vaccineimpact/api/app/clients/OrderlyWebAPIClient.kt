@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.clients
 
 import com.google.gson.JsonSyntaxException
+import com.google.gson.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -38,14 +39,14 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String,
     private val baseUrl = config["orderlyweb.api.url"];
     private var orderlyWebToken: String? = null;
 
-    private val serializer = MontaguSerializer.instance
+    private val gson = GsonBuilder().create()
 
     override fun addUser(email: String, username: String, displayName: String) {
         println("addUser $email - getting ow token")
         val orderlyWebToken = getOrderlyWebToken()
         println("addUser- creating userDetails")
         val userDetails = OrderlyWebUserDetails(email, username, displayName, "Montagu")
-        val postBody = serializer.gson.toJson(userDetails)
+        val postBody = gson.toJson(userDetails)
         println("addUser- posting to $baseUrl/user/add")
         val postResponse = post("$baseUrl/user/add", mapOf("Authorization" to "Bearer $orderlyWebToken"), postBody)
         println("finished add user $email")
@@ -99,7 +100,7 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String,
     {
         return try
         {
-            serializer.fromJson<OrderlyWebLoginResult>(jsonString, OrderlyWebLoginResult::class.java);
+            gson.fromJson<OrderlyWebLoginResult>(jsonString, OrderlyWebLoginResult::class.java);
         }
         catch(e: JsonSyntaxException)
         {
