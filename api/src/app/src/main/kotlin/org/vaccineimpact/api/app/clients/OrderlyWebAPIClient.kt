@@ -49,13 +49,9 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String,
         println("addUser- posting to $baseUrl/user/add")
         val postResponse = post("$baseUrl/user/add", mapOf("Authorization" to "Bearer $orderlyWebToken"), postBody)
         println("finished add user $email")
-        if (postResponse.code != 200) {
-            var error = ""
-            if (postResponse.body != null)
-            {
-                error = postResponse.body!!.string()
-            }
-            throw OrderlyWebError("Error adding user to OrderlyWeb. Code: $postResponse.code, Error: $error")
+        val code = postResponse.code
+        if (code != 200) {
+            throw OrderlyWebError("Error adding user to OrderlyWeb. Code: $code")
         }
     }
 
