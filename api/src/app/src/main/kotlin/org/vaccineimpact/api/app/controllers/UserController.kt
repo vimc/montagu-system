@@ -117,8 +117,6 @@ class UserController(
                 context.request.queryParamOrDefault("includePermissions", "false") == "true"
         val internalUser = userRepository.getUserByUsername(userName)
 
-        val user = internalUser.toUser(includePermissions).copy(roles = null)
-
         return internalUser.toUser(includePermissions).copy(roles = null) //don't return any role information back to the current user
     }
 

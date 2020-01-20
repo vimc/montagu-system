@@ -31,11 +31,9 @@ docker exec montagu_db_1 psql -U vimc -d montagu -c \
        "CREATE USER MAPPING FOR vimc SERVER montagu_db_annex OPTIONS (user 'vimc', password 'changeme');"
 # -------------------------------------------------------------
 
-#
-#start orderly-web: TODO: do this through docker compose
+
 ORDERLY_IMAGE="vimc/orderly:master"
 OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
-#ORDERLY_WEB_IMAGE="vimc/orderly-web:master"
 
 # create orderly db
 docker pull $ORDERLY_IMAGE
@@ -45,16 +43,11 @@ docker run --rm --entrypoint create_orderly_demo.sh -v "$PWD/src:/orderly" -u $U
 docker pull $OW_MIGRATE_IMAGE
 docker run --rm -v "$PWD/src/demo:/orderly" $OW_MIGRATE_IMAGE
 
-# start orderlyweb
-#docker pull $ORDERLY_WEB_IMAGE
-#docker run -d -v "$PWD/src/demo:/orderly" -v "$PWD/src/config/blackboxTests/orderlyweb:/etc/orderly/web" -p 8888:8888 --network=montagu_default --name orderly-web $ORDERLY_WEB_IMAGE
-
 docker exec montagu_orderly_web_1 mkdir -p /etc/orderly/web
 docker exec montagu_orderly_web_1 touch /etc/orderly/web/go_signal
-#end start orderly-web
 
 
-# Build and image that can run blackbox tests
+# Build an image that can run blackbox tests
 docker build -f blackbox.Dockerfile -t montagu-api-blackbox-tests .
 
 # Push blackbox tests image so it can be reused
@@ -73,10 +66,6 @@ docker run \
   --network montagu_default \
   -v montagu_emails:/tmp/montagu_emails \
   montagu-api-blackbox-tests
-
-#TODO: Might not need this if docker-compose OW
-#docker kill orderly-web
-#docker rm orderly-web
 
 # Tear down
 docker-compose --project-name montagu down
