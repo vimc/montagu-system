@@ -13,6 +13,22 @@ docker run --rm \
     $registry/montagu-cert-tool:$cert_tool_version \
     gen-keypair /workspace
 
+# prepare to create orderly db
+rm $PWD/demo -rf
+rm $PWD/git -rf
+mkdir $PWD/demo
+ORDERLY_IMAGE="vimc/orderly:master"
+OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
+OW_CLI_IMAGE="vimc/orderly-web-user-cli:master"
+
+#create orderly db
+docker pull $ORDERLY_IMAGE
+docker run --rm --entrypoint create_orderly_demo.sh -v "$PWD:/orderly" -u $UID -w /orderly $ORDERLY_IMAGE .
+
+# migrate to add orderlyweb tables
+docker pull $OW_MIGRATE_IMAGE
+docker run --rm -v "$PWD/demo:/orderly" $OW_MIGRATE_IMAGE
+
 # Run the APIs and database
 docker-compose pull
 docker-compose --project-name montagu up -d
@@ -27,3 +43,11 @@ docker exec montagu_db_1 montagu-wait.sh
 migrate_image=$registry/montagu-migrate:$MONTAGU_DB_VERSION
 docker pull $migrate_image
 docker run --network=montagu_default $migrate_image
+
+#Add users manage permission to test uesr for Orderly Web
+docker run -v $PWD/demo:/orderly $OW_CLI_IMAGE add-users test.user@example.com
+docker run -v $PWD/demo:/orderly $OW_CLI_IMAGE grant test.user@example.com */users.manage
+
+#start orderly web
+docker exec montagu_orderly_web_1 mkdir -p /etc/orderly/web
+docker exec montagu_orderly_web_1 touch /etc/orderly/web/go_signal
