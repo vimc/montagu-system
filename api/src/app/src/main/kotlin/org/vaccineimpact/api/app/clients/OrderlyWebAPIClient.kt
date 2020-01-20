@@ -8,14 +8,12 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.vaccineimpact.api.app.errors.OrderlyWebError
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.ConfigWrapper
-import org.vaccineimpact.api.serialization.MontaguSerializer
-import java.io.IOException
 import java.security.cert.X509Certificate
 import javax.net.ssl.*
 
 interface OrderlyWebAPIClient
 {
-    @Throws(OrderlyWebAPIException::class)
+    @Throws(OrderlyWebError::class)
     fun addUser(email: String, username: String, displayName: String)
 }
 
@@ -42,14 +40,10 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String,
     private val gson = GsonBuilder().create()
 
     override fun addUser(email: String, username: String, displayName: String) {
-        println("addUser $email - getting ow token")
         val orderlyWebToken = getOrderlyWebToken()
-        println("addUser- creating userDetails")
         val userDetails = OrderlyWebUserDetails(email, username, displayName, "Montagu")
         val postBody = gson.toJson(userDetails)
-        println("addUser- posting to $baseUrl/user/add")
         val postResponse = post("$baseUrl/user/add", mapOf("Authorization" to "Bearer $orderlyWebToken"), postBody)
-        println("finished add user $email")
         val code = postResponse.code
         if (code != 200) {
             throw OrderlyWebError("Error adding user to OrderlyWeb. Code: $code")
@@ -104,7 +98,7 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String,
         }
         catch(e: JsonSyntaxException)
         {
-            throw OrderlyWebAPIException("Failed to parse text as JSON.\nText was: $jsonString\n\n$e", 500)
+            throw OrderlyWebError("Failed to parse text as JSON.\nText was: $jsonString\n\n$e")
         }
     }
 
@@ -152,5 +146,3 @@ class RemoteHttpMontaguApiClient(montaguToken: String): OkHttpOrderlyWebAPIClien
         return OkHttpClient()
     }
 }
-
-class OrderlyWebAPIException(override val message: String, val status: Int) : IOException(message)

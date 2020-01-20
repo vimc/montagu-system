@@ -11,6 +11,7 @@ import org.vaccineimpact.api.app.clients.OkHttpOrderlyWebAPIClient
 import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import com.github.fge.jackson.JsonLoader
+import org.vaccineimpact.api.app.errors.OrderlyWebError
 
 
 class TestOkHttpOrderlyWebAPIClient(private val client: OkHttpClient, val config: ConfigWrapper):
@@ -86,5 +87,38 @@ class OkHttpOrderlyWebAPIClientTests: MontaguTests()
         Assertions.assertThat(userDetailsJson["username"].asText()).isEqualTo("test.user")
         Assertions.assertThat(userDetailsJson["displayName"].asText()).isEqualTo("Test User")
         Assertions.assertThat(userDetailsJson["source"].asText()).isEqualTo("Montagu")
+    }
+
+    @Test
+    fun `throws OrderlyWebError if unsuccessful call to add user`()
+    {
+        val responseBody = "{access_token: \"test_orderly_web_token\", token_type: \"test\", expires_in: 1000}"
+                .toResponseBody()
+
+        val request = Request.Builder().url("http://test-orderly-web").build()
+
+        val response = Response.Builder()
+                .body(responseBody)
+                .code(500)
+                .request(request)
+                .protocol(Protocol.HTTP_2)
+                .message("test message")
+                .build()
+
+        val mockCall = mock<Call>{
+            on { execute() } doReturn response
+        }
+
+        val mockClient = mock<OkHttpClient>{
+            on {newCall(any())} doReturn(mockCall)
+        }
+
+        val mockConfig = mock<ConfigWrapper>{
+            on{ get("orderlyweb.api.url") } doReturn "http://test-orderly-web"
+        }
+        val sut = TestOkHttpOrderlyWebAPIClient(mockClient, mockConfig)
+
+        Assertions.assertThatThrownBy {  sut.addUser("test@example.com", "test.user", "Test User") }
+                .isInstanceOf(OrderlyWebError::class.java)
     }
 }
