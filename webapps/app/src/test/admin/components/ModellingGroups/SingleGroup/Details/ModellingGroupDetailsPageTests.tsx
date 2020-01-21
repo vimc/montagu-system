@@ -41,7 +41,7 @@ describe("Modelling Group Details Page Component Tests", () => {
             match={testMatch}
         />, {context: {store}}).dive();
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
         expect(pageArticle.props().title).toBe(testGroup.description);
         expect(pageArticle.find(ModellingGroupDetailsContent).length).toBe(1);
     });

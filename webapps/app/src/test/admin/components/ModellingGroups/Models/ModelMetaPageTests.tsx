@@ -19,7 +19,7 @@ describe("ModelMetaPage", () => {
 
         expect(rendered.find(PageArticle).props().title).toEqual("Model Metadata");
         expect(rendered.find(PageArticle).find(ModelMetaTable)).toHaveLength(2);
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
     });
 
 });

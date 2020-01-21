@@ -60,7 +60,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
 
         const content = rendered.find(ResponsibilityGuidanceModelInputsContentLatest);
         expect(content.getElements().length).toBe(1);
@@ -80,7 +80,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
 
         const content = rendered.find(ResponsibilityGuidanceTouchstoneNotOpenContent);
         expect(content.getElements().length).toBe(1);
@@ -101,7 +101,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
 
         const content = rendered.find(ResponsibilityGuidanceModelInputsContent2017);
         expect(content.getElements().length).toBe(1);
@@ -122,7 +122,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
         const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
         const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
 
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
 
         const link = rendered.find("a");
         expect(link.prop("href")).toContain("guidance-2019-inputs.pdf");

@@ -32,7 +32,7 @@ describe("ContribRouter", () => {
         const rendered = mount(<Provider store={store}><ContribRouter loggedIn={false} history={history}/></Provider>);
 
         expect(rendered.find(LoginPage)).toHaveLength(1);
-        expect(loginStub.called).toBe(true);
+        expect(loginStub.mock.calls.length).toBe(1);
     });
 
     it("does normal routing when logged in", () => {

@@ -20,10 +20,10 @@ describe("scenarioPageActionCreators", () => {
             touchstoneId: "touchstone",
             touchstoneVersionId: "touchstone-1"
         }));
-        expect(getScenariosStub.callCount).toEqual(1);
-        expect(getScenariosStub.getCall(0).args).toEqual(["touchstone-1"]);
-        expect(getDiseasesStub.callCount).toEqual(1);
-        expect(getDiseasesStub.getCall(0).args).toEqual([]);
+        expect(getScenariosStub.mock.calls.length).toEqual(1);
+        expect(getScenariosStub.mock.calls[0]).toEqual(["touchstone-1"]);
+        expect(getDiseasesStub.mock.calls.length).toEqual(1);
+        expect(getDiseasesStub.mock.calls[0]).toEqual([]);
     });
 
     it("creates breadcrumbs", () => {

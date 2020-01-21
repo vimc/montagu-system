@@ -56,7 +56,7 @@ describe("CreateTouchstoneForm", () => {
         );
 
         mounted.simulate("submit");
-        expect(stub.called).toBe(true);
+        expect(stub.mock.calls.length).toBe(1);
     });
 
     it("renders createTouchstoneErrors from state", () => {

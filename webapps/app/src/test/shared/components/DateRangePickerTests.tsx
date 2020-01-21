@@ -28,8 +28,8 @@ describe("DateRangePicker", () => {
         const rendered = shallow(<DateRangePicker
             startDate={from}
             endDate={to}
-            timeFromSelected={sandbox.sinon.stub()}
-            timeUntilSelected={sandbox.sinon.stub()}
+            timeFromSelected={sandbox.createSpy}
+            timeUntilSelected={sandbox.createSpy}
             value={value}/>);
 
         const startDatePicker = rendered.find(DatePicker).first();
@@ -45,8 +45,8 @@ describe("DateRangePicker", () => {
         const rendered = shallow(<DateRangePicker
             startDate={from}
             endDate={to}
-            timeFromSelected={sandbox.sinon.stub()}
-            timeUntilSelected={sandbox.sinon.stub()}
+            timeFromSelected={sandbox.createSpy}
+            timeUntilSelected={sandbox.createSpy}
             value={value}/>);
 
         const startDatePicker = rendered.find(DatePicker).last();
@@ -59,36 +59,36 @@ describe("DateRangePicker", () => {
 
     it("calls timeFromSelected when start date changes", () => {
 
-        const timeFromSelectedStub = sandbox.sinon.stub();
+        const timeFromSelectedStub = sandbox.createSpy();
 
         const rendered = shallow(<DateRangePicker
             startDate={from}
             endDate={to}
             timeFromSelected={timeFromSelectedStub}
-            timeUntilSelected={sandbox.sinon.stub()}
+            timeUntilSelected={sandbox.createSpy}
             value={value}/>);
 
         const startDatePicker = rendered.find(DatePicker).first();
         startDatePicker.simulate("change");
 
-        expect(timeFromSelectedStub.called).toBe(true);
+        expect(timeFromSelectedStub.mock.calls.length).toBe(1);
     });
 
     it("calls timeUntilSelected when end date changes", () => {
 
-        const timeUntilSelectedStub = sandbox.sinon.stub();
+        const timeUntilSelectedStub = sandbox.createSpy();
 
         const rendered = shallow(<DateRangePicker
             startDate={from}
             endDate={to}
-            timeFromSelected={sandbox.sinon.stub()}
+            timeFromSelected={sandbox.createSpy}
             timeUntilSelected={timeUntilSelectedStub}
             value={value}/>);
 
         const startDatePicker = rendered.find(DatePicker).last();
         startDatePicker.simulate("change");
 
-        expect(timeUntilSelectedStub.called).toBe(true);
+        expect(timeUntilSelectedStub.mock.calls.length).toBe(1);
     });
 
 });

@@ -58,9 +58,9 @@ describe("Modelling Group Details Page actions tests", () => {
                     {type: ModellingGroupTypes.SET_CURRENT_GROUP_MEMBERS, data: [testUser]}
                 ];
                 expect(actions).toEqual(expectedPayload);
-                expect(getAllUsersStub.called).toBe(true);
-                expect(getGroupDetailsServiceStub.called).toBe(true);
-                expect(getGroupDetailsServiceStub.getCall(0).args[0]).toEqual(testGroup.id);
+                expect(getAllUsersStub.mock.calls.length).toBe(1);
+                expect(getGroupDetailsServiceStub.mock.calls.length).toBe(1);
+                expect(getGroupDetailsServiceStub.mock.calls[0][0]).toEqual(testGroup.id);
                 done();
             });
         }

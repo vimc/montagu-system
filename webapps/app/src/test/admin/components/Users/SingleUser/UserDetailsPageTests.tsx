@@ -40,7 +40,7 @@ describe("UserDetailsPage", () => {
             {context: {store}}).dive();
 
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
         expect(pageArticle.props().title).toBe("Fake Name");
         expect(pageArticle.find(UserDetailsContent).length).toBe(1);
     });

@@ -85,13 +85,13 @@ describe("Model Run Parameters Content component tests, no HOCS", () => {
         const componentProps = {...componentDefaultProps, resetUploadStatus: resetSpy};
         const rendered = shallow(<ModelRunParametersFormComponent {...componentProps} />);
         rendered.setState({disabled: true});
-        expect(resetSpy.called).toEqual(false);
+        expect(resetSpy.mock.calls.length).toBe(0);
         // initiate props change
         rendered.setProps({
             status: RunParametersUploadStatus.completed,
             errors: [testError]
         });
-        expect(resetSpy.called).toEqual(true);
+        expect(resetSpy.mock.calls.length).toBe(1);
         expect(rendered.state().disabled).toEqual(false);
         expect(rendered.state().success).toEqual(false);
         expect(rendered.state().errors).toEqual([testError]);
@@ -106,13 +106,13 @@ describe("Model Run Parameters Content component tests, no HOCS", () => {
         const componentProps = {...componentDefaultProps, resetUploadStatus: resetSpy};
         const rendered = shallow(<ModelRunParametersFormComponent {...componentProps} />);
         rendered.setState({disabled: true});
-        expect(resetSpy.called).toEqual(false);
+        expect(resetSpy.mock.calls.length).toBe(0);
         // initiate props change
         rendered.setProps({
             status: RunParametersUploadStatus.completed,
             errors: null
         });
-        expect(resetSpy.called).toEqual(true);
+        expect(resetSpy.mock.calls.length).toBe(1);
         expect(rendered.state().disabled).toEqual(false);
         expect(rendered.state().success).toEqual(true);
         expect(rendered.state().errors).toEqual([]);
@@ -148,7 +148,7 @@ describe("Model Run Parameters Content component tests, no HOCS", () => {
             preventDefault: () => {},
             target: form
         });
-        expect(uploadSpy.called).toEqual(true);
+        expect(uploadSpy.mock.calls.length).toBe(1);
         rendered.setState({disabled: true});
         expect(rendered.state().disabled).toEqual(true);
         expect(rendered.find('button[type="submit"]').props().disabled).toEqual(true);

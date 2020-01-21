@@ -30,7 +30,7 @@ describe("Guidance Marshall Islands Page Component tests", () => {
         let store = createMockStore();
         const createBreadcrumbsStub = sandbox.setStubReduxAction(breadcrumbsActionCreators, "createBreadcrumbs");
         const rendered = shallow(<ResponsibilityGuidanceMarshallIslandsPage/>, {context: {store}}).dive().dive().dive();
-        expect(createBreadcrumbsStub.called).toBe(true);
+        expect(createBreadcrumbsStub.mock.calls.length).toBe(1);
         const pageArticle = rendered.find(PageArticle);
         const pageArticleProps = pageArticle.props() as PageArticleProps;
         expect(pageArticleProps.hideTitle).toBe(true);

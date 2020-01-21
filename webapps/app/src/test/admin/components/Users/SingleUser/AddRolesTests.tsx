@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import * as Sinon from "sinon";
 import {AddRoles, AddRolesComponent} from "../../../../../main/admin/components/Users/SingleUser/AddRoles";
 import {Sandbox} from "../../../../Sandbox";
 import {shallow} from "enzyme";
@@ -23,7 +22,7 @@ describe("AddRoles", () => {
     });
     const mockAdminAppState = mockAdminState({users: mockUsersState});
 
-    let store: MockStore<AdminAppState>, addRoleStub: Sinon.SinonStub;
+    let store: MockStore<AdminAppState>, addRoleStub: jest.SpyInstance;
 
     beforeEach(() => {
         addRoleStub = sandbox.setStubFunc(usersActionCreators, "addGlobalRoleToUser",
@@ -69,7 +68,7 @@ describe("AddRoles", () => {
             }
         });
 
-        expect(addRoleStub.calledWith("testuser", "rolename")).toBe(true);
+        expect(addRoleStub.mock.calls[0]).toEqual(["testuser", "rolename"]);
 
     })
 });

@@ -16,7 +16,7 @@ describe("touchstoneListPageActionCreators", () => {
         const store = createMockAdminStore();
         await store.dispatch(touchstoneListPageActionCreators.loadData());
 
-        expect(getAllTouchstones.called).toBe(true);
+        expect(getAllTouchstones.mock.calls.length).toBe(1);
     });
 
     it("creates breadcrumbs", () => {

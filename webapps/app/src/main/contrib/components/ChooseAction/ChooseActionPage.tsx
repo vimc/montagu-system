@@ -12,10 +12,6 @@ export interface ChooseActionPageLocationProps {
 
 export class ChooseActionPageComponent extends React.Component<PageProperties<ChooseActionPageLocationProps>> {
 
-    componentDidMount() {
-        this.props.onLoad(this.props.match.params)
-    }
-
     render(): JSX.Element {
         return <PageArticle title="What do you want to do?">
             <ChooseActionContent/>

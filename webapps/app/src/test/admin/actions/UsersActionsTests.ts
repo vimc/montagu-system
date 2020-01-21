@@ -4,7 +4,6 @@ import {createMockAdminStore, createMockStore} from "../../mocks/mockStore";
 import {UserCacheKeysEnum, UsersService} from "../../../main/admin/services/UsersService";
 import {ChangeSetPasswordToken, UsersTypes} from "../../../main/admin/actionTypes/UsersTypes";
 import {mockUser} from "../../mocks/mockModels";
-import * as Sinon from "sinon"
 import {checkPromise} from "../../testHelpers";
 import {NotificationTypeKeys} from "../../../main/shared/actionTypes/NotificationTypes";
 import {mockError, mockResult} from "../../mocks/mockResult";
@@ -14,7 +13,7 @@ describe("Admin Users actions tests", () => {
     const sandbox = new Sandbox();
 
     let store: any = null,
-        createUserStub: Sinon.SinonStub = null;
+        createUserStub: jest.SpyInstance = null;
 
     beforeEach(() => {
         store = createMockStore({});
@@ -87,8 +86,7 @@ describe("Admin Users actions tests", () => {
                 {type: UsersTypes.SET_CURRENT_USER, data: "user"}];
             expect(actions).toEqual(expectedPayload);
 
-            expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
-                .toBe(true);
+            expect(cacheStub.mock.calls[0]).toEqual([UserCacheKeysEnum.users, "/users/"])
 
         }
     );
@@ -106,8 +104,7 @@ describe("Admin Users actions tests", () => {
                 {type: UsersTypes.SET_CURRENT_USER, data: "user"}];
             expect(actions).toEqual(expectedPayload);
 
-            expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
-                .toBe(true);
+            expect(cacheStub.mock.calls[0]).toEqual([UserCacheKeysEnum.users, "/users/"])
 
         }
     );
@@ -122,7 +119,7 @@ describe("Admin Users actions tests", () => {
             username: "joe.b"
         }));
 
-        expect(createUserStub.calledWith("joe bloggs", "joe@email.com", "joe.b")).toBe(true);
+        expect(createUserStub.mock.calls[0]).toEqual(["joe bloggs", "joe@email.com", "joe.b"]);
         const actions = store.getActions();
         const expectedPayload = {type: UsersTypes.ALL_USERS_FETCHED, data: [testUser, testUser2]};
         expect(actions).toContainEqual(expectedPayload);
@@ -161,8 +158,7 @@ describe("Admin Users actions tests", () => {
             username: "joe.b"
         }));
 
-        expect(cacheStub.calledWith(UserCacheKeysEnum.users, "/users/"))
-            .toBe(true)
+        expect(cacheStub.mock.calls[0]).toEqual([UserCacheKeysEnum.users, "/users/"]);
     });
 
     it('createUser should set show create user to false', async () => {
@@ -177,7 +173,7 @@ describe("Admin Users actions tests", () => {
             username: "joe.b"
         }));
 
-        expect(stub.calledWith(false)).toBe(true)
+        expect(stub.mock.calls[0][0]).toBe(false);
     });
 
     it('setShowCreateUser dispatches SHOW_CREATE_USER', async () => {

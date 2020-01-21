@@ -23,7 +23,7 @@ describe("TouchstoneVersionPage", () => {
         sandbox.setStubReduxAction(touchstoneVersionPageActionCreators, "title");
         const rendered = shallowRenderPage(<TouchstoneVersionPage {...mockPageProperties()} />);
         expect(rendered.find(PageArticle).find(TouchstoneVersionDetails)).toHaveLength(1);
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
     });
 });
 
