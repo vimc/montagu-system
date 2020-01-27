@@ -34,7 +34,7 @@ describe("Modelling Groups List Page Component Tests", () => {
             match={testMatch}
         />, {context: {store}}).dive();
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
         expect(pageArticle.props().title).toBe(ModellingGroupsListPageComponent.title);
         expect(pageArticle.find(ModellingGroupsListContent).length).toBe(1);
         expect(pageArticle.find(ButtonLink).prop("href")).toBe("/modelling-groups/models")

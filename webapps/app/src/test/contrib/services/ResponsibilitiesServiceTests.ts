@@ -26,8 +26,8 @@ describe('Responsibilities service tests', () => {
 
         responsibilitiesService.getResponsibilities("group-2", "touchstone-2");
 
-        expect(getStub.getCall(0).args[0]).toEqual("/modelling-groups/group-2/responsibilities/touchstone-2/");
-        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'set' });
+        expect(getStub.mock.calls[0][0]).toEqual("/modelling-groups/group-2/responsibilities/touchstone-2/");
+        expect(setOptionsSpy.mock.calls[0][0]).toEqual({ cacheKey: 'set' });
     });
 
     it('clears cache for responsibilities', () => {
@@ -39,8 +39,8 @@ describe('Responsibilities service tests', () => {
 
         responsibilitiesService.clearCacheForResponsibilities("group-2", "touchstone-2");
 
-        expect(clearCacheStub.getCall(0).args[0]).toEqual("set");
-        expect(clearCacheStub.getCall(0).args[1]).toEqual("/modelling-groups/group-2/responsibilities/touchstone-2/");
+        expect(clearCacheStub.mock.calls[0][0]).toEqual("set");
+        expect(clearCacheStub.mock.calls[0][1]).toEqual("/modelling-groups/group-2/responsibilities/touchstone-2/");
     });
 
 });

@@ -45,9 +45,9 @@ describe("Modelling Group Members Deletable User Component tests", () => {
             const deleteLink = rendered.find(".text-danger").dive();
             const removeActionStub = sandbox.setStubReduxAction(modellingGroupsActionCreators, "removeUserFromGroup");
             deleteLink.simulate("click");
-            expect(removeActionStub.called).toBe(true);
-            expect(removeActionStub.getCall(0).args[0]).toEqual("g-1");
-            expect(removeActionStub.getCall(0).args[1]).toEqual(testUser.username);
+            expect(removeActionStub.mock.calls.length).toBe(1);
+            expect(removeActionStub.mock.calls[0][0]).toEqual("g-1");
+            expect(removeActionStub.mock.calls[0][1]).toEqual(testUser.username);
         });
     });
 
@@ -56,7 +56,7 @@ describe("Modelling Group Members Deletable User Component tests", () => {
         const testUser = mockUser({"username": "w.a.m", "name": "Wolfgang Amadeus Mozart"});
 
         const sandbox = new Sandbox();
-        let removeSpy: sinon.SinonSpy;
+        let removeSpy: jest.Mock;
         beforeEach(() => {
             removeSpy = sandbox.createSpy();
         });
@@ -103,9 +103,9 @@ describe("Modelling Group Members Deletable User Component tests", () => {
             />);
             const deleteLink = rendered.find(".text-danger").dive();
             deleteLink.simulate("click");
-            expect(removeSpy.called).toBe(true);
-            expect(removeSpy.getCall(0).args[0]).toEqual("group1");
-            expect(removeSpy.getCall(0).args[1]).toEqual(testUser.username);
+            expect(removeSpy.mock.calls.length).toBe(1);
+            expect(removeSpy.mock.calls[0][0]).toEqual("group1");
+            expect(removeSpy.mock.calls[0][1]).toEqual(testUser.username);
         });
 
     });

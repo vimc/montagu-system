@@ -35,7 +35,7 @@ describe("AdminRouter", () => {
         const store = createAdminStore(history);
         const rendered = mount(<Provider store={store}><AdminRouter loggedIn={false} history={history}/></Provider>);
         expect(rendered.find(LoginPage)).toHaveLength(1);
-        expect(loginStub.called).toBe(true);
+        expect(loginStub.mock.calls.length).toBe(1);
     });
 
 });

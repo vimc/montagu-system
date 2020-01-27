@@ -98,9 +98,9 @@ describe("Responsibility Overview Disease Filter Component tests", () => {
             const store = createMockStore(state);
             const rendered = shallow(<DiseaseFilter/>, {context: {store}}).dive().dive();
             const selectElement = rendered.find(OptionSelector).dive();
-            expect(selectChangeStub.called).toEqual(false);
+            expect(selectChangeStub.mock.calls.length).toBe(0);
             selectElement.simulate('change', { currentTarget: {value: testDisease.id} });
-            expect(selectChangeStub.called).toEqual(true);
+            expect(selectChangeStub.mock.calls.length).toBe(1);
         }
     );
 });

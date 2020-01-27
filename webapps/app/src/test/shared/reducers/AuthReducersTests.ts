@@ -39,7 +39,7 @@ describe('Auth reducer tests', () => {
             })).toEqual(
                 initialAuthState
             );
-            expect(redirectStub.called).toBe(true);
+            expect(redirectStub.mock.calls.length).toBe(1);
         }
     );
 

@@ -43,7 +43,7 @@ describe("Download Coverage Page Component tests", () => {
             match={testMatch}
         />, {context: {store}}).dive().dive();
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
         expect(pageArticle.find(DownloadCoverageContent).length).toBe(1);
         const titleComponent = pageArticle.dive().find(ResponsibilitiesPageTitle);
         expect(titleComponent.props().title).toBe("Download coverage data");

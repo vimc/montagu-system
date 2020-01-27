@@ -17,6 +17,7 @@ import {modelRunParametersPageActionCreators} from "../../../../../main/contrib/
 import {ModelRunParametersContent} from "../../../../../main/contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersContent";
 import {Provider} from "react-redux";
 import {mockContribState} from "../../../../mocks/mockStates";
+import {mount} from "enzyme";
 
 describe("Model Run Parameters Page tests", () => {
 
@@ -38,15 +39,14 @@ describe("Model Run Parameters Page tests", () => {
 
         const onLoadStub = sandbox.setStubReduxAction(modelRunParametersPageActionCreators, "onLoad");
 
-        const rendered = sandbox.mount(<Provider store={store}><ModelRunParametersPage
+        const rendered = mount(<Provider store={store}><ModelRunParametersPage
             match={testMatch}
         /></Provider>);
 
         const pageArticle = rendered.find(PageArticle);
-        expect(onLoadStub.called).toBe(true);
+        expect(onLoadStub.mock.calls.length).toBe(1);
         expect(pageArticle.find(ModelRunParametersContent).length).toBe(1);
         const titleComponent = pageArticle.find(ResponsibilitiesPageTitle);
         expect(titleComponent.props().title).toBe("Upload parameters");
     });
 });
-

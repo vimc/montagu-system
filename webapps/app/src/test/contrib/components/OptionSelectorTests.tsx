@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import { shallow } from "enzyme";
-import * as sinon from "sinon";
 
 import "../../helper";
 import { Option, OptionSelector } from "../../../main/contrib/components/OptionSelector/OptionSelector";
@@ -15,7 +14,7 @@ function mockOptions(): Option[] {
 
 describe('OptionSelector', () => {
     it("renders option", () => {
-        const callback = sinon.spy();
+        const callback = jest.fn();
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption=""
                                                  onChange={ callback }  required={false} name={"fruit"}/>);
         const children = rendered.find("option");
@@ -25,7 +24,7 @@ describe('OptionSelector', () => {
     });
 
     it("renders default option", () => {
-        const callback = sinon.spy();
+        const callback = jest.fn();
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
                                                  onChange={ callback } required={false} name={"fruit"}/>);
         const children = rendered.find("option");
@@ -35,7 +34,7 @@ describe('OptionSelector', () => {
     });
 
     it("adds required attribute", () => {
-        const callback = sinon.spy();
+        const callback = jest.fn();
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
                                                  onChange={ callback } required={true} name={"fruit"}/>);
 
@@ -43,7 +42,7 @@ describe('OptionSelector', () => {
     });
 
     it("does not add required attribute", () => {
-        const callback = sinon.spy();
+        const callback = jest.fn();
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
                                                  onChange={ callback } required={false} name={"fruit"}/>);
 
@@ -51,7 +50,7 @@ describe('OptionSelector', () => {
     });
 
     it("adds name attribute", () => {
-        const callback = sinon.spy();
+        const callback = jest.fn();
         const rendered = shallow(<OptionSelector options={ mockOptions() } defaultOption="Fruit"
                                                  onChange={ callback } required={false} name={"fruit"}/>);
 
@@ -59,7 +58,7 @@ describe('OptionSelector', () => {
     });
 
     it("invokes the callback when an option is selected", () => {
-        const callback = sinon.spy();
+        const callback = jest.fn();
         const rendered = shallow(<OptionSelector options={ [] } defaultOption="" onChange={ callback }
                                                  required={false} name={"fruit"}/>);
         rendered.find("select").simulate("change", {
@@ -69,7 +68,7 @@ describe('OptionSelector', () => {
             preventDefault: () => {
             }
         });
-        expect(callback.called).toBe(true);
-        expect(callback.args[ 0 ][ 0 ]).toEqual("test");
+        expect(callback.mock.calls.length).toBe(1);
+        expect(callback.mock.calls[0][0]).toEqual("test");
     });
 });

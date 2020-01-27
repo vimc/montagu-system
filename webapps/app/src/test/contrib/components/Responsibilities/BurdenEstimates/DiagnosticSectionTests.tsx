@@ -139,9 +139,9 @@ describe("Diagnostic section", () => {
         mount(<DiagnosticSection scenarioId={testScenario.id}
                                  setId={testEstimateSet.id}/>, {context: {store}});
 
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, testScenario.id, testEstimateSet.id)).toBe(true);
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, testScenario.id, testEstimateSet.id)).toBe(true);
-        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, testEstimateSet.id)).toBe(true);
+        expect(getEstimatesStub.mock.calls).toContainEqual([BurdenOutcome.DALYS, testScenario.id, testEstimateSet.id]);
+        expect(getEstimatesStub.mock.calls).toContainEqual([BurdenOutcome.DEATHS, testScenario.id, testEstimateSet.id]);
+        expect(getEstimatesStub.mock.calls).toContainEqual([BurdenOutcome.CASES, testScenario.id, testEstimateSet.id]);
     });
 
     it("fetches data when setId or scenarioId is updated", () => {
@@ -151,19 +151,19 @@ describe("Diagnostic section", () => {
         const rendered = mount(<DiagnosticSection scenarioId={testScenario.id}
                                                   setId={testEstimateSet.id}/>, {context: {store}});
 
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, testScenario.id, testEstimateSet.id)).toBe(true);
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, testScenario.id, testEstimateSet.id)).toBe(true);
-        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, testEstimateSet.id)).toBe(true);
+        expect(getEstimatesStub.mock.calls).toContainEqual([BurdenOutcome.DEATHS, testScenario.id, testEstimateSet.id]);
+        expect(getEstimatesStub.mock.calls).toContainEqual([BurdenOutcome.DALYS, testScenario.id, testEstimateSet.id]);
+        expect(getEstimatesStub.mock.calls).toContainEqual([BurdenOutcome.CASES, testScenario.id, testEstimateSet.id]);
 
         rendered.setProps({setId: 123});
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, testScenario.id, 123)).toBe(true);
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, testScenario.id, 123)).toBe(true);
-        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, testScenario.id, 123)).toBe(true);
+        expect(getEstimatesStub.mock.calls).toContainEqual([BurdenOutcome.DEATHS, testScenario.id, 123]);
+        expect(getEstimatesStub.mock.calls).toContainEqual([BurdenOutcome.DALYS, testScenario.id, 123]);
+        expect(getEstimatesStub.mock.calls).toContainEqual([BurdenOutcome.CASES, testScenario.id, 123]);
 
         rendered.setProps({scenarioId: 456});
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DEATHS, 456, 123)).toBe(true);
-        expect(getEstimatesStub.calledWith(BurdenOutcome.DALYS, 456, 123)).toBe(true);
-        expect(getEstimatesStub.calledWith(BurdenOutcome.CASES, 456, 123)).toBe(true);
+        expect(getEstimatesStub.mock.calls).toContainEqual([BurdenOutcome.DEATHS, 456, 123]);
+        expect(getEstimatesStub.mock.calls).toContainEqual([BurdenOutcome.DALYS, 456, 123]);
+        expect(getEstimatesStub.mock.calls).toContainEqual([BurdenOutcome.CASES, 456, 123]);
 
     });
 

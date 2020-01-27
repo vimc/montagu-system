@@ -62,6 +62,6 @@ describe("CreateUserSectionComponenent", () => {
         const spy = sandbox.setStubReduxAction(usersActionCreators, "setShowCreateUser");
         const rendered = shallow(<CreateUserSection/>, {context: {store}}).dive().dive();
         rendered.find("button").simulate("click");
-        expect(spy.calledWith(true)).toBe(true);
+        expect(spy.mock.calls[0][0]).toBe(true);
     });
 });

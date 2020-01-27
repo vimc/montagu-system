@@ -22,8 +22,8 @@ describe("scenarioActionCreators", () => {
         );
         await store.dispatch(scenarioActionCreators.getScenariosForTouchstoneVersion("touchstone-1"));
 
-        expect(serviceStub.callCount).toEqual(1);
-        expect(serviceStub.getCall(0).args).toEqual(["touchstone-1"]);
+        expect(serviceStub.mock.calls.length).toEqual(1);
+        expect(serviceStub.mock.calls[0]).toEqual(["touchstone-1"]);
         expect(store.getActions()).toEqual([
             {type: ScenarioTypes.SOME_SCENARIOS_FETCHED, data: scenarios}
         ]);

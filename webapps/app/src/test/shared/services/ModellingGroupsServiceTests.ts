@@ -24,9 +24,9 @@ describe('Modelling Groups service tests', () => {
 
         groupsService.getAllGroups();
 
-        expect(getStub.getCall(0).args[0])
+        expect(getStub.mock.calls[0][0])
             .toEqual("/modelling-groups/");
-        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'groups' });
+        expect(setOptionsSpy.mock.calls[0][0]).toEqual({ cacheKey: 'groups' });
     });
 
     it('fetches user groups', () => {
@@ -39,9 +39,9 @@ describe('Modelling Groups service tests', () => {
 
         groupsService.getUserGroups();
 
-        expect(getStub.getCall(0).args[0])
+        expect(getStub.mock.calls[0][0])
             .toEqual("/user/modelling-groups/");
-        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'userGroups' });
+        expect(setOptionsSpy.mock.calls[0][0]).toEqual({ cacheKey: 'userGroups' });
     });
 
     it('fetches group details', () => {
@@ -54,9 +54,9 @@ describe('Modelling Groups service tests', () => {
 
         groupsService.getGroupDetails("g-1");
 
-        expect(getStub.getCall(0).args[0])
+        expect(getStub.mock.calls[0][0])
             .toEqual("/modelling-groups/g-1/");
-        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'groupsDetails' });
+        expect(setOptionsSpy.mock.calls[0][0]).toEqual({ cacheKey: 'groupsDetails' });
     });
 
     it('adds member', () => {
@@ -73,9 +73,9 @@ describe('Modelling Groups service tests', () => {
 
         groupsService.addMember("g-1", "u1");
 
-        expect(postStub.getCall(0).args[0])
+        expect(postStub.mock.calls[0][0])
             .toEqual("/modelling-groups/g-1/actions/associate-member/");
-        expect(postStub.getCall(0).args[1]).toEqual(JSON.stringify(associateUser));
+        expect(postStub.mock.calls[0][1]).toEqual(JSON.stringify(associateUser));
     });
 
     it('removes member', () => {
@@ -92,9 +92,9 @@ describe('Modelling Groups service tests', () => {
 
         groupsService.removeMember("g-1", "u1");
 
-        expect(postStub.getCall(0).args[0])
+        expect(postStub.mock.calls[0][0])
             .toEqual("/modelling-groups/g-1/actions/associate-member/");
-        expect(postStub.getCall(0).args[1]).toEqual(JSON.stringify(associateUser));
+        expect(postStub.mock.calls[0][1]).toEqual(JSON.stringify(associateUser));
     });
 
     it('clears cache for group details', () => {
@@ -104,8 +104,8 @@ describe('Modelling Groups service tests', () => {
 
         groupsService.clearCacheForGroupDetails("g-1");
 
-        expect(postStub.getCall(0).args[0]).toEqual("groupsDetails");
-        expect(postStub.getCall(0).args[1]).toEqual("/modelling-groups/g-1/");
+        expect(postStub.mock.calls[0][0]).toEqual("groupsDetails");
+        expect(postStub.mock.calls[0][1]).toEqual("/modelling-groups/g-1/");
     });
 
 });

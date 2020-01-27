@@ -26,8 +26,8 @@ describe('Diseases service tests', () => {
 
         diseaseService.getAllDiseases();
 
-        expect(getStub.getCall(0).args[0]).toEqual('/diseases/');
-        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'diseases' });
+        expect(getStub.mock.calls[0][0]).toEqual('/diseases/');
+        expect(setOptionsSpy.mock.calls[0][0]).toEqual({ cacheKey: 'diseases' });
     });
 
 });

@@ -1,9 +1,8 @@
 import * as React from "react";
-import { shallow } from "enzyme";
-
+import {shallow} from "enzyme";
 
 import "../../../helper";
-import { Sandbox } from "../../../Sandbox";
+import {Sandbox} from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
 import {PageArticle} from "../../../../main/shared/components/PageWithHeader/PageArticle";
 import {
@@ -19,8 +18,7 @@ describe("Choose Action Page", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
-    it(
-        "renders component on component level, renders title and sub component",
+    it("renders component on component level, renders title and sub component",
         () => {
             let testMatch = mockMatch<ChooseActionPageLocationProps>({groupId: "g-1"});
             let store = createMockStore();
@@ -29,7 +27,7 @@ describe("Choose Action Page", () => {
                 match={testMatch}
             />, {context: {store}}).dive().dive();
             const pageArticle = rendered.find(PageArticle);
-            expect(onLoadStub.called).toBe(true);
+            expect(onLoadStub.mock.calls.length).toBe(1);
             expect(pageArticle.props().title).toBe("What do you want to do?");
             expect(pageArticle.find(ChooseActionContent).length).toBe(1);
         }

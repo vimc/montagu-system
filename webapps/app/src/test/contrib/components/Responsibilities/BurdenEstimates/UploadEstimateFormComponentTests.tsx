@@ -54,7 +54,7 @@ describe("Upload Burden Estimates Form Component tests", () => {
     };
 
     beforeEach(() => {
-        sandbox.sinon.stub(window, "fetch");
+        window.fetch = jest.fn();
         fakeUploadClient = new FakeUploadClient();
     });
 
@@ -188,8 +188,8 @@ describe("Upload Burden Estimates Form Component tests", () => {
 
     it("creates estimate set if metadata and file present", () => {
 
-        const resetPopulateState = sandbox.sinon.stub();
-        const createEstimateSet = sandbox.sinon.stub();
+        const resetPopulateState = sandbox.createSpy();
+        const createEstimateSet = sandbox.createSpy();
         const result = getComponent({resetPopulateState: resetPopulateState, createEstimateSet: createEstimateSet});
         result.setState({
             metadata: {
@@ -199,16 +199,16 @@ describe("Upload Burden Estimates Form Component tests", () => {
             file: {fileName: "test.csv"}
         });
         result.find(".submit").simulate("click");
-        expect(resetPopulateState.called).toBe(true);
-        expect(createEstimateSet.called).toBe(true);
+        expect(resetPopulateState.mock.calls.length).toBe(1);
+        expect(createEstimateSet.mock.calls.length).toBe(1);
         expect(result.state().isUploading).toBe(true);
         expect(fakeUploadClient.uploadStarted).not.toBe(true);
     });
 
     it("uploads estimates when url changes", () => {
 
-        const resetPopulateState = sandbox.sinon.stub();
-        const createEstimateSet = sandbox.sinon.stub();
+        const resetPopulateState = sandbox.createSpy();
+        const createEstimateSet = sandbox.createSpy();
         const result = getComponent({
             resetPopulateState: resetPopulateState,
             createEstimateSet: createEstimateSet,
@@ -222,8 +222,8 @@ describe("Upload Burden Estimates Form Component tests", () => {
             file: {fileName: "test.csv"}
         });
         result.find(".submit").simulate("click");
-        expect(resetPopulateState.called).toBe(true);
-        expect(createEstimateSet.called).toBe(true);
+        expect(resetPopulateState.mock.calls.length).toBe(1);
+        expect(createEstimateSet.mock.calls.length).toBe(1);
 
         result.setProps({url: "URL"});
         result.update();
@@ -236,8 +236,8 @@ describe("Upload Burden Estimates Form Component tests", () => {
         // when file has already been uploaded, its progress will be stored in the upload client as 1
         fakeUploadClient.files[0].progress = () => 1;
 
-        const resetPopulateState = sandbox.sinon.stub();
-        const createEstimateSet = sandbox.sinon.stub();
+        const resetPopulateState = sandbox.createSpy();
+        const createEstimateSet = sandbox.createSpy();
         const result = getComponent({
             resetPopulateState: resetPopulateState,
             createEstimateSet: createEstimateSet,
@@ -251,8 +251,8 @@ describe("Upload Burden Estimates Form Component tests", () => {
             file: {fileName: "test.csv"}
         });
         result.find(".submit").simulate("click");
-        expect(resetPopulateState.called).toBe(true);
-        expect(createEstimateSet.called).toBe(true);
+        expect(resetPopulateState.mock.calls.length).toBe(1);
+        expect(createEstimateSet.mock.calls.length).toBe(1);
 
         result.setProps({url: "URL"});
         result.update();
@@ -299,11 +299,11 @@ describe("Upload Burden Estimates Form Component tests", () => {
 
     it("populates estimates on file upload success", () => {
 
-        const populateEstimateSet = sandbox.sinon.stub();
+        const populateEstimateSet = sandbox.createSpy();
         getComponent({populateEstimateSet});
 
         fakeUploadClient.emit("fileSuccess");
-        expect(populateEstimateSet.called).toBe(true);
+        expect(populateEstimateSet.mock.calls.length).toBe(1);
     });
 
     it("shows Montagu errors on file upload error", () => {

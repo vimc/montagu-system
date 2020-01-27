@@ -36,7 +36,7 @@ describe("ErrorLog", () => {
         const store = createMockAdminStore(mockAdminState({notifications: notificationState}));
         const rendered = shallow(<ErrorLog/>, {context: {store}}).dive();
         rendered.find("button").simulate("click");
-        expect(stub.getCall(0).args).toEqual(["error"]);
+        expect(stub.mock.calls[0]).toEqual(["error"]);
     });
 
     it("maps state to props", () => {

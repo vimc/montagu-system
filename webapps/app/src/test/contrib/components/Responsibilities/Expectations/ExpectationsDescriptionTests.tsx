@@ -194,7 +194,7 @@ describe("ExpectationsDescription", () => {
                 allScenarios={mockScenarios}
                 groupId="gId"
             />);
-            expect(stub.called).toBe(true);
+            expect(stub.mock.calls.length).toBe(1);
             expect(rendered.find(FileDownloadButton).at(1).prop("href"))
                 .toEqual(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/?type=stochastic`);
         }
@@ -212,7 +212,7 @@ describe("ExpectationsDescription", () => {
                 allScenarios={mockScenarios}
                 groupId="gId"
             />);
-            expect(stub.called).toBe(true);
+            expect(stub.mock.calls.length).toBe(1);
             expect(rendered.find(FileDownloadButton).length).toEqual(1);
             expect(rendered.find(FileDownloadButton).at(0).prop("href"))
                 .toEqual(`/modelling-groups/gId/expectations/tId/${em.expectation.id}/`); //single button is for central

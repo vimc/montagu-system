@@ -31,7 +31,7 @@ describe("Touchstone version page actions tests", () => {
         await store.dispatch(touchstoneVersionPageActionCreators
             .loadData({touchstoneVersionId: "t1", touchstoneId: "whatever"}));
 
-        expect(setCurrentStub.called).toBe(true);
+        expect(setCurrentStub.mock.calls.length).toBe(1);
 
     });
 

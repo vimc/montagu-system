@@ -50,9 +50,9 @@ describe("Modelling Group Members Add component tests", () => {
                 {context: {store}}
             ).dive();
             rendered.find("button.btn-success").simulate("click", mockEvent());
-            expect(addUserToGroupStub.called).toBe(true);
-            expect(addUserToGroupStub.getCall(0).args[0]).toEqual("group-1");
-            expect(addUserToGroupStub.getCall(0).args[1]).toEqual("a");
+            expect(addUserToGroupStub.mock.calls.length).toBe(1);
+            expect(addUserToGroupStub.mock.calls[0][0]).toEqual("group-1");
+            expect(addUserToGroupStub.mock.calls[0][1]).toEqual("a");
         });
     });
 
@@ -133,9 +133,9 @@ describe("Modelling Group Members Add component tests", () => {
             // Subject
             const rendered = shallow(<ModellingGroupMembersAddComponent members={[]} users={[a, b]} groupId={groupId} addUserToGroup={addSpy}/>);
             rendered.find("button.btn-success").simulate("click", mockEvent());
-            expect(addSpy.called).toBe(true);
-            expect(addSpy.getCall(0).args[0]).toEqual("group-1");
-            expect(addSpy.getCall(0).args[1]).toEqual("a");
+            expect(addSpy.mock.calls.length).toBe(1);
+            expect(addSpy.mock.calls[0][0]).toEqual("group-1");
+            expect(addSpy.mock.calls[0][1]).toEqual("a");
         });
     });
 });

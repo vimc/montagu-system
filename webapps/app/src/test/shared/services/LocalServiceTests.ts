@@ -1,7 +1,6 @@
 import {createStore} from "redux";
 
-import {Sandbox} from "../../Sandbox";
-import * as sinon from 'sinon';
+import {Sandbox} from "../../Sandbox";;
 import {AbstractLocalService, RequestOptions} from "../../../main/shared/services/AbstractLocalService";
 import {settings} from "../../../main/shared/Settings";
 import {AuthTypeKeys} from "../../../main/shared/actionTypes/AuthTypes";
@@ -89,7 +88,7 @@ describe('LocalService', () => {
             sandbox.setStubFunc(testService, "processResponse", () => Promise.resolve("testData"));
             const serviceData = await testService.test();
             expect(serviceData).toEqual("testData");
-            expect(doFetch.args[0][0]).toEqual("api.address/test/");
+            expect(doFetch.mock.calls[0][0]).toEqual("api.address/test/");
         });
 
         it('performs query and api says token expired', async () => {
@@ -202,8 +201,8 @@ describe('LocalService', () => {
             }
         }
 
-        let testService: TestService, cacheEngine: CacheInterface, setCacheSpy: sinon.SinonSpy,
-            getCacheSpy: sinon.SinonSpy, doFetchStub: sinon.SinonStub;
+        let testService: TestService, cacheEngine: CacheInterface, setCacheSpy: jest.SpyInstance,
+            getCacheSpy: jest.SpyInstance, doFetchStub: jest.SpyInstance;
 
         afterEach(() => {
             sandbox.restore();
@@ -249,9 +248,9 @@ describe('LocalService', () => {
 
             const result = await testService.testWithoutCache();
 
-            expect(doFetchStub.called).toEqual(true);
-            expect(setCacheSpy.called).toEqual(false);
-            expect(getCacheSpy.called).toEqual(false);
+            expect(doFetchStub.mock.calls.length).toBe(1);
+            expect(setCacheSpy.mock.calls.length).toBe(0);
+            expect(getCacheSpy.mock.calls.length).toBe(0);
             expect(result).toEqual("testData");
         });
 
@@ -262,18 +261,18 @@ describe('LocalService', () => {
                 const resultFromApi = await testService.testWithCache();
 
                 // first time it makes request and sets data to cache
-                expect(doFetchStub.called).toEqual(true);
-                expect(setCacheSpy.called).toEqual(true);
+                expect(doFetchStub.mock.calls.length).toBe(1);
+                expect(setCacheSpy.mock.calls.length).toBe(1);
                 expect(resultFromApi).toEqual("testData");
 
-                doFetchStub.reset();
+                doFetchStub.mockReset();
 
                 // do second request
                 const resultFromCache = await testService.testWithCache();
 
                 // second time it doesn't make a request and fetches data from cache
-                expect(doFetchStub.called).toEqual(false);
-                expect(getCacheSpy.called).toEqual(true);
+                expect(doFetchStub.mock.calls.length).toBe(0);
+                expect(getCacheSpy.mock.calls.length).toBe(2);
                 expect(resultFromCache).toEqual("testData");
                 expect(cacheEngine.get(["localService", testService.constructor.name, "test",
                     encodeURIComponent(settings.apiUrl() + "/test/")].join("."))).toEqual("testData");

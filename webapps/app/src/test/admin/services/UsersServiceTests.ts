@@ -23,9 +23,9 @@ describe('Users service tests', () => {
 
         usersService.getAllUsers();
 
-        expect(getStub.getCall(0).args[0])
+        expect(getStub.mock.calls[0][0])
             .toEqual("/users/");
-        expect(setOptionsSpy.getCall(0).args[0]).toEqual({ cacheKey: 'users' });
+        expect(setOptionsSpy.mock.calls[0][0]).toEqual({ cacheKey: 'users' });
     });
 
     it("sets password", () => {
@@ -34,6 +34,6 @@ describe('Users service tests', () => {
             return Promise.resolve();
         });
         usersService.setPassword("TOKEN", "password");
-        expect(postStub.getCall(0).args).toEqual(["/password/set/?access_token=TOKEN", `{"password":"password"}`]);
+        expect(postStub.mock.calls[0]).toEqual(["/password/set/?access_token=TOKEN", `{"password":"password"}`]);
     });
 });

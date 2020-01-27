@@ -26,8 +26,8 @@ describe("Touchstone responsibility page actions tests", () => {
         store.dispatch(touchstoneResponsibilitiesPageActionCreators
             .loadData({touchstoneVersionId: "t1", touchstoneId: "whatever"}));
         setTimeout(() => {
-            expect(setCurrentStub.called).toBe(true);
-            expect(responsibilitiesStub.called).toBe(true);
+            expect(setCurrentStub.mock.calls.length).toBe(1);
+            expect(responsibilitiesStub.mock.calls.length).toBe(1);
             done();
         });
     });

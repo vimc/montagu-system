@@ -32,7 +32,7 @@ describe('Confidentiality Agreement Component tests', () => {
 
     let store: Store<ContribAppState>;
     let TestComponent: any;
-    let getStub: sinon.SinonStub;
+    let getStub: jest.SpyInstance;
 
     const sandbox = new Sandbox();
     beforeEach(() => {
@@ -107,7 +107,7 @@ describe('Confidentiality Agreement Component tests', () => {
         rendered.setState({checked: true});
         rendered.find("button").simulate("click");
 
-        expect(signStub.called).toBe(true);
+        expect(signStub.mock.calls.length).toBe(1);
     });
 
     it("dispatches getConfidentialityAgreement onMount", () => {
@@ -115,7 +115,7 @@ describe('Confidentiality Agreement Component tests', () => {
         shallow(<TestComponent touchstoneId={"rfp1"}/>,
             {context: {store}}).dive().dive();
 
-        expect(getStub.called).toBe(true);
+        expect(getStub.mock.calls.length).toBe(1);
     });
 
 });

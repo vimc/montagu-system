@@ -1,5 +1,3 @@
-import * as Sinon from "sinon"
-
 import {Sandbox} from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
 import {breadcrumbsModule} from "../../../../main/shared/modules/breadcrumbs";
@@ -19,12 +17,11 @@ describe("User Details Page actions tests", () => {
     const testUser = mockUser();
     const testRole = mockRole();
     const testBreadcrumbs = mockBreadcrumbs();
-    let parentStub: Sinon.SinonStub, store: MockStore<AdminAppState>;
+    let parentStub: jest.SpyInstance, store: MockStore<AdminAppState>;
 
     beforeEach(() => {
         store = createMockStore(mockAdminState());
 
-        sandbox.setStub(UserDetailsPageComponent, "breadcrumb");
         sandbox.setStubFunc(breadcrumbsModule, "initialize", () => {
             return testBreadcrumbs;
         });

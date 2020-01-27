@@ -1,6 +1,4 @@
 import * as React from "react";
-
-
 import "../../../../helper";
 import {
     mapDispatchToProps,
@@ -62,33 +60,33 @@ describe("Upload Burden Estimates Form tests", () => {
     describe("mapDispatchToProps", () => {
 
         it("can dispatch createBurdenEstimateSet", () => {
-            const dispatchStub = sandbox.sinon.stub();
+            const dispatchStub = sandbox.createSpy();
             sandbox.setStubFunc(estimatesActionCreators, "createBurden", () => "TEST");
 
             const result = mapDispatchToProps(dispatchStub, {});
             result.createBurdenEstimateSet({type: "central-averaged", details: ""});
 
-            expect(dispatchStub.calledWith("TEST")).toBe(true);
+            expect(dispatchStub.mock.calls[0][0]).toBe("TEST");
         });
 
         it("can dispatch populateEstimateSet", () => {
-            const dispatchStub = sandbox.sinon.stub();
+            const dispatchStub = sandbox.createSpy();
             sandbox.setStubFunc(estimatesActionCreators, "populateEstimateSet", (token: String) => token);
 
             const result = mapDispatchToProps(dispatchStub, {});
             result.populateEstimateSet("TOKEN");
 
-            expect(dispatchStub.calledWith("TOKEN")).toBe(true);
+            expect(dispatchStub.mock.calls[0][0]).toBe("TOKEN");
         });
 
         it("can dispatch resetPopulateState", () => {
-            const dispatchStub = sandbox.sinon.stub();
+            const dispatchStub = sandbox.createSpy();
             sandbox.setStubFunc(estimatesActionCreators, "resetPopulateState", () => "TEST");
 
             const result = mapDispatchToProps(dispatchStub, {});
             result.resetPopulateState();
 
-            expect(dispatchStub.calledWith("TEST")).toBe(true);
+            expect(dispatchStub.mock.calls[0][0]).toBe("TEST");
         })
 
     });
