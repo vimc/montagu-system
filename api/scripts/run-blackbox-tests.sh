@@ -36,8 +36,8 @@ docker exec montagu_orderly_web_1 touch /etc/orderly/web/go_signal
 
 #Add users manage permission to test user for Orderly Web
 OW_CLI_IMAGE="vimc/orderly-web-user-cli:master"
-docker run -v $root/demo:/orderly $OW_CLI_IMAGE add-users user@test.com
-docker run -v $root/demo:/orderly $OW_CLI_IMAGE grant user@test.com */users.manage
+docker run -v $root/src/demo:/orderly $OW_CLI_IMAGE add-users user@test.com
+docker run -v $root/src/demo:/orderly $OW_CLI_IMAGE grant user@test.com */users.manage
 
 # Build an image that can run blackbox tests
 docker build -f blackbox.Dockerfile -t montagu-api-blackbox-tests .
