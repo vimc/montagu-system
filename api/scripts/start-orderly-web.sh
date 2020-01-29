@@ -13,3 +13,6 @@ docker run -d -v "$root/src/demo:/orderly" --net=host --name orderly-web $ORDERL
 docker exec orderly-web mkdir -p /etc/orderly/web
 docker exec orderly-web touch /etc/orderly/web/go_signal
 
+OW_CLI_IMAGE="vimc/orderly-web-user-cli:master"
+docker run -v $root/src/demo:/orderly $OW_CLI_IMAGE add-users user@test.com
+docker run -v $root/src/demo:/orderly $OW_CLI_IMAGE grant user@test.com */users.manage
