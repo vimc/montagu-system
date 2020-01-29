@@ -7,10 +7,7 @@ MONTAGU_API_BRANCH=$(git symbolic-ref --short HEAD)
 registry=docker.montagu.dide.ic.ac.uk:5000
 migrate_image=$registry/montagu-migrate:$MONTAGU_DB_VERSION
 
-# Clear orderly web demo folder
-rm $PWD/src/demo -rf
-rm $PWD/src/git -rf
-mkdir $PWD/src/demo
+./scripts/run-orderly-web-deps.sh $PWD/src
 
 # Run API, DB and orderlyweb
 docker-compose pull
@@ -31,23 +28,11 @@ docker exec montagu_db_1 psql -U vimc -d montagu -c \
        "CREATE USER MAPPING FOR vimc SERVER montagu_db_annex OPTIONS (user 'vimc', password 'changeme');"
 # -------------------------------------------------------------
 
-
-ORDERLY_IMAGE="vimc/orderly:master"
-OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
-OW_CLI_IMAGE="vimc/orderly-web-user-cli:master"
-
-# create orderly db
-docker pull $ORDERLY_IMAGE
-docker run --rm --entrypoint create_orderly_demo.sh -v "$PWD/src:/orderly" -u $UID -w /orderly $ORDERLY_IMAGE .
-
-# migrate to add orderlyweb tables
-docker pull $OW_MIGRATE_IMAGE
-docker run --rm -v "$PWD/src/demo:/orderly" $OW_MIGRATE_IMAGE
-
 docker exec montagu_orderly_web_1 mkdir -p /etc/orderly/web
 docker exec montagu_orderly_web_1 touch /etc/orderly/web/go_signal
 
 #Add users manage permission to test user for Orderly Web
+OW_CLI_IMAGE="vimc/orderly-web-user-cli:master"
 docker run -v $PWD/src/demo:/orderly $OW_CLI_IMAGE add-users user@test.com
 docker run -v $PWD/src/demo:/orderly $OW_CLI_IMAGE grant user@test.com */users.manage
 

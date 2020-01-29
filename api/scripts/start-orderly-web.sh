@@ -1,19 +1,10 @@
-ORDERLY_IMAGE="vimc/orderly:master"
-OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
-ORDERLY_WEB_IMAGE="vimc/orderly-web:master"
+#!/usr/bin/env bash
+set -ex
 
-# create orderly db
-rm  -rf -v $PWD/demo
-rm  -rf -v $PWD/git
-
-docker pull $ORDERLY_IMAGE
-docker run --rm --entrypoint create_orderly_demo.sh -v "$PWD:/orderly" -u $UID -w /orderly $ORDERLY_IMAGE .
-
-# migrate to add orderlyweb tables
-docker pull $OW_MIGRATE_IMAGE
-docker run --rm -v "$PWD/demo:/orderly" $OW_MIGRATE_IMAGE
+./../scripts/run-orderly-web-deps.sh $PWD
 
 # start orderlyweb
+ORDERLY_WEB_IMAGE="vimc/orderly-web:master"
 docker pull $ORDERLY_WEB_IMAGE
 docker run -d -v "$PWD/demo:/orderly" --net=host --name orderly-web $ORDERLY_WEB_IMAGE
 
