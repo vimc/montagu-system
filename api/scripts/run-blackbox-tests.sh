@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 set -ex
 
+here=$(dirname $0)
+root=$(realpath $here/..)
+
 export MONTAGU_API_VERSION=$(git rev-parse --short=7 HEAD)
 export MONTAGU_DB_VERSION=$(<src/config/db_version)
 MONTAGU_API_BRANCH=$(git symbolic-ref --short HEAD)
 registry=docker.montagu.dide.ic.ac.uk:5000
 migrate_image=$registry/montagu-migrate:$MONTAGU_DB_VERSION
 
-./scripts/run-orderly-web-deps.sh $PWD/src
+$here/run-orderly-web-deps.sh
 
 # Run API, DB and orderlyweb
 docker-compose pull
@@ -33,8 +36,8 @@ docker exec montagu_orderly_web_1 touch /etc/orderly/web/go_signal
 
 #Add users manage permission to test user for Orderly Web
 OW_CLI_IMAGE="vimc/orderly-web-user-cli:master"
-docker run -v $PWD/src/demo:/orderly $OW_CLI_IMAGE add-users user@test.com
-docker run -v $PWD/src/demo:/orderly $OW_CLI_IMAGE grant user@test.com */users.manage
+docker run -v $root/demo:/orderly $OW_CLI_IMAGE add-users user@test.com
+docker run -v $root/demo:/orderly $OW_CLI_IMAGE grant user@test.com */users.manage
 
 # Build an image that can run blackbox tests
 docker build -f blackbox.Dockerfile -t montagu-api-blackbox-tests .
