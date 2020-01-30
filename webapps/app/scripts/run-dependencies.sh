@@ -3,15 +3,8 @@ set -ex
 
 export MONTAGU_API_VERSION=$(<config/api_version)
 export MONTAGU_DB_VERSION=$(<config/db_version)
-export TOKEN_KEY_PATH=$PWD/token_key
 cert_tool_version=master
 registry=docker.montagu.dide.ic.ac.uk:5000
-
-# Generate a keypair
-docker run --rm \
-    -v $TOKEN_KEY_PATH:/workspace \
-    $registry/montagu-cert-tool:$cert_tool_version \
-    gen-keypair /workspace
 
 ORDERLY_IMAGE="vimc/orderly:master"
 OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
