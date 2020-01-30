@@ -3,7 +3,6 @@ set -ex
 
 export MONTAGU_API_VERSION=$(<config/api_version)
 export MONTAGU_DB_VERSION=$(<config/db_version)
-cert_tool_version=master
 registry=docker.montagu.dide.ic.ac.uk:5000
 
 ORDERLY_IMAGE="vimc/orderly:master"
