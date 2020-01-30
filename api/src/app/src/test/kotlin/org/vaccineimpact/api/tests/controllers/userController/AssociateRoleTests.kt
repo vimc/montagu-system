@@ -31,7 +31,7 @@ class AssociateRoleTests : MontaguTests()
             on { permissions } doReturn PermissionSet()
         }
 
-        val sut = UserController(mockActionContext, mockUserRepo, mock<OneTimeTokenGenerator>())
+        val sut = UserController(mockActionContext, mockUserRepo, mock(), mock(), mock())
 
         assertThatThrownBy {
             sut.modifyUserRole()
@@ -49,7 +49,7 @@ class AssociateRoleTests : MontaguTests()
                     Scope.parse("modelling-group:Someone-Else"))))
         }
 
-        val sut = UserController(mockActionContext, mock<UserRepository>(), mock<OneTimeTokenGenerator>())
+        val sut = UserController(mockActionContext, mock(), mock(), mock(), mock())
 
         assertThatThrownBy {
             sut.modifyUserRole()
@@ -67,7 +67,7 @@ class AssociateRoleTests : MontaguTests()
                     Scope.parse("modelling-group:IC-Garske"))))
         }
 
-        val sut = UserController(mockActionContext, mock<UserRepository>(), mock<OneTimeTokenGenerator>())
+        val sut = UserController(mockActionContext, mock(), mock(), mock(), mock())
 
         assertThatThrownBy {
             sut.modifyUserRole()
@@ -85,7 +85,7 @@ class AssociateRoleTests : MontaguTests()
                     Scope.parse("modelling-group:IC-Garske"))))
         }
 
-        val sut = UserController(mockActionContext, mock<UserRepository>(), mock<OneTimeTokenGenerator>())
+        val sut = UserController(mockActionContext, mock(), mock(), mock(), mock())
 
         val result = sut.modifyUserRole()
         assertThat(result).isEqualTo("OK")

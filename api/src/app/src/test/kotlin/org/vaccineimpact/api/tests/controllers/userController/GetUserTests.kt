@@ -45,7 +45,7 @@ class GetUserTests : MontaguTests()
             on { permissions } doReturn permissionSet
         }
 
-        val sut = UserController(context, repo, mock<OneTimeTokenGenerator>())
+        val sut = UserController(context, repo, mock(), mock(), mock())
         Assertions.assertThat(sut.getUser()).isEqualToComparingFieldByField(expectedUser)
     }
 
@@ -77,7 +77,7 @@ class GetUserTests : MontaguTests()
             on { permissions } doReturn permissionSet
         }
 
-        val sut = UserController(context, repo, mock<OneTimeTokenGenerator>())
+        val sut = UserController(context, repo, mock<OneTimeTokenGenerator>(), mock(), mock())
         val actualRoles = sut.getUser().roles
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
@@ -109,7 +109,7 @@ class GetUserTests : MontaguTests()
 
         val expectedRoles = listOf(RoleAssignment("member", "modelling-group", "IC-Garske"))
 
-        val sut = UserController(context, repo, mock<OneTimeTokenGenerator>())
+        val sut = UserController(context, repo, mock(), mock(), mock())
         val actualRoles = sut.getUser().roles
 
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
@@ -128,7 +128,7 @@ class GetUserTests : MontaguTests()
             on { permissions } doReturn PermissionSet()
         }
 
-        val sut = UserController(context, repo, mock<OneTimeTokenGenerator>())
+        val sut = UserController(context, repo, mock(), mock(), mock())
         val actualUsers = sut.getUsers()
 
         Assertions.assertThat(actualUsers).hasSameElementsAs(users)
@@ -153,7 +153,7 @@ class GetUserTests : MontaguTests()
             on { permissions } doReturn permissionSet
         }
 
-        val sut = UserController(context, repo, mock<OneTimeTokenGenerator>())
+        val sut = UserController(context, repo, mock(), mock(), mock())
         val actualRoles = sut.getUsers()[0].roles
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
     }
@@ -181,7 +181,7 @@ class GetUserTests : MontaguTests()
 
         val expectedRoles = listOf(RoleAssignment("member", "modelling-group", "IC-Garske"))
 
-        val sut = UserController(context, repo, mock<OneTimeTokenGenerator>())
+        val sut = UserController(context, repo, mock(), mock(), mock())
         val actualRoles = sut.getUsers()[0].roles
 
         Assertions.assertThat(actualRoles).hasSameElementsAs(expectedRoles)
@@ -217,7 +217,7 @@ class GetUserTests : MontaguTests()
             on { this.getUserByUsername("test") } doReturn testInternalUser
         }
 
-        val sut = UserController(context, repo, mock())
+        val sut = UserController(context, repo, mock(), mock(), mock())
 
         val result = sut.getCurrentUser();
 
@@ -257,7 +257,7 @@ class GetUserTests : MontaguTests()
             on { this.getUserByUsername("test") } doReturn testInternalUser
         }
 
-        val sut = UserController(context, repo, mock())
+        val sut = UserController(context, repo, mock(), mock(), mock())
 
         val result = sut.getCurrentUser();
 

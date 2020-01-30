@@ -11,9 +11,10 @@ Install Docker and add your user to the Docker group (e.g. https://www.digitaloc
 Configure your Docker client to use our registry by following instructions here:
 https://github.com/vimc/montagu-ci#configuring-docker-clients-to-use-the-registry
 
-Start the database by navigating to the `src` folder and running
+Start the dependencies (the database and orderly web) by navigating to the `src` folder and running
 
     ./gradlew :startDatabase
+    ./gradlew :startOrderlyWeb
 
 Run the app
 
@@ -38,7 +39,7 @@ docker run --rm \
 The reporting API needs to be run with the public key from the keypair.
 
 ## Running tests
-To run the Blackbox tests, you will need to start the database and run the app as described above. Note that if you want to run individual tests through IntelliJ, you will need to manually run the `copySpec` Gradle task first.
+To run the Blackbox tests, you will need to start the dependencies and run the app as described above. Note that if you want to run individual tests through IntelliJ, you will need to manually run the `copySpec` Gradle task first.
 
 To run Blackbox tests from the command line, after running the above 2 commands, from the same folder run
 

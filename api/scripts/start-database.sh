@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-set -e
-
+set -ex
 here=$(dirname $0)
 
 # If the database is already running, stop it
@@ -17,4 +16,3 @@ echo "-------------------------------------------------------------------------"
 echo "Databases are now running:"
 echo "Main database is accessible at port $DB_PORT"
 echo "Annex database is accessible at port $ANNEX_PORT"
-

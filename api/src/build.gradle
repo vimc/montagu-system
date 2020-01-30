@@ -78,9 +78,16 @@ task startDatabase(type: Exec, dependsOn: ':loadPropertiesTask') {
     commandLine 'bash', '../scripts/start-database.sh'
 }
 
+task startOrderlyWeb(type: Exec) {
+    commandLine 'bash', '../scripts/start-orderly-web.sh'
+}
 
 task stopDatabase(type: Exec) {
     commandLine 'bash', '../scripts/stop-database.sh'
+}
+
+task stopOrderlyWeb(type: Exec) {
+    commandLine 'bash', '../scripts/stop-orderly-web.sh'
 }
 
 subprojects {
