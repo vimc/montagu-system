@@ -12,8 +12,6 @@ services:
       - "8080:8080"
     depends_on:
       - db
-    volumes:
-      - ${TOKEN_KEY_PATH}:/etc/montagu/api/token_key
   db:
     image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:${MONTAGU_DB_VERSION}
     ports:
@@ -22,3 +20,10 @@ services:
   db_annex:
     image: docker.montagu.dide.ic.ac.uk:5000/montagu-db:${MONTAGU_DB_VERSION}
     command: /etc/montagu/postgresql.test.conf
+  orderly_web:
+    image: vimc/orderly-web:master
+    ports:
+      - "8888:8888"
+    volumes:
+      - ${PWD}/demo:/orderly
+      - ${PWD}/config/orderlyweb:/etc/orderly/web
