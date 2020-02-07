@@ -147,6 +147,28 @@ describe("Upload Burden Estimates Form Component tests", () => {
         expect(result.find(".submit").props().disabled).toBe(true);
     });
 
+    it("shows try again message if populate error is invalid-operation", () => {
+
+        const result = shallow(<UploadEstimatesFormComponent
+            createUploadClient={() => fakeUploadClient as any}
+            createBurdenEstimateSet={nullFunction}
+            populateEstimateSet={nullFunction}
+            hasPopulateSuccess={false}
+            populateErrors={[{code: "invalid-operation", message: "File not uploaded"}]}
+            resetPopulateState={nullFunction}
+            url={null}
+            uploadToken={"TOKEN"}
+            populatingInProgress={false}
+            touchstoneId={"1"}
+            scenarioId={"1"}
+            groupId={"1"}/>);
+
+        result.setState({file: {fileName: "test.csv"}});
+
+        expect(result.find(Alert).find("p").first().text()).toBe("File not uploaded");
+        expect(result.find(Alert).find("p").last().text()).toContain("This may be a network error, please try again");
+    });
+
     it("file upload is disabled if file is null", () => {
 
         const result = getComponent({metadata: {type: "central-averaged", details: "whatever"}});
