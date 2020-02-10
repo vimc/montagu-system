@@ -5,13 +5,14 @@ import org.vaccineimpact.api.app.models.ChunkedFile
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
-interface Cache<T> {
+interface Cache<T>
+{
     operator fun get(uniqueIdentifier: String): T?
     fun put(item: T)
     fun remove(uniqueIdentifier: String)
 }
 
-class ChunkedFileCache(private val flushInterval: Long = TimeUnit.HOURS.toMillis(1)): Cache<ChunkedFile>
+class ChunkedFileCache(private val flushInterval: Long = TimeUnit.HOURS.toMillis(1)) : Cache<ChunkedFile>
 {
     private val memoryCache = ConcurrentHashMap<String, MutablePair<ChunkedFile, Long>>()
 
@@ -29,7 +30,14 @@ class ChunkedFileCache(private val flushInterval: Long = TimeUnit.HOURS.toMillis
     override fun put(item: ChunkedFile)
     {
         recycle()
-        memoryCache[item.uniqueIdentifier] = MutablePair(item, System.currentTimeMillis())
+        if (memoryCache[item.uniqueIdentifier] == null)
+        {
+            memoryCache[item.uniqueIdentifier] = MutablePair(item, System.currentTimeMillis())
+        }
+        else
+        {
+            memoryCache[item.uniqueIdentifier]!!.left.uploadedChunks.putAll(item.uploadedChunks)
+        }
     }
 
     override fun remove(uniqueIdentifier: String)
@@ -39,7 +47,8 @@ class ChunkedFileCache(private val flushInterval: Long = TimeUnit.HOURS.toMillis
         item?.left?.cleanUp()
     }
 
-    private fun recycle() {
+    private fun recycle()
+    {
         memoryCache.filter {
             it.value.right < System.currentTimeMillis() - flushInterval
         }.map {
