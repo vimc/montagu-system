@@ -2,19 +2,14 @@ import * as React from "react";
 import {FormEvent} from "react";
 import {Alert} from "reactstrap";
 import {checkFileExtensionIsCSV, CustomValidationResult} from "../../../../shared/validation/FileValidationHelpers";
-import {
-    BurdenEstimateSetType,
-    BurdenEstimateSetTypeCode,
-    ErrorInfo,
-    Result
-} from "../../../../shared/models/Generated";
+import {BurdenEstimateSetType, BurdenEstimateSetTypeCode, ErrorInfo, Result} from "../../../../shared/models/Generated";
 import {ConfigurationHash, Resumable, ResumableFile} from "./ResumableTypes";
 import {settings} from "../../../../shared/Settings";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 import {Dispatch} from "redux";
 import {estimatesActionCreators} from "../../../actions/estimatesActionCreators";
 import {connect} from "react-redux";
-import {branch, compose} from "recompose";
+import {compose} from "recompose";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {roundToOneDecimalPlace} from "../../../../shared/Helpers";
 import {OptionSelector} from "../../OptionSelector/OptionSelector";
@@ -164,10 +159,9 @@ export class UploadEstimatesFormComponent extends React.Component<UploadEstimate
 
     componentDidUpdate(prevProps: Readonly<UploadEstimatesProps>) {
         if (prevProps.url != this.props.url && this.props.url != null) {
-            if (this.uploadClient.files[0].progress(false) == 1){
+            if (this.uploadClient.files[0].progress(false) == 1) {
                 this.uploadClient.files[0].retry();
-            }
-            else {
+            } else {
                 this.uploadClient.upload();
             }
         }
@@ -267,7 +261,10 @@ export class UploadEstimatesFormComponent extends React.Component<UploadEstimate
                     <p className="render-whitespace">
                         {this.props.populateErrors.length > 0 && this.props.populateErrors[0].message}
                     </p>
-                    Please correct the data and re-upload.
+                    {this.props.populateErrors.length > 0 && this.props.populateErrors[0].code == "invalid-operation" &&
+                    <p>This may be a network error, please try again and if the problem persists
+                        contact us at: ${settings.supportContact}
+                    </p>}
                 </Alert>
                 <Alert color="success" isOpen={this.props.hasPopulateSuccess} toggle={this.props.resetPopulateState}>
                     Success! You have uploaded a new set of burden estimates
@@ -280,7 +277,7 @@ export class UploadEstimatesFormComponent extends React.Component<UploadEstimate
                             onClick={this.startUpload}>Upload
                     </button>
                     <button disabled={!this.state.isUploading} className="cancel"
-                             onClick={this.cancelUpload}>Cancel
+                            onClick={this.cancelUpload}>Cancel
                     </button>
                 </div>
                 }
