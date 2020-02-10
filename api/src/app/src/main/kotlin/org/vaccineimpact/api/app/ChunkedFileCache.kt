@@ -34,10 +34,6 @@ class ChunkedFileCache(private val flushInterval: Long = TimeUnit.HOURS.toMillis
         {
             memoryCache[item.uniqueIdentifier] = MutablePair(item, System.currentTimeMillis())
         }
-        else
-        {
-            memoryCache[item.uniqueIdentifier]!!.left.uploadedChunks.putAll(item.uploadedChunks)
-        }
     }
 
     override fun remove(uniqueIdentifier: String)

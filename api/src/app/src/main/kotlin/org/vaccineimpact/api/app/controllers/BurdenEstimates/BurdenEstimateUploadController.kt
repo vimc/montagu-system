@@ -215,7 +215,7 @@ class BurdenEstimateUploadController(context: ActionContext,
         else
         {
             chunkedFileCache.put(providedMetadata)
-            providedMetadata
+            chunkedFileCache[uniqueIdentifier]!!
         }
     }
 
