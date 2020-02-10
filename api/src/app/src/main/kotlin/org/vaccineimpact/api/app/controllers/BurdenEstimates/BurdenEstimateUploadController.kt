@@ -199,23 +199,25 @@ class BurdenEstimateUploadController(context: ActionContext,
         }
 
         val uniqueIdentifier = claims["uid"].toString()
-        val cachedMetadata = chunkedFileCache[uniqueIdentifier]
-        val providedMetadata = ChunkedFile(totalChunks = totalChunks, chunkSize = chunkSize,
-                totalSize = totalSize, uniqueIdentifier = uniqueIdentifier, originalFileName = filename)
+        synchronized(BurdenEstimateUploadController::class.java) {
+            val cachedMetadata = chunkedFileCache[uniqueIdentifier]
+            val providedMetadata = ChunkedFile(totalChunks = totalChunks, chunkSize = chunkSize,
+                    totalSize = totalSize, uniqueIdentifier = uniqueIdentifier, originalFileName = filename)
 
-        return if (cachedMetadata != null)
-        {
-            if (cachedMetadata != providedMetadata)
+            return if (cachedMetadata != null)
             {
-                throw BadRequest("The given token has already been used to upload a different file." +
-                        " Please request a fresh upload token.")
+                if (cachedMetadata != providedMetadata)
+                {
+                    throw BadRequest("The given token has already been used to upload a different file." +
+                            " Please request a fresh upload token.")
+                }
+                cachedMetadata
             }
-            cachedMetadata
-        }
-        else
-        {
-            chunkedFileCache.put(providedMetadata)
-            chunkedFileCache[uniqueIdentifier]!!
+            else
+            {
+                chunkedFileCache.put(providedMetadata)
+                chunkedFileCache[uniqueIdentifier]!!
+            }
         }
     }
 
