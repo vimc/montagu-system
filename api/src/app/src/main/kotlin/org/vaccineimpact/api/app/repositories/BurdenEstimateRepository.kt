@@ -13,6 +13,8 @@ interface BurdenEstimateRepository : Repository
 {
     val touchstoneRepository: TouchstoneRepository
 
+    val centralEstimateWriter: BurdenEstimateWriter
+
     /** Returns the database ID of the newly created burden estimate set **/
     fun createBurdenEstimateSet(responsibilityId: Int,
                                 modelVersionId: Int,
@@ -37,7 +39,6 @@ interface BurdenEstimateRepository : Repository
     fun getModelRunParameterSet(groupId: String, touchstoneVersionId: String, setId: Int): FlexibleDataTable<ModelRun>
     fun changeBurdenEstimateStatus(setId: Int, newStatus: BurdenEstimateSetStatus)
     fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetType)
-    fun getEstimateWriter(set: BurdenEstimateSet): BurdenEstimateWriter
     fun getBurdenEstimateSetForResponsibility(setId: Int, responsibilityId: Int): BurdenEstimateSet
 
     @Throws(UnknownObjectError::class)

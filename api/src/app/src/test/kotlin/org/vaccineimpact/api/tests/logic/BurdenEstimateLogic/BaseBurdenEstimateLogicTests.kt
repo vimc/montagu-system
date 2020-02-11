@@ -64,7 +64,7 @@ abstract class BaseBurdenEstimateLogicTests : MontaguTests()
             on { getBurdenEstimateSetForResponsibility(any(), any()) } doReturn existingBurdenEstimateSet
             on { getResponsibilityInfo(any(), any(), any()) } doReturn
                     ResponsibilityInfo(responsibilityId, disease, "open", setId)
-            on { getEstimateWriter(any()) } doReturn mockEstimateWriter
+            on { centralEstimateWriter } doReturn mockEstimateWriter
         }
     }
 

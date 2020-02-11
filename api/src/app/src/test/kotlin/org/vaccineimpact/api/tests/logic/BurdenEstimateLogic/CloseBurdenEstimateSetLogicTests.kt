@@ -148,7 +148,7 @@ AGO, age 12, year 2005""")
                     .copy(status = BurdenEstimateSetStatus.PARTIAL)
             on { getResponsibilityInfo(groupId, touchstoneVersionId, scenarioId) } doThrow
                     UnknownObjectError(scenarioId, "responsibility")
-            on { getEstimateWriter(defaultEstimateSet) } doReturn writer
+            on { centralEstimateWriter } doReturn writer
         }
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mock())
 

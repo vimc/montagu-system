@@ -20,8 +20,6 @@ import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 
 class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
 {
-    override val usesAnnex = true
-
     private fun createCentralSetWithoutModelRuns(): Int
     {
         return withDatabase { db ->
@@ -42,17 +40,6 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
         }
     }
 
-    private fun createStochasticSetWithModelRuns(): Pair<Int, ModelRunTestData>
-    {
-        return withDatabase { db ->
-            val returnedIds = setupDatabase(db)
-            val modelRunData = addModelRuns(db, returnedIds.responsibilitySetId, returnedIds.modelVersion!!)
-            val setId = db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion,
-                    username, setType = "stochastic", timestamp = timestamp, modelRunParameterSetId = modelRunData.runParameterSetId)
-            Pair(setId, modelRunData)
-        }
-    }
-
     @Test
     fun `can populate central burden estimate set`()
     {
@@ -62,20 +49,6 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
 
             sut.addEstimatesToSet(setId, data(), diseaseId)
             checkBurdenEstimates(db, setId)
-        }
-    }
-
-    @Test
-    fun `can populate stochastic burden estimate set`()
-    {
-        val (setId, modelRunData) = createStochasticSetWithModelRuns()
-        withDatabase { db ->
-            val data = data(modelRunData.externalIds)
-            val sut = StochasticBurdenEstimateWriter(db.dsl)
-
-            sut.addEstimatesToSet(setId, data, diseaseId)
-            checkStochasticBurdenEstimates(db, setId)
-            checkStochasticModelRuns(db, modelRunData)
         }
     }
 
@@ -195,25 +168,6 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `can clear stochastic burden estimate set`()
-    {
-        val setId = 1
-        withDatabase { db ->
-            val returnedIds = setupDatabase(db)
-            db.addBurdenEstimateSet(returnedIds.responsibility, returnedIds.modelVersion!!, username, setId = setId)
-            db.addCountries(listOf("ABC"))
-            AnnexJooqContext().use { annex ->
-                annex.addStochasticBurdenEstimate(db, setId, "ABC")
-            }
-        }
-        withDatabase { db ->
-            val sut = CentralBurdenEstimateWriter(db.dsl)
-            sut.clearEstimateSet(setId)
-            assertThat(getEstimatesInOrder(db)).isEmpty()
-        }
-    }
-
-    @Test
     fun `duplicate rows throw error`()
     {
         val setId = createCentralSetWithoutModelRuns()
@@ -228,24 +182,6 @@ class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
             }.isInstanceOf(PSQLException::class.java)
         }
         assertThatTableIsEmpty(Tables.BURDEN_ESTIMATE)
-    }
-
-    @Test
-    fun `duplicate stochastic rows throws error`()
-    {
-        val (setId, modelRun) = createStochasticSetWithModelRuns()
-        withDatabase { db ->
-            val badData = sequenceOf(
-                    estimateObject(runId = modelRun.externalIds[0]),
-                    estimateObject(runId = modelRun.externalIds[0])
-            )
-            val sut = StochasticBurdenEstimateWriter(db.dsl)
-
-            Assertions.assertThatThrownBy {
-                sut.addEstimatesToSet(setId, badData, diseaseId)
-            }.isInstanceOf(PSQLException::class.java)
-        }
-        assertThatTableIsEmpty(Tables.BURDEN_ESTIMATE_STOCHASTIC)
     }
 
     private fun estimateObject(

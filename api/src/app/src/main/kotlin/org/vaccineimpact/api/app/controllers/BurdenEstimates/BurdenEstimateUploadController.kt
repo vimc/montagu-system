@@ -19,7 +19,10 @@ import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
 import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.app.requests.csvData
-import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.BurdenEstimate
+import org.vaccineimpact.api.models.BurdenEstimateSet
+import org.vaccineimpact.api.models.BurdenEstimateWithRunId
+import org.vaccineimpact.api.models.Result
 import org.vaccineimpact.api.security.KeyHelper
 import org.vaccineimpact.api.security.TokenType
 import org.vaccineimpact.api.security.TokenValidationException
@@ -217,17 +220,8 @@ class BurdenEstimateUploadController(context: ActionContext,
             source: RequestDataSource
     ): Sequence<BurdenEstimateWithRunId>
     {
-        return if (metadata.type.type == BurdenEstimateSetTypeCode.STOCHASTIC)
-        {
-            postDataHelper.csvData<StochasticBurdenEstimate>(from = source).map {
-                BurdenEstimateWithRunId(it)
-            }
-        }
-        else
-        {
-            postDataHelper.csvData<BurdenEstimate>(from = source).map {
-                BurdenEstimateWithRunId(it, runId = null)
-            }
+        return postDataHelper.csvData<BurdenEstimate>(from = source).map {
+            BurdenEstimateWithRunId(it, runId = null)
         }
     }
 
