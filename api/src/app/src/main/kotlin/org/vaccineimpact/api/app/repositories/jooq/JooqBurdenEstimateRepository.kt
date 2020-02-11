@@ -14,18 +14,18 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
+import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fetchSequence
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
+import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.RowLookup
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
 import java.sql.Timestamp
 import java.time.Instant
-import org.vaccineimpact.api.db.Tables
-import org.vaccineimpact.api.db.fetchSequence
-import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
-import org.vaccineimpact.api.models.expectations.RowLookup
 
 data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
@@ -226,6 +226,11 @@ class JooqBurdenEstimateRepository(
     {
         //check that the burden estimate set exists in the group etc
         val set = getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, burdenEstimateSetId)
+
+        if (set.isStochastic())
+        {
+            throw InvalidOperationError("Cannot get burden estimate data for stochastic burden estimate sets")
+        }
 
         return dsl.select(
                 DISEASE.ID,
@@ -433,6 +438,11 @@ class JooqBurdenEstimateRepository(
 
     override fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetType)
     {
+        if (type.isStochastic())
+        {
+            throw InvalidOperationError("You cannot update a stochastic estimate set.")
+        }
+
         dsl.update(RESPONSIBILITY)
                 .set(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET, setId)
                 .where(RESPONSIBILITY.ID.eq(responsibilityId))

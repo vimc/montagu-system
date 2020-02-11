@@ -2,13 +2,16 @@ package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.direct.addBurdenEstimate
 import org.vaccineimpact.api.db.direct.addCountries
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.expectations.CohortRestriction
 import org.vaccineimpact.api.models.expectations.CountryOutcomeExpectations
+import java.io.InvalidObjectException
 import java.time.Instant
 
 class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
@@ -67,20 +70,15 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     }
 
     @Test
-    fun `can update current stochastic estimate set`()
+    fun `cannot update current stochastic estimate set`()
     {
         val (returnedIds, setId) = withDatabase { db ->
             setupDatabaseWithBurdenEstimateSetAndReturnIds(db, type = "stochastic")
         }
         withRepo {
-            it.updateCurrentBurdenEstimateSet(returnedIds.responsibility, setId,
+            assertThatThrownBy {  it.updateCurrentBurdenEstimateSet(returnedIds.responsibility, setId,
                     BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC))
-        }
-
-        withDatabase { db ->
-            val t = Tables.RESPONSIBILITY
-            val r = db.dsl.selectFrom(t).where(t.ID.eq(returnedIds.responsibility)).fetchOne()
-            Assertions.assertThat(r[t.CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET]).isEqualTo(setId)
+            }.isInstanceOf(InvalidOperationError::class.java)
         }
     }
 
