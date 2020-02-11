@@ -9,6 +9,7 @@ import org.vaccineimpact.api.blackboxTests.helpers.TokenLiteral
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.validateSchema.JSONValidator
@@ -175,7 +176,7 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         val response = helper.post("$setUrl/$setId/", duplicateStochasticCSVData, token = token)
         val expectedError = "duplicate-key:burden_estimate_set,model_run,country,year,age,burden_outcome"
         JSONValidator().validateError(response.text, expectedError)
-        JooqContext().use {
+        AnnexJooqContext().use {
             val records = it.dsl
                     .select(BURDEN_ESTIMATE_STOCHASTIC.fieldsAsList())
                     .from(BURDEN_ESTIMATE_STOCHASTIC)
