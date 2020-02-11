@@ -21,7 +21,11 @@ before_script:
 script:
   - ./src/gradlew -p src :testLibrary
 after_success:
-  - ./src/gradlew -p src :jacocoTestReport
+  - ./src/gradlew -p src :app:jacocoTestReport
+  - ./src/gradlew -p src :databaseTests:jacocoTestReport
+  - ./src/gradlew -p src :security:jacocoTestReport
+  - ./src/gradlew -p src :serialization:jacocoTestReport
+  - ./src/gradlew -p src :userCLI:jacocoTestReport
   - codecov -f src/app/coverage/test/*.xml
   - codecov -f src/databaseTests/coverage/test/*.xml
   - codecov -f src/emails/coverage/test/*.xml
