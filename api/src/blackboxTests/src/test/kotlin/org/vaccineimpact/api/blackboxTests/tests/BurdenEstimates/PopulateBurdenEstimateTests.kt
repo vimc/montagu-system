@@ -9,7 +9,6 @@ import org.vaccineimpact.api.blackboxTests.helpers.TokenLiteral
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
-import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fieldsAsList
 import org.vaccineimpact.api.validateSchema.JSONValidator
@@ -17,8 +16,6 @@ import spark.route.HttpMethod
 
 class PopulateBurdenEstimateTests : BurdenEstimateTests()
 {
-    override val usesAnnex = true
-
     @Test
     fun `can populate central burden estimate`()
     {
@@ -62,35 +59,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
                 requiredWritePermissions + "*/can-login", stochasticCSVData)
         JSONValidator().validateError(response.text, "csv-unexpected-header",
                 "Expected column header 'year'; found 'run_id' instead (column 1)")
-    }
-
-    @Test
-    fun `can populate stochastic burden estimate`()
-    {
-        TestUserHelper.setupTestUser()
-        val setId = JooqContext().use {
-            setUpWithStochasticBurdenEstimateSet(it)
-        }
-        validate("$setUrl/$setId/?keepOpen=true", method = HttpMethod.post) withRequestSchema {
-            CSVSchema("StochasticBurdenEstimate")
-        } sending {
-            stochasticCSVData
-        } withPermissions {
-            requiredWritePermissions
-        } andCheckHasStatus 200..299
-    }
-
-    @Test
-    fun `cannot provide central data for stochastic estimates`()
-    {
-        TestUserHelper.setupTestUser()
-        val setId = JooqContext().use {
-            setUpWithStochasticBurdenEstimateSet(it)
-        }
-        val response = RequestHelper().post("$setUrl/$setId/",
-                requiredWritePermissions + "*/can-login", csvData)
-        JSONValidator().validateError(response.text, "csv-unexpected-header",
-                "Expected column header 'run_id'; found 'year' instead (column 1)")
     }
 
     @Test
@@ -162,27 +130,6 @@ class PopulateBurdenEstimateTests : BurdenEstimateTests()
         JSONValidator()
                 .validateError(response.text, "inconsistent-data")
 
-    }
-
-    @Test
-    fun `cannot populate stochastic burden estimate set if duplicate rows`()
-    {
-        TestUserHelper.setupTestUser()
-        val setId = JooqContext().use {
-            setUpWithStochasticBurdenEstimateSet(it)
-        }
-        val token = TestUserHelper.getToken(requiredWritePermissions, includeCanLogin = true)
-        val helper = RequestHelper()
-        val response = helper.post("$setUrl/$setId/", duplicateStochasticCSVData, token = token)
-        val expectedError = "duplicate-key:burden_estimate_set,model_run,country,year,age,burden_outcome"
-        JSONValidator().validateError(response.text, expectedError)
-        AnnexJooqContext().use {
-            val records = it.dsl
-                    .select(BURDEN_ESTIMATE_STOCHASTIC.fieldsAsList())
-                    .from(BURDEN_ESTIMATE_STOCHASTIC)
-                    .fetch()
-            assertThat(records).isEmpty()
-        }
     }
 
     @Test

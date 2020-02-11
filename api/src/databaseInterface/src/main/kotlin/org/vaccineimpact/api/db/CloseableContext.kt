@@ -20,14 +20,3 @@ class AmbientDSLContext(val dsl: DSLContext) : CloseableContext
         work(dsl)
     }
 }
-
-// Open a new database connection as needed, and then close it again
-class ShortlivedAnnexContext : CloseableContext
-{
-    override fun inside(work: (DSLContext) -> Unit)
-    {
-        AnnexJooqContext().use {
-            work(it.dsl)
-        }
-    }
-}

@@ -9,13 +9,10 @@ import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.errors.UnknownRunIdError
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
-import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
-import org.vaccineimpact.api.db.AnnexJooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.direct.addBurdenEstimate
 import org.vaccineimpact.api.db.direct.addBurdenEstimateSet
 import org.vaccineimpact.api.db.direct.addCountries
-import org.vaccineimpact.api.db.direct.addStochasticBurdenEstimate
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 
 class BurdenEstimateWriterTests : BurdenEstimateRepositoryTests()
