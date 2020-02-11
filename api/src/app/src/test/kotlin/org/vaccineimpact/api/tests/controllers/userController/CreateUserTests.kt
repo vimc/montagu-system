@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.junit.Test
+import org.vaccineimpact.api.app.clients.OrderlyWebAPIClient
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.UserController
 import org.vaccineimpact.api.app.models.CreateUser
@@ -41,6 +42,14 @@ class CreateUserTests : MontaguTests()
     }
 
     @Test
+    fun `create user adds user to OrderlyWeb`()
+    {
+        val mockOWClient = mock<OrderlyWebAPIClient>()
+        postToUserCreate(orderlyWebClient = mockOWClient, userRepo = userRepo())
+        verify(mockOWClient).addUser(email, username, name)
+    }
+
+    @Test
     fun `creating user sends email with password set link`()
     {
         val emailManager = mock<EmailManager>()
@@ -68,7 +77,8 @@ class CreateUserTests : MontaguTests()
 
     private fun postToUserCreate(
             userRepo: UserRepository = mock<UserRepository>(),
-            emailManager: EmailManager = getEmailManager()
+            emailManager: EmailManager = getEmailManager(),
+            orderlyWebClient: OrderlyWebAPIClient = mock()
     ): String
     {
         val model = CreateUser(username, name, email)
@@ -84,7 +94,8 @@ class CreateUserTests : MontaguTests()
         val sut = UserController(context,
                 userRepo,
                 tokenGenerator,
-                emailManager)
+                emailManager,
+                orderlyWebClient)
 
         return sut.createUser()
     }

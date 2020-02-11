@@ -1,0 +1,32 @@
+language: java
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+jdk:
+  - openjdk8
+before_install:
+  - docker pull vimc/montagu-db:master
+  - docker pull vimc/montagu-migrate:master
+install:
+  - npm install codecov -g
+  - travis_retry sudo ./libsodium/install-libsodium.sh
+  - ./src/gradlew -p src
+before_script:
+  - sudo mkdir -p /etc/montagu/api/ && sudo touch /etc/montagu/api/go_signal
+  - ./travis/start-database.sh
+script:
+  - ./src/gradlew -p src :testLibrary
+after_success:
+  - ./src/gradlew -p src :jacocoTestReport
+  - codecov -f src/app/coverage/test/*.xml
+  - codecov -f src/databaseTests/coverage/test/*.xml
+  - codecov -f src/emails/coverage/test/*.xml
+  - codecov -f src/security/coverage/test/*.xml
+  - codecov -f src/serialization/coverage/test/*.xml
+  - codecov -f src/userCLI/coverage/test/*.xml
+services:
+  - docker

@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
+import org.vaccineimpact.api.app.clients.OkHttpOrderlyWebAPIClient
+import org.vaccineimpact.api.app.clients.OrderlyWebAPIClient
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
@@ -17,12 +19,14 @@ import org.vaccineimpact.api.models.encompass
 import org.vaccineimpact.api.models.permissions.AssociateRole
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.RoleAssignment
+import org.vaccineimpact.api.security.CookieName
 
 class UserController(
         context: ActionContext,
         private val userRepository: UserRepository,
         private val oneTimeTokenGenerator: OneTimeTokenGenerator,
-        private val emailManager: EmailManager = getEmailManager()
+        private val emailManager: EmailManager = getEmailManager(),
+        private val orderlyWebAPIClient: OrderlyWebAPIClient = OkHttpOrderlyWebAPIClient.create(context.authenticationToken()!!)
 ) : Controller(context)
 {
 
@@ -83,6 +87,9 @@ class UserController(
         val token = oneTimeTokenGenerator.getSetPasswordToken(newUser)
 
         emailManager.sendEmail(NewUserEmail(user, token), user)
+
+        orderlyWebAPIClient.addUser(user.email, user.username, user.name)
+
         return objectCreation(context, "/users/${user.username}/")
     }
 
@@ -109,6 +116,7 @@ class UserController(
         val includePermissions =
                 context.request.queryParamOrDefault("includePermissions", "false") == "true"
         val internalUser = userRepository.getUserByUsername(userName)
+
         return internalUser.toUser(includePermissions).copy(roles = null) //don't return any role information back to the current user
     }
 

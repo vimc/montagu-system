@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 set -ex
 
+here=$(dirname $0)
+root=$(realpath $here/..)
+
 export MONTAGU_API_VERSION=$(git rev-parse --short=7 HEAD)
 export MONTAGU_DB_VERSION=$(<src/config/db_version)
 MONTAGU_API_BRANCH=$(git symbolic-ref --short HEAD)
 registry=docker.montagu.dide.ic.ac.uk:5000
 migrate_image=$registry/montagu-migrate:$MONTAGU_DB_VERSION
 
-# Run API and DB
+$here/run-orderly-web-deps.sh
+
+# Run API, DB and orderlyweb
 docker-compose pull
 docker-compose --project-name montagu up -d
 docker exec montagu_api_1 mkdir -p /etc/montagu/api/
@@ -23,7 +28,10 @@ docker run --rm --network=montagu_default $migrate_image -configFile=conf/flyway
 
 # -------------------------------------------------------------
 
-# Build and image that can run blackbox tests
+docker exec montagu_orderly_web_1 mkdir -p /etc/orderly/web
+docker exec montagu_orderly_web_1 touch /etc/orderly/web/go_signal
+
+# Build an image that can run blackbox tests
 docker build -f blackbox.Dockerfile -t montagu-api-blackbox-tests .
 
 # Push blackbox tests image so it can be reused
@@ -45,5 +53,6 @@ docker run \
 
 # Tear down
 docker-compose --project-name montagu down
+
 
 

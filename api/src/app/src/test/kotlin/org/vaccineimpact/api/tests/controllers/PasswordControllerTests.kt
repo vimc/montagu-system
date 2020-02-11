@@ -68,7 +68,7 @@ class PasswordControllerTests : MontaguTests()
         val tokenHelper = mock<WebTokenHelper> {
             on {
                 generateOnetimeActionToken(any(),
-                        any(), anyOrNull(), any(), any())
+                        any(), anyOrNull())
             } doReturn "TOKEN"
         }
         val tokenGenerator = OneTimeTokenGenerator(mock(), tokenHelper)
@@ -79,8 +79,6 @@ class PasswordControllerTests : MontaguTests()
         verify(tokenHelper).generateOnetimeActionToken(
                 eq("/v1/password/set/"),
                 eq(user.username),
-                eq(""),
-                eq(""),
                 eq(Duration.ofDays(1))
         )
     }

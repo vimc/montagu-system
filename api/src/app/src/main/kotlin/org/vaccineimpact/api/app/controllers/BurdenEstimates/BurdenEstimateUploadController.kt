@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers.BurdenEstimates
 
+import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.app.Cache
 import org.vaccineimpact.api.app.ChunkedFileCache
 import org.vaccineimpact.api.app.ChunkedFileManager
@@ -49,7 +50,7 @@ class BurdenEstimateUploadController(context: ActionContext,
             RepositoriesResponsibilitiesLogic(repos.modellingGroup, repos.scenario, repos.touchstone),
             repos.burdenEstimates)
 
-
+    private val logger = LoggerFactory.getLogger(BurdenEstimateUploadController::class.java)
     fun getUploadToken(): String
     {
         val path = getValidResponsibilityPath()
@@ -80,6 +81,10 @@ class BurdenEstimateUploadController(context: ActionContext,
                 ?: throw BadRequest("Missing required query parameter: chunkNumber")
 
         val metadata = getFileMetadata()
+
+        val alreadyUploadedKeys = metadata.uploadedChunks.keys().toList().joinToString(",")
+        logger.info("Uploading chunk: $chunkNumber")
+        logger.info("These chunks have already been uploaded: $alreadyUploadedKeys")
 
         // Get file from context (supports multi-part or octet stream)
         val source = RequestDataSource.fromContentType(context)
@@ -133,6 +138,8 @@ class BurdenEstimateUploadController(context: ActionContext,
         }
         else
         {
+            val alreadyUploadedKeys = file.uploadedChunks.keys().toList().joinToString(",")
+            logger.info("These chunks have been uploaded: $alreadyUploadedKeys")
             throw InvalidOperationError("This file has not been fully uploaded")
         }
     }
@@ -195,23 +202,25 @@ class BurdenEstimateUploadController(context: ActionContext,
         }
 
         val uniqueIdentifier = claims["uid"].toString()
-        val cachedMetadata = chunkedFileCache[uniqueIdentifier]
-        val providedMetadata = ChunkedFile(totalChunks = totalChunks, chunkSize = chunkSize,
-                totalSize = totalSize, uniqueIdentifier = uniqueIdentifier, originalFileName = filename)
+        synchronized(BurdenEstimateUploadController::class.java) {
+            val cachedMetadata = chunkedFileCache[uniqueIdentifier]
+            val providedMetadata = ChunkedFile(totalChunks = totalChunks, chunkSize = chunkSize,
+                    totalSize = totalSize, uniqueIdentifier = uniqueIdentifier, originalFileName = filename)
 
-        return if (cachedMetadata != null)
-        {
-            if (cachedMetadata != providedMetadata)
+            return if (cachedMetadata != null)
             {
-                throw BadRequest("The given token has already been used to upload a different file." +
-                        " Please request a fresh upload token.")
+                if (cachedMetadata != providedMetadata)
+                {
+                    throw BadRequest("The given token has already been used to upload a different file." +
+                            " Please request a fresh upload token.")
+                }
+                cachedMetadata
             }
-            cachedMetadata
-        }
-        else
-        {
-            chunkedFileCache.put(providedMetadata)
-            providedMetadata
+            else
+            {
+                chunkedFileCache.put(providedMetadata)
+                chunkedFileCache[uniqueIdentifier]!!
+            }
         }
     }
 

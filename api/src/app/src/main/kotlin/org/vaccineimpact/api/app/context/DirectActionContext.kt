@@ -164,6 +164,20 @@ class DirectActionContext(private val context: SparkWebContext) : ActionContext
     {
         this.response.redirect(url)
     }
+
+    override fun authenticationToken(): String?
+    {
+        var token = this.request.cookie(CookieName.Main.cookieName)
+        if (token == null)
+        {
+            token = this.request.headers("Authorization")
+            if (token != null)
+            {
+                token = token.substring("Bearer ".length)
+            }
+        }
+        return token
+    }
 }
 
 // https://stackoverflow.com/a/19032439/777939
