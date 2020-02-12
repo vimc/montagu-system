@@ -15,7 +15,6 @@ import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstim
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.db.fetchSequence
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
@@ -23,8 +22,6 @@ import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.expectations.RowLookup
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
-import java.sql.Connection
-import java.sql.ResultSet
 import java.sql.Timestamp
 import java.time.Instant
 
@@ -222,28 +219,18 @@ class JooqBurdenEstimateRepository(
         return mapper.mapBurdenEstimateSets(records)
     }
 
-    override fun getBurdenEstimateOutcomesSequence(groupId: String,
-                                                   touchstoneVersionId: String,
-                                                   scenarioId: String,
-                                                   burdenEstimateSetId: Int,
-                                                   outcomes: List<Pair<Int, String>>)
+    override fun getBurdenEstimateOutcomesSequence(burdenEstimateSetId: Int,
+                                                   outcomes: List<Pair<Int, String>>,
+                                                   disease: String)
             : Sequence<BurdenEstimate>
     {
-        //check that the burden estimate set exists in the group etc
-        val set = getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, burdenEstimateSetId)
-
-        if (set.isStochastic())
-        {
-            throw InvalidOperationError("Cannot get burden estimate data for stochastic burden estimate sets")
-        }
 
         val countryLookup = getCountriesAsLookup()
-        // val disease = getDiseaseForScenario()
 
         val outcomeIdQuery = "select ${outcomes.map { it.first }.joinToString(" union select ")}"
-        val expectedOutcomeCodes = "${outcomes.joinToString(" real,") { it.second }} real, cohort_size real"
+        val expectedOutcomeCodes = "${outcomes.joinToString(" real,") { it.second }} real"
         val compoundRowKey = "year || '':''|| age || '':'' || country"
-        val sql = "explain analyze verbose SELECT * FROM crosstab\n" +
+        val sql = "SELECT * FROM crosstab" +
                 "(" +
                 "'SELECT $compoundRowKey,year,country,age,burden_outcome,value FROM burden_estimate" +
                 " where burden_estimate_set = $burdenEstimateSetId'," +
@@ -258,18 +245,14 @@ class JooqBurdenEstimateRepository(
                 expectedOutcomeCodes +
                 ");"
 
-        var resultSet: ResultSet? = null
-        dsl.connection { conn ->
-            resultSet = conn.createStatement().executeQuery(sql)
-        }
-        resultSet!!.fetchSize = 100
-        val cursor = dsl.fetchLazy(resultSet)
+        val cursor = dsl.fetchLazy(sql)
+
         return generateSequence {
-            cursor.fetchNext().map { record ->
+            cursor.fetchNext()?.map { record ->
                 val cid = record.get("country", Short::class.java)
                 val outcomeList = outcomes.associateBy({ it.second }, { record.get(it.second, Float::class.java) })
                 BurdenEstimate(
-                        "disease",
+                        disease,
                         record.get("year", Short::class.java),
                         record.get("age", Short::class.java),
                         countryLookup[cid]!!,

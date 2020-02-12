@@ -4,7 +4,6 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.app.validate
@@ -144,40 +143,21 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
     override fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
                                        scenarioId: String): FlexibleDataTable<BurdenEstimate>
     {
-        val expectedOutcomes = burdenEstimateRepository.getExpectedOutcomesForBurdenEstimateSet(setId)
+        //check that the burden estimate set exists in the group etc
+        val set = getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, setId)
 
-        val rows = burdenEstimateRepository.getBurdenEstimateOutcomesSequence(groupId,
-                touchstoneVersionId, scenarioId, setId, expectedOutcomes)
+        if (set.isStochastic())
+        {
+            throw InvalidOperationError("Cannot get burden estimate data for stochastic burden estimate sets")
+        }
+
+        val expectedOutcomes = burdenEstimateRepository.getExpectedOutcomesForBurdenEstimateSet(setId)
+        val disease = scenarioRepository.getScenarioForTouchstone(touchstoneVersionId, scenarioId).disease
+
+        val rows = burdenEstimateRepository.getBurdenEstimateOutcomesSequence(setId, expectedOutcomes, disease)
 
         return FlexibleDataTable.new(rows, expectedOutcomes.map { it.first })
 
-    }
-
-    private val COHORT_SIZE_CODE = "cohort_size"
-    private fun mapBurdenEstimate(records: List<BurdenEstimateOutcome>)
-            : BurdenEstimate
-    {
-        // all records in thr parameter group should have same disease, year, age, country code and country name
-        // so use value from the first row
-        val reference = records.first()
-
-        //We should find cohort size as one of the burden outcomes
-
-        val cohortSize = records.firstOrNull { it.burden_outcome_code == COHORT_SIZE_CODE }?.value
-        val burdenOutcomeRows = records.filter { it.burden_outcome_code != COHORT_SIZE_CODE }
-
-        val burdenOutcomeValues =
-                burdenOutcomeRows.associateBy({ it.burden_outcome_code }, { it.value })
-
-        return BurdenEstimate(
-                reference.disease,
-                reference.year,
-                reference.age,
-                reference.country,
-                reference.countryName,
-                cohortSize ?: 0f,
-                burdenOutcomeValues
-        )
     }
 
     override fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)

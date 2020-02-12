@@ -385,12 +385,13 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         }
 
         val outcomes = withDatabase {
-            it.dsl.select(BURDEN_OUTCOME.CODE, BURDEN_OUTCOME.NAME)
+            it.dsl.select(BURDEN_OUTCOME.ID, BURDEN_OUTCOME.CODE)
                     .from(BURDEN_OUTCOME)
+                    .where(BURDEN_OUTCOME.CODE.eq("deaths").or(BURDEN_OUTCOME.CODE.eq("cohort_size")))
                     .fetch()
                     .map { r ->
-                        Pair(r.get(Tables.BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME, Int::class.java),
-                                r[BURDEN_OUTCOME.NAME])
+                        Pair(r.get(BURDEN_OUTCOME.ID, Int::class.java),
+                                r[BURDEN_OUTCOME.CODE])
                     }
         }
 
@@ -400,8 +401,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             db.addBurdenEstimate(setId, "ABC", 2000, 20, outcomes[0].second, 10f)
         }
         withRepo { repo ->
-            val result = repo.getBurdenEstimateOutcomesSequence(groupId,
-                    touchstoneVersionId, scenarioId, setId, outcomes).toList()
+            val result = repo.getBurdenEstimateOutcomesSequence(setId, outcomes, "Hib3").toList()
 
             assertThat(result.count()).isEqualTo(2)
 

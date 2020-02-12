@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.app.repositories
 
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.models.*
@@ -54,11 +53,9 @@ interface BurdenEstimateRepository : Repository
                      burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):
             BurdenEstimateDataSeries
 
-    fun getBurdenEstimateOutcomesSequence(groupId: String,
-                                          touchstoneVersionId: String,
-                                          scenarioId: String,
-                                          burdenEstimateSetId: Int,
-                                          outcomes: List<Pair<Int, String>>): Sequence<BurdenEstimate>
+    fun getBurdenEstimateOutcomesSequence(burdenEstimateSetId: Int,
+                                          outcomes: List<Pair<Int, String>>,
+                                          disease: String): Sequence<BurdenEstimate>
 
     fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<Pair<Int, String>>
 
