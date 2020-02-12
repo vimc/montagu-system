@@ -421,7 +421,7 @@ class JooqBurdenEstimateRepository(
         {
             throw InvalidOperationError("You cannot clear a burden estimate set which is marked as 'complete'.")
         }
-        
+
         changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.EMPTY)
         centralEstimateWriter.clearEstimateSet(setId)
     }
