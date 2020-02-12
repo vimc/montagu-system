@@ -269,6 +269,7 @@ public class Keys {
     public static final UniqueKey<DemographicSourceRecord> DEMOGRAPHIC_SOURCE_PKEY = UniqueKeys0.DEMOGRAPHIC_SOURCE_PKEY;
     public static final UniqueKey<DemographicStatisticRecord> DEMOGRAPHIC_STATISTIC_PKEY = UniqueKeys0.DEMOGRAPHIC_STATISTIC_PKEY;
     public static final UniqueKey<DemographicStatisticTypeRecord> DEMOGRAPHIC_STATISTIC_TYPE_PKEY = UniqueKeys0.DEMOGRAPHIC_STATISTIC_TYPE_PKEY;
+    public static final UniqueKey<DemographicStatisticTypeRecord> DEMOGRAPHIC_STATISTIC_TYPE_UNIQUE = UniqueKeys0.DEMOGRAPHIC_STATISTIC_TYPE_UNIQUE;
     public static final UniqueKey<DemographicStatisticTypeVariantRecord> DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY = UniqueKeys0.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY;
     public static final UniqueKey<DemographicValueUnitRecord> DEMOGRAPHIC_VALUE_UNIT_PKEY = UniqueKeys0.DEMOGRAPHIC_VALUE_UNIT_PKEY;
     public static final UniqueKey<DemographicVariantRecord> DEMOGRAPHIC_VARIANT_PKEY = UniqueKeys0.DEMOGRAPHIC_VARIANT_PKEY;
@@ -552,6 +553,7 @@ public class Keys {
         public static final UniqueKey<DemographicSourceRecord> DEMOGRAPHIC_SOURCE_PKEY = Internal.createUniqueKey(DemographicSource.DEMOGRAPHIC_SOURCE, "demographic_source_pkey", DemographicSource.DEMOGRAPHIC_SOURCE.ID);
         public static final UniqueKey<DemographicStatisticRecord> DEMOGRAPHIC_STATISTIC_PKEY = Internal.createUniqueKey(DemographicStatistic.DEMOGRAPHIC_STATISTIC, "demographic_statistic_pkey", DemographicStatistic.DEMOGRAPHIC_STATISTIC.ID);
         public static final UniqueKey<DemographicStatisticTypeRecord> DEMOGRAPHIC_STATISTIC_TYPE_PKEY = Internal.createUniqueKey(DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE, "demographic_statistic_type_pkey", DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE.ID);
+        public static final UniqueKey<DemographicStatisticTypeRecord> DEMOGRAPHIC_STATISTIC_TYPE_UNIQUE = Internal.createUniqueKey(DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE, "demographic_statistic_type_unique", DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE.CODE);
         public static final UniqueKey<DemographicStatisticTypeVariantRecord> DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY = Internal.createUniqueKey(DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT, "demographic_statistic_type_variant_pkey", DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT.DEMOGRAPHIC_STATISTIC_TYPE, DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT.DEMOGRAPHIC_VARIANT);
         public static final UniqueKey<DemographicValueUnitRecord> DEMOGRAPHIC_VALUE_UNIT_PKEY = Internal.createUniqueKey(DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT, "demographic_value_unit_pkey", DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT.ID);
         public static final UniqueKey<DemographicVariantRecord> DEMOGRAPHIC_VARIANT_PKEY = Internal.createUniqueKey(DemographicVariant.DEMOGRAPHIC_VARIANT, "demographic_variant_pkey", DemographicVariant.DEMOGRAPHIC_VARIANT.ID);
