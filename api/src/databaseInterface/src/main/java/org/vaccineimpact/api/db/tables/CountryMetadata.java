@@ -39,7 +39,7 @@ import org.vaccineimpact.api.db.tables.records.CountryMetadataRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CountryMetadata extends TableImpl<CountryMetadataRecord> {
 
-    private static final long serialVersionUID = 1315104959;
+    private static final long serialVersionUID = -363536004;
 
     /**
      * The reference instance of <code>public.country_metadata</code>
@@ -97,47 +97,47 @@ public class CountryMetadata extends TableImpl<CountryMetadataRecord> {
     /**
      * The column <code>public.country_metadata.francophone</code>. 28 Gavi-supported French-speaking countries of interest to Gavi donors + 1 associated member + 4 observer counrties
      */
-    public final TableField<CountryMetadataRecord, String> FRANCOPHONE = createField("francophone", org.jooq.impl.SQLDataType.CLOB, this, "28 Gavi-supported French-speaking countries of interest to Gavi donors + 1 associated member + 4 observer counrties");
+    public final TableField<CountryMetadataRecord, String> FRANCOPHONE = createField("francophone", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "28 Gavi-supported French-speaking countries of interest to Gavi donors + 1 associated member + 4 observer counrties");
 
     /**
      * The column <code>public.country_metadata.vxdel_segment</code>. An internal grouping as used by BMFG to stratify countries
      */
-    public final TableField<CountryMetadataRecord, String> VXDEL_SEGMENT = createField("vxdel_segment", org.jooq.impl.SQLDataType.CLOB, this, "An internal grouping as used by BMFG to stratify countries");
+    public final TableField<CountryMetadataRecord, String> VXDEL_SEGMENT = createField("vxdel_segment", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "An internal grouping as used by BMFG to stratify countries");
 
     /**
      * The column <code>public.country_metadata.pine_5</code>.
      */
-    public final TableField<CountryMetadataRecord, Boolean> PINE_5 = createField("pine_5", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<CountryMetadataRecord, Boolean> PINE_5 = createField("pine_5", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.country_metadata.dove94</code>.
      */
-    public final TableField<CountryMetadataRecord, Boolean> DOVE94 = createField("dove94", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<CountryMetadataRecord, Boolean> DOVE94 = createField("dove94", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.country_metadata.gavi68</code>.
      */
-    public final TableField<CountryMetadataRecord, Boolean> GAVI68 = createField("gavi68", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<CountryMetadataRecord, Boolean> GAVI68 = createField("gavi68", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.country_metadata.gavi72</code>.
      */
-    public final TableField<CountryMetadataRecord, Boolean> GAVI72 = createField("gavi72", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<CountryMetadataRecord, Boolean> GAVI72 = createField("gavi72", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.country_metadata.gavi77</code>.
      */
-    public final TableField<CountryMetadataRecord, Boolean> GAVI77 = createField("gavi77", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<CountryMetadataRecord, Boolean> GAVI77 = createField("gavi77", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.country_metadata.dove96</code>.
      */
-    public final TableField<CountryMetadataRecord, Boolean> DOVE96 = createField("dove96", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<CountryMetadataRecord, Boolean> DOVE96 = createField("dove96", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.country_metadata.gavi_region</code>.
      */
-    public final TableField<CountryMetadataRecord, String> GAVI_REGION = createField("gavi_region", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<CountryMetadataRecord, String> GAVI_REGION = createField("gavi_region", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.country_metadata.gavi_pef_tier</code>. Gavi Partners engagement framework; Tier 1, 2 or 3 (stored as integer). NULL values indicate "Not PEF"

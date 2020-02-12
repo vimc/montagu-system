@@ -5,7 +5,6 @@ import org.jooq.Record
 import org.jooq.Result
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
-import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.*
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
 import org.vaccineimpact.api.databaseTests.RepositoryTests
@@ -32,15 +31,14 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
 
     protected fun makeRepository(
             db: JooqContext,
-            centralEstimateWriter: CentralBurdenEstimateWriter,
-            stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter
+            centralEstimateWriter: CentralBurdenEstimateWriter
     ): JooqBurdenEstimateRepository
     {
         val scenario = JooqScenarioRepository(db.dsl)
         val touchstone = JooqTouchstoneRepository(db.dsl, scenario)
         val modellingGroup = JooqModellingGroupRepository(db.dsl, touchstone)
         return JooqBurdenEstimateRepository(db.dsl, scenario, touchstone, modellingGroup, BurdenMappingHelper(),
-                centralEstimateWriter, stochasticBurdenEstimateWriter)
+                centralEstimateWriter)
     }
 
     protected val scenarioId = "scenario-1"

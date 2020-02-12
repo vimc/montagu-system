@@ -208,7 +208,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
             throw InvalidOperationError("This burden estimate set has already been closed.")
         }
 
-        if (burdenEstimateRepository.getEstimateWriter(set).isSetEmpty(setId))
+        if (burdenEstimateRepository.centralEstimateWriter.isSetEmpty(setId))
         {
             throw InvalidOperationError("This burden estimate set does not have any burden estimate data. " +
                     "It cannot be marked as complete")
@@ -299,14 +299,14 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
 
         val validatedEstimates = estimates.validate(expectedRows)
 
-        burdenEstimateRepository.getEstimateWriter(set).addEstimatesToSet(set.id, validatedEstimates, responsibilityInfo.disease)
+        burdenEstimateRepository.centralEstimateWriter.addEstimatesToSet(set.id, validatedEstimates, responsibilityInfo.disease)
     }
 
     private fun populateStochasticBurdenEstimateSet(set: BurdenEstimateSet, responsibilityInfo: ResponsibilityInfo,
                                                     estimates: Sequence<BurdenEstimateWithRunId>)
     {
         val validatedEstimates = estimates.validateStochastic()
-        burdenEstimateRepository.getEstimateWriter(set)
+        burdenEstimateRepository.centralEstimateWriter
                 .addEstimatesToSet(set.id, validatedEstimates, responsibilityInfo.disease)
     }
 }

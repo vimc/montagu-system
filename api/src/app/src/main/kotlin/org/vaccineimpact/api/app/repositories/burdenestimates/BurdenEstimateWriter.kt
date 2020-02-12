@@ -149,8 +149,6 @@ abstract class BurdenEstimateWriter(
 
     private fun resolveRunId(modelRuns: Map<String, Int>, modelRunParameterSetId: Int?, runId: String?): Int?
     {
-        // If we are expecting run IDs not to be null (i.e. for stochastic estimates)
-        // we expect this to have been caught at an earlier stage, during CSV parsing
         return if (runId == null)
         {
             null

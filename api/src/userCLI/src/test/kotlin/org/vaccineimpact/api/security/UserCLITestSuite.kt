@@ -27,7 +27,6 @@ class UserCLITestSuite
         fun createTemplateDatabase()
         {
             DatabaseCreationHelper.main.createTemplateFromDatabase()
-            DatabaseCreationHelper.annex.createTemplateFromDatabase()
         }
 
         @AfterClass
@@ -35,7 +34,6 @@ class UserCLITestSuite
         fun restoreDatabaseFromTemplate()
         {
             DatabaseCreationHelper.main.restoreDatabaseFromTemplate()
-            DatabaseCreationHelper.annex.restoreDatabaseFromTemplate()
         }
     }
 }

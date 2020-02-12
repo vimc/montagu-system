@@ -40,7 +40,7 @@ import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DemographicStatisticType extends TableImpl<DemographicStatisticTypeRecord> {
 
-    private static final long serialVersionUID = 1323501949;
+    private static final long serialVersionUID = -26294603;
 
     /**
      * The reference instance of <code>public.demographic_statistic_type</code>
@@ -142,7 +142,7 @@ public class DemographicStatisticType extends TableImpl<DemographicStatisticType
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DEMOGRAPHIC_STATISTIC_TYPE_PKEY);
+        return Arrays.<Index>asList(Indexes.DEMOGRAPHIC_STATISTIC_TYPE_PKEY, Indexes.DEMOGRAPHIC_STATISTIC_TYPE_UNIQUE);
     }
 
     /**
@@ -166,7 +166,7 @@ public class DemographicStatisticType extends TableImpl<DemographicStatisticType
      */
     @Override
     public List<UniqueKey<DemographicStatisticTypeRecord>> getKeys() {
-        return Arrays.<UniqueKey<DemographicStatisticTypeRecord>>asList(Keys.DEMOGRAPHIC_STATISTIC_TYPE_PKEY);
+        return Arrays.<UniqueKey<DemographicStatisticTypeRecord>>asList(Keys.DEMOGRAPHIC_STATISTIC_TYPE_PKEY, Keys.DEMOGRAPHIC_STATISTIC_TYPE_UNIQUE);
     }
 
     /**

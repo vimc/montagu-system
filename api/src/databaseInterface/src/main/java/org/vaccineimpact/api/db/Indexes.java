@@ -146,6 +146,7 @@ public class Indexes {
     public static final Index DEMOGRAPHIC_STATISTIC_GENDER_IDX = Indexes0.DEMOGRAPHIC_STATISTIC_GENDER_IDX;
     public static final Index DEMOGRAPHIC_STATISTIC_PKEY = Indexes0.DEMOGRAPHIC_STATISTIC_PKEY;
     public static final Index DEMOGRAPHIC_STATISTIC_TYPE_PKEY = Indexes0.DEMOGRAPHIC_STATISTIC_TYPE_PKEY;
+    public static final Index DEMOGRAPHIC_STATISTIC_TYPE_UNIQUE = Indexes0.DEMOGRAPHIC_STATISTIC_TYPE_UNIQUE;
     public static final Index DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY = Indexes0.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY;
     public static final Index DEMOGRAPHIC_VALUE_UNIT_PKEY = Indexes0.DEMOGRAPHIC_VALUE_UNIT_PKEY;
     public static final Index DEMOGRAPHIC_VARIANT_PKEY = Indexes0.DEMOGRAPHIC_VARIANT_PKEY;
@@ -255,6 +256,7 @@ public class Indexes {
         public static Index DEMOGRAPHIC_STATISTIC_GENDER_IDX = Internal.createIndex("demographic_statistic_gender_idx", DemographicStatistic.DEMOGRAPHIC_STATISTIC, new OrderField[] { DemographicStatistic.DEMOGRAPHIC_STATISTIC.GENDER }, false);
         public static Index DEMOGRAPHIC_STATISTIC_PKEY = Internal.createIndex("demographic_statistic_pkey", DemographicStatistic.DEMOGRAPHIC_STATISTIC, new OrderField[] { DemographicStatistic.DEMOGRAPHIC_STATISTIC.ID }, true);
         public static Index DEMOGRAPHIC_STATISTIC_TYPE_PKEY = Internal.createIndex("demographic_statistic_type_pkey", DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE, new OrderField[] { DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE.ID }, true);
+        public static Index DEMOGRAPHIC_STATISTIC_TYPE_UNIQUE = Internal.createIndex("demographic_statistic_type_unique", DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE, new OrderField[] { DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE.CODE }, true);
         public static Index DEMOGRAPHIC_STATISTIC_TYPE_VARIANT_PKEY = Internal.createIndex("demographic_statistic_type_variant_pkey", DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT, new OrderField[] { DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT.DEMOGRAPHIC_STATISTIC_TYPE, DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT.DEMOGRAPHIC_VARIANT }, true);
         public static Index DEMOGRAPHIC_VALUE_UNIT_PKEY = Internal.createIndex("demographic_value_unit_pkey", DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT, new OrderField[] { DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT.ID }, true);
         public static Index DEMOGRAPHIC_VARIANT_PKEY = Internal.createIndex("demographic_variant_pkey", DemographicVariant.DEMOGRAPHIC_VARIANT, new OrderField[] { DemographicVariant.DEMOGRAPHIC_VARIANT.ID }, true);

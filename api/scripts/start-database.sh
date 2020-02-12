@@ -10,9 +10,8 @@ if docker top db &>/dev/null; then
 fi
 
 echo "Starting database"
-$here/../db/scripts/start.sh $DB_VERSION $DB_PORT $ANNEX_PORT
+$here/../db/scripts/start.sh $DB_VERSION $DB_PORT
 
 echo "-------------------------------------------------------------------------"
 echo "Databases are now running:"
 echo "Main database is accessible at port $DB_PORT"
-echo "Annex database is accessible at port $ANNEX_PORT"
