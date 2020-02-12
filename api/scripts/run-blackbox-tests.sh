@@ -22,7 +22,7 @@ docker exec montagu_api_1 touch /etc/montagu/api/go_signal
 # -------------------------------------------------------------
 docker exec montagu_db_1 montagu-wait.sh
 
-docker exec db psql -U postgres -d montagu -c "create extension tablefunc;"
+docker exec montagu_db_1 psql -U postgres -d montagu -c "create extension tablefunc;"
 
 docker pull $migrate_image
 docker run --rm --network=montagu_default $migrate_image
