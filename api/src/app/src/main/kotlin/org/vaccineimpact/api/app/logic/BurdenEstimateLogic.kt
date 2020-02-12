@@ -156,8 +156,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
 
         val rows = burdenEstimateRepository.getBurdenEstimateOutcomesSequence(setId, expectedOutcomes, disease)
 
-        return FlexibleDataTable.new(rows, expectedOutcomes.map { it.first })
-
+        return FlexibleDataTable.new(rows, expectedOutcomes.map { it.second })
     }
 
     override fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)
