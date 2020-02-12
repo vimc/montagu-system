@@ -11,7 +11,6 @@ import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
-import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.JooqBurdenEstimateRepository
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE_SET
@@ -26,22 +25,9 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
     {
         withDatabase { db ->
             val setId = setupDatabaseWithBurdenEstimateSet(db, type = "central-averaged")
-            val (repo, central, stochastic) = getRepoWithMockedWriters(db)
+            val (repo, central) = getRepoWithMockedWriter(db)
             repo.clearBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
             verify(central, Times(1)).clearEstimateSet(setId)
-            verifyZeroInteractions(stochastic)
-        }
-    }
-
-    @Test
-    fun `can clear stochastic estimates`()
-    {
-        withDatabase { db ->
-            val setId = setupDatabaseWithBurdenEstimateSet(db, type = "stochastic")
-            val (repo, central, stochastic) = getRepoWithMockedWriters(db)
-            repo.clearBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-            verify(stochastic, Times(1)).clearEstimateSet(setId)
-            verifyZeroInteractions(central)
         }
     }
 
@@ -128,17 +114,15 @@ class ClearBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         }
     }
 
-    data class RepoAndWriters(
+    data class RepoAndWriter(
             val repo: JooqBurdenEstimateRepository,
-            val central: CentralBurdenEstimateWriter,
-            val stochastic: StochasticBurdenEstimateWriter
+            val central: CentralBurdenEstimateWriter
     )
 
-    private fun getRepoWithMockedWriters(db: JooqContext): RepoAndWriters
+    private fun getRepoWithMockedWriter(db: JooqContext): RepoAndWriter
     {
         val central = mock<CentralBurdenEstimateWriter>()
-        val stochastic = mock<StochasticBurdenEstimateWriter>()
-        val repo = makeRepository(db, central, stochastic)
-        return RepoAndWriters(repo, central, stochastic)
+        val repo = makeRepository(db, central)
+        return RepoAndWriter(repo, central)
     }
 }

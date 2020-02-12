@@ -1,7 +1,6 @@
 package org.vaccineimpact.api.test_helpers
 
 import org.docopt.Docopt
-import org.vaccineimpact.api.db.AnnexJooqContext
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.UnableToConnectToDatabase
@@ -12,9 +11,6 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
     {
         val main = DatabaseCreationHelper(
                 DatabaseConfig({ JooqContext(it) }, Config["db.name"], Config["testdb.template_name"])
-        )
-        val annex = DatabaseCreationHelper(
-                DatabaseConfig({ AnnexJooqContext(it) }, Config["annex.name"], Config["annex.template_name"])
         )
 
         const val usage = """Usage:
@@ -31,12 +27,10 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
             if (opts["createTemplateFromDatabase"] as Boolean)
             {
                 DatabaseCreationHelper.main.createTemplateFromDatabase()
-                DatabaseCreationHelper.annex.createTemplateFromDatabase()
             }
             else if (opts["restoreDatabaseFromTemplate"] as Boolean)
             {
                 DatabaseCreationHelper.main.restoreDatabaseFromTemplate()
-                DatabaseCreationHelper.annex.restoreDatabaseFromTemplate()
             }
         }
     }

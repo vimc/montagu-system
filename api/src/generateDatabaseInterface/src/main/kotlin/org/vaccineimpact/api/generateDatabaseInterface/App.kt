@@ -12,7 +12,6 @@ class CodeGenerator
     fun run()
     {
         generate("main-database.xml")
-        generate("annex-database.xml")
     }
 
     private fun generate(configFileName: String)
