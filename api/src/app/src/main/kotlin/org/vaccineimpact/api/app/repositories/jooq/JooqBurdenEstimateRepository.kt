@@ -232,13 +232,13 @@ class JooqBurdenEstimateRepository(
                 .where(BURDEN_OUTCOME.CODE.eq("cohort_size"))
                 .fetchAnyInto(Short::class.java)
 
-        val outcomeIdQuery = "select ${outcomes.map { it.first }.joinToString(" union select ")} union select $cohortSize"
+        val outcomeIdQuery = "select $cohortSize union select ${outcomes.map { it.first }.joinToString(" union select ")} order by 1"
         val expectedOutcomeCodes = "${outcomes.joinToString(" real,") { it.second }} real, cohort_size real"
         val compoundRowKey = "year || '':''|| age || '':'' || country"
         val sql = "SELECT * FROM crosstab" +
                 "(" +
                 "'SELECT $compoundRowKey,year,country,age,burden_outcome,value FROM burden_estimate" +
-                " where burden_estimate_set = $burdenEstimateSetId order by country, year, age'," +
+                " where burden_estimate_set = $burdenEstimateSetId order by year, age, country'," +
                 "'$outcomeIdQuery'" +
                 ")" +
                 "AS" +
