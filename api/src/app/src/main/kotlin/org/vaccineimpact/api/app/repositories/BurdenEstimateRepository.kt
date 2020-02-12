@@ -53,10 +53,13 @@ interface BurdenEstimateRepository : Repository
                      burdenEstimateGrouping: BurdenEstimateGrouping = BurdenEstimateGrouping.AGE):
             BurdenEstimateDataSeries
 
-    fun getBurdenEstimateOutcomesSequence(groupId: String, touchstoneVersionId: String, scenarioId: String, burdenEstimateSetId: Int)
-            : Sequence<BurdenEstimateOutcome>
+    fun getBurdenEstimateOutcomesSequence(groupId: String,
+                                          touchstoneVersionId: String,
+                                          scenarioId: String,
+                                          burdenEstimateSetId: Int,
+                                          outcomes: List<Pair<Int, String>>): Sequence<BurdenEstimate>
 
-    fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<String>
+    fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<Pair<Int, String>>
 
     fun updateBurdenEstimateSetFilename(setId: Int, filename: String?)
 }

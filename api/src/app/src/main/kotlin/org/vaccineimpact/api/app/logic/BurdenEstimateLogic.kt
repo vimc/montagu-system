@@ -144,26 +144,12 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
     override fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
                                        scenarioId: String): FlexibleDataTable<BurdenEstimate>
     {
-        val data = burdenEstimateRepository.getBurdenEstimateOutcomesSequence(groupId,
-                touchstoneVersionId, scenarioId, setId)
-
-        //first, group the outcome rows by disease, year, age, country code and country name
-        val groupedRows = data
-                .groupBy {
-                    hashSetOf(it.disease, it.year, it.age,
-                            it.country, it.countryName)
-                }
-
-        //get the expected outcomes for this burden estimate set
         val expectedOutcomes = burdenEstimateRepository.getExpectedOutcomesForBurdenEstimateSet(setId)
 
-        //next, map to BurdenEstimate objects, including extracting the cohort size outcome
-        val rows = groupedRows.values
-                .map {
-                    mapBurdenEstimate(it)
-                }
+        val rows = burdenEstimateRepository.getBurdenEstimateOutcomesSequence(groupId,
+                touchstoneVersionId, scenarioId, setId, expectedOutcomes)
 
-        return FlexibleDataTable.new(rows.asSequence(), expectedOutcomes)
+        return FlexibleDataTable.new(rows, expectedOutcomes.map { it.first })
 
     }
 
