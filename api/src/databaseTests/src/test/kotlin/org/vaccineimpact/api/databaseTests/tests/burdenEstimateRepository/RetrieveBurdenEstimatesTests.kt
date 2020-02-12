@@ -387,7 +387,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         val outcomes = withDatabase {
             it.dsl.select(BURDEN_OUTCOME.ID, BURDEN_OUTCOME.CODE)
                     .from(BURDEN_OUTCOME)
-                    .where(BURDEN_OUTCOME.CODE.eq("deaths").or(BURDEN_OUTCOME.CODE.eq("cohort_size")))
+                    .where(BURDEN_OUTCOME.CODE.eq("deaths"))
                     .fetch()
                     .map { r ->
                         Pair(r.get(BURDEN_OUTCOME.ID, Short::class.java),

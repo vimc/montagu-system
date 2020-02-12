@@ -227,8 +227,13 @@ class JooqBurdenEstimateRepository(
 
         val countryLookup = getCountriesAsLookup()
 
-        val outcomeIdQuery = "select ${outcomes.map { it.first }.joinToString(" union select ")}"
-        val expectedOutcomeCodes = "${outcomes.joinToString(" real,") { it.second }} real"
+        val cohortSize = dsl.select(BURDEN_OUTCOME.ID)
+                .from(BURDEN_OUTCOME)
+                .where(BURDEN_OUTCOME.CODE.eq("cohort_size"))
+                .fetchAnyInto(Short::class.java)
+
+        val outcomeIdQuery = "select ${outcomes.map { it.first }.joinToString(" union select ")} union select $cohortSize"
+        val expectedOutcomeCodes = "${outcomes.joinToString(" real,") { it.second }} real, cohort_size real"
         val compoundRowKey = "year || '':''|| age || '':'' || country"
         val sql = "SELECT * FROM crosstab" +
                 "(" +
