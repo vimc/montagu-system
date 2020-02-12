@@ -54,10 +54,10 @@ interface BurdenEstimateRepository : Repository
             BurdenEstimateDataSeries
 
     fun getBurdenEstimateOutcomesSequence(burdenEstimateSetId: Int,
-                                          outcomes: List<Pair<Int, String>>,
+                                          outcomes: List<Pair<Short, String>>,
                                           disease: String): Sequence<BurdenEstimate>
 
-    fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<Pair<Int, String>>
+    fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<Pair<Short, String>>
 
     fun updateBurdenEstimateSetFilename(setId: Int, filename: String?)
 }

@@ -220,7 +220,7 @@ class JooqBurdenEstimateRepository(
     }
 
     override fun getBurdenEstimateOutcomesSequence(burdenEstimateSetId: Int,
-                                                   outcomes: List<Pair<Int, String>>,
+                                                   outcomes: List<Pair<Short, String>>,
                                                    disease: String)
             : Sequence<BurdenEstimate>
     {
@@ -233,7 +233,7 @@ class JooqBurdenEstimateRepository(
         val sql = "SELECT * FROM crosstab" +
                 "(" +
                 "'SELECT $compoundRowKey,year,country,age,burden_outcome,value FROM burden_estimate" +
-                " where burden_estimate_set = $burdenEstimateSetId'," +
+                " where burden_estimate_set = $burdenEstimateSetId order by country, year, age'," +
                 "'$outcomeIdQuery'" +
                 ")" +
                 "AS" +
@@ -250,13 +250,14 @@ class JooqBurdenEstimateRepository(
         return generateSequence {
             cursor.fetchNext()?.map { record ->
                 val cid = record.get("country", Short::class.java)
-                val outcomeList = outcomes.associateBy({ it.second }, { record.get(it.second, Float::class.java) })
+                val outcomeList = outcomes.filter { it.second != "cohort_size" }
+                        .associateBy({ it.second }, { record.get(it.second, Float::class.java) })
                 BurdenEstimate(
                         disease,
                         record.get("year", Short::class.java),
                         record.get("age", Short::class.java),
                         countryLookup[cid]!!,
-                        cid.toString(), // TODO look up countries
+                        countryLookup[cid]!!, // TODO look up countries
                         record.get("cohort_size", Float::class.java),
                         outcomeList)
             }
@@ -264,20 +265,22 @@ class JooqBurdenEstimateRepository(
     }
 
 
-    override fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<Pair<Int, String>>
+    override fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<Pair<Short, String>>
     {
-        return dsl.select(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME, BURDEN_OUTCOME.NAME)
+        return dsl.select(BURDEN_OUTCOME.ID, BURDEN_OUTCOME.CODE)
                 .from(BURDEN_ESTIMATE_SET)
                 .join(RESPONSIBILITY)
                 .on(BURDEN_ESTIMATE_SET.RESPONSIBILITY.eq(RESPONSIBILITY.ID))
-                .joinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION, BURDEN_ESTIMATE_OUTCOME_EXPECTATION, BURDEN_OUTCOME)
+                .joinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION, BURDEN_ESTIMATE_OUTCOME_EXPECTATION)
+                .join(BURDEN_OUTCOME)
+                .on(BURDEN_OUTCOME.CODE.eq(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME))
                 .where(BURDEN_ESTIMATE_SET.ID.eq(burdenEstimateSetId))
-                .groupBy(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
-                .orderBy(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
+                .groupBy(BURDEN_OUTCOME.CODE, BURDEN_OUTCOME.ID)
+                .orderBy(BURDEN_OUTCOME.CODE, BURDEN_OUTCOME.ID)
                 .fetch()
                 .map {
-                    Pair(it.get(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME, Int::class.java),
-                            it[BURDEN_OUTCOME.NAME])
+                    Pair(it.get(BURDEN_OUTCOME.ID, Short::class.java),
+                            it[BURDEN_OUTCOME.CODE])
                 }
     }
 

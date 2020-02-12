@@ -390,7 +390,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
                     .where(BURDEN_OUTCOME.CODE.eq("deaths").or(BURDEN_OUTCOME.CODE.eq("cohort_size")))
                     .fetch()
                     .map { r ->
-                        Pair(r.get(BURDEN_OUTCOME.ID, Int::class.java),
+                        Pair(r.get(BURDEN_OUTCOME.ID, Short::class.java),
                                 r[BURDEN_OUTCOME.CODE])
                     }
         }
@@ -408,17 +408,20 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             assertThat(result[0].disease).isEqualTo("Hib3")
             assertThat(result[0].year).isEqualTo(2000)
             assertThat(result[0].age).isEqualTo(20)
-
             assertThat(result[0].country).isEqualTo("ABC")
-            assertThat(result[0].countryName).isEqualTo("ABC-Name")
+            assertThat(result[0].countryName).isEqualTo("ABC")
             assertThat(result[0].outcomes[outcomes[0].second]).isEqualTo(10f)
+            assertThat(result[0].outcomes.count()).isEqualTo(1)
+            assertThat(result[0].cohortSize).isEqualTo(0f)
 
             assertThat(result[1].disease).isEqualTo("Hib3")
             assertThat(result[1].year).isEqualTo(2001)
             assertThat(result[1].age).isEqualTo(21)
             assertThat(result[1].country).isEqualTo("DEF")
-            assertThat(result[1].countryName).isEqualTo("DEF-Name")
-            assertThat(result[0].outcomes["cohort_size"]).isEqualTo(5f)
+            assertThat(result[1].countryName).isEqualTo("DEF")
+            assertThat(result[1].cohortSize).isEqualTo(5f)
+            assertThat(result[1].outcomes[outcomes[0].second]).isEqualTo(0f)
+            assertThat(result[1].outcomes.count()).isEqualTo(1)
         }
     }
 
@@ -633,9 +636,9 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             val result = repo.getExpectedOutcomesForBurdenEstimateSet(setId)
 
             assertThat(result.count()).isEqualTo(3)
-            assertThat(result[0]).isEqualTo("test_cases")
-            assertThat(result[1]).isEqualTo("test_dalys")
-            assertThat(result[2]).isEqualTo("test_deaths")
+            assertThat(result[0].second).isEqualTo("test_cases")
+            assertThat(result[1].second).isEqualTo("test_dalys")
+            assertThat(result[2].second).isEqualTo("test_deaths")
         }
     }
 
@@ -657,7 +660,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             val result = repo.getExpectedOutcomesForBurdenEstimateSet(setId)
 
             assertThat(result.count()).isEqualTo(1)
-            assertThat(result[0]).isEqualTo("cases_acute")
+            assertThat(result[0].second).isEqualTo("cases_acute")
         }
     }
 
