@@ -232,13 +232,37 @@ class JooqBurdenEstimateRepository(
                 .where(BURDEN_OUTCOME.CODE.eq("cohort_size"))
                 .fetchAnyInto(Short::class.java)
 
-        val outcomeIdQuery = "select $cohortSize union select ${outcomes.map { it.first }.joinToString(" union select ")} order by 1"
+        return sequenceOf(countryLookup.keys.map {
+            k ->
+            dsl.fetch(getQuery(burdenEstimateSetId, outcomes, cohortSize, k))
+                    .map { record ->
+                        val cid = record.get("country", Short::class.java)
+                        val outcomeList = outcomes.filter { it.second != "cohort_size" }
+                                .associateBy({ it.second }, { record.get(it.second, Float::class.java) })
+                        BurdenEstimate(
+                                disease,
+                                record.get("year", Short::class.java),
+                                record.get("age", Short::class.java),
+                                countryLookup[cid]!!,
+                                countryLookup[cid]!!, // TODO look up countries
+                                record.get("cohort_size", Float::class.java),
+                                outcomeList)
+                    }.asSequence()
+        }).flatten().flatten()
+    }
+
+    private fun getQuery(setId: Int,
+                         outcomes: List<Pair<Short, String>>,
+                         cohortSize: Short,
+                         country: Short): String
+    {
+        val outcomeIdQuery = "select ${outcomes.map { it.first }.joinToString(" union select ")} union select $cohortSize order by 1"
         val expectedOutcomeCodes = "${outcomes.joinToString(" real,") { it.second }} real, cohort_size real"
         val compoundRowKey = "year || '':''|| age || '':'' || country"
-        val sql = "SELECT * FROM crosstab" +
+        return "SELECT * FROM crosstab" +
                 "(" +
                 "'SELECT $compoundRowKey,year,country,age,burden_outcome,value FROM burden_estimate" +
-                " where burden_estimate_set = $burdenEstimateSetId order by year, age, country'," +
+                " where burden_estimate_set = $setId and country = $country order by year, age'," +
                 "'$outcomeIdQuery'" +
                 ")" +
                 "AS" +
@@ -249,26 +273,7 @@ class JooqBurdenEstimateRepository(
                 "       age smallint," +
                 expectedOutcomeCodes +
                 ");"
-
-        val cursor = dsl.fetchLazy(sql)
-
-        return generateSequence {
-            cursor.fetchNext()?.map { record ->
-                val cid = record.get("country", Short::class.java)
-                val outcomeList = outcomes.filter { it.second != "cohort_size" }
-                        .associateBy({ it.second }, { record.get(it.second, Float::class.java) })
-                BurdenEstimate(
-                        disease,
-                        record.get("year", Short::class.java),
-                        record.get("age", Short::class.java),
-                        countryLookup[cid]!!,
-                        countryLookup[cid]!!, // TODO look up countries
-                        record.get("cohort_size", Float::class.java),
-                        outcomeList)
-            }
-        }
     }
-
 
     override fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<Pair<Short, String>>
     {

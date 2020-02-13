@@ -21,6 +21,7 @@ interface BurdenEstimateRepository : Repository
                                 uploader: String,
                                 timestamp: Instant): Int
 
+    @Throws(UnknownObjectError::class)
     fun getBurdenEstimateSet(groupId: String, touchstoneVersionId: String, scenarioId: String,
                              burdenEstimateSetId: Int): BurdenEstimateSet
 
