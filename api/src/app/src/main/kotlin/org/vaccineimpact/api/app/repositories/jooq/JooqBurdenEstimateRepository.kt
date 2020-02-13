@@ -232,23 +232,24 @@ class JooqBurdenEstimateRepository(
                 .where(BURDEN_OUTCOME.CODE.eq("cohort_size"))
                 .fetchAnyInto(Short::class.java)
 
-        return sequenceOf(countryLookup.keys.map {
-            k ->
-            dsl.fetch(getQuery(burdenEstimateSetId, outcomes, cohortSize, k))
-                    .map { record ->
-                        val cid = record.get("country", Short::class.java)
-                        val outcomeList = outcomes.filter { it.second != "cohort_size" }
-                                .associateBy({ it.second }, { record.get(it.second, Float::class.java) })
-                        BurdenEstimate(
-                                disease,
-                                record.get("year", Short::class.java),
-                                record.get("age", Short::class.java),
-                                countryLookup[cid]!!,
-                                countryLookup[cid]!!, // TODO look up countries
-                                record.get("cohort_size", Float::class.java),
-                                outcomeList)
-                    }.asSequence()
-        }).flatten().flatten()
+        return countryLookup.keys.asSequence().map { k ->
+            val cursor = dsl.fetchLazy(getQuery(burdenEstimateSetId, outcomes, cohortSize, k))
+            generateSequence {
+                cursor.fetchNext()?.map { record ->
+                    val cid = record.get("country", Short::class.java)
+                    val outcomeList = outcomes.filter { it.second != "cohort_size" }
+                            .associateBy({ it.second }, { record.get(it.second, Float::class.java) })
+                    BurdenEstimate(
+                            disease,
+                            record.get("year", Short::class.java),
+                            record.get("age", Short::class.java),
+                            countryLookup[cid]!!,
+                            countryLookup[cid]!!, // TODO look up countries
+                            record.get("cohort_size", Float::class.java),
+                            outcomeList)
+                }
+            }
+        }.flatten()
     }
 
     private fun getQuery(setId: Int,
