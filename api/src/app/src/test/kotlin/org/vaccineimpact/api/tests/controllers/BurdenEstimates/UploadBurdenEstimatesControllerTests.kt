@@ -103,39 +103,6 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
     }
 
     @Test
-    fun `can populate stochastic estimate set`()
-    {
-        val touchstoneSet = mockTouchstones()
-        val logic = mockLogic()
-
-        val csvData = listOf(
-                StochasticBurdenEstimate("yf", "runA", 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
-                        "deaths" to 10F,
-                        "cases" to 100F
-                )),
-                StochasticBurdenEstimate("yf", "runB", 1980, 30, "AGO", "Angola", 2000F, mapOf(
-                        "deaths" to 20F,
-                        "dalys" to 73.6F
-                ))
-        )
-        val expectedData = listOf(
-                BurdenEstimateWithRunId("yf", "runA", 2000, 50, "AFG", "Afghanistan", 1000F, mapOf(
-                        "deaths" to 10F,
-                        "cases" to 100F
-                )),
-                BurdenEstimateWithRunId("yf", "runB", 1980, 30, "AGO", "Angola", 2000F, mapOf(
-                        "deaths" to 20F,
-                        "dalys" to 73.6F
-                ))
-        )
-
-        val mockContext = mockActionContext()
-        val repo = mockEstimatesRepository(touchstoneSet, existingBurdenEstimateSet = defaultEstimateSet.copy(
-                type = BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC)))
-        verifyLogicIsInvokedToPopulateSet(mockContext, repo, logic, csvData.asSequence(), expectedData)
-    }
-
-    @Test
     fun `if keepOpen is not provided, populate closes estimate set`()
     {
         // This way, the webapps will carry on with the same behaviour as before.

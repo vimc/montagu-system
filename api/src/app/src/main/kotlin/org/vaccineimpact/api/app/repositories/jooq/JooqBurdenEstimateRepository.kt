@@ -13,20 +13,19 @@ import org.vaccineimpact.api.app.repositories.ScenarioRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
-import org.vaccineimpact.api.app.repositories.burdenestimates.StochasticBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
+import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.fetchSequence
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
+import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.RowLookup
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import java.beans.ConstructorProperties
 import java.sql.Timestamp
 import java.time.Instant
-import org.vaccineimpact.api.db.Tables
-import org.vaccineimpact.api.db.fetchSequence
-import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
-import org.vaccineimpact.api.models.expectations.RowLookup
 
 data class ResponsibilityInfo
 @ConstructorProperties("id", "disease", "status", "setId")
@@ -38,8 +37,7 @@ class JooqBurdenEstimateRepository(
         override val touchstoneRepository: TouchstoneRepository,
         private val modellingGroupRepository: ModellingGroupRepository,
         private val mapper: BurdenMappingHelper = BurdenMappingHelper(),
-        centralBurdenEstimateWriter: CentralBurdenEstimateWriter? = null,
-        stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter? = null
+        centralBurdenEstimateWriter: CentralBurdenEstimateWriter? = null
 ) : JooqRepository(dsl), BurdenEstimateRepository
 {
     override fun getEstimates(setId: Int, responsibilityId: Int,
@@ -109,11 +107,8 @@ class JooqBurdenEstimateRepository(
         expectedRows[countryId]!![r.age]!![r.year] = true
     }
 
-    private val centralBurdenEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter
+    override val centralEstimateWriter: BurdenEstimateWriter = centralBurdenEstimateWriter
             ?: CentralBurdenEstimateWriter(dsl)
-
-    private val stochasticBurdenEstimateWriter: StochasticBurdenEstimateWriter = stochasticBurdenEstimateWriter
-            ?: StochasticBurdenEstimateWriter(dsl)
 
     override fun getModelRunParameterSets(groupId: String, touchstoneVersionId: String): List<ModelRunParameterSet>
     {
@@ -427,22 +422,8 @@ class JooqBurdenEstimateRepository(
             throw InvalidOperationError("You cannot clear a burden estimate set which is marked as 'complete'.")
         }
 
-        // We do this first, as this change will be rolled back if the annex
-        // changes fail, but the reverse is not true
         changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.EMPTY)
-        getEstimateWriter(set).clearEstimateSet(setId)
-    }
-
-    override fun getEstimateWriter(set: BurdenEstimateSet): BurdenEstimateWriter
-    {
-        return if (set.isStochastic())
-        {
-            stochasticBurdenEstimateWriter
-        }
-        else
-        {
-            centralBurdenEstimateWriter
-        }
+        centralEstimateWriter.clearEstimateSet(setId)
     }
 
     override fun changeBurdenEstimateStatus(setId: Int, newStatus: BurdenEstimateSetStatus)
@@ -455,17 +436,13 @@ class JooqBurdenEstimateRepository(
 
     override fun updateCurrentBurdenEstimateSet(responsibilityId: Int, setId: Int, type: BurdenEstimateSetType)
     {
-        val field = if (type.isStochastic())
+        if (type.isStochastic())
         {
-            RESPONSIBILITY.CURRENT_STOCHASTIC_BURDEN_ESTIMATE_SET
-        }
-        else
-        {
-            RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET
+            throw InvalidOperationError("You cannot update a stochastic estimate set.")
         }
 
         dsl.update(RESPONSIBILITY)
-                .set(field, setId)
+                .set(RESPONSIBILITY.CURRENT_BURDEN_ESTIMATE_SET, setId)
                 .where(RESPONSIBILITY.ID.eq(responsibilityId))
                 .execute()
     }

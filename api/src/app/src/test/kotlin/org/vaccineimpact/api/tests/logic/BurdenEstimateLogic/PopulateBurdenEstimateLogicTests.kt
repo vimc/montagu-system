@@ -24,7 +24,7 @@ class PopulateBurdenEstimateLogicTests : BaseBurdenEstimateLogicTests()
                     .copy(status = BurdenEstimateSetStatus.PARTIAL)
             on { getResponsibilityInfo(any(), any(), any()) } doReturn
                     ResponsibilityInfo(responsibilityId, disease, "open", setId)
-            on { getEstimateWriter(any()) } doReturn writer
+            on { centralEstimateWriter } doReturn writer
         }
         val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mock())
 
@@ -103,13 +103,4 @@ class PopulateBurdenEstimateLogicTests : BaseBurdenEstimateLogicTests()
         verify(repo).updateBurdenEstimateSetFilename(setId, "file.csv")
     }
 
-    @Test
-    fun `gets estimate writer from repo`()
-    {
-        val repo = mockEstimatesRepository()
-        val sut = RepositoriesBurdenEstimateLogic(mockGroupRepository(), repo, mockExpectationsRepository(), mock(), mock(), mock())
-
-        sut.populateBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId, validData, null)
-        verify(repo).getEstimateWriter(defaultEstimateSet)
-    }
 }
