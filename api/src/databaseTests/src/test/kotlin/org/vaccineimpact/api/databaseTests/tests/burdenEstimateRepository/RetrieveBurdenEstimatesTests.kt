@@ -505,18 +505,19 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             assertThat(result[0].disease).isEqualTo("disease")
             assertThat(result[0].year).isEqualTo(2000)
             assertThat(result[0].age).isEqualTo(15)
-            assertThat(result[0].country).isEqualTo("DEF")
-            assertThat(result[0].cohortSize).isEqualTo(0f)
+            assertThat(result[0].country).isEqualTo("ABC")
+            assertThat(result[0].cohortSize).isEqualTo(100f)
             assertThat(result[0].outcomes.count()).isEqualTo(1)
-            assertThat(result[0].outcomes["deaths"]).isEqualTo(50f)
+            assertThat(result[0].outcomes["deaths"]).isEqualTo(0f)
 
             assertThat(result[1].disease).isEqualTo("disease")
             assertThat(result[1].year).isEqualTo(2000)
             assertThat(result[1].age).isEqualTo(15)
-            assertThat(result[1].country).isEqualTo("ABC")
-            assertThat(result[1].cohortSize).isEqualTo(100f)
+            assertThat(result[1].country).isEqualTo("DEF")
+            assertThat(result[1].cohortSize).isEqualTo(0f)
             assertThat(result[1].outcomes.count()).isEqualTo(1)
-            assertThat(result[1].outcomes["deaths"]).isEqualTo(0f)
+            assertThat(result[1].outcomes["deaths"]).isEqualTo(50f)
+
         }
     }
 
