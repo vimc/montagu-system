@@ -1,14 +1,11 @@
 package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
-import org.vaccineimpact.api.db.Tables.BURDEN_ESTIMATE
 import org.vaccineimpact.api.db.Tables.BURDEN_OUTCOME
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.*
