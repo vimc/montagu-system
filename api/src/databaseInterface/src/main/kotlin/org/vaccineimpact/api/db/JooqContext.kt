@@ -8,7 +8,7 @@ import java.sql.DriverManager
 
 open class JooqContext(private val dbName: String? = null) : AutoCloseable
 {
-    val conn = getConnection()
+    private val conn = getConnection()
     val dsl = createDSL(conn)
 
     protected open fun loadSettings() = DatabaseSettings.fromConfig(prefix = "db")

@@ -233,7 +233,7 @@ class JooqBurdenEstimateRepository(
                 .fetchAnyInto(Short::class.java)
 
         return countryLookup.keys.asSequence().map { k ->
-            val cursor = dsl.fetchLazy(getQuery(burdenEstimateSetId, outcomes, cohortSize, k))
+            val cursor = dsl.fetchLazy(getBurdenEstimateQueryForCountry(burdenEstimateSetId, outcomes, cohortSize, k))
             generateSequence {
                 cursor.fetchNext()?.map { record ->
                     val country = countryLookup.getValue(record.get("country", Short::class.java))
@@ -252,10 +252,10 @@ class JooqBurdenEstimateRepository(
         }.flatten()
     }
 
-    private fun getQuery(setId: Int,
-                         outcomes: List<Pair<Short, String>>,
-                         cohortSize: Short,
-                         country: Short): String
+    private fun getBurdenEstimateQueryForCountry(setId: Int,
+                                                 outcomes: List<Pair<Short, String>>,
+                                                 cohortSize: Short,
+                                                 country: Short): String
     {
         val outcomeIdQuery = "select ${outcomes.map { it.first }.joinToString(" union select ")} union select $cohortSize order by 1"
         val expectedOutcomeCodes = "${outcomes.joinToString(" real,") { it.second }} real, cohort_size real"
