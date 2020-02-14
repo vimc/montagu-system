@@ -20,7 +20,7 @@ before_script:
   - ./travis/start-database.sh
 script:
   - ./src/gradlew -p src :testLibrary
-  - ./src/gradlew -p src :run
+  - ./src/gradlew -p src :run &
   - ./src/gradlew -p src :blackboxTests:test
 after_success:
   - ./src/gradlew -p src :app:jacocoTestReport
