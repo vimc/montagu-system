@@ -13,7 +13,6 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
-import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
@@ -71,10 +70,11 @@ class JooqBurdenEstimateRepository(
                 .fetchInto(Short::class.java)
     }
 
-    private fun getCountriesAsLookup(): Map<Short, String> = dsl.select(Tables.COUNTRY.ID, Tables.COUNTRY.NID)
-            .from(Tables.COUNTRY)
-            .fetch()
-            .intoMap(Tables.COUNTRY.NID, Tables.COUNTRY.ID)
+    private fun getCountriesAsLookup(): Map<Short, Pair<String, String>> =
+            dsl.select(COUNTRY.ID, COUNTRY.NID, COUNTRY.NAME)
+                    .from(COUNTRY)
+                    .fetch()
+                    .associateBy({ it[COUNTRY.NID] }, { Pair(it[COUNTRY.ID], it[COUNTRY.NAME]) })
 
     override fun validateEstimates(set: BurdenEstimateSet, expectedRowMap: RowLookup): RowLookup
     {
@@ -88,9 +88,9 @@ class JooqBurdenEstimateRepository(
         return expectedRowMap
     }
 
-    private fun validate(r: BurdenEstimateRecord, countries: Map<Short, String>, expectedRows: RowLookup)
+    private fun validate(r: BurdenEstimateRecord, countries: Map<Short, Pair<String, String>>, expectedRows: RowLookup)
     {
-        val countryId = countries[r.country]
+        val countryId = countries.getValue(r.country).first
         val ages = expectedRows[countryId]
                 ?: throw BadRequest("We are not expecting data for country $countryId")
 
@@ -236,15 +236,15 @@ class JooqBurdenEstimateRepository(
             val cursor = dsl.fetchLazy(getQuery(burdenEstimateSetId, outcomes, cohortSize, k))
             generateSequence {
                 cursor.fetchNext()?.map { record ->
-                    val cid = record.get("country", Short::class.java)
+                    val country = countryLookup.getValue(record.get("country", Short::class.java))
                     val outcomeList = outcomes.filter { it.second != "cohort_size" }
                             .associateBy({ it.second }, { record.get(it.second, Float::class.java) })
                     BurdenEstimate(
                             disease,
                             record.get("year", Short::class.java),
                             record.get("age", Short::class.java),
-                            countryLookup[cid]!!,
-                            countryLookup[cid]!!, // TODO look up countries
+                            country.first,
+                            country.second,
                             record.get("cohort_size", Float::class.java),
                             outcomeList)
                 }
