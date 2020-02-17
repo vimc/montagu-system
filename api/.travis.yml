@@ -12,6 +12,7 @@ before_install:
   - docker pull vimc/montagu-db:master
   - docker pull vimc/montagu-migrate:master
 install:
+  - npm install codecov -g
   - travis_retry sudo ./libsodium/install-libsodium.sh
   - ./src/gradlew -p src
 before_script:
