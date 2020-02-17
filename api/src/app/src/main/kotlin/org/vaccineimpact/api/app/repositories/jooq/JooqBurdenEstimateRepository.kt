@@ -237,8 +237,9 @@ class JooqBurdenEstimateRepository(
             generateSequence {
                 cursor.fetchNext()?.map { record ->
                     val country = countryLookup.getValue(record.get("country", Short::class.java))
-                    val outcomeList = outcomes.filter { it.second != "cohort_size" }
+                    val outcomeList = outcomes
                             .associateBy({ it.second }, { record.get(it.second, Float::class.java) })
+
                     BurdenEstimate(
                             disease,
                             record.get("year", Short::class.java),
@@ -259,7 +260,7 @@ class JooqBurdenEstimateRepository(
     {
         val outcomeIdQuery = "select ${outcomes.map { it.first }.joinToString(" union select ")} union select $cohortSize order by 1"
         val expectedOutcomeCodes = "${outcomes.joinToString(" real,") { it.second }} real, cohort_size real"
-        val compoundRowKey = "year || '':''|| age || '':'' || country"
+        val compoundRowKey = "year || '':''|| age"
         return "SELECT * FROM crosstab" +
                 "(" +
                 "'SELECT $compoundRowKey,year,country,age,burden_outcome,value FROM burden_estimate" +

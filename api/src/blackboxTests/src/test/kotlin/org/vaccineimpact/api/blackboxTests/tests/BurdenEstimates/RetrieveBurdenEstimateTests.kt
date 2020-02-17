@@ -119,22 +119,20 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "dalys", value = 25.5f)
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "deaths", value = 2F)
 
-            it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "cohort_size", value = 50F)
             it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "cases", value = 10F)
             it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "dalys", value = 5.5f)
             it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "deaths", value = 1F)
+            it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "cohort_size", value = 50F)
 
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "dalys", value = 35.5f)
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "cohort_size", value = 200F)
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "cases", value = 80F)
-            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "dalys", value = 35.5f)
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "deaths", value = 3F)
 
+            it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "deaths", value = 4F)
             it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "cohort_size", value = 150F)
             it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "cases", value = 60F)
             it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "dalys", value = 30.5f)
-            it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "deaths", value = 4F)
-
-
         }
 
         val estimatesUrl ="${setUrl}1/estimates/"
