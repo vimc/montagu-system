@@ -17,6 +17,7 @@ install:
 before_script:
   - sudo mkdir -p /etc/montagu/api/ && sudo touch /etc/montagu/api/go_signal
   - ./travis/start-database.sh
+  - ./scripts/start-orderly-web.sh
 script:
   - ./src/gradlew -p src :testLibrary
   - nohup ./src/gradlew -p src :run > /dev/null 2>&1 &
