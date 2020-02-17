@@ -3,6 +3,7 @@ package org.vaccineimpact.api.blackboxTests.helpers
 import khttp.responses.Response
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.slf4j.LoggerFactory
 
 data class LocationConstraint(val urlFragment: String, val unknownId: Boolean = false)
 {
@@ -12,7 +13,7 @@ data class LocationConstraint(val urlFragment: String, val unknownId: Boolean = 
     fun checkObjectCreation(response: Response, body: String): String
     {
         val expectedPath = EndpointBuilder.buildPath(urlFragment)
-        print(body)
+        LoggerFactory.getLogger("TEST").info(body)
         assertThat(response.statusCode).`as`("Status code").isEqualTo(201)
         val thingsToCheck = listOf(
                 Assertions.assertThat(response.headers["Location"]).`as`("Location header"),
