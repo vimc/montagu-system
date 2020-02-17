@@ -16,7 +16,6 @@ import org.vaccineimpact.api.test_helpers.DatabaseTest
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
 
-@Ignore
 class CreateUserTests : DatabaseTest()
 {
     val requestHelper = RequestHelper()

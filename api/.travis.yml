@@ -16,6 +16,7 @@ install:
   - ./src/gradlew -p src
 before_script:
   - sudo mkdir -p /etc/montagu/api/ && sudo touch /etc/montagu/api/go_signal
+  - sudo mkdir /tmp/montagu_emails
   - ./travis/start-database.sh
 script:
   - ./src/gradlew -p src :testLibrary
