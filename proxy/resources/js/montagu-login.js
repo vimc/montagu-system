@@ -2,7 +2,6 @@
 class MontaguLogin {
 
     constructor(montaguAuth, jwt_decode, pako) {
-        this.TOKEN_KEY = "accessToken";
         this.montaguAuth = montaguAuth;
         this.jwt_decode = jwt_decode;
         this.pako = pako;
