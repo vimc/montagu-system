@@ -17,7 +17,7 @@ test('can decode jwt token', () => {
     const mockInflate = jest.fn(x => x + "inflated");
     const mockDecode = jest.fn(x => x + "decoded");
 
-    const sut = new MontaguLogin(null, null, mockDecode, {inflate: mockInflate});
+    const sut = new MontaguLogin(null, mockDecode, {inflate: mockInflate});
     const result = sut.decodeToken(toDecode);
 
     const expected = atob("test/+") + "inflateddecoded";
@@ -69,7 +69,6 @@ test('user name is empty if getUserDetails fails', (done) => {
 test('can login', (done) => {
     const encodedToken = getEncodedToken("test user name", new Date(now.getTime() + (60 * 60 * 1000)));
 
-    const mockSetItem = jest.fn();
     const mockInflate = jest.fn(x => x);
     const mockDecode = jest.fn(x => JSON.parse(x));
     const mockLogin = jest.fn(x => new Promise((resolve, reject) => {
@@ -95,10 +94,6 @@ test('can login', (done) => {
 
             expect(mockLogin.mock.calls.length).toBe(1);
             expect(mockSetCookies.mock.calls.length).toBe(1);
-
-            expect(mockSetItem.mock.calls.length).toBe(1);
-            expect(mockSetItem.mock.calls[0][0]).toBe("accessToken");
-            expect(mockSetItem.mock.calls[0][1]).toBe(encodedToken);
             done();
         },
         (error) => {
