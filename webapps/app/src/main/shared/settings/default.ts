@@ -18,16 +18,6 @@ export const settings: Settings = {
             .map(d => d.toLocaleLowerCase())
             .indexOf(disease.toLowerCase()) > -1
     },
-    canDownloadEstimates: function (groupId) {
-        return ["PHE-Vynnycky-WHO",
-            "JHU-Lessler-WHO",
-            "CDA-Razavi",
-            "IC-Hallett",
-            "Li",
-            "JHU-Tam",
-            "JHU-Lessler",
-            "PHE-Vynnycky"].indexOf(groupId) == -1
-    },
     showTouchstoneCreation: false,
     admin: {
         publicPath: "/admin",

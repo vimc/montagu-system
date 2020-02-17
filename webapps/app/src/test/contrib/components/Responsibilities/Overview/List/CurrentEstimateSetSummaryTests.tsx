@@ -38,18 +38,6 @@ describe("CurrentEstimateSetSummary Component Tests", () => {
         }
     );
 
-    it(
-        "does not display download button if group cannot download estimates",
-        () => {
-            const rendered = render(mockBurdenEstimateSet({
-                id: 1,
-                status: "complete",
-                uploaded_on: "2017-07-13 13:55:29 +0100"
-            }), true, "Li");
-            expect(rendered.find(FileDownloadButton)).toHaveLength(0);
-        }
-    );
-
     it("displays download button if current estimate set is invalid", () => {
         const rendered = render(mockBurdenEstimateSet({
             id: 1,

@@ -44,8 +44,7 @@ export class CurrentEstimateSetSummary extends React.Component<CurrentEstimateSe
     }
 
     url(): any {
-        // TODO enable for all groups once this endpoint is fixed
-        if (settings.canDownloadEstimates(this.props.groupId) && this.props.estimateSet && this.props.estimateSet.status != "empty") {
+        if (this.props.estimateSet && this.props.estimateSet.status != "empty") {
             return `/modelling-groups/${this.props.groupId}/responsibilities/${this.props.touchstoneId}/${this.props.scenarioId}/estimate-sets/${this.props.estimateSet.id}/estimates/`
         } else {
             return null
