@@ -1,10 +1,8 @@
 package org.vaccineimpact.api.databaseTests.tests.burdenEstimateRepository
 
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
@@ -225,18 +223,18 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             val after = Instant.now()
             val sets = repo.getBurdenEstimateSets(groupId, touchstoneVersionId, scenarioId).toList()
             val a = sets.single { it.id == setA }
-            Assertions.assertThat(a.uploadedBy).isEqualTo(username)
-            Assertions.assertThat(a.uploadedOn).isAfter(before)
-            Assertions.assertThat(a.uploadedOn).isBefore(after)
-            Assertions.assertThat(a.problems).isEmpty()
-            Assertions.assertThat(a.originalFilename).isNull()
+            assertThat(a.uploadedBy).isEqualTo(username)
+            assertThat(a.uploadedOn).isAfter(before)
+            assertThat(a.uploadedOn).isBefore(after)
+            assertThat(a.problems).isEmpty()
+            assertThat(a.originalFilename).isNull()
 
             val b = sets.single { it.id == setB }
-            Assertions.assertThat(b.uploadedBy).isEqualTo("some.other.user")
-            Assertions.assertThat(b.uploadedOn).isAfter(a.uploadedOn)
-            Assertions.assertThat(b.uploadedOn).isBefore(after)
-            Assertions.assertThat(b.problems).hasSameElementsAs(listOf("some problem"))
-            Assertions.assertThat(b.originalFilename).isEqualTo("file.csv")
+            assertThat(b.uploadedBy).isEqualTo("some.other.user")
+            assertThat(b.uploadedOn).isAfter(a.uploadedOn)
+            assertThat(b.uploadedOn).isBefore(after)
+            assertThat(b.problems).hasSameElementsAs(listOf("some problem"))
+            assertThat(b.originalFilename).isEqualTo("file.csv")
         }
     }
 
@@ -271,7 +269,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setType = "stochastic", filename = "file.csv")
         }
         withRepo { repo ->
-            val set = repo.getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId,  setId)
+            val set = repo.getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, setId)
             assertThat(set.uploadedBy).isEqualTo(username)
             assertThat(set.problems).isEmpty()
             assertThat(set.isStochastic()).isTrue()
@@ -292,8 +290,8 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             db.addTouchstoneVersion("touchstone", 2)
         }
         withRepo { repo ->
-            Assertions.assertThatThrownBy {
-                repo.getBurdenEstimateSet(groupId, touchstone2, scenarioId,  setId)
+            assertThatThrownBy {
+                repo.getBurdenEstimateSet(groupId, touchstone2, scenarioId, setId)
             }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
@@ -311,8 +309,8 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             db.addScenarioDescription(scenario2, "Test scenario 2", diseaseId, addDisease = false)
         }
         withRepo { repo ->
-            Assertions.assertThatThrownBy {
-                repo.getBurdenEstimateSet(groupId, touchstoneVersionId, scenario2,  setId)
+            assertThatThrownBy {
+                repo.getBurdenEstimateSet(groupId, touchstoneVersionId, scenario2, setId)
             }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
@@ -329,7 +327,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             Pair(responsibilityId, setId)
         }
         withRepo { repo ->
-            Assertions.assertThatThrownBy {
+            assertThatThrownBy {
                 repo.getBurdenEstimateSetForResponsibility(setId, responsibilityId)
             }.isInstanceOf(UnknownObjectError::class.java)
         }
@@ -339,7 +337,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
     fun `getResponsibilityInfo throws unknown object error if touchstone does not exist`()
     {
         withRepo { repo ->
-            Assertions.assertThatThrownBy {
+            assertThatThrownBy {
                 repo.getResponsibilityInfo(groupId, touchstoneVersionId, scenarioId)
             }.isInstanceOf(UnknownObjectError::class.java)
                     .hasMessageContaining("touchstone")
@@ -353,7 +351,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             it.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
         }
         withRepo { repo ->
-            Assertions.assertThatThrownBy {
+            assertThatThrownBy {
                 repo.getResponsibilityInfo(groupId, touchstoneVersionId, scenarioId)
             }.isInstanceOf(UnknownObjectError::class.java)
                     .hasMessageContaining("scenario")
@@ -368,7 +366,7 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             it.addScenarioDescription(scenarioId, "description", "disease", addDisease = true)
         }
         withRepo { repo ->
-            Assertions.assertThatThrownBy {
+            assertThatThrownBy {
                 repo.getResponsibilityInfo(groupId, touchstoneVersionId, scenarioId)
             }.isInstanceOf(UnknownObjectError::class.java)
                     .hasMessageContaining("responsibility")
@@ -384,42 +382,80 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username)
         }
 
-        withDatabase{ db ->
+        val outcomes = getOutcomes("deaths", "cases")
+
+        withDatabase { db ->
             db.addCountries(listOf("ABC", "DEF"))
-            db.addBurdenEstimate(setId, "DEF", 2001, 21, "cohort_size", 5f )
-            db.addBurdenEstimate(setId, "ABC", 2000, 20, "deaths", 10f )
+            db.addBurdenEstimate(setId, "ABC", 2000, 20, "deaths", 9f)
+            db.addBurdenEstimate(setId, "ABC", 2000, 20, "cases", 10f)
+            db.addBurdenEstimate(setId, "ABC", 2001, 20, "deaths", 11f)
+            db.addBurdenEstimate(setId, "ABC", 2001, 20, "cases", 12f)
+            db.addBurdenEstimate(setId, "ABC", 2001, 21, "deaths", 13f)
+            db.addBurdenEstimate(setId, "ABC", 2001, 21, "cases", 14f)
+
+            db.addBurdenEstimate(setId, "ABC", 2000, 20, "cohort_size", 100f)
+            db.addBurdenEstimate(setId, "ABC", 2001, 20, "cohort_size", 200f)
+            db.addBurdenEstimate(setId, "ABC", 2001, 21, "cohort_size", 300f)
+
+            db.addBurdenEstimate(setId, "DEF", 2000, 20, "deaths", 19f)
+            db.addBurdenEstimate(setId, "DEF", 2000, 20, "cases", 20f)
+            db.addBurdenEstimate(setId, "DEF", 2000, 20, "cohort_size", 1100f)
+
         }
+
         withRepo { repo ->
-            val result = repo.getBurdenEstimateOutcomesSequence(groupId,
-                    touchstoneVersionId, scenarioId, setId).toList()
+            val result = repo.getBurdenEstimateOutcomesSequence(setId, outcomes, "Hib3").toList()
 
-            Assertions.assertThat(result.count()).isEqualTo(2)
+            assertThat(result.count()).isEqualTo(4)
 
-            Assertions.assertThat(result[0].disease).isEqualTo("Hib3")
-            Assertions.assertThat(result[0].year).isEqualTo(2000)
-            Assertions.assertThat(result[0].age).isEqualTo(20)
-            Assertions.assertThat(result[0].country).isEqualTo("ABC")
-            Assertions.assertThat(result[0].countryName).isEqualTo("ABC-Name")
-            Assertions.assertThat(result[0].burden_outcome_code).isEqualTo("deaths")
-            Assertions.assertThat(result[0].value).isEqualTo(10f)
+            assertThat(result[0].disease).isEqualTo("Hib3")
+            assertThat(result[0].year).isEqualTo(2000)
+            assertThat(result[0].age).isEqualTo(20)
+            assertThat(result[0].country).isEqualTo("ABC")
+            assertThat(result[0].countryName).isEqualTo("ABC-Name")
+            assertThat(result[0].outcomes["deaths"]).isEqualTo(9f)
+            assertThat(result[0].outcomes["cases"]).isEqualTo(10f)
+            assertThat(result[0].outcomes.count()).isEqualTo(2)
+            assertThat(result[0].cohortSize).isEqualTo(100f)
 
-            Assertions.assertThat(result[1].disease).isEqualTo("Hib3")
-            Assertions.assertThat(result[1].year).isEqualTo(2001)
-            Assertions.assertThat(result[1].age).isEqualTo(21)
-            Assertions.assertThat(result[1].country).isEqualTo("DEF")
-            Assertions.assertThat(result[1].countryName).isEqualTo("DEF-Name")
-            Assertions.assertThat(result[1].burden_outcome_code).isEqualTo("cohort_size")
-            Assertions.assertThat(result[1].value).isEqualTo(5f)
+            assertThat(result[1].disease).isEqualTo("Hib3")
+            assertThat(result[1].year).isEqualTo(2001)
+            assertThat(result[1].age).isEqualTo(20)
+            assertThat(result[1].country).isEqualTo("ABC")
+            assertThat(result[1].countryName).isEqualTo("ABC-Name")
+            assertThat(result[1].outcomes["deaths"]).isEqualTo(11f)
+            assertThat(result[1].outcomes["cases"]).isEqualTo(12f)
+            assertThat(result[1].outcomes.count()).isEqualTo(2)
+            assertThat(result[1].cohortSize).isEqualTo(200f)
 
+            assertThat(result[2].disease).isEqualTo("Hib3")
+            assertThat(result[2].year).isEqualTo(2001)
+            assertThat(result[2].age).isEqualTo(21)
+            assertThat(result[2].country).isEqualTo("ABC")
+            assertThat(result[2].countryName).isEqualTo("ABC-Name")
+            assertThat(result[2].outcomes["deaths"]).isEqualTo(13f)
+            assertThat(result[2].outcomes["cases"]).isEqualTo(14f)
+            assertThat(result[2].outcomes.count()).isEqualTo(2)
+            assertThat(result[2].cohortSize).isEqualTo(300f)
+
+            assertThat(result[3].disease).isEqualTo("Hib3")
+            assertThat(result[3].year).isEqualTo(2000)
+            assertThat(result[3].age).isEqualTo(20)
+            assertThat(result[3].country).isEqualTo("DEF")
+            assertThat(result[3].countryName).isEqualTo("DEF-Name")
+            assertThat(result[3].outcomes["deaths"]).isEqualTo(19f)
+            assertThat(result[3].outcomes["cases"]).isEqualTo(20f)
+            assertThat(result[3].outcomes.count()).isEqualTo(2)
+            assertThat(result[3].cohortSize).isEqualTo(1100f)
         }
-
-
     }
 
     @Test
     fun `getBurdenEstimateOutcomesSequence returns only data for the requested burden estimate set`()
     {
+        val outcomes = getOutcomes("deaths")
         val setId = 25
+        val badId = 30
         withDatabase { db ->
             val ids = setupDatabase(db)
             val modelVersionId = ids.modelVersion!!
@@ -428,27 +464,26 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setId = setId)
             db.addBurdenEstimate(setId, "DEF", 2000, 15, "cohort_size", 1000f)
 
-            setupSecondaryBurdenEstimates(db, modelVersionId, ids.responsibilitySetId)
+            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setId = badId)
+            db.addBurdenEstimate(badId, "ABC", 2000, 15, "cohort_size", 1000f)
         }
         withRepo { repo ->
-            val result = repo.getBurdenEstimateOutcomesSequence(groupId,
-                    touchstoneVersionId, scenarioId, setId).toList()
+            val result = repo.getBurdenEstimateOutcomesSequence(setId, outcomes, "disease").toList()
 
-            Assertions.assertThat(result.count()).isEqualTo(1)
+            assertThat(result.count()).isEqualTo(1)
 
-            Assertions.assertThat(result[0].disease).isEqualTo("Hib3")
-            Assertions.assertThat(result[0].year).isEqualTo(2000)
-            Assertions.assertThat(result[0].age).isEqualTo(15)
-            Assertions.assertThat(result[0].country).isEqualTo("DEF")
-            Assertions.assertThat(result[0].countryName).isEqualTo("DEF-Name")
-            Assertions.assertThat(result[0].burden_outcome_code).isEqualTo("cohort_size")
-            Assertions.assertThat(result[0].value).isEqualTo(1000f)
+            assertThat(result[0].disease).isEqualTo("disease")
+            assertThat(result[0].year).isEqualTo(2000)
+            assertThat(result[0].age).isEqualTo(15)
+            assertThat(result[0].country).isEqualTo("DEF")
+            assertThat(result[0].countryName).isEqualTo("DEF-Name")
         }
     }
 
     @Test
-    fun `getBurdenEstimateOutcomesSequence throws UnknownObjectError when burden estimate set does not belong to touchstone version`()
+    fun `getBurdenEstimateOutcomesSequence returns zeros for missing data`()
     {
+        val outcomes = getOutcomes("deaths")
         val setId = 25
         withDatabase { db ->
             val ids = setupDatabase(db)
@@ -456,159 +491,30 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             db.addCountries(listOf("ABC", "DEF"))
 
             db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setId = setId)
-            db.addBurdenEstimate(setId, "DEF", 2000, 15, "cohort_size", 1000f)
-
-            //This creates the second touchstone version
-            setupSecondaryBurdenEstimates(db, modelVersionId, ids.responsibilitySetId)
+            db.addBurdenEstimate(setId, "DEF", 2000, 15, "deaths", 50f)
+            db.addBurdenEstimate(setId, "ABC", 2000, 15, "cohort_size", 100f)
         }
         withRepo { repo ->
-            Assertions.assertThatThrownBy {
-                repo.getBurdenEstimateOutcomesSequence(groupId,
-                        "touchstone-2", scenarioId, setId)
-            }.isInstanceOf(UnknownObjectError::class.java)
-        }
-    }
+            val result = repo.getBurdenEstimateOutcomesSequence(setId, outcomes, "disease").toList()
 
-    @Test
-    fun `getBurdenEstimateOutcomesSequence throws UnknownObjectError when touchstone version does not exist`()
-    {
-        val setId = 25
-        withDatabase { db ->
-            val ids = setupDatabase(db)
-            val modelVersionId = ids.modelVersion!!
-            db.addCountries(listOf("ABC", "DEF"))
+            assertThat(result.count()).isEqualTo(2)
 
-            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setId = setId)
-            db.addBurdenEstimate(setId, "DEF", 2000, 15, "cohort_size", 1000f)
-        }
-        withRepo { repo ->
-            Assertions.assertThatThrownBy {
-                repo.getBurdenEstimateOutcomesSequence(groupId,
-                        "nonexistent-1", scenarioId, setId)
-            }.isInstanceOf(UnknownObjectError::class.java)
-        }
-    }
+            assertThat(result[0].disease).isEqualTo("disease")
+            assertThat(result[0].year).isEqualTo(2000)
+            assertThat(result[0].age).isEqualTo(15)
+            assertThat(result[0].country).isEqualTo("ABC")
+            assertThat(result[0].cohortSize).isEqualTo(100f)
+            assertThat(result[0].outcomes.count()).isEqualTo(1)
+            assertThat(result[0].outcomes["deaths"]).isEqualTo(0f)
 
-    @Test
-    fun `getBurdenEstimateOutcomesSequence throws UnknownObjectError when burden estimate set does not belong to group`()
-    {
-        val setId = 25
-        withDatabase { db ->
-            val ids = setupDatabase(db)
-            val modelVersionId = ids.modelVersion!!
-            db.addCountries(listOf("ABC", "DEF"))
+            assertThat(result[1].disease).isEqualTo("disease")
+            assertThat(result[1].year).isEqualTo(2000)
+            assertThat(result[1].age).isEqualTo(15)
+            assertThat(result[1].country).isEqualTo("DEF")
+            assertThat(result[1].cohortSize).isEqualTo(0f)
+            assertThat(result[1].outcomes.count()).isEqualTo(1)
+            assertThat(result[1].outcomes["deaths"]).isEqualTo(50f)
 
-            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setId = setId)
-            db.addBurdenEstimate(setId, "DEF", 2000, 15, "cohort_size", 1000f)
-
-            //This creates the second group
-            setupSecondaryBurdenEstimates(db, modelVersionId, ids.responsibilitySetId)
-        }
-        withRepo { repo ->
-            Assertions.assertThatThrownBy {
-               repo.getBurdenEstimateOutcomesSequence("group-2",
-                        touchstoneVersionId, scenarioId, setId)
-            }.isInstanceOf(UnknownObjectError::class.java)
-        }
-    }
-
-    @Test
-    fun `getBurdenEstimateOutcomesSequence throws UnknownObjectError when burden group does not exist`()
-    {
-        val setId = 25
-        withDatabase { db ->
-            val ids = setupDatabase(db)
-            val modelVersionId = ids.modelVersion!!
-            db.addCountries(listOf("ABC", "DEF"))
-
-            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setId = setId)
-            db.addBurdenEstimate(setId, "DEF", 2000, 15, "cohort_size", 1000f)
-
-        }
-        withRepo { repo ->
-            Assertions.assertThatThrownBy {
-                repo.getBurdenEstimateOutcomesSequence("nonexistent-1",
-                        touchstoneVersionId, scenarioId, setId)
-            }.isInstanceOf(UnknownObjectError::class.java)
-        }
-    }
-
-    @Test
-    fun `getBurdenEstimateOutcomesSequence throws UnknownObjectError when burden estimate set does not belong to scenario`()
-    {
-        val setId = 25
-        withDatabase { db ->
-            val ids = setupDatabase(db)
-            val modelVersionId = ids.modelVersion!!
-            db.addCountries(listOf("ABC", "DEF"))
-
-            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setId = setId)
-            db.addBurdenEstimate(setId, "DEF", 2000, 15, "cohort_size", 1000f)
-
-            //This creates the second scenario
-            setupSecondaryBurdenEstimates(db, modelVersionId, ids.responsibilitySetId)
-        }
-        withRepo { repo ->
-            Assertions.assertThatThrownBy {
-                repo.getBurdenEstimateOutcomesSequence(groupId,
-                        touchstoneVersionId, "scenario-2", setId)
-            }.isInstanceOf(UnknownObjectError::class.java)
-        }
-    }
-
-    @Test
-    fun `getBurdenEstimateOutcomesSequence throws UnknownObjectError when scenario does not exist`()
-    {
-        val setId = 25
-        withDatabase { db ->
-            val ids = setupDatabase(db)
-            val modelVersionId = ids.modelVersion!!
-            db.addCountries(listOf("ABC", "DEF"))
-
-            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setId = setId)
-            db.addBurdenEstimate(setId, "DEF", 2000, 15, "cohort_size", 1000f)
-        }
-        withRepo { repo ->
-            Assertions.assertThatThrownBy {
-                repo.getBurdenEstimateOutcomesSequence(groupId,
-                        touchstoneVersionId, "nonexistent-1", setId)
-            }.isInstanceOf(UnknownObjectError::class.java)
-        }
-    }
-
-    @Test
-    fun `getBurdenEstimateOutcomesSequence throws UnknownObjectError when burden estimate set does not exist`()
-    {
-        val setId = 25
-        withDatabase { db ->
-            setupDatabase(db)
-        }
-        withRepo { repo ->
-            Assertions.assertThatThrownBy {
-                repo.getBurdenEstimateOutcomesSequence(groupId,
-                        touchstoneVersionId, scenarioId, setId)
-            }.isInstanceOf(UnknownObjectError::class.java)
-        }
-    }
-
-    @Test
-    fun `getBurdenEstimateOutcomesSequence throws InvalidOperatioError when set is stochastic`()
-    {
-        val setId = 25
-        withDatabase { db ->
-            val ids = setupDatabase(db)
-            val modelVersionId = ids.modelVersion!!
-            db.addCountries(listOf("ABC", "DEF"))
-
-            db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setId = setId, setType = "stochastic")
-            db.addBurdenEstimate(setId, "DEF", 2000, 15, "cohort_size", 1000f)
-
-        }
-        withRepo { repo ->
-            Assertions.assertThatThrownBy {
-                repo.getBurdenEstimateOutcomesSequence(groupId,
-                        touchstoneVersionId, scenarioId, setId)
-            }.isInstanceOf(InvalidOperationError::class.java)
         }
     }
 
@@ -628,15 +534,15 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
         withRepo { repo ->
             val result = repo.getExpectedOutcomesForBurdenEstimateSet(setId)
 
-            Assertions.assertThat(result.count()).isEqualTo(3)
-            Assertions.assertThat(result[0]).isEqualTo("test_cases")
-            Assertions.assertThat(result[1]).isEqualTo("test_dalys")
-            Assertions.assertThat(result[2]).isEqualTo("test_deaths")
+            assertThat(result.count()).isEqualTo(3)
+            assertThat(result[0].second).isEqualTo("test_cases")
+            assertThat(result[1].second).isEqualTo("test_dalys")
+            assertThat(result[2].second).isEqualTo("test_deaths")
         }
     }
 
     @Test
-    fun `getExpectedOutcomesForBurdenEstimateSet only returns expected outcomes for estimate set's responsibility`()
+    fun `can getExpectedOutcomesForBurdenEstimateSet for correct estimate set`()
     {
         val setId = 25
         withDatabase { db ->
@@ -645,60 +551,13 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
             db.addCountries(listOf("ABC"))
             db.addExpectations(ids.responsibility, outcomes = listOf(Outcome("cases_acute", "cases acute name")))
             db.addBurdenEstimateSet(ids.responsibility, modelVersionId, username, setId = setId)
-
-            //add secondary estimate sets and expectations
-            setupSecondaryBurdenEstimates(db, modelVersionId, ids.responsibilitySetId)
         }
         withRepo { repo ->
             val result = repo.getExpectedOutcomesForBurdenEstimateSet(setId)
 
-            Assertions.assertThat(result.count()).isEqualTo(1)
-            Assertions.assertThat(result[0]).isEqualTo("cases_acute")
+            assertThat(result.count()).isEqualTo(1)
+            assertThat(result[0].second).isEqualTo("cases_acute")
         }
-    }
-
-    private fun setupSecondaryBurdenEstimates(db: JooqContext, modelVersionId : Int, primaryResponsibilitySetId : Int)
-    {
-        //For testing that correct burden estimate values are returned, create
-        // additional  burden estimate sets, for a second touchstone, group and scenario
-        val secondTouchstoneVersionId = "touchstone-2"
-        val secondModellingGroupId = "group-2"
-        val secondScenarioId = "scenario-2"
-        db.addTouchstoneVersion("touchstone", 2, "Touchstone 2", addTouchstone = false)
-
-        //Add a second modelling group
-        db.addGroup(secondModellingGroupId)
-
-        //Add a second scenario
-        db.addScenarioDescription(secondScenarioId, "description", "Hib3")
-
-        val outcomes = listOf(
-                Outcome("cases", "cases name"),
-                Outcome("deaths", "deaths name"),
-                Outcome("dalys", "dalys name")
-        )
-
-
-        val secondTouchstoneResponsibilitySetId = db.addResponsibilitySet(groupId, secondTouchstoneVersionId)
-        val secondTouchstoneResponsibilityId = db.addResponsibility(secondTouchstoneResponsibilitySetId,
-                secondTouchstoneVersionId, scenarioId)
-        val secondTouchstoneBurdenEstimateSetId = 99
-        db.addBurdenEstimateSet(secondTouchstoneResponsibilityId, modelVersionId, username, setId = secondTouchstoneBurdenEstimateSetId)
-        db.addBurdenEstimate(secondTouchstoneBurdenEstimateSetId, "ABC", 1960, 65, "deaths", 27f )
-        db.addExpectations(secondTouchstoneResponsibilityId, outcomes = outcomes)
-
-        val secondGroupResponsibilitySetId = db.addResponsibilitySet(secondModellingGroupId, touchstoneVersionId)
-        val secondGroupResponsibilityId = db.addResponsibility(secondGroupResponsibilitySetId, touchstoneVersionId, scenarioId)
-        val secondGroupBurdenEstimateSetId = 199
-        db.addBurdenEstimateSet(secondGroupResponsibilityId, modelVersionId, username, setId = secondGroupBurdenEstimateSetId)
-        db.addBurdenEstimate(secondGroupBurdenEstimateSetId, "ABC", 1961, 61, "cases", 77f )
-        db.addExpectations(secondGroupResponsibilityId, outcomes = outcomes)
-
-        val secondScenarioResponsibilityId = db.addResponsibility(primaryResponsibilitySetId, touchstoneVersionId, secondScenarioId)
-        val secondScenarioBurdenEstimateSetId = 299
-        db.addBurdenEstimateSet(secondScenarioResponsibilityId, modelVersionId, username, setId = secondScenarioBurdenEstimateSetId)
-        db.addBurdenEstimate(secondScenarioBurdenEstimateSetId, "ABC", 1962, 62, "dalys", 87f )
-        db.addExpectations(secondGroupResponsibilityId, outcomes = outcomes)
     }
 
     private fun checkSetHasExpectedType(sets: List<BurdenEstimateSet>, setId: Int, expectedType: BurdenEstimateSetType)
@@ -718,5 +577,18 @@ class RetrieveBurdenEstimatesTests : BurdenEstimateRepositoryTests()
                 username ?: this.username,
                 setType = setType, setTypeDetails = setTypeDetails
         )
+    }
+
+    private fun getOutcomes(vararg code: String): List<Pair<Short, String>> {
+        return withDatabase {
+            it.dsl.select(BURDEN_OUTCOME.ID, BURDEN_OUTCOME.CODE)
+                    .from(BURDEN_OUTCOME)
+                    .where(BURDEN_OUTCOME.CODE.`in`(*code))
+                    .fetch()
+                    .map { r ->
+                        Pair(r.get(BURDEN_OUTCOME.ID, Short::class.java),
+                                r[BURDEN_OUTCOME.CODE])
+                    }
+        }
     }
 }

@@ -100,5 +100,4 @@ open class BurdenEstimatesController(
         context.addAttachmentHeader(filename)
         return estimatesLogic.getBurdenEstimateData(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
     }
-
 }

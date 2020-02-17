@@ -4,7 +4,6 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.app.validate
@@ -144,54 +143,20 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
     override fun getBurdenEstimateData(setId: Int, groupId: String, touchstoneVersionId: String,
                                        scenarioId: String): FlexibleDataTable<BurdenEstimate>
     {
-        val data = burdenEstimateRepository.getBurdenEstimateOutcomesSequence(groupId,
-                touchstoneVersionId, scenarioId, setId)
+        //check that the burden estimate set exists in the group etc
+        val set = getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, setId)
 
-        //first, group the outcome rows by disease, year, age, country code and country name
-        val groupedRows = data
-                .groupBy {
-                    hashSetOf(it.disease, it.year, it.age,
-                            it.country, it.countryName)
-                }
+        if (set.isStochastic())
+        {
+            throw InvalidOperationError("Cannot get burden estimate data for stochastic burden estimate sets")
+        }
 
-        //get the expected outcomes for this burden estimate set
         val expectedOutcomes = burdenEstimateRepository.getExpectedOutcomesForBurdenEstimateSet(setId)
+        val disease = scenarioRepository.getScenarioForTouchstone(touchstoneVersionId, scenarioId).disease
 
-        //next, map to BurdenEstimate objects, including extracting the cohort size outcome
-        val rows = groupedRows.values
-                .map {
-                    mapBurdenEstimate(it)
-                }
+        val rows = burdenEstimateRepository.getBurdenEstimateOutcomesSequence(setId, expectedOutcomes, disease)
 
-        return FlexibleDataTable.new(rows.asSequence(), expectedOutcomes)
-
-    }
-
-    private val COHORT_SIZE_CODE = "cohort_size"
-    private fun mapBurdenEstimate(records: List<BurdenEstimateOutcome>)
-            : BurdenEstimate
-    {
-        // all records in thr parameter group should have same disease, year, age, country code and country name
-        // so use value from the first row
-        val reference = records.first()
-
-        //We should find cohort size as one of the burden outcomes
-
-        val cohortSize = records.firstOrNull { it.burden_outcome_code == COHORT_SIZE_CODE }?.value
-        val burdenOutcomeRows = records.filter { it.burden_outcome_code != COHORT_SIZE_CODE }
-
-        val burdenOutcomeValues =
-                burdenOutcomeRows.associateBy({ it.burden_outcome_code }, { it.value })
-
-        return BurdenEstimate(
-                reference.disease,
-                reference.year,
-                reference.age,
-                reference.country,
-                reference.countryName,
-                cohortSize ?: 0f,
-                burdenOutcomeValues
-        )
+        return FlexibleDataTable.new(rows, expectedOutcomes.map { it.second })
     }
 
     override fun closeBurdenEstimateSet(setId: Int, groupId: String, touchstoneVersionId: String, scenarioId: String)

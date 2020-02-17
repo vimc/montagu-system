@@ -6,7 +6,6 @@ import org.jooq.impl.DSL.sum
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.InvalidOperationError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.models.BurdenEstimateOutcome
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.ModellingGroupRepository
 import org.vaccineimpact.api.app.repositories.ScenarioRepository
@@ -14,9 +13,7 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.burdenestimates.BurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.burdenestimates.CentralBurdenEstimateWriter
 import org.vaccineimpact.api.app.repositories.jooq.mapping.BurdenMappingHelper
-import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.db.fetchSequence
 import org.vaccineimpact.api.db.fromJoinPath
 import org.vaccineimpact.api.db.joinPath
 import org.vaccineimpact.api.db.tables.records.BurdenEstimateRecord
@@ -73,10 +70,11 @@ class JooqBurdenEstimateRepository(
                 .fetchInto(Short::class.java)
     }
 
-    private fun getCountriesAsLookup(): Map<Short, String> = dsl.select(Tables.COUNTRY.ID, Tables.COUNTRY.NID)
-            .from(Tables.COUNTRY)
-            .fetch()
-            .intoMap(Tables.COUNTRY.NID, Tables.COUNTRY.ID)
+    private fun getCountriesAsLookup(): Map<Short, Pair<String, String>> =
+            dsl.select(COUNTRY.ID, COUNTRY.NID, COUNTRY.NAME)
+                    .from(COUNTRY)
+                    .fetch()
+                    .associateBy({ it[COUNTRY.NID] }, { Pair(it[COUNTRY.ID], it[COUNTRY.NAME]) })
 
     override fun validateEstimates(set: BurdenEstimateSet, expectedRowMap: RowLookup): RowLookup
     {
@@ -90,9 +88,9 @@ class JooqBurdenEstimateRepository(
         return expectedRowMap
     }
 
-    private fun validate(r: BurdenEstimateRecord, countries: Map<Short, String>, expectedRows: RowLookup)
+    private fun validate(r: BurdenEstimateRecord, countries: Map<Short, Pair<String, String>>, expectedRows: RowLookup)
     {
-        val countryId = countries[r.country]
+        val countryId = countries.getValue(r.country).first
         val ages = expectedRows[countryId]
                 ?: throw BadRequest("We are not expecting data for country $countryId")
 
@@ -221,58 +219,81 @@ class JooqBurdenEstimateRepository(
         return mapper.mapBurdenEstimateSets(records)
     }
 
-    override fun getBurdenEstimateOutcomesSequence(groupId: String, touchstoneVersionId: String, scenarioId: String, burdenEstimateSetId: Int)
-            : Sequence<BurdenEstimateOutcome>
+    override fun getBurdenEstimateOutcomesSequence(burdenEstimateSetId: Int,
+                                                   outcomes: List<Pair<Short, String>>,
+                                                   disease: String)
+            : Sequence<BurdenEstimate>
     {
-        //check that the burden estimate set exists in the group etc
-        val set = getBurdenEstimateSet(groupId, touchstoneVersionId, scenarioId, burdenEstimateSetId)
 
-        if (set.isStochastic())
-        {
-            throw InvalidOperationError("Cannot get burden estimate data for stochastic burden estimate sets")
-        }
+        val countryLookup = getCountriesAsLookup()
 
-        return dsl.select(
-                DISEASE.ID,
-                BURDEN_ESTIMATE.YEAR,
-                BURDEN_ESTIMATE.AGE,
-                COUNTRY.ID,
-                COUNTRY.NAME,
-                BURDEN_OUTCOME.CODE,
-                BURDEN_ESTIMATE.VALUE
-        )
-                .fromJoinPath(BURDEN_ESTIMATE_SET, BURDEN_ESTIMATE)
-                .join(RESPONSIBILITY)
-                .on(BURDEN_ESTIMATE_SET.RESPONSIBILITY.eq(RESPONSIBILITY.ID))
-                .joinPath(RESPONSIBILITY, SCENARIO, SCENARIO_DESCRIPTION, DISEASE)
-                .join(COUNTRY)
-                .on(BURDEN_ESTIMATE.COUNTRY.eq(COUNTRY.NID))
-                .joinPath(BURDEN_ESTIMATE, BURDEN_OUTCOME)
-                .where(BURDEN_ESTIMATE_SET.ID.eq(burdenEstimateSetId))
-                .orderBy(
-                        DISEASE.ID,
-                        BURDEN_ESTIMATE.YEAR,
-                        BURDEN_ESTIMATE.AGE,
-                        COUNTRY.ID,
-                        COUNTRY.NAME,
-                        BURDEN_OUTCOME.CODE)
-                .fetchSequence()
-                .map { it.into(BurdenEstimateOutcome::class.java) }
+        val cohortSize = dsl.select(BURDEN_OUTCOME.ID)
+                .from(BURDEN_OUTCOME)
+                .where(BURDEN_OUTCOME.CODE.eq("cohort_size"))
+                .fetchAnyInto(Short::class.java)
 
+        return countryLookup.keys.asSequence().map { k ->
+            val cursor = dsl.fetchLazy(getBurdenEstimateQueryForCountry(burdenEstimateSetId, outcomes, cohortSize, k))
+            generateSequence {
+                cursor.fetchNext()?.map { record ->
+                    val country = countryLookup.getValue(record.get("country", Short::class.java))
+                    val outcomeList = outcomes
+                            .associateBy({ it.second }, { record.get(it.second, Float::class.java) })
+
+                    BurdenEstimate(
+                            disease,
+                            record.get("year", Short::class.java),
+                            record.get("age", Short::class.java),
+                            country.first,
+                            country.second,
+                            record.get("cohort_size", Float::class.java),
+                            outcomeList)
+                }
+            }
+        }.flatten()
     }
 
-    override fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<String>
+    private fun getBurdenEstimateQueryForCountry(setId: Int,
+                                                 outcomes: List<Pair<Short, String>>,
+                                                 cohortSize: Short,
+                                                 country: Short): String
     {
-        return dsl.select(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
+        val outcomeIdQuery = "select ${outcomes.map { it.first }.joinToString(" union select ")} union select $cohortSize order by 1"
+        val expectedOutcomeCodes = "${outcomes.joinToString(" real,") { it.second }} real, cohort_size real"
+        val compoundRowKey = "year || '':''|| age"
+        return "SELECT * FROM crosstab" +
+                "(" +
+                "'SELECT $compoundRowKey,year,country,age,burden_outcome,value FROM burden_estimate" +
+                " where burden_estimate_set = $setId and country = $country order by year, age'," +
+                "'$outcomeIdQuery'" +
+                ")" +
+                "AS" +
+                "(" +
+                "       id text," +
+                "       year smallint," +
+                "       country smallint," +
+                "       age smallint," +
+                expectedOutcomeCodes +
+                ");"
+    }
+
+    override fun getExpectedOutcomesForBurdenEstimateSet(burdenEstimateSetId: Int): List<Pair<Short, String>>
+    {
+        return dsl.select(BURDEN_OUTCOME.ID, BURDEN_OUTCOME.CODE)
                 .from(BURDEN_ESTIMATE_SET)
                 .join(RESPONSIBILITY)
                 .on(BURDEN_ESTIMATE_SET.RESPONSIBILITY.eq(RESPONSIBILITY.ID))
                 .joinPath(RESPONSIBILITY, BURDEN_ESTIMATE_EXPECTATION, BURDEN_ESTIMATE_OUTCOME_EXPECTATION)
+                .join(BURDEN_OUTCOME)
+                .on(BURDEN_OUTCOME.CODE.eq(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME))
                 .where(BURDEN_ESTIMATE_SET.ID.eq(burdenEstimateSetId))
-                .groupBy(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
-                .orderBy(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
+                .groupBy(BURDEN_OUTCOME.CODE, BURDEN_OUTCOME.ID)
+                .orderBy(BURDEN_OUTCOME.CODE, BURDEN_OUTCOME.ID)
                 .fetch()
-                .getValues(BURDEN_ESTIMATE_OUTCOME_EXPECTATION.OUTCOME)
+                .map {
+                    Pair(it.get(BURDEN_OUTCOME.ID, Short::class.java),
+                            it[BURDEN_OUTCOME.CODE])
+                }
     }
 
     override fun addModelRunParameterSet(groupId: String, touchstoneVersionId: String,

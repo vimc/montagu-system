@@ -3,6 +3,7 @@ package org.vaccineimpact.api.db
 import org.jooq.Cursor
 import org.jooq.Record
 import org.jooq.ResultQuery
+import java.sql.ResultSet
 
 fun <TRecord : Record> ResultQuery<TRecord>.fetchSequence(): Sequence<TRecord>
 {
