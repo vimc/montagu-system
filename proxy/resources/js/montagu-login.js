@@ -1,10 +1,9 @@
 //Logic class for logging in and out of Montagu
 class MontaguLogin {
 
-    constructor(montaguAuth, localStorage, jwt_decode, pako) {
+    constructor(montaguAuth, jwt_decode, pako) {
         this.TOKEN_KEY = "accessToken";
         this.montaguAuth = montaguAuth;
-        this.localStorage = localStorage;
         this.jwt_decode = jwt_decode;
         this.pako = pako;
     }
@@ -28,10 +27,6 @@ class MontaguLogin {
         return expiry > now
     }
 
-    writeTokenToLocalStorage(token) {
-        this.localStorage.setItem(this.TOKEN_KEY, token);
-    }
-
     login(email, password) {
         return this.montaguAuth.login(email, password)
             .then((data) => this.montaguLoginSuccess(data))
@@ -46,20 +41,13 @@ class MontaguLogin {
         return this.montaguAuth.setCookies(token).then(
             () => {
                 const decodedToken = this.decodeToken(token);
-                const montaguUserName = decodedToken.sub;
-
-                // TODO remove once local storage deprecated in portals
-                // https://vimc.myjetbrains.com/youtrack/issue/VIMC-2865
-                this.writeTokenToLocalStorage(token);
-                return montaguUserName
+                return decodedToken.sub;
             }
         );
     }
 
     logout() {
-        // TODO remove once local storage deprecated in portals
-        // https://vimc.myjetbrains.com/youtrack/issue/VIMC-2865
-        this.writeTokenToLocalStorage('');
+
         return this.montaguAuth.logout()
             .catch((jqXHR) => {
                 throw MontaguLogin.montaguApiError(jqXHR)
