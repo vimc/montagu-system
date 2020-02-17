@@ -12,6 +12,7 @@ data class LocationConstraint(val urlFragment: String, val unknownId: Boolean = 
     fun checkObjectCreation(response: Response, body: String): String
     {
         val expectedPath = EndpointBuilder.buildPath(urlFragment)
+        print(body)
         assertThat(response.statusCode).`as`("Status code").isEqualTo(201)
         val thingsToCheck = listOf(
                 Assertions.assertThat(response.headers["Location"]).`as`("Location header"),
