@@ -3,6 +3,7 @@ package org.vaccineimpact.api.blackboxTests.tests
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Ignore
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.db.JooqContext
@@ -15,6 +16,7 @@ import org.vaccineimpact.api.test_helpers.DatabaseTest
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
 
+@Ignore
 class CreateUserTests : DatabaseTest()
 {
     val requestHelper = RequestHelper()
