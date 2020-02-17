@@ -3,15 +3,26 @@ import {Client, QueryResult} from "pg";
 import {createMemoryHistory} from 'history';
 
 import {
-    CoverageSet, CreateBurdenEstimateSet, DemographicDataset,
+    CoverageSet,
+    CreateBurdenEstimateSet,
+    DemographicDataset,
     Disease,
-    ModellingGroup, ModelRunParameterSet,
+    ModellingGroup,
+    ModelRunParameterSet,
     ResponsibilitySetWithExpectations,
-    Result, ScenarioTouchstoneAndCoverageSets, Touchstone,
+    Result,
+    ScenarioTouchstoneAndCoverageSets,
+    Touchstone,
 } from "../main/shared/models/Generated";
 import {
-    IntegrationTestSuite, TestService, ResponsibilityIds, addResponsibilities, addGroups,
-    addCoverageSetsForGroup, addCoverageData, addTouchstone
+    addCoverageData,
+    addCoverageSetsForGroup,
+    addGroups,
+    addResponsibilities,
+    addTouchstone,
+    IntegrationTestSuite,
+    ResponsibilityIds,
+    TestService
 } from "./IntegrationTest";
 import * as enzyme from "enzyme";
 import {shallow} from "enzyme";
@@ -397,6 +408,8 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const responsibilityIds = await addResponsibilities(this.db, scenarioId, touchstoneVersionId, groupId);
             const modelVersionId = await addModel(this.db);
             const setId = await addBurdenEstimateSet(this.db, responsibilityIds.responsibility, modelVersionId);
+            await addBurdenEstimate(this.db, setId, 1000);
+            await addOutcomeExpectations(this.db);
 
             const rendered = shallow(<CurrentEstimateSetSummary
                 touchstoneId={touchstoneVersionId}
@@ -416,7 +429,7 @@ class ContributionPortalIntegrationTests extends IntegrationTestSuite {
             const headers = result.split("\n")[0];
 
             // just check it's the format we're expecting
-            expect(headers).toEqual("disease,year,age,country,country_name,cohort_size")
+            expect(headers).toEqual("disease,year,age,country,country_name,cohort_size,cases")
         })
 
     }
@@ -447,6 +460,15 @@ function addBurdenEstimate(db: Client, setId: number, value: number) {
         .then(result => db.query(`INSERT INTO burden_estimate (burden_estimate_set, country, year, burden_outcome, value, age)
         VALUES ('${setId}', 1111, 2000, ${result.rows[0].id}, ${value}, 1);
     `))
+}
+
+function addOutcomeExpectations(db: Client) {
+    return db.query("INSERT INTO burden_estimate_expectation (year_min_inclusive, year_max_inclusive, age_min_inclusive," +
+        " age_max_inclusive, cohort_min_inclusive, cohort_max_inclusive, description, version) VALUES " +
+        "(2000, 2000, 1, 2, 1, 2, 'whatever', 'whatever')")
+        .then(result => db.query(`INSERT INTO burden_estimate_outcome_expectation (burden_estimate_expectation, outcome)
+             VALUES (1, 'cases')`))
+        .then(() => db.query("UPDATE responsibility set expectations = 1"));
 }
 
 function addDemographicDataSets(db: Client): Promise<QueryResult> {
