@@ -90,3 +90,21 @@ test('can login with redirect', async () => {
 
     expect(await browser.getCurrentUrl()).toBe("http://nonsense/");
 });
+
+test('redirects user if redirect query is present and user is already logged in', async () => {
+
+    await TestHelper.ensureLoggedIn(browser);
+
+    // navigate away
+    browser.get("https://google.com");
+
+    //navigate back
+    browser.get("https://localhost?redirectTo=http://nonsense");
+
+    await browser.wait(() => {
+        return browser.getCurrentUrl().then((url) => {
+            return url === "http://nonsense/";
+        });
+    });
+
+}, 9000);
