@@ -49,16 +49,17 @@ describe("LoggedInUserBoxComponent", () => {
         expect(props.loggedIn).toEqual(true);
     });
 
-    it(
-        "clicking log out dispatches unauthenticated action",
-        (done: DoneCallback) => {
+    it("clicking log out dispatches unauthenticated action", (done: DoneCallback) => {
             const store = createMockContribStore({auth: {loggedIn: true}});
             sandbox.setStub(AuthService.prototype, "logOutOfAPI");
             const rendered = mount(<Provider store={store}><Router><LoggedInUserBox/></Router></Provider>);
             rendered.find(InternalLink).simulate("click");
-            const actions = store.getActions();
-            expect(actions[0].type).toEqual(AuthTypeKeys.UNAUTHENTICATED);
-            done();
+            setTimeout(() => {
+                const actions = store.getActions();
+                expect(actions[0].type).toEqual(AuthTypeKeys.UNAUTHENTICATED);
+                done();
+            });
+
         }
     );
 
