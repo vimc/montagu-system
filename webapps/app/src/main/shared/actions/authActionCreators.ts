@@ -74,8 +74,8 @@ export const authActionCreators = {
     },
 
     logOut() {
-        return (dispatch: Dispatch<any>, getState: () => GlobalState) => {
-            (new AuthService(dispatch, getState))
+        return async (dispatch: Dispatch<any>, getState: () => GlobalState) => {
+            await (new AuthService(dispatch, getState))
                 .clearAllCache()
                 .logOutOfAPI();
             dispatch({
