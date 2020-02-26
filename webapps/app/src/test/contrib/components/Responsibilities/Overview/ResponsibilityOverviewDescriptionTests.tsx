@@ -20,9 +20,15 @@ describe("Responsibility Overview Description Component", () => {
         expect(rendered.text().indexOf("See an overview of which scenarios") > -1).toEqual(true);
     });
 
-    it("renders component on touchstone is applicants", () => {
+    it("renders component for 2019 applicants touchstone", () => {
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={itTouchstoneId2} groupId={itGroupId} touchstoneStatus={touchstoneStatus}/>);
         expect(rendered.text().indexOf("Access the standardised demographic") > -1).toEqual(true);
+    });
+
+    it("renders component for 2020 applicants touchstone", () => {
+        const touchstoneId = "2020rfp-1";
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={touchstoneId} groupId={itGroupId} touchstoneStatus={touchstoneStatus}/>);
+        expect(rendered.text().indexOf("test country named 'RFP'") > -1).toEqual(true);
     });
 
     it("renders component on touchstone is not open", () => {
