@@ -21,7 +21,7 @@ const ContactDetails = () => {
     </div>
 };
 
-const JanuaryRfpTouchstone = () => {
+const TwentyNineteenRfpTouchstone = () => {
     return <div>
         On this page you can:
         <ul>
@@ -71,7 +71,7 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
             return TwentyTwentyRfpTouchstone()
         }
         else {
-            return JanuaryRfpTouchstone()
+            return TwentyNineteenRfpTouchstone()
         }
     } else {
         let guidanceInputsUrl = `/help/model-inputs/${props.currentTouchstoneId}`;
