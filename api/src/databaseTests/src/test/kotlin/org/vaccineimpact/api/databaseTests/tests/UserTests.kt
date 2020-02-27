@@ -109,36 +109,6 @@ class UserTests : RepositoryTests<UserRepository>()
 
     }
 
-    @Test
-    fun `can retrieve report readers with roles`()
-    {
-        withDatabase { db ->
-            db.addUserWithRoles(username, ReifiedRole("reports-reader", Scope.parse("report:testname")))
-            db.addUserWithRoles("test.user2", ReifiedRole("reports-reviewer", Scope.Global()),
-                    ReifiedRole("reports-reader", Scope.Global()))
-            db.addUserWithRoles("test.user3", ReifiedRole("reports-reader", Scope.parse("report:othername")))
-            db.addUserWithRoles("test.user4", ReifiedRole("reports-reviewer", Scope.Global()))
-        }
-        withRepo { repo ->
-            val users = repo.reportReaders("testname")
-
-            assertThat(users.count()).isEqualTo(2)
-
-            val localReportReader = users[0]
-            assertThat(localReportReader.username).isEqualTo(username)
-            assertThat(localReportReader.roles).hasSize(1)
-            assertThat(localReportReader.roles!![0].name).isEqualTo("reports-reader")
-            assertThat(localReportReader.roles!![0].scopeId).isEqualTo("testname")
-            assertThat(localReportReader.roles!![0].scopePrefix).isEqualTo("report")
-
-            val globalReportReader = users[1]
-            assertThat(globalReportReader.username).isEqualTo("test.user2")
-            assertThat(globalReportReader.roles).hasSize(2)
-            assertThat(globalReportReader.roles!![0].name).isEqualTo("reports-reader")
-            assertThat(globalReportReader.roles!!.all({ it.scopeId.isNullOrEmpty() })).isTrue()
-            assertThat(globalReportReader.roles!!.all({ it.scopePrefix.isNullOrEmpty() })).isTrue()
-        }
-    }
 
     @Test
     fun `can add role to user`()
@@ -169,17 +139,6 @@ class UserTests : RepositoryTests<UserRepository>()
             assertThatThrownBy {
                 repo.modifyUserRole(username, AssociateRole("add", "member", "modelling-group", "fakegroup"))
             }.isInstanceOf(UnknownObjectError::class.java).hasMessageContaining("modelling-group")
-        }
-    }
-
-    @Test
-    fun `can add role scoped to report`()
-    {
-        withDatabase { db ->
-            db.addUserWithRoles(username)
-        }
-        withRepo { repo ->
-            repo.modifyUserRole(username, AssociateRole("add", "reports-reader", "report", "anyreportname"))
         }
     }
 
@@ -397,7 +356,7 @@ class UserTests : RepositoryTests<UserRepository>()
     {
         withRepo { repo ->
             val roles = repo.globalRoles()
-            assertThat(roles.count()).isEqualTo(12)
+            assertThat(roles.count()).isEqualTo(10)
         }
     }
 
