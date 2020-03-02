@@ -163,7 +163,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         it("can add a global role to a user", async () => {
             await addUsers(this.db);
             const result = await (new UsersService(this.store.dispatch, this.store.getState))
-                .addGlobalRoleToUser("bob", "reports-reader");
+                .addGlobalRoleToUser("bob", "touchstone-reviewer");
             expect(result).toEqual("OK");
 
             const users = await (new UsersService(this.store.dispatch, this.store.getState))
@@ -171,7 +171,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
             const user = users.find((u: User) => u.username == "bob");
             expect(user.roles.map((r: RoleAssignment) => r.name))
-                .toEqual(['reports-reader', 'member', 'user-manager'])
+                .toEqual(['touchstone-reviewer', 'member', 'user-manager'])
         });
 
         it("can remove role from a user", async () => {
@@ -208,7 +208,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const roles: string[] = await (new UsersService(this.store.dispatch, this.store.getState))
                 .getGlobalRoles();
 
-            expect(roles).toHaveLength(12)
+            expect(roles).toHaveLength(10)
         });
 
         it("can create a user", async () => {
