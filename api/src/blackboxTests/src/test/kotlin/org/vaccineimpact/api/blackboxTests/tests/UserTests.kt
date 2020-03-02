@@ -91,22 +91,7 @@ class UserTests : DatabaseTest()
 
         Assertions.assertThat(response.statusCode).isEqualTo(200)
     }
-
-    @Test
-    fun `can get report readers`()
-    {
-        validate("/users/report-readers/testname/") against "Users" given {
-            TestUserHelper().setupTestUser(it)
-            it.addUserWithRoles("reportreaduser", ReifiedRole("reports-reader", Scope.parse("report:testname")))
-        } requiringPermissions {
-            PermissionSet(setOf(ReifiedPermission("roles.read", Scope.Global())))
-        } andCheckArray {
-            Assertions.assertThat(it).hasSize(1)
-            Assertions.assertThat((it[0] as JsonObject)["username"]).isEqualTo("reportreaduser")
-            Assertions.assertThat((it[0] as JsonObject)["roles"]).isNotNull()
-        }
-    }
-
+    
     @Test
     fun `can add user role`()
     {
