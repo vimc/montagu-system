@@ -107,31 +107,31 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
         JooqContext().use {
 
             val outcomes = listOf(
-                Outcome("cases", "cases name"),
-                Outcome("dalys", "dalys name"),
-                Outcome("deaths", "deaths name")
+                Outcome("hepb_chronic_symptomatic_in_acute_phase", "cases name"),
+                Outcome("hepb_deaths_acute", "dalys name"),
+                Outcome("dalys", "deaths name")
             )
 
             val setId = setUpWithBurdenEstimateSet(it, expectedOutcomes = outcomes)
             it.addCountries(listOf("ABC", "DEF"))
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "cohort_size", value = 100F)
-            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "cases", value = 40F)
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "hepb_chronic_symptomatic_in_acute_phase", value = 40F)
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "dalys", value = 25.5f)
-            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "deaths", value = 2F)
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 20, outcome = "hepb_deaths_acute", value = 2F)
 
-            it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "cases", value = 10F)
+            it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "hepb_chronic_symptomatic_in_acute_phase", value = 10F)
             it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "dalys", value = 5.5f)
-            it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "deaths", value = 1F)
+            it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "hepb_deaths_acute", value = 1F)
             it.addBurdenEstimate(setId, "DEF", year = 2000, age = 20, outcome = "cohort_size", value = 50F)
 
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "dalys", value = 35.5f)
             it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "cohort_size", value = 200F)
-            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "cases", value = 80F)
-            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "deaths", value = 3F)
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "hepb_chronic_symptomatic_in_acute_phase", value = 80F)
+            it.addBurdenEstimate(setId, "ABC", year = 2000, age = 21, outcome = "hepb_deaths_acute", value = 3F)
 
-            it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "deaths", value = 4F)
+            it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "hepb_deaths_acute", value = 4F)
             it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "cohort_size", value = 150F)
-            it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "cases", value = 60F)
+            it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "hepb_chronic_symptomatic_in_acute_phase", value = 60F)
             it.addBurdenEstimate(setId, "ABC", year = 2001, age = 20, outcome = "dalys", value = 30.5f)
         }
 
@@ -160,9 +160,9 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
         Assertions.assertThat(firstRow[3]).isEqualTo("country")
         Assertions.assertThat(firstRow[4]).isEqualTo("country_name")
         Assertions.assertThat(firstRow[5]).isEqualTo("cohort_size")
-        Assertions.assertThat(firstRow[6]).isEqualTo("cases")
-        Assertions.assertThat(firstRow[7]).isEqualTo("dalys")
-        Assertions.assertThat(firstRow[8]).isEqualTo("deaths")
+        Assertions.assertThat(firstRow[6]).isEqualTo("dalys")
+        Assertions.assertThat(firstRow[7]).isEqualTo("hepb_deaths_acute")
+        Assertions.assertThat(firstRow[8]).isEqualTo("hepb_chronic_symptomatic_in_acute_phase")
 
         var dataRow = csv.drop(1).first().toList()
 
@@ -173,9 +173,9 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
         Assertions.assertThat(dataRow[3]).isEqualTo("ABC")
         Assertions.assertThat(dataRow[4]).isEqualTo("ABC-Name")
         Assertions.assertThat(dataRow[5]).isEqualTo("100.0")
-        Assertions.assertThat(dataRow[6]).isEqualTo("40.0")
-        Assertions.assertThat(dataRow[7]).isEqualTo("25.5")
-        Assertions.assertThat(dataRow[8]).isEqualTo("2.0")
+        Assertions.assertThat(dataRow[6]).isEqualTo("25.5")
+        Assertions.assertThat(dataRow[7]).isEqualTo("2.0")
+        Assertions.assertThat(dataRow[8]).isEqualTo("40.0")
 
         dataRow = csv.drop(2).first().toList()
 
@@ -186,9 +186,9 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
         Assertions.assertThat(dataRow[3]).isEqualTo("ABC")
         Assertions.assertThat(dataRow[4]).isEqualTo("ABC-Name")
         Assertions.assertThat(dataRow[5]).isEqualTo("200.0")
-        Assertions.assertThat(dataRow[6]).isEqualTo("80.0")
-        Assertions.assertThat(dataRow[7]).isEqualTo("35.5")
-        Assertions.assertThat(dataRow[8]).isEqualTo("3.0")
+        Assertions.assertThat(dataRow[6]).isEqualTo("35.5")
+        Assertions.assertThat(dataRow[7]).isEqualTo("3.0")
+        Assertions.assertThat(dataRow[8]).isEqualTo("80.0")
 
         dataRow = csv.drop(3).first().toList()
 
@@ -199,9 +199,9 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
         Assertions.assertThat(dataRow[3]).isEqualTo("ABC")
         Assertions.assertThat(dataRow[4]).isEqualTo("ABC-Name")
         Assertions.assertThat(dataRow[5]).isEqualTo("150.0")
-        Assertions.assertThat(dataRow[6]).isEqualTo("60.0")
-        Assertions.assertThat(dataRow[7]).isEqualTo("30.5")
-        Assertions.assertThat(dataRow[8]).isEqualTo("4.0")
+        Assertions.assertThat(dataRow[6]).isEqualTo("30.5")
+        Assertions.assertThat(dataRow[7]).isEqualTo("4.0")
+        Assertions.assertThat(dataRow[8]).isEqualTo("60.0")
 
         dataRow = csv.drop(4).first().toList()
 
@@ -212,9 +212,9 @@ class RetrieveBurdenEstimateTests : BurdenEstimateTests()
         Assertions.assertThat(dataRow[3]).isEqualTo("DEF")
         Assertions.assertThat(dataRow[4]).isEqualTo("DEF-Name")
         Assertions.assertThat(dataRow[5]).isEqualTo("50.0")
-        Assertions.assertThat(dataRow[6]).isEqualTo("10.0")
-        Assertions.assertThat(dataRow[7]).isEqualTo("5.5")
-        Assertions.assertThat(dataRow[8]).isEqualTo("1.0")
+        Assertions.assertThat(dataRow[6]).isEqualTo("5.5")
+        Assertions.assertThat(dataRow[7]).isEqualTo("1.0")
+        Assertions.assertThat(dataRow[8]).isEqualTo("10.0")
     }
 
     @Test

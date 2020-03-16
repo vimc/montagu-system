@@ -232,7 +232,7 @@ class JooqBurdenEstimateRepository(
                 .where(BURDEN_OUTCOME.CODE.eq("cohort_size"))
                 .fetchAnyInto(Short::class.java)
 
-        val outcomesIncludingCohort = outcomes +  Pair(cohortSize, "cohort_size")
+        val outcomesIncludingCohort = (outcomes +  Pair(cohortSize, "cohort_size")).sortedBy { it.first }
 
         return countryLookup.keys.asSequence().map { k ->
             val cursor = dsl.fetchLazy(getBurdenEstimateQueryForCountry(burdenEstimateSetId, outcomesIncludingCohort, k))
