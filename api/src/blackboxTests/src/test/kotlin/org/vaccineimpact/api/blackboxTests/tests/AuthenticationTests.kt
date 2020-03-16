@@ -51,8 +51,7 @@ class AuthenticationTests : DatabaseTest()
         JooqContext().use {
             it.addUserForTesting(TestUserHelper.username,
                     email = TestUserHelper.email, password = TestUserHelper.defaultPassword)
-            it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("reports-reviewer", Scope.Global()))
-            it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("user", Scope.Global()))
+             it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("user", Scope.Global()))
             it.ensureUserHasRole(TestUserHelper.username, ReifiedRole("member", Scope.Specific("modelling-group", "group-1")))
             it.addGroup("group-1")
             it.addDisease("d1")
