@@ -152,6 +152,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         }
 
         val expectedOutcomes = burdenEstimateRepository.getExpectedOutcomesForBurdenEstimateSet(setId)
+                .sortedBy { it.first } // sort by id
         val disease = scenarioRepository.getScenarioForTouchstone(touchstoneVersionId, scenarioId).disease
 
         val rows = burdenEstimateRepository.getBurdenEstimateOutcomesSequence(setId, expectedOutcomes, disease)

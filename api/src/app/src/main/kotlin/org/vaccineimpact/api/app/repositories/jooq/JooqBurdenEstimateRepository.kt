@@ -232,8 +232,10 @@ class JooqBurdenEstimateRepository(
                 .where(BURDEN_OUTCOME.CODE.eq("cohort_size"))
                 .fetchAnyInto(Short::class.java)
 
+        val outcomesIncludingCohort = (outcomes +  Pair(cohortSize, "cohort_size")).sortedBy { it.first }
+
         return countryLookup.keys.asSequence().map { k ->
-            val cursor = dsl.fetchLazy(getBurdenEstimateQueryForCountry(burdenEstimateSetId, outcomes, cohortSize, k))
+            val cursor = dsl.fetchLazy(getBurdenEstimateQueryForCountry(burdenEstimateSetId, outcomesIncludingCohort, k))
             generateSequence {
                 cursor.fetchNext()?.map { record ->
                     val country = countryLookup.getValue(record.get("country", Short::class.java))
@@ -255,16 +257,15 @@ class JooqBurdenEstimateRepository(
 
     private fun getBurdenEstimateQueryForCountry(setId: Int,
                                                  outcomes: List<Pair<Short, String>>,
-                                                 cohortSize: Short,
                                                  country: Short): String
     {
-        val outcomeIdQuery = "select ${outcomes.map { it.first }.joinToString(" union select ")} union select $cohortSize order by 1"
-        val expectedOutcomeCodes = "${outcomes.joinToString(" real,") { it.second }} real, cohort_size real"
+        val outcomeIdQuery = "select ${outcomes.map { it.first }.joinToString(" union select ")} order by 1"
+        val expectedOutcomeCodes = "${outcomes.joinToString(" real,") { it.second }} real"
         val compoundRowKey = "year || '':''|| age"
         return "SELECT * FROM crosstab" +
                 "(" +
                 "'SELECT $compoundRowKey,year,country,age,burden_outcome,value FROM burden_estimate" +
-                " where burden_estimate_set = $setId and country = $country order by year, age'," +
+                " where burden_estimate_set = $setId and country = $country order by year, age, burden_outcome'," +
                 "'$outcomeIdQuery'" +
                 ")" +
                 "AS" +
