@@ -37,7 +37,7 @@ describe("Responsibility Overview Description Component", () => {
     });
 
     it("renders no guidance content where isNoGuidanceTouchstone", () => {
-        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"op-2018-1"}
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"202005covid-1"}
                                                                     groupId={itGroupId}
                                                                     touchstoneStatus={"open"}/>);
         const linksTitle = rendered.find("#useful-links");
