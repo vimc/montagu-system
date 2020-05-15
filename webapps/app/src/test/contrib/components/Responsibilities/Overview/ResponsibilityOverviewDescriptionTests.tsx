@@ -36,10 +36,27 @@ describe("Responsibility Overview Description Component", () => {
         expect(rendered.text().indexOf("This touchstone is no longer open")).toBeGreaterThan(-1);
     });
 
+    it("renders no guidance content where isNoGuidanceTouchstone", () => {
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"202005covid-1"}
+                                                                    groupId={itGroupId}
+                                                                    touchstoneStatus={"open"}/>);
+        const linksTitle = rendered.find("#useful-links");
+        expect(linksTitle.length).toBe(0);
+
+        const intLinks = rendered.find(InternalLink);
+        expect(intLinks.length).toBe(0);
+
+        const links = rendered.find("a");
+        expect(links.length).toBe(0);
+    });
+
     it("renders internal links for non-2019 touchstone", () => {
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"t1"}
                                                                     groupId={itGroupId}
                                                                     touchstoneStatus={"open"}/>);
+        const linksTitle = rendered.find("#useful-links");
+        expect(linksTitle.length).toBe(1);
+
         const link = rendered.find(InternalLink);
 
         expect(link.at(0).prop("href")).toBe("/help/model-inputs/t1");
@@ -51,6 +68,9 @@ describe("Responsibility Overview Description Component", () => {
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"201910"}
                                                                     groupId={itGroupId}
                                                                     touchstoneStatus={"open"}/>);
+        const linksTitle = rendered.find("#useful-links");
+        expect(linksTitle.length).toBe(1);
+
         const link = rendered.find("a");
 
         expect(link.at(0).prop("href")).toContain("guidance-2019-inputs.pdf");
