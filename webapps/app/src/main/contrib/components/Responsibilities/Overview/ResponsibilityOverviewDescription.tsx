@@ -86,6 +86,7 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
         let outputGuidanceLinkText;
         let stochasticEstimatesText;
 
+        const omitGuidance = settings.isNoGuidanceTouchstone(props.currentTouchstoneId);
         const guidanceAsPdfs = settings.is2019Touchstone(props.currentTouchstoneId);
 
         if (settings.isVersionOfStochasticTouchstone(props.currentTouchstoneId)) {
@@ -133,37 +134,41 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
             <p>
                 {stochasticEstimatesText}
             </p>
-            <span>
-                    Useful links:
-                </span>
-            {!guidanceAsPdfs &&
-            <ul>
-                <li>
-                    <InternalLink href={guidanceInputsUrl}>
-                        Guidance on model inputs: coverage and demographic data
-                    </InternalLink>
-                </li>
-                <li><InternalLink href={guidanceOutputsUrl}>
-                    {outputGuidanceLinkText}
-                </InternalLink>
 
-                </li>
-            </ul>
-            }
-            {guidanceAsPdfs &&
-            <ul>
-                <li>
-                    <a href={guidanceInputsUrl} target={"_blank"}>
-                        Guidance on model inputs: coverage and demographic data
-                    </a>
-                </li>
-                <li>
-                    <a href={guidanceOutputsUrl} target={"_blank"}>
+                {!omitGuidance &&
+                <span id="useful-links">
+                        Useful links:
+                 </span>
+                 }
+                {!omitGuidance && !guidanceAsPdfs &&
+                <ul>
+                    <li>
+                        <InternalLink href={guidanceInputsUrl}>
+                            Guidance on model inputs: coverage and demographic data
+                        </InternalLink>
+                    </li>
+                    <li><InternalLink href={guidanceOutputsUrl}>
                         {outputGuidanceLinkText}
-                    </a>
-                </li>
-            </ul>
-            }
+                    </InternalLink>
+
+                    </li>
+                </ul>
+                }
+                {!omitGuidance && guidanceAsPdfs &&
+                <ul>
+                    <li>
+                        <a href={guidanceInputsUrl} target={"_blank"}>
+                            Guidance on model inputs: coverage and demographic data
+                        </a>
+                    </li>
+                    <li>
+                        <a href={guidanceOutputsUrl} target={"_blank"}>
+                            {outputGuidanceLinkText}
+                        </a>
+                    </li>
+                </ul>
+                }
+
 
             <ContactDetails/>
         </div>

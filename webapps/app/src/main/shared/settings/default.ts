@@ -8,6 +8,7 @@ export const settings: Settings = {
     isApplicantTouchstone: (id: string) => id.indexOf("rfp-") > -1,
     is2017Touchstone: (id: string) => id.indexOf("201710gavi-") === 0,
     is2019Touchstone: (id: string) => id.indexOf("201910") === 0,
+    isNoGuidanceTouchstone: (id: string) => id.indexOf("202005covid") > -1,
     nonStochasticTouchstones: ["201810synthetic"],
     isVersionOfStochasticTouchstone: function (touchstoneId: string) {
         //is touchstone id NOT a version of any name in array of non-stochastic touchstones
