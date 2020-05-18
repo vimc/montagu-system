@@ -38,17 +38,21 @@ test('can access orderly web', async () => {
 
 test('old report page urls are redirected', async () => {
 
+    console.log("getting localhost");
     await browser.get("https://localhost");
+    console.log("ensuring logged in");
     await TestHelper.ensureLoggedIn(browser);
-
+    console.log("getting report url");
     await browser.get("https://localhost/reports/r1/20170516-134824-a16bab9d");
 
+    console.log("waiting to return url");
     await browser.wait(() => {
         return browser.getCurrentUrl().then((url) => {
             return url === "https://localhost/reports/report/r1/20170516-134824-a16bab9d";
         });
     });
 
+    console.log("getting final current url");
     expect(await browser.getCurrentUrl()).toBe("https://localhost/reports/report/r1/20170516-134824-a16bab9d")
 
 });
