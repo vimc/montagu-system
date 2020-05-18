@@ -69,25 +69,32 @@ test('can login without redirect', async () => {
 
 test('can login with redirect', async () => {
 
+    console.log("getting url");
     browser.get("https://localhost?redirectTo=http://nonsense");
 
+    console.log("getting fields");
     const emailField = await browser.findElement(webDriver.By.id("email-input"));
     const pwField = await browser.findElement(webDriver.By.id("password-input"));
 
+    console.log("sending keys");
     await emailField.sendKeys("test.user@example.com");
     await pwField.sendKeys("password");
 
+    console.log("clicking button");
     await browser.findElement(webDriver.By.id("login-button"))
         .click();
 
+    console.log("waiting for status");
     const loggedInBox = browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
 
+    console.log("waiting for redirect");
     await browser.wait(() => {
         return browser.getCurrentUrl().then((url) => {
             return url === "http://nonsense/";
         });
     });
 
+    console.log("checking redirect");
     expect(await browser.getCurrentUrl()).toBe("http://nonsense/");
 });
 
