@@ -48,6 +48,7 @@ test('old report page urls are redirected', async () => {
     console.log("waiting to return url");
     await browser.wait(() => {
         return browser.getCurrentUrl().then((url) => {
+            console.log("Actual url is: " + url);
             return url === "https://localhost/reports/report/r1/20170516-134824-a16bab9d";
         });
     });
