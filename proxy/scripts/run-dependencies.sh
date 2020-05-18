@@ -53,7 +53,7 @@ docker run --rm \
   $REGISTRY/orderly:master \
   "."
 
-# Copy the demo dbdocker  file to top level
+# Copy the demo db file to top level
 docker cp $PWD/demo/orderly.sqlite montagu_orderly_web_web_1:/orderly/orderly.sqlite
 
 # Migrate the orderlyweb tables
