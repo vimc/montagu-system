@@ -34,21 +34,27 @@ migrate_image=$REGISTRY/montagu-migrate:master
 docker pull $migrate_image
 docker run --network=montagu_proxy $migrate_image
 
-# Generate test data, including reports, if 'data' present as first param
+# Generate test data if 'data' present as first param
 if [ "$1" = "data" ]; then
   test_data_image=$REGISTRY/montagu-generate-test-data:master
   docker pull $test_data_image
   docker run --rm --network=montagu_proxy $test_data_image
-
-  # Generate report test data
-    docker pull $REGISTRY/orderly:master
-    docker run --rm \
-      --entrypoint create_orderly_demo.sh \
-      -v montagu_orderly_volume:/orderly \
-      $REGISTRY/orderly:master \
-    /orderly
-
 fi
+
+# Always generate report test database
+rm demo -rf
+rm git -rf
+docker pull $REGISTRY/orderly:master
+docker run --rm \
+  --entrypoint create_orderly_demo.sh \
+  -u $UID \
+  -v $PWD:/orderly \
+  -w "/orderly" \
+  $REGISTRY/orderly:master \
+  "."
+
+# Copy the demo db file to top level
+docker cp $PWD/demo/orderly.sqlite montagu_orderly_web_web_1:/orderly/orderly.sqlite
 
 # Migrate the orderlyweb tables
 ow_migrate_image=$REGISTRY/orderlyweb-migrate:master
