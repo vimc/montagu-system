@@ -2,7 +2,7 @@
 set -ex
 
 git_id=$(git rev-parse --short=7 HEAD)
-git_branch=$(git symbolic-ref --short HEAD)
+git_branch=$(git symbolic-ref --short HEAD | sed 's;/;-;g')
 
 # Shared build env between the main build and the integration tests
 docker build -f shared-build-env.dockerfile \
