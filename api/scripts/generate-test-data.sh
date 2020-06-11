@@ -2,6 +2,7 @@
 set -ex
 
 registry=docker.montagu.dide.ic.ac.uk:5000
+public_registry=vimc
 name=montagu-generate-test-data
 commit=$(git rev-parse --short=7 HEAD)
 branch=$(git symbolic-ref --short HEAD)
@@ -38,10 +39,19 @@ docker exec db pg_dump --user=vimc -Fc --no-privileges montagu > ./test-data.bin
 
 # Tag and push
 docker_tag=$registry/$name
-commit_tag=$registry/$name:$commit
-branch_tag=$registry/$name:$branch
+public_docker_tag=$public_registry/$name
+
+commit_tag=$docker_tag:$commit
+branch_tag=$docker_tag:$branch
+public_commit_tag=$public_docker_tag:$commit
+public_branch_tag=$public_docker_tag:$branch
 
 docker tag $name $commit_tag
 docker tag $name $branch_tag
 docker push $commit_tag 
 docker push $branch_tag
+
+docker tag $name $public_commit_tag
+docker tag $name $public_branch_tag
+docker push $public_commit_tag
+docker push $public_branch_tag
