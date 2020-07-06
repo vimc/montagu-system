@@ -168,6 +168,7 @@ fun JooqContext.addScenarioDescription(id: String, description: String, disease:
         this.id = id
         this.description = description
         this.disease = disease
+        this.scenarioType = "bestcase"
     }.store()
 }
 
