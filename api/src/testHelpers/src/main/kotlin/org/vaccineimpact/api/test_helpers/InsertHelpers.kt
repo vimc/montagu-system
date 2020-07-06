@@ -158,7 +158,10 @@ fun JooqContext.addVaccine(id: String, name: String? = null)
     }.store()
 }
 
-fun JooqContext.addScenarioDescription(id: String, description: String, disease: String, addDisease: Boolean = false)
+fun JooqContext.addScenarioDescription(id: String, description: String,
+                                       disease: String,
+                                       type: String = "routine",
+                                       addDisease: Boolean = false)
 {
     if (addDisease)
     {
@@ -168,7 +171,7 @@ fun JooqContext.addScenarioDescription(id: String, description: String, disease:
         this.id = id
         this.description = description
         this.disease = disease
-        this.scenarioType = "bestcase"
+        this.scenarioType = type
     }.store()
 }
 
