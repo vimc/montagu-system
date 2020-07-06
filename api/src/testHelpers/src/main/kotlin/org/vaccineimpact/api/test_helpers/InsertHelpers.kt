@@ -176,6 +176,7 @@ fun JooqContext.addScenarioDescription(id: String, description: String,
     {
         this.dsl.newRecord(SCENARIO_TYPE).apply {
             this.id = type
+            this.name = type
         }.store()
     }
     this.dsl.newRecord(SCENARIO_DESCRIPTION).apply {
