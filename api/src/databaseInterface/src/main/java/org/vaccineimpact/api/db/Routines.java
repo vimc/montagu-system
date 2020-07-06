@@ -12,7 +12,12 @@ import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.vaccineimpact.api.db.routines.DisableTrigger;
 import org.vaccineimpact.api.db.routines.EnableTrigger;
-import org.vaccineimpact.api.db.routines.PostgresFdwValidator;
+import org.vaccineimpact.api.db.tables.Connectby;
+import org.vaccineimpact.api.db.tables.Crosstab;
+import org.vaccineimpact.api.db.tables.Crosstab2;
+import org.vaccineimpact.api.db.tables.Crosstab3;
+import org.vaccineimpact.api.db.tables.Crosstab4;
+import org.vaccineimpact.api.db.tables.NormalRand;
 import org.vaccineimpact.api.db.tables.SelectBurdenData1;
 import org.vaccineimpact.api.db.tables.SelectBurdenData2;
 import org.vaccineimpact.api.db.tables.SelectBurdenData3;
@@ -22,6 +27,12 @@ import org.vaccineimpact.api.db.tables.SelectBurdenData6;
 import org.vaccineimpact.api.db.tables.SelectBurdenData7;
 import org.vaccineimpact.api.db.tables.SelectBurdenData8;
 import org.vaccineimpact.api.db.tables.SelectBurdenDataCol;
+import org.vaccineimpact.api.db.tables.records.ConnectbyRecord;
+import org.vaccineimpact.api.db.tables.records.Crosstab2Record;
+import org.vaccineimpact.api.db.tables.records.Crosstab3Record;
+import org.vaccineimpact.api.db.tables.records.Crosstab4Record;
+import org.vaccineimpact.api.db.tables.records.CrosstabRecord;
+import org.vaccineimpact.api.db.tables.records.NormalRandRecord;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData1Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData2Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData3Record;
@@ -69,14 +80,129 @@ public class Routines {
     }
 
     /**
-     * Call <code>public.postgres_fdw_validator</code>
+     * Call <code>public.connectby</code>.
      */
-    public static void postgresFdwValidator(Configuration configuration, String[] __1, Long __2) {
-        PostgresFdwValidator p = new PostgresFdwValidator();
-        p.set__1(__1);
-        p.set__2(__2);
+    public static Result<ConnectbyRecord> connectby(Configuration configuration, String __1, String __2, String __3, String __4, Integer __5, String __6) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6)).fetch();
+    }
 
-        p.execute(configuration);
+    /**
+     * Get <code>public.connectby</code> as a table.
+     */
+    public static Connectby connectby(String __1, String __2, String __3, String __4, Integer __5, String __6) {
+        return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6);
+    }
+
+    /**
+     * Get <code>public.connectby</code> as a table.
+     */
+    public static Connectby connectby(Field<String> __1, Field<String> __2, Field<String> __3, Field<String> __4, Field<Integer> __5, Field<String> __6) {
+        return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6);
+    }
+
+    /**
+     * Call <code>public.crosstab</code>.
+     */
+    public static Result<CrosstabRecord> crosstab(Configuration configuration, String __1) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1)).fetch();
+    }
+
+    /**
+     * Get <code>public.crosstab</code> as a table.
+     */
+    public static Crosstab crosstab(String __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    }
+
+    /**
+     * Get <code>public.crosstab</code> as a table.
+     */
+    public static Crosstab crosstab(Field<String> __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    }
+
+    /**
+     * Call <code>public.crosstab2</code>.
+     */
+    public static Result<Crosstab2Record> crosstab2(Configuration configuration, String __1) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab2.CROSSTAB2.call(__1)).fetch();
+    }
+
+    /**
+     * Get <code>public.crosstab2</code> as a table.
+     */
+    public static Crosstab2 crosstab2(String __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab2.CROSSTAB2.call(__1);
+    }
+
+    /**
+     * Get <code>public.crosstab2</code> as a table.
+     */
+    public static Crosstab2 crosstab2(Field<String> __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab2.CROSSTAB2.call(__1);
+    }
+
+    /**
+     * Call <code>public.crosstab3</code>.
+     */
+    public static Result<Crosstab3Record> crosstab3(Configuration configuration, String __1) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab3.CROSSTAB3.call(__1)).fetch();
+    }
+
+    /**
+     * Get <code>public.crosstab3</code> as a table.
+     */
+    public static Crosstab3 crosstab3(String __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab3.CROSSTAB3.call(__1);
+    }
+
+    /**
+     * Get <code>public.crosstab3</code> as a table.
+     */
+    public static Crosstab3 crosstab3(Field<String> __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab3.CROSSTAB3.call(__1);
+    }
+
+    /**
+     * Call <code>public.crosstab4</code>.
+     */
+    public static Result<Crosstab4Record> crosstab4(Configuration configuration, String __1) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab4.CROSSTAB4.call(__1)).fetch();
+    }
+
+    /**
+     * Get <code>public.crosstab4</code> as a table.
+     */
+    public static Crosstab4 crosstab4(String __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab4.CROSSTAB4.call(__1);
+    }
+
+    /**
+     * Get <code>public.crosstab4</code> as a table.
+     */
+    public static Crosstab4 crosstab4(Field<String> __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab4.CROSSTAB4.call(__1);
+    }
+
+    /**
+     * Call <code>public.normal_rand</code>.
+     */
+    public static Result<NormalRandRecord> normalRand(Configuration configuration, Integer __1, Double __2, Double __3) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.NormalRand.NORMAL_RAND.call(__1, __2, __3)).fetch();
+    }
+
+    /**
+     * Get <code>public.normal_rand</code> as a table.
+     */
+    public static NormalRand normalRand(Integer __1, Double __2, Double __3) {
+        return org.vaccineimpact.api.db.tables.NormalRand.NORMAL_RAND.call(__1, __2, __3);
+    }
+
+    /**
+     * Get <code>public.normal_rand</code> as a table.
+     */
+    public static NormalRand normalRand(Field<Integer> __1, Field<Double> __2, Field<Double> __3) {
+        return org.vaccineimpact.api.db.tables.NormalRand.NORMAL_RAND.call(__1, __2, __3);
     }
 
     /**

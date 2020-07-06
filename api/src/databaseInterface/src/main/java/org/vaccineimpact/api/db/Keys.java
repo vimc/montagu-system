@@ -73,6 +73,7 @@ import org.vaccineimpact.api.db.tables.RolePermission;
 import org.vaccineimpact.api.db.tables.Scenario;
 import org.vaccineimpact.api.db.tables.ScenarioCoverageSet;
 import org.vaccineimpact.api.db.tables.ScenarioDescription;
+import org.vaccineimpact.api.db.tables.ScenarioType;
 import org.vaccineimpact.api.db.tables.SupportType;
 import org.vaccineimpact.api.db.tables.Touchstone;
 import org.vaccineimpact.api.db.tables.TouchstoneCountry;
@@ -153,6 +154,7 @@ import org.vaccineimpact.api.db.tables.records.RoleRecord;
 import org.vaccineimpact.api.db.tables.records.ScenarioCoverageSetRecord;
 import org.vaccineimpact.api.db.tables.records.ScenarioDescriptionRecord;
 import org.vaccineimpact.api.db.tables.records.ScenarioRecord;
+import org.vaccineimpact.api.db.tables.records.ScenarioTypeRecord;
 import org.vaccineimpact.api.db.tables.records.SupportTypeRecord;
 import org.vaccineimpact.api.db.tables.records.TouchstoneCountryRecord;
 import org.vaccineimpact.api.db.tables.records.TouchstoneDemographicDatasetRecord;
@@ -316,6 +318,7 @@ public class Keys {
     public static final UniqueKey<ScenarioCoverageSetRecord> SCENARIO_COVERAGE_SET_PKEY = UniqueKeys0.SCENARIO_COVERAGE_SET_PKEY;
     public static final UniqueKey<ScenarioCoverageSetRecord> SCENARIO_COVERAGE_SET_SCENARIO_ORDER_KEY = UniqueKeys0.SCENARIO_COVERAGE_SET_SCENARIO_ORDER_KEY;
     public static final UniqueKey<ScenarioDescriptionRecord> SCENARIO_DESCRIPTION_PKEY = UniqueKeys0.SCENARIO_DESCRIPTION_PKEY;
+    public static final UniqueKey<ScenarioTypeRecord> SCENARIO_TYPE_PKEY = UniqueKeys0.SCENARIO_TYPE_PKEY;
     public static final UniqueKey<SupportTypeRecord> SUPPORT_TYPE_PKEY = UniqueKeys0.SUPPORT_TYPE_PKEY;
     public static final UniqueKey<TouchstoneRecord> TOUCHSTONE_PKEY = UniqueKeys0.TOUCHSTONE_PKEY;
     public static final UniqueKey<TouchstoneRecord> TOUCHSTONE_TOUCHSTONE_NAME_VERSION_KEY = UniqueKeys0.TOUCHSTONE_TOUCHSTONE_NAME_VERSION_KEY;
@@ -452,6 +455,7 @@ public class Keys {
     public static final ForeignKey<ScenarioCoverageSetRecord, ScenarioRecord> SCENARIO_COVERAGE_SET__SCENARIO_COVERAGE_SET_SCENARIO_FKEY = ForeignKeys0.SCENARIO_COVERAGE_SET__SCENARIO_COVERAGE_SET_SCENARIO_FKEY;
     public static final ForeignKey<ScenarioCoverageSetRecord, CoverageSetRecord> SCENARIO_COVERAGE_SET__SCENARIO_COVERAGE_SET_COVERAGE_SET_FKEY = ForeignKeys0.SCENARIO_COVERAGE_SET__SCENARIO_COVERAGE_SET_COVERAGE_SET_FKEY;
     public static final ForeignKey<ScenarioDescriptionRecord, DiseaseRecord> SCENARIO_DESCRIPTION__SCENARIO_DESCRIPTION_DISEASE_FKEY = ForeignKeys0.SCENARIO_DESCRIPTION__SCENARIO_DESCRIPTION_DISEASE_FKEY;
+    public static final ForeignKey<ScenarioDescriptionRecord, ScenarioTypeRecord> SCENARIO_DESCRIPTION__SCENARIO_DESCRIPTION_SCENARIO_TYPE_FKEY = ForeignKeys0.SCENARIO_DESCRIPTION__SCENARIO_DESCRIPTION_SCENARIO_TYPE_FKEY;
     public static final ForeignKey<TouchstoneRecord, TouchstoneNameRecord> TOUCHSTONE__TOUCHSTONE_TOUCHSTONE_NAME_FKEY = ForeignKeys0.TOUCHSTONE__TOUCHSTONE_TOUCHSTONE_NAME_FKEY;
     public static final ForeignKey<TouchstoneRecord, TouchstoneStatusRecord> TOUCHSTONE__TOUCHSTONE_STATUS_FKEY = ForeignKeys0.TOUCHSTONE__TOUCHSTONE_STATUS_FKEY;
     public static final ForeignKey<TouchstoneCountryRecord, TouchstoneRecord> TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_TOUCHSTONE_FKEY = ForeignKeys0.TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_TOUCHSTONE_FKEY;
@@ -600,6 +604,7 @@ public class Keys {
         public static final UniqueKey<ScenarioCoverageSetRecord> SCENARIO_COVERAGE_SET_PKEY = Internal.createUniqueKey(ScenarioCoverageSet.SCENARIO_COVERAGE_SET, "scenario_coverage_set_pkey", ScenarioCoverageSet.SCENARIO_COVERAGE_SET.ID);
         public static final UniqueKey<ScenarioCoverageSetRecord> SCENARIO_COVERAGE_SET_SCENARIO_ORDER_KEY = Internal.createUniqueKey(ScenarioCoverageSet.SCENARIO_COVERAGE_SET, "scenario_coverage_set_scenario_order_key", ScenarioCoverageSet.SCENARIO_COVERAGE_SET.SCENARIO, ScenarioCoverageSet.SCENARIO_COVERAGE_SET.ORDER);
         public static final UniqueKey<ScenarioDescriptionRecord> SCENARIO_DESCRIPTION_PKEY = Internal.createUniqueKey(ScenarioDescription.SCENARIO_DESCRIPTION, "scenario_description_pkey", ScenarioDescription.SCENARIO_DESCRIPTION.ID);
+        public static final UniqueKey<ScenarioTypeRecord> SCENARIO_TYPE_PKEY = Internal.createUniqueKey(ScenarioType.SCENARIO_TYPE, "scenario_type_pkey", ScenarioType.SCENARIO_TYPE.ID);
         public static final UniqueKey<SupportTypeRecord> SUPPORT_TYPE_PKEY = Internal.createUniqueKey(SupportType.SUPPORT_TYPE, "support_type_pkey", SupportType.SUPPORT_TYPE.ID);
         public static final UniqueKey<TouchstoneRecord> TOUCHSTONE_PKEY = Internal.createUniqueKey(Touchstone.TOUCHSTONE, "touchstone_pkey", Touchstone.TOUCHSTONE.ID);
         public static final UniqueKey<TouchstoneRecord> TOUCHSTONE_TOUCHSTONE_NAME_VERSION_KEY = Internal.createUniqueKey(Touchstone.TOUCHSTONE, "touchstone_touchstone_name_version_key", Touchstone.TOUCHSTONE.TOUCHSTONE_NAME, Touchstone.TOUCHSTONE.VERSION);
@@ -734,6 +739,7 @@ public class Keys {
         public static final ForeignKey<ScenarioCoverageSetRecord, ScenarioRecord> SCENARIO_COVERAGE_SET__SCENARIO_COVERAGE_SET_SCENARIO_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.SCENARIO_PKEY, ScenarioCoverageSet.SCENARIO_COVERAGE_SET, "scenario_coverage_set__scenario_coverage_set_scenario_fkey", ScenarioCoverageSet.SCENARIO_COVERAGE_SET.SCENARIO);
         public static final ForeignKey<ScenarioCoverageSetRecord, CoverageSetRecord> SCENARIO_COVERAGE_SET__SCENARIO_COVERAGE_SET_COVERAGE_SET_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.COVERAGE_SET_PKEY, ScenarioCoverageSet.SCENARIO_COVERAGE_SET, "scenario_coverage_set__scenario_coverage_set_coverage_set_fkey", ScenarioCoverageSet.SCENARIO_COVERAGE_SET.COVERAGE_SET);
         public static final ForeignKey<ScenarioDescriptionRecord, DiseaseRecord> SCENARIO_DESCRIPTION__SCENARIO_DESCRIPTION_DISEASE_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.DISEASE_PKEY, ScenarioDescription.SCENARIO_DESCRIPTION, "scenario_description__scenario_description_disease_fkey", ScenarioDescription.SCENARIO_DESCRIPTION.DISEASE);
+        public static final ForeignKey<ScenarioDescriptionRecord, ScenarioTypeRecord> SCENARIO_DESCRIPTION__SCENARIO_DESCRIPTION_SCENARIO_TYPE_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.SCENARIO_TYPE_PKEY, ScenarioDescription.SCENARIO_DESCRIPTION, "scenario_description__scenario_description_scenario_type_fkey", ScenarioDescription.SCENARIO_DESCRIPTION.SCENARIO_TYPE);
         public static final ForeignKey<TouchstoneRecord, TouchstoneNameRecord> TOUCHSTONE__TOUCHSTONE_TOUCHSTONE_NAME_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_NAME_PKEY, Touchstone.TOUCHSTONE, "touchstone__touchstone_touchstone_name_fkey", Touchstone.TOUCHSTONE.TOUCHSTONE_NAME);
         public static final ForeignKey<TouchstoneRecord, TouchstoneStatusRecord> TOUCHSTONE__TOUCHSTONE_STATUS_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_STATUS_PKEY, Touchstone.TOUCHSTONE, "touchstone__touchstone_status_fkey", Touchstone.TOUCHSTONE.STATUS);
         public static final ForeignKey<TouchstoneCountryRecord, TouchstoneRecord> TOUCHSTONE_COUNTRY__TOUCHSTONE_COUNTRY_TOUCHSTONE_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_PKEY, TouchstoneCountry.TOUCHSTONE_COUNTRY, "touchstone_country__touchstone_country_touchstone_fkey", TouchstoneCountry.TOUCHSTONE_COUNTRY.TOUCHSTONE);
