@@ -1,4 +1,6 @@
 # Montagu API
+
+[![Build Status](https://travis-ci.com/vimc/montagu-api.svg?branch=master)](https://travis-ci.com/vimc/montagu-api)
 [![codecov](https://codecov.io/gh/vimc/montagu-api/branch/master/graph/badge.svg)](https://codecov.io/gh/vimc/montagu-api)
 
 ## Running the app locally
