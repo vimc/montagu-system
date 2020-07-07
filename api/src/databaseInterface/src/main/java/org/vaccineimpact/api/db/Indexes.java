@@ -72,6 +72,7 @@ import org.vaccineimpact.api.db.tables.RolePermission;
 import org.vaccineimpact.api.db.tables.Scenario;
 import org.vaccineimpact.api.db.tables.ScenarioCoverageSet;
 import org.vaccineimpact.api.db.tables.ScenarioDescription;
+import org.vaccineimpact.api.db.tables.ScenarioType;
 import org.vaccineimpact.api.db.tables.SupportType;
 import org.vaccineimpact.api.db.tables.Touchstone;
 import org.vaccineimpact.api.db.tables.TouchstoneCountry;
@@ -193,6 +194,7 @@ public class Indexes {
     public static final Index SCENARIO_TOUCHSTONE_SCENARIO_DESCRIPTION_KEY = Indexes0.SCENARIO_TOUCHSTONE_SCENARIO_DESCRIPTION_KEY;
     public static final Index SCENARIO_COVERAGE_SET_PKEY = Indexes0.SCENARIO_COVERAGE_SET_PKEY;
     public static final Index SCENARIO_DESCRIPTION_PKEY = Indexes0.SCENARIO_DESCRIPTION_PKEY;
+    public static final Index SCENARIO_TYPE_PKEY = Indexes0.SCENARIO_TYPE_PKEY;
     public static final Index SUPPORT_TYPE_PKEY = Indexes0.SUPPORT_TYPE_PKEY;
     public static final Index TOUCHSTONE_PKEY = Indexes0.TOUCHSTONE_PKEY;
     public static final Index TOUCHSTONE_TOUCHSTONE_NAME_VERSION_KEY = Indexes0.TOUCHSTONE_TOUCHSTONE_NAME_VERSION_KEY;
@@ -303,6 +305,7 @@ public class Indexes {
         public static Index SCENARIO_TOUCHSTONE_SCENARIO_DESCRIPTION_KEY = Internal.createIndex("scenario_touchstone_scenario_description_key", Scenario.SCENARIO, new OrderField[] { Scenario.SCENARIO.TOUCHSTONE, Scenario.SCENARIO.SCENARIO_DESCRIPTION }, true);
         public static Index SCENARIO_COVERAGE_SET_PKEY = Internal.createIndex("scenario_coverage_set_pkey", ScenarioCoverageSet.SCENARIO_COVERAGE_SET, new OrderField[] { ScenarioCoverageSet.SCENARIO_COVERAGE_SET.ID }, true);
         public static Index SCENARIO_DESCRIPTION_PKEY = Internal.createIndex("scenario_description_pkey", ScenarioDescription.SCENARIO_DESCRIPTION, new OrderField[] { ScenarioDescription.SCENARIO_DESCRIPTION.ID }, true);
+        public static Index SCENARIO_TYPE_PKEY = Internal.createIndex("scenario_type_pkey", ScenarioType.SCENARIO_TYPE, new OrderField[] { ScenarioType.SCENARIO_TYPE.ID }, true);
         public static Index SUPPORT_TYPE_PKEY = Internal.createIndex("support_type_pkey", SupportType.SUPPORT_TYPE, new OrderField[] { SupportType.SUPPORT_TYPE.ID }, true);
         public static Index TOUCHSTONE_PKEY = Internal.createIndex("touchstone_pkey", Touchstone.TOUCHSTONE, new OrderField[] { Touchstone.TOUCHSTONE.ID }, true);
         public static Index TOUCHSTONE_TOUCHSTONE_NAME_VERSION_KEY = Internal.createIndex("touchstone_touchstone_name_version_key", Touchstone.TOUCHSTONE, new OrderField[] { Touchstone.TOUCHSTONE.TOUCHSTONE_NAME, Touchstone.TOUCHSTONE.VERSION }, true);

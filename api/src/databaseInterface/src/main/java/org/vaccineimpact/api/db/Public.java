@@ -16,6 +16,7 @@ import org.jooq.Field;
 import org.jooq.Result;
 import org.jooq.Sequence;
 import org.jooq.Table;
+import org.jooq.UDT;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SchemaImpl;
 import org.vaccineimpact.api.db.tables.ActivityType;
@@ -29,9 +30,9 @@ import org.vaccineimpact.api.db.tables.BurdenEstimateSet;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetProblem;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetStatus;
 import org.vaccineimpact.api.db.tables.BurdenEstimateSetType;
-import org.vaccineimpact.api.db.tables.BurdenEstimateStochastic;
 import org.vaccineimpact.api.db.tables.BurdenOutcome;
 import org.vaccineimpact.api.db.tables.CofinanceStatus;
+import org.vaccineimpact.api.db.tables.Connectby;
 import org.vaccineimpact.api.db.tables.Country;
 import org.vaccineimpact.api.db.tables.CountryCofinance;
 import org.vaccineimpact.api.db.tables.CountryDiseaseEndemic;
@@ -41,6 +42,10 @@ import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
 import org.vaccineimpact.api.db.tables.CountryWorldbankStatus;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
+import org.vaccineimpact.api.db.tables.Crosstab;
+import org.vaccineimpact.api.db.tables.Crosstab2;
+import org.vaccineimpact.api.db.tables.Crosstab3;
+import org.vaccineimpact.api.db.tables.Crosstab4;
 import org.vaccineimpact.api.db.tables.DemographicDataset;
 import org.vaccineimpact.api.db.tables.DemographicSource;
 import org.vaccineimpact.api.db.tables.DemographicStatistic;
@@ -72,6 +77,7 @@ import org.vaccineimpact.api.db.tables.ModelRunParameterValue;
 import org.vaccineimpact.api.db.tables.ModelVersion;
 import org.vaccineimpact.api.db.tables.ModelVersionCountry;
 import org.vaccineimpact.api.db.tables.ModellingGroup;
+import org.vaccineimpact.api.db.tables.NormalRand;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
 import org.vaccineimpact.api.db.tables.Permission;
 import org.vaccineimpact.api.db.tables.Responsibility;
@@ -82,6 +88,7 @@ import org.vaccineimpact.api.db.tables.RolePermission;
 import org.vaccineimpact.api.db.tables.Scenario;
 import org.vaccineimpact.api.db.tables.ScenarioCoverageSet;
 import org.vaccineimpact.api.db.tables.ScenarioDescription;
+import org.vaccineimpact.api.db.tables.ScenarioType;
 import org.vaccineimpact.api.db.tables.SelectBurdenData1;
 import org.vaccineimpact.api.db.tables.SelectBurdenData2;
 import org.vaccineimpact.api.db.tables.SelectBurdenData3;
@@ -110,6 +117,12 @@ import org.vaccineimpact.api.db.tables.Vaccine;
 import org.vaccineimpact.api.db.tables.VaccineRoutineAge;
 import org.vaccineimpact.api.db.tables.VxdelSegment;
 import org.vaccineimpact.api.db.tables.WorldbankStatus;
+import org.vaccineimpact.api.db.tables.records.ConnectbyRecord;
+import org.vaccineimpact.api.db.tables.records.Crosstab2Record;
+import org.vaccineimpact.api.db.tables.records.Crosstab3Record;
+import org.vaccineimpact.api.db.tables.records.Crosstab4Record;
+import org.vaccineimpact.api.db.tables.records.CrosstabRecord;
+import org.vaccineimpact.api.db.tables.records.NormalRandRecord;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData1Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData2Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData3Record;
@@ -119,6 +132,9 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenData6Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData7Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenData8Record;
 import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
+import org.vaccineimpact.api.db.udt.TablefuncCrosstab_2;
+import org.vaccineimpact.api.db.udt.TablefuncCrosstab_3;
+import org.vaccineimpact.api.db.udt.TablefuncCrosstab_4;
 
 
 /**
@@ -134,7 +150,7 @@ import org.vaccineimpact.api.db.tables.records.SelectBurdenDataColRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 2063938310;
+    private static final long serialVersionUID = 946642879;
 
     /**
      * The reference instance of <code>public</code>
@@ -197,11 +213,6 @@ public class Public extends SchemaImpl {
     public final BurdenEstimateSetType BURDEN_ESTIMATE_SET_TYPE = org.vaccineimpact.api.db.tables.BurdenEstimateSetType.BURDEN_ESTIMATE_SET_TYPE;
 
     /**
-     * The table <code>public.burden_estimate_stochastic</code>.
-     */
-    public final BurdenEstimateStochastic BURDEN_ESTIMATE_STOCHASTIC = org.vaccineimpact.api.db.tables.BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC;
-
-    /**
      * The table <code>public.burden_outcome</code>.
      */
     public final BurdenOutcome BURDEN_OUTCOME = org.vaccineimpact.api.db.tables.BurdenOutcome.BURDEN_OUTCOME;
@@ -210,6 +221,32 @@ public class Public extends SchemaImpl {
      * The table <code>public.cofinance_status</code>.
      */
     public final CofinanceStatus COFINANCE_STATUS = org.vaccineimpact.api.db.tables.CofinanceStatus.COFINANCE_STATUS;
+
+    /**
+     * The table <code>public.connectby</code>.
+     */
+    public final Connectby CONNECTBY = org.vaccineimpact.api.db.tables.Connectby.CONNECTBY;
+
+    /**
+     * Call <code>public.connectby</code>.
+     */
+    public static Result<ConnectbyRecord> CONNECTBY(Configuration configuration, String __1, String __2, String __3, String __4, Integer __5, String __6) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6)).fetch();
+    }
+
+    /**
+     * Get <code>public.connectby</code> as a table.
+     */
+    public static Connectby CONNECTBY(String __1, String __2, String __3, String __4, Integer __5, String __6) {
+        return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6);
+    }
+
+    /**
+     * Get <code>public.connectby</code> as a table.
+     */
+    public static Connectby CONNECTBY(Field<String> __1, Field<String> __2, Field<String> __3, Field<String> __4, Field<Integer> __5, Field<String> __6) {
+        return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6);
+    }
 
     /**
      * The table <code>public.country</code>.
@@ -255,6 +292,110 @@ public class Public extends SchemaImpl {
      * The table <code>public.coverage_set</code>.
      */
     public final CoverageSet COVERAGE_SET = org.vaccineimpact.api.db.tables.CoverageSet.COVERAGE_SET;
+
+    /**
+     * The table <code>public.crosstab</code>.
+     */
+    public final Crosstab CROSSTAB = org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB;
+
+    /**
+     * Call <code>public.crosstab</code>.
+     */
+    public static Result<CrosstabRecord> CROSSTAB(Configuration configuration, String __1) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1)).fetch();
+    }
+
+    /**
+     * Get <code>public.crosstab</code> as a table.
+     */
+    public static Crosstab CROSSTAB(String __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    }
+
+    /**
+     * Get <code>public.crosstab</code> as a table.
+     */
+    public static Crosstab CROSSTAB(Field<String> __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    }
+
+    /**
+     * The table <code>public.crosstab2</code>.
+     */
+    public final Crosstab2 CROSSTAB2 = org.vaccineimpact.api.db.tables.Crosstab2.CROSSTAB2;
+
+    /**
+     * Call <code>public.crosstab2</code>.
+     */
+    public static Result<Crosstab2Record> CROSSTAB2(Configuration configuration, String __1) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab2.CROSSTAB2.call(__1)).fetch();
+    }
+
+    /**
+     * Get <code>public.crosstab2</code> as a table.
+     */
+    public static Crosstab2 CROSSTAB2(String __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab2.CROSSTAB2.call(__1);
+    }
+
+    /**
+     * Get <code>public.crosstab2</code> as a table.
+     */
+    public static Crosstab2 CROSSTAB2(Field<String> __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab2.CROSSTAB2.call(__1);
+    }
+
+    /**
+     * The table <code>public.crosstab3</code>.
+     */
+    public final Crosstab3 CROSSTAB3 = org.vaccineimpact.api.db.tables.Crosstab3.CROSSTAB3;
+
+    /**
+     * Call <code>public.crosstab3</code>.
+     */
+    public static Result<Crosstab3Record> CROSSTAB3(Configuration configuration, String __1) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab3.CROSSTAB3.call(__1)).fetch();
+    }
+
+    /**
+     * Get <code>public.crosstab3</code> as a table.
+     */
+    public static Crosstab3 CROSSTAB3(String __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab3.CROSSTAB3.call(__1);
+    }
+
+    /**
+     * Get <code>public.crosstab3</code> as a table.
+     */
+    public static Crosstab3 CROSSTAB3(Field<String> __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab3.CROSSTAB3.call(__1);
+    }
+
+    /**
+     * The table <code>public.crosstab4</code>.
+     */
+    public final Crosstab4 CROSSTAB4 = org.vaccineimpact.api.db.tables.Crosstab4.CROSSTAB4;
+
+    /**
+     * Call <code>public.crosstab4</code>.
+     */
+    public static Result<Crosstab4Record> CROSSTAB4(Configuration configuration, String __1) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab4.CROSSTAB4.call(__1)).fetch();
+    }
+
+    /**
+     * Get <code>public.crosstab4</code> as a table.
+     */
+    public static Crosstab4 CROSSTAB4(String __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab4.CROSSTAB4.call(__1);
+    }
+
+    /**
+     * Get <code>public.crosstab4</code> as a table.
+     */
+    public static Crosstab4 CROSSTAB4(Field<String> __1) {
+        return org.vaccineimpact.api.db.tables.Crosstab4.CROSSTAB4.call(__1);
+    }
 
     /**
      * The table <code>public.demographic_dataset</code>.
@@ -412,6 +553,32 @@ public class Public extends SchemaImpl {
     public final ModellingGroup MODELLING_GROUP = org.vaccineimpact.api.db.tables.ModellingGroup.MODELLING_GROUP;
 
     /**
+     * The table <code>public.normal_rand</code>.
+     */
+    public final NormalRand NORMAL_RAND = org.vaccineimpact.api.db.tables.NormalRand.NORMAL_RAND;
+
+    /**
+     * Call <code>public.normal_rand</code>.
+     */
+    public static Result<NormalRandRecord> NORMAL_RAND(Configuration configuration, Integer __1, Double __2, Double __3) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.NormalRand.NORMAL_RAND.call(__1, __2, __3)).fetch();
+    }
+
+    /**
+     * Get <code>public.normal_rand</code> as a table.
+     */
+    public static NormalRand NORMAL_RAND(Integer __1, Double __2, Double __3) {
+        return org.vaccineimpact.api.db.tables.NormalRand.NORMAL_RAND.call(__1, __2, __3);
+    }
+
+    /**
+     * Get <code>public.normal_rand</code> as a table.
+     */
+    public static NormalRand NORMAL_RAND(Field<Integer> __1, Field<Double> __2, Field<Double> __3) {
+        return org.vaccineimpact.api.db.tables.NormalRand.NORMAL_RAND.call(__1, __2, __3);
+    }
+
+    /**
      * The table <code>public.onetime_token</code>.
      */
     public final OnetimeToken ONETIME_TOKEN = org.vaccineimpact.api.db.tables.OnetimeToken.ONETIME_TOKEN;
@@ -460,6 +627,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.scenario_description</code>.
      */
     public final ScenarioDescription SCENARIO_DESCRIPTION = org.vaccineimpact.api.db.tables.ScenarioDescription.SCENARIO_DESCRIPTION;
+
+    /**
+     * The table <code>public.scenario_type</code>.
+     */
+    public final ScenarioType SCENARIO_TYPE = org.vaccineimpact.api.db.tables.ScenarioType.SCENARIO_TYPE;
 
     /**
      * The table <code>public.select_burden_data1</code>.
@@ -882,9 +1054,9 @@ public class Public extends SchemaImpl {
             BurdenEstimateSetProblem.BURDEN_ESTIMATE_SET_PROBLEM,
             BurdenEstimateSetStatus.BURDEN_ESTIMATE_SET_STATUS,
             BurdenEstimateSetType.BURDEN_ESTIMATE_SET_TYPE,
-            BurdenEstimateStochastic.BURDEN_ESTIMATE_STOCHASTIC,
             BurdenOutcome.BURDEN_OUTCOME,
             CofinanceStatus.COFINANCE_STATUS,
+            Connectby.CONNECTBY,
             Country.COUNTRY,
             CountryCofinance.COUNTRY_COFINANCE,
             CountryDiseaseEndemic.COUNTRY_DISEASE_ENDEMIC,
@@ -894,6 +1066,10 @@ public class Public extends SchemaImpl {
             CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS,
             Coverage.COVERAGE,
             CoverageSet.COVERAGE_SET,
+            Crosstab.CROSSTAB,
+            Crosstab2.CROSSTAB2,
+            Crosstab3.CROSSTAB3,
+            Crosstab4.CROSSTAB4,
             DemographicDataset.DEMOGRAPHIC_DATASET,
             DemographicSource.DEMOGRAPHIC_SOURCE,
             DemographicStatistic.DEMOGRAPHIC_STATISTIC,
@@ -925,6 +1101,7 @@ public class Public extends SchemaImpl {
             ModelVersion.MODEL_VERSION,
             ModelVersionCountry.MODEL_VERSION_COUNTRY,
             ModellingGroup.MODELLING_GROUP,
+            NormalRand.NORMAL_RAND,
             OnetimeToken.ONETIME_TOKEN,
             Permission.PERMISSION,
             Responsibility.RESPONSIBILITY,
@@ -935,6 +1112,7 @@ public class Public extends SchemaImpl {
             Scenario.SCENARIO,
             ScenarioCoverageSet.SCENARIO_COVERAGE_SET,
             ScenarioDescription.SCENARIO_DESCRIPTION,
+            ScenarioType.SCENARIO_TYPE,
             SelectBurdenData1.SELECT_BURDEN_DATA1,
             SelectBurdenData2.SELECT_BURDEN_DATA2,
             SelectBurdenData3.SELECT_BURDEN_DATA3,
@@ -963,5 +1141,19 @@ public class Public extends SchemaImpl {
             VaccineRoutineAge.VACCINE_ROUTINE_AGE,
             VxdelSegment.VXDEL_SEGMENT,
             WorldbankStatus.WORLDBANK_STATUS);
+    }
+
+    @Override
+    public final List<UDT<?>> getUDTs() {
+        List result = new ArrayList();
+        result.addAll(getUDTs0());
+        return result;
+    }
+
+    private final List<UDT<?>> getUDTs0() {
+        return Arrays.<UDT<?>>asList(
+            TablefuncCrosstab_2.TABLEFUNC_CROSSTAB_2,
+            TablefuncCrosstab_3.TABLEFUNC_CROSSTAB_3,
+            TablefuncCrosstab_4.TABLEFUNC_CROSSTAB_4);
     }
 }

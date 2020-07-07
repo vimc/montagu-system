@@ -10,11 +10,12 @@ root=$(realpath $here/..)
 # create orderly db
 if [[ -d $root/src/demo ]]
 then
-  echo "Orderly demo folder already exists, not re-creating it."
-else
-  docker pull $ORDERLY_IMAGE
-  docker run --rm --entrypoint create_orderly_demo.sh -v "$root/src:/orderly" -u $UID -w /orderly $ORDERLY_IMAGE .
+  rm $root/src/demo -rf
 fi
+
+docker pull $ORDERLY_IMAGE
+docker run --rm --entrypoint create_orderly_demo.sh -v "$root/src:/orderly" -u $UID -w /orderly $ORDERLY_IMAGE .
+
 
 # migrate to add orderlyweb tables
 docker pull $OW_MIGRATE_IMAGE

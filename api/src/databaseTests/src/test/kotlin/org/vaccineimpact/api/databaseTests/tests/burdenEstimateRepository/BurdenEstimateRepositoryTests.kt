@@ -231,68 +231,6 @@ abstract class BurdenEstimateRepositoryTests : RepositoryTests<BurdenEstimateRep
             modelRunParameterSet = null
     )
 
-
-    protected fun checkStochasticBurdenEstimates(db: JooqContext, setId: Int)
-    {
-        val records = getStochasticEstimatesInOrder(db)
-        checkStochasticRecord(records[0], setId, 2000, 50, "AFG", "cases", 100F)
-        checkStochasticRecord(records[1], setId, 2000, 50, "AFG", "cohort_size", 1000F)
-        checkStochasticRecord(records[2], setId, 2000, 50, "AFG", "deaths", 10F)
-        checkStochasticRecord(records[3], setId, 1980, 30, "AGO", "cohort_size", 2000F)
-        checkStochasticRecord(records[4], setId, 1980, 30, "AGO", "dalys", 73.6F)
-        checkStochasticRecord(records[5], setId, 1980, 30, "AGO", "deaths", 20F)
-    }
-
-    protected fun checkStochasticModelRuns(db: JooqContext, modelRunData: ModelRunTestData)
-    {
-        val records = getStochasticEstimatesInOrder(db)
-        val expectedIds = modelRunData.internalIds
-        for (i in 0..2)
-        {
-            Assertions.assertThat(records[i][Tables.BURDEN_ESTIMATE.MODEL_RUN]).isEqualTo(expectedIds[0])
-        }
-        for (i in 3..5)
-        {
-            Assertions.assertThat(records[i][Tables.BURDEN_ESTIMATE.MODEL_RUN]).isEqualTo(expectedIds[1])
-        }
-    }
-
-    protected fun getStochasticEstimatesInOrder(db: JooqContext): Result<Record>
-    {
-        // We order the rows coming back so they are in a guaranteed order. This allows
-        // us to write simple hardcoded expectations.
-        val t = Tables.BURDEN_ESTIMATE_STOCHASTIC
-        return db.dsl.select(t.BURDEN_ESTIMATE_SET, t.YEAR, t.AGE, t.VALUE, t.MODEL_RUN)
-                .select(Tables.BURDEN_OUTCOME.CODE)
-                .select(Tables.COUNTRY.ID)
-                .from(Tables.BURDEN_ESTIMATE_STOCHASTIC)
-                .join(Tables.BURDEN_OUTCOME)
-                .on(Tables.BURDEN_OUTCOME.ID.eq(Tables.BURDEN_ESTIMATE_STOCHASTIC.BURDEN_OUTCOME))
-                .join(Tables.COUNTRY).on(t.COUNTRY.eq(Tables.COUNTRY.NID))
-                .orderBy(Tables.BURDEN_ESTIMATE_STOCHASTIC.COUNTRY, Tables.BURDEN_OUTCOME.CODE)
-                .fetch()
-    }
-
-    protected fun checkStochasticRecord(
-            record: Record, setId: Int,
-            year: Short, age: Short, country: String,
-            outcomeCode: String, outcomeValue: Float
-    )
-    {
-        val t = Tables.BURDEN_ESTIMATE_STOCHASTIC
-        Assertions.assertThat(record[t.BURDEN_ESTIMATE_SET]).isEqualTo(setId)
-        Assertions.assertThat(record[Tables.COUNTRY.ID]).isEqualTo(country)
-        Assertions.assertThat(record[t.YEAR]).isEqualTo(year)
-        Assertions.assertThat(record[t.AGE]).isEqualTo(age)
-        Assertions.assertThat(record[Tables.BURDEN_OUTCOME.CODE]).isEqualTo(outcomeCode)
-        Assertions.assertThat(record[t.VALUE]).isEqualTo(outcomeValue)
-    }
-
-    protected val defaultStochasticProperties = CreateBurdenEstimateSet(
-            BurdenEstimateSetType(BurdenEstimateSetTypeCode.STOCHASTIC),
-            modelRunParameterSet = null
-    )
-
     data class ModelRunTestData(val runParameterSetId: Int, val runs: List<Pair<String, Int>>)
     {
         val externalIds = runs.map { (runId, _) -> runId }

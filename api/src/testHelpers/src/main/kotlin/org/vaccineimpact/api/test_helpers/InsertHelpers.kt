@@ -158,16 +158,32 @@ fun JooqContext.addVaccine(id: String, name: String? = null)
     }.store()
 }
 
-fun JooqContext.addScenarioDescription(id: String, description: String, disease: String, addDisease: Boolean = false)
+fun JooqContext.addScenarioDescription(id: String, description: String,
+                                       disease: String,
+                                       type: String = "default",
+                                       addDisease: Boolean = false)
 {
+
     if (addDisease)
     {
         addDisease(disease)
+    }
+    val scenarioType = this.dsl.selectFrom(SCENARIO_TYPE)
+            .where(SCENARIO_TYPE.ID.eq(type))
+            .singleOrNull()
+
+    if (scenarioType == null)
+    {
+        this.dsl.newRecord(SCENARIO_TYPE).apply {
+            this.id = type
+            this.name = type
+        }.store()
     }
     this.dsl.newRecord(SCENARIO_DESCRIPTION).apply {
         this.id = id
         this.description = description
         this.disease = disease
+        this.scenarioType = type
     }.store()
 }
 

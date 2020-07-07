@@ -13,8 +13,8 @@ fun main(args: Array<String>) {
         db.addDisease("YF", "Yellow Fever")
         db.addVaccine("YF", "Yellow Fever")
 
-        db.addScenarioDescription("yf-routine", "Yellow Fever, routine", "YF")
-        db.addScenarioDescription("yf-campaign", "Yellow Fever, campaign", "YF")
+        db.addScenarioDescription("yf-routine", "Yellow Fever, routine", "YF", "routine")
+        db.addScenarioDescription("yf-campaign", "Yellow Fever, campaign", "YF", "campaign")
 
         db.addGroup("IC-Garske", "Imperial Yellow Fever modelling group")
         db.addGroup("IC-Imaginary", "Imperial speculative modelling group")
