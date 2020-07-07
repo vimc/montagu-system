@@ -398,7 +398,7 @@ function addResponsibilities(db: Client) {
             BEGIN
                 INSERT INTO scenario_type (id, name)
                 VALUES ('default', 'default');
-                INSERT INTO scenario_description (id, description, disease, type)
+                INSERT INTO scenario_description (id, description, disease, scenario_type)
                 VALUES ('${scenarioId}', 'Yellow Fever scenario', 'yf', 'default');
                 INSERT INTO scenario (touchstone, scenario_description)
                 VALUES ('${touchstoneVersionId}', '${scenarioId}')
