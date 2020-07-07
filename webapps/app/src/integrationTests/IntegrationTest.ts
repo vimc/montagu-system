@@ -108,8 +108,9 @@ export function addScenario(db:Client, scenarioId: String, touchstoneVersionId: 
             DO $$
             BEGIN
                 INSERT INTO disease (id, name) VALUES ('yf', 'Yellow Fever');
-                INSERT INTO scenario_description (id, description, disease)
-                VALUES ('${scenarioId}', 'Yellow Fever scenario', 'yf');
+                INSERT INTO scenario_type (id, name) VALUES ('default', 'default');
+                INSERT INTO scenario_description (id, description, disease, scenario_type)
+                VALUES ('${scenarioId}', 'Yellow Fever scenario', 'yf', 'default');
                 INSERT INTO scenario (touchstone, scenario_description)
                 VALUES ('${touchstoneVersionId}', '${scenarioId}');       
             END $$;

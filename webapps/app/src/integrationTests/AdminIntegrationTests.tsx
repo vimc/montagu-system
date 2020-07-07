@@ -396,8 +396,10 @@ function addResponsibilities(db: Client) {
                 DECLARE set_id integer;
                 DECLARE burden_estimate_expectation_id integer;
             BEGIN
-                INSERT INTO scenario_description (id, description, disease)
-                VALUES ('${scenarioId}', 'Yellow Fever scenario', 'yf');
+                INSERT INTO scenario_type (id, name)
+                VALUES ('default', 'default');
+                INSERT INTO scenario_description (id, description, disease, scenario_type)
+                VALUES ('${scenarioId}', 'Yellow Fever scenario', 'yf', 'default');
                 INSERT INTO scenario (touchstone, scenario_description)
                 VALUES ('${touchstoneVersionId}', '${scenarioId}')
                 RETURNING id INTO scenario_id;
