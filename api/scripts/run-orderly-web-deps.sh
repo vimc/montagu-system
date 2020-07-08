@@ -11,6 +11,7 @@ root=$(realpath $here/..)
 if [[ -d $root/src/demo ]]
 then
   rm $root/src/demo -rf
+  rm $root/src/git -rf
 fi
 
 docker pull $ORDERLY_IMAGE
