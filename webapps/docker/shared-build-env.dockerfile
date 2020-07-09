@@ -57,3 +57,5 @@ RUN npm run generate-models
 # Main build starts here
 # --------------------------------
 COPY app .
+RUN mkdir -p docker
+COPY docker docker
