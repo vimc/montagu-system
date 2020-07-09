@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+ORG=vimc
+
+if [ "$BUILDKITE" = "true" ]; then
+    GIT_SHA=${BUILDKITE_COMMIT:0:7}
+else
+    GIT_SHA=$(git -C "$PACKAGE_ROOT" rev-parse --short=7 HEAD)
+fi
+
+if [ "$BUILDKITE" = "true" ]; then
+    GIT_BRANCH=$BUILDKITE_BRANCH
+else
+    GIT_BRANCH=$(git -C "$PACKAGE_ROOT" symbolic-ref --short HEAD)
+fi
+
+BUILD_ENV_TAG=$ORG/montagu-portal-shared-build-env:$GIT_SHA
+BUILD_ENV_NAME=montagu-portal-shared-build-env

@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:8-stretch
 
 # Install OpenJDK
 RUN echo 'deb http://deb.debian.org/debian stretch-backports main' > /etc/apt/sources.list.d/stretch-backports.list
@@ -35,25 +35,25 @@ WORKDIR /workspace
 
 # Install Gradle wrapper
 RUN mkdir -p src/webmodels/
-COPY ./src/webmodels/gradlew src/webmodels/
-COPY ./src/webmodels/gradle/ src/webmodels/gradle/
+COPY ./app/src/webmodels/gradlew src/webmodels/
+COPY ./app/src/webmodels/gradle/ src/webmodels/gradle/
 RUN ./src/webmodels/gradlew
 
 # Install Kotlin compiler
-COPY ./src/webmodels/build.gradle src/webmodels/
-COPY ./src/webmodels/settings.gradle src/webmodels/
+COPY ./app/src/webmodels/build.gradle src/webmodels/
+COPY ./app/src/webmodels/settings.gradle src/webmodels/
 RUN ./src/webmodels/gradlew
 
 # Install Node dependencies
-COPY package.json .
-COPY package-lock.json .
+COPY ./app/package.json .
+COPY ./app/package-lock.json .
 RUN npm install --quiet 2>&1
 
 # Generate Typescript models from montagu-webmodels
-COPY ./src/webmodels/ src/webmodels
+COPY ./app/src/webmodels/ src/webmodels
 RUN mkdir -p src/main/shared/models
 RUN npm run generate-models
 
 # Main build starts here
 # --------------------------------
-COPY . .
+COPY app .
