@@ -34,7 +34,7 @@ the API that tests are run against is stored in `./config/api_version`.
 The integration tests get run in three different ways:
 
 1. During development, using the method above.
-2. During the Webapp TeamCity build configuration. This runs the tests in
+2. During the Webapp BuildKite build configuration. This runs the tests in
    exactly the same way, but does so inside a Docker container that gives a
    consistent build environment. Additionally, during this same build, another
    Docker image is built that can be used to run the integration tests

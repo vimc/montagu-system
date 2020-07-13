@@ -10,7 +10,6 @@ interface Settings {
     isNoGuidanceTouchstone: (id: string) => boolean;
     isVersionOfStochasticTouchstone: (touchstoneId: string) => boolean;
     nonStochasticTouchstones: string[],
-    teamcityServiceMessages: boolean;
     admin: AdminSettings;
     contrib: ContribSettings;
     test: AppSpecificSettings;

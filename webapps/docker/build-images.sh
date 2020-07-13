@@ -11,7 +11,7 @@ echo "Beginning webapp build with:"
 echo "Branch: $git_branch"
 echo "Commit hash: $git_id"
 
-export MONTAGU_PORTAL_PROFILE=teamcity
+export MONTAGU_PORTAL_PROFILE=ci
 npm run test
 
 # Tell the tests where to find the database

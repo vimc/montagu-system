@@ -8,7 +8,6 @@ module.exports = {
             }
         }
     },
-    "testResultsProcessor": "jest-teamcity-reporter",
     "moduleNameMapper": {
         "environmentSettings": `<rootDir>/src/main/shared/settings/${process.env.MONTAGU_PORTAL_PROFILE || "development"}`,
         "appName": "<rootDir>/src/main/shared/settings/app/test.ts"
