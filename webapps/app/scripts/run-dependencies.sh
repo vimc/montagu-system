@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -ex
 
-export MONTAGU_API_VERSION=$(<config/api_version)
-export MONTAGU_DB_VERSION=$(<config/db_version)
+here=$(dirname $0)
+export MONTAGU_API_VERSION=$(<$here/../../config/api_version)
+export MONTAGU_DB_VERSION=$(<$here/../../config/db_version)
 
 ORDERLY_IMAGE="vimc/orderly:master"
 OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
