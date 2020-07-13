@@ -13,7 +13,7 @@ TAG_BRANCH=$NAME:$GIT_BRANCH
 
 # We build a docker image that inherits from the latest build env image
 # so here tag the image with the name used in the dockerfile
-docker tag -f $BUILD_ENV_TAG $BUILD_ENV_NAME
+docker tag $BUILD_ENV_TAG $BUILD_ENV_NAME
 
 docker build -f ./docker/integration-tests.dockerfile -t $TAG_SHA .
 docker tag $TAG_SHA $TAG_BRANCH
