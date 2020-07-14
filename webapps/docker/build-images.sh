@@ -3,7 +3,7 @@ set -e
 
 git_branch=$1
 git_id=$2
-registry=docker.montagu.dide.ic.ac.uk:5000
+org=vimc
 contrib_name=montagu-contrib-portal
 admin_name=montagu-admin-portal
 
@@ -26,8 +26,8 @@ function build {
     app_name=$2
     echo "Building $app_name portal image"
     docker build -f docker/run.dockerfile \
-        -t $registry/$image_name:$git_id \
-        -t $registry/$image_name:$git_branch \
+        -t $org/$image_name:$git_id \
+        -t $org/$image_name:$git_branch \
         --build-arg APP_NAME=$app_name \
         .
 }
@@ -41,7 +41,7 @@ function push {
 	docker push $id
 }
 
-push $registry/$contrib_name:$git_id
-push $registry/$contrib_name:$git_branch
-push $registry/$admin_name:$git_id
-push $registry/$admin_name:$git_branch
+push $org/$contrib_name:$git_id
+push $org/$contrib_name:$git_branch
+push $org/$admin_name:$git_id
+push $org/$admin_name:$git_branch

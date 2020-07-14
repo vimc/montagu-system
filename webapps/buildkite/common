@@ -14,4 +14,3 @@ else
 fi
 
 BUILD_ENV_TAG=$ORG/montagu-portal-shared-build-env:$GIT_SHA
-BUILD_ENV_NAME=montagu-portal-shared-build-env

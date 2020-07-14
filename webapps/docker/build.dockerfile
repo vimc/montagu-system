@@ -1,4 +1,5 @@
-FROM montagu-portal-shared-build-env
+ARG MONTAGU_GIT_ID="UNKNOWN"
+FROM vimc/montagu-portal-shared-build-env:$MONTAGU_GIT_ID
 
 ARG MONTAGU_GIT_ID="UNKNOWN"
 ARG MONTAGU_GIT_BRANCH="UNKNOWN"
