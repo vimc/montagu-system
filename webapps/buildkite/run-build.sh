@@ -17,7 +17,7 @@ docker tag $BUILD_ENV_TAG $BUILD_ENV_NAME
 
 # The main build env which builds and tests below
 docker build -f ./docker/build.dockerfile \
-    -t $PORTAL_BUILD_ENV:$GIT_ID \
+    -t $PORTAL_BUILD_ENV:$GIT_SHA \
     --build-arg MONTAGU_GIT_ID=$GIT_SHA \
     --build-arg MONTAGU_GIT_BRANCH=$GIT_BRANCH \
     .
@@ -30,4 +30,4 @@ docker run \
     -v $docker_auth_path:/root/.docker/config.json \
     -v /var/run/docker.sock:/var/run/docker.sock \
     --network=host \
-   $PORTAL_BUILD_ENV:$GIT_ID
+   $PORTAL_BUILD_ENV:$GIT_SHA
