@@ -25,5 +25,5 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - ${PWD}/demo:/orderly
-      - ${PWD}/config/orderlyweb:/etc/orderly/web
+      - $ROOT/demo:/orderly
+      - $ROOT/config/orderlyweb:/etc/orderly/web
