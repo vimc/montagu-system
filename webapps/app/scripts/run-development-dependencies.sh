@@ -12,7 +12,7 @@ function on_interrupt() {
 }
 
 # Generate test data
-image=$registry/montagu-generate-test-data:$MONTAGU_API_VERSION
+image=vimc/montagu-generate-test-data:$MONTAGU_API_VERSION
 docker pull $image
 docker run --rm --network=montagu_default $image
 

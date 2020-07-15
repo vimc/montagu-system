@@ -1,0 +1,29 @@
+version: '3'
+services:
+  proxy:
+    image: vimc/montagu-reverse-proxy-minimal:master
+    ports:
+      - 80:80
+    depends_on:
+      - api
+  api:
+    image: vimc/montagu-api:${MONTAGU_API_VERSION}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  db:
+    image: vimc/montagu-db:${MONTAGU_DB_VERSION}
+    ports:
+      - "5432:5432"
+    command: /etc/montagu/postgresql.test.conf
+  db_annex:
+    image: vimc/montagu-db:${MONTAGU_DB_VERSION}
+    command: /etc/montagu/postgresql.test.conf
+  orderly_web:
+    image: vimc/orderly-web:master
+    ports:
+      - "8888:8888"
+    volumes:
+      - $ROOT/demo:/orderly
+      - $ROOT/config/orderlyweb:/etc/orderly/web

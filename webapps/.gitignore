@@ -6,7 +6,7 @@ nohup\.out
 react-prototype/dist/*
 react-prototype/node_modules/*
 react-prototype/npm-debug\.log
-app/config/orderlyweb/go_signal
-app/demo
-app/git
+config/orderlyweb/go_signal
+demo
+git
 app/src/app

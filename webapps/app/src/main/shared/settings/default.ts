@@ -4,7 +4,6 @@ export const settings: Settings = {
     supportContact: "montagu-help@imperial.ac.uk",
     vimcEmail: "vimc@imperial.ac.uk",
     slackUrl: "https://vimc.slack.com/",
-    teamcityServiceMessages: false,
     isApplicantTouchstone: (id: string) => id.indexOf("rfp-") > -1,
     is2017Touchstone: (id: string) => id.indexOf("201710gavi-") === 0,
     is2019Touchstone: (id: string) => id.indexOf("201910") === 0,
