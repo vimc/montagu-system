@@ -5,6 +5,12 @@ HERE=$(dirname $0)
 
 PORTAL_BUILD_ENV=montagu-portal-build-env:$GIT_SHA
 
+# Clean up docker containers on exit
+trap on_exit EXIT
+function on_exit() {
+    ./$HERE/../app/scripts/clear-docker.sh
+}
+
 ./$HERE/../app/scripts/run-dependencies.sh
 ./$HERE/../app/scripts/add-test-accounts-for-integration-tests.sh
 

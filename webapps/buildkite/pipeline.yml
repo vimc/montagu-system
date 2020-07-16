@@ -9,9 +9,3 @@ steps:
 
   - label: ":construction_worker: Build and push integration test image"
     command: buildkite/make-integration-tests-image.sh
-
-  - wait
-
-  - label: ":hammer: Stop dependencies"
-    command: app/scripts/clear-docker.sh
-    allow_dependency_failure: true
