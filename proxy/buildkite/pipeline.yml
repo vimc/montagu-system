@@ -11,6 +11,9 @@ steps:
     command: scripts/run-build.sh
 
   - wait
-  # both previous steps are needed to actually run the tests
+
   - label: ":mag: Run integration tests"
     command: scripts/run-integration-tests.sh
+
+  - label: ":shipit: Build minimal test image"
+    command: dev/build-minimal-image.sh
