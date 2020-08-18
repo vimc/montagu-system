@@ -22,20 +22,20 @@ trap cleanup EXIT
 mkdir montagu_emails
 $here/run-dependencies.sh
 
-export REGISTRY=docker.montagu.dide.ic.ac.uk:5000
+export ORG=vimc
 
 echo "Generating SSL keypair"
 mkdir workspace
 docker run --rm \
     -v $PWD/workspace:/workspace \
-    $REGISTRY/montagu-cert-tool:master \
+    $ORG/montagu-cert-tool:master \
     gen-self-signed /workspace > /dev/null 2> /dev/null
 
 docker run -d \
 	-p "443:443" -p "80:80" \
 	--name reverse-proxy \
 	--network montagu_proxy\
-	$REGISTRY/montagu-reverse-proxy:$git_id 443 localhost
+	$ORG/montagu-reverse-proxy:$git_id 443 localhost
 
 docker run -d \
     -p "9113:9113" \

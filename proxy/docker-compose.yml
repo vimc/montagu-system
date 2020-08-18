@@ -7,7 +7,7 @@ x-logging: &log-journald
 
 services:
   api:
-    image: ${REGISTRY}/montagu-api:master
+    image: ${ORG}/montagu-api:master
     ports:
      - "8080:8080"
     networks:
@@ -18,7 +18,7 @@ services:
      - token_key_volume:/etc/montagu/api/token_key
      - ${PWD}/montagu_emails:/tmp/montagu_emails
   orderly_web_web:
-    image: ${REGISTRY}/orderly-web:mrc-316
+    image: ${ORG}/orderly-web:master
     networks:
      - proxy
     depends_on:
@@ -26,21 +26,21 @@ services:
     volumes:
      - orderly_volume:/orderly
   db:
-    image: ${REGISTRY}/montagu-db:master
+    image: ${ORG}/montagu-db:master
     ports:
      - "5432:5432"
     command: /etc/montagu/postgresql.test.conf
     networks:
      - proxy
   orderly:
-    image: ${REGISTRY}/orderly.server:master
+    image: ${ORG}/orderly.server:master
     volumes:
      - orderly_volume:/orderly
     command: --port 8321 --go-signal /orderly_go /orderly
     networks:
      - proxy
   contrib:
-    image: ${REGISTRY}/montagu-contrib-portal:master
+    image: ${ORG}/montagu-contrib-portal:master
     networks:
      - proxy
     depends_on:
@@ -49,13 +49,13 @@ services:
      - template_volume:/usr/share/nginx/html/templates
      - guidance_volume:/usr/share/nginx/html/guidance
   admin:
-    image: ${REGISTRY}/montagu-admin-portal:master
+    image: ${ORG}/montagu-admin-portal:master
     networks:
      - proxy
     depends_on:
      - api
   static:
-    image: ${REGISTRY}/montagu-static:master
+    image: ${ORG}/montagu-static:master
     networks:
      - proxy
     volumes:

@@ -3,7 +3,7 @@ set -ex
 
 here=$(dirname $0)
 
-export REGISTRY=docker.montagu.dide.ic.ac.uk:5000
+export ORG=vimc
 export TOKEN_KEY_PATH=$PWD/token_key
 
 function cleanup() {
@@ -30,13 +30,13 @@ docker exec montagu_orderly_1 touch /orderly_go
 docker exec montagu_db_1 montagu-wait.sh
 
 # Migrate the database
-migrate_image=$REGISTRY/montagu-migrate:master
+migrate_image=$ORG/montagu-migrate:master
 docker pull $migrate_image
 docker run --network=montagu_proxy $migrate_image
 
 # Generate test data if 'data' present as first param
 if [ "$1" = "data" ]; then
-  test_data_image=$REGISTRY/montagu-generate-test-data:master
+  test_data_image=$ORG/montagu-generate-test-data:master
   docker pull $test_data_image
   docker run --rm --network=montagu_proxy $test_data_image
 fi
@@ -44,20 +44,20 @@ fi
 # Always generate report test database
 rm demo -rf
 rm git -rf
-docker pull $REGISTRY/orderly:master
+docker pull $ORG/orderly:master
 docker run --rm \
   --entrypoint create_orderly_demo.sh \
   -u $UID \
   -v $PWD:/orderly \
   -w "/orderly" \
-  $REGISTRY/orderly:master \
+  $ORG/orderly:master \
   "."
 
 # Copy the demo db file to top level
 docker cp $PWD/demo/orderly.sqlite montagu_orderly_web_web_1:/orderly/orderly.sqlite
 
 # Migrate the orderlyweb tables
-ow_migrate_image=$REGISTRY/orderlyweb-migrate:master
+ow_migrate_image=$ORG/orderlyweb-migrate:master
 docker pull $ow_migrate_image
 docker run --rm --network=montagu_proxy \
   -v montagu_orderly_volume:/orderly \
