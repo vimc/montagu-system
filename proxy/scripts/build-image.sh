@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-registry=docker.montagu.dide.ic.ac.uk:5000
+org=vimc
 name=montagu-reverse-proxy
 
 # Deal with dependabot tags which look like
@@ -11,8 +11,8 @@ name=montagu-reverse-proxy
 # But docker does not like
 MONTAGU_GIT_BRANCH=$(echo $MONTAGU_GIT_BRANCH | sed 's;/;-;g')
 
-commit_tag=$registry/$name:$MONTAGU_GIT_ID
-branch_tag=$registry/$name:$MONTAGU_GIT_BRANCH
+commit_tag=$org/$name:$MONTAGU_GIT_ID
+branch_tag=$org/$name:$MONTAGU_GIT_BRANCH
 
 docker build -t $commit_tag -t $branch_tag .
 docker push $commit_tag

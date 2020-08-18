@@ -13,7 +13,7 @@ function cleanup() {
     docker-compose --project-name montagu down || true
 }
 
-export REGISTRY=docker.montagu.dide.ic.ac.uk:5000
+export ORG=vimc
 
 cleanup
 
@@ -25,7 +25,7 @@ mkdir workspace
 mkdir montagu_emails
 docker run --rm \
     -v $PWD/workspace:/workspace \
-    $REGISTRY/montagu-cert-tool:master \
+    $ORG/montagu-cert-tool:master \
     gen-self-signed /workspace > /dev/null 2> /dev/null
 
 $here/run-dependencies.sh
@@ -52,6 +52,7 @@ openssl dhparam -out workspace/dhparam.pem 1024
 docker cp workspace/certificate.pem reverse-proxy:/etc/montagu/proxy/
 docker cp workspace/ssl_key.pem reverse-proxy:/etc/montagu/proxy/
 docker cp workspace/dhparam.pem reverse-proxy:/etc/montagu/proxy/
+docker cp $here/../2020 reverse-proxy:/usr/share/nginx/html
 rm -rf workspace
 
 sleep 2s
