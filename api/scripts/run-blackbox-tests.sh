@@ -7,8 +7,9 @@ root=$(realpath $here/..)
 export MONTAGU_API_VERSION=$(git rev-parse --short=7 HEAD)
 export MONTAGU_DB_VERSION=$(<src/config/db_version)
 MONTAGU_API_BRANCH=$(git symbolic-ref --short HEAD)
+ORG=vimc
 registry=docker.montagu.dide.ic.ac.uk:5000
-migrate_image=$registry/montagu-migrate:$MONTAGU_DB_VERSION
+migrate_image=$ORG/montagu-migrate:$MONTAGU_DB_VERSION
 
 $here/run-orderly-web-deps.sh
 
