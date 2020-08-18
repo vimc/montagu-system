@@ -16,4 +16,4 @@ steps:
     command: scripts/run-integration-tests.sh
 
   - label: ":shipit: Build minimal test image"
-    command: dev/build-minimal-image.sh
+    command: dev/run-build-minimal.sh

@@ -1,18 +1,17 @@
-#!/usr/bin/env bash
+ #!/usr/bin/env bash
 set -ex
-
-git_id=$(git rev-parse --short=7 HEAD)
-git_branch=$(git symbolic-ref --short HEAD | sed 's;/;-;g')
+HERE=$(dirname $0)
+. $HERE/../scripts/common
 
 docker build -f dev/buildMinimal.dockerfile \
     -t montagu-reverse-proxy-build-minimal-env \
-    --build-arg MONTAGU_GIT_ID=$git_id \
-    --build-arg MONTAGU_GIT_BRANCH=$git_branch \
+    --build-arg MONTAGU_GIT_ID=$GIT_SHA \
+    --build-arg MONTAGU_GIT_BRANCH=$GIT_BRANCH \
     .
 
 # This is the path for teamcity agents. If running locally, pass in your own docker config location
 # i.e. /home/{user}/.docker/config.json
-docker_auth_path=${1:-/opt/teamcity-agent/.docker/config.json}
+docker_auth_path=${1:-/var/lib/buildkite-agent/.docker/config.json}
 
 docker run \
     -v $docker_auth_path:/root/.docker/config.json \
