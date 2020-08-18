@@ -39,7 +39,7 @@ docker exec db pg_dump --user=vimc -Fc --no-privileges montagu > ./test-data.bin
 
 # Tag and push
 docker_tag=$registry/$name
-public_docker_tag=$public_registry/$name
+public_docker_tag=$org/$name
 
 commit_tag=$docker_tag:$commit
 branch_tag=$docker_tag:$branch
