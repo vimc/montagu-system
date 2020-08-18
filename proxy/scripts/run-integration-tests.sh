@@ -7,13 +7,13 @@ function cleanup() {
     # Pull down old containers
     rm -rf workspace || true
     rm -rf montagu_emails || true
-    $here/clear-docker.sh
+    $HERE/clear-docker.sh
 }
 
 trap cleanup EXIT
 
 mkdir montagu_emails
-$here/run-dependencies.sh
+$HERE/run-dependencies.sh
 
 export ORG=vimc
 
