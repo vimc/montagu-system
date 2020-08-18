@@ -10,7 +10,7 @@ function cleanup() {
     docker-compose --project-name montagu down || true
 }
 
-trap cleanup ERR
+trap cleanup EXIT
 
 # Run up all the APIs and Portals which are to be proxied
 docker volume rm montagu_orderly_volume -f

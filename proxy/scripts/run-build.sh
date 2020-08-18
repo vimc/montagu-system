@@ -9,4 +9,4 @@ docker run \
     -v $docker_auth_path:/root/.docker/config.json \
     -v /var/run/docker.sock:/var/run/docker.sock \
     --network=host \
-    montagu-reverse-proxy-build-env
+    $BUILD_ENV_TAG
