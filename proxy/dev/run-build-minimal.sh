@@ -3,7 +3,6 @@ set -ex
 
 git_id=$(git rev-parse --short=7 HEAD)
 git_branch=$(git symbolic-ref --short HEAD | sed 's;/;-;g')
-REGISTRY=docker.montagu.dide.ic.ac.uk:5000
 
 docker build -f dev/buildMinimal.dockerfile \
     -t montagu-reverse-proxy-build-minimal-env \
