@@ -5,17 +5,17 @@ registry_public=vimc
 registry=docker.montagu.dide.ic.ac.uk:5000
 name=montagu-reverse-proxy-minimal
 
-commit_tag=$registry/$name:$MONTAGU_GIT_ID
-branch_tag=$registry/$name:$MONTAGU_GIT_BRANCH
-
-public_branch_tag=$registry_public/$name:$MONTAGU_GIT_BRANCH
-
 # Deal with dependabot tags which look like
 #
 #   dependabot/npm_and_yarn/app/lodash-4.17.19
 #
 # But docker does not like
-branch_tag=$(echo $branch_tag | sed 's;/;-;g')
+MONTAGU_GIT_BRANCH=$(echo $MONTAGU_GIT_BRANCH | sed 's;/;-;g')
+
+commit_tag=$registry/$name:$MONTAGU_GIT_ID
+branch_tag=$registry/$name:$MONTAGU_GIT_BRANCH
+
+public_branch_tag=$registry_public/$name:$MONTAGU_GIT_BRANCH
 
 docker build -t $commit_tag -t $branch_tag .
 docker push $commit_tag
