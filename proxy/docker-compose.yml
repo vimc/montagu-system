@@ -55,7 +55,7 @@ services:
     depends_on:
      - api
   static:
-    image: ${ORG}/montagu-static:master
+    image: docker.montagu.dide.ic.ac.uk:5000/montagu-static:master
     networks:
      - proxy
     volumes:
