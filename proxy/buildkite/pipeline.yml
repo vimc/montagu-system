@@ -7,15 +7,15 @@ steps:
   - label: ":construction_worker: Build main build env image"
     command: scripts/make-build-env.sh
 
+  - wait
+  # run these 2 longer running steps in parallel
   - label: ":construction_worker: Build integration test image"
     command: scripts/make-integration-test-image.sh
-
-  - wait
 
   - label: ":shipit: Build and push main image"
     command: scripts/run-build.sh
 
   - wait
-
+  # both previous steps are needed to actually run the tests
   - label: ":mag: Run integration tests"
     command: scripts/run-integration-tests.sh
