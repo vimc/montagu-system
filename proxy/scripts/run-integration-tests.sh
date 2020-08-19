@@ -1,26 +1,19 @@
-#!/usr/bin/env bash
-set -ex
-
-here=$(dirname $0)
-
-git_id=$(git rev-parse --short=7 HEAD)
-git_branch=$(git symbolic-ref --short HEAD | sed 's;/;-;g')
+ #!/usr/bin/env bash
+set -e
+HERE=$(dirname $0)
+. $HERE/common
 
 function cleanup() {
     # Pull down old containers
     rm -rf workspace || true
     rm -rf montagu_emails || true
-    docker stop reverse-proxy || true
-    docker rm reverse-proxy || true
-    docker stop montagu-metrics || true
-    docker rm montagu-metrics || true
-    docker-compose --project-name montagu down || true
+    $HERE/clear-docker.sh
 }
 
 trap cleanup EXIT
 
 mkdir montagu_emails
-$here/run-dependencies.sh
+$HERE/run-dependencies.sh
 
 export ORG=vimc
 
@@ -35,7 +28,7 @@ docker run -d \
 	-p "443:443" -p "80:80" \
 	--name reverse-proxy \
 	--network montagu_proxy\
-	$ORG/montagu-reverse-proxy:$git_id 443 localhost
+	$SHA_TAG 443 localhost
 
 docker run -d \
     -p "9113:9113" \
@@ -56,7 +49,7 @@ rm -rf workspace
 sleep 2s
 
 docker run \
+  --rm \
 	--network host \
 	-v ${PWD}/montagu_emails:/workspace/montagu_emails \
-	montagu-reverse-proxy-integration-tests
-
+	$INTEGRATION_TESTS_TAG
