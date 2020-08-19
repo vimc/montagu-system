@@ -10,7 +10,7 @@ docker build -f build.dockerfile \
     --build-arg MONTAGU_GIT_BRANCH=$GIT_BRANCH \
     .
 
-# This is the path for teamcity agents. If running locally, pass in your own docker config location
+# This is the path for buildkite agents. If running locally, pass in your own docker config location
 # i.e. /home/{user}/.docker/config.json
 docker_auth_path=${1:-/var/lib/buildkite-agent/.docker/config.json}
 

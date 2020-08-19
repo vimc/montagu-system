@@ -41,12 +41,13 @@ To run integration tests:
 
 Jest will pick up tests in files with the `.itest.js` extension.
 
-## Teamcity
-1. `./scripts/make-build-env.sh`: makes a shared base image containing all npm dependencies, the main build env image
- which also runs the unit tests, and the integration tests image which contains all selenium test dependencies
-1. `./scripts/run-build.sh`: runs the build env image from the previous step which dockerises and pushes the app image 
+## Buildkite
+1. `./scripts/make-shared-build-env.sh`: makes a shared base image containing all npm dependencies
+1. `./scripts/make-integration-test-image.sh` makes the integration tests image which contains all selenium test 
+dependencies
+1. `./scripts/run-build.sh`: creates and runs the main build env image which dockerises and pushes the app image 
 to docker hub
 1. `./scripts/run-integration-tests.sh`: runs the app image created in the previous step along with all dependencies and 
-then runs the integration tests image created in step 1.
+then runs the integration tests image created in step 2.
 1. `./dev/run-build-minimal.sh`: builds an image `montagu-reverse-proxy-minimal` that just provides login functionality.
  This is used for testing OrderlyWeb login integration without having to run an entire Montagu deployment.
