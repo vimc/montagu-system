@@ -23,7 +23,8 @@ export const usersActionCreators = {
 
     getAllUsers() {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
-            const users: User[] = await (new UsersService(dispatch, getState)).getAllUsers();
+            const allUsers: User[] = await (new UsersService(dispatch, getState)).getAllUsers();
+            const users = allUsers.filter(u => u.username !== "MONTAGU_TASK_QUEUE");
             dispatch({
                 type: UsersTypes.ALL_USERS_FETCHED,
                 data: users
