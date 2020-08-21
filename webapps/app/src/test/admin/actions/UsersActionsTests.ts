@@ -66,7 +66,7 @@ describe("Admin Users actions tests", () => {
         store.dispatch(usersActionCreators.getAllUsers());
         setTimeout(() => {
             const actions = store.getActions();
-            const expectedPayload = {type: UsersTypes.ALL_USERS_FETCHED, data: [testUser2, testUser1]};
+            const expectedPayload = {type: UsersTypes.ALL_USERS_FETCHED, data: [testUser2, testUser]};
             expect(actions).toEqual([expectedPayload]);
             done();
         });
