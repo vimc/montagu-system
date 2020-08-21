@@ -11,6 +11,10 @@ root=$(realpath $here/..)
 if [[ -d $root/src/demo ]]
 then
   rm $root/src/demo -rf
+fi
+
+if  [[ -d $root/src/git ]]
+then
   rm $root/src/git -rf
 fi
 
