@@ -59,7 +59,7 @@ describe("Admin Users actions tests", () => {
 
     it("get all users excludes system task queue user", (done) => {
         sandbox.setStubFunc(UsersService.prototype, "getAllUsers", () => {
-            const tqUser = mockUser({username: "MOCK_TASK_QUEUE"});
+            const tqUser = mockUser({username: "MONTAGU_TASK_QUEUE"});
             return Promise.resolve([testUser2, tqUser, testUser]);
         });
 
