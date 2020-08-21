@@ -11,6 +11,10 @@ root=$(realpath $here/..)
 if [[ -d $root/src/demo ]]
 then
   rm $root/src/demo -rf
+fi
+
+if  [[ -d $root/src/git ]]
+then
   rm $root/src/git -rf
 fi
 
@@ -19,7 +23,6 @@ docker run --rm --entrypoint create_orderly_demo.sh -v "$root/src:/orderly" -u $
 
 
 # migrate to add orderlyweb tables
-echo Migrating orderlyweb tables
 docker pull $OW_MIGRATE_IMAGE
 docker run --rm -v "$root/src/demo:/orderly" $OW_MIGRATE_IMAGE
 
