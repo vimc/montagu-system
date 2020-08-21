@@ -9,9 +9,9 @@ set -ex
 DB_VERSION=master
 PORT_MAPPING="-p 5432:5432"
 PG_CONFIG=/etc/montagu/postgresql.test.conf
-REGISTRY=vimc
-DB_IMAGE=$REGISTRY/montagu-db:$DB_VERSION
-MIGRATE_IMAGE=$REGISTRY/montagu-migrate:$DB_VERSION
+ORG=vimc
+DB_IMAGE=$ORG/montagu-db:$DB_VERSION
+MIGRATE_IMAGE=$ORG/montagu-migrate:$DB_VERSION
 
 DB_CONTAINER=db
 NETWORK=db_nw
