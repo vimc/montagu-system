@@ -57,6 +57,21 @@ describe("Admin Users actions tests", () => {
         });
     });
 
+    it("get all users excludes system task queue user", (done) => {
+        sandbox.setStubFunc(UsersService.prototype, "getAllUsers", () => {
+            const tqUser = mockUser({username: "MONTAGU_TASK_QUEUE"});
+            return Promise.resolve([testUser2, tqUser, testUser]);
+        });
+
+        store.dispatch(usersActionCreators.getAllUsers());
+        setTimeout(() => {
+            const actions = store.getActions();
+            const expectedPayload = {type: UsersTypes.ALL_USERS_FETCHED, data: [testUser2, testUser]};
+            expect(actions).toEqual([expectedPayload]);
+            done();
+        });
+    });
+
     it("gets global roles", (done) => {
 
         sandbox.setStubFunc(UsersService.prototype, "getGlobalRoles", () => {
