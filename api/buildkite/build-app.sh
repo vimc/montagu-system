@@ -3,8 +3,7 @@ set -ex
 HERE=$(dirname $0)
 . $HERE/common
 
-# In case we switch agents between steps
-[ ! -z $(docker images -q $BUILD_ENV_TAG) ] || docker pull $BUILD_ENV_TAG
+$HERE/pull-build-env.sh
 
 # This is the path for Buildkite agents. If running locally, pass in your own docker config location
 # i.e. /home/{user}/.docker/config.json

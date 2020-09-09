@@ -10,14 +10,14 @@ steps:
   - label: ":shipit: Generate test data"
     command: buildkite/generate-test-data.sh
 
-#  - wait
-#
-#  - label: "shipit: Build app"
-#    command: buildkite/build-app.sh
-#
-#  - label: "shipit: Build CLI"
-#    command: buildkite/build-cli.sh
-#
+  - wait
+
+  - label: ":shipit: Build app"
+    command: buildkite/build-app.sh
+
+  - label: ":shipit: Build CLI"
+    command: buildkite/build-cli.sh
+
 #  - wait
 #
 #  - label: "mag: Run blackbox tests"
