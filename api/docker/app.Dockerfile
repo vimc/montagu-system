@@ -1,6 +1,6 @@
-FROM montagu-api-build-environment
+ARG git_id="UNKNOWN"
+FROM vimc/montagu-api-build-environment:$git_id
 
-ARG git_id='UNKNOWN'
 ARG git_branch='UNKNOWN'
 ARG registry=docker.montagu.dide.ic.ac.uk:5000
 ARG name=montagu-api

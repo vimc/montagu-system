@@ -3,6 +3,8 @@ set -ex
 HERE=$(dirname $0)
 . $HERE/common
 
+$HERE/pull-build-env.sh
+
 NAME=montagu-generate-test-data
 TAG=$ORG/$NAME
 COMMIT_TAG=$TAG:$GIT_SHA

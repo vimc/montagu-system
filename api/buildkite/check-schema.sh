@@ -3,6 +3,8 @@ set -ex
 HERE=$(dirname $0)
 . $HERE/common
 
+$HERE/pull-build-env.sh
+
 SCHEMA_CHECK=montagu-api-schema-check
 
 docker build -f ./docker/check-schema.Dockerfile \

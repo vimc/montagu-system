@@ -1,5 +1,4 @@
-ARG libsodium_image=vimc/openjdk-libsodium:vimc-4258
-FROM $libsodium_image
+FROM vimc/openjdk-libsodium:vimc-4258
 
 # Install docker
 RUN apt-get update
