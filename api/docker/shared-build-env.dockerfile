@@ -1,4 +1,4 @@
-ARG libsodium_image=docker.montagu.dide.ic.ac.uk:5000/openjdk-libsodium:master
+ARG libsodium_image=vimc/openjdk-libsodium:vimc-4258
 FROM $libsodium_image
 
 # Install docker
