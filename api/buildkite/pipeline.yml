@@ -7,15 +7,15 @@ steps:
   - label: ":mag: Check schema"
     command: buildkite/check-schema.sh
 
-  - label: ":shipit: Generate test data"
+  - label: ":mag::shipit: Generate test data"
     command: buildkite/generate-test-data.sh
 
   - wait
 
-  - label: ":shipit: Build app"
+  - label: ":mag::shipit: Build app"
     command: buildkite/build-app.sh
 
-  - label: ":shipit: Build CLI"
+  - label: ":mag::shipit: Build CLI"
     command: buildkite/build-cli.sh
 
 #  - wait

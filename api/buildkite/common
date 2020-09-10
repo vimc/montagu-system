@@ -22,4 +22,15 @@ GIT_BRANCH=$(echo $GIT_BRANCH | sed 's;/;-;g')
 
 BUILD_ENV_TAG=$ORG/montagu-api-shared-build-env:$GIT_SHA
 
+# Arguments for running test dependencies
 DB_VERSION=$(<src/config/db_version)
+DB_PORT=5432
+NETWORK=test_nw
+
+# Teardown on exit
+function cleanup() {
+  set +e
+  docker stop db
+  docker network rm $NETWORK
+}
+trap cleanup EXIT

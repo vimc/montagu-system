@@ -2,5 +2,4 @@
 set -e
 
 here=$(dirname $0)
-$here/../db/scripts/stop.sh
-
+$here/../db/scripts/stop.sh $NETWORK
