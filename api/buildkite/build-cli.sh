@@ -3,8 +3,6 @@ set -ex
 HERE=$(dirname $0)
 . $HERE/common
 
-$HERE/pull-build-env.sh
-
 # This is the path for Buildkite agents. If running locally, pass in your own docker config location
 # i.e. /home/{user}/.docker/config.json
 DOCKER_AUTH_PATH=${1:-/var/lib/buildkite-agent/.docker/config.json}

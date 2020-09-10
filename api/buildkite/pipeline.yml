@@ -7,10 +7,10 @@ steps:
   - label: ":mag: Check schema"
     command: buildkite/check-schema.sh
 
-  - label: ":mag::shipit: Generate test data"
-    command: buildkite/generate-test-data.sh
-
   - wait
+
+  - label: ":shipit: Build test data image"
+    command: buildkite/generate-test-data.sh
 
   - label: ":mag::shipit: Build app"
     command: buildkite/build-app.sh
@@ -18,7 +18,7 @@ steps:
   - label: ":mag::shipit: Build CLI"
     command: buildkite/build-cli.sh
 
-#  - wait
-#
-#  - label: "mag: Run blackbox tests"
-#    command: buildkite/run-blackbox-tests.sh
+  - wait
+
+  - label: ":mag: Run blackbox tests"
+    command: buildkite/run-blackbox-tests.sh
