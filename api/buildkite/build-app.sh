@@ -5,7 +5,7 @@ HERE=$(dirname $0)
 
 # This is the path for Buildkite agents. If running locally, pass in your own docker config location
 # i.e. /home/{user}/.docker/config.json
-DOCKER_AUTH_PATH=${1:-/var/lib/buildkite-agent/.docker/config.json}
+DOCKER_AUTH_PATH=${1:-$BUILDKITE_DOCKER_AUTH_PATH}
 
 # Create an image based on the shared build env that compiles, tests and dockerises
 # the app

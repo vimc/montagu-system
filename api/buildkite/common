@@ -20,6 +20,7 @@ fi
 # But docker does not like
 GIT_BRANCH=$(echo $GIT_BRANCH | sed 's;/;-;g')
 
+BUILDKITE_DOCKER_AUTH_PATH=/var/lib/buildkite-agent/.docker/config.json
 BUILD_ENV_TAG=$ORG/montagu-api-shared-build-env:$GIT_SHA
 
 # Export env vars needed for running test dependencies
