@@ -3,4 +3,5 @@
 set -ex
 HERE=$(dirname $0)
 export DB_VERSION=$(<src/config/db_version)
+export DB_PORT=5432
 $HERE/../scripts/start-database.sh
