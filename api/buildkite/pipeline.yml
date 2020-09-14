@@ -1,0 +1,24 @@
+steps:
+  - label: ":construction_worker: Make shared build env"
+    command: buildkite/make-build-env.sh
+
+  - wait
+
+  - label: ":mag: Check schema"
+    command: buildkite/check-schema.sh
+
+  - wait
+
+  - label: ":shipit: Build test data image"
+    command: buildkite/generate-test-data.sh
+
+  - label: ":mag::shipit: Build app"
+    command: buildkite/build-app.sh
+
+  - label: ":mag::shipit: Build CLI"
+    command: buildkite/build-cli.sh
+
+  - wait
+
+  - label: ":mag: Run blackbox tests"
+    command: buildkite/run-blackbox-tests.sh

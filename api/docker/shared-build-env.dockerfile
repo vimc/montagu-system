@@ -1,5 +1,4 @@
-ARG libsodium_image=docker.montagu.dide.ic.ac.uk:5000/openjdk-libsodium:master
-FROM $libsodium_image
+FROM vimc/openjdk-libsodium:vimc-4258
 
 # Install docker
 RUN apt-get update

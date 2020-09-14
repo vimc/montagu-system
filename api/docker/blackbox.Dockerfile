@@ -1,5 +1,4 @@
-ARG libsodium_image=docker.montagu.dide.ic.ac.uk:5000/openjdk-libsodium:master
-FROM $libsodium_image
+FROM vimc/openjdk-libsodium:vimc-4258
 
 # Setup gradle
 COPY src/gradlew /api/src/
@@ -11,7 +10,7 @@ RUN ./gradlew
 COPY ./src/build.gradle /api/src/
 COPY ./src/settings.gradle /api/src/
 COPY ./src/config/ /api/src/config/
-RUN echo 'docker' > config/current_user
+RUN echo 'blackbox' > config/current_user
 RUN ./gradlew
 
 # Do our build
