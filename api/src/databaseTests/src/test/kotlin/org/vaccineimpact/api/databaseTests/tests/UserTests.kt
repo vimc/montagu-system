@@ -396,8 +396,9 @@ class UserTests : RepositoryTests<UserRepository>()
         }).check { repo ->
             val expectedUser = User("testuser", "Test User", "test1@test.com", null)
             val results = repo.all().toList()
+                    .filter { it.username != "task.user" } // may also include task q user
 
-            assertThat(results.count()).isGreaterThanOrEqualTo(2) // may also include task q user
+            assertThat(results.count()).isEqualTo(2)
             assertThat(results[0]).isEqualToComparingFieldByField(expectedUser)
         }
     }
@@ -467,9 +468,9 @@ class UserTests : RepositoryTests<UserRepository>()
                     null, expectedRoles2)
 
             val results = repo.allWithRoles()
+                    .filter { it.username != "task.user" } // may also include task q user
 
-            assertThat(results.count()).isGreaterThanOrEqualTo(2) // also includes task q user
-
+            assertThat(results.count()).isEqualTo(2)
             checkUserWithRoles(results[0], expectedUser, expectedRoles1)
             checkUserWithRoles(results[1], expectedUser2, expectedRoles2)
 
