@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 set -ex
-docker kill orderly-web
+HERE=$(dirname $0)
+
+orderly-web stop $HERE --kill --force

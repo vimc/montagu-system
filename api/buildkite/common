@@ -31,10 +31,9 @@ export GIT_SHA=$GIT_SHA
 
 # Teardown on exit
 function cleanup() {
-  set +e
-  docker stop db || true
-  docker stop api || true
-  docker stop orderly-web || true
+  $HERE/../scripts/stop-database.sh
+  $HERE/../scripts/stop-api.sh
+  $HERE/../scripts/stop-orderly-web.sh
   docker network rm $NETWORK || true
 }
 trap cleanup EXIT

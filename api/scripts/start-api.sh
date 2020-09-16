@@ -12,7 +12,7 @@ if [[ -z $NETWORK ]]; then
   NETWORK=host
 else
   # if running on a network, need this config to be able to talk to orderlyweb
-  CONFIG_PATH=$(realpath $HERE/../src/config/blackboxTests/api/config.properties)
+  CONFIG_PATH=$(realpath $HERE/../src/config/blackboxTests/config.properties)
 fi
 
 API_IMAGE=vimc/montagu-api:$VERSION

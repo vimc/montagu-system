@@ -3,7 +3,6 @@ package org.vaccineimpact.api.validateSchema
 import org.assertj.core.api.Assertions.assertThat
 import org.commonmark.parser.Parser
 import org.junit.Test
-import org.vaccineimpact.api.test_helpers.TeamCityHelper
 
 class SchemaValidator
 {
@@ -13,9 +12,7 @@ class SchemaValidator
         val allSpecFiles = ResourceHelper.getResourcesInFolder("docs/spec/", matching = Regex(".md$"))
         for (specFile in allSpecFiles)
         {
-            TeamCityHelper.asSuite(specFile) {
-                validateSpecFile(specFile)
-            }
+            validateSpecFile(specFile)
         }
         println("☺️\n")
     }
@@ -36,20 +33,19 @@ class SchemaValidator
         for (endpoint in endpoints)
         {
             println("Checking $endpoint:")
-            TeamCityHelper.asTest(endpoint.toString().replace(":", "")) {
-                if (!endpoint.isMetaBlock)
-                {
-                    assertThat(urlRegex.matches(endpoint.urlTemplate))
-                            .`as`("'${endpoint.urlTemplate}' did not match expected regex. URL must consist only of " +
-                                    "letters, hyphens, and slashes, and must begin and end with a slash. Full " +
-                                    "regex: $urlRegex  ")
-                            .isTrue()
-                }
-                for (requestSchema in endpoint.requestSchemas)
-                {
-                    println("Checking [${requestSchema.schemaPath}] against ${requestSchema.example}")
-                    validator.validateExampleAgainstSchema(requestSchema.example, requestSchema.schema)
-                }
+
+            if (!endpoint.isMetaBlock)
+            {
+                assertThat(urlRegex.matches(endpoint.urlTemplate))
+                        .`as`("'${endpoint.urlTemplate}' did not match expected regex. URL must consist only of " +
+                                "letters, hyphens, and slashes, and must begin and end with a slash. Full " +
+                                "regex: $urlRegex  ")
+                        .isTrue()
+            }
+            for (requestSchema in endpoint.requestSchemas)
+            {
+                println("Checking [${requestSchema.schemaPath}] against ${requestSchema.example}")
+                validator.validateExampleAgainstSchema(requestSchema.example, requestSchema.schema)
             }
         }
     }

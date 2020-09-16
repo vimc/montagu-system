@@ -1,0 +1,37 @@
+container_prefix: orderly_web
+
+# if no other network specified, use the default db network
+network: db_nw
+
+volumes:
+  orderly: orderly_volume
+
+orderly:
+  image:
+    repo: vimc
+    name: orderly.server
+    tag: master
+  initial:
+    source: clone
+    url: https://github.com/vimc/orderly-demo
+
+web:
+  image:
+    repo: vimc
+    name: orderly-web
+    tag: master
+    migrate: orderlyweb-migrate
+    admin: orderly-web-user-cli
+  url: https://localhost
+  dev_mode: true
+  port: 8888
+  name: OrderlyWeb
+  email: admin@example.com
+  auth:
+    fine_grained: true
+    montagu: true
+    montagu_url: http://api:8080
+    montagu_api_url: http://api:8080/v1
+
+proxy:
+  enabled: false

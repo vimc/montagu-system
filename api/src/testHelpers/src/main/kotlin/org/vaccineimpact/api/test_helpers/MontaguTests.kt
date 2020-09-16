@@ -4,6 +4,5 @@ import org.junit.Rule
 
 abstract class MontaguTests
 {
-    @get:Rule
-    val teamCityIntegration = TeamCityIntegration()
+
 }
