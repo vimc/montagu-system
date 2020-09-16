@@ -34,6 +34,7 @@ function cleanup() {
   $HERE/../scripts/stop-database.sh
   $HERE/../scripts/stop-api.sh
   $HERE/../scripts/stop-orderly-web.sh
+  $HERE/../scripts/stop-task-queue.sh
   docker network rm $NETWORK || true
 }
 trap cleanup EXIT

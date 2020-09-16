@@ -11,7 +11,7 @@ BRANCH_TAG=$TAG:$GIT_BRANCH
 # Run test dependencies
 $HERE/../scripts/start-database.sh
 $HERE/../scripts/start-orderly-web.sh
-$HERE/../scripts/start-api.sh
+$HERE/../scripts/start-api.sh $GIT_SHA
 
 # Build an image that can run blackbox tests
 docker build -f ./docker/blackbox.Dockerfile -t $NAME .

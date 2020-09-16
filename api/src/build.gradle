@@ -81,12 +81,28 @@ task startOrderlyWeb(type: Exec) {
     commandLine 'bash', '../scripts/start-orderly-web.sh'
 }
 
+task startTaskQueue(type: Exec) {
+    commandLine 'bash', '../scripts/start-task-queue.sh'
+}
+
+task startTestAPI(type: Exec) {
+    commandLine 'bash', '../scripts/start-api.sh'
+}
+
 task stopDatabase(type: Exec) {
     commandLine 'bash', '../scripts/stop-database.sh'
 }
 
 task stopOrderlyWeb(type: Exec) {
     commandLine 'bash', '../scripts/stop-orderly-web.sh'
+}
+
+task stopTaskQueue(type: Exec) {
+    commandLine 'bash', '../scripts/stop-task-queue.sh'
+}
+
+task stopTestAPI(type: Exec) {
+    commandLine 'bash', '../scripts/stop-api.sh'
 }
 
 subprojects {
