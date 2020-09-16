@@ -24,9 +24,12 @@ before_script:
   - sudo mkdir -p /etc/montagu/api/ && sudo touch /etc/montagu/api/go_signal
   - ./src/gradlew -p src :startDatabase :startOrderlyWeb
 script:
-  - ./src/gradlew -p src :testLibrary :stopDatabase :stopOrderlyWeb
-  - ./src/gradlew -p src :startDatabase
+  - ./src/gradlew -p src :testLibrary
+# need to stop and re-start orderly-web on host network for blackbox tests against app running on metal
+  - ./scripts/stop-orderly-web.sh
   - ./scripts/start-orderly-web.sh host
+  - nohup ./src/gradlew -p src :run > /dev/null 2>&1 &
+  - ./src/gradlew -p src :blackboxTests:test
 after_success:
   - ./src/gradlew -p src :app:jacocoTestReport
   - ./src/gradlew -p src :blackboxTests:jacocoTestReport

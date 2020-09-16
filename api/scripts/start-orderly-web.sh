@@ -10,6 +10,7 @@ if [[ ! -z $NETWORK ]]; then
 fi
 
 if [[ ! -z $HOST ]]; then
+  # this is used if running the app on metal for running local blackbox tests
   OPTION_MAPPING="--option network=host --option web.auth.montagu_url=http://localhost:8080 --option web.auth.montagu_api_url=http://localhost:8080/v1"
 fi
 
