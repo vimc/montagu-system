@@ -4,6 +4,8 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.mockito.Mockito
+import org.vaccineimpact.api.app.clients.CeleryClient
+import org.vaccineimpact.api.app.clients.TaskQueueClient
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimatesController
@@ -128,8 +130,11 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
             on { params(":scenario-id") } doReturn scenarioId
         }
         val mockResponsibilitiesLogic = mock<ResponsibilitiesLogic>()
-        BurdenEstimatesController(mockContext, logic, repo, mockResponsibilitiesLogic).closeBurdenEstimateSet()
+        val mockTaskQueueClient = mock<TaskQueueClient>()
+        BurdenEstimatesController(mockContext, logic, repo, mockResponsibilitiesLogic, mockTaskQueueClient)
+                .closeBurdenEstimateSet()
         verify(logic).closeBurdenEstimateSet(1, groupId, touchstoneVersionId, scenarioId)
+        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId)
         verifyValidResponsibilityPathChecks(mockResponsibilitiesLogic, mockContext)
     }
 
@@ -147,7 +152,7 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
             on { params(":scenario-id") } doReturn scenarioId
         }
         val mockResponsibilitiesLogic = mock<ResponsibilitiesLogic>()
-        val result = BurdenEstimatesController(mockContext, logic, repo, mockResponsibilitiesLogic)
+        val result = BurdenEstimatesController(mockContext, logic, repo, mockResponsibilitiesLogic, mock())
                 .closeBurdenEstimateSet()
         assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
         verifyValidResponsibilityPathChecks(mockResponsibilitiesLogic, mockContext)

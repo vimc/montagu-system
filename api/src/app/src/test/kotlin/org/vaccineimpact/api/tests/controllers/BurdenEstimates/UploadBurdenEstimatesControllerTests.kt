@@ -8,6 +8,7 @@ import org.mockito.Mockito
 import org.vaccineimpact.api.app.Cache
 import org.vaccineimpact.api.app.ChunkedFileCache
 import org.vaccineimpact.api.app.ChunkedFileManager
+import org.vaccineimpact.api.app.clients.TaskQueueClient
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimateUploadController
 import org.vaccineimpact.api.app.errors.BadRequest
@@ -307,9 +308,9 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
             on { verify(any(), eq(TokenType.UPLOAD)) } doReturn
                     mapOf(
                             "sub" to username,
-                            "group-id" to "g1",
-                            "scenario-id" to "s1",
-                            "touchstone-id" to "t1",
+                            "group-id" to groupId,
+                            "scenario-id" to scenarioId,
+                            "touchstone-id" to touchstoneVersionId,
                             "set-id" to 1,
                             "uid" to uid)
         }
@@ -342,7 +343,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 estimatesLogic,
                 responsibilitiesLogic,
                 repo,
-                postDataHelper = mockPostData).populateBurdenEstimateSet()
+                postDataHelper = mockPostData, celeryClient = mock()).populateBurdenEstimateSet()
         verify(estimatesLogic, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
                 groupId, touchstoneVersionId, scenarioId)
         verifyValidResponsibilityPathChecks(responsibilitiesLogic, mockContext)
@@ -392,11 +393,13 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         }
 
         val responsibilitiesLogic = mock<ResponsibilitiesLogic>()
+        val mockTaskQueueClient = mock<TaskQueueClient>()
         val sut = BurdenEstimateUploadController(actionContext,
                 estimatesLogic,
                 responsibilitiesLogic,
                 repo,
-                postDataHelper = postDataHelper)
+                postDataHelper = postDataHelper,
+                celeryClient = mockTaskQueueClient)
 
         sut.populateBurdenEstimateSet()
         verify(estimatesLogic).populateBurdenEstimateSet(eq(1),
@@ -406,6 +409,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 },
                 anyOrNull()
         )
+        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId)
         verifyValidResponsibilityPathChecks(responsibilitiesLogic, actionContext)
     }
 
