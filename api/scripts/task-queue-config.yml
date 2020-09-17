@@ -1,0 +1,27 @@
+broker: pyamqp://guest@mq//
+backend: rpc://
+servers:
+  montagu:
+    url: http://api:8080
+    user: task.user@example.com
+    password: password
+  orderlyweb:
+    url: http://orderly_web_web:8888
+  smtp:
+    host: localhost
+    port: 1025
+    user:
+    password:
+    from: noreply@example.com
+tasks:
+  diagnostic_reports:
+    poll_seconds: 5
+    reports:
+      testGroup:
+        testDisease:
+          - report_name: minimal
+            success_email:
+              recipients:
+                - minimal_modeller@example.com
+                - science@example.com
+              subject: "New version of Orderly report"

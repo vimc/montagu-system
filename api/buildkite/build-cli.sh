@@ -15,9 +15,12 @@ docker build --tag montagu-api-cli-build \
     -f ./docker/cli.Dockerfile \
     .
 
+# Run test dependencies
+$HERE/../scripts/start-database.sh
+
 # Run the created image
 docker run --rm \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $DOCKER_AUTH_PATH:/root/.docker/config.json \
-    --network=host \
+    --network=$NETWORK \
     montagu-api-cli-build

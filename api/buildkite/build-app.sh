@@ -15,9 +15,15 @@ docker build --tag montagu-api-app-build \
     -f ./docker/app.Dockerfile \
     .
 
+# Run test dependencies
+$HERE/../scripts/start-database.sh
+$HERE/../scripts/start-orderly-web.sh
+$HERE/../scripts/start-api.sh
+$HERE/../scripts/start-task-queue.sh
+
 # Run the created image
 docker run --rm \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $DOCKER_AUTH_PATH:/root/.docker/config.json \
-    --network=host \
+    --network=$NETWORK \
     montagu-api-app-build
