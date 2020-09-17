@@ -44,7 +44,7 @@ class BurdenEstimateUploadController(context: ActionContext,
                                      private val chunkedFileCache: Cache<ChunkedFile> = ChunkedFileCache.instance,
                                      private val chunkedFileManager: ChunkedFileManager = ChunkedFileManager(),
                                      private val serializer: Serializer = MontaguSerializer.instance,
-                                     taskQueueClient: TaskQueueClient = CeleryClient())
+                                     private val taskQueueClient: TaskQueueClient = CeleryClient())
     : BaseBurdenEstimateController(context, estimatesLogic, responsibilitiesLogic, taskQueueClient)
 {
     constructor(context: ActionContext, repos: Repositories)
@@ -185,7 +185,6 @@ class BurdenEstimateUploadController(context: ActionContext,
         }
         else
         {
-            taskQueueClient.runDiagnosticReport(path.groupId, info.disease, path.touchstoneVersionId)
             okayResponse().asResult()
         }
     }

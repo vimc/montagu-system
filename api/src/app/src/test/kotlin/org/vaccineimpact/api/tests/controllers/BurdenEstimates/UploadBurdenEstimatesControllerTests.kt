@@ -339,14 +339,17 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val repo = mockEstimatesRepository()
         val mockContext = mockActionContext(keepOpen = keepOpen)
         val mockPostData = mockCSVPostData(normalCSVData)
+        val mockTaskQueueClient = mock<TaskQueueClient>()
         BurdenEstimateUploadController(mockContext,
                 estimatesLogic,
                 responsibilitiesLogic,
                 repo,
-                postDataHelper = mockPostData, celeryClient = mock()).populateBurdenEstimateSet()
+                postDataHelper = mockPostData,
+                taskQueueClient = mockTaskQueueClient).populateBurdenEstimateSet()
         verify(estimatesLogic, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
                 groupId, touchstoneVersionId, scenarioId)
         verifyValidResponsibilityPathChecks(responsibilitiesLogic, mockContext)
+        verify(mockTaskQueueClient, timesExpected).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId)
     }
 
     protected fun mockActionContext(user: String = "username", keepOpen: String? = null): ActionContext
@@ -399,7 +402,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 responsibilitiesLogic,
                 repo,
                 postDataHelper = postDataHelper,
-                celeryClient = mockTaskQueueClient)
+                taskQueueClient = mockTaskQueueClient)
 
         sut.populateBurdenEstimateSet()
         verify(estimatesLogic).populateBurdenEstimateSet(eq(1),

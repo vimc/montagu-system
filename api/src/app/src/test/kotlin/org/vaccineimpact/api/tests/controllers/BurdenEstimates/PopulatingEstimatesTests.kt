@@ -38,7 +38,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
         val mockTaskQueueClient = mock<TaskQueueClient>()
         val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mock(),
-                mockTokenHelper, cache, mock(), mock(), mockTaskQueueClient)
+                mockTokenHelper, cache, taskQueueClient = mockTaskQueueClient)
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
 
@@ -124,7 +124,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
 
         val sut = BurdenEstimateUploadController(mockContext, logic, mock(),
-                repo, mock(), mockTokenHelper, cache, mock(), mock(), mock())
+                repo, mock(), mockTokenHelper, cache, taskQueueClient = mock())
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
 
