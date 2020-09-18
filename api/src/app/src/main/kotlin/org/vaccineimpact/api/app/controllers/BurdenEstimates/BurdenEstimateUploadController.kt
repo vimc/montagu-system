@@ -6,6 +6,8 @@ import org.vaccineimpact.api.app.ChunkedFileCache
 import org.vaccineimpact.api.app.ChunkedFileManager
 import org.vaccineimpact.api.app.ChunkedFileManager.Companion.UPLOAD_DIR
 import org.vaccineimpact.api.app.asResult
+import org.vaccineimpact.api.app.clients.CeleryClient
+import org.vaccineimpact.api.app.clients.TaskQueueClient
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.errors.BadRequest
@@ -41,8 +43,9 @@ class BurdenEstimateUploadController(context: ActionContext,
                                      private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair),
                                      private val chunkedFileCache: Cache<ChunkedFile> = ChunkedFileCache.instance,
                                      private val chunkedFileManager: ChunkedFileManager = ChunkedFileManager(),
-                                     private val serializer: Serializer = MontaguSerializer.instance)
-    : BaseBurdenEstimateController(context, estimatesLogic, responsibilitiesLogic)
+                                     private val serializer: Serializer = MontaguSerializer.instance,
+                                     private val taskQueueClient: TaskQueueClient = CeleryClient())
+    : BaseBurdenEstimateController(context, estimatesLogic, responsibilitiesLogic, taskQueueClient)
 {
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
@@ -134,7 +137,10 @@ class BurdenEstimateUploadController(context: ActionContext,
 
             chunkedFileCache.remove(file.uniqueIdentifier)
 
-            closeEstimateSetAndReturnMissingRowError(path.setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
+            val info = estimateRepository.getResponsibilityInfo(path.groupId, path.touchstoneVersionId, path.scenarioId)
+
+            closeEstimateSetAndReturnMissingRowError(path.setId,
+                    path.groupId, info.disease, path.touchstoneVersionId, path.scenarioId)
         }
         else
         {
@@ -168,11 +174,14 @@ class BurdenEstimateUploadController(context: ActionContext,
                 data,
                 filename = null)
 
+        val info = estimateRepository.getResponsibilityInfo(path.groupId, path.touchstoneVersionId, path.scenarioId)
+
         // Then, maybe close the burden estimate set
         val keepOpen = context.queryParams("keepOpen")?.toBoolean() ?: false
+
         return if (!keepOpen)
         {
-            closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
+            closeEstimateSetAndReturnMissingRowError(setId, path.groupId, info.disease, path.touchstoneVersionId, path.scenarioId)
         }
         else
         {

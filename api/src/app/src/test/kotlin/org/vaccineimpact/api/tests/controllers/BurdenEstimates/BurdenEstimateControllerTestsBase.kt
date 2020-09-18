@@ -4,16 +4,21 @@ import com.nhaarman.mockito_kotlin.*
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.ResponsibilitiesLogic
-import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
+import org.vaccineimpact.api.app.repositories.SimpleDataSet
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Instant
 
-abstract class BurdenEstimateControllerTestsBase: MontaguTests() {
+abstract class BurdenEstimateControllerTestsBase : MontaguTests()
+{
 
     protected val groupId = "group-1"
     protected val touchstoneVersionId = "touchstone-1"
     protected val scenarioId = "scenario-1"
+    protected val diseaseId = "disease-1"
 
     protected fun mockTouchstones() = mock<SimpleDataSet<TouchstoneVersion, String>> {
         on { get(touchstoneVersionId) } doReturn TouchstoneVersion(touchstoneVersionId, "touchstone", 1, "Description", TouchstoneStatus.OPEN)
@@ -32,6 +37,8 @@ abstract class BurdenEstimateControllerTestsBase: MontaguTests() {
     {
         val touchstoneRepo = mockTouchstoneRepository(touchstoneVersionSet)
         return mock {
+            on { getResponsibilityInfo(groupId, touchstoneVersionId, scenarioId) } doReturn
+                    ResponsibilityInfo(1, diseaseId, "status", 1)
             on { touchstoneRepository } doReturn touchstoneRepo
             on { getBurdenEstimateSet(any(), any(), any(), any()) } doReturn existingBurdenEstimateSet
         }

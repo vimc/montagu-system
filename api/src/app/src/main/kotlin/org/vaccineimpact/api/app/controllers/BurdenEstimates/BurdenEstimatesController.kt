@@ -1,5 +1,7 @@
 package org.vaccineimpact.api.app.controllers.BurdenEstimates
 
+import org.vaccineimpact.api.app.clients.CeleryClient
+import org.vaccineimpact.api.app.clients.TaskQueueClient
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
@@ -16,8 +18,9 @@ open class BurdenEstimatesController(
         context: ActionContext,
         private val estimatesLogic: BurdenEstimateLogic,
         private val estimateRepository: BurdenEstimateRepository,
-        private val responsibilitiesLogic: ResponsibilitiesLogic
-) : BaseBurdenEstimateController(context, estimatesLogic, responsibilitiesLogic)
+        private val responsibilitiesLogic: ResponsibilitiesLogic,
+        taskQueueClient: TaskQueueClient = CeleryClient()
+) : BaseBurdenEstimateController(context, estimatesLogic, responsibilitiesLogic, taskQueueClient)
 {
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
@@ -89,7 +92,8 @@ open class BurdenEstimatesController(
     {
         val path = getValidResponsibilityPath()
         val setId = context.params(":set-id").toInt()
-        return closeEstimateSetAndReturnMissingRowError(setId, path.groupId, path.touchstoneVersionId, path.scenarioId)
+        val info = estimateRepository.getResponsibilityInfo(path.groupId, path.touchstoneVersionId, path.scenarioId)
+        return closeEstimateSetAndReturnMissingRowError(setId, path.groupId, info.disease, path.touchstoneVersionId, path.scenarioId)
     }
 
     fun getBurdenEstimateSetData(): StreamSerializable<BurdenEstimate>

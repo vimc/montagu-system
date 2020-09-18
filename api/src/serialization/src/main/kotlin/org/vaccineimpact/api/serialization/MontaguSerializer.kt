@@ -98,6 +98,7 @@ open class MontaguSerializer : Serializer
     override fun convertFieldName(name: String): String
     {
         val builder = StringBuilder()
+
         for (char in name)
         {
             if (char.isUpperCase())

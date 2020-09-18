@@ -24,10 +24,9 @@ before_script:
   - sudo mkdir -p /etc/montagu/api/ && sudo touch /etc/montagu/api/go_signal
   - ./src/gradlew -p src :startDatabase :startOrderlyWeb :startTaskQueue :startTestAPI
 script:
-  - ./src/gradlew -p src :testLibrary :stopTaskQueue :stopTestAPI
+  - ./src/gradlew -p src :testLibrary :stopTestAPI
 # need to stop and re-start orderly-web on host network for blackbox tests against app running on metal
-# and stop and restart the database so it doesn't have the task queue user anymore
-  - ./src/gradlew -p src :stopDatabase :stopOrderlyWeb :startDatabase
+  - ./scripts/stop-orderly-web.sh host
   - ./scripts/start-orderly-web.sh host
   - nohup ./src/gradlew -p src :run > /dev/null 2>&1 &
   - ./src/gradlew -p src :blackboxTests:test

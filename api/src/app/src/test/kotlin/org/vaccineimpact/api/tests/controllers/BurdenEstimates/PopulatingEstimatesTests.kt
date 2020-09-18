@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.ChunkedFileManager.Companion.UPLOAD_DIR
+import org.vaccineimpact.api.app.clients.TaskQueueClient
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.BurdenEstimates.BurdenEstimateUploadController
 import org.vaccineimpact.api.app.errors.BadRequest
@@ -35,15 +36,17 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         val repo = mockEstimatesRepository(touchstoneSet)
         val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true, fileName = "file.csv")
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
-
-        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mock(), mockTokenHelper, cache)
+        val mockTaskQueueClient = mock<TaskQueueClient>()
+        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mock(),
+                mockTokenHelper, cache, taskQueueClient = mockTaskQueueClient)
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
 
         assertThat(result.status).isEqualTo(ResultStatus.SUCCESS)
         assertThat(result.data).isEqualTo("OK")
-        verify(logic).populateBurdenEstimateSet(eq(1), eq("g1"), eq("t1"), eq("s1"), any(), eq("file.csv"))
-        verify(logic).closeBurdenEstimateSet(eq(1), eq("g1"), eq("t1"), eq("s1"))
+        verify(logic).populateBurdenEstimateSet(eq(1), eq(groupId), eq(touchstoneVersionId), eq(scenarioId), any(), eq("file.csv"))
+        verify(logic).closeBurdenEstimateSet(1, groupId, touchstoneVersionId, scenarioId)
+        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId)
     }
 
     @Test
@@ -120,7 +123,8 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true)
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
 
-        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mock(), mockTokenHelper, cache)
+        val sut = BurdenEstimateUploadController(mockContext, logic, mock(),
+                repo, mock(), mockTokenHelper, cache, taskQueueClient = mock())
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
 
@@ -191,9 +195,9 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         return mock {
             on { username } doReturn user
             on { params(":set-id") } doReturn "1"
-            on { params(":group-id") } doReturn "group-1"
-            on { params(":touchstone-version-id") } doReturn "touchstone-1"
-            on { params(":scenario-id") } doReturn "scenario-1"
+            on { params(":group-id") } doReturn groupId
+            on { params(":touchstone-version-id") } doReturn touchstoneVersionId
+            on { params(":scenario-id") } doReturn scenarioId
             on { params(":token") } doReturn "faketoken"
         }
     }

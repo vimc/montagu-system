@@ -2,6 +2,8 @@ package org.vaccineimpact.api.app.controllers.BurdenEstimates
 
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.asResult
+import org.vaccineimpact.api.app.clients.CeleryClient
+import org.vaccineimpact.api.app.clients.TaskQueueClient
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.MissingRowsError
@@ -15,20 +17,26 @@ import org.vaccineimpact.api.models.Result
 
 abstract class BaseBurdenEstimateController(context: ActionContext,
                                             private val estimatesLogic: BurdenEstimateLogic,
-                                            private val responsibilitiesLogic: ResponsibilitiesLogic) : Controller(context)
+                                            private val responsibilitiesLogic: ResponsibilitiesLogic,
+                                            private val taskQueueClient: TaskQueueClient = CeleryClient()) : Controller(context)
 {
 
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
             RepositoriesBurdenEstimateLogic(repos),
-            RepositoriesResponsibilitiesLogic(repos.modellingGroup, repos.scenario, repos.touchstone))
+            RepositoriesResponsibilitiesLogic(repos.modellingGroup, repos.scenario, repos.touchstone),
+            CeleryClient())
 
-    protected fun closeEstimateSetAndReturnMissingRowError(setId: Int, groupId: String, touchstoneVersionId: String,
+    protected fun closeEstimateSetAndReturnMissingRowError(setId: Int,
+                                                           groupId: String,
+                                                           disease: String,
+                                                           touchstoneVersionId: String,
                                                            scenarioId: String): Result
     {
         return try
         {
             estimatesLogic.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
+            taskQueueClient.runDiagnosticReport(groupId, disease, touchstoneVersionId)
             okayResponse().asResult()
         }
         catch (error: MissingRowsError)
