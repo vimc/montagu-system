@@ -1,4 +1,4 @@
-FROM docker.montagu.dide.ic.ac.uk:5000/node-docker:master
+FROM vimc/node-docker:master
 
 ARG MONTAGU_GIT_ID="UNKNOWN"
 ARG MONTAGU_GIT_BRANCH="UNKNOWN"
