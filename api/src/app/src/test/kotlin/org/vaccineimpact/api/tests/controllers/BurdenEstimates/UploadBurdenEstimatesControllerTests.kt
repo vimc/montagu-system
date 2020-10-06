@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.mockito.Mockito
 import org.pac4j.core.profile.CommonProfile
+import org.pac4j.core.profile.definition.CommonProfileDefinition
 import org.vaccineimpact.api.app.Cache
 import org.vaccineimpact.api.app.ChunkedFileCache
 import org.vaccineimpact.api.app.ChunkedFileManager
@@ -98,10 +99,10 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 ))
         )
 
-        val mockContext = mockActionContext()
+        val mockContext = mockActionContext(email="test.user@example.com")
         verifyLogicIsInvokedToPopulateSet(mockContext,
                 mockEstimatesRepository(touchstoneSet), logic,
-                normalCSVData.asSequence(), expectedData)
+                normalCSVData.asSequence(), expectedData, "test.user@example.com")
     }
 
     @Test
@@ -356,8 +357,8 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
 
     protected fun mockActionContext(user: String = "username", keepOpen: String? = null, email: String = "test.user@example.com"): ActionContext
     {
-        val mockProfile = mock<CommonProfile> {
-            on { email } doReturn email
+        val mockProfile = CommonProfile().apply {
+            addAttribute(CommonProfileDefinition.EMAIL, email)
         }
 
         return mock {
@@ -395,7 +396,8 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
             repo: BurdenEstimateRepository,
             estimatesLogic: BurdenEstimateLogic,
             actualData: Sequence<T>,
-            expectedData: List<BurdenEstimateWithRunId>
+            expectedData: List<BurdenEstimateWithRunId>,
+            uploaderEmail: String
     )
     {
         val postDataHelper = mock<PostDataHelper> {
@@ -419,7 +421,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 },
                 anyOrNull()
         )
-        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId)
+        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId, uploaderEmail)
         verifyValidResponsibilityPathChecks(responsibilitiesLogic, actionContext)
     }
 

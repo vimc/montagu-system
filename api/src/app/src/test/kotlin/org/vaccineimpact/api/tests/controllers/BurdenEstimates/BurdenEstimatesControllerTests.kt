@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.mockito.Mockito
 import org.pac4j.core.profile.CommonProfile
+import org.pac4j.core.profile.definition.CommonProfileDefinition
 import org.vaccineimpact.api.app.clients.CeleryClient
 import org.vaccineimpact.api.app.clients.TaskQueueClient
 import org.vaccineimpact.api.app.context.ActionContext
@@ -124,8 +125,8 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
     {
         val logic = mockLogic()
         val repo = mockEstimatesRepository()
-        val mockProfile = mock<CommonProfile> {
-            on { email } doReturn "test.user@example.com"
+        val mockProfile = CommonProfile().apply {
+            addAttribute(CommonProfileDefinition.EMAIL, "test.user@example.com")
         }
 
         val mockContext = mock<ActionContext> {
@@ -152,11 +153,15 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
         val repo = mockEstimatesRepository()
         Mockito.`when`(logic.closeBurdenEstimateSet(any(), any(), any(), any()))
                 .doThrow(MissingRowsError("message"))
+        val mockProfile = CommonProfile().apply {
+            addAttribute(CommonProfileDefinition.EMAIL, "test.user@example.com")
+        }
         val mockContext = mock<ActionContext> {
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn groupId
             on { params(":touchstone-version-id") } doReturn touchstoneVersionId
             on { params(":scenario-id") } doReturn scenarioId
+            on { userProfile } doReturn mockProfile
         }
         val mockResponsibilitiesLogic = mock<ResponsibilitiesLogic>()
         val result = BurdenEstimatesController(mockContext, logic, repo, mockResponsibilitiesLogic, mock())

@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.pac4j.core.profile.CommonProfile
+import org.pac4j.core.profile.definition.CommonProfileDefinition
 import org.vaccineimpact.api.app.ChunkedFileManager.Companion.UPLOAD_DIR
 import org.vaccineimpact.api.app.clients.TaskQueueClient
 import org.vaccineimpact.api.app.context.ActionContext
@@ -193,8 +194,8 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 
     private fun mockPopulateFromLocalFileActionContext(user: String, emailAddress: String = "test.user@example.com"): ActionContext
     {
-        val mockProfile = mock<CommonProfile> {
-            on { email } doReturn emailAddress
+        val mockProfile = CommonProfile().apply {
+            addAttribute(CommonProfileDefinition.EMAIL, emailAddress)
         }
 
         return mock {
