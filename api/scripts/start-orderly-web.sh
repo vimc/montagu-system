@@ -18,7 +18,7 @@ fi
 if which -a orderly-web > /dev/null; then
   echo "orderly-web already installed"
 else
-  pip3 install orderly-web
+  pip3 install orderly-web --user
 fi
 
 orderly-web start $HERE $OPTION_MAPPING
