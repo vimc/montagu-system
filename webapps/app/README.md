@@ -49,12 +49,18 @@ The integration tests get run in three different ways:
 
 # Dockerised build & run
 1. Make a containerised build environment: `scripts/make-build-env.sh`
-2. Use the build environment to build (and push) a containerised app: `scripts/run-build.sh`
-3. Run the containerised app
-   ```
-   docker run -p 8080:80 montagu.dide.ic.ac.uk/montagu-contrib-portal:CURRENT_GIT_BRANCH
+2. Use the build environment to build (and push) the two containerised apps: `scripts/run-build.sh`
+3. Run a containerised app:
+    ```
+    docker run -p 8080:80 vimc/montagu-contrib-portal:CURRENT_GIT_BRANCH
 
-   ```
+    ```
+   or
+
+    ```
+    docker run -p 8080:80 vimc/montagu-admin-portal:CURRENT_GIT_BRANCH
+
+    ```
 4. Browse to `http://localhost:8080/`
 
 # Portals
