@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.controllers.BurdenEstimates
 
+import org.simplejavamail.email.Email
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.asResult
 import org.vaccineimpact.api.app.clients.CeleryClient
@@ -31,12 +32,13 @@ abstract class BaseBurdenEstimateController(context: ActionContext,
                                                            groupId: String,
                                                            disease: String,
                                                            touchstoneVersionId: String,
-                                                           scenarioId: String): Result
+                                                           scenarioId: String,
+                                                           uploaderEmailAddress: String): Result
     {
         return try
         {
             estimatesLogic.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-            taskQueueClient.runDiagnosticReport(groupId, disease, touchstoneVersionId)
+            taskQueueClient.runDiagnosticReport(groupId, disease, touchstoneVersionId, uploaderEmailAddress)
             okayResponse().asResult()
         }
         catch (error: MissingRowsError)
