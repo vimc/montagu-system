@@ -124,14 +124,16 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
     {
         val logic = mockLogic()
         val repo = mockEstimatesRepository()
+        val mockProfile = mock<CommonProfile> {
+            on { email } doReturn "test.user@example.com"
+        }
+
         val mockContext = mock<ActionContext> {
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn groupId
             on { params(":touchstone-version-id") } doReturn touchstoneVersionId
             on { params(":scenario-id") } doReturn scenarioId
-            on { userProfile } doReturn mock<CommonProfile> {
-                on { email } doReturn "test.user@example.com"
-            }
+            on { userProfile } doReturn mockProfile
         }
         val mockResponsibilitiesLogic = mock<ResponsibilitiesLogic>()
         val mockTaskQueueClient = mock<TaskQueueClient>()

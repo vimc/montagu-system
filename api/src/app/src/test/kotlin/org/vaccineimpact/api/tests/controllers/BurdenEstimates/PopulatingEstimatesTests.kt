@@ -191,13 +191,15 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         return tempFile
     }
 
-    private fun mockPopulateFromLocalFileActionContext(user: String, email: String = "test.user@example.com"): ActionContext
+    private fun mockPopulateFromLocalFileActionContext(user: String, emailAddress: String = "test.user@example.com"): ActionContext
     {
+        val mockProfile = mock<CommonProfile> {
+            on { email } doReturn emailAddress
+        }
+
         return mock {
             on { username } doReturn user
-            on { userProfile } doReturn mock<CommonProfile> {
-                on { email } doReturn email
-            }
+            on { userProfile } doReturn mockProfile
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn groupId
             on { params(":touchstone-version-id") } doReturn touchstoneVersionId

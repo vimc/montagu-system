@@ -356,11 +356,13 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
 
     protected fun mockActionContext(user: String = "username", keepOpen: String? = null, email: String = "test.user@example.com"): ActionContext
     {
+        val mockProfile = mock<CommonProfile> {
+            on { email } doReturn email
+        }
+
         return mock {
             on { username } doReturn user
-            on { userProfile } doReturn mock<CommonProfile> {
-                on { email } doReturn email
-            }
+            on { userProfile } doReturn mockProfile
             on { contentType() } doReturn "text/csv"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn groupId
