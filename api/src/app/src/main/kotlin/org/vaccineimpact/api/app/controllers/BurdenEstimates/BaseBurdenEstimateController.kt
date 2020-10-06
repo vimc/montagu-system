@@ -32,13 +32,13 @@ abstract class BaseBurdenEstimateController(context: ActionContext,
                                                            groupId: String,
                                                            disease: String,
                                                            touchstoneVersionId: String,
-                                                           scenarioId: String,
-                                                           uploaderEmailAddress: String): Result
+                                                           scenarioId: String): Result
     {
+        val uploaderEmail = context.userProfile!!.email
         return try
         {
             estimatesLogic.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-            taskQueueClient.runDiagnosticReport(groupId, disease, touchstoneVersionId, uploaderEmailAddress)
+            taskQueueClient.runDiagnosticReport(groupId, disease, touchstoneVersionId, uploaderEmail)
             okayResponse().asResult()
         }
         catch (error: MissingRowsError)
