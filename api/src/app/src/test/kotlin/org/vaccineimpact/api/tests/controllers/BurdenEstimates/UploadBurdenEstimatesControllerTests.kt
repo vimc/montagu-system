@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.mockito.Mockito
+import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.app.Cache
 import org.vaccineimpact.api.app.ChunkedFileCache
 import org.vaccineimpact.api.app.ChunkedFileManager
@@ -337,7 +338,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val estimatesLogic = mockLogic()
         val responsibilitiesLogic = mock<ResponsibilitiesLogic>()
         val repo = mockEstimatesRepository()
-        val mockContext = mockActionContext(keepOpen = keepOpen)
+        val mockContext = mockActionContext(keepOpen = keepOpen, email="test.user@example.com")
         val mockPostData = mockCSVPostData(normalCSVData)
         val mockTaskQueueClient = mock<TaskQueueClient>()
         BurdenEstimateUploadController(mockContext,
@@ -349,13 +350,17 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         verify(estimatesLogic, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
                 groupId, touchstoneVersionId, scenarioId)
         verifyValidResponsibilityPathChecks(responsibilitiesLogic, mockContext)
-        verify(mockTaskQueueClient, timesExpected).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId)
+        verify(mockTaskQueueClient, timesExpected).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId,
+                "test.user@example.com")
     }
 
-    protected fun mockActionContext(user: String = "username", keepOpen: String? = null): ActionContext
+    protected fun mockActionContext(user: String = "username", keepOpen: String? = null, email: String = "test.user@example.com"): ActionContext
     {
         return mock {
             on { username } doReturn user
+            on { userProfile } doReturn mock<CommonProfile> {
+                on { email } doReturn email
+            }
             on { contentType() } doReturn "text/csv"
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn groupId

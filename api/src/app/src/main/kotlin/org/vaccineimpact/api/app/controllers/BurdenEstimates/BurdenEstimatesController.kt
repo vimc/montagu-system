@@ -93,7 +93,6 @@ open class BurdenEstimatesController(
         val path = getValidResponsibilityPath()
         val setId = context.params(":set-id").toInt()
         val info = estimateRepository.getResponsibilityInfo(path.groupId, path.touchstoneVersionId, path.scenarioId)
-
         return closeEstimateSetAndReturnMissingRowError(setId, path.groupId, info.disease, path.touchstoneVersionId, path.scenarioId)
     }
 

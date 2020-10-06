@@ -1,6 +1,5 @@
 package org.vaccineimpact.api.app.controllers.BurdenEstimates
 
-import org.simplejavamail.email.Email
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.asResult
 import org.vaccineimpact.api.app.clients.CeleryClient

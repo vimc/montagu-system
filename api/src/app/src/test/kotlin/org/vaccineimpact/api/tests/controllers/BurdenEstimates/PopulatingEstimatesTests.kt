@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
+import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.app.ChunkedFileManager.Companion.UPLOAD_DIR
 import org.vaccineimpact.api.app.clients.TaskQueueClient
 import org.vaccineimpact.api.app.context.ActionContext
@@ -32,7 +33,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 
         createTempCSVFile(uid)
 
-        val mockContext = mockPopulateFromLocalFileActionContext("user.name")
+        val mockContext = mockPopulateFromLocalFileActionContext("user.name", "test.user@example.com")
         val repo = mockEstimatesRepository(touchstoneSet)
         val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true, fileName = "file.csv")
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
@@ -46,7 +47,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         assertThat(result.data).isEqualTo("OK")
         verify(logic).populateBurdenEstimateSet(eq(1), eq(groupId), eq(touchstoneVersionId), eq(scenarioId), any(), eq("file.csv"))
         verify(logic).closeBurdenEstimateSet(1, groupId, touchstoneVersionId, scenarioId)
-        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId)
+        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId, "test.user@example.com")
     }
 
     @Test
@@ -190,10 +191,13 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         return tempFile
     }
 
-    private fun mockPopulateFromLocalFileActionContext(user: String): ActionContext
+    private fun mockPopulateFromLocalFileActionContext(user: String, email: String = "test.user@example.com"): ActionContext
     {
         return mock {
             on { username } doReturn user
+            on { userProfile } doReturn mock<CommonProfile> {
+                on { email } doReturn email
+            }
             on { params(":set-id") } doReturn "1"
             on { params(":group-id") } doReturn groupId
             on { params(":touchstone-version-id") } doReturn touchstoneVersionId

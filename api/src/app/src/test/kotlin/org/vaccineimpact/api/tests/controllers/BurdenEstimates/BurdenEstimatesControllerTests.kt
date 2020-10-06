@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.mockito.Mockito
+import org.pac4j.core.profile.CommonProfile
 import org.vaccineimpact.api.app.clients.CeleryClient
 import org.vaccineimpact.api.app.clients.TaskQueueClient
 import org.vaccineimpact.api.app.context.ActionContext
@@ -128,13 +129,17 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
             on { params(":group-id") } doReturn groupId
             on { params(":touchstone-version-id") } doReturn touchstoneVersionId
             on { params(":scenario-id") } doReturn scenarioId
+            on { userProfile } doReturn mock<CommonProfile> {
+                on { email } doReturn "test.user@example.com"
+            }
         }
         val mockResponsibilitiesLogic = mock<ResponsibilitiesLogic>()
         val mockTaskQueueClient = mock<TaskQueueClient>()
         BurdenEstimatesController(mockContext, logic, repo, mockResponsibilitiesLogic, mockTaskQueueClient)
                 .closeBurdenEstimateSet()
         verify(logic).closeBurdenEstimateSet(1, groupId, touchstoneVersionId, scenarioId)
-        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId)
+        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId,
+                "test.user@example.com")
         verifyValidResponsibilityPathChecks(mockResponsibilitiesLogic, mockContext)
     }
 
