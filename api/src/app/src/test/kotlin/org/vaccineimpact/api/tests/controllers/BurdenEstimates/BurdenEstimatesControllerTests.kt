@@ -1,13 +1,9 @@
 package org.vaccineimpact.api.tests.controllers.BurdenEstimates
 
 import com.nhaarman.mockito_kotlin.*
-import khttp.get
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.mockito.Mockito
-import org.pac4j.core.profile.CommonProfile
-import org.pac4j.core.profile.definition.CommonProfileDefinition
-import org.vaccineimpact.api.app.clients.CeleryClient
 import org.vaccineimpact.api.app.clients.TaskQueueClient
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.postData
@@ -16,10 +12,7 @@ import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.BurdenEstimateLogic
 import org.vaccineimpact.api.app.logic.ResponsibilitiesLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
-import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.security.InternalUser
-import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.serialization.DataTableDeserializer
 import java.time.Instant
 

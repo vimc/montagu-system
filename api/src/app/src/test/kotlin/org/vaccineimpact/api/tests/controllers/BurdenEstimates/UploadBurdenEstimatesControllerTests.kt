@@ -37,7 +37,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
     fun `can get upload token`()
     {
         val mockTokenHelper = mock<WebTokenHelper> {
-            on { generateUploadEstimatesToken("username", groupId, touchstoneVersionId, scenarioId, 1) } doReturn "TOKEN"
+            on { generateUploadEstimatesToken(username, groupId, touchstoneVersionId, scenarioId, 1) } doReturn "TOKEN"
         }
 
         val repo = mockEstimatesRepository(mockTouchstones())
