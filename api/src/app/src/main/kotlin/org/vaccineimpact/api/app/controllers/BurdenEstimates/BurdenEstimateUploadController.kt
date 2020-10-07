@@ -20,6 +20,7 @@ import org.vaccineimpact.api.app.logic.ResponsibilitiesLogic
 import org.vaccineimpact.api.app.models.ChunkedFile
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.app.requests.csvData
 import org.vaccineimpact.api.models.BurdenEstimate
@@ -39,19 +40,21 @@ class BurdenEstimateUploadController(context: ActionContext,
                                      private val estimatesLogic: BurdenEstimateLogic,
                                      private val responsibilitiesLogic: ResponsibilitiesLogic,
                                      private val estimateRepository: BurdenEstimateRepository,
+                                     private val userRepository: UserRepository,
                                      private val postDataHelper: PostDataHelper = PostDataHelper(),
                                      private val tokenHelper: WebTokenHelper = WebTokenHelper(KeyHelper.keyPair),
                                      private val chunkedFileCache: Cache<ChunkedFile> = ChunkedFileCache.instance,
                                      private val chunkedFileManager: ChunkedFileManager = ChunkedFileManager(),
                                      private val serializer: Serializer = MontaguSerializer.instance,
                                      private val taskQueueClient: TaskQueueClient = CeleryClient())
-    : BaseBurdenEstimateController(context, estimatesLogic, responsibilitiesLogic, taskQueueClient)
+    : BaseBurdenEstimateController(context, estimatesLogic, responsibilitiesLogic, userRepository, taskQueueClient)
 {
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
             RepositoriesBurdenEstimateLogic(repos),
             RepositoriesResponsibilitiesLogic(repos.modellingGroup, repos.scenario, repos.touchstone),
-            repos.burdenEstimates)
+            repos.burdenEstimates,
+            repos.user)
 
     private val logger = LoggerFactory.getLogger(BurdenEstimateUploadController::class.java)
     fun getUploadToken(): String

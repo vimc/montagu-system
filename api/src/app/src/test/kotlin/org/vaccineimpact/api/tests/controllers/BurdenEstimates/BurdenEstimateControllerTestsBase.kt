@@ -7,18 +7,28 @@ import org.vaccineimpact.api.app.logic.ResponsibilitiesLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.SimpleDataSet
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.security.InternalUser
+import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Instant
 
 abstract class BurdenEstimateControllerTestsBase : MontaguTests()
 {
-
     protected val groupId = "group-1"
     protected val touchstoneVersionId = "touchstone-1"
     protected val scenarioId = "scenario-1"
     protected val diseaseId = "disease-1"
+
+    protected val username = "user.name"
+    protected val userEmail = "test.user@example.com"
+    private val mockUser = InternalUser(UserProperties(username, username, userEmail,
+        null, null), listOf(), listOf())
+    protected val mockUserRepo = mock<UserRepository> {
+        on { getUserByUsername(username) } doReturn mockUser
+    }
 
     protected fun mockTouchstones() = mock<SimpleDataSet<TouchstoneVersion, String>> {
         on { get(touchstoneVersionId) } doReturn TouchstoneVersion(touchstoneVersionId, "touchstone", 1, "Description", TouchstoneStatus.OPEN)

@@ -32,12 +32,12 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 
         createTempCSVFile(uid)
 
-        val mockContext = mockPopulateFromLocalFileActionContext("user.name")
+        val mockContext = mockPopulateFromLocalFileActionContext(username)
         val repo = mockEstimatesRepository(touchstoneSet)
         val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true, fileName = "file.csv")
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
         val mockTaskQueueClient = mock<TaskQueueClient>()
-        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mock(),
+        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mockUserRepo, mock(),
                 mockTokenHelper, cache, taskQueueClient = mockTaskQueueClient)
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
@@ -46,7 +46,7 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         assertThat(result.data).isEqualTo("OK")
         verify(logic).populateBurdenEstimateSet(eq(1), eq(groupId), eq(touchstoneVersionId), eq(scenarioId), any(), eq("file.csv"))
         verify(logic).closeBurdenEstimateSet(1, groupId, touchstoneVersionId, scenarioId)
-        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId)
+        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId, userEmail)
     }
 
     @Test
@@ -66,12 +66,12 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 
         createTempCSVFile(uid)
 
-        val mockContext = mockPopulateFromLocalFileActionContext("user.name")
+        val mockContext = mockPopulateFromLocalFileActionContext(username)
         val repo = mockEstimatesRepository(touchstoneSet)
         val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true)
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
 
-        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mock(), mockTokenHelper, cache)
+        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mockUserRepo, mock(), mockTokenHelper, cache)
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
         assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
@@ -95,12 +95,12 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
 
         createTempCSVFile(uid)
 
-        val mockContext = mockPopulateFromLocalFileActionContext("user.name")
+        val mockContext = mockPopulateFromLocalFileActionContext(username)
         val repo = mockEstimatesRepository(touchstoneSet)
         val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true)
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
 
-        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mock(), mockTokenHelper, cache)
+        val sut = BurdenEstimateUploadController(mockContext, logic, mock(), repo, mockUserRepo, mock(), mockTokenHelper, cache)
 
         assertThatThrownBy {
             sut.populateBurdenEstimateSetFromLocalFile()
@@ -118,13 +118,13 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
         val file = File(uid)
         val tempFile = createTempCSVFile(uid)
 
-        val mockContext = mockPopulateFromLocalFileActionContext("user.name")
+        val mockContext = mockPopulateFromLocalFileActionContext(username)
         val repo = mockEstimatesRepository(touchstoneSet)
         val cache = makeFakeCacheWithChunkedFile(uid, uploadFinished = true)
         val mockTokenHelper = getMockTokenHelper("user.name", uid)
 
         val sut = BurdenEstimateUploadController(mockContext, logic, mock(),
-                repo, mock(), mockTokenHelper, cache, taskQueueClient = mock())
+                repo, mockUserRepo, mock(), mockTokenHelper, cache, taskQueueClient = mock())
 
         val result = sut.populateBurdenEstimateSetFromLocalFile()
 
@@ -138,10 +138,10 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
     @Test
     fun `populating set from local file throws error if uid not recognised`()
     {
-        val mockContext = mockPopulateFromLocalFileActionContext("user.name")
+        val mockContext = mockPopulateFromLocalFileActionContext(username)
         val mockTokenHelper = getMockTokenHelper("user.name", "uid")
 
-        val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(), mockTokenHelper, mock())
+        val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(), mock(), mockTokenHelper, mock())
 
         assertThatThrownBy { sut.populateBurdenEstimateSetFromLocalFile() }
                 .isInstanceOf(BadRequest::class.java)
@@ -152,11 +152,11 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
     @Test
     fun `populating set from local file requires file to be fully uploaded`()
     {
-        val mockContext = mockPopulateFromLocalFileActionContext("user.name")
+        val mockContext = mockPopulateFromLocalFileActionContext(username)
         val mockTokenHelper = getMockTokenHelper("user.name", "uid")
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = false)
 
-        val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(),
+        val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(),  mock(), mock(),
                 mockTokenHelper, fakeCache)
 
         assertThatThrownBy { sut.populateBurdenEstimateSetFromLocalFile() }
@@ -168,10 +168,10 @@ class PopulatingEstimatesTests : UploadBurdenEstimatesControllerTests()
     @Test
     fun `populating set from local file requires token to be validated`()
     {
-        val mockContext = mockPopulateFromLocalFileActionContext("user.name")
+        val mockContext = mockPopulateFromLocalFileActionContext(username)
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
 
-        val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(),
+        val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(), mock(),
                 WebTokenHelper(KeyHelper.keyPair),
                 fakeCache)
 

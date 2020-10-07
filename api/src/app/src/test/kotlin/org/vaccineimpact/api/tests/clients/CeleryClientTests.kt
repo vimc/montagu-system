@@ -17,7 +17,8 @@ class CeleryClientTests : MontaguTests()
     fun `can call task`()
     {
         val client = CeleryClient()
-        val task = client.runDiagnosticReport("testGroup", "testDisease", "testTouchstone")
+        val task = client.runDiagnosticReport("testGroup", "testDisease", "testTouchstone",
+                "test.user@example.com")
 
         val result = task.get().mapValues { DiagnosticReportTaskResult(it.value["published"] ?: false) }
         assertThat(result.count()).isEqualTo(1)

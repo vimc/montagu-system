@@ -5,6 +5,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.mockito.Mockito
+import org.pac4j.core.profile.CommonProfile
+import org.pac4j.core.profile.definition.CommonProfileDefinition
 import org.vaccineimpact.api.app.Cache
 import org.vaccineimpact.api.app.ChunkedFileCache
 import org.vaccineimpact.api.app.ChunkedFileManager
@@ -35,7 +37,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
     fun `can get upload token`()
     {
         val mockTokenHelper = mock<WebTokenHelper> {
-            on { generateUploadEstimatesToken("username", groupId, touchstoneVersionId, scenarioId, 1) } doReturn "TOKEN"
+            on { generateUploadEstimatesToken(username, groupId, touchstoneVersionId, scenarioId, 1) } doReturn "TOKEN"
         }
 
         val repo = mockEstimatesRepository(mockTouchstones())
@@ -46,6 +48,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 logic,
                 responsibilitiesLogic,
                 repo,
+                mockUserRepo,
                 mock(),
                 mockTokenHelper)
         val result = sut.getUploadToken()
@@ -71,6 +74,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 estimateLogic,
                 responsibilitiesLogic,
                 repo,
+                mockUserRepo,
                 mock(),
                 mockTokenHelper)
         assertThatThrownBy { sut.getUploadToken() }
@@ -100,7 +104,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val mockContext = mockActionContext()
         verifyLogicIsInvokedToPopulateSet(mockContext,
                 mockEstimatesRepository(touchstoneSet), logic,
-                normalCSVData.asSequence(), expectedData)
+                normalCSVData.asSequence(), expectedData, userEmail)
     }
 
     @Test
@@ -137,6 +141,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 estimateLogic,
                 responsibilitiesLogic,
                 repo,
+                mockUserRepo,
                 postDataHelper = mockPostData).populateBurdenEstimateSet()
 
         assertThat(result.status).isEqualTo(ResultStatus.FAILURE)
@@ -160,10 +165,10 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
     @Test
     fun `uploading file requires chunkNumber query parameter`()
     {
-        val mockContext = mockActionContext(user = "user.name")
+        val mockContext = mockActionContext(username)
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
         val sut = BurdenEstimateUploadController(mockContext, mock(), mock(),
-                mock(), mock(), mock(), fakeCache)
+                mock(), mock(), mock(), mock(), fakeCache)
 
         assertThatThrownBy { sut.uploadBurdenEstimateFile() }
                 .isInstanceOf(BadRequest::class.java)
@@ -179,7 +184,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
 
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
         val sut = BurdenEstimateUploadController(mockContext, mock(), mock(),
-                mock(), mock(), mock(), fakeCache)
+                mock(), mock(), mock(), mock(), fakeCache)
 
         assertThatThrownBy { sut.uploadBurdenEstimateFile() }
                 .isInstanceOf(BadRequest::class.java)
@@ -196,7 +201,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
 
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
         val sut = BurdenEstimateUploadController(mockContext, mock(), mock(),
-                mock(), mock(), mock(), fakeCache)
+                mock(), mock(), mock(), mock(), fakeCache)
 
         assertThatThrownBy { sut.uploadBurdenEstimateFile() }
                 .isInstanceOf(BadRequest::class.java)
@@ -214,7 +219,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
 
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
         val sut = BurdenEstimateUploadController(mockContext, mock(), mock(),
-                mock(), mock(), mock(), fakeCache)
+                mock(), mock(), mock(),mock(), fakeCache)
 
         assertThatThrownBy { sut.uploadBurdenEstimateFile() }
                 .isInstanceOf(BadRequest::class.java)
@@ -234,7 +239,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
 
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
         val sut = BurdenEstimateUploadController(mockContext, mock(), mock(),
-                mock(), mock(), mock(), fakeCache)
+                mock(), mock(), mock(), mock(), fakeCache)
 
         assertThatThrownBy { sut.uploadBurdenEstimateFile() }
                 .isInstanceOf(BadRequest::class.java)
@@ -248,7 +253,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val mockTokenHelper = getMockTokenHelper("user.name", "uid")
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
         val sut = BurdenEstimateUploadController(mockContext, mock(), mock(),
-                mock(), mock(), mockTokenHelper, fakeCache)
+                mock(), mock(), mock(), mockTokenHelper, fakeCache)
 
         assertThatThrownBy { sut.uploadBurdenEstimateFile() }
                 .isInstanceOf(BadRequest::class.java)
@@ -263,7 +268,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
         val mockTokenHelper = getMockTokenHelper("user.name", "uid")
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
         val sut = BurdenEstimateUploadController(mockContext, mock(), mock(),
-                mock(), mock(), mockTokenHelper, fakeCache)
+                mock(), mock(), mock(), mockTokenHelper, fakeCache)
 
         assertThatThrownBy { sut.uploadBurdenEstimateFile() }
                 .isInstanceOf(BadRequest::class.java)
@@ -295,7 +300,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
             }
         }
 
-        val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(),
+        val sut = BurdenEstimateUploadController(mockContext, mock(), mock(), mock(), mock(), mock(),
                 mockTokenHelper, fakeCache, MockFileManager())
 
         sut.uploadBurdenEstimateFile()
@@ -344,15 +349,17 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 estimatesLogic,
                 responsibilitiesLogic,
                 repo,
+                mockUserRepo,
                 postDataHelper = mockPostData,
                 taskQueueClient = mockTaskQueueClient).populateBurdenEstimateSet()
         verify(estimatesLogic, timesExpected).closeBurdenEstimateSet(defaultEstimateSet.id,
                 groupId, touchstoneVersionId, scenarioId)
         verifyValidResponsibilityPathChecks(responsibilitiesLogic, mockContext)
-        verify(mockTaskQueueClient, timesExpected).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId)
+        verify(mockTaskQueueClient, timesExpected).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId,
+                userEmail)
     }
 
-    protected fun mockActionContext(user: String = "username", keepOpen: String? = null): ActionContext
+    protected fun mockActionContext(user: String = username, keepOpen: String? = null): ActionContext
     {
         return mock {
             on { username } doReturn user
@@ -388,7 +395,8 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
             repo: BurdenEstimateRepository,
             estimatesLogic: BurdenEstimateLogic,
             actualData: Sequence<T>,
-            expectedData: List<BurdenEstimateWithRunId>
+            expectedData: List<BurdenEstimateWithRunId>,
+            uploaderEmail: String
     )
     {
         val postDataHelper = mock<PostDataHelper> {
@@ -401,6 +409,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 estimatesLogic,
                 responsibilitiesLogic,
                 repo,
+                mockUserRepo,
                 postDataHelper = postDataHelper,
                 taskQueueClient = mockTaskQueueClient)
 
@@ -412,7 +421,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 },
                 anyOrNull()
         )
-        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId)
+        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId, uploaderEmail)
         verifyValidResponsibilityPathChecks(responsibilitiesLogic, actionContext)
     }
 
