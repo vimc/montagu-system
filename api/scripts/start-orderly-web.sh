@@ -21,7 +21,6 @@ else
   pip3 install orderly-web --user
 fi
 
-export PATH=$PATH:/var/lib/buildkite-agent/.local/bin
 orderly-web start $HERE $OPTION_MAPPING
 
 $HERE/orderly-web-cli.sh add-users user@test.com
