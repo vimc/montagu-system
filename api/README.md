@@ -34,7 +34,7 @@ To generate, first create a keypair at some TOKEN_KEY_PATH and then run:
 ```
 docker run --rm \
     -v $TOKEN_KEY_PATH:/etc/montagu/api/token_key \
-    docker.montagu.dide.ic.ac.uk:5000/montagu-api:$MONTAGU_API_VERSION \
+    vimc/montagu-api:$MONTAGU_API_VERSION \
     generate-token */can-login */reports.read */reports.review
 ```
 
