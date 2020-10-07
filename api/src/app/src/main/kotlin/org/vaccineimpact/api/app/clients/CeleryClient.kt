@@ -9,7 +9,7 @@ typealias CeleryTaskArguments = Array<out Any>
 
 interface TaskQueueClient
 {
-    fun runDiagnosticReport(group: String, disease: String, touchstone: String, vararg additionalRecipients: String): Any
+    fun runDiagnosticReport(group: String, disease: String, touchstone: String, uploaderEmail: String): Any
 }
 
 class CeleryClient : TaskQueueClient
@@ -21,10 +21,10 @@ class CeleryClient : TaskQueueClient
             .backendUri(backend)
             .build()
 
-    override fun runDiagnosticReport(group: String, disease: String, touchstone: String, vararg additionalRecipients: String):
+    override fun runDiagnosticReport(group: String, disease: String, touchstone: String, uploaderEmail: String):
             ListenableFuture<CeleryTaskResult>
     {
-        val args = arrayOf(group, disease, touchstone, *additionalRecipients) as CeleryTaskArguments
+        val args = arrayOf(group, disease, touchstone, uploaderEmail) as CeleryTaskArguments
         return client.submit<CeleryTaskResult>("run-diagnostic-reports", args)
     }
 }

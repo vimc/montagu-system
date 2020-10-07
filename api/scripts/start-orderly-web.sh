@@ -18,12 +18,10 @@ fi
 if which -a orderly-web > /dev/null; then
   echo "orderly-web already installed"
 else
-  pip3 install orderly-web
+  pip3 install orderly-web --user
 fi
 
-# temporary fix for buildkite
 export PATH=$PATH:/var/lib/buildkite-agent/.local/bin
-
 orderly-web start $HERE $OPTION_MAPPING
 
 $HERE/orderly-web-cli.sh add-users user@test.com

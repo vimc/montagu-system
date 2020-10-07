@@ -19,7 +19,7 @@ if (hasProperty('docker_name')) {
     api_docker_name = docker_name
 }
 
-def base_image = 'docker.montagu.dide.ic.ac.uk:5000/openjdk-libsodium:master'
+def base_image = 'vimc/openjdk-libsodium:master'
 if (hasProperty('libsodium_image')) {
     base_image = libsodium_image
 }
