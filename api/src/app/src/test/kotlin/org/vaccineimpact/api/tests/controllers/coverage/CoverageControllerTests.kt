@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.tests.controllers
+package org.vaccineimpact.api.tests.controllers.coverage
 
 import com.nhaarman.mockito_kotlin.*
 import org.assertj.core.api.Assertions

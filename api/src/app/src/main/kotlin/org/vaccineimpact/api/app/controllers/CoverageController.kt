@@ -2,23 +2,32 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.logic.CoverageLogic
 import org.vaccineimpact.api.app.logic.RepositoriesCoverageLogic
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.requests.csvData
+import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
-import org.vaccineimpact.api.models.CoverageRow
-import org.vaccineimpact.api.models.ScenarioTouchstoneAndCoverageSets
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
 
 class CoverageController(
         actionContext: ActionContext,
-        private val coverageLogic: CoverageLogic
+        private val coverageLogic: CoverageLogic,
+        private val postDataHelper: PostDataHelper = PostDataHelper()
 ) : Controller(actionContext)
 {
     constructor(context: ActionContext, repositories: Repositories)
             : this(context, RepositoriesCoverageLogic(repositories))
+
+    fun getCoverageDataFromCSV(): Sequence<CoverageIngestionRow>
+    {
+        val source = RequestBodySource(context)
+        return postDataHelper.csvData(from = source)
+    }
 
     fun getCoverageSetsForGroup(): ScenarioTouchstoneAndCoverageSets
     {
@@ -53,7 +62,7 @@ class CoverageController(
     {
         val path = ResponsibilityPath(context)
         val format = context.queryParams("format")
-        val allCountries = context.queryParams("all-countries")?.toBoolean()?: false
+        val allCountries = context.queryParams("all-countries")?.toBoolean() ?: false
         val splitData = coverageLogic.getCoverageDataForGroup(path.groupId,
                 path.touchstoneVersionId, path.scenarioId, format = format, allCountries = allCountries)
         context.checkIsAllowedToSeeTouchstone(path.touchstoneVersionId, splitData.structuredMetadata.touchstoneVersion.status)
