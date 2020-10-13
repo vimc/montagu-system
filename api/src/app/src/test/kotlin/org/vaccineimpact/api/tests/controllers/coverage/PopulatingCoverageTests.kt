@@ -20,6 +20,7 @@ class PopulatingCoverageTests : MontaguTests()
     fun `can deserialize coverage`()
     {
         val mockContext = mock<ActionContext> {
+            on { contentType() } doReturn "text/csv"
             on { this.getInputStream() } doReturn normalCSVDataString.byteInputStream()
         }
         val sut = CoverageController(mockContext, mock(), PostDataHelper())
@@ -34,6 +35,7 @@ class PopulatingCoverageTests : MontaguTests()
     fun `deserializing coverage throws error on invalid gavi support level`()
     {
         val mockContext = mock<ActionContext> {
+            on { contentType() } doReturn "text/csv"
             on { this.getInputStream() } doReturn invalidSupportLevelCSVDataString.byteInputStream()
         }
         val sut = CoverageController(mockContext, mock(), PostDataHelper())
@@ -46,6 +48,7 @@ class PopulatingCoverageTests : MontaguTests()
     fun `deserializing coverage throws error on invalid activity type`()
     {
         val mockContext = mock<ActionContext> {
+            on { contentType() } doReturn "text/csv"
             on { this.getInputStream() } doReturn invalidActivityTypeCSVDataString.byteInputStream()
         }
         val sut = CoverageController(mockContext, mock(), PostDataHelper())
@@ -58,11 +61,11 @@ class PopulatingCoverageTests : MontaguTests()
     fun `deserializing coverage throws error on invalid column headers`()
     {
         val mockContext = mock<ActionContext> {
+            on { contentType() } doReturn "text/csv"
             on { this.getInputStream() } doReturn invalidHeadersCSVDataString.byteInputStream()
         }
         val sut = CoverageController(mockContext, mock(), PostDataHelper())
-
-        assertThatThrownBy {  sut.getCoverageDataFromCSV() }
+        assertThatThrownBy { sut.getCoverageDataFromCSV() }
                 .isInstanceOf(ValidationException::class.java)
     }
 
