@@ -226,7 +226,7 @@ class JooqTouchstoneRepository(
         return record.id
     }
 
-    override fun saveCoverage(touchstoneVersionId: String, records: List<CoverageRecord>)
+    override fun saveCoverageForTouchstone(touchstoneVersionId: String, records: List<CoverageRecord>)
     {
         dsl.batchStore(records).execute()
     }

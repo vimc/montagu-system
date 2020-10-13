@@ -68,7 +68,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                     coverage = it.target.toBigDecimal()
             )
         }.toList()
-        touchstoneRepository.saveCoverage(touchstoneVersionId, records)
+        touchstoneRepository.saveCoverageForTouchstone(touchstoneVersionId, records)
     }
 
     constructor(repositories: Repositories) : this(repositories.modellingGroup,

@@ -32,7 +32,7 @@ interface TouchstoneRepository : Repository
             scenarioDescriptionId: String)
             : List<CoverageSet>
 
-    fun saveCoverage(touchstoneVersionId: String, records: List<CoverageRecord>)
+    fun saveCoverageForTouchstone(touchstoneVersionId: String, records: List<CoverageRecord>)
     fun newCoverageRowRecord(coverageSetId: Int,
                              country: String,
                              year: Int,

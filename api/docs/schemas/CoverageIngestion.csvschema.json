@@ -1,0 +1,14 @@
+{
+    "columns": {
+        "vaccine": "String",
+        "country": "String",
+        "activity_type": "String",
+        "gavi_support": "String",
+        "year": "Int",
+        "age_first": "Int",
+        "age_last": "Int",
+        "target": "Decimal",
+        "coverage": "Decimal"
+    },
+    "additionalColumnsAllowed": false
+}
