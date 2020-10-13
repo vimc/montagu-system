@@ -1,7 +1,9 @@
 package org.vaccineimpact.api.databaseTests.tests.touchstoneRepository
 
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
+import org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.Tables.COVERAGE
 import org.vaccineimpact.api.db.Tables.COVERAGE_SET
 import org.vaccineimpact.api.db.direct.addCoverageSet
@@ -31,6 +33,19 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
             assertThat(set[COVERAGE_SET.ACTIVITY_TYPE]).isEqualTo("routine")
             assertThat(set[COVERAGE_SET.GAVI_SUPPORT_LEVEL]).isEqualTo("without")
             assertThat(set[COVERAGE_SET.NAME]).isEqualTo("v1: v1, without, routine")
+        }
+    }
+
+    @Test
+    fun `create coverage set will throw unknown object error for invalid vaccines`()
+    {
+        withDatabase {
+            it.addTouchstoneVersion("t", 1, addTouchstone = true)
+        }
+        withRepo {
+            assertThatThrownBy {
+                it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT)
+            }.isInstanceOf(UnknownObjectError::class.java)
         }
     }
 

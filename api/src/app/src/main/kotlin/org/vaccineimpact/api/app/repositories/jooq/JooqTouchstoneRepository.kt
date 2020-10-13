@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.*
 import org.jooq.Result
+import org.jooq.exception.DataAccessException
 import org.jooq.impl.DSL.*
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
@@ -212,18 +213,27 @@ class JooqTouchstoneRepository(
                                    activityType: ActivityType,
                                    supportLevel: GAVISupportLevel): Int
     {
-
-        val support = supportLevel.toString().toLowerCase()
-        val activity = activityType.toString().toLowerCase().replace('_', '-')
-        val record = this.dsl.newRecord(COVERAGE_SET).apply {
-            this.touchstone = touchstoneVersionId
-            this.name = "$vaccine: $vaccine, $support, $activity"
-            this.vaccine = vaccine
-            this.gaviSupportLevel = support
-            this.activityType = activity
+        try
+        {
+            val support = supportLevel.toString().toLowerCase()
+            val activity = activityType.toString().toLowerCase().replace('_', '-')
+            val record = this.dsl.newRecord(COVERAGE_SET).apply {
+                this.touchstone = touchstoneVersionId
+                this.name = "$vaccine: $vaccine, $support, $activity"
+                this.vaccine = vaccine
+                this.gaviSupportLevel = support
+                this.activityType = activity
+            }
+            record.store()
+            return record.id
         }
-        record.store()
-        return record.id
+        catch(e: DataAccessException)
+        {
+            if (e.message?.contains("coverage_set_vaccine_fkey") == true) {
+                throw UnknownObjectError("vaccine", vaccine)
+            }
+            else throw e
+        }
     }
 
     override fun saveCoverageForTouchstone(touchstoneVersionId: String, records: List<CoverageRecord>)
