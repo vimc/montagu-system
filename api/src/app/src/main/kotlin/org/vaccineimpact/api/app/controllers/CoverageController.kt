@@ -2,7 +2,6 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.context.RequestBodySource
 import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.logic.CoverageLogic
@@ -21,12 +20,11 @@ import org.vaccineimpact.api.serialization.StreamSerializable
 class CoverageController(
         actionContext: ActionContext,
         private val coverageLogic: CoverageLogic,
-        private val touchstoneRepository: TouchstoneRepository,
         private val postDataHelper: PostDataHelper = PostDataHelper()
 ) : Controller(actionContext)
 {
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, RepositoriesCoverageLogic(repositories), repositories.touchstone)
+            : this(context, RepositoriesCoverageLogic(repositories))
 
     fun getCoverageDataFromCSV(): Sequence<CoverageIngestionRow>
     {
@@ -37,7 +35,7 @@ class CoverageController(
     fun ingestCoverage(): String
     {
         val sequence = getCoverageDataFromCSV()
-        touchstoneRepository.saveCoverage(context.params(":touchstone-version-id"), sequence)
+        coverageLogic.saveCoverageForTouchstone(context.params(":touchstone-version-id"), sequence)
         return okayResponse()
     }
 

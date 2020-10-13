@@ -21,7 +21,7 @@ class CoverageControllerTests : MontaguTests()
     {
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
-        CoverageController(context, logic, mock()).getCoverageSetsForGroup()
+        CoverageController(context, logic).getCoverageSetsForGroup()
 
         verify(logic).getCoverageSetsForGroup(eq("gId"), eq("tId"), eq("sId"))
     }
@@ -32,7 +32,7 @@ class CoverageControllerTests : MontaguTests()
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
         Assertions.assertThatThrownBy {
-            CoverageController(context, logic, mock()).getCoverageSetsForGroup()
+            CoverageController(context, logic).getCoverageSetsForGroup()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 
@@ -41,7 +41,7 @@ class CoverageControllerTests : MontaguTests()
     {
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
-        CoverageController(context, logic, mock()).getCoverageDataForGroup()
+        CoverageController(context, logic).getCoverageDataForGroup()
         verify(logic).getCoverageDataForGroup(eq("gId"), eq("tId"), eq("sId"), eq(false), isNull())
     }
 
@@ -91,7 +91,7 @@ class CoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        CoverageController(context, logic, mock())
+        CoverageController(context, logic)
                 .getCoverageDataForGroup().data
         verify(logic).getCoverageDataForGroup("gId", "tId", "sId", false, null)
     }
@@ -107,7 +107,7 @@ class CoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        CoverageController(context, logic, mock())
+        CoverageController(context, logic)
                 .getCoverageDataForGroup().data
         verify(logic).getCoverageDataForGroup("gId", "tId", "sId", false, null)
     }
@@ -118,7 +118,7 @@ class CoverageControllerTests : MontaguTests()
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
 
-        val data = CoverageController(context, logic, mock())
+        val data = CoverageController(context, logic)
                 .getCoverageDataForGroup().data
 
         // test data includes 5 years
@@ -146,7 +146,7 @@ class CoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val data = CoverageController(context, logic, mock())
+        val data = CoverageController(context, logic)
                 .getCoverageDataForGroup().data
 
         Assertions.assertThat(data.count()).isEqualTo(0)

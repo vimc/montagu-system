@@ -2,10 +2,10 @@ package org.vaccineimpact.api.app.repositories
 
 import org.jooq.Record
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
-import org.vaccineimpact.api.db.tables.Coverage
+import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.serialization.SplitData
+import java.math.BigDecimal
 
 interface TouchstoneRepository : Repository
 {
@@ -32,7 +32,14 @@ interface TouchstoneRepository : Repository
             scenarioDescriptionId: String)
             : List<CoverageSet>
 
-    fun saveCoverage(touchstoneVersionId: String, rows: Sequence<CoverageIngestionRow>)
+    fun saveCoverage(touchstoneVersionId: String, records: List<CoverageRecord>)
+    fun newCoverageRowRecord(coverageSetId: Int,
+                             country: String,
+                             year: Int,
+                             ageFrom: BigDecimal,
+                             ageTo: BigDecimal,
+                             target: BigDecimal?,
+                             coverage: BigDecimal?): CoverageRecord
 
     fun getDemographicDatasets(touchstoneVersionId: String): List<DemographicDataset>
     fun getDemographicData(statisticTypeCode: String, source: String,
@@ -41,4 +48,5 @@ interface TouchstoneRepository : Repository
 
     fun mapTouchstone(records: List<Record>): Touchstone
     fun mapTouchstoneVersion(record: Record): TouchstoneVersion
+    fun createCoverageSet(touchstoneVersionId: String, vaccine: String, activityType: ActivityType, supportLevel: GAVISupportLevel): Int
 }

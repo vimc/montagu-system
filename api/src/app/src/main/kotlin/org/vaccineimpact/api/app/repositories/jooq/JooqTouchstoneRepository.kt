@@ -4,7 +4,6 @@ import org.jooq.*
 import org.jooq.Result
 import org.jooq.impl.DSL.*
 import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.app.errors.ValidationError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.getLongCoverageRowDataTable
@@ -19,7 +18,6 @@ import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.SplitData
-import org.vaccineimpact.api.serialization.validation.ValidationException
 import java.math.BigDecimal
 import kotlin.sequences.Sequence
 
@@ -209,39 +207,31 @@ class JooqTouchstoneRepository(
         return records.map { mapCoverageSet(it) }
     }
 
-    override fun saveCoverage(touchstoneVersionId: String, rows: Sequence<CoverageIngestionRow>)
+    override fun createCoverageSet(touchstoneVersionId: String,
+                                   vaccine: String,
+                                   activityType: ActivityType,
+                                   supportLevel: GAVISupportLevel): Int
     {
-        val coverageSets = getCoverageSets(touchstoneVersionId)
-        val setDeterminants = coverageSets.map {
-            Triple(mapper.mapEnum<ActivityType>(it[COVERAGE_SET.ACTIVITY_TYPE]),
-                    mapper.mapEnum<GAVISupportLevel>(it[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
-                    it[COVERAGE_SET.VACCINE])
+
+        val support = supportLevel.toString().toLowerCase().replace('_', '-')
+        val activity = activityType.toString().toLowerCase().replace('_', '-')
+        val record = this.dsl.newRecord(COVERAGE_SET).apply {
+            this.touchstone = touchstoneVersionId
+            this.name = "$vaccine: $vaccine, $support, $activity"
+            this.vaccine = vaccine
+            this.gaviSupportLevel = support
+            this.activityType = activity
         }
-        val records = rows.map {
-            val set = Triple(it.activityType, it.gaviSupport, it.vaccine)
-            val setIndex = setDeterminants.indexOf(set)
-            if (setIndex == -1)
-            {
-                throw UnknownObjectError(set, CoverageSet::class)
-            }
-            else
-            {
-                val id = coverageSets[setIndex][COVERAGE_SET.ID]
-                newCoverageRowRecord(
-                        id,
-                        it.country,
-                        it.year,
-                        ageFrom = BigDecimal(it.ageFirst),
-                        ageTo = BigDecimal(it.ageLast),
-                        target = it.target.toBigDecimal(),
-                        coverage = it.target.toBigDecimal()
-                )
-            }
-        }.toList()
+        record.store()
+        return record.id
+    }
+
+    override fun saveCoverage(touchstoneVersionId: String, records: List<CoverageRecord>)
+    {
         dsl.batchStore(records).execute()
     }
 
-    private fun newCoverageRowRecord(coverageSetId: Int,
+    override fun newCoverageRowRecord(coverageSetId: Int,
                                      country: String,
                                      year: Int,
                                      ageFrom: BigDecimal,

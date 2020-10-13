@@ -5,9 +5,9 @@ import org.vaccineimpact.api.app.getLongCoverageRowDataTable
 import org.vaccineimpact.api.app.getWideCoverageRowDataTable
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
+import java.math.BigDecimal
 
 interface CoverageLogic
 {
@@ -21,6 +21,7 @@ interface CoverageLogic
     fun getCoverageSetsForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String):
             ScenarioTouchstoneAndCoverageSets
 
+    fun saveCoverageForTouchstone(touchstoneVersionId: String, rows: Sequence<CoverageIngestionRow>)
 }
 
 class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingGroupRepository,
@@ -40,6 +41,34 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                 responsibilityAndTouchstone.touchstoneVersion,
                 scenarioAndCoverageSets.scenario,
                 scenarioAndCoverageSets.coverageSets)
+    }
+
+    override fun saveCoverageForTouchstone(touchstoneVersionId: String, rows: Sequence<CoverageIngestionRow>)
+    {
+        val setDeterminants = mutableListOf<Triple<ActivityType, GAVISupportLevel, String>>()
+        val setIds = mutableListOf<Int>()
+        val records = rows.map {
+            val set = Triple(it.activityType, it.gaviSupport, it.vaccine)
+            var setIndex = setDeterminants.indexOf(set)
+            if (setIndex == -1)
+            {
+                val newId = touchstoneRepository.createCoverageSet(touchstoneVersionId, it.vaccine, it.activityType, it.gaviSupport)
+                setIds.add(newId)
+                setDeterminants.add(set)
+                setIndex = setIds.count() - 1
+            }
+            val id = setIds[setIndex]
+            touchstoneRepository.newCoverageRowRecord(
+                    id,
+                    it.country,
+                    it.year,
+                    ageFrom = BigDecimal(it.ageFirst),
+                    ageTo = BigDecimal(it.ageLast),
+                    target = it.target.toBigDecimal(),
+                    coverage = it.target.toBigDecimal()
+            )
+        }.toList()
+        touchstoneRepository.saveCoverage(touchstoneVersionId, records)
     }
 
     constructor(repositories: Repositories) : this(repositories.modellingGroup,
