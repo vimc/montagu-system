@@ -16,7 +16,7 @@ import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
 import java.io.File
 
-class UploadCoverageTests : CoverageTests()
+class PopulateCoverageTests : CoverageTests()
 {
     private val requiredPermissions = PermissionSet("*/coverage.write")
 

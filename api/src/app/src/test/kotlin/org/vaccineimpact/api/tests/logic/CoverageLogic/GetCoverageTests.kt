@@ -1,4 +1,4 @@
-package org.vaccineimpact.api.tests.logic
+package org.vaccineimpact.api.tests.logic.CoverageLogic
 
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
@@ -24,7 +24,7 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.math.BigDecimal
 import java.util.*
 
-class CoverageLogicTests : MontaguTests()
+class GetCoverageTests : MontaguTests()
 {
     private val fakeScenario = Scenario("sId", "scDesc", "disease", listOf("t-1"))
     private val fakeTouchstoneVersion = TouchstoneVersion("touchstone-1", "touchstone", 1,
