@@ -32,6 +32,8 @@ interface TouchstoneRepository : Repository
             scenarioDescriptionId: String)
             : List<CoverageSet>
 
+    fun saveCoverage(touchstoneVersionId: String, rows: Sequence<CoverageIngestionRow>)
+
     fun getDemographicDatasets(touchstoneVersionId: String): List<DemographicDataset>
     fun getDemographicData(statisticTypeCode: String, source: String,
                            touchstoneVersionId: String,

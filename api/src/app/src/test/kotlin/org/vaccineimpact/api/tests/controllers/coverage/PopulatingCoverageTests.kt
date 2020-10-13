@@ -22,7 +22,7 @@ class PopulatingCoverageTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { this.getInputStream() } doReturn normalCSVDataString.byteInputStream()
         }
-        val sut = CoverageController(mockContext, mock(), PostDataHelper())
+        val sut = CoverageController(mockContext, mock(), mock(), PostDataHelper())
         val result = sut.getCoverageDataFromCSV()
         assertThat(result.toList()).containsExactly(
                 CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2020, 1, 10, 100F, 78.8F),
@@ -36,7 +36,7 @@ class PopulatingCoverageTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { this.getInputStream() } doReturn invalidSupportLevelCSVDataString.byteInputStream()
         }
-        val sut = CoverageController(mockContext, mock(), PostDataHelper())
+        val sut = CoverageController(mockContext, mock(), mock(), PostDataHelper())
         val result = sut.getCoverageDataFromCSV()
         assertThatThrownBy { result.toList() }
                 .isInstanceOf(ValidationException::class.java)
@@ -48,7 +48,7 @@ class PopulatingCoverageTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { this.getInputStream() } doReturn invalidActivityTypeCSVDataString.byteInputStream()
         }
-        val sut = CoverageController(mockContext, mock(), PostDataHelper())
+        val sut = CoverageController(mockContext, mock(), mock(), PostDataHelper())
         val result = sut.getCoverageDataFromCSV()
         assertThatThrownBy { result.toList() }
                 .isInstanceOf(ValidationException::class.java)
@@ -60,7 +60,7 @@ class PopulatingCoverageTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { this.getInputStream() } doReturn invalidHeadersCSVDataString.byteInputStream()
         }
-        val sut = CoverageController(mockContext, mock(), PostDataHelper())
+        val sut = CoverageController(mockContext, mock(), mock(), PostDataHelper())
 
         assertThatThrownBy {  sut.getCoverageDataFromCSV() }
                 .isInstanceOf(ValidationException::class.java)

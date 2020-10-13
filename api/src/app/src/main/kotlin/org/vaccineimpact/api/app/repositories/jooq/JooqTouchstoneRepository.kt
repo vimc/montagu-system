@@ -4,6 +4,7 @@ import org.jooq.*
 import org.jooq.Result
 import org.jooq.impl.DSL.*
 import org.vaccineimpact.api.app.errors.UnknownObjectError
+import org.vaccineimpact.api.app.errors.ValidationError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.filters.whereMatchesFilter
 import org.vaccineimpact.api.app.getLongCoverageRowDataTable
@@ -13,10 +14,12 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.mapping.MappingHelper
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.SplitData
+import org.vaccineimpact.api.serialization.validation.ValidationException
 import java.math.BigDecimal
 import kotlin.sequences.Sequence
 
@@ -130,6 +133,19 @@ class JooqTouchstoneRepository(
 
     }
 
+    private fun getCoverageSets(touchstoneVersionId: String):
+            Result<Record4<Int, String, String, String>>
+    {
+        return dsl
+                .select(COVERAGE_SET.ID,
+                        COVERAGE_SET.ACTIVITY_TYPE,
+                        COVERAGE_SET.GAVI_SUPPORT_LEVEL,
+                        COVERAGE_SET.VACCINE)
+                .fromJoinPath(COVERAGE_SET, TOUCHSTONE)
+                .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
+                .fetch()
+    }
+
     override fun getScenarioAndCoverageData(
             touchstoneVersionId: String,
             scenarioDescId: String
@@ -191,6 +207,54 @@ class JooqTouchstoneRepository(
                 .fetch()
 
         return records.map { mapCoverageSet(it) }
+    }
+
+    override fun saveCoverage(touchstoneVersionId: String, rows: Sequence<CoverageIngestionRow>)
+    {
+        val coverageSets = getCoverageSets(touchstoneVersionId)
+        val setDeterminants = coverageSets.map {
+            Triple(mapper.mapEnum<ActivityType>(it[COVERAGE_SET.ACTIVITY_TYPE]),
+                    mapper.mapEnum<GAVISupportLevel>(it[COVERAGE_SET.GAVI_SUPPORT_LEVEL]),
+                    it[COVERAGE_SET.VACCINE])
+        }
+        val records = rows.map {
+            val set = Triple(it.activityType, it.gaviSupport, it.vaccine)
+            val setIndex = setDeterminants.indexOf(set)
+            if (setIndex == -1)
+            {
+                throw UnknownObjectError(set, CoverageSet::class)
+            }
+            else
+            {
+                val id = coverageSets[setIndex][COVERAGE_SET.ID]
+                newCoverageRowRecord(
+                        id,
+                        it.country,
+                        it.year,
+                        ageFrom = BigDecimal(it.ageFirst),
+                        ageTo = BigDecimal(it.ageLast),
+                        target = it.target.toBigDecimal(),
+                        coverage = it.target.toBigDecimal()
+                )
+            }
+        }.toList()
+        dsl.batchStore(records).execute()
+    }
+
+    private fun newCoverageRowRecord(coverageSetId: Int,
+                                     country: String,
+                                     year: Int,
+                                     ageFrom: BigDecimal,
+                                     ageTo: BigDecimal,
+                                     target: BigDecimal?,
+                                     coverage: BigDecimal?) = this.dsl.newRecord(COVERAGE).apply {
+        this.coverageSet = coverageSetId
+        this.country = country
+        this.year = year
+        this.ageFrom = ageFrom
+        this.ageTo = ageTo
+        this.target = target
+        this.coverage = coverage
     }
 
     private fun coverageDimensions(): Array<Field<*>>
@@ -530,9 +594,9 @@ class JooqTouchstoneRepository(
 
     private fun getDiseaseIdForScenarioDescription(scenarioDescriptionId: String): String =
             dsl.select(SCENARIO_DESCRIPTION.DISEASE)
-                .from(SCENARIO_DESCRIPTION)
-                .where(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
-                .fetchOne()[SCENARIO_DESCRIPTION.DISEASE]
+                    .from(SCENARIO_DESCRIPTION)
+                    .where(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
+                    .fetchOne()[SCENARIO_DESCRIPTION.DISEASE]
 
     private fun includeGenderInCoverage(touchstoneVersionId: String): Boolean = touchstoneVersionId > "2019"
 
