@@ -213,7 +213,7 @@ class JooqTouchstoneRepository(
                                    supportLevel: GAVISupportLevel): Int
     {
 
-        val support = supportLevel.toString().toLowerCase().replace('_', '-')
+        val support = supportLevel.toString().toLowerCase()
         val activity = activityType.toString().toLowerCase().replace('_', '-')
         val record = this.dsl.newRecord(COVERAGE_SET).apply {
             this.touchstone = touchstoneVersionId
