@@ -88,7 +88,7 @@ test('can login with redirect', async (done) => {
     //    });
     //});
 
-    setTimeout(() => async {
+    setTimeout(async () =>  {
         expect(await browser.getCurrentUrl()).toBe("https://google.com/");
         done();
     }, 3000);
