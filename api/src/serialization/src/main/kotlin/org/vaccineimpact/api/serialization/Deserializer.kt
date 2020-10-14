@@ -2,6 +2,7 @@ package org.vaccineimpact.api.serialization
 
 import org.vaccineimpact.api.models.ActivityType
 import org.vaccineimpact.api.models.GAVISupportLevel
+import org.vaccineimpact.api.models.GenderEnum
 import java.lang.UnsupportedOperationException
 import kotlin.reflect.KType
 import kotlin.reflect.full.createType
@@ -37,6 +38,7 @@ class Deserializer
             Float::class.createType() -> raw.toFloat()
             ActivityType::class.createType() -> ActivityType.valueOf(raw.toUpperCase())
             GAVISupportLevel::class.createType() -> GAVISupportLevel.valueOf(raw.toUpperCase())
+            GenderEnum::class.createType() -> GenderEnum.valueOf(raw.toUpperCase())
             else -> throw UnsupportedOperationException("org.vaccineimpact.api.serialization.Deserializer does not support target type $targetType")
         }
     }
