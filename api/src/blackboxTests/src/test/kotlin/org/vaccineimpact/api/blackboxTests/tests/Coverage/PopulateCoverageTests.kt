@@ -23,14 +23,11 @@ class PopulateCoverageTests : CoverageTests()
     @Test
     fun `can populate coverage`()
     {
-        // this data is somewhat realistically sized - in practice will likely be fewer vaccines,
-        // but for some vaccines more gavi support levels
-        val data = File("coverage.csv").readText()
         setup()
         validate("/touchstones/$touchstoneVersionId/coverage/", method = HttpMethod.post) withRequestSchema {
             CSVSchema("CoverageIngestion")
         } sending {
-           data
+           csvData
         } withPermissions {
             requiredPermissions
         } andCheckHasStatus 200..299
@@ -78,4 +75,11 @@ class PopulateCoverageTests : CoverageTests()
             assertThat(coverage.count()).isEqualTo(expectedNumberOfRows)
         }
     }
+
+    private val csvData = """
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "target", "coverage"
+   "HepB_BD",   "AFG",    "campaign",     "with",  "2020",         1,     10,    100, 78.8
+   "HepB_BD",   "AFG",    "campaign",     "with",  "2021",         1,      10,    100, 65.5
+"""
+
 }
