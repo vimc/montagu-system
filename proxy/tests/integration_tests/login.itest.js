@@ -82,21 +82,14 @@ test('can login with redirect', async (done) => {
 
     const loggedInBox = browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
 
-    //await browser.wait(() => {
-    //    return browser.getCurrentUrl().then((url) => {
-    //        return url === "https://google.com/";
-    //    });
-    //});
-
     setTimeout(async () =>  {
         expect(await browser.getCurrentUrl()).toBe("https://nonsense/");
         done();
-    }, 3000);
-
+    });
 
 });
 
-test('redirects user if redirect query is present and user is already logged in', async () => {
+test('redirects user if redirect query is present and user is already logged in', async (done) => {
 
     await TestHelper.ensureLoggedIn(browser);
 
@@ -104,12 +97,11 @@ test('redirects user if redirect query is present and user is already logged in'
     browser.get("https://google.com");
 
     //navigate back
-    browser.get("https://localhost?redirectTo=https://www.mozilla.org");
+    browser.get("https://localhost?redirectTo=http://nonsense");
 
-    await browser.wait(() => {
-        return browser.getCurrentUrl().then((url) => {
-            return url === "http://www.mozilla.org/";
-        });
+    setTimeout(async () =>  {
+        expect(await browser.getCurrentUrl()).toBe("https://nonsense/");
+        done();
     });
 
-}, 9000);
+});
