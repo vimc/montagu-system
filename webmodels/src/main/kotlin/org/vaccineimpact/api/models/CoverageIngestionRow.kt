@@ -8,6 +8,7 @@ data class CoverageIngestionRow(
         val year: Int,
         val ageFirst: Int,
         val ageLast: Int,
+        val gender: GenderEnum,
         val target: Float,
         val coverage: Float
 )

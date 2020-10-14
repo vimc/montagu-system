@@ -13,3 +13,9 @@ object Gender
         BOTH
     }
 }
+
+enum class GenderEnum {
+    BOTH,
+    MALE,
+    FEMALE
+}
