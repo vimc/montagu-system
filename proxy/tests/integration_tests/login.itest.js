@@ -69,7 +69,7 @@ test('can login without redirect', async () => {
 
 test('can login with redirect', async () => {
 
-    browser.get("https://localhost?redirectTo=http://nonsense");
+    browser.get("https://localhost?redirectTo=https://google.com");
 
     const emailField = await browser.findElement(webDriver.By.id("email-input"));
     const pwField = await browser.findElement(webDriver.By.id("password-input"));
@@ -84,11 +84,11 @@ test('can login with redirect', async () => {
 
     await browser.wait(() => {
         return browser.getCurrentUrl().then((url) => {
-            return url === "http://nonsense/";
+            return url === "https://google.com/";
         });
     });
 
-    expect(await browser.getCurrentUrl()).toBe("http://nonsense/");
+    expect(await browser.getCurrentUrl()).toBe("https://google.com/");
 });
 
 test('redirects user if redirect query is present and user is already logged in', async () => {
@@ -99,11 +99,11 @@ test('redirects user if redirect query is present and user is already logged in'
     browser.get("https://google.com");
 
     //navigate back
-    browser.get("https://localhost?redirectTo=http://nonsense");
+    browser.get("https://localhost?redirectTo=https://mozilla.org");
 
     await browser.wait(() => {
         return browser.getCurrentUrl().then((url) => {
-            return url === "http://nonsense/";
+            return url === "http://mozilla.org/";
         });
     });
 
