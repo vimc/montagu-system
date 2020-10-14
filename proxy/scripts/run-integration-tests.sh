@@ -48,6 +48,7 @@ rm -rf workspace
 
 sleep 2s
 
+echo "Running integration test container"
 docker run \
   --rm \
 	--network host \
