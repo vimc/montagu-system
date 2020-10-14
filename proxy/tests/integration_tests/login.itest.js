@@ -69,7 +69,7 @@ test('can login without redirect', async () => {
 
 test('can login with redirect', async (done) => {
 
-    browser.get("https://localhost?redirectTo=https://google.com");
+    browser.get("https://localhost?redirectTo=https://nonsense/");
 
     const emailField = await browser.findElement(webDriver.By.id("email-input"));
     const pwField = await browser.findElement(webDriver.By.id("password-input"));
@@ -89,7 +89,7 @@ test('can login with redirect', async (done) => {
     //});
 
     setTimeout(async () =>  {
-        expect(await browser.getCurrentUrl()).toBe("https://google.com/");
+        expect(await browser.getCurrentUrl()).toBe("https://nonsense/");
         done();
     }, 3000);
 
@@ -104,11 +104,11 @@ test('redirects user if redirect query is present and user is already logged in'
     browser.get("https://google.com");
 
     //navigate back
-    browser.get("https://localhost?redirectTo=https://mozilla.org");
+    browser.get("https://localhost?redirectTo=https://www.mozilla.org");
 
     await browser.wait(() => {
         return browser.getCurrentUrl().then((url) => {
-            return url === "http://mozilla.org/";
+            return url === "http://www.mozilla.org/";
         });
     });
 
