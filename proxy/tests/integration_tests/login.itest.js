@@ -85,7 +85,7 @@ test('can login with redirect', async (done) => {
     setTimeout(async () =>  {
         expect(await browser.getCurrentUrl()).toBe("https://nonsense/");
         done();
-    });
+    }, 2000);
 
 });
 
@@ -102,6 +102,6 @@ test('redirects user if redirect query is present and user is already logged in'
     setTimeout(async () =>  {
         expect(await browser.getCurrentUrl()).toBe("https://nonsense/");
         done();
-    });
+    }, 2000);
 
 });
