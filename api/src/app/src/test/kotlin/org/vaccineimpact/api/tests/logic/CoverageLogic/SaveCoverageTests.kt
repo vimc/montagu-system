@@ -9,6 +9,7 @@ import org.vaccineimpact.api.models.ActivityType
 import org.vaccineimpact.api.models.CoverageIngestionRow
 import org.vaccineimpact.api.models.GAVISupportLevel
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import java.math.BigDecimal
 
 class SaveCoverageTests : MontaguTests()
 {
@@ -42,6 +43,22 @@ class SaveCoverageTests : MontaguTests()
         verifyNoMoreInteractions(mockRepo)
     }
 
+    @Test
+    fun `rows are created correctly`()
+    {
+        val mockRepo = mock<TouchstoneRepository> {
+            on { createCoverageSet(any(), any(), any(), any()) } doReturn 1
+        }
+        val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock())
+        sut.saveCoverageForTouchstone("t1", testSequence)
+        verify(mockRepo, Times(1)).newCoverageRowRecord(1,
+                "AFG",
+                2020,
+                BigDecimal(1),
+                BigDecimal(10),
+                100F.toBigDecimal(),
+                78.8.toBigDecimal())
+    }
 
     @Test
     fun `coverage records are saved to correct coverage set`()

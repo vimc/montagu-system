@@ -32,7 +32,10 @@ class PopulateCoverageTests : CoverageTests()
             requiredPermissions
         } andCheckHasStatus 200..299
 
-        verifyCorrectRows()
+        JooqContext().use {
+            val coverage = it.dsl.selectFrom(COVERAGE).fetch()
+            assertThat(coverage.count()).isEqualTo(2)
+        }
     }
 
     @Test

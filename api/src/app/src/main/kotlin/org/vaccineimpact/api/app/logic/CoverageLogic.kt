@@ -65,7 +65,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                     ageFrom = BigDecimal(it.ageFirst),
                     ageTo = BigDecimal(it.ageLast),
                     target = it.target.toBigDecimal(),
-                    coverage = it.target.toBigDecimal()
+                    coverage = it.coverage.toBigDecimal()
             )
         }.toList()
         touchstoneRepository.saveCoverageForTouchstone(touchstoneVersionId, records)
