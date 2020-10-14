@@ -67,7 +67,7 @@ test('can login without redirect', async () => {
 
 });
 
-test('can login with redirect', async () => {
+test('can login with redirect', async (done) => {
 
     browser.get("https://localhost?redirectTo=https://google.com");
 
@@ -82,13 +82,18 @@ test('can login with redirect', async () => {
 
     const loggedInBox = browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
 
-    await browser.wait(() => {
-        return browser.getCurrentUrl().then((url) => {
-            return url === "https://google.com/";
-        });
-    });
+    //await browser.wait(() => {
+    //    return browser.getCurrentUrl().then((url) => {
+    //        return url === "https://google.com/";
+    //    });
+    //});
 
-    expect(await browser.getCurrentUrl()).toBe("https://google.com/");
+    setTimeout(() => async {
+        expect(await browser.getCurrentUrl()).toBe("https://google.com/");
+        done();
+    }, 3000);
+
+
 });
 
 test('redirects user if redirect query is present and user is already logged in', async () => {
