@@ -3,6 +3,7 @@ FROM nginx:1.15
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.montagu.conf /etc/nginx/conf.d/montagu.conf
 COPY index.html /usr/share/nginx/html/index.html
+COPY 404.html /usr/share/nginx/html/404.html
 COPY resources /usr/share/nginx/html/resources
 
 # Copy third party javascript from npm modules
