@@ -14,4 +14,16 @@ describe("TouchstoneTable", () => {
         rendered = shallow(<TouchstoneTable showFinished={false} touchstones={[t]} />);
         expect(rendered.find(TouchstoneListItem).props()).toEqual({...t, showFinished: false});
     });
+
+    it("column header reads 'Latest version' if showFinished is true", () => {
+        const t = mockTouchstone();
+        let rendered = shallow(<TouchstoneTable showFinished={true} touchstones={[t]} />);
+        expect(rendered.find("th").at(3).text()).toBe("Latest version");
+    });
+
+    it("column header reads 'Latest unfinished version' if showFinished is true", () => {
+        const t = mockTouchstone();
+        let rendered = shallow(<TouchstoneTable showFinished={false} touchstones={[t]} />);
+        expect(rendered.find("th").at(3).text()).toBe("Latest unfinished version");
+    });
 });

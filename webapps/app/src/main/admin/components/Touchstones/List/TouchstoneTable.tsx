@@ -15,7 +15,7 @@ export const TouchstoneTable: React.FunctionComponent<TouchstoneTableProps> = (p
             <th>ID</th>
             <th>Description</th>
             <th>Comment</th>
-            <th>Latest version</th>
+            <th>{props.showFinished ? "Latest version" : "Latest unfinished version"}</th>
         </tr>
         </thead>
         <tbody>
