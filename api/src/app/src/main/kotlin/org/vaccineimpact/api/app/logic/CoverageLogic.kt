@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.app.logic
 
+import okhttp3.internal.userAgent
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.getLongCoverageRowDataTable
 import org.vaccineimpact.api.app.getWideCoverageRowDataTable
@@ -45,6 +46,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
 
     override fun saveCoverageForTouchstone(touchstoneVersionId: String, rows: Sequence<CoverageIngestionRow>)
     {
+        val genders = touchstoneRepository.getGenders()
         val setDeterminants = mutableListOf<Triple<ActivityType, GAVISupportLevel, String>>()
         val setIds = mutableListOf<Int>()
         val records = rows.map {
@@ -64,6 +66,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                     it.year,
                     ageFrom = BigDecimal(it.ageFirst),
                     ageTo = BigDecimal(it.ageLast),
+                    gender = genders[it.gender]!!,
                     target = it.target.toBigDecimal(),
                     coverage = it.coverage.toBigDecimal()
             )

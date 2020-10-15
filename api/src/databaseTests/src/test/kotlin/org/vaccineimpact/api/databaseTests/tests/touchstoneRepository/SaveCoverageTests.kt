@@ -11,6 +11,7 @@ import org.vaccineimpact.api.db.direct.addTouchstoneVersion
 import org.vaccineimpact.api.db.direct.addVaccine
 import org.vaccineimpact.api.models.ActivityType
 import org.vaccineimpact.api.models.GAVISupportLevel
+import org.vaccineimpact.api.models.GenderEnum
 import java.math.BigDecimal
 
 class SaveCoverageTests : TouchstoneRepositoryTests()
@@ -123,6 +124,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
                     2020,
                     BigDecimal(0),
                     BigDecimal(5),
+                    1,
                     BigDecimal(100),
                     BigDecimal(200))
         }
@@ -134,6 +136,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
         assertThat(result.ageTo.toInt()).isEqualTo(5)
         assertThat(result.target).isEqualTo(BigDecimal(100))
         assertThat(result.coverage).isEqualTo(BigDecimal(200))
+        assertThat(result.gender).isEqualTo(1)
     }
 
     @Test
@@ -150,6 +153,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
                     2020,
                     BigDecimal(0),
                     BigDecimal(5),
+                    1,
                     BigDecimal(100),
                     BigDecimal(200))
             it.saveCoverageForTouchstone("t1", listOf(row))
@@ -165,5 +169,6 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
         assertThat(result[COVERAGE.AGE_TO].toInt()).isEqualTo(5)
         assertThat(result[COVERAGE.TARGET]).isEqualTo(BigDecimal(100))
         assertThat(result[COVERAGE.COVERAGE_]).isEqualTo(BigDecimal(200))
+        assertThat(result[COVERAGE.GENDER]).isEqualTo(1)
     }
 }

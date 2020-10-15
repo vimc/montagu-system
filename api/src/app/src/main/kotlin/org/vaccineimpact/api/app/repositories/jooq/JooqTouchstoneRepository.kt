@@ -242,12 +242,13 @@ class JooqTouchstoneRepository(
     }
 
     override fun newCoverageRowRecord(coverageSetId: Int,
-                                     country: String,
-                                     year: Int,
-                                     ageFrom: BigDecimal,
-                                     ageTo: BigDecimal,
-                                     target: BigDecimal?,
-                                     coverage: BigDecimal?) = this.dsl.newRecord(COVERAGE).apply {
+                                      country: String,
+                                      year: Int,
+                                      ageFrom: BigDecimal,
+                                      ageTo: BigDecimal,
+                                      gender: Int,
+                                      target: BigDecimal?,
+                                      coverage: BigDecimal?) = this.dsl.newRecord(COVERAGE).apply {
         this.coverageSet = coverageSetId
         this.country = country
         this.year = year
@@ -255,6 +256,7 @@ class JooqTouchstoneRepository(
         this.ageTo = ageTo
         this.target = target
         this.coverage = coverage
+        this.gender = gender
     }
 
     private fun coverageDimensions(): Array<Field<*>>
@@ -474,6 +476,13 @@ class JooqTouchstoneRepository(
                 .on(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT.eq(field(name("v", "id"), Int::class.java)))
                 .where(DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_STATISTIC_TYPE.eq(statisticType.id))
                 .and(DEMOGRAPHIC_STATISTIC.GENDER.eq(genderId))
+    }
+
+    override fun getGenders(): Map<GenderEnum, Int>
+    {
+        return dsl.fetch(GENDER).associate {
+            GenderEnum.valueOf(it.name.toUpperCase()) to it.id
+        }
     }
 
     private fun getGenderId(statisticType: DemographicStatisticTypeRecord, gender: String): Int

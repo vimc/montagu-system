@@ -32,12 +32,14 @@ interface TouchstoneRepository : Repository
             scenarioDescriptionId: String)
             : List<CoverageSet>
 
+    fun getGenders(): Map<GenderEnum, Int>
     fun saveCoverageForTouchstone(touchstoneVersionId: String, records: List<CoverageRecord>)
     fun newCoverageRowRecord(coverageSetId: Int,
                              country: String,
                              year: Int,
                              ageFrom: BigDecimal,
                              ageTo: BigDecimal,
+                             gender: Int,
                              target: BigDecimal?,
                              coverage: BigDecimal?): CoverageRecord
 
