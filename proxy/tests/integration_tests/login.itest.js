@@ -105,34 +105,3 @@ test('redirects user if redirect query is present and user is already logged in'
     }, 2000);
 }, 9000);
 
-test('Shows 404 page for unknown urls', async () => {
-    await TestHelper.ensureLoggedIn(browser);
-
-    browser.get("https://localhost/blah");
-    await browser.wait(() => {
-        return browser.getCurrentUrl().then((url) => {
-            return url === "https://localhost/blah/";
-        });
-    });
-    const header = browser.findElement(webDriver.By.css("h1"));
-    expect(header.getText()).toBe("Page not found");
-
-});
-
-test('Link in 404 page returns to index', async () => {
-
-    browser.get("http://localhost/blah");
-    await browser.wait(() => {
-        return browser.getCurrentUrl().then((url) => {
-            return url === "https://localhost/blah";
-        });
-    });
-    const link = browser.findElement(webDriver.By.css("a"));
-    link.click();
-    await browser.wait(() => {
-        return browser.getCurrentUrl().then((url) => {
-            return url === "https://localhost/";
-        });
-    });
-
-});

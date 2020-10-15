@@ -24,14 +24,12 @@ docker run --rm \
     $ORG/montagu-cert-tool:master \
     gen-self-signed /workspace > /dev/null 2> /dev/null
 
-echo "Running reverse proxy"
 docker run -d \
 	-p "443:443" -p "80:80" \
 	--name reverse-proxy \
 	--network montagu_proxy\
 	$SHA_TAG 443 localhost
 
-echo "Running metrics"
 docker run -d \
     -p "9113:9113" \
     --network montagu_proxy \
@@ -43,7 +41,6 @@ docker run -d \
 # the real dhparam will be 4096 bits but that takes ages to generate
 openssl dhparam -out workspace/dhparam.pem 1024
 
-echo "Copying workshpace"
 docker cp workspace/certificate.pem reverse-proxy:/etc/montagu/proxy/
 docker cp workspace/ssl_key.pem reverse-proxy:/etc/montagu/proxy/
 docker cp workspace/dhparam.pem reverse-proxy:/etc/montagu/proxy/
@@ -51,7 +48,6 @@ rm -rf workspace
 
 sleep 2s
 
-echo "Running integration test container"
 docker run \
   --rm \
 	--network host \
