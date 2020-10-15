@@ -14,7 +14,9 @@ function on_interrupt() {
 # Generate test data
 image=vimc/montagu-generate-test-data:$MONTAGU_API_VERSION
 docker pull $image
+echo "STARTING TO GENERATE TEST DATA"
 docker run --rm --network=montagu_default $image
+echo "FINISHED GENERATING TEST DATA"
 
 
 # Add test accounts
