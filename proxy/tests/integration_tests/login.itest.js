@@ -97,10 +97,10 @@ test('redirects user if redirect query is present and user is already logged in'
     browser.get("https://mozilla.org");
 
     //navigate back
-    browser.get("https://localhost?redirectTo=http://nonsense");
+    browser.get("https://localhost?redirectTo=http://www.google.com");
 
     setTimeout(async () =>  {
-        expect(await browser.getCurrentUrl()).toBe("https://nonsense/");
+        expect(await browser.getCurrentUrl()).toBe("https://www.google.com/");
         done();
     }, 2000);
 
