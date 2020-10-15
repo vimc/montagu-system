@@ -8,6 +8,7 @@ import {TouchstoneTable} from "../../../../../main/admin/components/Touchstones/
 
 
 describe("TouchstoneList (admin)", () => {
+
     it("touchstone with one open version is active", () => {
         checkThatTouchstoneIsActive(true, mockTouchstone({id: "active1"}, [
             mockTouchstoneVersion({status: "open"}),
@@ -39,10 +40,12 @@ describe("TouchstoneList (admin)", () => {
         const expectedSection = sections.at(isActive ? 0 : 1);
         const wrongSection = sections.at(isActive ? 1 : 0);
         expect(expectedSection.props()).toEqual({
-            touchstones: [touchstone]
+            touchstones: [touchstone],
+            showFinished: !isActive
         });
         expect(wrongSection.props()).toEqual({
-            touchstones: []
+            touchstones: [],
+            showFinished: isActive
         });
     }
 });
