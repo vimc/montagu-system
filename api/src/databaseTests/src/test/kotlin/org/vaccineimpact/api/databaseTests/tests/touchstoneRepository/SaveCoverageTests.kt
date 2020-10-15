@@ -171,4 +171,15 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
         assertThat(result[COVERAGE.COVERAGE_]).isEqualTo(BigDecimal(200))
         assertThat(result[COVERAGE.GENDER]).isEqualTo(1)
     }
+
+    @Test
+    fun `can get genders`()
+    {
+        val genders = withRepo {
+            it.getGenders()
+        }
+        assertThat(genders[GenderEnum.BOTH]).isEqualTo(1)
+        assertThat(genders[GenderEnum.MALE]).isEqualTo(2)
+        assertThat(genders[GenderEnum.FEMALE]).isEqualTo(3)
+    }
 }
