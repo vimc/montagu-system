@@ -67,9 +67,9 @@ test('can login without redirect', async () => {
 
 });
 
-test('can login with redirect', async () => {
+test('can login with redirect', async (done) => {
 
-    browser.get("https://localhost?redirectTo=http://nonsense");
+    browser.get("https://localhost?redirectTo=https://nonsense/");
 
     const emailField = await browser.findElement(webDriver.By.id("email-input"));
     const pwField = await browser.findElement(webDriver.By.id("password-input"));
@@ -82,31 +82,27 @@ test('can login with redirect', async () => {
 
     const loggedInBox = browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
 
-    await browser.wait(() => {
-        return browser.getCurrentUrl().then((url) => {
-            return url === "http://nonsense/";
-        });
-    });
+    setTimeout(async () =>  {
+        expect(await browser.getCurrentUrl()).toBe("https://nonsense/");
+        done();
+    }, 2000);
 
-    expect(await browser.getCurrentUrl()).toBe("http://nonsense/");
 });
 
-test('redirects user if redirect query is present and user is already logged in', async () => {
+test('redirects user if redirect query is present and user is already logged in', async (done) => {
 
     await TestHelper.ensureLoggedIn(browser);
 
     // navigate away
-    browser.get("https://google.com");
+    browser.get("https://mozilla.org");
 
     //navigate back
-    browser.get("https://localhost?redirectTo=http://nonsense");
+    browser.get("https://localhost?redirectTo=https://www.google.com");
 
-    await browser.wait(() => {
-        return browser.getCurrentUrl().then((url) => {
-            return url === "http://nonsense/";
-        });
-    });
-
+    setTimeout(async () =>  {
+        expect(await browser.getCurrentUrl()).toBe("https://www.google.com/");
+        done();
+    }, 2000);
 }, 9000);
 
 test('Shows 404 page for unknown urls', async () => {
