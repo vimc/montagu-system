@@ -12,6 +12,7 @@ import {demographicsReducer, DemographicsState} from "../../shared/reducers/demo
 import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneTimeTokenReducer";
 import {scenarioReducer, ScenarioState} from "./scenarioReducer";
 import {diseasesReducer} from "../../shared/reducers/diseasesReducer";
+import {CoverageState} from "./uploadCoverageReducer";
 
 export interface AdminAppState extends CommonState {
     groups: ModellingGroupsState
@@ -21,6 +22,7 @@ export interface AdminAppState extends CommonState {
     scenario: ScenarioState;
     demographics: DemographicsState;
     onetimeTokens: OneTimeTokenState;
+    coverage: CoverageState;
 }
 
 const reducers = combineReducers({
