@@ -94,7 +94,7 @@ test('redirects user if redirect query is present and user is already logged in'
     await TestHelper.ensureLoggedIn(browser);
 
     // navigate away
-    browser.get("https://google.com");
+    browser.get("https://mozilla.org");
 
     //navigate back
     browser.get("https://localhost?redirectTo=http://nonsense");
