@@ -28,7 +28,7 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
                      onSubmit={this.onSubmit}
                      onChange={this.onChange}
                      noValidate>
-            <CustomFileInput required={true} accept=".json" key={this.state.fileInputKey.toISOString()}>
+            <CustomFileInput required={true} accept=".csv" key={this.state.fileInputKey.toISOString()}>
                 Choose file
             </CustomFileInput>
             <Alert color="danger" isOpen={this.props.errors.length > 0}>

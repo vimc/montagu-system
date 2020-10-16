@@ -15,7 +15,6 @@ export const coverageActionCreators = {
             });
 
             const touchstone = getState().touchstones.currentTouchstoneVersion;
-            alert("Current touchstone: " + touchstone.id);
 
             const result: Result = await (new UploadCoverageService(dispatch, getState))
                 .uploadCoverage(touchstone.id, data);

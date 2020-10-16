@@ -16,7 +16,7 @@ then
   echo "Orderly demo folder already exists, not re-creating it."
 else
   docker pull $ORDERLY_IMAGE
-  docker run --rm --entrypoint create_orderly_demo.sh -v "$ROOT:/orderly" -u $UID -w /orderly $ORDERLY_IMAGE .
+  #docker run --rm --entrypoint create_orderly_demo.sh -v "$ROOT:/orderly" -u $UID -w /orderly $ORDERLY_IMAGE .
 fi
 
 # migrate to add orderlyweb tables
