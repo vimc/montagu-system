@@ -31,12 +31,12 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
             <CustomFileInput required={true} accept=".csv" key={this.state.fileInputKey.toISOString()}>
                 Choose file
             </CustomFileInput>
-            <Alert color="danger" isOpen={this.props.errors.length > 0}>
+            <Alert id="error-alert" color="danger" isOpen={this.props.errors.length > 0}>
                 {this.props.errors[0] && this.props.errors[0].message}
             </Alert>
-            <Alert color="success" isOpen={this.state.success}
+            <Alert id="success-alert" color="success" isOpen={this.state.success}
                    toggle={this.onChange}>
-                Success! You have uploaded a new parameter set
+                Success! You have uploaded a new coverage set
             </Alert>
             <button type="submit" className="mt-2" disabled={(this.props.status == CoverageUploadStatus.in_progress) || !this.state.fileSelected}>
                 Upload

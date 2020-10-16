@@ -12,7 +12,7 @@ import {demographicsReducer, DemographicsState} from "../../shared/reducers/demo
 import {onetimeTokenReducer, OneTimeTokenState} from "../../shared/reducers/oneTimeTokenReducer";
 import {scenarioReducer, ScenarioState} from "./scenarioReducer";
 import {diseasesReducer} from "../../shared/reducers/diseasesReducer";
-import {coverageReducer, CoverageState} from "./uploadCoverageReducer";
+import {coverageReducer, CoverageState} from "./coverageReducer";
 
 export interface AdminAppState extends CommonState {
     groups: ModellingGroupsState

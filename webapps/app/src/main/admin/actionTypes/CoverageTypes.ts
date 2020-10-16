@@ -15,7 +15,7 @@ export interface CoverageUploadState {
 
 export interface CoverageUploadStateChanged{
     type: CoverageTypes.COVERAGE_UPLOAD_STATE_CHANGED,
-    data: CoverageUploadStatus
+    data: CoverageUploadState
 }
 
 export type CoverageAction =
