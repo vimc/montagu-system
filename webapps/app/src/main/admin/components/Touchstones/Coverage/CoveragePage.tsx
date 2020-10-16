@@ -5,10 +5,6 @@ import * as React from "react";
 import {coveragePageActionCreators} from "../../../actions/pages/CoveragePageActionCreators";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {UploadCoverage} from "./UploadCoverage";
-import {Alert} from "reactstrap";
-import {SelectedFile} from "../../../../contrib/components/Responsibilities/BurdenEstimates/UploadBurdenEstimatesForm";
-import {CustomFileInput} from "../../../../shared/components/CustomFileInput";
-import {ModelRunParametersFormProps} from "../../../../contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersForm";
 
 class CoveragePageComponent extends React.Component<PageProperties<TouchstoneVersionPageLocationProps>> {
 

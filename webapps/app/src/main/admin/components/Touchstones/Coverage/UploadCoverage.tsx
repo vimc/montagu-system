@@ -1,32 +1,25 @@
 import * as React from "react";
-import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
-import {TouchstoneVersionPageLocationProps} from "../SingleTouchstoneVersion/TouchstoneVersionPage";
-import {
-    ModelRunParametersFormComponent,
-    ModelRunParametersFormProps
-} from "../../../../contrib/components/Responsibilities/ModelRunParameters/ModelRunParametersForm";
-import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {CustomFileInput} from "../../../../shared/components/CustomFileInput";
 import {Alert} from "reactstrap";
-import {RunParametersUploadStatus} from "../../../../contrib/actionTypes/RunParametersTypes";
-import {ContribAppState} from "../../../../contrib/reducers/contribAppReducers";
 import {Dispatch} from "redux";
-import {runParametersActionCreators} from "../../../../contrib/actions/runParametersActionCreators";
 import {compose} from "recompose";
 import {connect} from "react-redux";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {CoverageUploadStatus} from "../../../actionTypes/CoverageTypes";
+import {coverageActionCreators} from "../../../actions/coverageActionCreators";
+import FormData = require("form-data");
 
 export interface UploadCoverageProps {
     errors: Error[];
     status: CoverageUploadStatus;
+    uploadCoverage: (data: FormData) => void;
+    resetUploadStatus: () => void;
 }
 
 export interface UploadCoverageState {
     fileInputKey: Date;
-    errors: Error[];
     success: boolean;
-    disabled: boolean;
+    fileSelected: boolean;
 }
 
 class UploadCoverageComponent extends React.Component<UploadCoverageProps, UploadCoverageState> {
@@ -35,17 +28,17 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
                      onSubmit={this.onSubmit}
                      onChange={this.onChange}
                      noValidate>
-            <CustomFileInput required={true} key={this.state.fileInputKey.toISOString()}>
+            <CustomFileInput required={true} accept=".json" key={this.state.fileInputKey.toISOString()}>
                 Choose file
             </CustomFileInput>
-            <Alert color="danger" isOpen={this.state.errors.length > 0}>
-                {this.state.errors[0] && this.state.errors[0].message}
+            <Alert color="danger" isOpen={this.props.errors.length > 0}>
+                {this.props.errors[0] && this.props.errors[0].message}
             </Alert>
             <Alert color="success" isOpen={this.state.success}
                    toggle={this.onChange}>
                 Success! You have uploaded a new parameter set
             </Alert>
-            <button type="submit" className="mt-2" disabled={this.state.disabled}>
+            <button type="submit" className="mt-2" disabled={(this.props.status == CoverageUploadStatus.in_progress) || !this.state.fileSelected}>
                 Upload
             </button>
         </form>
@@ -55,9 +48,8 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
         super(props);
         this.state = {
             fileInputKey: new Date(),
-            errors: [],
             success: false,
-            disabled: false,
+            fileSelected: false
         };
         this.resetForm = this.resetForm.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -66,22 +58,15 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
 
     componentWillReceiveProps(nextProps: UploadCoverageProps) {
         if (this.props.status !== nextProps.status && nextProps.status === CoverageUploadStatus.completed) {
-            this.setState({disabled: false});
-            if (nextProps.errors) {
+            if (nextProps.errors.length) {
                 this.setState({
-                    success: false,
-                    errors: nextProps.errors,
-                    disabled: false
+                    success: false
                 });
             } else {
                 this.setState({
-                    success: true,
-                    errors: [],
-                    disabled: false
+                    success: true
                 });
             }
-            //TODO:!!
-            //this.props.resetUploadStatus();
             this.resetForm();
         }
     }
@@ -89,7 +74,7 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
     onChange() {
         this.setState({
             success: false,
-            errors: []
+            fileSelected: true
         });
     }
 
@@ -97,7 +82,8 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
         this.setState({
             // this is to trick React into re-rendering the file input when the form has been successfully submitted
             // see https://github.com/erikras/redux-form/issues/769
-            fileInputKey: new Date()
+            fileInputKey: new Date(),
+            fileSelected: false
         });
     }
 
@@ -106,33 +92,26 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
         const form = e.target as HTMLFormElement;
         const data = new FormData(form);
         this.setState({
-            disabled: true,
-            success: false,
-            errors: []
+            success: false
         });
-        //TODO:
-        //this.props.uploadSet(data);
+        this.props.uploadCoverage(data);
     }
 }
 
 export const mapStateToProps = (state: AdminAppState, props: Partial<UploadCoverageProps>): Partial<UploadCoverageProps> => {
     return {
-        errors: [],
-        status: CoverageUploadStatus.off
-        //errors: state.runParameters.uploadStatus.errors,
-        //status: state.runParameters.uploadStatus.status
+        errors: state.coverage.uploadState.errors,
+        status: state.coverage.uploadState.status
     }
 };
 
-//TODO: Dispatch!
-/*export const mapDispatchToProps = (dispatch: Dispatch<ContribAppState>): Partial<ModelRunParametersFormProps> => {
+export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<UploadCoverageProps> => {
     return {
-        uploadSet: (data: FormData) => dispatch(runParametersActionCreators.uploadSet(data)),
-        resetUploadStatus: () => dispatch(runParametersActionCreators.resetUploadStatus())
+        uploadCoverage: (data: FormData) => dispatch(coverageActionCreators.uploadCoverage(data)),
+        resetUploadStatus: () => dispatch(coverageActionCreators.resetUploadStatus())
     }
-};*/
+};
 
 export const UploadCoverage = compose(
-    //connect(mapStateToProps, mapDispatchToProps),
-    connect(mapStateToProps),
+    connect(mapStateToProps, mapDispatchToProps)
 )(UploadCoverageComponent) as React.ComponentClass<Partial<UploadCoverageProps>>;

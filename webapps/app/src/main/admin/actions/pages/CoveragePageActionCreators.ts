@@ -1,11 +1,8 @@
-import {Dispatch} from "redux";
 import {AdminAppState} from "../../reducers/adminAppReducers";
 import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 import {touchstoneVersionPageActionCreators} from "./touchstoneVersionPageActionCreators";
-import {scenarioActionCreators} from "../scenarioActionCreators";
 import {TouchstoneVersionPageLocationProps} from "../../components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
-import {diseasesActionCreators} from "../../../shared/actions/diseasesActionCreators";
 
 export class CoveragePageActionCreators extends AdminPageActionCreators<{}> {
 
