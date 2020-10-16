@@ -3,6 +3,8 @@ import {Dispatch} from "redux";
 import FormData = require("form-data");
 import {AdminAppState} from "../reducers/adminAppReducers";
 import {CoverageTypes, CoverageUploadStatus} from "../actionTypes/CoverageTypes";
+import {UploadCoverageService} from "../services/UploadCoverageService";
+import {Result} from "../../shared/models/Generated";
 
 export const coverageActionCreators = {
     uploadCoverage(data: FormData) {
@@ -12,20 +14,16 @@ export const coverageActionCreators = {
                 data: {status: CoverageUploadStatus.in_progress, errors: []}
             });
 
-            //const group = getState().groups.currentUserGroup;
-            //const touchstone = getState().touchstones.currentTouchstoneVersion;
+            const touchstone = getState().touchstones.currentTouchstoneVersion;
+            alert("Current touchstone: " + touchstone.id);
 
-            //const result: Result = await (new RunParametersService(dispatch, getState))
-            //    .uploadSet(group.id, touchstone.id, data);
+            const result: Result = await (new UploadCoverageService(dispatch, getState))
+                .uploadCoverage(touchstone.id, data);
 
-            alert("This is where we will upload coverage!!");
             dispatch({
                 type: CoverageTypes.COVERAGE_UPLOAD_STATE_CHANGED,
-                data: {status: CoverageUploadStatus.completed, errors: []}
+                data: {status: CoverageUploadStatus.completed, errors: result.errors || []}
             });
-            //if (result && !result.errors) {
-                //dispatch(this.refreshParameterSets());
-            //}
         }
     },
 
