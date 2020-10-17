@@ -7,7 +7,7 @@ import {shallow} from "enzyme";
 import {Client, QueryResult} from "pg";
 import {
     ModellingGroup,
-    ResponsibilitySetWithExpectations,
+    ResponsibilitySetWithExpectations, Result,
     RoleAssignment,
     Scenario,
     User
@@ -21,6 +21,8 @@ import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 import {ScenarioGroupComponent} from "../main/admin/components/Touchstones/Scenarios/ScenarioGroup"
 import {FileDownloadButton} from "../main/shared/components/FileDownloadLink";
 import {ExpectationsService} from "../main/shared/services/ExpectationsService";
+import {UploadCoverageService} from "../main/admin/services/UploadCoverageService";
+import FormData = require("form-data");
 
 const touchstoneVersionId = "test-1";
 const scenarioId = "yf-1";
@@ -327,6 +329,15 @@ class AdminIntegrationTests extends IntegrationTestSuite {
 
             expect(result).toEqual("scenario,set_name,vaccine,gavi_support,activity_type,country_code,country,age_first,age_last,age_range_verbatim,gender,coverage_1970,target_1970\n"
                 + "yf-1,Test set,yf,no vaccine,none,ATL,Atlantis,1,2,1-2,both,1000,1000\n")
+        });
+
+        it("can upload coverage", async () => {
+            const form = new FormData();
+
+            const uploadResult: Result = await (new UploadCoverageService(this.store.dispatch, this.store.getState))
+                .uploadCoverage(touchstoneVersionId, form);
+
+            expect(uploadResult.errors[0].message).toEqual("You must supply a \'file\' parameter in the multipart body");
         });
 
     }
