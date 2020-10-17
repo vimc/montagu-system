@@ -24,15 +24,5 @@ export const coverageActionCreators = {
                 data: {status: CoverageUploadStatus.completed, errors: result.errors || []}
             });
         }
-    },
-
-    resetUploadStatus() {
-        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
-            dispatch({
-                type: CoverageTypes.COVERAGE_UPLOAD_STATE_CHANGED,
-                data: {status: CoverageUploadStatus.off, errors: []}
-            });
-        }
     }
-
 };

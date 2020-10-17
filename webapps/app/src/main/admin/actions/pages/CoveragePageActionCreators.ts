@@ -10,7 +10,7 @@ export class CoveragePageActionCreators extends AdminPageActionCreators<{}> {
 
     title(state: AdminAppState): string {
         if (state.touchstones.currentTouchstoneVersion) {
-            return `Upload coverage for touchstone ${state.touchstones.currentTouchstoneVersion.id}`
+            return `Upload coverage for touchstone version ${state.touchstones.currentTouchstoneVersion.id}`
         } else {
             return "";
         }

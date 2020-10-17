@@ -13,7 +13,6 @@ export interface UploadCoverageProps {
     errors: Error[];
     status: CoverageUploadStatus;
     uploadCoverage: (data: FormData) => void;
-    resetUploadStatus: () => void;
 }
 
 export interface UploadCoverageState {
@@ -107,8 +106,7 @@ export const mapStateToProps = (state: AdminAppState, props: Partial<UploadCover
 
 export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<UploadCoverageProps> => {
     return {
-        uploadCoverage: (data: FormData) => dispatch(coverageActionCreators.uploadCoverage(data)),
-        resetUploadStatus: () => dispatch(coverageActionCreators.resetUploadStatus())
+        uploadCoverage: (data: FormData) => dispatch(coverageActionCreators.uploadCoverage(data))
     }
 };
 
