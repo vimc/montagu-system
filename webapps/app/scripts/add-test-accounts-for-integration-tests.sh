@@ -10,6 +10,7 @@ $here/cli.sh addRole test.user user
 $here/cli.sh addRole test.user admin
 $here/cli.sh addRole test.user user-manager
 $here/cli.sh addRole test.user funder
+$here/cli.sh addRole test.user coverage-provider
 $here/cli.sh addRole test.user member modelling-group:IC-Garske
 $here/cli.sh addRole test.user uploader modelling-group:IC-Garske
 $here/cli.sh addRole test.user uploader modelling-group:test-group

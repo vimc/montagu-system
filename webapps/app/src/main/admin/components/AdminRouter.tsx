@@ -18,6 +18,7 @@ import {MainMenuPage} from "./MainMenu/MainMenu";
 import {TouchstoneVersionPage} from "./Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
 import {DownloadDemographicsAdminPage} from "./Touchstones/Demography/DownloadDemographicsPage";
 import {ScenarioPage} from "./Touchstones/Scenarios/ScenarioPage";
+import {CoveragePage} from "./Touchstones/Coverage/CoveragePage";
 import {LoginPage} from "../../shared/components/LoginPage";
 import {ModelMetaPage} from "./ModellingGroups/Models/ModelMetaPage";
 
@@ -42,6 +43,7 @@ export const AdminRouter: React.FunctionComponent<AdminRouterProps> = (props: Ad
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/demographics/"
                component={DownloadDemographicsAdminPage}/>
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/scenarios/" component={ScenarioPage}/>
+        <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage/" component={CoveragePage}/>
         <Route exact path="/users/" component={UsersListPage}/>
         <Route exact path="/users/:username/" component={UserDetailsPage}/>
         <Route component={AdminNoRouteFoundPage}/>

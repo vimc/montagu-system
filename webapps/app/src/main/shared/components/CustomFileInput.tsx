@@ -7,6 +7,7 @@ interface State {
 
 interface Props {
     required: boolean;
+    accept: string | null;
 }
 
 export class CustomFileInput extends React.Component<Props, State> {
@@ -31,6 +32,7 @@ export class CustomFileInput extends React.Component<Props, State> {
 
         return <div className="form-group mb-0"><label className="customFileUpload">
             <input name="file"
+                   accept={this.props.accept}
                    type="file" className="form-control" onChange={this.handleChange.bind(this)} required={this.props.required}/>
             <div className="button mt-2">
                 {this.props.children}

@@ -21,6 +21,7 @@ import {demographicsInitialState} from "../../main/shared/reducers/demographicsR
 import {scenarioInitialState} from "../../main/admin/reducers/scenarioReducer";
 import {diseasesInitialState} from "../../main/shared/reducers/diseasesReducer";
 import {estimatesInitialState} from "../../main/contrib/reducers/estimatesReducer";
+import {coverageInitialState as adminCoverageInitialState} from "../../main/admin/reducers/coverageReducer";
 
 export type RecursivePartial<T> = {
     [P in keyof T]?: RecursivePartial<T[P]>
@@ -60,7 +61,8 @@ export const mockAdminState = (props?: RecursivePartial<AdminAppState>): AdminAp
         diseases: diseasesInitialState,
         touchstones: adminTouchstonesInitialState,
         notifications: initialNotificationState,
-        onetimeTokens: onetimeTokensInitialState
+        onetimeTokens: onetimeTokensInitialState,
+        coverage: adminCoverageInitialState
     };
     return Object.assign(template, props);
 };

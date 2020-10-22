@@ -16,7 +16,6 @@ image=vimc/montagu-generate-test-data:$MONTAGU_API_VERSION
 docker pull $image
 docker run --rm --network=montagu_default $image
 
-
 # Add test accounts
 $here/add-test-accounts-for-integration-tests.sh
 

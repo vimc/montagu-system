@@ -71,6 +71,7 @@ describe("Model Run Parameters Content component tests, no HOCS", () => {
         expect(rendered.state().success).toEqual(false);
         expect(rendered.state().disabled).toEqual(false);
         expect(rendered.find('button[type="submit"]').props().disabled).toEqual(false);
+        expect(rendered.find('CustomFileInput').props().accept).toBe(".csv");
     });
 
     it("renders form, imitates it will start sending", () => {
