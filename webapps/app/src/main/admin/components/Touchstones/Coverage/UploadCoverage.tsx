@@ -1,6 +1,6 @@
 import * as React from "react";
 import {CustomFileInput} from "../../../../shared/components/CustomFileInput";
-import {Alert} from "reactstrap";
+import {UncontrolledAlert} from "reactstrap";
 import {Dispatch} from "redux";
 import {compose} from "recompose";
 import {connect} from "react-redux";
@@ -30,13 +30,14 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
             <CustomFileInput required={true} accept=".csv" key={this.state.fileInputKey.toISOString()}>
                 Choose file
             </CustomFileInput>
-            <Alert id="error-alert" color="danger" isOpen={this.props.errors.length > 0}>
-                {this.props.errors[0] && this.props.errors[0].message}
-            </Alert>
-            <Alert id="success-alert" color="success" isOpen={this.state.success}
-                   toggle={this.onChange}>
-                Success! You have uploaded a new coverage set
-            </Alert>
+            { this.props.errors.length > 0 &&
+                <UncontrolledAlert id="error-alert" color="danger">
+                    {this.props.errors[0] && this.props.errors[0].message }
+                </UncontrolledAlert>}
+            { this.state.success &&
+                <UncontrolledAlert id="success-alert" color="success" toggle={this.onChange}>
+                    Success! You have uploaded a new coverage set
+                </UncontrolledAlert> }
             <button type="submit" className="mt-2" disabled={(this.props.status == CoverageUploadStatus.in_progress) || !this.state.fileSelected}>
                 Upload
             </button>

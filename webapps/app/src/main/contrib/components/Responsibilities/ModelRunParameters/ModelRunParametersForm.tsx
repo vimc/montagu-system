@@ -97,7 +97,7 @@ export class ModelRunParametersFormComponent extends React.Component<ModelRunPar
                   noValidate
             >
                 <input type={"hidden"} name={"disease"} value={this.props.disease}/>
-                <CustomFileInput required={true} accept="" key={this.state.fileInputKey.toISOString()}>
+                <CustomFileInput required={true} accept=".csv" key={this.state.fileInputKey.toISOString()}>
                     Choose file
                 </CustomFileInput>
                 <Alert color="danger" isOpen={this.state.errors.length > 0}>

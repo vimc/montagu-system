@@ -38,8 +38,8 @@ describe("Upload Coverage component tests", () => {
         const store = createMockStore({coverage: {uploadState: initialUploadState}});
         const rendered = shallow(<UploadCoverage/>, {context: {store}}).dive();
         expect(rendered.find("CustomFileInput").props().accept).toBe(".csv");
-        expect((rendered.find("#error-alert").props() as any).isOpen).toBe(false);
-        expect((rendered.find("#success-alert").props() as any).isOpen).toBe(false);
+        expect(rendered.find("#error-alert").length).toBe(0);
+        expect(rendered.find("#success-alert").length).toBe(0);
         expect(rendered.find('button').text()).toBe("Upload");
         expect(rendered.find('button').props().disabled).toBe(true);
     });
@@ -50,9 +50,9 @@ describe("Upload Coverage component tests", () => {
         const rendered = shallow(<UploadCoverage/>, {context: {store}}).dive();
         const error = Error("TEST ERROR");
         rendered.setProps({status: CoverageUploadStatus.completed, errors: [error]});
-        expect((rendered.find("#error-alert").props() as any).isOpen).toBe(true);
+        expect(rendered.find("#error-alert").length).toBe(1);
         expect(rendered.find("#error-alert").html()).toContain("TEST ERROR");
-        expect((rendered.find("#success-alert").props() as any).isOpen).toBe(false);
+        expect(rendered.find("#success-alert").length).toBe(0);
     });
 
     it("renders success alert", () => {
@@ -60,8 +60,8 @@ describe("Upload Coverage component tests", () => {
         const store = createMockStore({coverage: {uploadState}});
         const rendered = shallow(<UploadCoverage/>, {context: {store}}).dive();
         rendered.setProps({...uploadState, status: CoverageUploadStatus.completed});
-        expect((rendered.find("#error-alert").props() as any).isOpen).toBe(false);
-        expect((rendered.find("#success-alert").props() as any).isOpen).toBe(true);
+        expect(rendered.find("#error-alert").length).toBe(0);
+        expect(rendered.find("#success-alert").length).toBe(1);
         expect(rendered.find("#success-alert").html()).toContain("Success! You have uploaded a new coverage set");
     });
 
