@@ -2,23 +2,27 @@ import * as React from "react";
 import {InternalLink} from "../../../../shared/components/InternalLink";
 import {Touchstone} from "../../../../shared/models/Generated";
 
-export class TouchstoneListItem extends React.Component<Touchstone, undefined> {
-    render() {
-
-        const touchstoneUrl = `/touchstones/${this.props.id}/`;
-
-        let latestVersionUrl = "", latestVersionId = "";
-        if (this.props.versions.length > 0) {
-            // The API is guaranteed to return versions in descending order
-            latestVersionId = this.props.versions[0].id;
-            latestVersionUrl = `/touchstones/${this.props.id}/${latestVersionId}/`;
-        }
-
-        return <tr>
-            <td>{this.props.id}</td>
-            <td><InternalLink href={touchstoneUrl}>{this.props.description}</InternalLink></td>
-            <td>{this.props.comment}</td>
-            <td>{latestVersionId && <InternalLink href={latestVersionUrl}>{latestVersionId}</InternalLink>}</td>
-        </tr>;
-    }
+export interface TouchstoneListItemProps extends Touchstone {
+    showFinished: boolean;
 }
+
+export const TouchstoneListItem: React.FunctionComponent<TouchstoneListItemProps> = (props: TouchstoneListItemProps) => {
+
+    const touchstoneUrl = `/touchstones/${props.id}/`;
+
+    let latestVersionUrl = "", latestVersionId = "";
+    const versionsToChooseFrom = props.versions.filter(v => v.status != "finished" || props.showFinished);
+    if (versionsToChooseFrom.length > 0) {
+        // The API is guaranteed to return versions in descending order
+        latestVersionId = versionsToChooseFrom[0].id;
+        latestVersionUrl = `/touchstones/${props.id}/${latestVersionId}/`;
+    }
+
+    return <tr>
+        <td>{props.id}</td>
+        <td><InternalLink href={touchstoneUrl}>{props.description}</InternalLink></td>
+        <td>{props.comment}</td>
+        <td>{latestVersionId && <InternalLink href={latestVersionUrl}>{latestVersionId}</InternalLink>}</td>
+    </tr>;
+
+};

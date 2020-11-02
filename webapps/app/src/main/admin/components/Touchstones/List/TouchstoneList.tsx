@@ -16,15 +16,15 @@ export const TouchstoneListComponent: React.FunctionComponent<TouchstoneListProp
         <div className="mb-5 row">
             <div className="col-12">
                 <h4>Active touchstones</h4>
-                <div className="mb-2">The latest version of these touchstones is 'open' or 'in-preparation'.</div>
-                <TouchstoneTable touchstones={props.active}/>
+                <div className="mb-2">These touchstones have at least one version that is 'open' or 'in-preparation'.</div>
+                <TouchstoneTable touchstones={props.active} showFinished={false}/>
             </div>
         </div>
         <div className="mb-5 row">
             <div className="col-12">
                 <h4>Inactive touchstones</h4>
                 <div className="mb-2">All versions of these touchstones are 'finished'.</div>
-                <TouchstoneTable touchstones={props.inactive}/>
+                <TouchstoneTable touchstones={props.inactive} showFinished={true}/>
             </div>
         </div>
     </div>;
