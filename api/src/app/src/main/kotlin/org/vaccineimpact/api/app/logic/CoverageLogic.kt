@@ -50,32 +50,37 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         val genders = touchstoneRepository.getGenders()
         val setDeterminants = mutableListOf<Pair<ActivityType, String>>()
         val setIds = mutableListOf<Int>()
-        val records = rows.map {
-            val set = Pair(it.activityType, it.vaccine)
-            var setIndex = setDeterminants.indexOf(set)
-            if (setIndex == -1)
-            {
-                // All coverage uploaded by GAVI should be put into a coverage set with
-                // gavi support level "WITH". Individual coverage rows may nevertheless have
-                // gaviSupport = false where e.g. countries are funding their own programs
-                val newId = touchstoneRepository.createCoverageSet(touchstoneVersionId,
-                        it.vaccine, it.activityType, GAVISupportLevel.WITH)
-                setIds.add(newId)
-                setDeterminants.add(set)
-                setIndex = setIds.count() - 1
-            }
-            val id = setIds[setIndex]
-            touchstoneRepository.newCoverageRowRecord(
-                    coverageSetId = id,
-                    country = it.country,
-                    year = it.year,
-                    ageFrom = BigDecimal(it.ageFirst),
-                    ageTo = BigDecimal(it.ageLast),
-                    gender = genders[it.gender]!!,
-                    gaviSupport = it.gaviSupport,
-                    target = it.target.toBigDecimal(),
-                    coverage = it.coverage.toBigDecimal()
-            )
+        val records = rows.flatMap{ row ->
+
+            val rowVaccines = mapVaccineForCoverageSet(row.vaccine)
+            rowVaccines.map { vaccine ->
+
+                val set = Pair(row.activityType,vaccine)
+                var setIndex = setDeterminants.indexOf(set)
+                if (setIndex == -1)
+                {
+                    // All coverage uploaded by GAVI should be put into a coverage set with
+                    // gavi support level "WITH". Individual coverage rows may nevertheless have
+                    // gaviSupport = false where e.g. countries are funding their own programs
+                    val newId = touchstoneRepository.createCoverageSet(touchstoneVersionId,
+                            vaccine, row.activityType, GAVISupportLevel.WITH)
+                    setIds.add(newId)
+                    setDeterminants.add(set)
+                    setIndex = setIds.count() - 1
+                }
+                val id = setIds[setIndex]
+                touchstoneRepository.newCoverageRowRecord(
+                        coverageSetId = id,
+                        country = row.country,
+                        year = row.year,
+                        ageFrom = BigDecimal(row.ageFirst),
+                        ageTo = BigDecimal(row.ageLast),
+                        gender = genders[row.gender]!!,
+                        gaviSupport = row.gaviSupport,
+                        target = row.target.toBigDecimal(),
+                        coverage = row.coverage.toBigDecimal()
+                )
+            }.asSequence()
         }.toList()
         touchstoneRepository.saveCoverageForTouchstone(touchstoneVersionId, records)
     }
@@ -146,6 +151,18 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         }
 
         return SplitData(splitData.structuredMetadata, tableData)
+    }
+
+    private fun mapVaccineForCoverageSet(vaccine: String) : List<String>
+    {
+        // GAVI may provide vaccine programs rather tha individual vaccines in some coverage rows
+        return when (vaccine.toUpperCase())
+        {
+            "PENTA", "PENTAVALENT" -> listOf("Hib3", "HepB", "DTP3")
+            "MR1" -> listOf("MCV1", "RCV1")
+            "MR2" -> listOf("MCV2", "RCV2")
+            else -> listOf(vaccine)
+        }
     }
 
     private fun getWideDatatable(data: Sequence<LongCoverageRow>):
