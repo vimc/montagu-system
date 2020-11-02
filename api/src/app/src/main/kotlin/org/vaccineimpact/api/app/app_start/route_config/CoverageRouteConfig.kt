@@ -13,6 +13,10 @@ object CoverageRouteConfig : RouteConfig
             "*/coverage.read"
     )
 
+    private val writePermissions = setOf(
+            "*/coverage.write"
+    )
+
     override val endpoints: List<EndpointDefinition> = listOf(
 
             Endpoint("$baseUrl/coverage/", controller, "getCoverageDataAndMetadataForTouchstoneVersion")
@@ -29,7 +33,11 @@ object CoverageRouteConfig : RouteConfig
             //above two routes.
             Endpoint("$baseUrl/coverage/csv/", controller, "getCoverageDataForTouchstoneVersion")
                     .csv().streamed()
-                    .secure(permissions)
+                    .secure(permissions),
+
+            Endpoint("/touchstones/:touchstone-version-id/coverage/", controller, "ingestCoverage")
+                    .post()
+                    .secure(writePermissions)
     )
 
 }

@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.*
 import org.jooq.Result
+import org.jooq.exception.DataAccessException
 import org.jooq.impl.DSL.*
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
@@ -13,6 +14,7 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.repositories.jooq.mapping.MappingHelper
 import org.vaccineimpact.api.db.*
 import org.vaccineimpact.api.db.Tables.*
+import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticTypeRecord
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
@@ -130,6 +132,19 @@ class JooqTouchstoneRepository(
 
     }
 
+    private fun getCoverageSets(touchstoneVersionId: String):
+            Result<Record4<Int, String, String, String>>
+    {
+        return dsl
+                .select(COVERAGE_SET.ID,
+                        COVERAGE_SET.ACTIVITY_TYPE,
+                        COVERAGE_SET.GAVI_SUPPORT_LEVEL,
+                        COVERAGE_SET.VACCINE)
+                .fromJoinPath(COVERAGE_SET, TOUCHSTONE)
+                .where(TOUCHSTONE.ID.eq(touchstoneVersionId))
+                .fetch()
+    }
+
     override fun getScenarioAndCoverageData(
             touchstoneVersionId: String,
             scenarioDescId: String
@@ -191,6 +206,59 @@ class JooqTouchstoneRepository(
                 .fetch()
 
         return records.map { mapCoverageSet(it) }
+    }
+
+    override fun createCoverageSet(touchstoneVersionId: String,
+                                   vaccine: String,
+                                   activityType: ActivityType,
+                                   supportLevel: GAVISupportLevel): Int
+    {
+        try
+        {
+            val support = supportLevel.toString().toLowerCase()
+            val activity = activityType.toString().toLowerCase().replace('_', '-')
+            val record = this.dsl.newRecord(COVERAGE_SET).apply {
+                this.touchstone = touchstoneVersionId
+                this.name = "$vaccine: $vaccine, $support, $activity"
+                this.vaccine = vaccine
+                this.gaviSupportLevel = support
+                this.activityType = activity
+            }
+            record.store()
+            return record.id
+        }
+        catch(e: DataAccessException)
+        {
+            if (e.message?.contains("coverage_set_vaccine_fkey") == true) {
+                throw UnknownObjectError("vaccine", vaccine)
+            }
+            else throw e
+        }
+    }
+
+    override fun saveCoverageForTouchstone(touchstoneVersionId: String, records: List<CoverageRecord>)
+    {
+        dsl.batchStore(records).execute()
+    }
+
+    override fun newCoverageRowRecord(coverageSetId: Int,
+                                      country: String,
+                                      year: Int,
+                                      ageFrom: BigDecimal,
+                                      ageTo: BigDecimal,
+                                      gender: Int,
+                                      gaviSupport: Boolean,
+                                      target: BigDecimal?,
+                                      coverage: BigDecimal?) = this.dsl.newRecord(COVERAGE).apply {
+        this.coverageSet = coverageSetId
+        this.country = country
+        this.year = year
+        this.ageFrom = ageFrom
+        this.ageTo = ageTo
+        this.target = target
+        this.coverage = coverage
+        this.gender = gender
+        this.gaviSupport = gaviSupport
     }
 
     private fun coverageDimensions(): Array<Field<*>>
@@ -412,6 +480,13 @@ class JooqTouchstoneRepository(
                 .and(DEMOGRAPHIC_STATISTIC.GENDER.eq(genderId))
     }
 
+    override fun getGenders(): Map<GenderEnum, Int>
+    {
+        return dsl.fetch(GENDER).associate {
+            GenderEnum.valueOf(it.name.toUpperCase()) to it.id
+        }
+    }
+
     private fun getGenderId(statisticType: DemographicStatisticTypeRecord, gender: String): Int
     {
         val genderFilter = if (statisticType[DEMOGRAPHIC_STATISTIC_TYPE.GENDER_IS_APPLICABLE])
@@ -530,9 +605,9 @@ class JooqTouchstoneRepository(
 
     private fun getDiseaseIdForScenarioDescription(scenarioDescriptionId: String): String =
             dsl.select(SCENARIO_DESCRIPTION.DISEASE)
-                .from(SCENARIO_DESCRIPTION)
-                .where(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
-                .fetchOne()[SCENARIO_DESCRIPTION.DISEASE]
+                    .from(SCENARIO_DESCRIPTION)
+                    .where(SCENARIO_DESCRIPTION.ID.eq(scenarioDescriptionId))
+                    .fetchOne()[SCENARIO_DESCRIPTION.DISEASE]
 
     private fun includeGenderInCoverage(touchstoneVersionId: String): Boolean = touchstoneVersionId > "2019"
 

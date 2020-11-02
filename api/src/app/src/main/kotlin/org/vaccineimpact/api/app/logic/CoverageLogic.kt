@@ -1,13 +1,15 @@
 package org.vaccineimpact.api.app.logic
 
+import okhttp3.internal.userAgent
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.getLongCoverageRowDataTable
 import org.vaccineimpact.api.app.getWideCoverageRowDataTable
 import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.db.tables.GaviSupportLevel
 import org.vaccineimpact.api.models.*
-import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
+import java.math.BigDecimal
 
 interface CoverageLogic
 {
@@ -21,6 +23,7 @@ interface CoverageLogic
     fun getCoverageSetsForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String):
             ScenarioTouchstoneAndCoverageSets
 
+    fun saveCoverageForTouchstone(touchstoneVersionId: String, rows: Sequence<CoverageIngestionRow>)
 }
 
 class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingGroupRepository,
@@ -40,6 +43,41 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                 responsibilityAndTouchstone.touchstoneVersion,
                 scenarioAndCoverageSets.scenario,
                 scenarioAndCoverageSets.coverageSets)
+    }
+
+    override fun saveCoverageForTouchstone(touchstoneVersionId: String, rows: Sequence<CoverageIngestionRow>)
+    {
+        val genders = touchstoneRepository.getGenders()
+        val setDeterminants = mutableListOf<Pair<ActivityType, String>>()
+        val setIds = mutableListOf<Int>()
+        val records = rows.map {
+            val set = Pair(it.activityType, it.vaccine)
+            var setIndex = setDeterminants.indexOf(set)
+            if (setIndex == -1)
+            {
+                // All coverage uploaded by GAVI should be put into a coverage set with
+                // gavi support level "WITH". Individual coverage rows may nevertheless have
+                // gaviSupport = false where e.g. countries are funding their own programs
+                val newId = touchstoneRepository.createCoverageSet(touchstoneVersionId,
+                        it.vaccine, it.activityType, GAVISupportLevel.WITH)
+                setIds.add(newId)
+                setDeterminants.add(set)
+                setIndex = setIds.count() - 1
+            }
+            val id = setIds[setIndex]
+            touchstoneRepository.newCoverageRowRecord(
+                    coverageSetId = id,
+                    country = it.country,
+                    year = it.year,
+                    ageFrom = BigDecimal(it.ageFirst),
+                    ageTo = BigDecimal(it.ageLast),
+                    gender = genders[it.gender]!!,
+                    gaviSupport = it.gaviSupport,
+                    target = it.target.toBigDecimal(),
+                    coverage = it.coverage.toBigDecimal()
+            )
+        }.toList()
+        touchstoneRepository.saveCoverageForTouchstone(touchstoneVersionId, records)
     }
 
     constructor(repositories: Repositories) : this(repositories.modellingGroup,

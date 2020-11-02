@@ -57,7 +57,7 @@ class CoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val data = CoverageController(context, logic)
+        val data = CoverageController(context, logic, mock())
                 .getCoverageDataForGroup().data
         Assertions.assertThat(data.first() is LongCoverageRow).isTrue()
     }
@@ -74,7 +74,7 @@ class CoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        CoverageController(context, logic)
+        CoverageController(context, logic, mock())
                 .getCoverageDataForGroup().data
         verify(logic).getCoverageDataForGroup("gId", "tId", "sId", true, null)
     }
@@ -161,7 +161,7 @@ class CoverageControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(false)
 
         Assertions.assertThatThrownBy {
-            CoverageController(context, logic).getCoverageDataForGroup()
+            CoverageController(context, logic, mock()).getCoverageDataForGroup()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 

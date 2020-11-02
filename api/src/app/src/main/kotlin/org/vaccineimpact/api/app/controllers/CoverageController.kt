@@ -2,15 +2,18 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.context.RequestBodySource
+import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.logic.CoverageLogic
 import org.vaccineimpact.api.app.logic.RepositoriesCoverageLogic
 import org.vaccineimpact.api.app.repositories.Repositories
-import org.vaccineimpact.api.app.requests.csvData
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.requests.PostDataHelper
+import org.vaccineimpact.api.app.requests.csvData
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
-import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.CoverageIngestionRow
+import org.vaccineimpact.api.models.CoverageRow
+import org.vaccineimpact.api.models.ScenarioTouchstoneAndCoverageSets
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
 
@@ -25,8 +28,15 @@ class CoverageController(
 
     fun getCoverageDataFromCSV(): Sequence<CoverageIngestionRow>
     {
-        val source = RequestBodySource(context)
+        val source = RequestDataSource.fromContentType(context)
         return postDataHelper.csvData(from = source)
+    }
+
+    fun ingestCoverage(): String
+    {
+        val sequence = getCoverageDataFromCSV()
+        coverageLogic.saveCoverageForTouchstone(context.params(":touchstone-version-id"), sequence)
+        return okayResponse()
     }
 
     fun getCoverageSetsForGroup(): ScenarioTouchstoneAndCoverageSets
