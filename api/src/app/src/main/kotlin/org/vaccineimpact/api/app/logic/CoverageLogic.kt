@@ -5,6 +5,7 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.getLongCoverageRowDataTable
 import org.vaccineimpact.api.app.getWideCoverageRowDataTable
 import org.vaccineimpact.api.app.repositories.*
+import org.vaccineimpact.api.db.tables.GaviSupportLevel
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
@@ -47,26 +48,31 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
     override fun saveCoverageForTouchstone(touchstoneVersionId: String, rows: Sequence<CoverageIngestionRow>)
     {
         val genders = touchstoneRepository.getGenders()
-        val setDeterminants = mutableListOf<Triple<ActivityType, GAVISupportLevel, String>>()
+        val setDeterminants = mutableListOf<Pair<ActivityType, String>>()
         val setIds = mutableListOf<Int>()
         val records = rows.map {
-            val set = Triple(it.activityType, it.gaviSupport, it.vaccine)
+            val set = Pair(it.activityType, it.vaccine)
             var setIndex = setDeterminants.indexOf(set)
             if (setIndex == -1)
             {
-                val newId = touchstoneRepository.createCoverageSet(touchstoneVersionId, it.vaccine, it.activityType, it.gaviSupport)
+                // All coverage uploaded by GAVI should be put into a coverage set with
+                // gavi support level "WITH". Individual coverage rows may nevertheless have
+                // gaviSupport = false where e.g. countries are funding their own programs
+                val newId = touchstoneRepository.createCoverageSet(touchstoneVersionId,
+                        it.vaccine, it.activityType, GAVISupportLevel.WITH)
                 setIds.add(newId)
                 setDeterminants.add(set)
                 setIndex = setIds.count() - 1
             }
             val id = setIds[setIndex]
             touchstoneRepository.newCoverageRowRecord(
-                    id,
-                    it.country,
-                    it.year,
+                    coverageSetId = id,
+                    country = it.country,
+                    year = it.year,
                     ageFrom = BigDecimal(it.ageFirst),
                     ageTo = BigDecimal(it.ageLast),
                     gender = genders[it.gender]!!,
+                    gaviSupport = it.gaviSupport,
                     target = it.target.toBigDecimal(),
                     coverage = it.coverage.toBigDecimal()
             )

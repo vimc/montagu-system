@@ -125,6 +125,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
                     BigDecimal(0),
                     BigDecimal(5),
                     1,
+                    true,
                     BigDecimal(100),
                     BigDecimal(200))
         }
@@ -137,6 +138,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
         assertThat(result.target).isEqualTo(BigDecimal(100))
         assertThat(result.coverage).isEqualTo(BigDecimal(200))
         assertThat(result.gender).isEqualTo(1)
+        assertThat(result.gaviSupport).isEqualTo(true)
     }
 
     @Test
@@ -154,6 +156,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
                     BigDecimal(0),
                     BigDecimal(5),
                     1,
+                    true,
                     BigDecimal(100),
                     BigDecimal(200))
             it.saveCoverageForTouchstone("t1", listOf(row))
@@ -170,6 +173,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
         assertThat(result[COVERAGE.TARGET]).isEqualTo(BigDecimal(100))
         assertThat(result[COVERAGE.COVERAGE_]).isEqualTo(BigDecimal(200))
         assertThat(result[COVERAGE.GENDER]).isEqualTo(1)
+        assertThat(result[COVERAGE.GAVI_SUPPORT]).isEqualTo(true)
     }
 
     @Test

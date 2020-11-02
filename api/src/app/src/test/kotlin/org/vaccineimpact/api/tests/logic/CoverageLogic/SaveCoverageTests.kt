@@ -16,15 +16,13 @@ class SaveCoverageTests : MontaguTests()
 {
     private val testSequence = sequenceOf(
             // each of these belongs to a new coverage set
-            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2020, 1, 10, GenderEnum.BOTH, 100F, 78.8F),
-            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.ROUTINE, GAVISupportLevel.WITH, 2022, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, GAVISupportLevel.WITHOUT, 2023, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT, 2024, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-            CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-            CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, GAVISupportLevel.WITH, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
+            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN,  true, 2020, 1, 10, GenderEnum.BOTH, 100F, 78.8F),
+            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.ROUTINE, false, 2022, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
+            CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
+            CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2026, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
 
             // belongs to same coverage set as the first row
-            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2021, 1, 10, GenderEnum.BOTH, 100F, 78.8F)
+            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, true, 2021, 1, 10, GenderEnum.BOTH, 100F, 78.8F)
     )
 
     @Test
@@ -37,11 +35,9 @@ class SaveCoverageTests : MontaguTests()
         sut.saveCoverageForTouchstone("t1", testSequence)
         verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB_BD", ActivityType.CAMPAIGN, GAVISupportLevel.WITH)
         verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB_BD", ActivityType.ROUTINE, GAVISupportLevel.WITH)
-        verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB_BD", ActivityType.CAMPAIGN, GAVISupportLevel.WITHOUT)
-        verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB_BD", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT)
         verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB", ActivityType.CAMPAIGN, GAVISupportLevel.WITH)
         verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB", ActivityType.ROUTINE, GAVISupportLevel.WITH)
-        verify(mockRepo, Times(7)).newCoverageRowRecord(any(), any(), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(5)).newCoverageRowRecord(any(), any(), any(), any(), any(), any(), any(), any(), any())
         verify(mockRepo).saveCoverageForTouchstone(any(), any())
         verify(mockRepo).getGenders()
         verifyNoMoreInteractions(mockRepo)
@@ -62,8 +58,18 @@ class SaveCoverageTests : MontaguTests()
                 BigDecimal(1),
                 BigDecimal(10),
                 111,
+                true,
                 100F.toBigDecimal(),
                 78.8.toBigDecimal())
+        verify(mockRepo, Times(1)).newCoverageRowRecord(1,
+                "AFG",
+                2022,
+                BigDecimal(1),
+                BigDecimal(10),
+                111,
+                false,
+                100F.toBigDecimal(),
+                65.5.toBigDecimal())
     }
 
     @Test
@@ -73,16 +79,16 @@ class SaveCoverageTests : MontaguTests()
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
             on { createCoverageSet("t1", "HepB_BD", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 1
             on { createCoverageSet("t1", "HepB_BD", ActivityType.ROUTINE, GAVISupportLevel.WITH) } doReturn 2
-            on { createCoverageSet("t1", "HepB_BD", ActivityType.CAMPAIGN, GAVISupportLevel.WITHOUT) } doReturn 3
-            on { createCoverageSet("t1", "HepB_BD", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT) } doReturn 4
+            on { createCoverageSet("t1", "HepB", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 3
+            on { createCoverageSet("t1", "HepB", ActivityType.ROUTINE, GAVISupportLevel.WITH) } doReturn 4
         }
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock())
         sut.saveCoverageForTouchstone("t1", testSequence)
-        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2020), any(), any(), any(), any(), any())
-        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2021), any(), any(), any(), any(), any())
-        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(2), any(), eq(2022), any(), any(), any(), any(), any())
-        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(3), any(), eq(2023), any(), any(), any(), any(), any())
-        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(4), any(), eq(2024), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2020), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2021), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(2), any(), eq(2022), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(3), any(), eq(2025), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(4), any(), eq(2026), any(), any(), any(), any(), any(), any())
     }
 
 }

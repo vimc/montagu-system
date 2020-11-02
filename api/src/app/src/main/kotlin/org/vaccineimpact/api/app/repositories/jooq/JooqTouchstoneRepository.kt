@@ -247,6 +247,7 @@ class JooqTouchstoneRepository(
                                       ageFrom: BigDecimal,
                                       ageTo: BigDecimal,
                                       gender: Int,
+                                      gaviSupport: Boolean,
                                       target: BigDecimal?,
                                       coverage: BigDecimal?) = this.dsl.newRecord(COVERAGE).apply {
         this.coverageSet = coverageSetId
@@ -257,6 +258,7 @@ class JooqTouchstoneRepository(
         this.target = target
         this.coverage = coverage
         this.gender = gender
+        this.gaviSupport = gaviSupport
     }
 
     private fun coverageDimensions(): Array<Field<*>>

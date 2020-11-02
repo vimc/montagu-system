@@ -40,6 +40,7 @@ interface TouchstoneRepository : Repository
                              ageFrom: BigDecimal,
                              ageTo: BigDecimal,
                              gender: Int,
+                             gaviSupport: Boolean,
                              target: BigDecimal?,
                              coverage: BigDecimal?): CoverageRecord
 

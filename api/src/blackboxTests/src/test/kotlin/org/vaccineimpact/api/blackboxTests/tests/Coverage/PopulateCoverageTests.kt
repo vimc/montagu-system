@@ -69,7 +69,7 @@ class PopulateCoverageTests : CoverageTests()
     private fun verifyCorrectRows()
     {
         JooqContext().use {
-            val expectedNumberOfSets = 18 * 2 * 2 // vaccines, activities, support levels
+            val expectedNumberOfSets = 18 * 2 // vaccines, activities
             val coverageSets = it.dsl.selectFrom(COVERAGE_SET).fetch()
             assertThat(coverageSets.count()).isEqualTo(expectedNumberOfSets)
 
@@ -81,8 +81,8 @@ class PopulateCoverageTests : CoverageTests()
 
     private val csvData = """
 "vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "campaign",     "with",  "2020",         1,     10,    "female", 100, 78.8
-   "HepB_BD",   "AFG",    "campaign",     "with",  "2021",         1,      10,    "female", 100, 65.5
+   "HepB_BD",   "AFG",    "campaign",     "true",  "2020",         1,     10,    "female", 100, 78.8
+   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,      10,    "female", 100, 65.5
 """
 
 }

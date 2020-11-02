@@ -36,6 +36,7 @@ class Deserializer
             Int::class.createType() -> raw.toInt()
             Short::class.createType() -> raw.toShort()
             Float::class.createType() -> raw.toFloat()
+            Boolean::class.createType() -> raw.toBoolean()
             ActivityType::class.createType() -> ActivityType.valueOf(raw.toUpperCase())
             GAVISupportLevel::class.createType() -> GAVISupportLevel.valueOf(raw.toUpperCase())
             GenderEnum::class.createType() -> GenderEnum.valueOf(raw.toUpperCase())
