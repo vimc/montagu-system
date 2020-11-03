@@ -2,7 +2,9 @@ package org.vaccineimpact.api.databaseTests.tests.touchstoneRepository
 
 import org.assertj.core.api.AssertionsForClassTypes.assertThat
 import org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy
+import org.jooq.exception.DataAccessException
 import org.junit.Test
+import org.vaccineimpact.api.app.errors.ForeignKeyError
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.db.Tables.COVERAGE
 import org.vaccineimpact.api.db.Tables.COVERAGE_SET
@@ -38,7 +40,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `create coverage set will throw unknown object error for invalid vaccines`()
+    fun `create coverage set will throw DataAccessException for invalid vaccines`()
     {
         withDatabase {
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
@@ -46,7 +48,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
         withRepo {
             assertThatThrownBy {
                 it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT)
-            }.isInstanceOf(UnknownObjectError::class.java)
+            }.isInstanceOf(DataAccessException::class.java)
         }
     }
 
