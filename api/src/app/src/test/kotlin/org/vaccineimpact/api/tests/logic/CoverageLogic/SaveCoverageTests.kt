@@ -29,7 +29,7 @@ class SaveCoverageTests : MontaguTests()
     )
 
     private val mockExpectationsRepo = mock<ExpectationsRepository> {
-        on { getExpectedGAVICoverageCountries() } doReturn listOf("AFG")
+        on { getExpectedGAVICoverageCountries(any()) } doReturn listOf("AFG")
     }
 
     @Test
@@ -140,7 +140,6 @@ and 13 others"""
         verify(mockRepo, Times(3)).newCoverageRowRecord(any(), any(), any(), any(), any(), any(), any(), any(), any())
     }
 
-
     @Test
     fun `validation detects duplicate `()
     {
@@ -153,6 +152,60 @@ and 13 others"""
                 CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2023, 1, 10, GenderEnum.BOTH, 100F, 65.5F))
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
         val expectedMessage = "Duplicate rows detected: 2023, HepB, AFG"
+
+        assertThatThrownBy {
+            sut.saveCoverageForTouchstone("t1", testSequence)
+        }.isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining(expectedMessage)
+    }
+
+    @Test
+    fun `validation detects bad campaign years`()
+    {
+        val mockRepo = mock<TouchstoneRepository> {
+            on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
+        }
+        val testSequence = sequenceOf(
+                CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN, true, 2010, 1, 10, GenderEnum.BOTH, 100F, 65.5F)
+        )
+        val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
+        val expectedMessage = "Unexpected year: 2010"
+
+        assertThatThrownBy {
+            sut.saveCoverageForTouchstone("t1", testSequence)
+        }.isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining(expectedMessage)
+    }
+
+    @Test
+    fun `validation detects bad routine years`()
+    {
+        val mockRepo = mock<TouchstoneRepository> {
+            on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
+        }
+        val testSequence = sequenceOf(
+                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2010, 1, 10, GenderEnum.BOTH, 100F, 65.5F)
+        )
+        val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
+        val expectedMessage = "Unexpected year: 2010"
+
+        assertThatThrownBy {
+            sut.saveCoverageForTouchstone("t1", testSequence)
+        }.isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining(expectedMessage)
+    }
+
+    @Test
+    fun `validation detects unexpected countries for routine data`()
+    {
+        val mockRepo = mock<TouchstoneRepository> {
+            on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
+        }
+        val testSequence = sequenceOf(
+                CoverageIngestionRow("HepB", "123", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F)
+        )
+        val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
+        val expectedMessage = "Unrecognised or unexpected country code: 123"
 
         assertThatThrownBy {
             sut.saveCoverageForTouchstone("t1", testSequence)

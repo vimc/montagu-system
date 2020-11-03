@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app.logic
 
 import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.getLongCoverageRowDataTable
 import org.vaccineimpact.api.app.getWideCoverageRowDataTable
 import org.vaccineimpact.api.app.repositories.*
@@ -43,6 +44,8 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
             repositories.scenario,
             repositories.expectations)
 
+    private val expectedGAVICoverageYears = LocalDate.now().plusYears(1).year..2030
+
     override fun getCoverageSetsForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String):
             ScenarioTouchstoneAndCoverageSets
     {
@@ -60,11 +63,10 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
     private fun generateCountryLookup(countries: List<String>): CountryLookup
     {
         val map = CountryLookup()
-        val years = LocalDate.now().plusYears(1).year..2030
         for (country in countries)
         {
             val yearMap = YearLookup()
-            for (year in years)
+            for (year in expectedGAVICoverageYears)
             {
                 yearMap[year.toShort()] = false
             }
@@ -121,7 +123,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         }
         else
         {
-            throw BadRequest(rowErrorMessage(setsWithMissingRows))
+            throw MissingRowsError(rowErrorMessage(setsWithMissingRows))
         }
     }
 
@@ -129,14 +131,23 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                          countries: List<String>,
                          expectedRowLookup: CoverageRowLookup): CoverageRowLookup
     {
+        if (!expectedGAVICoverageYears.contains(row.year))
+        {
+            throw BadRequest("Unexpected year: ${row.year}")
+        }
         if (row.activityType == ActivityType.ROUTINE)
         {
             val countryLookup = expectedRowLookup[row.vaccine] ?: generateCountryLookup(countries)
-            if (countryLookup[row.country]!![row.year.toShort()] == true)
+            val year = row.year.toShort()
+            // note that although this country validation only happens for routine coverage rows,
+            // the foreign key constraint will catch invalid countries for campaign data
+            val yearLookup = countryLookup[row.country]
+                    ?: throw BadRequest("Unrecognised or unexpected country: ${row.country}")
+            if (yearLookup[year] == true)
             {
-                throw BadRequest("Duplicate rows detected: ${row.year}, ${row.vaccine}, ${row.country}")
+                throw BadRequest("Duplicate row detected: ${row.year}, ${row.vaccine}, ${row.country}")
             }
-            countryLookup[row.country]!![row.year.toShort()] = true
+            yearLookup[year] = true
             expectedRowLookup[row.vaccine] = countryLookup
         }
         return expectedRowLookup
