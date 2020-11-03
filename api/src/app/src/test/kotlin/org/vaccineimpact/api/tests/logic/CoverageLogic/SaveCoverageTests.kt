@@ -107,7 +107,7 @@ class SaveCoverageTests : MontaguTests()
             on { createCoverageSet("t1", "HepB", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 2
             on { createCoverageSet("t1", "DTP3", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 3
             on { createCoverageSet("t1", "MCV1", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 4
-            on { createCoverageSet("t1", "RCV1", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 5
+            on { createCoverageSet("t1", "Rubella", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 5
             on { createCoverageSet("t1", "MCV2", ActivityType.ROUTINE, GAVISupportLevel.WITH) } doReturn 6
             on { createCoverageSet("t1", "RCV2", ActivityType.ROUTINE, GAVISupportLevel.WITH) } doReturn 7
         }

@@ -159,7 +159,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         return when (vaccine.toUpperCase())
         {
             "PENTA", "PENTAVALENT" -> listOf("Hib3", "HepB", "DTP3")
-            "MR1" -> listOf("MCV1", "RCV1")
+            "MR1" -> listOf("MCV1", "Rubella")
             "MR2" -> listOf("MCV2", "RCV2")
             else -> listOf(vaccine)
         }
