@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.mockito.internal.verification.Times
 import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.RepositoriesCoverageLogic
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
@@ -61,7 +62,7 @@ class SaveCoverageTests : MontaguTests()
         sut.saveCoverageForTouchstone("t1", testSequence, validate = false)
         verify(mockRepo, Times(1)).newCoverageRowRecord(1,
                 "AFG",
-                2020,
+                2021,
                 BigDecimal(1),
                 BigDecimal(10),
                 111,
@@ -91,7 +92,7 @@ class SaveCoverageTests : MontaguTests()
         }
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
         sut.saveCoverageForTouchstone("t1", testSequence, validate = false)
-        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2020), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2021), any(), any(), any(), any(), any(), any())
         verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2021), any(), any(), any(), any(), any(), any())
         verify(mockRepo, Times(1)).newCoverageRowRecord(eq(2), any(), eq(2022), any(), any(), any(), any(), any(), any())
         verify(mockRepo, Times(1)).newCoverageRowRecord(eq(3), any(), eq(2025), any(), any(), any(), any(), any(), any())
@@ -120,7 +121,7 @@ and 13 others"""
 
         assertThatThrownBy {
             sut.saveCoverageForTouchstone("t1", testSequence)
-        }.isInstanceOf(BadRequest::class.java)
+        }.isInstanceOf(MissingRowsError::class.java)
                 .hasMessageContaining(expectedMessage)
     }
 
@@ -151,7 +152,7 @@ and 13 others"""
                 CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2023, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
                 CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2023, 1, 10, GenderEnum.BOTH, 100F, 65.5F))
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
-        val expectedMessage = "Duplicate rows detected: 2023, HepB, AFG"
+        val expectedMessage = "Duplicate row detected: 2023, HepB, AFG"
 
         assertThatThrownBy {
             sut.saveCoverageForTouchstone("t1", testSequence)
@@ -205,7 +206,7 @@ and 13 others"""
                 CoverageIngestionRow("HepB", "123", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F)
         )
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
-        val expectedMessage = "Unrecognised or unexpected country code: 123"
+        val expectedMessage = "Unrecognised or unexpected country: 123"
 
         assertThatThrownBy {
             sut.saveCoverageForTouchstone("t1", testSequence)
@@ -213,4 +214,133 @@ and 13 others"""
                 .hasMessageContaining(expectedMessage)
     }
 
+    @Test
+    fun `combination vaccines are mapped to vaccines correctly`()
+    {
+        val vaxProgSequence = sequenceOf(
+                CoverageIngestionRow("Penta", "AFG", ActivityType.CAMPAIGN,  true, 2021, 1, 10, GenderEnum.BOTH, 100F, 78.8F),
+                CoverageIngestionRow("pentavalent", "AFG", ActivityType.CAMPAIGN, false, 2022, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
+                CoverageIngestionRow("mr1", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
+                CoverageIngestionRow("MR2", "AFG", ActivityType.ROUTINE, true, 2026, 1, 10, GenderEnum.BOTH, 100F, 65.5F)
+        )
+
+        val mockRepo = mock<TouchstoneRepository> {
+            on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
+            on { createCoverageSet("t1", "Hib3", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 1
+            on { createCoverageSet("t1", "HepB", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 2
+            on { createCoverageSet("t1", "DTP3", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 3
+            on { createCoverageSet("t1", "MCV1", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 4
+            on { createCoverageSet("t1", "Rubella", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 5
+            on { createCoverageSet("t1", "MCV2", ActivityType.ROUTINE, GAVISupportLevel.WITH) } doReturn 6
+            on { createCoverageSet("t1", "RCV2", ActivityType.ROUTINE, GAVISupportLevel.WITH) } doReturn 7
+        }
+
+        val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
+        sut.saveCoverageForTouchstone("t1", vaxProgSequence, validate = false)
+
+        //Penta
+        verify(mockRepo, Times(1)).newCoverageRowRecord(1,
+                "AFG",
+                2021,
+                BigDecimal(1),
+                BigDecimal(10),
+                111,
+                true,
+                100F.toBigDecimal(),
+                78.8.toBigDecimal())
+
+        verify(mockRepo, Times(1)).newCoverageRowRecord(2,
+                "AFG",
+                2021,
+                BigDecimal(1),
+                BigDecimal(10),
+                111,
+                true,
+                100F.toBigDecimal(),
+                78.8.toBigDecimal())
+
+        verify(mockRepo, Times(1)).newCoverageRowRecord(3,
+                "AFG",
+                2021,
+                BigDecimal(1),
+                BigDecimal(10),
+                111,
+                true,
+                100F.toBigDecimal(),
+                78.8.toBigDecimal())
+
+        //pentavalent
+        verify(mockRepo, Times(1)).newCoverageRowRecord(1,
+                "AFG",
+                2022,
+                BigDecimal(1),
+                BigDecimal(10),
+                111,
+                false,
+                100F.toBigDecimal(),
+                65.5.toBigDecimal())
+
+        verify(mockRepo, Times(1)).newCoverageRowRecord(2,
+                "AFG",
+                2022,
+                BigDecimal(1),
+                BigDecimal(10),
+                111,
+                false,
+                100F.toBigDecimal(),
+                65.5.toBigDecimal())
+
+        verify(mockRepo, Times(1)).newCoverageRowRecord(3,
+                "AFG",
+                2022,
+                BigDecimal(1),
+                BigDecimal(10),
+                111,
+                false,
+                100F.toBigDecimal(),
+                65.5.toBigDecimal())
+
+        //mr1
+        verify(mockRepo, Times(1)).newCoverageRowRecord(4,
+                "AFG",
+                2025,
+                BigDecimal(1),
+                BigDecimal(10),
+                111,
+                true,
+                100F.toBigDecimal(),
+                65.5.toBigDecimal())
+
+        verify(mockRepo, Times(1)).newCoverageRowRecord(5,
+                "AFG",
+                2025,
+                BigDecimal(1),
+                BigDecimal(10),
+                111,
+                true,
+                100F.toBigDecimal(),
+                65.5.toBigDecimal())
+
+        //MR2
+        verify(mockRepo, Times(1)).newCoverageRowRecord(6,
+                "AFG",
+                2026,
+                BigDecimal(1),
+                BigDecimal(10),
+                111,
+                true,
+                100F.toBigDecimal(),
+                65.5.toBigDecimal())
+
+        verify(mockRepo, Times(1)).newCoverageRowRecord(7,
+                "AFG",
+                2026,
+                BigDecimal(1),
+                BigDecimal(10),
+                111,
+                true,
+                100F.toBigDecimal(),
+                65.5.toBigDecimal())
+
+    }
 }
