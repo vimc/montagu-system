@@ -138,6 +138,16 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 }
     }
 
+    override fun getExpectedCoverageCountries(): List<String>
+    {
+        return dsl.select(COUNTRY.ID)
+                .fromJoinPath(COUNTRY, COUNTRY_METADATA)
+                .where(COUNTRY_METADATA.GAVI73)
+                .orderBy(COUNTRY.ID)
+                .fetchInto(String::class.java)
+                .toList()
+    }
+
     private fun getBasicDataAndMappingFromRecords(records: List<Record>): Pair<BurdenEstimateExpectationRecord, ApplicableScenariosAndDisease>
     {
         val basicData = records.first().into(BurdenEstimateExpectationRecord::class.java)

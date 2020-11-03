@@ -1,15 +1,15 @@
 package org.vaccineimpact.api.app.logic
 
-import okhttp3.internal.userAgent
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.getLongCoverageRowDataTable
 import org.vaccineimpact.api.app.getWideCoverageRowDataTable
 import org.vaccineimpact.api.app.repositories.*
-import org.vaccineimpact.api.db.tables.GaviSupportLevel
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.*
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 import java.math.BigDecimal
+import java.time.LocalDate
 
 interface CoverageLogic
 {
@@ -23,14 +23,26 @@ interface CoverageLogic
     fun getCoverageSetsForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String):
             ScenarioTouchstoneAndCoverageSets
 
-    fun saveCoverageForTouchstone(touchstoneVersionId: String, rows: Sequence<CoverageIngestionRow>)
+    // in practice will always validate rows but the flag is useful for testing
+    fun saveCoverageForTouchstone(touchstoneVersionId: String,
+                                  rows: Sequence<CoverageIngestionRow>,
+                                  validate: Boolean = true)
+
 }
 
 class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingGroupRepository,
                                 private val responsibilitiesRepository: ResponsibilitiesRepository,
                                 private val touchstoneRepository: TouchstoneRepository,
-                                private val scenarioRepository: ScenarioRepository) : CoverageLogic
+                                private val scenarioRepository: ScenarioRepository,
+                                private val expectationsRepository: ExpectationsRepository) : CoverageLogic
 {
+
+    constructor(repositories: Repositories) : this(repositories.modellingGroup,
+            repositories.responsibilities,
+            repositories.touchstone,
+            repositories.scenario,
+            repositories.expectations)
+
     override fun getCoverageSetsForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String):
             ScenarioTouchstoneAndCoverageSets
     {
@@ -45,11 +57,31 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                 scenarioAndCoverageSets.coverageSets)
     }
 
-    override fun saveCoverageForTouchstone(touchstoneVersionId: String, rows: Sequence<CoverageIngestionRow>)
+    private fun generateCountryLookup(countries: List<String>): CountryLookup
+    {
+        val map = CountryLookup()
+        val years = LocalDate.now().plusYears(1).year..2030
+        for (country in countries)
+        {
+            val yearMap = YearLookup()
+            for (year in years)
+            {
+                yearMap[year.toShort()] = false
+            }
+            map[country] = yearMap
+        }
+        return map
+    }
+
+    override fun saveCoverageForTouchstone(touchstoneVersionId: String,
+                                           rows: Sequence<CoverageIngestionRow>,
+                                           validate: Boolean)
     {
         val genders = touchstoneRepository.getGenders()
         val setDeterminants = mutableListOf<Pair<ActivityType, String>>()
         val setIds = mutableListOf<Int>()
+        var expectedRowLookup = mutableMapOf<String, CountryLookup>()
+        val countries = expectationsRepository.getExpectedCoverageCountries()
         val records = rows.map {
             val set = Pair(it.activityType, it.vaccine)
             var setIndex = setDeterminants.indexOf(set)
@@ -65,6 +97,10 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                 setIndex = setIds.count() - 1
             }
             val id = setIds[setIndex]
+            if (validate)
+            {
+                expectedRowLookup = validate(it, countries, expectedRowLookup)
+            }
             touchstoneRepository.newCoverageRowRecord(
                     coverageSetId = id,
                     country = it.country,
@@ -77,13 +113,58 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                     coverage = it.coverage.toBigDecimal()
             )
         }.toList()
-        touchstoneRepository.saveCoverageForTouchstone(touchstoneVersionId, records)
+
+        val setsWithMissingRows = expectedRowLookup.missingRows()
+        if (!setsWithMissingRows.any())
+        {
+            touchstoneRepository.saveCoverageForTouchstone(touchstoneVersionId, records)
+        }
+        else
+        {
+            throw BadRequest(rowErrorMessage(setsWithMissingRows))
+        }
     }
 
-    constructor(repositories: Repositories) : this(repositories.modellingGroup,
-            repositories.responsibilities,
-            repositories.touchstone,
-            repositories.scenario)
+    private fun validate(row: CoverageIngestionRow,
+                         countries: List<String>,
+                         expectedRowLookup: CoverageRowLookup): CoverageRowLookup
+    {
+        if (row.activityType == ActivityType.ROUTINE)
+        {
+            val countryLookup = expectedRowLookup[row.vaccine] ?: generateCountryLookup(countries)
+            if (countryLookup[row.country]!![row.year.toShort()] == true)
+            {
+                throw BadRequest("Duplicate rows detected: ${row.year}, ${row.vaccine}, ${row.country}")
+            }
+            countryLookup[row.country]!![row.year.toShort()] = true
+            expectedRowLookup[row.vaccine] = countryLookup
+        }
+        return expectedRowLookup
+    }
+
+    private fun rowErrorMessage(setsWithMissingRows: Map<String, CountryLookup>): String
+    {
+        val totalMissingRows = setsWithMissingRows
+                .flatMap {
+                    it.value
+                            .flatMap { it.value.missingYears() }
+                }.count()
+
+        val countries = setsWithMissingRows.entries
+        val missingCountryYearPairs = countries.flatMap { it ->
+            val vaccine = it.key
+            val countryLookup = it.value
+            countryLookup.missingRows().flatMap {
+                it.value.missingYears().map { year ->
+                    "$vaccine, ${it.key}, $year"
+                }
+            }
+        }.take(5) // take 5 example rows
+
+        val basicMessage = "Missing $totalMissingRows rows for vaccines ${setsWithMissingRows.keys.joinToString(", ")}:"
+        val exampleRowMessage = "*${missingCountryYearPairs.joinToString("\n *")}"
+        return "$basicMessage\n $exampleRowMessage\nand ${totalMissingRows - 5} others"
+    }
 
     override fun getCoverageDataForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String,
                                          allCountries: Boolean, format: String?)
