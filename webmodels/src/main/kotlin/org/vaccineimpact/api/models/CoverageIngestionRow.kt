@@ -4,7 +4,7 @@ data class CoverageIngestionRow(
         val vaccine: String,
         val country: String,
         val activityType: ActivityType,
-        val gaviSupport: GAVISupportLevel,
+        val gaviSupport: Boolean,
         val year: Int,
         val ageFirst: Int,
         val ageLast: Int,
