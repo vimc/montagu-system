@@ -155,7 +155,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
 
     private fun mapVaccineForCoverageSet(vaccine: String) : List<String>
     {
-        // GAVI may provide vaccine programs rather tha individual vaccines in some coverage rows
+        // GAVI may provide combination vaccines rather than individual vaccines in some coverage rows
         return when (vaccine.toUpperCase())
         {
             "PENTA", "PENTAVALENT" -> listOf("Hib3", "HepB", "DTP3")
