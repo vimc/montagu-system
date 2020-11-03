@@ -29,7 +29,7 @@ class SaveCoverageTests : MontaguTests()
     )
 
     private val mockExpectationsRepo = mock<ExpectationsRepository> {
-        on { getExpectedCoverageCountries() } doReturn listOf("AFG")
+        on { getExpectedGAVICoverageCountries() } doReturn listOf("AFG")
     }
 
     @Test

@@ -81,7 +81,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         val setDeterminants = mutableListOf<Pair<ActivityType, String>>()
         val setIds = mutableListOf<Int>()
         var expectedRowLookup = mutableMapOf<String, CountryLookup>()
-        val countries = expectationsRepository.getExpectedCoverageCountries()
+        val countries = expectationsRepository.getExpectedGAVICoverageCountries(touchstoneVersionId)
         val records = rows.map {
             val set = Pair(it.activityType, it.vaccine)
             var setIndex = setDeterminants.indexOf(set)
