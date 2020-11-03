@@ -122,14 +122,11 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         }.toList()
 
         val setsWithMissingRows = expectedRowLookup.missingRows()
-        if (!setsWithMissingRows.any())
-        {
-            touchstoneRepository.saveCoverageForTouchstone(touchstoneVersionId, records)
-        }
-        else
+        if (setsWithMissingRows.any())
         {
             throw MissingRowsError(rowErrorMessage(setsWithMissingRows))
         }
+        touchstoneRepository.saveCoverageForTouchstone(touchstoneVersionId, records)
     }
 
     private fun validate(vaccine: String,

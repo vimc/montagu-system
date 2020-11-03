@@ -4,13 +4,11 @@ import org.vaccineimpact.api.app.errors.DuplicateKeyError
 import org.vaccineimpact.api.app.errors.ForeignKeyError
 import org.vaccineimpact.api.app.errors.MontaguError
 import org.vaccineimpact.api.app.errors.UnexpectedError
-import java.util.regex.Pattern
 
 open class PostgresErrorHandler
 {
     private val foreignKeyErrorRegex = Regex("violates foreign key constraint")
     private val foreignKeyFieldRegex = Regex("Detail: Key \\((?<field>.+)\\)=\\((?<value>.+)\\) is not present in table")
-    private val coverageKeyRegex = Regex("(coverage|coverage_set)_(?<col>.+)_fkey")
     private val duplicateKeyRegex = Regex("duplicate key value violates unique constraint")
     private val duplicateKeyFieldsRegex = Regex("""Detail: Key \((?<field>.+)\)=\((?<value>.+)\) already exists.""")
     private val psqlFuncRegex = Regex("""\w+\((?<inner>.+)\)""")

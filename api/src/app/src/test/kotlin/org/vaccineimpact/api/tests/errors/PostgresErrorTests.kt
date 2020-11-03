@@ -25,19 +25,6 @@ class PostgresErrorTests : MontaguTests()
     @Test
     fun `can handle foreign key error`()
     {
-        val exceptionText = """values (1, 2021, 'nonsense', '1', '10', '65.5', '100.0', 'TRUE', 3) was aborted: 
-ERROR: insert or update on table "coverage" violates foreign key constraint "coverage_country_fkey""""
-        val fakeException = mock<Exception> {
-            on { toString() } doReturn (exceptionText)
-        }
-        val error = handler.handleException(fakeException)
-        assertThat(error).isInstanceOf(ForeignKeyError::class.java)
-                .hasMessageContaining("Unrecognised country in row: 1, 2021, 'nonsense', '1', '10', '65.5', '100.0', 'TRUE', 3")
-    }
-
-    @Test
-    fun `can handle coverage foreign key error`()
-    {
         val exceptionText = """insert or update on table "coverage" violates foreign key constraint "coverage__set_vaccine_fkey
             | Detail: Key (country)=(nonsense) is not present in table "country""""".trimMargin()
         val fakeException = mock<Exception> {
@@ -45,20 +32,7 @@ ERROR: insert or update on table "coverage" violates foreign key constraint "cov
         }
         val error = handler.handleException(fakeException)
         assertThat(error).isInstanceOf(ForeignKeyError::class.java)
-                .hasMessageContaining("Unrecognised country: 'nonsense'")
-    }
-
-    @Test
-    fun `can handle coverage set foreign key error`()
-    {
-        val exceptionText = """insert or update on table "coverage" violates foreign key constraint "coverage__set_vaccine_fkey
-            | Detail: Key (country)=(nonsense) is not present in table "country""""".trimMargin()
-        val fakeException = mock<Exception> {
-            on { toString() } doReturn (exceptionText)
-        }
-        val error = handler.handleException(fakeException)
-        assertThat(error).isInstanceOf(ForeignKeyError::class.java)
-                .hasMessageContaining("Unrecognised country in row: 1, 2021, 'nonsense', '1', '10', '65.5', '100.0', 'TRUE', 3")
+                .hasMessageContaining("Unrecognised country: nonsense")
     }
 
     @Test
@@ -100,7 +74,7 @@ Detail: Key (lower(email))=(email@example.com) already exists."""
     }
 
     @Test
-    fun `returns unexpected error if not duplicate key error`()
+    fun `returns unexpected error if not duplicate key error or foreign key error`()
     {
         val fakeException = mock<Exception> {
             on { toString() } doReturn ("some other text")
