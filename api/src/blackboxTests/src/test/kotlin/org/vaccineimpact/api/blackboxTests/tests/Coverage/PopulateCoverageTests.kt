@@ -40,23 +40,12 @@ class PopulateCoverageTests : CoverageTests()
     }
 
     @Test
-    fun `can get coverage validation message for invalid countries in campaign data`()
+    fun `can get coverage validation message for invalid countries`()
     {
         setup()
         val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions, includeCanLogin = true)
         val response = RequestHelper().postFile("/touchstones/$touchstoneVersionId/coverage/",
                 badCountryCsvData,
-                token = token)
-        JSONValidator().validateError(response.text, "foreign-key-error", "Unrecognised country: nonsense")
-    }
-
-    @Test
-    fun `can get coverage validation message for invalid countries in routine data`()
-    {
-        setup()
-        val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions, includeCanLogin = true)
-        val response = RequestHelper().postFile("/touchstones/$touchstoneVersionId/coverage/",
-                badRoutineCountryCsvData,
                 token = token)
         JSONValidator().validateError(response.text, "bad-request", "Unrecognised or unexpected country: nonsense")
     }
@@ -207,12 +196,6 @@ class PopulateCoverageTests : CoverageTests()
 "vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
    "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8
    "HepB_BD",   "nonsense",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5
-"""
-
-    private val badRoutineCountryCsvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8
-   "HepB_BD",   "nonsense",    "routine",     "true",  "2022",         1,      10,    "female", 100, 65.5
 """
 
     private val badVaccineCsvData = """

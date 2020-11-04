@@ -138,14 +138,15 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         {
             throw BadRequest("Unexpected year: ${row.year}")
         }
+        if (!countries.contains(row.country))
+        {
+            throw BadRequest("Unrecognised or unexpected country: ${row.country}")
+        }
         if (row.activityType == ActivityType.ROUTINE)
         {
             val countryLookup = expectedRowLookup[vaccine] ?: generateCountryLookup(countries)
             val year = row.year.toShort()
-            // note that although this country validation only happens for routine coverage rows,
-            // the foreign key constraint will catch invalid countries for campaign data
-            val yearLookup = countryLookup[row.country]
-                    ?: throw BadRequest("Unrecognised or unexpected country: ${row.country}")
+            val yearLookup = countryLookup[row.country]!!
             if (yearLookup[year] == true)
             {
                 throw BadRequest("Duplicate row detected: ${row.year}, ${row.vaccine}, ${row.country}")
@@ -153,6 +154,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
             yearLookup[year] = true
             expectedRowLookup[row.vaccine] = countryLookup
         }
+
         return expectedRowLookup
     }
 

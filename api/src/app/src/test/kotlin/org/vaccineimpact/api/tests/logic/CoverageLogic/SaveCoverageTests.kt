@@ -215,6 +215,24 @@ and 13 others"""
     }
 
     @Test
+    fun `validation detects unexpected countries for campaign data`()
+    {
+        val mockRepo = mock<TouchstoneRepository> {
+            on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
+        }
+        val testSequence = sequenceOf(
+                CoverageIngestionRow("HepB", "123", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F)
+        )
+        val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
+        val expectedMessage = "Unrecognised or unexpected country: 123"
+
+        assertThatThrownBy {
+            sut.saveCoverageForTouchstone("t1", testSequence)
+        }.isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining(expectedMessage)
+    }
+
+    @Test
     fun `combination vaccines are mapped to vaccines correctly`()
     {
         val vaxProgSequence = sequenceOf(
