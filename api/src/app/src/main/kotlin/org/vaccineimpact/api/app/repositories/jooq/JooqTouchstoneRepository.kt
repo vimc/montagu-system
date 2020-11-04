@@ -213,27 +213,17 @@ class JooqTouchstoneRepository(
                                    activityType: ActivityType,
                                    supportLevel: GAVISupportLevel): Int
     {
-        try
-        {
-            val support = supportLevel.toString().toLowerCase()
-            val activity = activityType.toString().toLowerCase().replace('_', '-')
-            val record = this.dsl.newRecord(COVERAGE_SET).apply {
-                this.touchstone = touchstoneVersionId
-                this.name = "$vaccine: $vaccine, $support, $activity"
-                this.vaccine = vaccine
-                this.gaviSupportLevel = support
-                this.activityType = activity
-            }
-            record.store()
-            return record.id
+        val support = supportLevel.toString().toLowerCase()
+        val activity = activityType.toString().toLowerCase().replace('_', '-')
+        val record = this.dsl.newRecord(COVERAGE_SET).apply {
+            this.touchstone = touchstoneVersionId
+            this.name = "$vaccine: $vaccine, $support, $activity"
+            this.vaccine = vaccine
+            this.gaviSupportLevel = support
+            this.activityType = activity
         }
-        catch(e: DataAccessException)
-        {
-            if (e.message?.contains("coverage_set_vaccine_fkey") == true) {
-                throw UnknownObjectError("vaccine", vaccine)
-            }
-            else throw e
-        }
+        record.store()
+        return record.id
     }
 
     override fun saveCoverageForTouchstone(touchstoneVersionId: String, records: List<CoverageRecord>)

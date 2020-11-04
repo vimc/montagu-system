@@ -8,7 +8,10 @@ import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.jooq.JooqExpectationsRepository
 import org.vaccineimpact.api.databaseTests.RepositoryTests
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.Tables
+import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.db.tables.Country.COUNTRY
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.expectations.CohortRestriction
 import org.vaccineimpact.api.models.expectations.ExpectationMapping
@@ -55,6 +58,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             assertThat(result.outcomes).isEmpty()
         }
     }
+
     @Test
     fun `can pull cohort expectations`()
     {
@@ -99,7 +103,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     fun `can pull outcome expectations`()
     {
         val outcomes = listOf(Outcome("test_cases", "test cases name"),
-                                            Outcome("test_deaths", "test deaths name"))
+                Outcome("test_deaths", "test deaths name"))
 
         val responsibilityId = addResponsibilityAnd { db, _, responsibilityId ->
             db.addExpectations(
@@ -271,8 +275,8 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             val r1 = db.addResponsibility(setId1, touchstoneVersionId, scenarioId)
             val r2 = db.addResponsibility(setId2, "touchstone2-2", otherScenarioId)
             val r3 = db.addResponsibility(setId2, "touchstone2-2", "scenario3")
-            val expId1 = db.addExpectations(r1, outcomes=listOf(deathsOutcome))
-            val expId2 = db.addExpectations(r2, outcomes=listOf(deathsOutcome, casesOutcome))
+            val expId1 = db.addExpectations(r1, outcomes = listOf(deathsOutcome))
+            val expId2 = db.addExpectations(r2, outcomes = listOf(deathsOutcome, casesOutcome))
             db.addExistingExpectationsToResponsibility(r1, expId1)
             db.addExistingExpectationsToResponsibility(r2, expId2)
             db.addExistingExpectationsToResponsibility(r3, expId2)
@@ -294,7 +298,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     {
         withDatabase { db ->
             db.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
-            db.addTouchstoneVersion("touchstone2", 2, status="finished", addTouchstone = true)
+            db.addTouchstoneVersion("touchstone2", 2, status = "finished", addTouchstone = true)
             db.addScenarioDescription(scenarioId, "desc", "YF", addDisease = true)
             db.addScenarioDescription(otherScenarioId, "other desc", "HepB", addDisease = true)
             db.addGroup(groupId)
@@ -321,7 +325,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     fun `get all expectations does not return those from in preparation touchstones`()
     {
         withDatabase { db ->
-            db.addTouchstoneVersion("touchstone", 1, status="in-preparation", addTouchstone = true)
+            db.addTouchstoneVersion("touchstone", 1, status = "in-preparation", addTouchstone = true)
             db.addScenarioDescription(scenarioId, "desc", "YF", addDisease = true)
             db.addGroup(groupId)
             val setId1 = db.addResponsibilitySet(groupId, touchstoneVersionId)
@@ -348,7 +352,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             val setId1 = db.addResponsibilitySet(groupId, touchstoneVersionId)
             val setId2 = db.addResponsibilitySet(otherGroupId, "touchstone2-2")
             val r1 = db.addResponsibility(setId1, touchstoneVersionId, scenarioId)
-            val r2 = db.addResponsibility(setId2, "touchstone2-2", otherScenarioId, open=false)
+            val r2 = db.addResponsibility(setId2, "touchstone2-2", otherScenarioId, open = false)
             val expId1 = db.addExpectations(r1)
             val expId2 = db.addExpectations(r2)
             db.addExistingExpectationsToResponsibility(r1, expId1)
@@ -361,6 +365,58 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
                             listOf(scenarioId))
             ))
         }
+    }
+
+    @Test
+    fun `can get countries for GAVI coverage`()
+    {
+        withDatabase { db ->
+            db.addTouchstoneVersion("t", 1, addTouchstone = true)
+            db.dsl.newRecord(FRANCOPHONE_STATUS)
+                    .apply {
+                        id = "fff"
+                    }.store()
+            db.dsl.newRecord(VXDEL_SEGMENT)
+                    .apply {
+                        id = "v1"
+                    }.store()
+
+            db.dsl.newRecord(GAVI_REGION)
+                    .apply {
+                        id = "g1"
+                        name = "gaviregion"
+                    }.store()
+
+            val countryRecords = db.dsl.select(COUNTRY.ID)
+                    .from(COUNTRY)
+                    .limit(73)
+                    .fetchInto(String::class.java)
+                    .map {
+                        db.dsl.newRecord(COUNTRY_METADATA).apply {
+                            this.country = it
+                            this.gavi73 = true
+                            this.touchstone = "t-1"
+                            this.whoRegion = "123"
+                            this.continent = "aaa"
+                            this.region = "bbb"
+                            this.francophone = "fff"
+                            this.vxdelSegment = "v1"
+                            this.gaviRegion = "g1"
+                            this.wuenicCoverage = false
+                            this.pine_5 = false
+                            this.dove94 = false
+                            this.dove96 = false
+                            this.gavi68 = false
+                            this.gavi72 = false
+                            this.gavi77 = false
+                        }
+                    }
+            db.dsl.batchStore(countryRecords).execute()
+        }
+        val countries = withRepo {
+            it.getExpectedGAVICoverageCountries("t-1")
+        }
+        assertThat(countries.count()).isEqualTo(73)
     }
 
     private fun addResponsibilityAnd(action: (JooqContext, Int, Int) -> Int) = withDatabase { db ->
