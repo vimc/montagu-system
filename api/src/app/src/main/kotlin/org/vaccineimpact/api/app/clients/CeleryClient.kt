@@ -3,13 +3,21 @@ package org.vaccineimpact.api.app.clients
 import com.geneea.celery.Celery
 import com.google.common.util.concurrent.ListenableFuture
 import org.vaccineimpact.api.db.Config
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 typealias CeleryTaskResult = Map<String, Map<String, Boolean>>
 typealias CeleryTaskArguments = Array<out Any>
 
 interface TaskQueueClient
 {
-    fun runDiagnosticReport(group: String, disease: String, touchstone: String, uploaderEmail: String): Any
+    fun runDiagnosticReport(group: String,
+                            disease: String,
+                            touchstone: String,
+                            scenario: String,
+                            uploaderEmail: String): Any
 }
 
 class CeleryClient : TaskQueueClient
@@ -21,10 +29,11 @@ class CeleryClient : TaskQueueClient
             .backendUri(backend)
             .build()
 
-    override fun runDiagnosticReport(group: String, disease: String, touchstone: String, uploaderEmail: String):
+    override fun runDiagnosticReport(group: String, disease: String, touchstone: String, scenario: String, uploaderEmail: String):
             ListenableFuture<CeleryTaskResult>
     {
-        val args = arrayOf(group, disease, touchstone, uploaderEmail) as CeleryTaskArguments
+        val utcTime = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replace("Z", "")
+        val args = arrayOf(group, disease, touchstone, utcTime, scenario, uploaderEmail) as CeleryTaskArguments
         return client.submit<CeleryTaskResult>("run-diagnostic-reports", args)
     }
 }

@@ -137,7 +137,7 @@ class BurdenEstimatesControllerTests : BurdenEstimateControllerTestsBase()
                 .closeBurdenEstimateSet()
         verify(logic).closeBurdenEstimateSet(1, groupId, touchstoneVersionId, scenarioId)
         verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId,
-                userEmail)
+                scenarioId, userEmail)
         verifyValidResponsibilityPathChecks(mockResponsibilitiesLogic, mockContext)
     }
 
