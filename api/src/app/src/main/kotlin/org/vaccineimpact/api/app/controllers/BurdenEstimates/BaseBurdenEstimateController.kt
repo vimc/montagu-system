@@ -41,7 +41,7 @@ abstract class BaseBurdenEstimateController(context: ActionContext,
         return try
         {
             estimatesLogic.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-            taskQueueClient.runDiagnosticReport(groupId, disease, touchstoneVersionId, uploaderEmail)
+            taskQueueClient.runDiagnosticReport(groupId, disease, touchstoneVersionId, scenarioId, uploaderEmail)
             okayResponse().asResult()
         }
         catch (error: MissingRowsError)
