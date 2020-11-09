@@ -1,12 +1,15 @@
 package org.vaccineimpact.api.tests.controllers.coverage
 
+import com.nhaarman.mockito_kotlin.anyOrNull
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.InMemoryRequestData
 import org.vaccineimpact.api.app.controllers.CoverageController
+import org.vaccineimpact.api.app.requests.MultipartDataMap
 import org.vaccineimpact.api.app.requests.PostDataHelper
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.validation.ValidationException
@@ -18,11 +21,13 @@ class PopulatingCoverageTests : MontaguTests()
     fun `can deserialize coverage`()
     {
         val mockContext = mock<ActionContext> {
-            on { contentType() } doReturn "text/csv"
-            on { this.getInputStream() } doReturn normalCSVDataString.byteInputStream()
+            on { getParts(anyOrNull()) } doReturn MultipartDataMap(
+                    "description" to InMemoryRequestData("some description"),
+                    "file" to InMemoryRequestData(normalCSVDataString)
+            )
         }
         val sut = CoverageController(mockContext, mock(), PostDataHelper())
-        val result = sut.getCoverageDataFromCSV()
+        val result = sut.getCoverageDataFromCSV().first
         assertThat(result.toList()).containsExactly(
                 CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, true, 2020, 1, 10, GenderEnum.BOTH, 100F, 78.8F),
                 CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, false, 2021, 1, 10, GenderEnum.FEMALE, 100F, 65.5F)
@@ -33,11 +38,13 @@ class PopulatingCoverageTests : MontaguTests()
     fun `deserializing coverage throws error on invalid activity type`()
     {
         val mockContext = mock<ActionContext> {
-            on { contentType() } doReturn "text/csv"
-            on { this.getInputStream() } doReturn invalidActivityTypeCSVDataString.byteInputStream()
+            on { getParts(anyOrNull()) } doReturn MultipartDataMap(
+                    "description" to InMemoryRequestData("some description"),
+                    "file" to InMemoryRequestData(invalidActivityTypeCSVDataString)
+            )
         }
         val sut = CoverageController(mockContext, mock(), PostDataHelper())
-        val result = sut.getCoverageDataFromCSV()
+        val result = sut.getCoverageDataFromCSV().first
         assertThatThrownBy { result.toList() }
                 .isInstanceOf(ValidationException::class.java)
     }
@@ -46,11 +53,13 @@ class PopulatingCoverageTests : MontaguTests()
     fun `deserializing coverage throws error on invalid column headers`()
     {
         val mockContext = mock<ActionContext> {
-            on { contentType() } doReturn "text/csv"
-            on { this.getInputStream() } doReturn invalidHeadersCSVDataString.byteInputStream()
+            on { getParts(anyOrNull()) } doReturn MultipartDataMap(
+                    "description" to InMemoryRequestData("some description"),
+                    "file" to InMemoryRequestData(invalidHeadersCSVDataString)
+            )
         }
         val sut = CoverageController(mockContext, mock(), PostDataHelper())
-        assertThatThrownBy { sut.getCoverageDataFromCSV() }
+        assertThatThrownBy { sut.getCoverageDataFromCSV().first }
                 .isInstanceOf(ValidationException::class.java)
     }
 

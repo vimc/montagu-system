@@ -4,29 +4,31 @@ import org.assertj.core.api.AssertionsForClassTypes.assertThat
 import org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy
 import org.jooq.exception.DataAccessException
 import org.junit.Test
-import org.vaccineimpact.api.app.errors.ForeignKeyError
-import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.db.Tables.COVERAGE
-import org.vaccineimpact.api.db.Tables.COVERAGE_SET
+import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.direct.addCoverageSet
 import org.vaccineimpact.api.db.direct.addTouchstoneVersion
+import org.vaccineimpact.api.db.direct.addUserForTesting
 import org.vaccineimpact.api.db.direct.addVaccine
 import org.vaccineimpact.api.models.ActivityType
 import org.vaccineimpact.api.models.GAVISupportLevel
 import org.vaccineimpact.api.models.GenderEnum
 import java.math.BigDecimal
+import java.time.Instant
 
 class SaveCoverageTests : TouchstoneRepositoryTests()
 {
     @Test
-    fun `can create coverage set`()
+    fun `can create coverage set and metadata`()
     {
+        val now = Instant.now()
         withDatabase {
+            it.addUserForTesting("test.user")
             it.addVaccine("v1")
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
         withRepo {
-            it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT)
+            it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT,
+                    "desc", "test.user", now)
         }
         withDatabase {
             val set = it.dsl.selectFrom(COVERAGE_SET)
@@ -36,6 +38,13 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
             assertThat(set[COVERAGE_SET.ACTIVITY_TYPE]).isEqualTo("routine")
             assertThat(set[COVERAGE_SET.GAVI_SUPPORT_LEVEL]).isEqualTo("without")
             assertThat(set[COVERAGE_SET.NAME]).isEqualTo("v1: v1, without, routine")
+
+            val metadata = it.dsl.selectFrom(COVERAGE_SET_METADATA)
+                    .fetchOne()
+            assertThat(metadata[COVERAGE_SET_METADATA.ID]).isEqualTo(set[COVERAGE_SET.ID])
+            assertThat(metadata[COVERAGE_SET_METADATA.UPLOADED_BY]).isEqualTo("test.user")
+            assertThat(metadata[COVERAGE_SET_METADATA.UPLOADED_ON].toInstant()).isEqualTo(now)
+            assertThat(metadata[COVERAGE_SET_METADATA.DESCRIPTION]).isEqualTo("desc")
         }
     }
 
@@ -47,7 +56,8 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
         }
         withRepo {
             assertThatThrownBy {
-                it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT)
+                it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT,
+                        "", "", Instant.now())
             }.isInstanceOf(DataAccessException::class.java)
         }
     }
@@ -62,7 +72,8 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
         withRepo { repo ->
             listOf(ActivityType.ROUTINE, ActivityType.CAMPAIGN, ActivityType.CAMPAIGN_REACTIVE, ActivityType.NONE)
                     .forEach {
-                        repo.createCoverageSet("t-1", "v1", it, GAVISupportLevel.WITHOUT)
+                        repo.createCoverageSet("t-1", "v1", it, GAVISupportLevel.WITHOUT,
+                                "", "", Instant.now())
                     }
         }
         withDatabase {
@@ -96,7 +107,8 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
                     GAVISupportLevel.NONE,
                     GAVISupportLevel.STATUS_QUO)
                     .forEach {
-                        repo.createCoverageSet("t-1", "v1", ActivityType.NONE, it)
+                        repo.createCoverageSet("t-1", "v1", ActivityType.NONE, it,
+                                "", "", Instant.now())
                     }
         }
         withDatabase {

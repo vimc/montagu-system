@@ -22,31 +22,14 @@ class PopulateCoverageTests : CoverageTests()
     private val requiredPermissions = PermissionSet("*/coverage.write")
 
     @Test
-    fun `can populate coverage`()
-    {
-        setup()
-        validate("/touchstones/$touchstoneVersionId/coverage/", method = HttpMethod.post) withRequestSchema {
-            CSVSchema("CoverageIngestion")
-        } sending {
-            csvData
-        } withPermissions {
-            requiredPermissions
-        } andCheckHasStatus 200..299
-
-        JooqContext().use {
-            val coverage = it.dsl.selectFrom(COVERAGE).fetch()
-            assertThat(coverage.count()).isEqualTo(2)
-        }
-    }
-
-    @Test
     fun `can get coverage validation message for invalid countries`()
     {
         setup()
         val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions, includeCanLogin = true)
         val response = RequestHelper().postFile("/touchstones/$touchstoneVersionId/coverage/",
                 badCountryCsvData,
-                token = token)
+                token = token,
+                data = mapOf("description" to "test description"))
         JSONValidator().validateError(response.text, "bad-request", "Unrecognised or unexpected country: nonsense")
     }
 
@@ -57,7 +40,8 @@ class PopulateCoverageTests : CoverageTests()
         val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions, includeCanLogin = true)
         val response = RequestHelper().postFile("/touchstones/$touchstoneVersionId/coverage/",
                 badVaccineCsvData,
-                token = token)
+                token = token,
+                data = mapOf("description" to "test description"))
         JSONValidator().validateError(response.text, "foreign-key-error", "Unrecognised vaccine: nonsense")
     }
 
@@ -68,7 +52,8 @@ class PopulateCoverageTests : CoverageTests()
         val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions, includeCanLogin = true)
         val response = RequestHelper().postFile("/touchstones/$touchstoneVersionId/coverage/",
                 missingRowsCsvData,
-                token = token)
+                token = token,
+                data = mapOf("description" to "test description"))
         val expectedRowNum = 73 * 10 // countries * years
         val providedRowNum = 2
         JSONValidator().validateError(response.text, "missing-rows",
@@ -82,7 +67,8 @@ class PopulateCoverageTests : CoverageTests()
         val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions, includeCanLogin = true)
         val response = RequestHelper().postFile("/touchstones/$touchstoneVersionId/coverage/",
                 duplicateRowsCsvData,
-                token = token)
+                token = token,
+                data = mapOf("description" to "test description"))
         JSONValidator().validateError(response.text, "bad-request",
                 "Duplicate row detected: 2021, HepB_BD, AFG")
     }
@@ -94,7 +80,8 @@ class PopulateCoverageTests : CoverageTests()
         val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions, includeCanLogin = true)
         val response = RequestHelper().postFile("/touchstones/$touchstoneVersionId/coverage/",
                 unexpectedYearCsvData,
-                token = token)
+                token = token,
+                data = mapOf("description" to "test description"))
         JSONValidator().validateError(response.text, "bad-request",
                 "Unexpected year: 2031")
     }
@@ -106,10 +93,24 @@ class PopulateCoverageTests : CoverageTests()
         val data = File("coverage.csv").readText()
         setup()
         val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions, includeCanLogin = true)
-        val response = RequestHelper().postFile("/touchstones/$touchstoneVersionId/coverage/", data, token = token)
+        val response = RequestHelper().postFile("/touchstones/$touchstoneVersionId/coverage/",
+                data,
+                token = token,
+                data = mapOf("description" to "test description"))
         JSONValidator().validateSuccess(response.text)
-
         verifyCorrectRows()
+    }
+
+    @Test
+    fun `populating coverage requires coverage write permission`()
+    {
+        setup()
+        val token = TestUserHelper.setupTestUserAndGetToken(setOf(), includeCanLogin = true)
+        val response = RequestHelper().postFile("/touchstones/$touchstoneVersionId/coverage/",
+                csvData,
+                token = token,
+                data = mapOf("description" to "test description"))
+        JSONValidator().validateError(response.text, "forbidden")
     }
 
     private fun setup()
@@ -183,6 +184,11 @@ class PopulateCoverageTests : CoverageTests()
             val coverage = it.dsl.selectFrom(COVERAGE).fetch()
             val expectedNumberOfRows = expectedNumberOfSets * 10 * 73 // sets, years, countries
             assertThat(coverage.count()).isEqualTo(expectedNumberOfRows)
+
+            val metadata = it.dsl.selectFrom(COVERAGE_SET_METADATA).fetch()
+            assertThat(metadata.count()).isEqualTo(expectedNumberOfSets)
+            assertThat(metadata.first()[COVERAGE_SET_METADATA.UPLOADED_BY]).isEqualTo("test.user")
+            assertThat(metadata.first()[COVERAGE_SET_METADATA.DESCRIPTION]).isEqualTo("test description")
         }
     }
 

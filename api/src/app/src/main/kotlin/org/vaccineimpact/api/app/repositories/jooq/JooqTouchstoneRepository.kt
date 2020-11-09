@@ -20,6 +20,8 @@ import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.SplitData
 import java.math.BigDecimal
+import java.sql.Timestamp
+import java.time.Instant
 import kotlin.sequences.Sequence
 
 class JooqTouchstoneRepository(
@@ -211,7 +213,10 @@ class JooqTouchstoneRepository(
     override fun createCoverageSet(touchstoneVersionId: String,
                                    vaccine: String,
                                    activityType: ActivityType,
-                                   supportLevel: GAVISupportLevel): Int
+                                   supportLevel: GAVISupportLevel,
+                                   description: String,
+                                   uploader: String,
+                                   timestamp: Instant): Int
     {
         val support = supportLevel.toString().toLowerCase()
         val activity = activityType.toString().toLowerCase().replace('_', '-')
@@ -223,6 +228,12 @@ class JooqTouchstoneRepository(
             this.activityType = activity
         }
         record.store()
+        this.dsl.newRecord(COVERAGE_SET_METADATA).apply {
+            this.id = record.id
+            this.description = description
+            this.uploadedBy = uploader
+            this.uploadedOn = Timestamp.from(timestamp)
+        }.store()
         return record.id
     }
 
