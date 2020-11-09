@@ -18,6 +18,7 @@ class CeleryClientTests : MontaguTests()
     {
         val client = CeleryClient()
         val task = client.runDiagnosticReport("testGroup", "testDisease", "testTouchstone",
+                "testScenario",
                 "test.user@example.com")
 
         val result = task.get().mapValues { DiagnosticReportTaskResult(it.value["published"] ?: false) }

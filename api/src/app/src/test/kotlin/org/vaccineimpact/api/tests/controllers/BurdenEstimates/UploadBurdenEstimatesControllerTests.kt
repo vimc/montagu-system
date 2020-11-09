@@ -219,7 +219,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
 
         val fakeCache = makeFakeCacheWithChunkedFile("uid", uploadFinished = true)
         val sut = BurdenEstimateUploadController(mockContext, mock(), mock(),
-                mock(), mock(), mock(),mock(), fakeCache)
+                mock(), mock(), mock(), mock(), fakeCache)
 
         assertThatThrownBy { sut.uploadBurdenEstimateFile() }
                 .isInstanceOf(BadRequest::class.java)
@@ -356,7 +356,7 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 groupId, touchstoneVersionId, scenarioId)
         verifyValidResponsibilityPathChecks(responsibilitiesLogic, mockContext)
         verify(mockTaskQueueClient, timesExpected).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId,
-                userEmail)
+                scenarioId, userEmail)
     }
 
     protected fun mockActionContext(user: String = username, keepOpen: String? = null): ActionContext
@@ -421,7 +421,8 @@ open class UploadBurdenEstimatesControllerTests : BurdenEstimateControllerTestsB
                 },
                 anyOrNull()
         )
-        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId, uploaderEmail)
+        verify(mockTaskQueueClient).runDiagnosticReport(groupId, diseaseId, touchstoneVersionId,
+                scenarioId, uploaderEmail)
         verifyValidResponsibilityPathChecks(responsibilitiesLogic, actionContext)
     }
 
