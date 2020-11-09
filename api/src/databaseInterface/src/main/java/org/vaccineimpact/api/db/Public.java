@@ -42,6 +42,7 @@ import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
 import org.vaccineimpact.api.db.tables.CountryWorldbankStatus;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
+import org.vaccineimpact.api.db.tables.CoverageSetMetadata;
 import org.vaccineimpact.api.db.tables.Crosstab;
 import org.vaccineimpact.api.db.tables.Crosstab2;
 import org.vaccineimpact.api.db.tables.Crosstab3;
@@ -150,7 +151,7 @@ import org.vaccineimpact.api.db.udt.TablefuncCrosstab_4;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 946642879;
+    private static final long serialVersionUID = -1924768138;
 
     /**
      * The reference instance of <code>public</code>
@@ -294,6 +295,11 @@ public class Public extends SchemaImpl {
     public final CoverageSet COVERAGE_SET = org.vaccineimpact.api.db.tables.CoverageSet.COVERAGE_SET;
 
     /**
+     * The table <code>public.coverage_set_metadata</code>.
+     */
+    public final CoverageSetMetadata COVERAGE_SET_METADATA = org.vaccineimpact.api.db.tables.CoverageSetMetadata.COVERAGE_SET_METADATA;
+
+    /**
      * The table <code>public.crosstab</code>.
      */
     public final Crosstab CROSSTAB = org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB;
@@ -301,22 +307,22 @@ public class Public extends SchemaImpl {
     /**
      * Call <code>public.crosstab</code>.
      */
-    public static Result<CrosstabRecord> CROSSTAB(Configuration configuration, String __1) {
-        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1)).fetch();
+    public static Result<CrosstabRecord> CROSSTAB(Configuration configuration, String __1, String __2) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2)).fetch();
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab CROSSTAB(String __1) {
-        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    public static Crosstab CROSSTAB(String __1, String __2) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab CROSSTAB(Field<String> __1) {
-        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    public static Crosstab CROSSTAB(Field<String> __1, Field<String> __2) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
     /**
@@ -1066,6 +1072,7 @@ public class Public extends SchemaImpl {
             CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS,
             Coverage.COVERAGE,
             CoverageSet.COVERAGE_SET,
+            CoverageSetMetadata.COVERAGE_SET_METADATA,
             Crosstab.CROSSTAB,
             Crosstab2.CROSSTAB2,
             Crosstab3.CROSSTAB3,

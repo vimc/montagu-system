@@ -103,22 +103,22 @@ public class Routines {
     /**
      * Call <code>public.crosstab</code>.
      */
-    public static Result<CrosstabRecord> crosstab(Configuration configuration, String __1) {
-        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1)).fetch();
+    public static Result<CrosstabRecord> crosstab(Configuration configuration, String __1, String __2) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2)).fetch();
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab crosstab(String __1) {
-        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    public static Crosstab crosstab(String __1, String __2) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab crosstab(Field<String> __1) {
-        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    public static Crosstab crosstab(Field<String> __1, Field<String> __2) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
     /**

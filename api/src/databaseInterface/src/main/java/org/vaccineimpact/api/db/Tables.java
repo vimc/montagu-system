@@ -33,6 +33,7 @@ import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
 import org.vaccineimpact.api.db.tables.CountryWorldbankStatus;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
+import org.vaccineimpact.api.db.tables.CoverageSetMetadata;
 import org.vaccineimpact.api.db.tables.Crosstab;
 import org.vaccineimpact.api.db.tables.Crosstab2;
 import org.vaccineimpact.api.db.tables.Crosstab3;
@@ -275,6 +276,11 @@ public class Tables {
     public static final CoverageSet COVERAGE_SET = org.vaccineimpact.api.db.tables.CoverageSet.COVERAGE_SET;
 
     /**
+     * The table <code>public.coverage_set_metadata</code>.
+     */
+    public static final CoverageSetMetadata COVERAGE_SET_METADATA = org.vaccineimpact.api.db.tables.CoverageSetMetadata.COVERAGE_SET_METADATA;
+
+    /**
      * The table <code>public.crosstab</code>.
      */
     public static final Crosstab CROSSTAB = org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB;
@@ -282,22 +288,22 @@ public class Tables {
     /**
      * Call <code>public.crosstab</code>.
      */
-    public static Result<CrosstabRecord> CROSSTAB(Configuration configuration, String __1) {
-        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1)).fetch();
+    public static Result<CrosstabRecord> CROSSTAB(Configuration configuration, String __1, String __2) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2)).fetch();
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab CROSSTAB(String __1) {
-        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    public static Crosstab CROSSTAB(String __1, String __2) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab CROSSTAB(Field<String> __1) {
-        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    public static Crosstab CROSSTAB(Field<String> __1, Field<String> __2) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
     /**

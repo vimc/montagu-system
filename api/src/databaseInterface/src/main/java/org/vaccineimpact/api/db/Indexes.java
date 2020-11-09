@@ -31,6 +31,7 @@ import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
 import org.vaccineimpact.api.db.tables.CountryWorldbankStatus;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
+import org.vaccineimpact.api.db.tables.CoverageSetMetadata;
 import org.vaccineimpact.api.db.tables.DemographicDataset;
 import org.vaccineimpact.api.db.tables.DemographicSource;
 import org.vaccineimpact.api.db.tables.DemographicStatistic;
@@ -138,6 +139,7 @@ public class Indexes {
     public static final Index COUNTRY_WORLDBANK_STATUS_TOUCHSTONE_COUNTRY_YEAR_KEY = Indexes0.COUNTRY_WORLDBANK_STATUS_TOUCHSTONE_COUNTRY_YEAR_KEY;
     public static final Index COVERAGE_PKEY = Indexes0.COVERAGE_PKEY;
     public static final Index COVERAGE_SET_PKEY = Indexes0.COVERAGE_SET_PKEY;
+    public static final Index COVERAGE_SET_METADATA_PKEY = Indexes0.COVERAGE_SET_METADATA_PKEY;
     public static final Index DEMOGRAPHIC_DATASET_PKEY = Indexes0.DEMOGRAPHIC_DATASET_PKEY;
     public static final Index DEMOGRAPHIC_SOURCE_PKEY = Indexes0.DEMOGRAPHIC_SOURCE_PKEY;
     public static final Index DEMOGRAPHIC_STATISTIC_COUNTRY_IDX = Indexes0.DEMOGRAPHIC_STATISTIC_COUNTRY_IDX;
@@ -249,6 +251,7 @@ public class Indexes {
         public static Index COUNTRY_WORLDBANK_STATUS_TOUCHSTONE_COUNTRY_YEAR_KEY = Internal.createIndex("country_worldbank_status_touchstone_country_year_key", CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS, new OrderField[] { CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS.TOUCHSTONE, CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS.COUNTRY, CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS.YEAR }, true);
         public static Index COVERAGE_PKEY = Internal.createIndex("coverage_pkey", Coverage.COVERAGE, new OrderField[] { Coverage.COVERAGE.ID }, true);
         public static Index COVERAGE_SET_PKEY = Internal.createIndex("coverage_set_pkey", CoverageSet.COVERAGE_SET, new OrderField[] { CoverageSet.COVERAGE_SET.ID }, true);
+        public static Index COVERAGE_SET_METADATA_PKEY = Internal.createIndex("coverage_set_metadata_pkey", CoverageSetMetadata.COVERAGE_SET_METADATA, new OrderField[] { CoverageSetMetadata.COVERAGE_SET_METADATA.ID }, true);
         public static Index DEMOGRAPHIC_DATASET_PKEY = Internal.createIndex("demographic_dataset_pkey", DemographicDataset.DEMOGRAPHIC_DATASET, new OrderField[] { DemographicDataset.DEMOGRAPHIC_DATASET.ID }, true);
         public static Index DEMOGRAPHIC_SOURCE_PKEY = Internal.createIndex("demographic_source_pkey", DemographicSource.DEMOGRAPHIC_SOURCE, new OrderField[] { DemographicSource.DEMOGRAPHIC_SOURCE.ID }, true);
         public static Index DEMOGRAPHIC_STATISTIC_COUNTRY_IDX = Internal.createIndex("demographic_statistic_country_idx", DemographicStatistic.DEMOGRAPHIC_STATISTIC, new OrderField[] { DemographicStatistic.DEMOGRAPHIC_STATISTIC.COUNTRY }, false);
