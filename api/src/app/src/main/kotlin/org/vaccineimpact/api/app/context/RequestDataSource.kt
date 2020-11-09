@@ -1,9 +1,6 @@
 package org.vaccineimpact.api.app.context
 
-import org.apache.commons.fileupload.servlet.ServletFileUpload
 import java.io.InputStream
-import java.io.Reader
-import java.io.StringReader
 
 interface RequestDataSource
 {
@@ -23,11 +20,9 @@ interface RequestDataSource
         fun fromContentType(context: ActionContext, partNameToUseForMultipart: String = "file"): RequestDataSource
         {
             val type = context.contentType().toLowerCase()
-            val isMultipart = ServletFileUpload.isMultipartContent(context.request.raw())
             return when
             {
-                //type.startsWith("multipart/form-data") -> MultipartStreamSource(partNameToUseForMultipart, context)
-                isMultipart -> MultipartStreamSource(partNameToUseForMultipart, context)
+                type.startsWith("multipart/form-data") -> MultipartStreamSource(partNameToUseForMultipart, context)
                 else -> RequestBodySource(context)
             }
         }
