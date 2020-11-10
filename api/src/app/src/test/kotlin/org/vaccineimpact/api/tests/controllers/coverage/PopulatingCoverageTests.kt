@@ -15,6 +15,13 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 class PopulatingCoverageTests : MontaguTests()
 {
     @Test
+    fun `can get coverage upload template`() {
+        val sut = CoverageController(mock(), mock(), PostDataHelper())
+        val result = sut.getCoverageUploadTemplate()
+        assertThat(result).isEqualTo("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\"")
+    }
+
+    @Test
     fun `can deserialize coverage`()
     {
         val mockContext = mock<ActionContext> {

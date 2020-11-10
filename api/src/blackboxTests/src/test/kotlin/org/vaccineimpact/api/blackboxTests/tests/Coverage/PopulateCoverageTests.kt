@@ -112,6 +112,15 @@ class PopulateCoverageTests : CoverageTests()
         verifyCorrectRows()
     }
 
+    @Test
+    fun `can get coverage upload template`()
+    {
+        val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions, includeCanLogin = true)
+        val response = RequestHelper().get("/coverage/template/", token = token, acceptsContentType = "text/csv")
+        assertThat(response.text).isEqualTo("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\"")
+        assertThat(response.headers["Content-Disposition"]).isEqualTo("attachment; filename=\"coverage_template.csv\"")
+    }
+
     private fun setup()
     {
         JooqContext().use { db ->
