@@ -27,7 +27,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
         withRepo {
-            val metaId = it.createCoverageSetMetadata("desc", "test.user", Instant.now())
+            val metaId = it.createCoverageSetMetadata("desc", "test.user", now)
             it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT, metaId)
         }
         withDatabase {
@@ -53,6 +53,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
     fun `create coverage set will throw DataAccessException for invalid vaccines`()
     {
         withDatabase {
+            it.addUserForTesting("test.user")
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
         withRepo {
@@ -67,6 +68,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
     fun `can create coverage set for all activity types`()
     {
         withDatabase {
+            it.addUserForTesting("test.user")
             it.addVaccine("v1")
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
@@ -91,6 +93,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
     fun `can create coverage set for all support levels`()
     {
         withDatabase {
+            it.addUserForTesting("test.user")
             it.addVaccine("v1")
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
