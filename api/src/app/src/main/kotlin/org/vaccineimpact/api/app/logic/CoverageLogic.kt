@@ -92,6 +92,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         val setIds = mutableListOf<Int>()
         var expectedRowLookup = mutableMapOf<String, CountryLookup>()
         val countries = expectationsRepository.getExpectedGAVICoverageCountries(touchstoneVersionId)
+        val metadataId = touchstoneRepository.createCoverageSetMetadata(description, uploader, timestamp)
         val records = rows.flatMap { row ->
 
             val rowVaccines = mapVaccineForCoverageSet(row.vaccine)
@@ -105,7 +106,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                     // gavi support level "WITH". Individual coverage rows may nevertheless have
                     // gaviSupport = false where e.g. countries are funding their own programs
                     val newId = touchstoneRepository.createCoverageSet(touchstoneVersionId,
-                            vaccine, row.activityType, GAVISupportLevel.WITH, description, uploader, timestamp)
+                            vaccine, row.activityType, GAVISupportLevel.WITH, metadataId)
                     setIds.add(newId)
                     setDeterminants.add(set)
                     setIndex = setIds.count() - 1

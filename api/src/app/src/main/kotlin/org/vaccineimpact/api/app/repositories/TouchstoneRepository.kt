@@ -52,11 +52,14 @@ interface TouchstoneRepository : Repository
 
     fun mapTouchstone(records: List<Record>): Touchstone
     fun mapTouchstoneVersion(record: Record): TouchstoneVersion
+
+    fun createCoverageSetMetadata(description: String,
+                                  uploader: String,
+                                  timestamp: Instant): Int
+
     fun createCoverageSet(touchstoneVersionId: String,
                           vaccine: String,
                           activityType: ActivityType,
                           supportLevel: GAVISupportLevel,
-                          description: String,
-                          uploader: String,
-                          timestamp: Instant): Int
+                          metadataId: Int): Int
 }

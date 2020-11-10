@@ -151,7 +151,7 @@ class PopulateCoverageTests : CoverageTests()
                     .where(COUNTRY.ID.`in`(countryIds))
                     .fetchInto(String::class.java)
                     .map {
-                        db.dsl.newRecord(Tables.COUNTRY_METADATA).apply {
+                        db.dsl.newRecord(COUNTRY_METADATA).apply {
                             this.country = it
                             this.gavi73 = true
                             this.touchstone = "touchstone-1"
@@ -185,10 +185,10 @@ class PopulateCoverageTests : CoverageTests()
             val expectedNumberOfRows = expectedNumberOfSets * 10 * 73 // sets, years, countries
             assertThat(coverage.count()).isEqualTo(expectedNumberOfRows)
 
-            val metadata = it.dsl.selectFrom(COVERAGE_SET_METADATA).fetch()
-            assertThat(metadata.count()).isEqualTo(expectedNumberOfSets)
-            assertThat(metadata.first()[COVERAGE_SET_METADATA.UPLOADED_BY]).isEqualTo("test.user")
-            assertThat(metadata.first()[COVERAGE_SET_METADATA.DESCRIPTION]).isEqualTo("test description")
+            val metadata = it.dsl.selectFrom(COVERAGE_SET_UPLOAD_METADATA).fetch()
+            assertThat(metadata.count()).isEqualTo(1)
+            assertThat(metadata.first()[COVERAGE_SET_UPLOAD_METADATA.UPLOADED_BY]).isEqualTo("test.user")
+            assertThat(metadata.first()[COVERAGE_SET_UPLOAD_METADATA.DESCRIPTION]).isEqualTo("test description")
         }
     }
 

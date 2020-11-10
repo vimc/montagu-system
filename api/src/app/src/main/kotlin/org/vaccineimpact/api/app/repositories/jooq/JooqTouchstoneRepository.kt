@@ -210,13 +210,24 @@ class JooqTouchstoneRepository(
         return records.map { mapCoverageSet(it) }
     }
 
+    override fun createCoverageSetMetadata(description: String,
+                                           uploader: String,
+                                           timestamp: Instant): Int
+    {
+        val record = this.dsl.newRecord(COVERAGE_SET_UPLOAD_METADATA).apply {
+            this.description = description
+            this.uploadedBy = uploader
+            this.uploadedOn = Timestamp.from(timestamp)
+        }
+        record.store()
+        return record.id
+    }
+
     override fun createCoverageSet(touchstoneVersionId: String,
                                    vaccine: String,
                                    activityType: ActivityType,
                                    supportLevel: GAVISupportLevel,
-                                   description: String,
-                                   uploader: String,
-                                   timestamp: Instant): Int
+                                   metadataId: Int): Int
     {
         val support = supportLevel.toString().toLowerCase()
         val activity = activityType.toString().toLowerCase().replace('_', '-')
@@ -226,14 +237,9 @@ class JooqTouchstoneRepository(
             this.vaccine = vaccine
             this.gaviSupportLevel = support
             this.activityType = activity
+            this.coverageSetUploadMetadata = metadataId
         }
         record.store()
-        this.dsl.newRecord(COVERAGE_SET_METADATA).apply {
-            this.id = record.id
-            this.description = description
-            this.uploadedBy = uploader
-            this.uploadedOn = Timestamp.from(timestamp)
-        }.store()
         return record.id
     }
 

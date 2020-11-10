@@ -27,24 +27,25 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
         withRepo {
-            it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT,
-                    "desc", "test.user", now)
+            val metaId = it.createCoverageSetMetadata("desc", "test.user", Instant.now())
+            it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT, metaId)
         }
         withDatabase {
+            val metadata = it.dsl.selectFrom(COVERAGE_SET_UPLOAD_METADATA)
+                    .fetchOne()
+            assertThat(metadata[COVERAGE_SET_UPLOAD_METADATA.UPLOADED_BY]).isEqualTo("test.user")
+            assertThat(metadata[COVERAGE_SET_UPLOAD_METADATA.UPLOADED_ON].toInstant()).isEqualTo(now)
+            assertThat(metadata[COVERAGE_SET_UPLOAD_METADATA.DESCRIPTION]).isEqualTo("desc")
+
             val set = it.dsl.selectFrom(COVERAGE_SET)
                     .fetchOne()
+
+            assertThat(set[COVERAGE_SET.COVERAGE_SET_UPLOAD_METADATA]).isEqualTo(metadata[COVERAGE_SET_UPLOAD_METADATA.ID])
             assertThat(set[COVERAGE_SET.TOUCHSTONE]).isEqualTo("t-1")
             assertThat(set[COVERAGE_SET.VACCINE]).isEqualTo("v1")
             assertThat(set[COVERAGE_SET.ACTIVITY_TYPE]).isEqualTo("routine")
             assertThat(set[COVERAGE_SET.GAVI_SUPPORT_LEVEL]).isEqualTo("without")
             assertThat(set[COVERAGE_SET.NAME]).isEqualTo("v1: v1, without, routine")
-
-            val metadata = it.dsl.selectFrom(COVERAGE_SET_METADATA)
-                    .fetchOne()
-            assertThat(metadata[COVERAGE_SET_METADATA.ID]).isEqualTo(set[COVERAGE_SET.ID])
-            assertThat(metadata[COVERAGE_SET_METADATA.UPLOADED_BY]).isEqualTo("test.user")
-            assertThat(metadata[COVERAGE_SET_METADATA.UPLOADED_ON].toInstant()).isEqualTo(now)
-            assertThat(metadata[COVERAGE_SET_METADATA.DESCRIPTION]).isEqualTo("desc")
         }
     }
 
@@ -55,9 +56,9 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
         withRepo {
+            val metaId = it.createCoverageSetMetadata("desc", "test.user", Instant.now())
             assertThatThrownBy {
-                it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT,
-                        "", "", Instant.now())
+                it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT, metaId)
             }.isInstanceOf(DataAccessException::class.java)
         }
     }
@@ -70,10 +71,10 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
         withRepo { repo ->
+            val metaId = repo.createCoverageSetMetadata("desc", "test.user", Instant.now())
             listOf(ActivityType.ROUTINE, ActivityType.CAMPAIGN, ActivityType.CAMPAIGN_REACTIVE, ActivityType.NONE)
                     .forEach {
-                        repo.createCoverageSet("t-1", "v1", it, GAVISupportLevel.WITHOUT,
-                                "", "", Instant.now())
+                        repo.createCoverageSet("t-1", "v1", it, GAVISupportLevel.WITHOUT, metaId)
                     }
         }
         withDatabase {
@@ -94,6 +95,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
         withRepo { repo ->
+            val metaId = repo.createCoverageSetMetadata("desc", "test.user", Instant.now())
             listOf(GAVISupportLevel.WITH,
                     GAVISupportLevel.WITHOUT,
                     GAVISupportLevel.BESTCASE,
@@ -107,8 +109,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
                     GAVISupportLevel.NONE,
                     GAVISupportLevel.STATUS_QUO)
                     .forEach {
-                        repo.createCoverageSet("t-1", "v1", ActivityType.NONE, it,
-                                "", "", Instant.now())
+                        repo.createCoverageSet("t-1", "v1", ActivityType.NONE, it, metaId)
                     }
         }
         withDatabase {
