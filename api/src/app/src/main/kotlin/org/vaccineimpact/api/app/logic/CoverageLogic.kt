@@ -10,6 +10,8 @@ import org.vaccineimpact.api.models.expectations.*
 import org.vaccineimpact.api.serialization.FlexibleDataTable
 import org.vaccineimpact.api.serialization.SplitData
 import java.math.BigDecimal
+import java.sql.Timestamp
+import java.time.Instant
 import java.time.LocalDate
 
 interface CoverageLogic
@@ -27,6 +29,9 @@ interface CoverageLogic
     // in practice will always validate rows but the flag is useful for testing
     fun saveCoverageForTouchstone(touchstoneVersionId: String,
                                   rows: Sequence<CoverageIngestionRow>,
+                                  description: String,
+                                  uploader: String,
+                                  timestamp: Instant,
                                   validate: Boolean = true)
 
 }
@@ -77,6 +82,9 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
 
     override fun saveCoverageForTouchstone(touchstoneVersionId: String,
                                            rows: Sequence<CoverageIngestionRow>,
+                                           description: String,
+                                           uploader: String,
+                                           timestamp: Instant,
                                            validate: Boolean)
     {
         val genders = touchstoneRepository.getGenders()
@@ -84,6 +92,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         val setIds = mutableListOf<Int>()
         var expectedRowLookup = mutableMapOf<String, CountryLookup>()
         val countries = expectationsRepository.getExpectedGAVICoverageCountries(touchstoneVersionId)
+        val metadataId = touchstoneRepository.createCoverageSetMetadata(description, uploader, timestamp)
         val records = rows.flatMap { row ->
 
             val rowVaccines = mapVaccineForCoverageSet(row.vaccine)
@@ -97,7 +106,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                     // gavi support level "WITH". Individual coverage rows may nevertheless have
                     // gaviSupport = false where e.g. countries are funding their own programs
                     val newId = touchstoneRepository.createCoverageSet(touchstoneVersionId,
-                            vaccine, row.activityType, GAVISupportLevel.WITH)
+                            vaccine, row.activityType, GAVISupportLevel.WITH, metadataId)
                     setIds.add(newId)
                     setDeterminants.add(set)
                     setIndex = setIds.count() - 1

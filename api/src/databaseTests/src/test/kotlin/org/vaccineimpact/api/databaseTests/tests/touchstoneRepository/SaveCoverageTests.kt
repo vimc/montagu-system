@@ -4,33 +4,43 @@ import org.assertj.core.api.AssertionsForClassTypes.assertThat
 import org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy
 import org.jooq.exception.DataAccessException
 import org.junit.Test
-import org.vaccineimpact.api.app.errors.ForeignKeyError
-import org.vaccineimpact.api.app.errors.UnknownObjectError
-import org.vaccineimpact.api.db.Tables.COVERAGE
-import org.vaccineimpact.api.db.Tables.COVERAGE_SET
+import org.vaccineimpact.api.db.Tables.*
 import org.vaccineimpact.api.db.direct.addCoverageSet
 import org.vaccineimpact.api.db.direct.addTouchstoneVersion
+import org.vaccineimpact.api.db.direct.addUserForTesting
 import org.vaccineimpact.api.db.direct.addVaccine
 import org.vaccineimpact.api.models.ActivityType
 import org.vaccineimpact.api.models.GAVISupportLevel
 import org.vaccineimpact.api.models.GenderEnum
 import java.math.BigDecimal
+import java.time.Instant
 
 class SaveCoverageTests : TouchstoneRepositoryTests()
 {
     @Test
-    fun `can create coverage set`()
+    fun `can create coverage set and metadata`()
     {
+        val now = Instant.now()
         withDatabase {
+            it.addUserForTesting("test.user")
             it.addVaccine("v1")
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
         withRepo {
-            it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT)
+            val metaId = it.createCoverageSetMetadata("desc", "test.user", now)
+            it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT, metaId)
         }
         withDatabase {
+            val metadata = it.dsl.selectFrom(COVERAGE_SET_UPLOAD_METADATA)
+                    .fetchOne()
+            assertThat(metadata[COVERAGE_SET_UPLOAD_METADATA.UPLOADED_BY]).isEqualTo("test.user")
+            assertThat(metadata[COVERAGE_SET_UPLOAD_METADATA.UPLOADED_ON].toInstant()).isEqualTo(now)
+            assertThat(metadata[COVERAGE_SET_UPLOAD_METADATA.DESCRIPTION]).isEqualTo("desc")
+
             val set = it.dsl.selectFrom(COVERAGE_SET)
                     .fetchOne()
+
+            assertThat(set[COVERAGE_SET.COVERAGE_SET_UPLOAD_METADATA]).isEqualTo(metadata[COVERAGE_SET_UPLOAD_METADATA.ID])
             assertThat(set[COVERAGE_SET.TOUCHSTONE]).isEqualTo("t-1")
             assertThat(set[COVERAGE_SET.VACCINE]).isEqualTo("v1")
             assertThat(set[COVERAGE_SET.ACTIVITY_TYPE]).isEqualTo("routine")
@@ -43,11 +53,13 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
     fun `create coverage set will throw DataAccessException for invalid vaccines`()
     {
         withDatabase {
+            it.addUserForTesting("test.user")
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
         withRepo {
+            val metaId = it.createCoverageSetMetadata("desc", "test.user", Instant.now())
             assertThatThrownBy {
-                it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT)
+                it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITHOUT, metaId)
             }.isInstanceOf(DataAccessException::class.java)
         }
     }
@@ -56,13 +68,15 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
     fun `can create coverage set for all activity types`()
     {
         withDatabase {
+            it.addUserForTesting("test.user")
             it.addVaccine("v1")
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
         withRepo { repo ->
+            val metaId = repo.createCoverageSetMetadata("desc", "test.user", Instant.now())
             listOf(ActivityType.ROUTINE, ActivityType.CAMPAIGN, ActivityType.CAMPAIGN_REACTIVE, ActivityType.NONE)
                     .forEach {
-                        repo.createCoverageSet("t-1", "v1", it, GAVISupportLevel.WITHOUT)
+                        repo.createCoverageSet("t-1", "v1", it, GAVISupportLevel.WITHOUT, metaId)
                     }
         }
         withDatabase {
@@ -79,10 +93,12 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
     fun `can create coverage set for all support levels`()
     {
         withDatabase {
+            it.addUserForTesting("test.user")
             it.addVaccine("v1")
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
         }
         withRepo { repo ->
+            val metaId = repo.createCoverageSetMetadata("desc", "test.user", Instant.now())
             listOf(GAVISupportLevel.WITH,
                     GAVISupportLevel.WITHOUT,
                     GAVISupportLevel.BESTCASE,
@@ -96,7 +112,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
                     GAVISupportLevel.NONE,
                     GAVISupportLevel.STATUS_QUO)
                     .forEach {
-                        repo.createCoverageSet("t-1", "v1", ActivityType.NONE, it)
+                        repo.createCoverageSet("t-1", "v1", ActivityType.NONE, it, metaId)
                     }
         }
         withDatabase {

@@ -15,6 +15,7 @@ import org.vaccineimpact.api.models.GAVISupportLevel
 import org.vaccineimpact.api.models.GenderEnum
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.math.BigDecimal
+import java.time.Instant
 
 class SaveCoverageTests : MontaguTests()
 {
@@ -33,18 +34,22 @@ class SaveCoverageTests : MontaguTests()
         on { getExpectedGAVICoverageCountries(any()) } doReturn listOf("AFG")
     }
 
+    private val now = Instant.now()
+
     @Test
     fun `new coverage sets are created as needed`()
     {
         val mockRepo = mock<TouchstoneRepository>() {
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
+            on { createCoverageSetMetadata("desc", "uploader", now) } doReturn 2
         }
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
-        sut.saveCoverageForTouchstone("t1", testSequence, validate = false)
-        verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB_BD", ActivityType.CAMPAIGN, GAVISupportLevel.WITH)
-        verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB_BD", ActivityType.ROUTINE, GAVISupportLevel.WITH)
-        verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB", ActivityType.CAMPAIGN, GAVISupportLevel.WITH)
-        verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB", ActivityType.ROUTINE, GAVISupportLevel.WITH)
+        sut.saveCoverageForTouchstone("t1", testSequence, "desc", "uploader", now, validate = false)
+        verify(mockRepo, Times(1)).createCoverageSetMetadata("desc", "uploader", now)
+        verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB_BD", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2)
+        verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB_BD", ActivityType.ROUTINE, GAVISupportLevel.WITH, 2)
+        verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2)
+        verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB", ActivityType.ROUTINE, GAVISupportLevel.WITH, 2)
         verify(mockRepo, Times(5)).newCoverageRowRecord(any(), any(), any(), any(), any(), any(), any(), any(), any())
         verify(mockRepo).saveCoverageForTouchstone(any(), any())
         verify(mockRepo).getGenders()
@@ -56,10 +61,11 @@ class SaveCoverageTests : MontaguTests()
     {
         val mockRepo = mock<TouchstoneRepository> {
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
-            on { createCoverageSet(any(), any(), any(), any()) } doReturn 1
+            on { createCoverageSet(any(), any(), any(), any(), any()) } doReturn 1
+            on { createCoverageSetMetadata("desc", "uploader", now) } doReturn 2
         }
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
-        sut.saveCoverageForTouchstone("t1", testSequence, validate = false)
+        sut.saveCoverageForTouchstone("t1", testSequence, "", "", now, validate = false)
         verify(mockRepo, Times(1)).newCoverageRowRecord(1,
                 "AFG",
                 2021,
@@ -85,13 +91,14 @@ class SaveCoverageTests : MontaguTests()
     {
         val mockRepo = mock<TouchstoneRepository> {
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
-            on { createCoverageSet("t1", "HepB_BD", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 1
-            on { createCoverageSet("t1", "HepB_BD", ActivityType.ROUTINE, GAVISupportLevel.WITH) } doReturn 2
-            on { createCoverageSet("t1", "HepB", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 3
-            on { createCoverageSet("t1", "HepB", ActivityType.ROUTINE, GAVISupportLevel.WITH) } doReturn 4
+            on { createCoverageSetMetadata("desc", "uploader", now) } doReturn 2
+            on { createCoverageSet("t1", "HepB_BD", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2) } doReturn 1
+            on { createCoverageSet("t1", "HepB_BD", ActivityType.ROUTINE, GAVISupportLevel.WITH, 2) } doReturn 2
+            on { createCoverageSet("t1", "HepB", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2) } doReturn 3
+            on { createCoverageSet("t1", "HepB", ActivityType.ROUTINE, GAVISupportLevel.WITH, 2) } doReturn 4
         }
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
-        sut.saveCoverageForTouchstone("t1", testSequence, validate = false)
+        sut.saveCoverageForTouchstone("t1", testSequence, "desc", "uploader", now, validate = false)
         verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2021), any(), any(), any(), any(), any(), any())
         verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2021), any(), any(), any(), any(), any(), any())
         verify(mockRepo, Times(1)).newCoverageRowRecord(eq(2), any(), eq(2022), any(), any(), any(), any(), any(), any())
@@ -120,7 +127,7 @@ class SaveCoverageTests : MontaguTests()
 and 13 others"""
 
         assertThatThrownBy {
-            sut.saveCoverageForTouchstone("t1", testSequence)
+            sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
         }.isInstanceOf(MissingRowsError::class.java)
                 .hasMessageContaining(expectedMessage)
     }
@@ -137,7 +144,7 @@ and 13 others"""
                 CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
                 CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F))
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
-        sut.saveCoverageForTouchstone("t1", testSequence)
+        sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
         verify(mockRepo, Times(3)).newCoverageRowRecord(any(), any(), any(), any(), any(), any(), any(), any(), any())
     }
 
@@ -155,7 +162,7 @@ and 13 others"""
         val expectedMessage = "Duplicate row detected: 2023, HepB, AFG"
 
         assertThatThrownBy {
-            sut.saveCoverageForTouchstone("t1", testSequence)
+            sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
         }.isInstanceOf(BadRequest::class.java)
                 .hasMessageContaining(expectedMessage)
     }
@@ -173,7 +180,7 @@ and 13 others"""
         val expectedMessage = "Unexpected year: 2010"
 
         assertThatThrownBy {
-            sut.saveCoverageForTouchstone("t1", testSequence)
+            sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
         }.isInstanceOf(BadRequest::class.java)
                 .hasMessageContaining(expectedMessage)
     }
@@ -191,7 +198,7 @@ and 13 others"""
         val expectedMessage = "Unexpected year: 2010"
 
         assertThatThrownBy {
-            sut.saveCoverageForTouchstone("t1", testSequence)
+            sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
         }.isInstanceOf(BadRequest::class.java)
                 .hasMessageContaining(expectedMessage)
     }
@@ -209,7 +216,7 @@ and 13 others"""
         val expectedMessage = "Unrecognised or unexpected country: 123"
 
         assertThatThrownBy {
-            sut.saveCoverageForTouchstone("t1", testSequence)
+            sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
         }.isInstanceOf(BadRequest::class.java)
                 .hasMessageContaining(expectedMessage)
     }
@@ -227,7 +234,7 @@ and 13 others"""
         val expectedMessage = "Unrecognised or unexpected country: 123"
 
         assertThatThrownBy {
-            sut.saveCoverageForTouchstone("t1", testSequence)
+            sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
         }.isInstanceOf(BadRequest::class.java)
                 .hasMessageContaining(expectedMessage)
     }
@@ -236,7 +243,7 @@ and 13 others"""
     fun `combination vaccines are mapped to vaccines correctly`()
     {
         val vaxProgSequence = sequenceOf(
-                CoverageIngestionRow("Penta", "AFG", ActivityType.CAMPAIGN,  true, 2021, 1, 10, GenderEnum.BOTH, 100F, 78.8F),
+                CoverageIngestionRow("Penta", "AFG", ActivityType.CAMPAIGN, true, 2021, 1, 10, GenderEnum.BOTH, 100F, 78.8F),
                 CoverageIngestionRow("pentavalent", "AFG", ActivityType.CAMPAIGN, false, 2022, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
                 CoverageIngestionRow("mr1", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
                 CoverageIngestionRow("MR2", "AFG", ActivityType.ROUTINE, true, 2026, 1, 10, GenderEnum.BOTH, 100F, 65.5F)
@@ -244,17 +251,18 @@ and 13 others"""
 
         val mockRepo = mock<TouchstoneRepository> {
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
-            on { createCoverageSet("t1", "Hib3", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 1
-            on { createCoverageSet("t1", "HepB", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 2
-            on { createCoverageSet("t1", "DTP3", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 3
-            on { createCoverageSet("t1", "MCV1", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 4
-            on { createCoverageSet("t1", "Rubella", ActivityType.CAMPAIGN, GAVISupportLevel.WITH) } doReturn 5
-            on { createCoverageSet("t1", "MCV2", ActivityType.ROUTINE, GAVISupportLevel.WITH) } doReturn 6
-            on { createCoverageSet("t1", "RCV2", ActivityType.ROUTINE, GAVISupportLevel.WITH) } doReturn 7
+            on { createCoverageSetMetadata("desc", "uploader", now)} doReturn 2
+            on { createCoverageSet("t1", "Hib3", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2) } doReturn 1
+            on { createCoverageSet("t1", "HepB", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2) } doReturn 2
+            on { createCoverageSet("t1", "DTP3", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2) } doReturn 3
+            on { createCoverageSet("t1", "MCV1", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2) } doReturn 4
+            on { createCoverageSet("t1", "Rubella", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2) } doReturn 5
+            on { createCoverageSet("t1", "MCV2", ActivityType.ROUTINE, GAVISupportLevel.WITH, 2) } doReturn 6
+            on { createCoverageSet("t1", "RCV2", ActivityType.ROUTINE, GAVISupportLevel.WITH, 2) } doReturn 7
         }
 
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
-        sut.saveCoverageForTouchstone("t1", vaxProgSequence, validate = false)
+        sut.saveCoverageForTouchstone("t1", vaxProgSequence, "desc", "uploader", now, validate = false)
 
         //Penta
         verify(mockRepo, Times(1)).newCoverageRowRecord(1,

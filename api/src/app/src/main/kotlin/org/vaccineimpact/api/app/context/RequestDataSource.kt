@@ -1,8 +1,6 @@
 package org.vaccineimpact.api.app.context
 
 import java.io.InputStream
-import java.io.Reader
-import java.io.StringReader
 
 interface RequestDataSource
 {

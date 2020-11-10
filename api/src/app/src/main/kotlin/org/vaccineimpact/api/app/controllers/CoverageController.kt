@@ -13,8 +13,12 @@ import org.vaccineimpact.api.app.requests.csvData
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.CoverageIngestionRow
 import org.vaccineimpact.api.models.CoverageRow
-import org.vaccineimpact.api.models.GenderedLongCoverageRow
+import org.vaccineimpact.api.models.ModelRun
 import org.vaccineimpact.api.models.ScenarioTouchstoneAndCoverageSets
+import org.vaccineimpact.api.serialization.SplitData
+import org.vaccineimpact.api.serialization.StreamSerializable
+import java.time.Instant
+import org.vaccineimpact.api.models.GenderedLongCoverageRow
 import org.vaccineimpact.api.serialization.*
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
@@ -37,16 +41,19 @@ class CoverageController(
         }.joinToString(", ")
     }
 
-    fun getCoverageDataFromCSV(): Sequence<CoverageIngestionRow>
+    fun getCoverageDataFromCSV(): Pair<Sequence<CoverageIngestionRow>, String>
     {
-        val source = RequestDataSource.fromContentType(context)
-        return postDataHelper.csvData(from = source)
+        val parts = context.getParts()
+        val description = parts["description"].contents
+        val sequence = postDataHelper.csvData<CoverageIngestionRow>(parts["file"])
+        return Pair(sequence, description)
     }
 
     fun ingestCoverage(): String
     {
-        val sequence = getCoverageDataFromCSV()
-        coverageLogic.saveCoverageForTouchstone(context.params(":touchstone-version-id"), sequence)
+        val data = getCoverageDataFromCSV()
+        val touchstone = context.params(":touchstone-version-id")
+        coverageLogic.saveCoverageForTouchstone(touchstone, data.first, data.second, context.username!!, Instant.now())
         return okayResponse()
     }
 

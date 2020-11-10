@@ -6,6 +6,7 @@ import org.vaccineimpact.api.db.tables.records.CoverageRecord
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.SplitData
 import java.math.BigDecimal
+import java.time.Instant
 
 interface TouchstoneRepository : Repository
 {
@@ -51,5 +52,14 @@ interface TouchstoneRepository : Repository
 
     fun mapTouchstone(records: List<Record>): Touchstone
     fun mapTouchstoneVersion(record: Record): TouchstoneVersion
-    fun createCoverageSet(touchstoneVersionId: String, vaccine: String, activityType: ActivityType, supportLevel: GAVISupportLevel): Int
+
+    fun createCoverageSetMetadata(description: String,
+                                  uploader: String,
+                                  timestamp: Instant): Int
+
+    fun createCoverageSet(touchstoneVersionId: String,
+                          vaccine: String,
+                          activityType: ActivityType,
+                          supportLevel: GAVISupportLevel,
+                          metadataId: Int): Int
 }
