@@ -76,7 +76,7 @@ describe("Upload Coverage component tests", () => {
         const store = createMockStore({coverage: {uploadState: initialUploadState}});
         const rendered = shallow(<UploadCoverage/>, {context: {store}}).dive();
         const fileInput = rendered.find(CustomFileInput);
-        fileInput.simulate('change', {value: "testfile.csv"});
+        fileInput.dive().find("input").simulate("change", {target: {value: "testfile.csv"}});
         expect(rendered.find('button').props().disabled).toBe(false);
     });
 
@@ -84,7 +84,7 @@ describe("Upload Coverage component tests", () => {
         const store = createMockStore({coverage: {uploadState: initialUploadState}});
         const rendered = shallow(<UploadCoverage/>, {context: {store}}).dive();
         const fileInput = rendered.find(CustomFileInput);
-        fileInput.simulate('change', {value: "testfile.csv"});
+        fileInput.dive().find("input").simulate("change", {target: {value: "testfile.csv"}});
         expect(rendered.find('button').props().disabled).toBe(false);
         rendered.setProps({status: CoverageUploadStatus.in_progress});
         expect(rendered.find('button').props().disabled).toBe(true);

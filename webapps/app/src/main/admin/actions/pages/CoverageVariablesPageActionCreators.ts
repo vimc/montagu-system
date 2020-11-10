@@ -8,11 +8,11 @@ export class CoverageVariablesPageActionCreators extends AdminPageActionCreators
 
     parent = coveragePageActionCreators;
 
-    title(state: AdminAppState): string {
+    title(): string {
         return "Coverage variables";
     }
 
-    createBreadcrumb(state?: AdminAppState): PageBreadcrumb {
+    createBreadcrumb(): PageBreadcrumb {
         return {
             name: "Coverage variables",
             urlFragment: `coverage-variables/`
