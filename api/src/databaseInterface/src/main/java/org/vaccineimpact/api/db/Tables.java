@@ -33,7 +33,7 @@ import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
 import org.vaccineimpact.api.db.tables.CountryWorldbankStatus;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
-import org.vaccineimpact.api.db.tables.CoverageSetMetadata;
+import org.vaccineimpact.api.db.tables.CoverageSetUploadMetadata;
 import org.vaccineimpact.api.db.tables.Crosstab;
 import org.vaccineimpact.api.db.tables.Crosstab2;
 import org.vaccineimpact.api.db.tables.Crosstab3;
@@ -276,9 +276,9 @@ public class Tables {
     public static final CoverageSet COVERAGE_SET = org.vaccineimpact.api.db.tables.CoverageSet.COVERAGE_SET;
 
     /**
-     * The table <code>public.coverage_set_metadata</code>.
+     * The table <code>public.coverage_set_upload_metadata</code>.
      */
-    public static final CoverageSetMetadata COVERAGE_SET_METADATA = org.vaccineimpact.api.db.tables.CoverageSetMetadata.COVERAGE_SET_METADATA;
+    public static final CoverageSetUploadMetadata COVERAGE_SET_UPLOAD_METADATA = org.vaccineimpact.api.db.tables.CoverageSetUploadMetadata.COVERAGE_SET_UPLOAD_METADATA;
 
     /**
      * The table <code>public.crosstab</code>.
