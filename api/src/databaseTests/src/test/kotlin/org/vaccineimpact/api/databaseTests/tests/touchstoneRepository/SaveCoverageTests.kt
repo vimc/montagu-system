@@ -208,8 +208,9 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `can get coverage upload metadata`()
+    fun `can get latest coverage upload metadata`()
     {
+        val then = Instant.now()
         val now = Instant.now()
         withDatabase {
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
@@ -218,15 +219,17 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
             it.addVaccine("v2")
         }
         val meta = withRepo {
-            val metaId = it.createCoverageSetMetadata("desc", "test.user", now)
-            it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITH, metaId)
-            it.createCoverageSet("t-1", "v2", ActivityType.ROUTINE, GAVISupportLevel.WITH, metaId)
+            val oldMetaId = it.createCoverageSetMetadata("desc", "test.user", then)
+            val recentMetaId = it.createCoverageSetMetadata("desc", "test.user", now)
+            it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITH, oldMetaId)
+            it.createCoverageSet("t-1", "v2", ActivityType.ROUTINE, GAVISupportLevel.WITH, oldMetaId)
+            it.createCoverageSet("t-1", "v2", ActivityType.ROUTINE, GAVISupportLevel.WITH, recentMetaId)
             it.getCoverageUploadMetadata("t-1")
         }
 
         assertThat(meta.count()).isEqualTo(2)
         assertThat(meta[0].vaccine).isEqualTo("v1")
-        assertThat(meta[0].uploadedOn).isEqualTo(now)
+        assertThat(meta[0].uploadedOn).isEqualTo(then)
         assertThat(meta[0].uploadedBy).isEqualTo("test.user")
 
         assertThat(meta[1].vaccine).isEqualTo("v2")

@@ -251,6 +251,10 @@ class JooqTouchstoneRepository(
                 .fromJoinPath(COVERAGE_SET, COVERAGE_SET_UPLOAD_METADATA)
                 .where(COVERAGE_SET.TOUCHSTONE.eq(touchstoneVersionId))
                 .fetchInto(CoverageUploadMetadata::class.java)
+                .groupBy { it.vaccine }
+                .map { g->
+                    g.value.maxBy { it.uploadedOn }!!
+                }
     }
 
     override fun saveCoverageForTouchstone(touchstoneVersionId: String, records: List<CoverageRecord>)
