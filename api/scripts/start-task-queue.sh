@@ -12,16 +12,16 @@ fi
 
 docker run --rm -d \
   $NETWORK_MAPPING \
-  -p 5672:5672 \
+  -p 6379:6379 \
   --name mq \
-  rabbitmq
+  redis
 
-docker pull vimc/task-queue-worker:master
+docker pull vimc/task-queue-worker:vimc-4350
 docker run --rm -d \
   $NETWORK_MAPPING \
   -v $ROOT/scripts/task-queue-config.yml:/home/worker/config/config.yml \
   --name task_queue_worker \
-  vimc/task-queue-worker:master
+  vimc/task-queue-worker:vimc-4350
 
 # add task q user
 CLI=vimc/montagu-cli:master
