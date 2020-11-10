@@ -1,4 +1,5 @@
 import {coverageVariablesPageActionCreators} from "../../../../main/admin/actions/pages/CoverageVariablesPageActionCreators";
+import {coveragePageActionCreators} from "../../../../main/admin/actions/pages/CoveragePageActionCreators";
 
 describe("coverageVariablesPageActionCreators", () => {
 
@@ -10,5 +11,9 @@ describe("coverageVariablesPageActionCreators", () => {
 
     it("has correct title", () => {
         expect(coverageVariablesPageActionCreators.title()).toEqual("Coverage variables");
+    });
+
+    it("has correct parent", () => {
+        expect(coverageVariablesPageActionCreators.parent).toEqual(coveragePageActionCreators);
     });
 });

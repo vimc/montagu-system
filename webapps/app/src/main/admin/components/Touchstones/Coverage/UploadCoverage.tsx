@@ -46,7 +46,7 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
                             anything that could affect usage
                         </li>
                     </ul>
-                    Please see <InternalLink href={"coverage-variables"}>here</InternalLink> for information about how
+                    Please see <InternalLink href={"coverage/coverage-variables"}>here</InternalLink> for information about how
                     this coverage will be interpreted.</label>
                 <textarea className={"form-control"}
                           placeholder={"additional details..."}
