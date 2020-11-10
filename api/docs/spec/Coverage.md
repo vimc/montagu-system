@@ -258,8 +258,6 @@ Schema: [`CoverageSetUploadMetadata.schema.json`](../schemas/CoverageSetUploadMe
 Returns template for uploading coverage data.
 Required permissions: Global scope: `coverage.write`. 
 
-Schema: [`CoverageIngestion.csvschema.json`](../schemas/CoverageIngestion.csvschema.json)
-
 Returns an empty CSV with the following headers
 
     "vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
