@@ -4,8 +4,8 @@ import {shallow} from "enzyme";
 import * as React from "react";
 import {UploadCoverage} from "../../../../main/admin/components/Touchstones/Coverage/UploadCoverage";
 import {CoverageUploadStatus} from "../../../../main/admin/actionTypes/CoverageTypes";
-import {diseasesActionCreators} from "../../../../main/shared/actions/diseasesActionCreators";
 import {coverageActionCreators} from "../../../../main/admin/actions/coverageActionCreators";
+import {CustomFileInput} from "../../../../main/shared/components/CustomFileInput";
 
 describe("Upload Coverage component tests", () => {
     const sandbox = new Sandbox();
@@ -21,7 +21,7 @@ describe("Upload Coverage component tests", () => {
         expect(rendered.props().status).toEqual(CoverageUploadStatus.off);
 
         const uploadCoverageProp = rendered.props().uploadCoverage;
-        uploadCoverageProp({} as FormData)
+        uploadCoverageProp({} as FormData);
         expect(uploadCoverageStub.mock.calls.length).toBe(1);
     });
 
@@ -31,7 +31,14 @@ describe("Upload Coverage component tests", () => {
         const form = rendered.find('form');
         expect(form.length).toEqual(1);
         expect(typeof form.props().onSubmit).toEqual("function");
-        expect(typeof form.props().onChange).toEqual("function");
+    });
+
+    it("renders inputs", () => {
+        const store = createMockStore({coverage: {uploadState: initialUploadState}});
+        const rendered = shallow(<UploadCoverage/>, {context: {store}}).dive();
+        expect(rendered.find("CustomFileInput").length).toBe(1);
+        expect(rendered.find("textarea").length).toBe(1);
+        expect(rendered.find("textarea").props().name).toBe("description");
     });
 
     it("renders as expected before select file", () => {
@@ -68,16 +75,17 @@ describe("Upload Coverage component tests", () => {
     it("enables upload button when a file is selected", () => {
         const store = createMockStore({coverage: {uploadState: initialUploadState}});
         const rendered = shallow(<UploadCoverage/>, {context: {store}}).dive();
-        const form = rendered.find('form');
-        form.simulate('change');
+        const fileInput = rendered.find(CustomFileInput);
+        fileInput.simulate('change', {value: "testfile.csv"});
         expect(rendered.find('button').props().disabled).toBe(false);
     });
 
     it("disabled upload button while file is uploading", () => {
         const store = createMockStore({coverage: {uploadState: initialUploadState}});
         const rendered = shallow(<UploadCoverage/>, {context: {store}}).dive();
-        const form = rendered.find('form');
-        form.simulate('change');
+        const fileInput = rendered.find(CustomFileInput);
+        fileInput.simulate('change', {value: "testfile.csv"});
+        expect(rendered.find('button').props().disabled).toBe(false);
         rendered.setProps({status: CoverageUploadStatus.in_progress});
         expect(rendered.find('button').props().disabled).toBe(true);
     });
@@ -86,11 +94,12 @@ describe("Upload Coverage component tests", () => {
         const uploadSpy = sandbox.createSpy();
         const store = createMockStore({coverage: {uploadState: initialUploadState}});
         const rendered = shallow(<UploadCoverage/>, {context: {store}}).dive();
-        rendered.setProps({uploadCoverage: uploadSpy})
+        rendered.setProps({uploadCoverage: uploadSpy});
 
         const form = rendered.find('form');
         form.simulate('submit', {
-            preventDefault: () => {},
+            preventDefault: () => {
+            },
             target: form
         });
         expect(uploadSpy.mock.calls.length).toBe(1);
