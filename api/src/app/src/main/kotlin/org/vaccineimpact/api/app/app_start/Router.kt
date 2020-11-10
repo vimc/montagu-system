@@ -59,14 +59,25 @@ class Router(val config: RouteConfig,
 
         logger.info("Mapping $fullUrl to ${endpoint.actionName} on ${endpoint.controller.simpleName}")
 
-        when (endpoint.method)
+        if (contentType.contains("json"))
         {
-            HttpMethod.get -> Spark.get(fullUrl, contentType, route, this::transform)
-            HttpMethod.post -> Spark.post(fullUrl, contentType, route, this::transform)
-            HttpMethod.put -> Spark.put(fullUrl, contentType, route, this::transform)
-            HttpMethod.patch -> Spark.patch(fullUrl, contentType, route, this::transform)
-            HttpMethod.delete -> Spark.delete(fullUrl, contentType, route, this::transform)
-            else -> throw UnsupportedValueException(endpoint.method)
+            when (endpoint.method)
+            {
+                HttpMethod.get -> Spark.get(fullUrl, contentType, route, this::transform)
+                HttpMethod.post -> Spark.post(fullUrl, contentType, route, this::transform)
+                HttpMethod.put -> Spark.put(fullUrl, contentType, route, this::transform)
+                HttpMethod.patch -> Spark.patch(fullUrl, contentType, route, this::transform)
+                HttpMethod.delete -> Spark.delete(fullUrl, contentType, route, this::transform)
+                else -> throw UnsupportedValueException(endpoint.method)
+            }
+        }
+        else
+        {
+            when (endpoint.method)
+            {
+                HttpMethod.get -> Spark.get(fullUrl, contentType, route)
+                else -> throw UnsupportedValueException(endpoint.method)
+            }
         }
 
         endpoint.additionalSetup(fullUrl, webTokenHelper, repositoryFactory)
