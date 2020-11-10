@@ -37,6 +37,10 @@ object CoverageRouteConfig : RouteConfig
 
             Endpoint("/touchstones/:touchstone-version-id/coverage/", controller, "ingestCoverage")
                     .post()
+                    .secure(writePermissions),
+
+            Endpoint("/touchstones/:touchstone-version-id/coverage/meta/", controller, "getCoverageUploadMetadata")
+                    .json()
                     .secure(writePermissions)
     )
 

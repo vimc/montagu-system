@@ -233,4 +233,39 @@ Example wide format:
     "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "campaign",   "AFG",    0,         2,                    NA,                      NA,            87.5,          93.4             98.2
     "menA-novacc",    "Menigitis with GAVI support",    "MenA",        "total",       "campign",    "AFG",    0,         1,                    NA,                      NA,            88.5,          90.6             98.1
 
+## GET /touchstones/{touchstone-id}/coverage/meta/
+Returns metadata about any coverage sets uploaded via the API for this touchstone.
+
+Required permissions: Global scope: `coverage.write`. 
+
+Schema: [`CoverageSetUploadMetadata.schema.json`](../schemas/CoverageSetUploadMetadata.schema.json)
+
+#### Example
+    [ 
+        { 
+            "vaccine": "YF",
+            "uploaded_on": "2017-op-1",
+            "uploaded_by"L: "test.user"
+        },
+        { 
+            "vaccine": "Measles",
+            "uploaded_on": "2017-op-1",
+            "uploaded_by"L: "test.user"
+        }
+    ]
+    
+
+## POST /touchstones/{touchstone-id}/coverage/
+Upload GAVI projected coverage data for the given touchstone. All coverage data uploaded via this endpoint
+will be recorded in a coverage set with gavi_support_level = "with".
+
+Required permissions: Global scope: `coverage.write`. 
+
+Accepts multipart/form-data with one text part named "description",
+ which can be any text, and one file part named "file",
+which must be CSV data in the following format
+
+    "vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
+       "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8
+       "HepB_BD",   "AFG",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5
 

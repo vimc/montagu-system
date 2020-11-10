@@ -113,6 +113,15 @@ class PopulateCoverageTests : CoverageTests()
         JSONValidator().validateError(response.text, "forbidden")
     }
 
+    @Test
+    fun `can get coverage upload metadata`()
+    {
+        setup()
+        validate("/touchstones/$touchstoneVersionId/coverage/meta") against ("CoverageSetUploadMetadata") given {
+            addCoverageData(it, touchstoneStatus = "open")
+        } requiringPermissions { requiredPermissions } andCheckHasStatus 200..200
+    }
+
     private fun setup()
     {
         JooqContext().use { db ->
