@@ -9,10 +9,12 @@ import org.vaccineimpact.api.db.direct.addCoverageSet
 import org.vaccineimpact.api.db.direct.addTouchstoneVersion
 import org.vaccineimpact.api.db.direct.addUserForTesting
 import org.vaccineimpact.api.db.direct.addVaccine
+import org.vaccineimpact.api.db.tables.GaviSupportLevel
 import org.vaccineimpact.api.models.ActivityType
 import org.vaccineimpact.api.models.GAVISupportLevel
 import org.vaccineimpact.api.models.GenderEnum
 import java.math.BigDecimal
+import java.sql.Timestamp
 import java.time.Instant
 
 class SaveCoverageTests : TouchstoneRepositoryTests()
@@ -203,5 +205,48 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
         assertThat(genders[GenderEnum.BOTH]).isEqualTo(1)
         assertThat(genders[GenderEnum.MALE]).isEqualTo(2)
         assertThat(genders[GenderEnum.FEMALE]).isEqualTo(3)
+    }
+
+    @Test
+    fun `can get coverage upload metadata`()
+    {
+        val now = Instant.now()
+        withDatabase {
+            it.addTouchstoneVersion("t", 1, addTouchstone = true)
+            it.addUserForTesting("test.user")
+            it.addVaccine("v1")
+            it.addVaccine("v2")
+        }
+        val meta = withRepo {
+            val metaId = it.createCoverageSetMetadata("desc", "test.user", now)
+            it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITH, metaId)
+            it.createCoverageSet("t-1", "v2", ActivityType.ROUTINE, GAVISupportLevel.WITH, metaId)
+            it.getCoverageUploadMetadata("t-1")
+        }
+
+        assertThat(meta.count()).isEqualTo(2)
+        assertThat(meta[0].vaccine).isEqualTo("v1")
+        assertThat(meta[0].uploadedOn).isEqualTo(now)
+        assertThat(meta[0].uploadedBy).isEqualTo("test.user")
+
+        assertThat(meta[1].vaccine).isEqualTo("v2")
+        assertThat(meta[1].uploadedOn).isEqualTo(now)
+        assertThat(meta[1].uploadedBy).isEqualTo("test.user")
+    }
+
+    @Test
+    fun `can get empty coverage upload metadata`()
+    {
+        withDatabase {
+            it.addTouchstoneVersion("t", 1, addTouchstone = true)
+            it.addUserForTesting("test.user")
+            it.addVaccine("v1")
+            // not all coverage sets will be uploaded through the portal, some
+            // are created by the science team via data imports so will not have
+            // upload metadata
+            it.addCoverageSet("t-1", "name", "v1", "with", "campaign")
+        }
+        val meta = withRepo { it.getCoverageUploadMetadata("t-1") }
+        assertThat(meta.count()).isEqualTo(0)
     }
 }

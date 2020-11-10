@@ -10,10 +10,11 @@ import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.InMemoryRequestData
 import org.vaccineimpact.api.app.controllers.CoverageController
 import org.vaccineimpact.api.app.requests.MultipartDataMap
-import org.vaccineimpact.api.app.requests.PostDataHelper
+import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.validation.ValidationException
 import org.vaccineimpact.api.test_helpers.MontaguTests
+import java.time.Instant
 
 class PopulatingCoverageTests : MontaguTests()
 {
@@ -26,8 +27,9 @@ class PopulatingCoverageTests : MontaguTests()
                     "file" to InMemoryRequestData(normalCSVDataString)
             )
         }
-        val sut = CoverageController(mockContext, mock(), PostDataHelper())
+        val sut = CoverageController(mockContext, mock(), mock())
         val result = sut.getCoverageDataFromCSV().first
+
         assertThat(result.toList()).containsExactly(
                 CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, true, 2020, 1, 10, GenderEnum.BOTH, 100F, 78.8F),
                 CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, false, 2021, 1, 10, GenderEnum.FEMALE, 100F, 65.5F)
@@ -43,8 +45,9 @@ class PopulatingCoverageTests : MontaguTests()
                     "file" to InMemoryRequestData(invalidActivityTypeCSVDataString)
             )
         }
-        val sut = CoverageController(mockContext, mock(), PostDataHelper())
+        val sut = CoverageController(mockContext, mock(), mock())
         val result = sut.getCoverageDataFromCSV().first
+
         assertThatThrownBy { result.toList() }
                 .isInstanceOf(ValidationException::class.java)
     }
@@ -58,9 +61,26 @@ class PopulatingCoverageTests : MontaguTests()
                     "file" to InMemoryRequestData(invalidHeadersCSVDataString)
             )
         }
-        val sut = CoverageController(mockContext, mock(), PostDataHelper())
-        assertThatThrownBy { sut.getCoverageDataFromCSV().first }
-                .isInstanceOf(ValidationException::class.java)
+        val sut = CoverageController(mockContext, mock(), mock())
+        assertThatThrownBy {
+            sut.getCoverageDataFromCSV().first
+        }.isInstanceOf(ValidationException::class.java)
+    }
+
+    @Test
+    fun `can get coverage upload metadata`()
+    {
+        val mockContext = mock<ActionContext> {
+            on { params(":touchstone-version-id") } doReturn "t1"
+        }
+        val fakeData = CoverageUploadMetadata("YF", "test.user", Instant.now())
+        val mockRepo = mock<TouchstoneRepository> {
+            on { getCoverageUploadMetadata("t1") } doReturn
+                    listOf(fakeData)
+        }
+        val sut = CoverageController(mockContext, mock(), mockRepo)
+        val result = sut.getCoverageUploadMetadata()
+        assertThat(result[0]).isEqualToComparingFieldByField(fakeData)
     }
 
     private val normalCSVDataString = """

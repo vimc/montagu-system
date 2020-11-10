@@ -13,7 +13,7 @@ import org.vaccineimpact.api.app.requests.csvData
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.CoverageIngestionRow
 import org.vaccineimpact.api.models.CoverageRow
-import org.vaccineimpact.api.models.ModelRun
+import org.vaccineimpact.api.models.CoverageUploadMetadata
 import org.vaccineimpact.api.models.ScenarioTouchstoneAndCoverageSets
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
@@ -22,11 +22,18 @@ import java.time.Instant
 class CoverageController(
         actionContext: ActionContext,
         private val coverageLogic: CoverageLogic,
+        private val touchstoneRepository: TouchstoneRepository,
         private val postDataHelper: PostDataHelper = PostDataHelper()
 ) : Controller(actionContext)
 {
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, RepositoriesCoverageLogic(repositories))
+            : this(context, RepositoriesCoverageLogic(repositories), repositories.touchstone)
+
+    fun getCoverageUploadMetadata(): List<CoverageUploadMetadata>
+    {
+        val touchstoneVersionId = context.params(":touchstone-version-id")
+        return touchstoneRepository.getCoverageUploadMetadata(touchstoneVersionId)
+    }
 
     fun getCoverageDataFromCSV(): Pair<Sequence<CoverageIngestionRow>, String>
     {

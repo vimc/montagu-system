@@ -62,4 +62,6 @@ interface TouchstoneRepository : Repository
                           activityType: ActivityType,
                           supportLevel: GAVISupportLevel,
                           metadataId: Int): Int
+
+    fun getCoverageUploadMetadata(touchstoneVersionId: String): List<CoverageUploadMetadata>
 }
