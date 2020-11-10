@@ -346,7 +346,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const uploadResult: Result = await (new UploadCoverageService(this.store.dispatch, this.store.getState))
                 .uploadCoverage(touchstoneVersionId, form);
 
-            expect(uploadResult.errors[0].message).toEqual("You must supply a \'description\' parameter in the multipart body");
+            expect(uploadResult.errors[0].message).toEqual("You must supply a \'file\' parameter in the multipart body");
         });
 
         it("can download coverage template", async () => {
