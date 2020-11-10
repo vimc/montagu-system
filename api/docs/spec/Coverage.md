@@ -244,16 +244,25 @@ Schema: [`CoverageSetUploadMetadata.schema.json`](../schemas/CoverageSetUploadMe
     [ 
         { 
             "vaccine": "YF",
-            "uploaded_on": "2017-op-1",
-            "uploaded_by"L: "test.user"
+            "uploaded_on": "2017-10-06T11:18:06Z",
+            "uploaded_by": "test.user"
         },
         { 
             "vaccine": "Measles",
-            "uploaded_on": "2017-op-1",
-            "uploaded_by"L: "test.user"
+            "uploaded_on": "2017-10-06T11:18:06Z",
+            "uploaded_by": "test.user"
         }
     ]
     
+## GET /coverage/templates/
+Returns template for uploading coverage data.
+Required permissions: Global scope: `coverage.write`. 
+
+Schema: [`CoverageIngestion.csvschema.json`](../schemas/CoverageIngestion.csvschema.json)
+
+Returns an empty CSV with the following headers
+
+    "vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
 
 ## POST /touchstones/{touchstone-id}/coverage/
 Upload GAVI projected coverage data for the given touchstone. All coverage data uploaded via this endpoint
