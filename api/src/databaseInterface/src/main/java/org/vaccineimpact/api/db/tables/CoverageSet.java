@@ -39,7 +39,7 @@ import org.vaccineimpact.api.db.tables.records.CoverageSetRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CoverageSet extends TableImpl<CoverageSetRecord> {
 
-    private static final long serialVersionUID = -1896776201;
+    private static final long serialVersionUID = 1214387650;
 
     /**
      * The reference instance of <code>public.coverage_set</code>
@@ -83,6 +83,11 @@ public class CoverageSet extends TableImpl<CoverageSetRecord> {
      * The column <code>public.coverage_set.activity_type</code>.
      */
     public final TableField<CoverageSetRecord, String> ACTIVITY_TYPE = createField("activity_type", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.coverage_set.coverage_set_upload_metadata</code>.
+     */
+    public final TableField<CoverageSetRecord, Integer> COVERAGE_SET_UPLOAD_METADATA = createField("coverage_set_upload_metadata", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.coverage_set</code> table reference
@@ -158,7 +163,7 @@ public class CoverageSet extends TableImpl<CoverageSetRecord> {
      */
     @Override
     public List<ForeignKey<CoverageSetRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<CoverageSetRecord, ?>>asList(Keys.COVERAGE_SET__COVERAGE_SET_TOUCHSTONE_FKEY, Keys.COVERAGE_SET__COVERAGE_SET_VACCINE_FKEY, Keys.COVERAGE_SET__COVERAGE_SET_GAVI_SUPPORT_LEVEL_FKEY, Keys.COVERAGE_SET__COVERAGE_SET_ACTIVITY_TYPE_FKEY);
+        return Arrays.<ForeignKey<CoverageSetRecord, ?>>asList(Keys.COVERAGE_SET__COVERAGE_SET_TOUCHSTONE_FKEY, Keys.COVERAGE_SET__COVERAGE_SET_VACCINE_FKEY, Keys.COVERAGE_SET__COVERAGE_SET_GAVI_SUPPORT_LEVEL_FKEY, Keys.COVERAGE_SET__COVERAGE_SET_ACTIVITY_TYPE_FKEY, Keys.COVERAGE_SET__COVERAGE_SET_COVERAGE_SET_UPLOAD_METADATA_FKEY);
     }
 
     /**

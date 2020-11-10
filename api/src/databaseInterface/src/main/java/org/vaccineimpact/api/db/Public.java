@@ -42,7 +42,7 @@ import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
 import org.vaccineimpact.api.db.tables.CountryWorldbankStatus;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
-import org.vaccineimpact.api.db.tables.CoverageSetMetadata;
+import org.vaccineimpact.api.db.tables.CoverageSetUploadMetadata;
 import org.vaccineimpact.api.db.tables.Crosstab;
 import org.vaccineimpact.api.db.tables.Crosstab2;
 import org.vaccineimpact.api.db.tables.Crosstab3;
@@ -151,7 +151,7 @@ import org.vaccineimpact.api.db.udt.TablefuncCrosstab_4;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1924768138;
+    private static final long serialVersionUID = 1990905325;
 
     /**
      * The reference instance of <code>public</code>
@@ -295,9 +295,9 @@ public class Public extends SchemaImpl {
     public final CoverageSet COVERAGE_SET = org.vaccineimpact.api.db.tables.CoverageSet.COVERAGE_SET;
 
     /**
-     * The table <code>public.coverage_set_metadata</code>.
+     * The table <code>public.coverage_set_upload_metadata</code>.
      */
-    public final CoverageSetMetadata COVERAGE_SET_METADATA = org.vaccineimpact.api.db.tables.CoverageSetMetadata.COVERAGE_SET_METADATA;
+    public final CoverageSetUploadMetadata COVERAGE_SET_UPLOAD_METADATA = org.vaccineimpact.api.db.tables.CoverageSetUploadMetadata.COVERAGE_SET_UPLOAD_METADATA;
 
     /**
      * The table <code>public.crosstab</code>.
@@ -1006,6 +1006,7 @@ public class Public extends SchemaImpl {
             Sequences.COUNTRY_WORLDBANK_STATUS_ID_SEQ,
             Sequences.COVERAGE_ID_SEQ,
             Sequences.COVERAGE_SET_ID_SEQ,
+            Sequences.COVERAGE_SET_UPLOAD_METADATA_ID_SEQ,
             Sequences.DEMOGRAPHIC_DATASET_ID_SEQ,
             Sequences.DEMOGRAPHIC_SOURCE_ID_SEQ,
             Sequences.DEMOGRAPHIC_STATISTIC_ID_SEQ,
@@ -1072,7 +1073,7 @@ public class Public extends SchemaImpl {
             CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS,
             Coverage.COVERAGE,
             CoverageSet.COVERAGE_SET,
-            CoverageSetMetadata.COVERAGE_SET_METADATA,
+            CoverageSetUploadMetadata.COVERAGE_SET_UPLOAD_METADATA,
             Crosstab.CROSSTAB,
             Crosstab2.CROSSTAB2,
             Crosstab3.CROSSTAB3,
