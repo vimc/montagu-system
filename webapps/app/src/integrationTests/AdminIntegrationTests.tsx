@@ -16,13 +16,22 @@ import {createAdminStore} from "../main/admin/stores/createAdminStore";
 import {AuthService} from "../main/shared/services/AuthService";
 import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
 import {UsersService} from "../main/admin/services/UsersService";
-import {mockModellingGroupCreation} from "../test/mocks/mockModels";
+import {mockBurdenEstimateSet, mockModellingGroupCreation, mockTouchstoneVersion} from "../test/mocks/mockModels";
 import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 import {ScenarioGroupComponent} from "../main/admin/components/Touchstones/Scenarios/ScenarioGroup"
-import {FileDownloadButton} from "../main/shared/components/FileDownloadLink";
+import {FileDownloadButton, FileDownloadLink} from "../main/shared/components/FileDownloadLink";
 import {ExpectationsService} from "../main/shared/services/ExpectationsService";
 import {UploadCoverageService} from "../main/admin/services/UploadCoverageService";
 import FormData = require("form-data");
+import {CurrentEstimateSetSummary} from "../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
+import {UploadCoverage} from "../main/admin/components/Touchstones/Coverage/UploadCoverage";
+import {CoveragePage} from "../main/admin/components/Touchstones/Coverage/CoveragePage";
+import {InternalLink} from "../main/shared/components/InternalLink";
+import {createMockAdminStore} from "../test/mocks/mockStore";
+import {mockMatch} from "../test/mocks/mocks";
+import {TouchstoneVersionPageLocationProps} from "../main/admin/components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
+import {coveragePageActionCreators} from "../main/admin/actions/pages/CoveragePageActionCreators";
+import {Sandbox} from "../test/Sandbox";
 
 const touchstoneVersionId = "test-1";
 const scenarioId = "yf-1";
@@ -340,6 +349,30 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             expect(uploadResult.errors[0].message).toEqual("You must supply a \'file\' parameter in the multipart body");
         });
 
+        it("can download coverage template", async () => {
+            const sandbox = new Sandbox();
+            const store = createMockAdminStore({
+                touchstones: {currentTouchstoneVersion: mockTouchstoneVersion()}
+            });
+            const testMatch = mockMatch<TouchstoneVersionPageLocationProps>({
+                touchstoneId: "touchstone",
+                touchstoneVersionId: "touchstone-1"
+            });
+            sandbox.setStubReduxAction(coveragePageActionCreators, "onLoad");
+            const rendered = shallow(<CoveragePage match={testMatch}/>, {context: {store}}).dive().dive();
+            const href = rendered.find(FileDownloadLink).prop("href");
+
+            const response = await new TestService(this.store.dispatch, this.store.getState)
+                .getAnyUrl(href);
+
+            expect(response.status).toEqual(200);
+
+            const result = await response.text();
+            const headers = result.split("\n")[0];
+
+            // just check it's the format we're expecting
+            expect(headers).toEqual("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\"")
+        })
     }
 }
 

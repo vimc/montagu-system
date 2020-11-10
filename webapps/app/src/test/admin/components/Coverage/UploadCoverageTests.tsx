@@ -4,7 +4,6 @@ import {shallow} from "enzyme";
 import * as React from "react";
 import {UploadCoverage} from "../../../../main/admin/components/Touchstones/Coverage/UploadCoverage";
 import {CoverageUploadStatus} from "../../../../main/admin/actionTypes/CoverageTypes";
-import {diseasesActionCreators} from "../../../../main/shared/actions/diseasesActionCreators";
 import {coverageActionCreators} from "../../../../main/admin/actions/coverageActionCreators";
 
 describe("Upload Coverage component tests", () => {

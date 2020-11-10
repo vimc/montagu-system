@@ -5,12 +5,14 @@ import * as React from "react";
 import {coveragePageActionCreators} from "../../../actions/pages/CoveragePageActionCreators";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
 import {UploadCoverage} from "./UploadCoverage";
+import {FileDownloadLink} from "../../../../shared/components/FileDownloadLink";
 
 class CoveragePageComponent extends React.Component<PageProperties<TouchstoneVersionPageLocationProps>> {
 
     render(): JSX.Element {
         return <PageArticle title={this.props.title}>
-           <UploadCoverage></UploadCoverage>
+            <FileDownloadLink href={"/coverage/template/"}>Download template</FileDownloadLink>
+            <UploadCoverage></UploadCoverage>
         </PageArticle>;
     }
 
