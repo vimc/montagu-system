@@ -18,6 +18,8 @@ import org.vaccineimpact.api.models.ScenarioTouchstoneAndCoverageSets
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
 import java.time.Instant
+import org.vaccineimpact.api.serialization.*
+import kotlin.reflect.full.primaryConstructor
 
 class CoverageController(
         actionContext: ActionContext,
@@ -33,6 +35,15 @@ class CoverageController(
     {
         val touchstoneVersionId = context.params(":touchstone-version-id")
         return touchstoneRepository.getCoverageUploadMetadata(touchstoneVersionId)
+    }
+
+    fun getCoverageUploadTemplate(): String
+    {
+        val filename = "coverage_template.csv"
+        context.addAttachmentHeader(filename)
+        return CoverageIngestionRow::class.primaryConstructor!!.parameters.map {
+            "\"${MontaguSerializer.instance.convertFieldName(it.name!!)}\""
+        }.joinToString(", ")
     }
 
     fun getCoverageDataFromCSV(): Pair<Sequence<CoverageIngestionRow>, String>
