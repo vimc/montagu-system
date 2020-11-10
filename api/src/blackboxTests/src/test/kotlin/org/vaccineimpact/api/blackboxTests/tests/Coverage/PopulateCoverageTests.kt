@@ -9,13 +9,13 @@ import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.db.direct.addTouchstoneVersion
-import org.vaccineimpact.api.db.direct.addVaccine
+import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.tables.Country
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
 import java.io.File
+import java.time.Instant
 
 class PopulateCoverageTests : CoverageTests()
 {
@@ -116,11 +116,9 @@ class PopulateCoverageTests : CoverageTests()
     @Test
     fun `can get coverage upload metadata`()
     {
-        setup()
         validate("/touchstones/$touchstoneVersionId/coverage/meta") against ("CoverageSetUploadMetadata") given {
-            addCoverageData(it, touchstoneStatus = "open")
+            addCoverageSets()
         } requiringPermissions { requiredPermissions } andCheckHasStatus 200..200
-
     }
 
     @Test
@@ -190,6 +188,17 @@ class PopulateCoverageTests : CoverageTests()
                         }
                     }
             db.dsl.batchStore(countryRecords).execute()
+        }
+    }
+
+    private fun addCoverageSets()
+    {
+        JooqContext().use {
+            it.addVaccine("YF")
+            it.addUserForTesting("some.user")
+            it.addTouchstoneVersion("t", 1, addTouchstone = true)
+            val setId = it.addCoverageSet("t-1", "name", "YF", "with", "campaign")
+            it.addCoverageSetUploadMetadata("description", "some.user", Instant.now(), setId)
         }
     }
 
