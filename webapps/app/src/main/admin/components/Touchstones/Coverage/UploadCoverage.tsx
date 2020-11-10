@@ -8,6 +8,7 @@ import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {CoverageUploadStatus} from "../../../actionTypes/CoverageTypes";
 import {coverageActionCreators} from "../../../actions/coverageActionCreators";
 import FormData = require("form-data");
+import {InternalLink} from "../../../../shared/components/InternalLink";
 
 export interface UploadCoverageProps {
     errors: Error[];
@@ -25,20 +26,49 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
     render(): JSX.Element {
         return <form encType="multipart/form-data"
                      onSubmit={this.onSubmit}
-                     onChange={this.onChange}
                      noValidate>
-            <CustomFileInput required={true} accept=".csv" key={this.state.fileInputKey.toISOString()}>
+            <div className="form-group">
+                <label>Please provide any additional details on this coverage data such as:
+                    <ul>
+                        <li>
+                            caveats
+                        </li>
+                        <li>
+                            variable interpretations
+                        </li>
+                        <li>
+                            data sources
+                        </li>
+                        <li>
+                            things to note
+                        </li>
+                        <li>
+                            anything that could affect usage
+                        </li>
+                    </ul>
+                    Please see <InternalLink href={"coverage-variables"}>here</InternalLink> for information about how
+                    this coverage will be interpreted.</label>
+                <textarea className={"form-control"}
+                          placeholder={"additional details..."}
+                          name="description"
+                          required={true}/>
+            </div>
+            <CustomFileInput required={true}
+                             accept=".csv"
+                             key={this.state.fileInputKey.toISOString()}
+                             onChange={this.onFileChange}>
                 Choose file
             </CustomFileInput>
-            { this.props.errors.length > 0 &&
-                <UncontrolledAlert id="error-alert" color="danger">
-                    {this.props.errors[0] && this.props.errors[0].message }
-                </UncontrolledAlert>}
-            { this.state.success &&
-                <UncontrolledAlert id="success-alert" color="success" toggle={this.onChange}>
-                    Success! You have uploaded a new coverage set
-                </UncontrolledAlert> }
-            <button type="submit" className="mt-2" disabled={(this.props.status == CoverageUploadStatus.in_progress) || !this.state.fileSelected}>
+            {this.props.errors.length > 0 &&
+            <UncontrolledAlert id="error-alert" color="danger">
+                {this.props.errors[0] && this.props.errors[0].message}
+            </UncontrolledAlert>}
+            {this.state.success &&
+            <UncontrolledAlert id="success-alert" color="success" toggle={this.onFileChange}>
+                Success! You have uploaded a new coverage set
+            </UncontrolledAlert>}
+            <button type="submit" className="mt-2"
+                    disabled={(this.props.status == CoverageUploadStatus.in_progress) || !this.state.fileSelected}>
                 Upload
             </button>
         </form>
@@ -53,7 +83,7 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
         };
         this.resetForm = this.resetForm.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-        this.onChange = this.onChange.bind(this);
+        this.onFileChange = this.onFileChange.bind(this);
     }
 
     componentWillReceiveProps(nextProps: UploadCoverageProps) {
@@ -71,10 +101,10 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
         }
     }
 
-    onChange() {
+    onFileChange(target: HTMLInputElement) {
         this.setState({
             success: false,
-            fileSelected: true
+            fileSelected: typeof target.value != "undefined"
         });
     }
 

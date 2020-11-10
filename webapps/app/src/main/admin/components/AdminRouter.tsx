@@ -21,6 +21,7 @@ import {ScenarioPage} from "./Touchstones/Scenarios/ScenarioPage";
 import {CoveragePage} from "./Touchstones/Coverage/CoveragePage";
 import {LoginPage} from "../../shared/components/LoginPage";
 import {ModelMetaPage} from "./ModellingGroups/Models/ModelMetaPage";
+import {CoverageVariablesPage} from "./Touchstones/Coverage/CoverageVariablesPage";
 
 interface AdminRouterProps {
     loggedIn: boolean;
@@ -44,6 +45,7 @@ export const AdminRouter: React.FunctionComponent<AdminRouterProps> = (props: Ad
                component={DownloadDemographicsAdminPage}/>
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/scenarios/" component={ScenarioPage}/>
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage/" component={CoveragePage}/>
+        <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage-variables/" component={CoverageVariablesPage}/>
         <Route exact path="/users/" component={UsersListPage}/>
         <Route exact path="/users/:username/" component={UserDetailsPage}/>
         <Route component={AdminNoRouteFoundPage}/>
