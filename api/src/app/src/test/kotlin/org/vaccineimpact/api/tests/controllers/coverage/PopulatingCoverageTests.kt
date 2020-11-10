@@ -20,7 +20,7 @@ class PopulatingCoverageTests : MontaguTests()
 {
     @Test
     fun `can get coverage upload template`() {
-        val sut = CoverageController(mock(), mock(), PostDataHelper())
+        val sut = CoverageController(mock(), mock(), mock())
         val result = sut.getCoverageUploadTemplate()
         assertThat(result).isEqualTo("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\"")
     }
