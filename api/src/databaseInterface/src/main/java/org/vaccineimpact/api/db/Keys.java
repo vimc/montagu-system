@@ -32,6 +32,7 @@ import org.vaccineimpact.api.db.tables.CountryVaccineMetadata;
 import org.vaccineimpact.api.db.tables.CountryWorldbankStatus;
 import org.vaccineimpact.api.db.tables.Coverage;
 import org.vaccineimpact.api.db.tables.CoverageSet;
+import org.vaccineimpact.api.db.tables.CoverageSetUploadMetadata;
 import org.vaccineimpact.api.db.tables.DemographicDataset;
 import org.vaccineimpact.api.db.tables.DemographicSource;
 import org.vaccineimpact.api.db.tables.DemographicStatistic;
@@ -113,6 +114,7 @@ import org.vaccineimpact.api.db.tables.records.CountryVaccineMetadataRecord;
 import org.vaccineimpact.api.db.tables.records.CountryWorldbankStatusRecord;
 import org.vaccineimpact.api.db.tables.records.CoverageRecord;
 import org.vaccineimpact.api.db.tables.records.CoverageSetRecord;
+import org.vaccineimpact.api.db.tables.records.CoverageSetUploadMetadataRecord;
 import org.vaccineimpact.api.db.tables.records.DemographicDatasetRecord;
 import org.vaccineimpact.api.db.tables.records.DemographicSourceRecord;
 import org.vaccineimpact.api.db.tables.records.DemographicStatisticRecord;
@@ -205,6 +207,7 @@ public class Keys {
     public static final Identity<CountryWorldbankStatusRecord, Integer> IDENTITY_COUNTRY_WORLDBANK_STATUS = Identities0.IDENTITY_COUNTRY_WORLDBANK_STATUS;
     public static final Identity<CoverageRecord, Integer> IDENTITY_COVERAGE = Identities0.IDENTITY_COVERAGE;
     public static final Identity<CoverageSetRecord, Integer> IDENTITY_COVERAGE_SET = Identities0.IDENTITY_COVERAGE_SET;
+    public static final Identity<CoverageSetUploadMetadataRecord, Integer> IDENTITY_COVERAGE_SET_UPLOAD_METADATA = Identities0.IDENTITY_COVERAGE_SET_UPLOAD_METADATA;
     public static final Identity<DemographicDatasetRecord, Integer> IDENTITY_DEMOGRAPHIC_DATASET = Identities0.IDENTITY_DEMOGRAPHIC_DATASET;
     public static final Identity<DemographicSourceRecord, Integer> IDENTITY_DEMOGRAPHIC_SOURCE = Identities0.IDENTITY_DEMOGRAPHIC_SOURCE;
     public static final Identity<DemographicStatisticRecord, Integer> IDENTITY_DEMOGRAPHIC_STATISTIC = Identities0.IDENTITY_DEMOGRAPHIC_STATISTIC;
@@ -267,6 +270,7 @@ public class Keys {
     public static final UniqueKey<CountryWorldbankStatusRecord> COUNTRY_WORLDBANK_STATUS_TOUCHSTONE_COUNTRY_YEAR_KEY = UniqueKeys0.COUNTRY_WORLDBANK_STATUS_TOUCHSTONE_COUNTRY_YEAR_KEY;
     public static final UniqueKey<CoverageRecord> COVERAGE_PKEY = UniqueKeys0.COVERAGE_PKEY;
     public static final UniqueKey<CoverageSetRecord> COVERAGE_SET_PKEY = UniqueKeys0.COVERAGE_SET_PKEY;
+    public static final UniqueKey<CoverageSetUploadMetadataRecord> COVERAGE_SET_UPLOAD_METADATA_PKEY = UniqueKeys0.COVERAGE_SET_UPLOAD_METADATA_PKEY;
     public static final UniqueKey<DemographicDatasetRecord> DEMOGRAPHIC_DATASET_PKEY = UniqueKeys0.DEMOGRAPHIC_DATASET_PKEY;
     public static final UniqueKey<DemographicSourceRecord> DEMOGRAPHIC_SOURCE_PKEY = UniqueKeys0.DEMOGRAPHIC_SOURCE_PKEY;
     public static final UniqueKey<DemographicStatisticRecord> DEMOGRAPHIC_STATISTIC_PKEY = UniqueKeys0.DEMOGRAPHIC_STATISTIC_PKEY;
@@ -383,6 +387,8 @@ public class Keys {
     public static final ForeignKey<CoverageSetRecord, VaccineRecord> COVERAGE_SET__COVERAGE_SET_VACCINE_FKEY = ForeignKeys0.COVERAGE_SET__COVERAGE_SET_VACCINE_FKEY;
     public static final ForeignKey<CoverageSetRecord, GaviSupportLevelRecord> COVERAGE_SET__COVERAGE_SET_GAVI_SUPPORT_LEVEL_FKEY = ForeignKeys0.COVERAGE_SET__COVERAGE_SET_GAVI_SUPPORT_LEVEL_FKEY;
     public static final ForeignKey<CoverageSetRecord, ActivityTypeRecord> COVERAGE_SET__COVERAGE_SET_ACTIVITY_TYPE_FKEY = ForeignKeys0.COVERAGE_SET__COVERAGE_SET_ACTIVITY_TYPE_FKEY;
+    public static final ForeignKey<CoverageSetRecord, CoverageSetUploadMetadataRecord> COVERAGE_SET__COVERAGE_SET_COVERAGE_SET_UPLOAD_METADATA_FKEY = ForeignKeys0.COVERAGE_SET__COVERAGE_SET_COVERAGE_SET_UPLOAD_METADATA_FKEY;
+    public static final ForeignKey<CoverageSetUploadMetadataRecord, AppUserRecord> COVERAGE_SET_UPLOAD_METADATA__COVERAGE_SET_UPLOAD_METADATA_UPLOADED_BY_FKEY = ForeignKeys0.COVERAGE_SET_UPLOAD_METADATA__COVERAGE_SET_UPLOAD_METADATA_UPLOADED_BY_FKEY;
     public static final ForeignKey<DemographicDatasetRecord, DemographicSourceRecord> DEMOGRAPHIC_DATASET__DEMOGRAPHIC_DATASET_DEMOGRAPHIC_SOURCE_FKEY = ForeignKeys0.DEMOGRAPHIC_DATASET__DEMOGRAPHIC_DATASET_DEMOGRAPHIC_SOURCE_FKEY;
     public static final ForeignKey<DemographicDatasetRecord, DemographicStatisticTypeRecord> DEMOGRAPHIC_DATASET__DEMOGRAPHIC_DATASET_DEMOGRAPHIC_STATISTIC_TYPE_FKEY = ForeignKeys0.DEMOGRAPHIC_DATASET__DEMOGRAPHIC_DATASET_DEMOGRAPHIC_STATISTIC_TYPE_FKEY;
     public static final ForeignKey<DemographicStatisticRecord, DemographicVariantRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_VARIANT_FKEY = ForeignKeys0.DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_VARIANT_FKEY;
@@ -493,6 +499,7 @@ public class Keys {
         public static Identity<CountryWorldbankStatusRecord, Integer> IDENTITY_COUNTRY_WORLDBANK_STATUS = Internal.createIdentity(CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS, CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS.ID);
         public static Identity<CoverageRecord, Integer> IDENTITY_COVERAGE = Internal.createIdentity(Coverage.COVERAGE, Coverage.COVERAGE.ID);
         public static Identity<CoverageSetRecord, Integer> IDENTITY_COVERAGE_SET = Internal.createIdentity(CoverageSet.COVERAGE_SET, CoverageSet.COVERAGE_SET.ID);
+        public static Identity<CoverageSetUploadMetadataRecord, Integer> IDENTITY_COVERAGE_SET_UPLOAD_METADATA = Internal.createIdentity(CoverageSetUploadMetadata.COVERAGE_SET_UPLOAD_METADATA, CoverageSetUploadMetadata.COVERAGE_SET_UPLOAD_METADATA.ID);
         public static Identity<DemographicDatasetRecord, Integer> IDENTITY_DEMOGRAPHIC_DATASET = Internal.createIdentity(DemographicDataset.DEMOGRAPHIC_DATASET, DemographicDataset.DEMOGRAPHIC_DATASET.ID);
         public static Identity<DemographicSourceRecord, Integer> IDENTITY_DEMOGRAPHIC_SOURCE = Internal.createIdentity(DemographicSource.DEMOGRAPHIC_SOURCE, DemographicSource.DEMOGRAPHIC_SOURCE.ID);
         public static Identity<DemographicStatisticRecord, Integer> IDENTITY_DEMOGRAPHIC_STATISTIC = Internal.createIdentity(DemographicStatistic.DEMOGRAPHIC_STATISTIC, DemographicStatistic.DEMOGRAPHIC_STATISTIC.ID);
@@ -553,6 +560,7 @@ public class Keys {
         public static final UniqueKey<CountryWorldbankStatusRecord> COUNTRY_WORLDBANK_STATUS_TOUCHSTONE_COUNTRY_YEAR_KEY = Internal.createUniqueKey(CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS, "country_worldbank_status_touchstone_country_year_key", CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS.TOUCHSTONE, CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS.COUNTRY, CountryWorldbankStatus.COUNTRY_WORLDBANK_STATUS.YEAR);
         public static final UniqueKey<CoverageRecord> COVERAGE_PKEY = Internal.createUniqueKey(Coverage.COVERAGE, "coverage_pkey", Coverage.COVERAGE.ID);
         public static final UniqueKey<CoverageSetRecord> COVERAGE_SET_PKEY = Internal.createUniqueKey(CoverageSet.COVERAGE_SET, "coverage_set_pkey", CoverageSet.COVERAGE_SET.ID);
+        public static final UniqueKey<CoverageSetUploadMetadataRecord> COVERAGE_SET_UPLOAD_METADATA_PKEY = Internal.createUniqueKey(CoverageSetUploadMetadata.COVERAGE_SET_UPLOAD_METADATA, "coverage_set_upload_metadata_pkey", CoverageSetUploadMetadata.COVERAGE_SET_UPLOAD_METADATA.ID);
         public static final UniqueKey<DemographicDatasetRecord> DEMOGRAPHIC_DATASET_PKEY = Internal.createUniqueKey(DemographicDataset.DEMOGRAPHIC_DATASET, "demographic_dataset_pkey", DemographicDataset.DEMOGRAPHIC_DATASET.ID);
         public static final UniqueKey<DemographicSourceRecord> DEMOGRAPHIC_SOURCE_PKEY = Internal.createUniqueKey(DemographicSource.DEMOGRAPHIC_SOURCE, "demographic_source_pkey", DemographicSource.DEMOGRAPHIC_SOURCE.ID);
         public static final UniqueKey<DemographicStatisticRecord> DEMOGRAPHIC_STATISTIC_PKEY = Internal.createUniqueKey(DemographicStatistic.DEMOGRAPHIC_STATISTIC, "demographic_statistic_pkey", DemographicStatistic.DEMOGRAPHIC_STATISTIC.ID);
@@ -667,6 +675,8 @@ public class Keys {
         public static final ForeignKey<CoverageSetRecord, VaccineRecord> COVERAGE_SET__COVERAGE_SET_VACCINE_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.VACCINE_PKEY, CoverageSet.COVERAGE_SET, "coverage_set__coverage_set_vaccine_fkey", CoverageSet.COVERAGE_SET.VACCINE);
         public static final ForeignKey<CoverageSetRecord, GaviSupportLevelRecord> COVERAGE_SET__COVERAGE_SET_GAVI_SUPPORT_LEVEL_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.GAVI_SUPPORT_LEVEL_PKEY, CoverageSet.COVERAGE_SET, "coverage_set__coverage_set_gavi_support_level_fkey", CoverageSet.COVERAGE_SET.GAVI_SUPPORT_LEVEL);
         public static final ForeignKey<CoverageSetRecord, ActivityTypeRecord> COVERAGE_SET__COVERAGE_SET_ACTIVITY_TYPE_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.ACTIVITY_TYPE_PKEY, CoverageSet.COVERAGE_SET, "coverage_set__coverage_set_activity_type_fkey", CoverageSet.COVERAGE_SET.ACTIVITY_TYPE);
+        public static final ForeignKey<CoverageSetRecord, CoverageSetUploadMetadataRecord> COVERAGE_SET__COVERAGE_SET_COVERAGE_SET_UPLOAD_METADATA_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.COVERAGE_SET_UPLOAD_METADATA_PKEY, CoverageSet.COVERAGE_SET, "coverage_set__coverage_set_coverage_set_upload_metadata_fkey", CoverageSet.COVERAGE_SET.COVERAGE_SET_UPLOAD_METADATA);
+        public static final ForeignKey<CoverageSetUploadMetadataRecord, AppUserRecord> COVERAGE_SET_UPLOAD_METADATA__COVERAGE_SET_UPLOAD_METADATA_UPLOADED_BY_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.APP_USER_PKEY, CoverageSetUploadMetadata.COVERAGE_SET_UPLOAD_METADATA, "coverage_set_upload_metadata__coverage_set_upload_metadata_uploaded_by_fkey", CoverageSetUploadMetadata.COVERAGE_SET_UPLOAD_METADATA.UPLOADED_BY);
         public static final ForeignKey<DemographicDatasetRecord, DemographicSourceRecord> DEMOGRAPHIC_DATASET__DEMOGRAPHIC_DATASET_DEMOGRAPHIC_SOURCE_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.DEMOGRAPHIC_SOURCE_PKEY, DemographicDataset.DEMOGRAPHIC_DATASET, "demographic_dataset__demographic_dataset_demographic_source_fkey", DemographicDataset.DEMOGRAPHIC_DATASET.DEMOGRAPHIC_SOURCE);
         public static final ForeignKey<DemographicDatasetRecord, DemographicStatisticTypeRecord> DEMOGRAPHIC_DATASET__DEMOGRAPHIC_DATASET_DEMOGRAPHIC_STATISTIC_TYPE_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.DEMOGRAPHIC_STATISTIC_TYPE_PKEY, DemographicDataset.DEMOGRAPHIC_DATASET, "demographic_dataset__demographic_dataset_demographic_statistic_type_fkey", DemographicDataset.DEMOGRAPHIC_DATASET.DEMOGRAPHIC_STATISTIC_TYPE);
         public static final ForeignKey<DemographicStatisticRecord, DemographicVariantRecord> DEMOGRAPHIC_STATISTIC__DEMOGRAPHIC_STATISTIC_DEMOGRAPHIC_VARIANT_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.DEMOGRAPHIC_VARIANT_PKEY, DemographicStatistic.DEMOGRAPHIC_STATISTIC, "demographic_statistic__demographic_statistic_demographic_variant_fkey", DemographicStatistic.DEMOGRAPHIC_STATISTIC.DEMOGRAPHIC_VARIANT);

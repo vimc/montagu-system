@@ -89,6 +89,11 @@ public class Sequences {
     public static final Sequence<Integer> COVERAGE_SET_ID_SEQ = new SequenceImpl<Integer>("coverage_set_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
 
     /**
+     * The sequence <code>public.coverage_set_upload_metadata_id_seq</code>
+     */
+    public static final Sequence<Integer> COVERAGE_SET_UPLOAD_METADATA_ID_SEQ = new SequenceImpl<Integer>("coverage_set_upload_metadata_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
      * The sequence <code>public.demographic_dataset_id_seq</code>
      */
     public static final Sequence<Integer> DEMOGRAPHIC_DATASET_ID_SEQ = new SequenceImpl<Integer>("demographic_dataset_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
