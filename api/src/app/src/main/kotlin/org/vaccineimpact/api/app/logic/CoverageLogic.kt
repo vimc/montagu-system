@@ -124,7 +124,8 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                         gender = genders[row.gender]!!,
                         gaviSupport = row.gaviSupport,
                         target = row.target.toBigDecimal(),
-                        coverage = row.coverage.toBigDecimal()
+                        coverage = row.coverage.toBigDecimal(),
+                        subnational = row.subnational
                 )
             }.asSequence()
         }.toList()

@@ -22,7 +22,7 @@ class PopulatingCoverageTests : MontaguTests()
     fun `can get coverage upload template`() {
         val sut = CoverageController(mock(), mock(), mock())
         val result = sut.getCoverageUploadTemplate()
-        assertThat(result).isEqualTo("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\"")
+        assertThat(result).isEqualTo("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\", \"subnational\"")
     }
 
     @Test
@@ -38,8 +38,8 @@ class PopulatingCoverageTests : MontaguTests()
         val result = sut.getCoverageDataFromCSV().first
 
         assertThat(result.toList()).containsExactly(
-                CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, true, 2020, 1, 10, GenderEnum.BOTH, 100F, 78.8F),
-                CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, false, 2021, 1, 10, GenderEnum.FEMALE, 100F, 65.5F)
+                CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, true, 2020, 1, 10, GenderEnum.BOTH, 100F, 78.8F, true),
+                CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, false, 2021, 1, 10, GenderEnum.FEMALE, 100F, 65.5F, false)
         )
     }
 
@@ -91,19 +91,19 @@ class PopulatingCoverageTests : MontaguTests()
     }
 
     private val normalCSVDataString = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "campaign",     "True",  "2020",         1,     10,    "both", 100, 78.8
-   "HepB_BD",   "AFG",    "campaign",     "false",  "2021",         1,      10,    "Female", 100, 65.5
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "campaign",     "True",  "2020",         1,     10,    "both", 100, 78.8, true
+   "HepB_BD",   "AFG",    "campaign",     "false",  "2021",         1,      10,    "Female", 100, 65.5, false
 """
 
     private val invalidActivityTypeCSVDataString = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "a campaign",     "true",  "2020",         1,     10,    100, "both", 78.8
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "a campaign",     "true",  "2020",         1,     10,    100, "both", 78.8, true
 """
 
     private val invalidHeadersCSVDataString = """
-"vaccine", "country code", "activity", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "a campaign",     "true",  "2020",         1,     10,    "both", 100, 78.8
+"vaccine", "country code", "activity", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "a campaign",     "true",  "2020",         1,     10,    "both", 100, 78.8, true
 """
 
 }
