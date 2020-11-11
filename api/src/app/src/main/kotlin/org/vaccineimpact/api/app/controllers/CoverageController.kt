@@ -2,7 +2,6 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
-import org.vaccineimpact.api.app.context.RequestDataSource
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.logic.CoverageLogic
 import org.vaccineimpact.api.app.logic.RepositoriesCoverageLogic
@@ -13,24 +12,29 @@ import org.vaccineimpact.api.app.requests.csvData
 import org.vaccineimpact.api.app.security.checkIsAllowedToSeeTouchstone
 import org.vaccineimpact.api.models.CoverageIngestionRow
 import org.vaccineimpact.api.models.CoverageRow
-import org.vaccineimpact.api.models.ModelRun
+import org.vaccineimpact.api.models.CoverageUploadMetadata
 import org.vaccineimpact.api.models.ScenarioTouchstoneAndCoverageSets
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.serialization.StreamSerializable
 import java.time.Instant
-import org.vaccineimpact.api.models.GenderedLongCoverageRow
 import org.vaccineimpact.api.serialization.*
-import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.primaryConstructor
 
 class CoverageController(
         actionContext: ActionContext,
         private val coverageLogic: CoverageLogic,
+        private val touchstoneRepository: TouchstoneRepository,
         private val postDataHelper: PostDataHelper = PostDataHelper()
 ) : Controller(actionContext)
 {
     constructor(context: ActionContext, repositories: Repositories)
-            : this(context, RepositoriesCoverageLogic(repositories))
+            : this(context, RepositoriesCoverageLogic(repositories), repositories.touchstone)
+
+    fun getCoverageUploadMetadata(): List<CoverageUploadMetadata>
+    {
+        val touchstoneVersionId = context.params(":touchstone-version-id")
+        return touchstoneRepository.getCoverageUploadMetadata(touchstoneVersionId)
+    }
 
     fun getCoverageUploadTemplate(): String
     {

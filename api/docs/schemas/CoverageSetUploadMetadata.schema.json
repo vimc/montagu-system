@@ -1,0 +1,24 @@
+{
+	"id": "CoverageSetUploadMetadata",
+	"type": "array",
+	"items": {
+		"type": "object",
+		"properties": {
+			"vaccine": {
+				"type": "string"
+			},
+			"uploaded_on": {
+				"type": "string"
+			},
+			"uploaded_by": {
+				"type": "string"
+			}
+		},
+		"additionalProperties": false,
+		"required": [
+			"vaccine",
+			"uploaded_on",
+			"uploaded_by"
+		]
+	}
+}

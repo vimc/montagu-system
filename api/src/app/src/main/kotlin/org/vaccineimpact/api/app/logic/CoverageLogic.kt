@@ -33,7 +33,6 @@ interface CoverageLogic
                                   uploader: String,
                                   timestamp: Instant,
                                   validate: Boolean = true)
-
 }
 
 class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingGroupRepository,

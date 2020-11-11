@@ -427,6 +427,26 @@ fun JooqContext.addCoverageSet(
     return record.id
 }
 
+fun JooqContext.addCoverageSetUploadMetadata(
+        description: String,
+        uploadedBy: String,
+        uploadedOn: Instant,
+        coverageSetId: Int
+)
+{
+    val record = this.dsl.newRecord(COVERAGE_SET_UPLOAD_METADATA).apply {
+        this.description = description
+        this.uploadedBy = uploadedBy
+        this.uploadedOn = Timestamp.from(uploadedOn)
+    }
+    record.store()
+    val metaId = record.id
+    this.dsl.update(COVERAGE_SET)
+            .set(COVERAGE_SET.COVERAGE_SET_UPLOAD_METADATA, metaId)
+            .where(COVERAGE_SET.ID.eq(coverageSetId))
+            .execute()
+}
+
 fun JooqContext.addCoverageSetToScenario(scenarioId: Int, coverageSetId: Int, order: Int): Int
 {
     val record = this.dsl.newRecord(SCENARIO_COVERAGE_SET).apply {
