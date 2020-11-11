@@ -147,7 +147,8 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
                     1,
                     true,
                     BigDecimal(100),
-                    BigDecimal(200))
+                    BigDecimal(200),
+                    true)
         }
 
         assertThat(result.coverageSet).isEqualTo(1)
@@ -159,6 +160,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
         assertThat(result.coverage).isEqualTo(BigDecimal(200))
         assertThat(result.gender).isEqualTo(1)
         assertThat(result.gaviSupport).isEqualTo(true)
+        assertThat(result.subnational).isEqualTo(true)
     }
 
     @Test
@@ -178,7 +180,8 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
                     1,
                     true,
                     BigDecimal(100),
-                    BigDecimal(200))
+                    BigDecimal(200),
+                    true)
             it.saveCoverageForTouchstone("t1", listOf(row))
         }
         val result = withDatabase {
@@ -194,6 +197,7 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
         assertThat(result[COVERAGE.COVERAGE_]).isEqualTo(BigDecimal(200))
         assertThat(result[COVERAGE.GENDER]).isEqualTo(1)
         assertThat(result[COVERAGE.GAVI_SUPPORT]).isEqualTo(true)
+        assertThat(result[COVERAGE.SUBNATIONAL]).isEqualTo(true)
     }
 
     @Test

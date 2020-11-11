@@ -126,7 +126,7 @@ class PopulateCoverageTests : CoverageTests()
     {
         val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions, includeCanLogin = true)
         val response = RequestHelper().get("/coverage/template/", token = token, acceptsContentType = "text/csv")
-        assertThat(response.text).isEqualTo("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\"")
+        assertThat(response.text).isEqualTo("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\", \"subnational\"")
         assertThat(response.headers["Content-Disposition"]).isEqualTo("attachment; filename=\"coverage_template.csv\"")
     }
 
@@ -221,37 +221,37 @@ class PopulateCoverageTests : CoverageTests()
     }
 
     private val csvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8
-   "HepB_BD",   "AFG",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8, false
+   "HepB_BD",   "AFG",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5, false
 """
 
     private val badCountryCsvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8
-   "HepB_BD",   "nonsense",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8, false
+   "HepB_BD",   "nonsense",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5, false
 """
 
     private val badVaccineCsvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8
-   "nonsense",   "AFG",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8, false
+   "nonsense",   "AFG",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5, false
 """
 
     private val missingRowsCsvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "routine",     "true",  "2021",         1,     10,    "female", 100, 78.8
-   "HepB_BD",   "AFG",    "routine",     "true",  "2022",         1,      10,    "female", 100, 65.5
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "routine",     "true",  "2021",         1,     10,    "female", 100, 78.8, false
+   "HepB_BD",   "AFG",    "routine",     "true",  "2022",         1,      10,    "female", 100, 65.5, false
 """
 
     private val duplicateRowsCsvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "routine",     "true",  "2021",         1,     10,    "female", 100, 78.8
-   "HepB_BD",   "AFG",    "routine",     "true",  "2021",         1,      10,    "female", 100, 65.5
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "routine",     "true",  "2021",         1,     10,    "female", 100, 78.8, false
+   "HepB_BD",   "AFG",    "routine",     "true",  "2021",         1,      10,    "female", 100, 65.5, false
 """
 
     private val unexpectedYearCsvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "routine",     "true",  "2031",         1,     10,    "female", 100, 78.8
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "routine",     "true",  "2031",         1,     10,    "female", 100, 78.8, false
 """
 }

@@ -253,7 +253,7 @@ class JooqTouchstoneRepository(
                 .orderBy(COVERAGE_SET.VACCINE)
                 .fetchInto(CoverageUploadMetadata::class.java)
                 .groupBy { it.vaccine }
-                .map { g->
+                .map { g ->
                     g.value.maxBy { it.uploadedOn }!!
                 }
     }
@@ -271,7 +271,8 @@ class JooqTouchstoneRepository(
                                       gender: Int,
                                       gaviSupport: Boolean,
                                       target: BigDecimal?,
-                                      coverage: BigDecimal?) = this.dsl.newRecord(COVERAGE).apply {
+                                      coverage: BigDecimal?,
+                                      subnational: Boolean) = this.dsl.newRecord(COVERAGE).apply {
         this.coverageSet = coverageSetId
         this.country = country
         this.year = year
@@ -281,6 +282,7 @@ class JooqTouchstoneRepository(
         this.coverage = coverage
         this.gender = gender
         this.gaviSupport = gaviSupport
+        this.subnational = subnational
     }
 
     private fun coverageDimensions(): Array<Field<*>>

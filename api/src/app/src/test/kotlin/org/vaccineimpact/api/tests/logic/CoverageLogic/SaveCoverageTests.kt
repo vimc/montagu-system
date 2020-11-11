@@ -21,13 +21,13 @@ class SaveCoverageTests : MontaguTests()
 {
     private val testSequence = sequenceOf(
             // each of these belongs to a new coverage set
-            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, true, 2021, 1, 10, GenderEnum.BOTH, 100F, 78.8F),
-            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.ROUTINE, false, 2022, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-            CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-            CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2026, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
+            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, true, 2021, 1, 10, GenderEnum.BOTH, 100F, 78.8F, true),
+            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.ROUTINE, false, 2022, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+            CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+            CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2026, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
 
             // belongs to same coverage set as the first row
-            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, true, 2022, 1, 10, GenderEnum.BOTH, 100F, 78.8F)
+            CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, true, 2022, 1, 10, GenderEnum.BOTH, 100F, 78.8F, false)
     )
 
     private val mockExpectationsRepo = mock<ExpectationsRepository> {
@@ -50,7 +50,7 @@ class SaveCoverageTests : MontaguTests()
         verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB_BD", ActivityType.ROUTINE, GAVISupportLevel.WITH, 2)
         verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2)
         verify(mockRepo, Times(1)).createCoverageSet("t1", "HepB", ActivityType.ROUTINE, GAVISupportLevel.WITH, 2)
-        verify(mockRepo, Times(5)).newCoverageRowRecord(any(), any(), any(), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(5)).newCoverageRowRecord(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
         verify(mockRepo).saveCoverageForTouchstone(any(), any())
         verify(mockRepo).getGenders()
         verifyNoMoreInteractions(mockRepo)
@@ -74,7 +74,8 @@ class SaveCoverageTests : MontaguTests()
                 111,
                 true,
                 100F.toBigDecimal(),
-                78.8.toBigDecimal())
+                78.8.toBigDecimal(),
+                true)
         verify(mockRepo, Times(1)).newCoverageRowRecord(1,
                 "AFG",
                 2022,
@@ -83,7 +84,8 @@ class SaveCoverageTests : MontaguTests()
                 111,
                 false,
                 100F.toBigDecimal(),
-                65.5.toBigDecimal())
+                65.5.toBigDecimal(),
+                false)
     }
 
     @Test
@@ -99,11 +101,11 @@ class SaveCoverageTests : MontaguTests()
         }
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
         sut.saveCoverageForTouchstone("t1", testSequence, "desc", "uploader", now, validate = false)
-        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2021), any(), any(), any(), any(), any(), any())
-        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2021), any(), any(), any(), any(), any(), any())
-        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(2), any(), eq(2022), any(), any(), any(), any(), any(), any())
-        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(3), any(), eq(2025), any(), any(), any(), any(), any(), any())
-        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(4), any(), eq(2026), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2021), any(), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(1), any(), eq(2021), any(), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(2), any(), eq(2022), any(), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(3), any(), eq(2025), any(), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(1)).newCoverageRowRecord(eq(4), any(), eq(2026), any(), any(), any(), any(), any(), any(), any())
     }
 
     @Test
@@ -113,9 +115,9 @@ class SaveCoverageTests : MontaguTests()
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
         }
         val testSequence = sequenceOf(
-                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-                CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-                CoverageIngestionRow("Measles", "AFG", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F))
+                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("Measles", "AFG", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false))
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
 
         val expectedMessage = """Missing 18 rows for vaccines HepB, Measles:
@@ -140,12 +142,12 @@ and 13 others"""
         }
         // missing rows and duplicates fine for campaign
         val testSequence = sequenceOf(
-                CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-                CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-                CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F))
+                CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false))
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
         sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
-        verify(mockRepo, Times(3)).newCoverageRowRecord(any(), any(), any(), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(3)).newCoverageRowRecord(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
     }
 
     @Test
@@ -155,9 +157,9 @@ and 13 others"""
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
         }
         val testSequence = sequenceOf(
-                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2022, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2023, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2023, 1, 10, GenderEnum.BOTH, 100F, 65.5F))
+                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2022, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2023, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2023, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false))
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
         val expectedMessage = "Duplicate row detected: 2023, HepB, AFG"
 
@@ -174,7 +176,7 @@ and 13 others"""
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
         }
         val testSequence = sequenceOf(
-                CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN, true, 2010, 1, 10, GenderEnum.BOTH, 100F, 65.5F)
+                CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN, true, 2010, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
         )
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
         val expectedMessage = "Unexpected year: 2010"
@@ -192,7 +194,7 @@ and 13 others"""
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
         }
         val testSequence = sequenceOf(
-                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2010, 1, 10, GenderEnum.BOTH, 100F, 65.5F)
+                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2010, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
         )
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
         val expectedMessage = "Unexpected year: 2010"
@@ -210,7 +212,7 @@ and 13 others"""
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
         }
         val testSequence = sequenceOf(
-                CoverageIngestionRow("HepB", "123", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F)
+                CoverageIngestionRow("HepB", "123", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
         )
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
         val expectedMessage = "Unrecognised or unexpected country: 123"
@@ -228,7 +230,7 @@ and 13 others"""
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
         }
         val testSequence = sequenceOf(
-                CoverageIngestionRow("HepB", "123", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F)
+                CoverageIngestionRow("HepB", "123", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
         )
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
         val expectedMessage = "Unrecognised or unexpected country: 123"
@@ -243,15 +245,15 @@ and 13 others"""
     fun `combination vaccines are mapped to vaccines correctly`()
     {
         val vaxProgSequence = sequenceOf(
-                CoverageIngestionRow("Penta", "AFG", ActivityType.CAMPAIGN, true, 2021, 1, 10, GenderEnum.BOTH, 100F, 78.8F),
-                CoverageIngestionRow("pentavalent", "AFG", ActivityType.CAMPAIGN, false, 2022, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-                CoverageIngestionRow("mr1", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F),
-                CoverageIngestionRow("MR2", "AFG", ActivityType.ROUTINE, true, 2026, 1, 10, GenderEnum.BOTH, 100F, 65.5F)
+                CoverageIngestionRow("Penta", "AFG", ActivityType.CAMPAIGN, true, 2021, 1, 10, GenderEnum.BOTH, 100F, 78.8F, false),
+                CoverageIngestionRow("pentavalent", "AFG", ActivityType.CAMPAIGN, false, 2022, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("mr1", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("MR2", "AFG", ActivityType.ROUTINE, true, 2026, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
         )
 
         val mockRepo = mock<TouchstoneRepository> {
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
-            on { createCoverageSetMetadata("desc", "uploader", now)} doReturn 2
+            on { createCoverageSetMetadata("desc", "uploader", now) } doReturn 2
             on { createCoverageSet("t1", "Hib3", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2) } doReturn 1
             on { createCoverageSet("t1", "HepB", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2) } doReturn 2
             on { createCoverageSet("t1", "DTP3", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, 2) } doReturn 3
@@ -273,7 +275,8 @@ and 13 others"""
                 111,
                 true,
                 100F.toBigDecimal(),
-                78.8.toBigDecimal())
+                78.8.toBigDecimal(),
+                false)
 
         verify(mockRepo, Times(1)).newCoverageRowRecord(2,
                 "AFG",
@@ -283,7 +286,8 @@ and 13 others"""
                 111,
                 true,
                 100F.toBigDecimal(),
-                78.8.toBigDecimal())
+                78.8.toBigDecimal(),
+                false)
 
         verify(mockRepo, Times(1)).newCoverageRowRecord(3,
                 "AFG",
@@ -293,7 +297,8 @@ and 13 others"""
                 111,
                 true,
                 100F.toBigDecimal(),
-                78.8.toBigDecimal())
+                78.8.toBigDecimal(),
+                false)
 
         //pentavalent
         verify(mockRepo, Times(1)).newCoverageRowRecord(1,
@@ -304,7 +309,8 @@ and 13 others"""
                 111,
                 false,
                 100F.toBigDecimal(),
-                65.5.toBigDecimal())
+                65.5.toBigDecimal(),
+                false)
 
         verify(mockRepo, Times(1)).newCoverageRowRecord(2,
                 "AFG",
@@ -314,7 +320,8 @@ and 13 others"""
                 111,
                 false,
                 100F.toBigDecimal(),
-                65.5.toBigDecimal())
+                65.5.toBigDecimal(),
+                false)
 
         verify(mockRepo, Times(1)).newCoverageRowRecord(3,
                 "AFG",
@@ -324,7 +331,8 @@ and 13 others"""
                 111,
                 false,
                 100F.toBigDecimal(),
-                65.5.toBigDecimal())
+                65.5.toBigDecimal(),
+                false)
 
         //mr1
         verify(mockRepo, Times(1)).newCoverageRowRecord(4,
@@ -335,7 +343,8 @@ and 13 others"""
                 111,
                 true,
                 100F.toBigDecimal(),
-                65.5.toBigDecimal())
+                65.5.toBigDecimal(),
+                false)
 
         verify(mockRepo, Times(1)).newCoverageRowRecord(5,
                 "AFG",
@@ -345,7 +354,8 @@ and 13 others"""
                 111,
                 true,
                 100F.toBigDecimal(),
-                65.5.toBigDecimal())
+                65.5.toBigDecimal(),
+                false)
 
         //MR2
         verify(mockRepo, Times(1)).newCoverageRowRecord(6,
@@ -356,7 +366,8 @@ and 13 others"""
                 111,
                 true,
                 100F.toBigDecimal(),
-                65.5.toBigDecimal())
+                65.5.toBigDecimal(),
+                false)
 
         verify(mockRepo, Times(1)).newCoverageRowRecord(7,
                 "AFG",
@@ -366,7 +377,8 @@ and 13 others"""
                 111,
                 true,
                 100F.toBigDecimal(),
-                65.5.toBigDecimal())
+                65.5.toBigDecimal(),
+                false)
 
     }
 }

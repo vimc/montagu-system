@@ -43,7 +43,8 @@ interface TouchstoneRepository : Repository
                              gender: Int,
                              gaviSupport: Boolean,
                              target: BigDecimal?,
-                             coverage: BigDecimal?): CoverageRecord
+                             coverage: BigDecimal?,
+                             subnational: Boolean): CoverageRecord
 
     fun getDemographicDatasets(touchstoneVersionId: String): List<DemographicDataset>
     fun getDemographicData(statisticTypeCode: String, source: String,
