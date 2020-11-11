@@ -14,6 +14,8 @@ export interface UploadCoverageProps {
     errors: Error[];
     status: CoverageUploadStatus;
     uploadCoverage: (data: FormData) => void;
+    currentTouchstone: string;
+    currentTouchstoneVersion: string;
 }
 
 export interface UploadCoverageState {
@@ -24,6 +26,7 @@ export interface UploadCoverageState {
 
 class UploadCoverageComponent extends React.Component<UploadCoverageProps, UploadCoverageState> {
     render(): JSX.Element {
+        const variablesDictUrl = `/touchstones/${this.props.currentTouchstone}/${this.props.currentTouchstoneVersion}/coverage/coverage-variables`;
         return <form encType="multipart/form-data"
                      onSubmit={this.onSubmit}
                      noValidate>
@@ -46,7 +49,7 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
                             anything that could affect usage
                         </li>
                     </ul>
-                    Please see <InternalLink href={"coverage/coverage-variables"}>here</InternalLink> for information about how
+                    Please see <InternalLink href={variablesDictUrl}>here</InternalLink> for information about how
                     this coverage will be interpreted.</label>
                 <textarea className={"form-control"}
                           placeholder={"additional details..."}
@@ -128,10 +131,12 @@ class UploadCoverageComponent extends React.Component<UploadCoverageProps, Uploa
     }
 }
 
-export const mapStateToProps = (state: AdminAppState, props: Partial<UploadCoverageProps>): Partial<UploadCoverageProps> => {
+export const mapStateToProps = (state: AdminAppState): Partial<UploadCoverageProps> => {
     return {
         errors: state.coverage.uploadState.errors,
-        status: state.coverage.uploadState.status
+        status: state.coverage.uploadState.status,
+        currentTouchstone: state.touchstones.currentTouchstone && state.touchstones.currentTouchstone.id,
+        currentTouchstoneVersion: state.touchstones.currentTouchstoneVersion && state.touchstones.currentTouchstoneVersion.id
     }
 };
 
