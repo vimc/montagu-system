@@ -208,32 +208,32 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
     }
 
     @Test
-    fun `can get latest coverage upload metadata`()
+    fun `can get latest coverage upload metadata ordered by vaccine name`()
     {
         val then = Instant.now()
         val now = Instant.now()
         withDatabase {
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
             it.addUserForTesting("test.user")
-            it.addVaccine("v1")
-            it.addVaccine("v2")
+            it.addVaccine("a")
+            it.addVaccine("b")
         }
         val meta = withRepo {
             val oldMetaId = it.createCoverageSetMetadata("desc", "test.user", then)
             val recentMetaId = it.createCoverageSetMetadata("desc", "test.user", now)
-            it.createCoverageSet("t-1", "v1", ActivityType.ROUTINE, GAVISupportLevel.WITH, oldMetaId)
-            it.createCoverageSet("t-1", "v2", ActivityType.ROUTINE, GAVISupportLevel.WITH, oldMetaId)
-            it.createCoverageSet("t-1", "v2", ActivityType.ROUTINE, GAVISupportLevel.WITH, recentMetaId)
+            it.createCoverageSet("t-1", "b", ActivityType.ROUTINE, GAVISupportLevel.WITH, oldMetaId)
+            it.createCoverageSet("t-1", "a", ActivityType.ROUTINE, GAVISupportLevel.WITH, oldMetaId)
+            it.createCoverageSet("t-1", "a", ActivityType.ROUTINE, GAVISupportLevel.WITH, recentMetaId)
             it.getCoverageUploadMetadata("t-1")
         }
 
         assertThat(meta.count()).isEqualTo(2)
-        assertThat(meta[0].vaccine).isEqualTo("v1")
-        assertThat(meta[0].uploadedOn).isEqualTo(then)
+        assertThat(meta[0].vaccine).isEqualTo("a")
+        assertThat(meta[0].uploadedOn).isEqualTo(now)
         assertThat(meta[0].uploadedBy).isEqualTo("test.user")
 
-        assertThat(meta[1].vaccine).isEqualTo("v2")
-        assertThat(meta[1].uploadedOn).isEqualTo(now)
+        assertThat(meta[1].vaccine).isEqualTo("b")
+        assertThat(meta[1].uploadedOn).isEqualTo(then)
         assertThat(meta[1].uploadedBy).isEqualTo("test.user")
     }
 

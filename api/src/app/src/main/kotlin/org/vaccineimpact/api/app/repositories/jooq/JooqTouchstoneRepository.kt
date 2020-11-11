@@ -250,6 +250,7 @@ class JooqTouchstoneRepository(
                 COVERAGE_SET_UPLOAD_METADATA.UPLOADED_ON)
                 .fromJoinPath(COVERAGE_SET, COVERAGE_SET_UPLOAD_METADATA)
                 .where(COVERAGE_SET.TOUCHSTONE.eq(touchstoneVersionId))
+                .orderBy(COVERAGE_SET.VACCINE)
                 .fetchInto(CoverageUploadMetadata::class.java)
                 .groupBy { it.vaccine }
                 .map { g->

@@ -254,7 +254,7 @@ Schema: [`CoverageSetUploadMetadata.schema.json`](../schemas/CoverageSetUploadMe
         }
     ]
     
-## GET /coverage/templates/
+## GET /coverage/template/
 Returns template for uploading coverage data.
 Required permissions: Global scope: `coverage.write`. 
 
