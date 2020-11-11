@@ -16,6 +16,17 @@
 6. Run `./scripts/run-development-dependencies.sh` to run Montagu
    with a shared key, and with test data.
 
+## Generating Typescript classes from Kotlin classes
+This repo shares [montagu-webmodels](https://github.com/vimc/montagu-webmodels) as a submodule with
+[montagu-api](https://github.com/vimc/montagu-api). When new Kotlin classes are added to `montagu-webmodels`, we
+can generate Typescript interfaces to match them by doing the following:
+
+1. Make sure the latest version of the models repo is checked out here:
+ `cd app/src/webmodels/models && git checkout master && git pull`
+1. Add any new models you want to include in the generation to the Kotlin tool, in the
+ [`GenerateTypeDefinitions` class](src/webmodels/generate/src/main/kotlin/org/vaccineimpact/api/GenerateTypeDefinitions.kt)
+1. Run the tool to generate new Typescript interfaces: `npm run generate-models`
+
 ## Linting
 1. `npm run tslint` to see all tslint errors
 2. Optionally you can enable tslint plugin in your IDE to see errors in code (for Webstorm users:
