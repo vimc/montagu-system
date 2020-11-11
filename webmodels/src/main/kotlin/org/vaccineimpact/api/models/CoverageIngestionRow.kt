@@ -10,5 +10,6 @@ data class CoverageIngestionRow(
         val ageLast: Int,
         val gender: GenderEnum,
         val target: Float,
-        val coverage: Float
+        val coverage: Float,
+        val subnational: Boolean
 )
