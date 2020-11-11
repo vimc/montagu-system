@@ -8,6 +8,7 @@ interface State {
 interface Props {
     required: boolean;
     accept: string | null;
+    onChange?: (target: HTMLInputElement) => any;
 }
 
 export class CustomFileInput extends React.Component<Props, State> {
@@ -26,6 +27,7 @@ export class CustomFileInput extends React.Component<Props, State> {
             fileName: target.value.replace("C:\\fakepath\\", ""),
             fileSelected: typeof target.value != "undefined"
         });
+        this.props.onChange(target);
     }
 
     render() {
