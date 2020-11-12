@@ -90,7 +90,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         val setDeterminants = mutableListOf<Pair<ActivityType, String>>()
         val setIds = mutableListOf<Int>()
         var expectedRowLookup = mutableMapOf<String, CountryLookup>()
-        val countries = expectationsRepository.getExpectedGAVICoverageCountries(touchstoneVersionId)
+        val countries = expectationsRepository.getExpectedGAVICoverageCountries()
         val metadataId = touchstoneRepository.createCoverageSetMetadata(description, uploader, timestamp)
         val records = rows.flatMap { row ->
 

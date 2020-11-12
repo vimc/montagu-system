@@ -414,7 +414,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             db.dsl.batchStore(countryRecords).execute()
         }
         val countries = withRepo {
-            it.getExpectedGAVICoverageCountries("t-1")
+            it.getExpectedGAVICoverageCountries()
         }
         assertThat(countries.count()).isEqualTo(73)
     }
