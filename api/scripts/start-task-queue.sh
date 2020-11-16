@@ -24,12 +24,10 @@ docker run --rm -d \
   vimc/task-queue-worker:vimc-4350
 
 # flower provides an http api for interacting with/monitoring celery
-docker pull mher/flower
-docker run --rm -d \
+docker run \
   $NETWORK_MAPPING \
-  redis://guest@localhost/%2F
   -p 5555:5555 \
-  -e CELERY_BROKER_URL=redis://guest@mq/%2F \
+  -e CELERY_BROKER_URL=redis://guest@mq// \
   -e FLOWER_PORT=5555 \
   --name flower \
   mher/flower

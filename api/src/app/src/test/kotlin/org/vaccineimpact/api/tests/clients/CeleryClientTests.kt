@@ -22,5 +22,8 @@ class CeleryClientTests : MontaguTests()
                 "test.user@example.com")
 
         assertThat(response.statusCode).isEqualTo(200)
+
+        //TODO: test other stuff in response
+        //TODO: use flower to test that task completes?
     }
 }
