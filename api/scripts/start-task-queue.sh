@@ -23,6 +23,17 @@ docker run --rm -d \
   --name task_queue_worker \
   vimc/task-queue-worker:vimc-4350
 
+# flower provides an http api for interacting with/monitoring celery
+docker pull mher/flower
+docker run --rm -d \
+  $NETWORK_MAPPING \
+  redis://guest@localhost/%2F
+  -p 5555:5555 \
+  -e CELERY_BROKER_URL=redis://guest@mq/%2F \
+  -e FLOWER_PORT=5555 \
+  --name flower \
+  mher/flower
+
 # add task q user
 CLI=vimc/montagu-cli:master
 docker pull $CLI

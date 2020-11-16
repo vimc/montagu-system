@@ -17,14 +17,10 @@ class CeleryClientTests : MontaguTests()
     fun `can call task`()
     {
         val client = CeleryClient()
-        val task = client.runDiagnosticReport("testGroup", "testDisease", "testTouchstone",
+        val response = client.runDiagnosticReport("testGroup", "testDisease", "testTouchstone",
                 "testScenario",
                 "test.user@example.com")
 
-        val result = task.get().mapValues { DiagnosticReportTaskResult(it.value["published"] ?: false) }
-        assertThat(result.count()).isEqualTo(1)
-        assertThat(result.entries.first().value.published).isTrue()
+        assertThat(response.statusCode).isEqualTo(200)
     }
 }
-
-data class DiagnosticReportTaskResult(val published: Boolean)
