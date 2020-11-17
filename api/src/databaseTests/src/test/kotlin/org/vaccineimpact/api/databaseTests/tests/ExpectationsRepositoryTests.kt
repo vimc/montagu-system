@@ -372,6 +372,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     {
         withDatabase { db ->
             db.addTouchstoneVersion("t", 1, addTouchstone = true)
+            db.addTouchstoneVersion("t", 2, addTouchstone = false)
             db.dsl.newRecord(FRANCOPHONE_STATUS)
                     .apply {
                         id = "fff"
@@ -412,7 +413,28 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
                         }
                     }
             db.dsl.batchStore(countryRecords).execute()
+
+            // add one duplicate for another touchstone
+            db.dsl.newRecord(COUNTRY_METADATA).apply {
+                this.country = "AFG"
+                this.gavi73 = true
+                this.touchstone = "t-2"
+                this.whoRegion = "123"
+                this.continent = "aaa"
+                this.region = "bbb"
+                this.francophone = "fff"
+                this.vxdelSegment = "v1"
+                this.gaviRegion = "g1"
+                this.wuenicCoverage = false
+                this.pine_5 = false
+                this.dove94 = false
+                this.dove96 = false
+                this.gavi68 = false
+                this.gavi72 = false
+                this.gavi77 = false
+            }.store()
         }
+
         val countries = withRepo {
             it.getExpectedGAVICoverageCountries()
         }
