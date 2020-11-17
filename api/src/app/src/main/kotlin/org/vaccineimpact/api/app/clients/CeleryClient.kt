@@ -31,12 +31,6 @@ class CeleryClient(private val httpClient: HttpClient = KHttpClient()): TaskQueu
         val args = arrayOf(group, disease, touchstone, utcTime, scenario, uploaderEmail) as CeleryTaskArguments
         val headers = mapOf("Content-type" to ContentTypes.json)
 
-
-        val testUrl =  "http://$flowerHost:$flowerPort/api/task/types"
-        val result = httpClient.get(testUrl, headers)
-
-        val workers = httpClient.get("http://$flowerHost:$flowerPort/api/workers", headers)
-
         val url = "http://$flowerHost:$flowerPort/api/task/send-task/run-diagnostic-reports"
 
         return httpClient.post(url, headers, mapOf("args" to args))
