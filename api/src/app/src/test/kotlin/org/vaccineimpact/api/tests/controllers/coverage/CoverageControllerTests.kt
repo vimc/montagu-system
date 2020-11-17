@@ -21,7 +21,7 @@ class CoverageControllerTests : MontaguTests()
     {
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
-        CoverageController(context, logic).getCoverageSetsForGroup()
+        CoverageController(context, logic, mock()).getCoverageSetsForGroup()
 
         verify(logic).getCoverageSetsForGroup(eq("gId"), eq("tId"), eq("sId"))
     }
@@ -32,7 +32,7 @@ class CoverageControllerTests : MontaguTests()
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(false)
         Assertions.assertThatThrownBy {
-            CoverageController(context, logic).getCoverageSetsForGroup()
+            CoverageController(context, logic, mock()).getCoverageSetsForGroup()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 
@@ -41,7 +41,7 @@ class CoverageControllerTests : MontaguTests()
     {
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
-        CoverageController(context, logic).getCoverageDataForGroup()
+        CoverageController(context, logic, mock()).getCoverageDataForGroup()
         verify(logic).getCoverageDataForGroup(eq("gId"), eq("tId"), eq("sId"), eq(false), isNull())
     }
 
@@ -57,7 +57,7 @@ class CoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val data = CoverageController(context, logic, mock())
+        val data = CoverageController(context, logic, mock(), mock())
                 .getCoverageDataForGroup().data
         Assertions.assertThat(data.first() is LongCoverageRow).isTrue()
     }
@@ -74,7 +74,7 @@ class CoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        CoverageController(context, logic, mock())
+        CoverageController(context, logic, mock(), mock())
                 .getCoverageDataForGroup().data
         verify(logic).getCoverageDataForGroup("gId", "tId", "sId", true, null)
     }
@@ -91,7 +91,7 @@ class CoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        CoverageController(context, logic)
+        CoverageController(context, logic, mock())
                 .getCoverageDataForGroup().data
         verify(logic).getCoverageDataForGroup("gId", "tId", "sId", false, null)
     }
@@ -107,7 +107,7 @@ class CoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        CoverageController(context, logic)
+        CoverageController(context, logic, mock())
                 .getCoverageDataForGroup().data
         verify(logic).getCoverageDataForGroup("gId", "tId", "sId", false, null)
     }
@@ -118,7 +118,7 @@ class CoverageControllerTests : MontaguTests()
         val logic = makeLogicMockingGetCoverageData(TouchstoneStatus.IN_PREPARATION)
         val context = mockContextForSpecificResponsibility(true)
 
-        val data = CoverageController(context, logic)
+        val data = CoverageController(context, logic, mock())
                 .getCoverageDataForGroup().data
 
         // test data includes 5 years
@@ -146,7 +146,7 @@ class CoverageControllerTests : MontaguTests()
             on { hasPermission(any()) } doReturn true
         }
 
-        val data = CoverageController(context, logic)
+        val data = CoverageController(context, logic, mock())
                 .getCoverageDataForGroup().data
 
         Assertions.assertThat(data.count()).isEqualTo(0)
@@ -161,7 +161,7 @@ class CoverageControllerTests : MontaguTests()
         val context = mockContextForSpecificResponsibility(false)
 
         Assertions.assertThatThrownBy {
-            CoverageController(context, logic, mock()).getCoverageDataForGroup()
+            CoverageController(context, logic, mock(), mock()).getCoverageDataForGroup()
         }.hasMessageContaining("Unknown touchstone-version")
     }
 

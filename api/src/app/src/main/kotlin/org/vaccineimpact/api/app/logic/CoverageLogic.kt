@@ -33,7 +33,6 @@ interface CoverageLogic
                                   uploader: String,
                                   timestamp: Instant,
                                   validate: Boolean = true)
-
 }
 
 class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingGroupRepository,
@@ -91,7 +90,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         val setDeterminants = mutableListOf<Pair<ActivityType, String>>()
         val setIds = mutableListOf<Int>()
         var expectedRowLookup = mutableMapOf<String, CountryLookup>()
-        val countries = expectationsRepository.getExpectedGAVICoverageCountries(touchstoneVersionId)
+        val countries = expectationsRepository.getExpectedGAVICoverageCountries()
         val metadataId = touchstoneRepository.createCoverageSetMetadata(description, uploader, timestamp)
         val records = rows.flatMap { row ->
 
@@ -125,7 +124,8 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                         gender = genders[row.gender]!!,
                         gaviSupport = row.gaviSupport,
                         target = row.target.toBigDecimal(),
-                        coverage = row.coverage.toBigDecimal()
+                        coverage = row.coverage.toBigDecimal(),
+                        subnational = row.subnational
                 )
             }.asSequence()
         }.toList()

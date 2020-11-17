@@ -243,6 +243,21 @@ class JooqTouchstoneRepository(
         return record.id
     }
 
+    override fun getCoverageUploadMetadata(touchstoneVersionId: String): List<CoverageUploadMetadata>
+    {
+        return dsl.select(COVERAGE_SET.VACCINE,
+                COVERAGE_SET_UPLOAD_METADATA.UPLOADED_BY,
+                COVERAGE_SET_UPLOAD_METADATA.UPLOADED_ON)
+                .fromJoinPath(COVERAGE_SET, COVERAGE_SET_UPLOAD_METADATA)
+                .where(COVERAGE_SET.TOUCHSTONE.eq(touchstoneVersionId))
+                .orderBy(COVERAGE_SET.VACCINE)
+                .fetchInto(CoverageUploadMetadata::class.java)
+                .groupBy { it.vaccine }
+                .map { g ->
+                    g.value.maxBy { it.uploadedOn }!!
+                }
+    }
+
     override fun saveCoverageForTouchstone(touchstoneVersionId: String, records: List<CoverageRecord>)
     {
         dsl.batchStore(records).execute()
@@ -256,7 +271,8 @@ class JooqTouchstoneRepository(
                                       gender: Int,
                                       gaviSupport: Boolean,
                                       target: BigDecimal?,
-                                      coverage: BigDecimal?) = this.dsl.newRecord(COVERAGE).apply {
+                                      coverage: BigDecimal?,
+                                      subnational: Boolean) = this.dsl.newRecord(COVERAGE).apply {
         this.coverageSet = coverageSetId
         this.country = country
         this.year = year
@@ -266,6 +282,7 @@ class JooqTouchstoneRepository(
         this.coverage = coverage
         this.gender = gender
         this.gaviSupport = gaviSupport
+        this.subnational = subnational
     }
 
     private fun coverageDimensions(): Array<Field<*>>

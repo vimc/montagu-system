@@ -9,13 +9,13 @@ import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.Tables.*
-import org.vaccineimpact.api.db.direct.addTouchstoneVersion
-import org.vaccineimpact.api.db.direct.addVaccine
+import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.db.tables.Country
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.validateSchema.JSONValidator
 import spark.route.HttpMethod
 import java.io.File
+import java.time.Instant
 
 class PopulateCoverageTests : CoverageTests()
 {
@@ -114,11 +114,19 @@ class PopulateCoverageTests : CoverageTests()
     }
 
     @Test
+    fun `can get coverage upload metadata`()
+    {
+        validate("/touchstones/$touchstoneVersionId/coverage/meta") against ("CoverageSetUploadMetadata") given {
+            addCoverageSets()
+        } requiringPermissions { requiredPermissions } andCheckHasStatus 200..200
+    }
+
+    @Test
     fun `can get coverage upload template`()
     {
         val token = TestUserHelper.setupTestUserAndGetToken(requiredPermissions, includeCanLogin = true)
         val response = RequestHelper().get("/coverage/template/", token = token, acceptsContentType = "text/csv")
-        assertThat(response.text).isEqualTo("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\"")
+        assertThat(response.text).isEqualTo("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\", \"subnational\"")
         assertThat(response.headers["Content-Disposition"]).isEqualTo("attachment; filename=\"coverage_template.csv\"")
     }
 
@@ -183,6 +191,17 @@ class PopulateCoverageTests : CoverageTests()
         }
     }
 
+    private fun addCoverageSets()
+    {
+        JooqContext().use {
+            it.addVaccine("YF")
+            it.addUserForTesting("some.user")
+            it.addTouchstoneVersion("t", 1, addTouchstone = true)
+            val setId = it.addCoverageSet("t-1", "name", "YF", "with", "campaign")
+            it.addCoverageSetUploadMetadata("description", "some.user", Instant.now(), setId)
+        }
+    }
+
     private fun verifyCorrectRows()
     {
         JooqContext().use {
@@ -202,37 +221,37 @@ class PopulateCoverageTests : CoverageTests()
     }
 
     private val csvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8
-   "HepB_BD",   "AFG",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8, false
+   "HepB_BD",   "AFG",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5, false
 """
 
     private val badCountryCsvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8
-   "HepB_BD",   "nonsense",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8, false
+   "HepB_BD",   "nonsense",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5, false
 """
 
     private val badVaccineCsvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8
-   "nonsense",   "AFG",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "campaign",     "true",  "2021",         1,     10,    "female", 100, 78.8, false
+   "nonsense",   "AFG",    "campaign",     "true",  "2022",         1,      10,    "female", 100, 65.5, false
 """
 
     private val missingRowsCsvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "routine",     "true",  "2021",         1,     10,    "female", 100, 78.8
-   "HepB_BD",   "AFG",    "routine",     "true",  "2022",         1,      10,    "female", 100, 65.5
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "routine",     "true",  "2021",         1,     10,    "female", 100, 78.8, false
+   "HepB_BD",   "AFG",    "routine",     "true",  "2022",         1,      10,    "female", 100, 65.5, false
 """
 
     private val duplicateRowsCsvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "routine",     "true",  "2021",         1,     10,    "female", 100, 78.8
-   "HepB_BD",   "AFG",    "routine",     "true",  "2021",         1,      10,    "female", 100, 65.5
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "routine",     "true",  "2021",         1,     10,    "female", 100, 78.8, false
+   "HepB_BD",   "AFG",    "routine",     "true",  "2021",         1,      10,    "female", 100, 65.5, false
 """
 
     private val unexpectedYearCsvData = """
-"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage"
-   "HepB_BD",   "AFG",    "routine",     "true",  "2031",         1,     10,    "female", 100, 78.8
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "routine",     "true",  "2031",         1,     10,    "female", 100, 78.8, false
 """
 }
