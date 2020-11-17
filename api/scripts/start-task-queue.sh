@@ -3,6 +3,8 @@ set -ex
 HERE=$(dirname $0)
 ROOT=$(realpath $HERE/..)
 
+docker rm flower || true
+
 if [[ ! -z $NETWORK ]]; then
   NETWORK_MAPPING="--network=$NETWORK"
 else
