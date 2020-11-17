@@ -1,7 +1,9 @@
 package org.vaccineimpact.api.generateTestData
 
 import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.Tables
 import org.vaccineimpact.api.db.direct.*
+import org.vaccineimpact.api.db.tables.Country
 
 fun main(args: Array<String>) {
 
@@ -37,8 +39,53 @@ fun main(args: Array<String>) {
         db.addTouchstoneVersion("future", 1, "Future (v1)", "in-preparation")
 
         db.addUserForTesting("test.user")
+
+        addGAVI73Countries(db)
     }
 
+}
+
+fun addGAVI73Countries(db: JooqContext) {
+    db.dsl.newRecord(Tables.FRANCOPHONE_STATUS)
+            .apply {
+                id = "member"
+            }.store()
+    db.dsl.newRecord(Tables.VXDEL_SEGMENT)
+            .apply {
+                id = "conflict areas"
+            }.store()
+
+    db.dsl.newRecord(Tables.GAVI_REGION)
+            .apply {
+                id = "AA"
+                name = "Anglophone Africa"
+            }.store()
+
+    val countryRecords = db.dsl.select(Country.COUNTRY.ID)
+            .from(Country.COUNTRY)
+            .limit(73)
+            .fetchInto(String::class.java)
+            .map {
+                db.dsl.newRecord(Tables.COUNTRY_METADATA).apply {
+                    this.country = it
+                    this.gavi73 = true
+                    this.touchstone = "op-2017-1"
+                    this.whoRegion = "AFR"
+                    this.continent = "Africa"
+                    this.region = "Eastern Africa"
+                    this.francophone = "member"
+                    this.vxdelSegment = "conflict areas"
+                    this.gaviRegion = "AA"
+                    this.wuenicCoverage = false
+                    this.pine_5 = false
+                    this.dove94 = false
+                    this.dove96 = false
+                    this.gavi68 = false
+                    this.gavi72 = false
+                    this.gavi77 = false
+                }
+            }
+    db.dsl.batchStore(countryRecords).execute()
 }
 
 fun addAllTestDataForOp2017v1(db: JooqContext, demographicTestData: DemographicTestData){

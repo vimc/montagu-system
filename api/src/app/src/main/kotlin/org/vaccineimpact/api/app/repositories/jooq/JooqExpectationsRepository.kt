@@ -138,12 +138,11 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 }
     }
 
-    override fun getExpectedGAVICoverageCountries(touchstoneVersionId: String): List<String>
+    override fun getExpectedGAVICoverageCountries(): List<String>
     {
-        return dsl.select(COUNTRY.ID)
+        return dsl.selectDistinct(COUNTRY.ID)
                 .fromJoinPath(COUNTRY, COUNTRY_METADATA)
                 .where(COUNTRY_METADATA.GAVI73)
-                .and(COUNTRY_METADATA.TOUCHSTONE.eq(touchstoneVersionId))
                 .orderBy(COUNTRY.ID)
                 .fetchInto(String::class.java)
                 .toList()
