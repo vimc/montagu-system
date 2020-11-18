@@ -1,14 +1,13 @@
 package org.vaccineimpact.api.app.clients
 
-import com.geneea.celery.Celery
-import com.google.common.util.concurrent.ListenableFuture
+import khttp.responses.Response
+import org.vaccineimpact.api.app.logic.HttpClient
+import org.vaccineimpact.api.app.logic.KHttpClient
 import org.vaccineimpact.api.db.Config
+import org.vaccineimpact.api.models.helpers.ContentTypes
 import java.time.Instant
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
-typealias CeleryTaskResult = Map<String, Map<String, Boolean>>
 typealias CeleryTaskArguments = Array<out Any>
 
 interface TaskQueueClient
@@ -20,20 +19,20 @@ interface TaskQueueClient
                             uploaderEmail: String): Any
 }
 
-class CeleryClient : TaskQueueClient
+class CeleryClient(private val httpClient: HttpClient = KHttpClient()): TaskQueueClient
 {
-    private val broker = Config["celery.broker"]
-    private val backend = Config["celery.backend"]
-    private val client = Celery.builder()
-            .brokerUri(broker)
-            .backendUri(backend)
-            .build()
+    private val flowerHost= Config["celery.flower.host"]
+    private val flowerPort = Config["celery.flower.port"]
 
     override fun runDiagnosticReport(group: String, disease: String, touchstone: String, scenario: String, uploaderEmail: String):
-            ListenableFuture<CeleryTaskResult>
+            Response
     {
         val utcTime = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replace("Z", "")
         val args = arrayOf(group, disease, touchstone, utcTime, scenario, uploaderEmail) as CeleryTaskArguments
-        return client.submit<CeleryTaskResult>("run-diagnostic-reports", args)
+        val headers = mapOf("Content-type" to ContentTypes.json)
+
+        val url = "http://$flowerHost:$flowerPort/api/task/send-task/run-diagnostic-reports"
+
+        return httpClient.post(url, headers, mapOf("args" to args))
     }
 }

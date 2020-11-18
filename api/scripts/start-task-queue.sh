@@ -3,6 +3,8 @@ set -ex
 HERE=$(dirname $0)
 ROOT=$(realpath $HERE/..)
 
+docker rm flower || true
+
 if [[ ! -z $NETWORK ]]; then
   NETWORK_MAPPING="--network=$NETWORK"
 else
@@ -12,9 +14,9 @@ fi
 
 docker run --rm -d \
   $NETWORK_MAPPING \
-  -p 5672:5672 \
+  -p 6379:6379 \
   --name mq \
-  rabbitmq
+  redis
 
 docker pull vimc/task-queue-worker:master
 docker run --rm -d \
@@ -22,6 +24,16 @@ docker run --rm -d \
   -v $ROOT/scripts/task-queue-config.yml:/home/worker/config/config.yml \
   --name task_queue_worker \
   vimc/task-queue-worker:master
+
+# flower provides an http api for interacting with/monitoring celery
+docker run -d \
+  $NETWORK_MAPPING \
+  -p 5555:5555 \
+  -e CELERY_BROKER_URL=redis://guest@mq// \
+  -e CELERY_RESULT_BACKEND=redis://guest@mq/0/ \
+  -e FLOWER_PORT=5555 \
+  --name flower \
+  mher/flower:0.9.5
 
 # add task q user
 CLI=vimc/montagu-cli:master

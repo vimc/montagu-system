@@ -44,7 +44,6 @@ dependencies {
     compile "com.offbytwo:docopt:0.6.0.20150202"
     compile "khttp:khttp:0.1.0"
     compile "com.squareup.okhttp3:okhttp:4.0.0-RC1"
-    compile "com.geneea.celery:celery-java:1.10.4"
 
     compile project(":databaseInterface")
     compile project(":models")
