@@ -1,5 +1,4 @@
-broker: redis://guest@mq//
-backend: redis://guest@mq/0/
+host: mq
 servers:
   montagu:
     url: http://api:8080
