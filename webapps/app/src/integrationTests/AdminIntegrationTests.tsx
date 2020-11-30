@@ -21,7 +21,7 @@ import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 import {ScenarioGroupComponent} from "../main/admin/components/Touchstones/Scenarios/ScenarioGroup"
 import {FileDownloadButton, FileDownloadLink} from "../main/shared/components/FileDownloadLink";
 import {ExpectationsService} from "../main/shared/services/ExpectationsService";
-import {UploadCoverageService} from "../main/admin/services/UploadCoverageService";
+import {CoverageService} from "../main/admin/services/UploadCoverageService";
 import FormData = require("form-data");
 import {CurrentEstimateSetSummary} from "../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 import {UploadCoverage} from "../main/admin/components/Touchstones/Coverage/UploadCoverage";
@@ -343,7 +343,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         it("can upload coverage", async () => {
             const form = new FormData();
 
-            const uploadResult: Result = await (new UploadCoverageService(this.store.dispatch, this.store.getState))
+            const uploadResult: Result = await (new CoverageService(this.store.dispatch, this.store.getState))
                 .uploadCoverage(touchstoneVersionId, form);
 
             expect(uploadResult.errors[0].message).toEqual("You must supply a \'file\' parameter in the multipart body");

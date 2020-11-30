@@ -1,6 +1,6 @@
 
 import {createMockAdminStore} from "../../mocks/mockStore";
-import {UploadCoverageService} from "../../../main/admin/services/UploadCoverageService";
+import {CoverageService} from "../../../main/admin/services/UploadCoverageService";
 import {Sandbox} from "../../Sandbox";
 import {AdminAppState} from "../../../main/admin/reducers/adminAppReducers";
 import FormData = require("form-data");
@@ -14,7 +14,7 @@ describe('Upload Coverage service tests', () => {
     });
 
     it('uploads coverage', () => {
-        const uploadCoverageService = new UploadCoverageService(store.dispatch, store.getState as () => AdminAppState);
+        const uploadCoverageService = new CoverageService(store.dispatch, store.getState as () => AdminAppState);
 
         const postStub = sandbox.setStubFunc(uploadCoverageService, "post", ()=>{
             return Promise.resolve();

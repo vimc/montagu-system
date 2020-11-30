@@ -2,7 +2,7 @@ import {Sandbox} from "../../Sandbox";
 import {mockTouchstoneVersion} from "../../mocks/mockModels";
 import {createMockAdminStore} from "../../mocks/mockStore";
 import {coverageActionCreators} from "../../../main/admin/actions/coverageActionCreators";
-import {UploadCoverageService} from "../../../main/admin/services/UploadCoverageService";
+import {CoverageService} from "../../../main/admin/services/UploadCoverageService";
 import FormData = require("form-data");
 import {CoverageTypes, CoverageUploadStatus} from "../../../main/admin/actionTypes/CoverageTypes";
 
@@ -19,7 +19,7 @@ describe("coverageActionCreators", () => {
 
         const data = {} as FormData;
         const errors = [] as Error[];
-        const serviceStub = sandbox.setStubFunc(UploadCoverageService.prototype, "uploadCoverage", ()=>{
+        const serviceStub = sandbox.setStubFunc(CoverageService.prototype, "uploadCoverage", ()=>{
             return Promise.resolve({errors});
         });
         await store.dispatch(coverageActionCreators.uploadCoverage(data));
