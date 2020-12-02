@@ -34,7 +34,7 @@ export const coverageActionCreators = {
 
             dispatch({
                 type: CoverageTypes.COVERAGE_UPLOAD_METADATA_FETCHED,
-                data: result.data || []
+                data: result || []
             });
         }
     }
