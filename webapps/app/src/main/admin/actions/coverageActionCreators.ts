@@ -24,7 +24,7 @@ export const coverageActionCreators = {
                 data: {status: CoverageUploadStatus.completed, errors: result.errors || []}
             });
 
-            await dispatch(this.getCoverageMetadata(touchstone.id));
+            dispatch(this.getCoverageMetadata(touchstone.id));
         }
     },
 
