@@ -23,6 +23,8 @@ export const coverageActionCreators = {
                 type: CoverageTypes.COVERAGE_UPLOAD_STATE_CHANGED,
                 data: {status: CoverageUploadStatus.completed, errors: result.errors || []}
             });
+
+            await dispatch(this.getCoverageMetadata(touchstone.id));
         }
     },
 

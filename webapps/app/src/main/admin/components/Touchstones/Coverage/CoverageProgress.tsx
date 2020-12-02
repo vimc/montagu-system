@@ -11,9 +11,11 @@ interface CoverageProgressProps {
 }
 
 const CoverageProgressComponent: React.FunctionComponent<CoverageProgressProps> = (props: CoverageProgressProps) => {
-    return <div>{props.metadataEntries.map(v => <UncontrolledAlert>A coverage set for {v.vaccine}
-        was uploaded on {longTimestamp(new Date(v.uploaded_on))} by {v.uploaded_by}</UncontrolledAlert>)}
-    </div>
+    return <div>{props.metadataEntries.map((v, idx) =>
+        <UncontrolledAlert key={`coverage-metadata-${idx}`}>
+            A coverage set for {v.vaccine} was uploaded on {longTimestamp(new Date(v.uploaded_on))} by {v.uploaded_by}
+        </UncontrolledAlert>
+    )}</div>
 };
 
 export const mapStateToProps = (state: AdminAppState): CoverageProgressProps => {
