@@ -12,7 +12,7 @@ class CoveragePageComponent extends React.Component<PageProperties<TouchstoneVer
 
     render(): JSX.Element {
         return <PageArticle title={this.props.title}>
-            <CoverageProgress/>
+            <CoverageProgress></CoverageProgress>
             <FileDownloadLink href={"/coverage/template/"}>Download template</FileDownloadLink>
             <UploadCoverage></UploadCoverage>
         </PageArticle>;
