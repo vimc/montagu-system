@@ -22,9 +22,12 @@ import {CoveragePage} from "./Touchstones/Coverage/CoveragePage";
 import {LoginPage} from "../../shared/components/LoginPage";
 import {ModelMetaPage} from "./ModellingGroups/Models/ModelMetaPage";
 import {CoverageVariablesPage} from "./Touchstones/Coverage/CoverageVariablesPage";
+import {AdminAppState} from "../reducers/adminAppReducers";
+import {UserDetailsProps} from "./Users/SingleUser/UserDetailsContent";
 
 interface AdminRouterProps {
     loggedIn: boolean;
+    permissions: string[];
     history: History;
 }
 
@@ -44,7 +47,9 @@ export const AdminRouter: React.FunctionComponent<AdminRouterProps> = (props: Ad
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/demographics/"
                component={DownloadDemographicsAdminPage}/>
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/scenarios/" component={ScenarioPage}/>
-        <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage/" component={CoveragePage}/>
+        { props.permissions.indexOf("*/coverage.write") > -1 &&
+            <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage/" component={CoveragePage}/>
+        }
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage/coverage-variables/" component={CoverageVariablesPage}/>
         <Route exact path="/users/" component={UsersListPage}/>
         <Route exact path="/users/:username/" component={UserDetailsPage}/>
