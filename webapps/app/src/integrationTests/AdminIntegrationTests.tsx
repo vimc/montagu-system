@@ -21,7 +21,7 @@ import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 import {ScenarioGroupComponent} from "../main/admin/components/Touchstones/Scenarios/ScenarioGroup"
 import {FileDownloadButton, FileDownloadLink} from "../main/shared/components/FileDownloadLink";
 import {ExpectationsService} from "../main/shared/services/ExpectationsService";
-import {CoverageService} from "../main/admin/services/UploadCoverageService";
+import {CoverageService} from "../main/admin/services/CoverageService";
 import FormData = require("form-data");
 import {CurrentEstimateSetSummary} from "../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
 import {UploadCoverage} from "../main/admin/components/Touchstones/Coverage/UploadCoverage";
