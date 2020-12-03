@@ -39,12 +39,16 @@ If you need more rules to check against, add them in file tslint.json, under sec
 3. `npm test -- -t "foo bar"` runs just the individual test called "foo bar".
 
 ## Integration tests
-Run `npm run integration-test` to run all integration tests. The version of
-the API that tests are run against is stored in `./config/api_version`.
+`npm run integration-test` runs all integration tests. The version of
+the API that tests are run against is stored in `./config/api_version`. 
+
+*NB be wary about running integration tests directly in your local dev environment. We have scripts which set up some 
+necessary environment variables for accessing the montagu db. Use `run-integration-tests-with-apis.sh` instead.*
 
 The integration tests get run in three different ways:
 
-1. During development, using the method above.
+1. During development, with `run-integration-tests-with-apis.sh`, which also runs dependencies and sets environment variables
+used by postgres for accessing the montagu db.
 2. During the Webapp BuildKite build configuration. This runs the tests in
    exactly the same way, but does so inside a Docker container that gives a
    consistent build environment. Additionally, during this same build, another
