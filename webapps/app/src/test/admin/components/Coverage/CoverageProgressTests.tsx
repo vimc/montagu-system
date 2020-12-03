@@ -3,7 +3,6 @@ import {shallow} from "enzyme";
 import {CoverageProgress} from "../../../../main/admin/components/Touchstones/Coverage/CoverageProgress";
 import * as React from "react";
 import {UncontrolledAlert} from "reactstrap";
-import {longTimestamp} from "../../../../main/shared/Helpers";
 
 describe("Coverage Progress component tests", () => {
     const coverageUploadMetadata = [
@@ -41,7 +40,7 @@ describe("Coverage Progress component tests", () => {
                 coverageUploadMetadata: []
             }
         });
-        const rendered = shallow(<CoverageProgress/>, {context: {store}}).dive();
+        const rendered = shallow(<CoverageProgress/>, {context: {store: emptyStore}}).dive();
         const alerts = rendered.find(UncontrolledAlert);
         expect(alerts.length).toBe(0);
     });

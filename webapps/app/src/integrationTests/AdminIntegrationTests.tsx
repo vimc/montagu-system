@@ -349,6 +349,13 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             expect(uploadResult.errors[0].message).toEqual("You must supply a \'file\' parameter in the multipart body");
         });
 
+        it("can get coverage metadata", async () => {
+            const result: Result = await (new CoverageService(this.store.dispatch, this.store.getState))
+                .fetchCoverageMetadata("touchstone-1");
+            expect(result.status).toEqual(200);
+            expect(result.data).toStrictEqual([]);
+        });
+
         it("can download coverage template", async () => {
             const sandbox = new Sandbox();
             const store = createMockAdminStore({

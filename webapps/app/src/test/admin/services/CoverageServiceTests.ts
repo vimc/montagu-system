@@ -1,6 +1,6 @@
 
 import {createMockAdminStore} from "../../mocks/mockStore";
-import {CoverageService} from "../../../main/admin/services/UploadCoverageService";
+import {CoverageService} from "../../../main/admin/services/CoverageService";
 import {Sandbox} from "../../Sandbox";
 import {AdminAppState} from "../../../main/admin/reducers/adminAppReducers";
 import FormData = require("form-data");
