@@ -4,6 +4,8 @@ import {ConnectedRouter} from 'react-router-redux';
 import {History} from "history";
 import * as logo from "../../shared/components/PageWithHeader/logo.png"
 import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
+import {AdminAppState} from "../reducers/adminAppReducers";
+import {connect} from "react-redux";
 // Pages
 import {AdminNoRouteFoundPage} from "./AdminNoRouteFoundPage";
 import {ModellingGroupsListPage} from "./ModellingGroups/List/ModellingGroupsListPage";
@@ -22,11 +24,6 @@ import {CoveragePage} from "./Touchstones/Coverage/CoveragePage";
 import {LoginPage} from "../../shared/components/LoginPage";
 import {ModelMetaPage} from "./ModellingGroups/Models/ModelMetaPage";
 import {CoverageVariablesPage} from "./Touchstones/Coverage/CoverageVariablesPage";
-import {AdminAppState} from "../reducers/adminAppReducers";
-import {UserDetailsProps} from "./Users/SingleUser/UserDetailsContent";
-import {connect} from "react-redux";
-import {mapStateToAppProps} from "../../shared/components/App";
-import {AdminAppComponent} from "./AdminApp";
 
 interface AdminRouterProps {
     loggedIn: boolean;

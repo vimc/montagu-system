@@ -11,7 +11,8 @@ const testAuthData: AuthState = {
     bearerToken: 'testtoken',
     permissions: [],
     isAccountActive: true,
-    isModeller: false
+    isModeller: false,
+    canUploadCoverage: false
 };
 
 describe('Auth reducer tests', () => {
@@ -63,39 +64,32 @@ describe('Auth reducer tests', () => {
 });
 
 describe ('loadAuthState tests', () => {
-    it('loads basic param values', () => {
-        const result = loadAuthState({
-            username: "testUser",
-            loggedIn: true,
-            bearerToken: "testToken",
-            permissions: ["perm1", "perm2"],
-            modellingGroups: ["group1", "group2"]
-            });
+    const basicOptions = {
+        username: "testUser",
+        loggedIn: true,
+        bearerToken: "testToken",
+        permissions: ["perm1", "perm2"],
+        modellingGroups: ["group1", "group2"]
+    };
 
+    it('loads basic param values', () => {
+        const result = loadAuthState(basicOptions);
         expect(result.username).toEqual("testUser");
         expect(result.loggedIn).toEqual(true);
         expect(result.bearerToken).toEqual("testToken");
         expect(result.permissions).toEqual(["perm1", "perm2"]);
         expect(result.modellingGroups).toEqual(["group1", "group2"]);
+        expect(result.canUploadCoverage).toBe(false);
     });
 
     it('sets isAccountActive correctly', () => {
-        const inactive = loadAuthState({
-            username: "testUser",
-            loggedIn: true,
-            bearerToken: "testToken",
-            permissions: ["perm1", "perm2"],
-            modellingGroups: ["group1", "group2"]
-        });
+        const inactive = loadAuthState(basicOptions);
 
         expect(inactive.isAccountActive).toEqual(false);
 
         const active = loadAuthState({
-            username: "testUser",
-            loggedIn: true,
-            bearerToken: "testToken",
-            permissions: ["*/can-login", "perm1", "perm2"],
-            modellingGroups: ["group1", "group2"]
+            ...basicOptions,
+            permissions: ["*/can-login", "perm1", "perm2"]
         });
 
         expect(active.isAccountActive).toEqual(true)
@@ -104,24 +98,21 @@ describe ('loadAuthState tests', () => {
 
     it('sets isModeller correctly', () => {
 
-        const modeller = loadAuthState({
-            username: "testUser",
-            loggedIn: true,
-            bearerToken: "testToken",
-            permissions: ["perm1", "perm2"],
-            modellingGroups: ["group1", "group2"]
-        });
+        const modeller = loadAuthState(basicOptions);
         expect(modeller.isModeller).toEqual(true);
 
         const nonModeller = loadAuthState({
-            username: "testUser",
-            loggedIn: true,
-            bearerToken: "testToken",
-            permissions: ["perm1", "perm2"],
+            ...basicOptions,
             modellingGroups: [] as string[]
         });
         expect(nonModeller.isModeller).toEqual(false);
     });
 
-
+    it('sets canUploadCoverage if coverage write permission present', () => {
+        const result = loadAuthState({
+            ...basicOptions,
+            permissions: ["*/coverage.write", "perm1", "perm2"]
+        });
+        expect(result.canUploadCoverage).toBe(true);
+    });
 });

@@ -1,16 +1,20 @@
 import * as React from "react";
 
-import {mount} from "enzyme";
+import {mount, shallow} from "enzyme";
 import {Provider} from "react-redux";
 import {createMemoryHistory} from 'history';
 
 import "../../helper";
 import {AdminRouter} from "../../../main/admin/components/AdminRouter";
-import {createAdminStore} from "../../../main/admin/stores/createAdminStore";
 import {AdminNoRouteFoundPage} from "../../../main/admin/components/AdminNoRouteFoundPage";
 import {LoginPage} from "../../../main/shared/components/LoginPage";
 import {Sandbox} from "../../Sandbox";
 import {authActionCreators} from "../../../main/shared/actions/authActionCreators";
+import {createMockAdminStore} from "../../mocks/mockStore";
+import {RecursivePartial} from "../../mocks/mockStates";
+import {AdminAppState} from "../../../main/admin/reducers/adminAppReducers";
+import {CoveragePage} from "../../../main/admin/components/Touchstones/Coverage/CoveragePage";
+import {Route} from "react-router";
 
 describe("AdminRouter", () => {
 
@@ -20,22 +24,30 @@ describe("AdminRouter", () => {
         sandbox.restore();
     });
 
+    function renderComponent(state: RecursivePartial<AdminAppState>, route="/") {
+        const history = createMemoryHistory({initialEntries: [route]});
+        const store = createMockAdminStore(state);
+        return mount(<Provider store={store}><AdminRouter history={history}/></Provider>);
+    }
+
     it("does normal routing when logged in", () => {
-        const history = createMemoryHistory({initialEntries: ['/asd']});
-        const store = createAdminStore(history);
-        const rendered = mount(<Provider store={store}><AdminRouter loggedIn={true} history={history}/></Provider>);
+        const rendered = renderComponent({auth: {loggedIn: true}});
         expect(rendered.find(AdminNoRouteFoundPage)).toHaveLength(1);
     });
 
     it("attempts to log user in when user is logged out", () => {
-
         const loginStub = sandbox.setStubReduxAction(authActionCreators, "loadAuthenticatedUser");
-
-        const history = createMemoryHistory({initialEntries: ['/users/']});
-        const store = createAdminStore(history);
-        const rendered = mount(<Provider store={store}><AdminRouter loggedIn={false} history={history}/></Provider>);
+        const rendered = renderComponent({auth: {loggedIn: false}}, "/users/");
         expect(rendered.find(LoginPage)).toHaveLength(1);
         expect(loginStub.mock.calls.length).toBe(1);
     });
 
+    it("includes coverage page only when user can upload coverage", () => {
+        const coverageRoute = "/touchstones/touchstone-1/1/coverage/";
+        let rendered = renderComponent({auth: {loggedIn: true, canUploadCoverage: true}}, coverageRoute);
+        expect(rendered.find(CoveragePage)).toHaveLength(1);
+
+        rendered = renderComponent({auth: {loggedIn: true, canUploadCoverage: false}}, coverageRoute);
+        expect(rendered.find(CoveragePage)).toHaveLength(0);
+    });
 });
