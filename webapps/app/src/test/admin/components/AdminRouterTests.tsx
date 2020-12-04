@@ -14,7 +14,6 @@ import {createMockAdminStore} from "../../mocks/mockStore";
 import {RecursivePartial} from "../../mocks/mockStates";
 import {AdminAppState} from "../../../main/admin/reducers/adminAppReducers";
 import {CoveragePage} from "../../../main/admin/components/Touchstones/Coverage/CoveragePage";
-import {Route} from "react-router";
 
 describe("AdminRouter", () => {
 
@@ -24,14 +23,14 @@ describe("AdminRouter", () => {
         sandbox.restore();
     });
 
-    function renderComponent(state: RecursivePartial<AdminAppState>, route="/") {
+    function renderComponent(state: RecursivePartial<AdminAppState>, route: string) {
         const history = createMemoryHistory({initialEntries: [route]});
         const store = createMockAdminStore(state);
         return mount(<Provider store={store}><AdminRouter history={history}/></Provider>);
     }
 
     it("does normal routing when logged in", () => {
-        const rendered = renderComponent({auth: {loggedIn: true}});
+        const rendered = renderComponent({auth: {loggedIn: true}}, "/asd");
         expect(rendered.find(AdminNoRouteFoundPage)).toHaveLength(1);
     });
 
