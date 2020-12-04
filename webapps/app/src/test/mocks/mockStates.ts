@@ -34,7 +34,8 @@ export const mockAuthStateObject: AuthState = {
     permissions: [],
     modellingGroups: [],
     isAccountActive: true,
-    isModeller: false
+    isModeller: false,
+    canUploadCoverage: false
 };
 
 export const mockAuthState = (props?: RecursivePartial<AuthState>) => {
