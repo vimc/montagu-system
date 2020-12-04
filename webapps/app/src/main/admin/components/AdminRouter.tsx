@@ -24,14 +24,17 @@ import {ModelMetaPage} from "./ModellingGroups/Models/ModelMetaPage";
 import {CoverageVariablesPage} from "./Touchstones/Coverage/CoverageVariablesPage";
 import {AdminAppState} from "../reducers/adminAppReducers";
 import {UserDetailsProps} from "./Users/SingleUser/UserDetailsContent";
+import {connect} from "react-redux";
+import {mapStateToAppProps} from "../../shared/components/App";
+import {AdminAppComponent} from "./AdminApp";
 
 interface AdminRouterProps {
     loggedIn: boolean;
-    permissions: string[];
     history: History;
+    canUploadCoverage: boolean;
 }
 
-export const AdminRouter: React.FunctionComponent<AdminRouterProps> = (props: AdminRouterProps) => {
+export const AdminRouterComponent: React.FunctionComponent<AdminRouterProps> = (props: AdminRouterProps) => {
 
     const loggedIn = <Switch>
         <Route exact path="/" component={MainMenuPage}/>
@@ -47,7 +50,7 @@ export const AdminRouter: React.FunctionComponent<AdminRouterProps> = (props: Ad
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/demographics/"
                component={DownloadDemographicsAdminPage}/>
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/scenarios/" component={ScenarioPage}/>
-        { props.permissions.indexOf("*/coverage.write") > -1 &&
+        { props.canUploadCoverage &&
             <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage/" component={CoveragePage}/>
         }
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage/coverage-variables/" component={CoverageVariablesPage}/>
@@ -69,3 +72,13 @@ export const AdminRouter: React.FunctionComponent<AdminRouterProps> = (props: Ad
         </div>
     </ConnectedRouter>;
 };
+
+export const mapStateToProps = (state: AdminAppState, props: Partial<AdminRouterProps>): AdminRouterProps => {
+    return {
+        history: props.history,
+        loggedIn: state.auth.loggedIn,
+        canUploadCoverage: state.auth.canUploadCoverage
+    }
+};
+
+export const AdminRouter = connect(mapStateToProps)(AdminRouterComponent);

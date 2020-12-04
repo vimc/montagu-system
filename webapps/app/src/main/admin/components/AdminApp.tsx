@@ -8,7 +8,7 @@ import {AppProps, mapStateToAppProps} from "../../shared/components/App";
 export class AdminAppComponent extends React.Component<AppProps, undefined> {
     render() {
         return <div>
-            <AdminRouter loggedIn={ this.props.loggedIn } history={this.props.history} permissions={this.props.permissions} />
+            <AdminRouter history={this.props.history} />
             <NotificationArea />
             <ErrorLog />
         </div>;

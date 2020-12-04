@@ -10,6 +10,7 @@ export interface AuthState {
     isAccountActive: boolean;
     isModeller: boolean;
     errorMessage?: string;
+    canUploadCoverage: boolean;
 }
 
 export const initialAuthState: AuthState = {
@@ -18,7 +19,8 @@ export const initialAuthState: AuthState = {
     bearerToken: null,
     permissions: [],
     isAccountActive: false,
-    isModeller: false
+    isModeller: false,
+    canUploadCoverage: false
 };
 
 export interface AuthStateOptions {
@@ -29,15 +31,18 @@ export interface AuthStateOptions {
     modellingGroups: string[]
 }
 
+const permissionsInclude = (permissions: string[], perm: string) => permissions.some((x: string) => x == perm);
+
 export function loadAuthState(options: AuthStateOptions): AuthState {
     return {
         loggedIn: options.loggedIn,
         bearerToken: options.bearerToken,
-        isAccountActive: options.permissions.some((x: string) => x == "*/can-login"),
+        isAccountActive: permissionsInclude(options.permissions,"*/can-login"),
         isModeller: options.modellingGroups.length > 0,
         username: options.username,
         permissions: options.permissions,
-        modellingGroups: options.modellingGroups
+        modellingGroups: options.modellingGroups,
+        canUploadCoverage: permissionsInclude(options.permissions, "*/coverage.write")
     }
 }
 
