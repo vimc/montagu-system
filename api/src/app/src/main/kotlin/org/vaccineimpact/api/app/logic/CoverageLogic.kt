@@ -48,7 +48,8 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
             repositories.scenario,
             repositories.expectations)
 
-    private val expectedGAVICoverageYears = LocalDate.now().plusYears(1).year..2030
+    private val mandatoryGAVICoverageYears = 2021..2030
+    private val allowedGAVICoverageYears = 2000..2100
 
     override fun getCoverageSetsForGroup(groupId: String, touchstoneVersionId: String, scenarioId: String):
             ScenarioTouchstoneAndCoverageSets
@@ -70,7 +71,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         for (country in countries)
         {
             val yearMap = YearLookup()
-            for (year in expectedGAVICoverageYears)
+            for (year in mandatoryGAVICoverageYears)
             {
                 yearMap[year.toShort()] = false
             }
@@ -143,7 +144,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                          countries: List<String>,
                          expectedRowLookup: CoverageRowLookup): CoverageRowLookup
     {
-        if (!expectedGAVICoverageYears.contains(row.year))
+        if (!allowedGAVICoverageYears.contains(row.year))
         {
             throw BadRequest("Unexpected year: ${row.year}")
         }
