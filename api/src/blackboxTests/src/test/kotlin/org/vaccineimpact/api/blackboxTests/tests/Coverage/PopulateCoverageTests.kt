@@ -252,6 +252,6 @@ class PopulateCoverageTests : CoverageTests()
 
     private val unexpectedYearCsvData = """
 "vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
-   "HepB_BD",   "AFG",    "routine",     "true",  "2031",         1,     10,    "female", 100, 78.8, false
+   "HepB_BD",   "AFG",    "routine",     "true",  "1999",         1,     10,    "female", 100, 78.8, false
 """
 }
