@@ -46,14 +46,10 @@ class Deserializer
         }
     }
 
-    private fun String.toBooleanValidate(): Boolean
+    private fun String.toBooleanValidate() = when
     {
-        if (this.equals("true", ignoreCase = true)) {
-            return true;
-        }
-        if (this.equals("false", ignoreCase = true)) {
-            return false;
-        }
-        throw ValidationException(listOf(ErrorInfo("invalid-boolean", "Unable to parse '$this' as Boolean")))
+        equals("true", ignoreCase = true) -> true
+        equals("false", ignoreCase = true) -> false
+        else -> throw ValidationException(listOf(ErrorInfo("invalid-boolean", "Unable to parse '$this' as Boolean")))
     }
 }
