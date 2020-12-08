@@ -116,6 +116,7 @@ class SaveCoverageTests : MontaguTests()
         }
         val testSequence = sequenceOf(
                 CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2031, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
                 CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
                 CoverageIngestionRow("Measles", "AFG", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false))
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
@@ -144,10 +145,12 @@ and 13 others"""
         val testSequence = sequenceOf(
                 CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
                 CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
-                CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false))
+                CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("YF", "AFG", ActivityType.CAMPAIGN, true, 2020, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
+        )
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
         sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
-        verify(mockRepo, Times(3)).newCoverageRowRecord(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
+        verify(mockRepo, Times(4)).newCoverageRowRecord(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
     }
 
     @Test
@@ -172,37 +175,42 @@ and 13 others"""
     @Test
     fun `validation detects bad campaign years`()
     {
-        val mockRepo = mock<TouchstoneRepository> {
-            on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
-        }
-        val testSequence = sequenceOf(
-                CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN, true, 2010, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
-        )
-        val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
-        val expectedMessage = "Unexpected year: 2010"
-
-        assertThatThrownBy {
-            sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
-        }.isInstanceOf(BadRequest::class.java)
-                .hasMessageContaining(expectedMessage)
+       `validation detects bad years`(ActivityType.CAMPAIGN)
     }
 
     @Test
     fun `validation detects bad routine years`()
     {
+        `validation detects bad years`(ActivityType.ROUTINE)
+    }
+
+    private fun `validation detects bad years`(activityType: ActivityType)
+    {
         val mockRepo = mock<TouchstoneRepository> {
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
         }
-        val testSequence = sequenceOf(
-                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2010, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
-        )
-        val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
-        val expectedMessage = "Unexpected year: 2010"
 
+        val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
+
+        val testSequenceEarly = sequenceOf(
+                CoverageIngestionRow("HepB", "AFG", activityType, true, 1999, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
+        )
+
+        val testSequenceLate = sequenceOf(
+                CoverageIngestionRow("HepB", "AFG", activityType, true, 2101, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
+        )
+
+        val expectedMessageEarly = "Unexpected year: 1999"
         assertThatThrownBy {
-            sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
+            sut.saveCoverageForTouchstone("t1", testSequenceEarly, "", "", now)
         }.isInstanceOf(BadRequest::class.java)
-                .hasMessageContaining(expectedMessage)
+                .hasMessageContaining(expectedMessageEarly)
+
+        val expectedMessageLate = "Unexpected year: 2101"
+        assertThatThrownBy {
+            sut.saveCoverageForTouchstone("t1", testSequenceLate, "", "", now)
+        }.isInstanceOf(BadRequest::class.java)
+                .hasMessageContaining(expectedMessageLate)
     }
 
     @Test
