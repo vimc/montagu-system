@@ -4,8 +4,9 @@ import {ErrorLog} from "../../shared/components/ErrorLog/ErrorLog";
 import {AdminRouter} from "./AdminRouter";
 import {NotificationArea} from "../../shared/components/NotificationArea/NotificationArea";
 import {AppProps, mapStateToAppProps} from "../../shared/components/App";
+import {AdminAppState} from "../reducers/adminAppReducers";
 
-export class AdminAppComponent extends React.Component<AppProps, undefined> {
+export class AdminAppComponent extends React.Component<AppProps, AdminAppState> {
     render() {
         return <div>
             <AdminRouter history={this.props.history} />
