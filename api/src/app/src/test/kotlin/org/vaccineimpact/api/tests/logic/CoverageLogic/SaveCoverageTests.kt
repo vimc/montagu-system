@@ -197,7 +197,7 @@ and 13 others"""
         )
 
         val testSequenceLate = sequenceOf(
-                CoverageIngestionRow("HepB", "AFG", activityType, true, 21019, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
+                CoverageIngestionRow("HepB", "AFG", activityType, true, 2101, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
         )
 
         val expectedMessageEarly = "Unexpected year: 1999"
