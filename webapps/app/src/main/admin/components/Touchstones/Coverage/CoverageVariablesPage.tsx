@@ -37,7 +37,7 @@ class CoverageVariablesPageComponent extends React.Component<PageProperties<Touc
                 <li>country: the ISO code for this country</li>
                 <li>activity_type: "campaign" or "routine"</li>
                 <li>gavi_support: true or false - whether or not GAVI funded this program</li>
-                <li>year: one of {new Date().getFullYear() + 1} - 2030</li>
+                <li>year: one of 2000 - 2100 (2021 - 2030 must be provided)</li>
                 <li>age_first: the lowest age that received this vaccine</li>
                 <li>age_last: the highest age that received this vaccine</li>
                 <li>gender: "female", "male", or "both"</li>
