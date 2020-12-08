@@ -42,7 +42,7 @@ describe("TouchstoneVersionDetails", () => {
                 currentTouchstoneVersion: mockTouchstoneVersion({id: "v1", status: "open"})
             }
         });
-        return mount(<TouchstoneVersionDetails/>, {context: {store}});//.dive().dive();
+        return mount(<TouchstoneVersionDetails/>, {context: {store}});
     };
 
     it("renders status", () => {
