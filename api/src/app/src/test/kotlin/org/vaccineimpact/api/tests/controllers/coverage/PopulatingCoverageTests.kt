@@ -12,15 +12,11 @@ import org.vaccineimpact.api.app.context.InMemoryRequestData
 import org.vaccineimpact.api.app.controllers.CoverageController
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.requests.MultipartDataMap
-import org.vaccineimpact.api.models.ActivityType
-import org.vaccineimpact.api.models.CoverageIngestionRow
-import org.vaccineimpact.api.models.CoverageUploadMetadata
-import org.vaccineimpact.api.models.GenderEnum
+import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.validation.ValidationException
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Instant
 import java.util.function.Predicate
-
 
 class PopulatingCoverageTests : MontaguTests()
 {
