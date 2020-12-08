@@ -4,6 +4,8 @@ import {ConnectedRouter} from 'react-router-redux';
 import {History} from "history";
 import * as logo from "../../shared/components/PageWithHeader/logo.png"
 import {PageHeader} from "../../shared/components/PageWithHeader/PageHeader";
+import {AdminAppState} from "../reducers/adminAppReducers";
+import {connect} from "react-redux";
 // Pages
 import {AdminNoRouteFoundPage} from "./AdminNoRouteFoundPage";
 import {ModellingGroupsListPage} from "./ModellingGroups/List/ModellingGroupsListPage";
@@ -26,9 +28,10 @@ import {CoverageVariablesPage} from "./Touchstones/Coverage/CoverageVariablesPag
 interface AdminRouterProps {
     loggedIn: boolean;
     history: History;
+    canUploadCoverage: boolean;
 }
 
-export const AdminRouter: React.FunctionComponent<AdminRouterProps> = (props: AdminRouterProps) => {
+export const AdminRouterComponent: React.FunctionComponent<AdminRouterProps> = (props: AdminRouterProps) => {
 
     const loggedIn = <Switch>
         <Route exact path="/" component={MainMenuPage}/>
@@ -44,7 +47,9 @@ export const AdminRouter: React.FunctionComponent<AdminRouterProps> = (props: Ad
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/demographics/"
                component={DownloadDemographicsAdminPage}/>
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/scenarios/" component={ScenarioPage}/>
-        <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage/" component={CoveragePage}/>
+        { props.canUploadCoverage &&
+            <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage/" component={CoveragePage}/>
+        }
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage/coverage-variables/" component={CoverageVariablesPage}/>
         <Route exact path="/users/" component={UsersListPage}/>
         <Route exact path="/users/:username/" component={UserDetailsPage}/>
@@ -64,3 +69,13 @@ export const AdminRouter: React.FunctionComponent<AdminRouterProps> = (props: Ad
         </div>
     </ConnectedRouter>;
 };
+
+export const mapStateToProps = (state: AdminAppState, props: Partial<AdminRouterProps>): AdminRouterProps => {
+    return {
+        history: props.history,
+        loggedIn: state.auth.loggedIn,
+        canUploadCoverage: state.auth.canUploadCoverage
+    }
+};
+
+export const AdminRouter = connect(mapStateToProps)(AdminRouterComponent);
