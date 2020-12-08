@@ -5,16 +5,18 @@ import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Condition
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
 import org.vaccineimpact.api.app.context.InMemoryRequestData
 import org.vaccineimpact.api.app.controllers.CoverageController
-import org.vaccineimpact.api.app.requests.MultipartDataMap
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
+import org.vaccineimpact.api.app.requests.MultipartDataMap
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.serialization.validation.ValidationException
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import java.time.Instant
+import java.util.function.Predicate
 
 class PopulatingCoverageTests : MontaguTests()
 {
@@ -75,6 +77,27 @@ class PopulatingCoverageTests : MontaguTests()
     }
 
     @Test
+    fun `deserializing coverage throws error on invalid gavi_support`()
+    {
+        val mockContext = mock<ActionContext> {
+            on { getParts(anyOrNull()) } doReturn MultipartDataMap(
+                    "description" to InMemoryRequestData("some description"),
+                    "file" to InMemoryRequestData(invalidGaviSupportCSVDataString)
+            )
+        }
+        val sut = CoverageController(mockContext, mock(), mock())
+        val exceptionCondition =  Condition<Throwable>(
+                Predicate<Throwable> { e: Throwable ->
+                    val ve = e as ValidationException
+                    ve.errors.count() == 1 && ve.errors[0].code == "csv-bad-data-type:1:gavi_support"
+                            && ve.errors[0].message == "Unable to parse 'ABC' as Boolean (Row 1, column gavi_support)"
+                }, "exceptionCondition")
+        assertThatThrownBy {
+            sut.getCoverageDataFromCSV().first.toList()
+        }.isInstanceOf(ValidationException::class.java).has(exceptionCondition)
+    }
+
+    @Test
     fun `can get coverage upload metadata`()
     {
         val mockContext = mock<ActionContext> {
@@ -105,5 +128,8 @@ class PopulatingCoverageTests : MontaguTests()
 "vaccine", "country code", "activity", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
    "HepB_BD",   "AFG",    "a campaign",     "true",  "2020",         1,     10,    "both", 100, 78.8, true
 """
-
+    private val invalidGaviSupportCSVDataString = """
+"vaccine", "country", "activity_type", "gavi_support", "year", "age_first", "age_last", "gender", "target", "coverage", "subnational"
+   "HepB_BD",   "AFG",    "campaign",     "ABC",  "2020",         1,     10,    "both", 100, 78.8, true
+"""
 }
