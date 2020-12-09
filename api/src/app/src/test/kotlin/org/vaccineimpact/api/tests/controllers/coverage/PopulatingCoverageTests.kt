@@ -103,7 +103,7 @@ class PopulatingCoverageTests : MontaguTests()
         val mockContext = mock<ActionContext> {
             on { params(":touchstone-version-id") } doReturn "t1"
         }
-        val fakeData = CoverageUploadMetadata("YF", "test.user", Instant.now())
+        val fakeData = CoverageUploadMetadata("YF", "campaign", "test.user", Instant.now())
         val mockRepo = mock<TouchstoneRepository> {
             on { getCoverageUploadMetadata("t1") } doReturn
                     listOf(fakeData)
