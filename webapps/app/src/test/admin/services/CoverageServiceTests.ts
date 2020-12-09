@@ -28,4 +28,17 @@ describe('Upload Coverage service tests', () => {
         expect(postStub.mock.calls[0][1]).toBe(data);
     });
 
+    it('fetches coverage metadata', () => {
+        const coverageService = new CoverageService(store.dispatch, store.getState as () => AdminAppState);
+        const getStub = sandbox.setStubFunc(coverageService, "get", ()=>{
+            return ["TEST META"];
+        });
+
+        const result = coverageService.fetchCoverageMetadata("touchstone-1");
+        expect(result).toStrictEqual(["TEST META"]);
+
+        expect(getStub.mock.calls.length).toEqual(1);
+        expect(getStub.mock.calls[0][0]).toEqual("/touchstones/touchstone-1/coverage/meta/");
+    });
+
 });

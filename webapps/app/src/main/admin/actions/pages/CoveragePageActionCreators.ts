@@ -4,7 +4,6 @@ import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProp
 import {touchstoneVersionPageActionCreators} from "./touchstoneVersionPageActionCreators";
 import {TouchstoneVersionPageLocationProps} from "../../components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
 import {Dispatch} from "redux";
-import {touchstonesActionCreators} from "../../../shared/actions/touchstoneActionCreators";
 import {coverageActionCreators} from "../coverageActionCreators";
 
 export class CoveragePageActionCreators extends AdminPageActionCreators<{}> {
