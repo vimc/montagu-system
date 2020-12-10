@@ -228,17 +228,25 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
             it.createCoverageSet("t-1", "b", ActivityType.ROUTINE, GAVISupportLevel.WITH, oldMetaId)
             it.createCoverageSet("t-1", "a", ActivityType.ROUTINE, GAVISupportLevel.WITH, oldMetaId)
             it.createCoverageSet("t-1", "a", ActivityType.ROUTINE, GAVISupportLevel.WITH, recentMetaId)
+            it.createCoverageSet("t-1", "b", ActivityType.CAMPAIGN, GAVISupportLevel.WITH, recentMetaId)
             it.getCoverageUploadMetadata("t-1")
         }
 
-        assertThat(meta.count()).isEqualTo(2)
+        assertThat(meta.count()).isEqualTo(3)
         assertThat(meta[0].vaccine).isEqualTo("a")
         assertThat(meta[0].uploadedOn).isEqualTo(now)
+        assertThat(meta[0].activityType).isEqualTo("Routine vaccination")
         assertThat(meta[0].uploadedBy).isEqualTo("test.user")
 
         assertThat(meta[1].vaccine).isEqualTo("b")
-        assertThat(meta[1].uploadedOn).isEqualTo(then)
+        assertThat(meta[1].uploadedOn).isEqualTo(now)
+        assertThat(meta[1].activityType).isEqualTo("Campaign vaccination")
         assertThat(meta[1].uploadedBy).isEqualTo("test.user")
+
+        assertThat(meta[2].vaccine).isEqualTo("b")
+        assertThat(meta[2].uploadedOn).isEqualTo(then)
+        assertThat(meta[2].activityType).isEqualTo("Routine vaccination")
+        assertThat(meta[2].uploadedBy).isEqualTo("test.user")
     }
 
     @Test

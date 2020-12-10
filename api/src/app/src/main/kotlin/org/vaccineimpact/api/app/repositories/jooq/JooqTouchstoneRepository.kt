@@ -246,13 +246,15 @@ class JooqTouchstoneRepository(
     override fun getCoverageUploadMetadata(touchstoneVersionId: String): List<CoverageUploadMetadata>
     {
         return dsl.select(COVERAGE_SET.VACCINE,
+                ACTIVITY_TYPE.NAME.`as`("activityType"),
                 COVERAGE_SET_UPLOAD_METADATA.UPLOADED_BY,
                 COVERAGE_SET_UPLOAD_METADATA.UPLOADED_ON)
                 .fromJoinPath(COVERAGE_SET, COVERAGE_SET_UPLOAD_METADATA)
+                .joinPath(COVERAGE_SET, ACTIVITY_TYPE)
                 .where(COVERAGE_SET.TOUCHSTONE.eq(touchstoneVersionId))
-                .orderBy(COVERAGE_SET.VACCINE)
+                .orderBy(COVERAGE_SET.VACCINE, COVERAGE_SET.ACTIVITY_TYPE)
                 .fetchInto(CoverageUploadMetadata::class.java)
-                .groupBy { it.vaccine }
+                .groupBy { Pair(it.vaccine, it.activityType) }
                 .map { g ->
                     g.value.maxBy { it.uploadedOn }!!
                 }
