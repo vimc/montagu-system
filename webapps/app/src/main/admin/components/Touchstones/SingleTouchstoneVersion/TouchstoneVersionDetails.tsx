@@ -10,6 +10,7 @@ import {InternalLink} from "../../../../shared/components/InternalLink";
 interface TouchstoneVersionDetailsProps {
     touchstoneVersion: TouchstoneVersion
     touchstone: Touchstone
+    canUploadCoverage: Boolean
 }
 
 export class TouchstoneVersionDetailsComponent extends React.Component<TouchstoneVersionDetailsProps> {
@@ -29,6 +30,11 @@ export class TouchstoneVersionDetailsComponent extends React.Component<Touchston
                 <InternalLink href={`${baseUrl}demographics/`} className="list-group-item">
                     Download demographic data
                 </InternalLink>
+                { this.props.canUploadCoverage &&
+                    <InternalLink href={`${baseUrl}coverage/`} className="list-group-item">
+                        Upload coverage
+                    </InternalLink>
+                }
             </div>
         </div>;
     }
@@ -37,7 +43,8 @@ export class TouchstoneVersionDetailsComponent extends React.Component<Touchston
 const mapStateToProps = (state: AdminAppState): TouchstoneVersionDetailsProps => {
     return {
         touchstone: state.touchstones.currentTouchstone,
-        touchstoneVersion: state.touchstones.currentTouchstoneVersion
+        touchstoneVersion: state.touchstones.currentTouchstoneVersion,
+        canUploadCoverage: state.auth.canUploadCoverage
     }
 };
 
