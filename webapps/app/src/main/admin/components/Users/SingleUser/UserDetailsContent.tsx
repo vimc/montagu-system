@@ -67,8 +67,8 @@ export const UserDetailsContentComponent: React.FunctionComponent<UserDetailsPro
 
 export const mapStateToProps = (state: AdminAppState): UserDetailsProps => {
     return {
-        canReadRoles: state.auth.permissions.indexOf("*/roles.read") > -1,
-        canWriteRoles: state.auth.permissions.indexOf("*/roles.write") > -1,
+        canReadRoles: state.auth.canReadRoles,
+        canWriteRoles: state.auth.canWriteRoles,
         user: state.users.currentUser,
     }
 };

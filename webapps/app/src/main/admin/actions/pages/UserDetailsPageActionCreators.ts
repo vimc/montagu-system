@@ -25,7 +25,7 @@ export class UserDetailsPageActionCreators extends AdminPageActionCreators<UserD
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
 
             dispatch(usersActionCreators.setCurrentUser(params.username));
-            if (getState().auth.permissions.indexOf("*/roles.read") > -1) {
+            if (getState().auth.canReadRoles) {
                 dispatch(usersActionCreators.getGlobalRoles())
             }
         }

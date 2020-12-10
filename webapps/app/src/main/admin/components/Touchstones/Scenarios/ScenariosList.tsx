@@ -4,7 +4,6 @@ import * as React from "react";
 import {connect} from "react-redux";
 import {ScenarioGroup} from "./ScenarioGroup";
 import {discardDispatch} from "../../../../shared/Helpers";
-import {UncontrolledTooltip} from "reactstrap";
 
 export interface ScenariosListProps {
     scenarios: Scenario[];
@@ -33,7 +32,7 @@ function mapStateToProps(state: AdminAppState): ScenariosListProps {
     return {
         scenarios: state.scenario.scenarios.filter(s => s.touchstones.some(t => t == touchstoneVersionId)),
         diseases: state.diseases.diseases,
-        canDownloadCoverage: state.auth.permissions.indexOf("*/coverage.read") > -1,
+        canDownloadCoverage: state.auth.canDownloadCoverage,
         touchstoneVersionId: touchstoneVersionId
     }
 }

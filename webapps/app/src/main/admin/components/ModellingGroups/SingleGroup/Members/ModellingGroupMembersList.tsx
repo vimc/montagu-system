@@ -38,7 +38,7 @@ const mapSortUsers = (users: User[]) => {
 
 const mapStateToProps = (state: AdminAppState, props: Partial<ModellingGroupMembersListProps>) :Partial<ModellingGroupMembersListProps> => {
     return {
-        isAdmin: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1,
+        isAdmin: state.auth.canManageGroupMembers,
         users: mapSortUsers(props.users),
         groupId: props.groupId
     }

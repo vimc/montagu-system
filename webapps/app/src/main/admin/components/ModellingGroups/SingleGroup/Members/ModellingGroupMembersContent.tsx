@@ -42,7 +42,7 @@ export const ModellingGroupMembersContentComponent: React.FunctionComponent<Mode
 
 export const mapStateToProps = (state: AdminAppState) :Partial<ModellingGroupMembersContentProps> => {
     return {
-        canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1,
+        canManageGroupMembers: state.auth.canManageGroupMembers,
         groupId: state.groups.currentGroupDetails ? state.groups.currentGroupDetails.id : null,
         users: state.users.users,
         members: state.groups.currentGroupMembers,
