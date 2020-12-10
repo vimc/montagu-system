@@ -16,17 +16,14 @@ import {createAdminStore} from "../main/admin/stores/createAdminStore";
 import {AuthService} from "../main/shared/services/AuthService";
 import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";
 import {UsersService} from "../main/admin/services/UsersService";
-import {mockBurdenEstimateSet, mockModellingGroupCreation, mockTouchstoneVersion} from "../test/mocks/mockModels";
+import {mockModellingGroupCreation, mockTouchstoneVersion} from "../test/mocks/mockModels";
 import {TouchstonesService} from "../main/shared/services/TouchstonesService";
 import {ScenarioGroupComponent} from "../main/admin/components/Touchstones/Scenarios/ScenarioGroup"
 import {FileDownloadButton, FileDownloadLink} from "../main/shared/components/FileDownloadLink";
 import {ExpectationsService} from "../main/shared/services/ExpectationsService";
-import {UploadCoverageService} from "../main/admin/services/UploadCoverageService";
+import {CoverageService} from "../main/admin/services/CoverageService";
 import FormData = require("form-data");
-import {CurrentEstimateSetSummary} from "../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
-import {UploadCoverage} from "../main/admin/components/Touchstones/Coverage/UploadCoverage";
 import {CoveragePage} from "../main/admin/components/Touchstones/Coverage/CoveragePage";
-import {InternalLink} from "../main/shared/components/InternalLink";
 import {createMockAdminStore} from "../test/mocks/mockStore";
 import {mockMatch} from "../test/mocks/mocks";
 import {TouchstoneVersionPageLocationProps} from "../main/admin/components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
@@ -343,10 +340,16 @@ class AdminIntegrationTests extends IntegrationTestSuite {
         it("can upload coverage", async () => {
             const form = new FormData();
 
-            const uploadResult: Result = await (new UploadCoverageService(this.store.dispatch, this.store.getState))
+            const uploadResult: Result = await (new CoverageService(this.store.dispatch, this.store.getState))
                 .uploadCoverage(touchstoneVersionId, form);
 
-            expect(uploadResult.errors[0].message).toEqual("You must supply a \'file\' parameter in the multipart body");
+            expect(uploadResult.errors[0].message).toEqual("You must supply a \'description\' parameter in the multipart body");
+        });
+
+        it("can get coverage metadata", async () => {
+            const result: Result = await (new CoverageService(this.store.dispatch, this.store.getState))
+                .fetchCoverageMetadata("touchstone-1");
+            expect(result).toStrictEqual([]);
         });
 
         it("can download coverage template", async () => {
@@ -371,7 +374,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const headers = result.split("\n")[0];
 
             // just check it's the format we're expecting
-            expect(headers).toEqual("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\"")
+            expect(headers).toEqual("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\", \"subnational\"")
         })
     }
 }

@@ -4,8 +4,9 @@ import me.ntrrgc.tsGenerator.ClassTransformer
 import me.ntrrgc.tsGenerator.TypeScriptGenerator
 import me.ntrrgc.tsGenerator.camelCaseToSnakeCase
 import org.vaccineimpact.api.models.*
+import org.vaccineimpact.api.models.expectations.CohortRestriction
+import org.vaccineimpact.api.models.expectations.TouchstoneModelExpectations
 import org.vaccineimpact.api.models.permissions.AssociateRole
-import org.vaccineimpact.api.models.responsibilities.ResponsibilitySet
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import java.io.File
 import java.sql.Timestamp
@@ -31,6 +32,7 @@ fun main(args: Array<String>) {
                         AssociateUser::class,
                         CohortRestriction::class,
                         CoverageSet::class,
+                        CoverageUploadMetadata::class,
                         Country::class,
                         CreateBurdenEstimateSet::class,
                         Disease::class,

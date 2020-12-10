@@ -3,6 +3,8 @@ import {AdminPageActionCreators} from "./AdminPageActionCreators";
 import {PageBreadcrumb} from "../../../shared/components/PageWithHeader/PageProperties";
 import {touchstoneVersionPageActionCreators} from "./touchstoneVersionPageActionCreators";
 import {TouchstoneVersionPageLocationProps} from "../../components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
+import {Dispatch} from "redux";
+import {coverageActionCreators} from "../coverageActionCreators";
 
 export class CoveragePageActionCreators extends AdminPageActionCreators<{}> {
 
@@ -24,8 +26,10 @@ export class CoveragePageActionCreators extends AdminPageActionCreators<{}> {
     }
 
     loadData(params: TouchstoneVersionPageLocationProps) {
-        return async () => {
-            await new Promise(resolve => setTimeout(resolve));
+        return async (dispatch: Dispatch<AdminAppState>) => {
+            await dispatch(coverageActionCreators.getCoverageMetadata(
+                params.touchstoneVersionId
+            ));
         }
     }
 }

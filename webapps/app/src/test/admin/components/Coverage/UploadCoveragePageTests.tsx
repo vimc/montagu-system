@@ -11,6 +11,7 @@ import {coveragePageActionCreators} from "../../../../main/admin/actions/pages/C
 import {TouchstoneVersionPageLocationProps} from "../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
 import {mockTouchstoneVersion} from "../../../mocks/mockModels";
 import {FileDownloadLink} from "../../../../main/shared/components/FileDownloadLink";
+import {CoverageProgress} from "../../../../main/admin/components/Touchstones/Coverage/CoverageProgress";
 
 describe("Upload Coverage Page tests", () => {
     const sandbox = new Sandbox();
@@ -29,6 +30,7 @@ describe("Upload Coverage Page tests", () => {
         const pageArticle = rendered.find(PageArticle);
         expect(onLoadStub.mock.calls.length).toBe(1);
         expect(pageArticle.props().title).toBe("Upload coverage for touchstone version touchstone-1");
+        expect(pageArticle.find(CoverageProgress).length).toBe(1);
         expect(pageArticle.find(UploadCoverage).length).toBe(1);
         expect(pageArticle.find(FileDownloadLink).prop("href")).toBe("/coverage/template/");
         expect(pageArticle.find(FileDownloadLink).childAt(0).text()).toBe("Download template");

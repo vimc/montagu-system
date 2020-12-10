@@ -16,6 +16,17 @@
 6. Run `./scripts/run-development-dependencies.sh` to run Montagu
    with a shared key, and with test data.
 
+## Generating Typescript classes from Kotlin classes
+This repo shares [montagu-webmodels](https://github.com/vimc/montagu-webmodels) as a submodule with
+[montagu-api](https://github.com/vimc/montagu-api). When new Kotlin classes are added to `montagu-webmodels`, we
+can generate Typescript interfaces to match them by doing the following:
+
+1. Make sure the latest version of the models repo is checked out here:
+ `cd app/src/webmodels/models && git checkout master && git pull`
+1. Add any new models you want to include in the generation to the Kotlin tool, in the
+ [`GenerateTypeDefinitions` class](src/webmodels/generate/src/main/kotlin/org/vaccineimpact/api/GenerateTypeDefinitions.kt)
+1. Run the tool to generate new Typescript interfaces: `npm run generate-models`
+
 ## Linting
 1. `npm run tslint` to see all tslint errors
 2. Optionally you can enable tslint plugin in your IDE to see errors in code (for Webstorm users:
@@ -28,12 +39,16 @@ If you need more rules to check against, add them in file tslint.json, under sec
 3. `npm test -- -t "foo bar"` runs just the individual test called "foo bar".
 
 ## Integration tests
-Run `npm run integration-test` to run all integration tests. The version of
-the API that tests are run against is stored in `./config/api_version`.
+`npm run integration-test` runs all integration tests. The version of
+the API that tests are run against is stored in `./config/api_version`. 
+
+*NB be wary about running integration tests directly in your local dev environment. We have scripts which set up some 
+necessary environment variables for accessing the montagu db. Use `run-integration-tests-with-apis.sh` instead.*
 
 The integration tests get run in three different ways:
 
-1. During development, using the method above.
+1. During development, with `run-integration-tests-with-apis.sh`, which also runs dependencies and sets environment variables
+used by postgres for accessing the montagu db.
 2. During the Webapp BuildKite build configuration. This runs the tests in
    exactly the same way, but does so inside a Docker container that gives a
    consistent build environment. Additionally, during this same build, another

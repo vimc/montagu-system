@@ -31,6 +31,13 @@ export interface CoverageSet {
     vaccine: string;
 }
 
+export interface CoverageUploadMetadata {
+    activity_type: string;
+    uploaded_by: string;
+    uploaded_on: string;
+    vaccine: string;
+}
+
 export interface Country {
     id: string;
     name: string;
