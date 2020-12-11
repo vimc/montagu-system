@@ -9,10 +9,18 @@ const testAuthData: AuthState = {
     loggedIn: false,
     username: 'test.user',
     bearerToken: 'testtoken',
-    permissions: [],
     isAccountActive: true,
     isModeller: false,
-    canUploadCoverage: false
+    canUploadCoverage: false,
+    canDownloadCoverage: false,
+    canViewGroups: false,
+    canViewTouchstones: false,
+    canViewUsers: false,
+    canReadRoles: false,
+    canWriteRoles: false,
+    canCreateUsers: false,
+    canCreateModellingGroups: false,
+    canManageGroupMembers: false
 };
 
 describe('Auth reducer tests', () => {
@@ -77,9 +85,21 @@ describe ('loadAuthState tests', () => {
         expect(result.username).toEqual("testUser");
         expect(result.loggedIn).toEqual(true);
         expect(result.bearerToken).toEqual("testToken");
-        expect(result.permissions).toEqual(["perm1", "perm2"]);
         expect(result.modellingGroups).toEqual(["group1", "group2"]);
-        expect(result.canUploadCoverage).toBe(false);
+        const expectAllFalse = (...params: boolean[]) =>
+            params.forEach(value => expect(value).toBe(false));
+        expectAllFalse(
+            result.canDownloadCoverage,
+            result.canUploadCoverage,
+            result.canViewGroups,
+            result.canViewTouchstones,
+            result.canViewUsers,
+            result.canReadRoles,
+            result.canWriteRoles,
+            result.canCreateUsers,
+            result.canCreateModellingGroups,
+            result.canManageGroupMembers
+        );
     });
 
     it('sets isAccountActive correctly', () => {
@@ -108,11 +128,50 @@ describe ('loadAuthState tests', () => {
         expect(nonModeller.isModeller).toEqual(false);
     });
 
-    it('sets canUploadCoverage if coverage write permission present', () => {
-        const result = loadAuthState({
+    const loadAuthStateWithPermission = (permission: string) => {
+        return loadAuthState({
             ...basicOptions,
-            permissions: ["*/coverage.write", "perm1", "perm2"]
+            permissions: [...basicOptions.permissions, permission]
         });
-        expect(result.canUploadCoverage).toBe(true);
+    };
+
+    it('sets canUploadCoverage if coverage write permission present', () => {
+        expect(loadAuthStateWithPermission("*/coverage.write").canUploadCoverage).toBe(true);
+    });
+
+    it('sets canDownloadCoverage if coverage read permission present', () => {
+        expect(loadAuthStateWithPermission( "*/coverage.write").canUploadCoverage).toBe(true);
+    });
+
+    it('sets canViewGroups if modelling groups read permission present', () => {
+        expect(loadAuthStateWithPermission("*/modelling-groups.read").canViewGroups).toBe(true);
+    });
+
+    it('sets canViewTouchstones if touchstones read permission present', () => {
+        expect(loadAuthStateWithPermission("*/touchstones.read").canViewTouchstones).toBe(true);
+    });
+
+    it('sets canViewUsers if users read permission present', () => {
+        expect(loadAuthStateWithPermission("*/users.read").canViewUsers).toBe(true);
+    });
+
+    it('sets canReadRoles if roles read permission present', () => {
+        expect(loadAuthStateWithPermission("*/roles.read").canReadRoles).toBe(true);
+    });
+
+    it('sets canWriteRoles if roles write permission present', () => {
+        expect(loadAuthStateWithPermission("*/roles.write").canWriteRoles).toBe(true);
+    });
+
+    it('sets canCreateUsers if users create permission present', () => {
+        expect(loadAuthStateWithPermission("*/users.create").canCreateUsers).toBe(true);
+    });
+
+    it('sets canCreateModellingGroups if users create permission present', () => {
+        expect(loadAuthStateWithPermission("*/users.create").canCreateModellingGroups).toBe(true);
+    });
+
+    it('sets canManageGroupMembers if modelling groups manage members permission present', () => {
+        expect(loadAuthStateWithPermission("*/modelling-groups.manage-members").canManageGroupMembers).toBe(true);
     });
 });
