@@ -28,7 +28,7 @@ describe("Modelling Group Members Content component tests", () => {
         it("connect level, can edit, there are members", () => {
             const testGroupDetails = mockModellingGroupDetails({members: [testUser.username]});
             const testState = {
-                auth: { permissions: ["*/modelling-groups.manage-members"]},
+                auth: { canManageGroupMembers: true},
                 groups: { currentGroupDetails: testGroupDetails, currentGroupMembers: [testUser] },
                 users: { users: [testUser, testUser2]},
             };
@@ -45,7 +45,7 @@ describe("Modelling Group Members Content component tests", () => {
         it("connect level, can not edit, there are no members", () => {
             const testGroupDetails = mockModellingGroupDetails({members: []});
             const testState = {
-                auth: { permissions: ["test"]},
+                auth: { canManageGroupMembers: false},
                 groups: { currentGroupDetails: testGroupDetails, currentGroupMembers: [] as any},
                 users: { users: [testUser, testUser2]},
 

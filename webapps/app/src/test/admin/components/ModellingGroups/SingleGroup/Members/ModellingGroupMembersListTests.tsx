@@ -11,7 +11,6 @@ import { mockUser } from "../../../../../mocks/mockModels";
 import { Sandbox } from "../../../../../Sandbox";
 import { ModellingGroupMembersDeletableUser } from "../../../../../../main/admin/components/ModellingGroups/SingleGroup/Members/ModellingGroupMembersDeletableUser";
 import {createMockStore} from "../../../../../mocks/mockStore";
-// import { reduxHelper } from "../../../../../reduxHelper";
 
 describe("Modelling Group Members List component tests", () => {
 
@@ -26,7 +25,7 @@ describe("Modelling Group Members List component tests", () => {
 
         it("connect level, there are users and can manage", () => {
             const testState = {
-                auth: { permissions: ["*/modelling-groups.manage-members"]},
+                auth: { canManageGroupMembers: true},
             };
             const store = createMockStore(testState);
 
@@ -41,7 +40,7 @@ describe("Modelling Group Members List component tests", () => {
 
         it("connect level, there are no users and can not manage", () => {
             const testState = {
-                auth: { permissions: ["*/test"]},
+                auth: { canManageGroupMembers: false },
             };
             const store = createMockStore(testState);
 

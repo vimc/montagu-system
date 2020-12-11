@@ -54,7 +54,7 @@ describe("User Details Page actions tests", () => {
 
     it("sets current user and gets global roles on load", async () => {
 
-        store = createMockStore(mockAdminState({auth: {permissions: ["*/roles.read"]}}));
+        store = createMockStore(mockAdminState({auth: {canReadRoles: true}}));
         await store.dispatch(userDetailsPageActionCreators.loadData({username: "test.user"}));
 
         const actions = store.getActions();

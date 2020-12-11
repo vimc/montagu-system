@@ -30,38 +30,28 @@ describe("UserDetailsContent", () => {
     });
 
     it(
-        "maps canReadRoles property to true if user has '*roles.read' permission",
+        "gets canReadRoles property from auth state",
         () => {
-            const adminStateMock = mockAdminState({auth: mockAuthState({permissions: ["*/roles.read"]})});
-            const props = mapStateToProps(adminStateMock);
+            let adminStateMock = mockAdminState({auth: mockAuthState({canReadRoles: false})});
+            let props = mapStateToProps(adminStateMock);
+            expect(props.canReadRoles).toEqual(false);
+
+            adminStateMock = mockAdminState({auth: mockAuthState({canReadRoles: true})});
+            props = mapStateToProps(adminStateMock);
             expect(props.canReadRoles).toEqual(true);
         }
     );
 
     it(
-        "maps canReadRoles property to false if user does not have '*roles.read' permission",
+        "gets canWriteRoles property from auth state",
         () => {
-            const adminStateMock = mockAdminState();
-            const props = mapStateToProps(adminStateMock);
-            expect(props.canReadRoles).toEqual(false);
-        }
-    );
-
-    it(
-        "maps canWriteRoles property to true if user has '*roles.write' permission",
-        () => {
-            const adminStateMock = mockAdminState({auth: mockAuthState({permissions: ["*/roles.write"]})});
-            const props = mapStateToProps(adminStateMock);
-            expect(props.canWriteRoles).toEqual(true);
-        }
-    );
-
-    it(
-        "maps canWriteRoles property to false if user does not have '*roles.write' permission",
-        () => {
-            const adminStateMock = mockAdminState();
-            const props = mapStateToProps(adminStateMock);
+            let adminStateMock = mockAdminState({auth: mockAuthState({canWriteRoles: false})});
+            let props = mapStateToProps(adminStateMock);
             expect(props.canWriteRoles).toEqual(false);
+
+            adminStateMock = mockAdminState({auth: mockAuthState({canWriteRoles: true})});
+            props = mapStateToProps(adminStateMock);
+            expect(props.canWriteRoles).toEqual(true);
         }
     );
 
