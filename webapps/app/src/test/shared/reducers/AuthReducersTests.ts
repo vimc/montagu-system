@@ -140,7 +140,7 @@ describe ('loadAuthState tests', () => {
     });
 
     it('sets canDownloadCoverage if coverage read permission present', () => {
-        expect(loadAuthStateWithPermission( "*/coverage.write").canUploadCoverage).toBe(true);
+        expect(loadAuthStateWithPermission( "*/coverage.read").canDownloadCoverage).toBe(true);
     });
 
     it('sets canViewGroups if modelling groups read permission present', () => {
