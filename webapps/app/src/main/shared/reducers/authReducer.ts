@@ -5,22 +5,38 @@ export interface AuthState {
     loggedIn: boolean;
     username: string;
     bearerToken: string;
-    permissions: string[];
     modellingGroups?: string[];
     isAccountActive: boolean;
     isModeller: boolean;
     errorMessage?: string;
+    canDownloadCoverage: boolean;
     canUploadCoverage: boolean;
+    canViewGroups: boolean;
+    canViewTouchstones: boolean;
+    canViewUsers: boolean;
+    canReadRoles: boolean;
+    canWriteRoles: boolean;
+    canCreateUsers: boolean;
+    canCreateModellingGroups: boolean;
+    canManageGroupMembers: boolean;
 }
 
 export const initialAuthState: AuthState = {
     loggedIn: false,
     username: null,
     bearerToken: null,
-    permissions: [],
     isAccountActive: false,
     isModeller: false,
-    canUploadCoverage: false
+    canDownloadCoverage: false,
+    canUploadCoverage: false,
+    canViewGroups: false,
+    canViewTouchstones: false,
+    canViewUsers: false,
+    canReadRoles: false,
+    canWriteRoles: false,
+    canCreateUsers: false,
+    canCreateModellingGroups: false,
+    canManageGroupMembers: false
 };
 
 export interface AuthStateOptions {
@@ -40,9 +56,18 @@ export function loadAuthState(options: AuthStateOptions): AuthState {
         isAccountActive: permissionsInclude(options.permissions,"*/can-login"),
         isModeller: options.modellingGroups.length > 0,
         username: options.username,
-        permissions: options.permissions,
         modellingGroups: options.modellingGroups,
-        canUploadCoverage: permissionsInclude(options.permissions, "*/coverage.write")
+
+        canDownloadCoverage: permissionsInclude(options.permissions,"*/coverage.read"),
+        canUploadCoverage: permissionsInclude(options.permissions, "*/coverage.write"),
+        canViewGroups: permissionsInclude(options.permissions,"*/modelling-groups.read"),
+        canViewTouchstones: permissionsInclude(options.permissions,"*/touchstones.read"),
+        canViewUsers: permissionsInclude(options.permissions, "*/users.read"),
+        canReadRoles: permissionsInclude(options.permissions,"*/roles.read"),
+        canWriteRoles: permissionsInclude(options.permissions,"*/roles.write"),
+        canCreateUsers: permissionsInclude(options.permissions,"*/users.create"),
+        canCreateModellingGroups: permissionsInclude(options.permissions,"*/modelling-groups.write"),
+        canManageGroupMembers: permissionsInclude(options.permissions,"*/modelling-groups.manage-members")
     }
 }
 

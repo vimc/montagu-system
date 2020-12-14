@@ -33,7 +33,7 @@ describe("ScenariosList", () => {
     });
 
     it(
-        "canDownloadCoverage is true when user has global coverage reading permission",
+        "canDownloadCoverage is true when user has permission in auth state",
         () => {
             const touchstoneVersionId = "t1";
             const scenarios = [
@@ -45,7 +45,7 @@ describe("ScenariosList", () => {
             const store = createMockAdminStore({
                 scenario: {scenarios},
                 diseases: {diseases},
-                auth: {permissions: ["*/coverage.read"]},
+                auth: {canDownloadCoverage: true},
                 touchstones: {currentTouchstoneVersion: mockTouchstoneVersion({id: touchstoneVersionId})}
             });
             const rendered = shallow(<ScenariosList/>, {context: {store}});
@@ -73,7 +73,8 @@ describe("ScenariosList", () => {
             const store = createMockAdminStore({
                 scenario: {scenarios: d1scenarios.concat(d2scenarios)},
                 diseases: {diseases: [disease1, disease2]},
-                touchstones: {currentTouchstoneVersion: mockTouchstoneVersion({id: touchstoneVersionId})}
+                touchstones: {currentTouchstoneVersion: mockTouchstoneVersion({id: touchstoneVersionId})},
+                auth: {canDownloadCoverage: false}
             });
             const rendered = shallow(<ScenariosList/>, {context: {store}}).dive();
             const groups = rendered.find(ScenarioGroup);

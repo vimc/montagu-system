@@ -8,18 +8,16 @@ import {usersActionCreators} from "../../../../../main/admin/actions/usersAction
 import {mockAdminState, mockAdminUsersState, mockAuthState} from "../../../../mocks/mockStates";
 import {createMockStore} from "../../../../mocks/mockStore";
 
-describe("CreateUserSectionComponenent", () => {
+describe("CreateUserSectionComponent", () => {
     const sandbox = new Sandbox();
     afterEach(() => sandbox.restore());
 
     it(
-        "renders form when 'showCreateUser' is true and user has 'users-create' permission",
+        "renders form when 'showCreateUser' is true and user can create users",
         () => {
             const store = createMockStore(mockAdminState({
                 users: mockAdminUsersState({showCreateUser: true}),
-                auth: mockAuthState({
-                    permissions: ["*/users.create"]
-                })
+                auth: mockAuthState({canCreateUsers: true})
             }));
             const rendered = shallow(<CreateUserSection/>, {context: {store}}).dive().dive();
             expect(rendered.find(CreateUserForm)).toHaveLength(1);
@@ -28,13 +26,11 @@ describe("CreateUserSectionComponenent", () => {
     );
 
     it(
-        "renders button when 'showCreateUser' is false and user has 'users-create' permission",
+        "renders button when 'showCreateUser' is false and user can create users",
         () => {
             const store = createMockStore(mockAdminState({
                 users: mockAdminUsersState({showCreateUser: false}),
-                auth: mockAuthState({
-                    permissions: ["*/users.create"]
-                })
+                auth: mockAuthState({canCreateUsers: true})
             }));
             const rendered = shallow(<CreateUserSection/>, {context: {store}}).dive().dive();
             expect(rendered.find(CreateUserForm)).toHaveLength(0);
@@ -43,9 +39,12 @@ describe("CreateUserSectionComponenent", () => {
     );
 
     it(
-        "renders nothing when user does not have 'users-create' permission",
+        "renders nothing when user cannot create users",
         () => {
-            const store = createMockStore(mockAdminState({users: mockAdminUsersState({showCreateUser: false})}));
+            const store = createMockStore(mockAdminState({
+                users: mockAdminUsersState({showCreateUser: false}),
+                auth: mockAuthState({canCreateUsers: false})
+            }));
             const rendered = shallow(<CreateUserSection/>, {context: {store}}).dive().dive();
             expect(rendered.find("button")).toHaveLength(0);
             expect(rendered.find("div")).toHaveLength(0);
@@ -55,9 +54,7 @@ describe("CreateUserSectionComponenent", () => {
     it("button triggers setShowCreateUser", () => {
         const store = createMockStore(mockAdminState({
             users: mockAdminUsersState({showCreateUser: false}),
-            auth: mockAuthState({
-                permissions: ["*/users.create"]
-            })
+            auth: mockAuthState({canCreateUsers: true})
         }));
         const spy = sandbox.setStubReduxAction(usersActionCreators, "setShowCreateUser");
         const rendered = shallow(<CreateUserSection/>, {context: {store}}).dive().dive();

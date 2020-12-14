@@ -5,15 +5,14 @@ import {MainMenuList} from "../../../main/admin/components/MainMenu/MainMenu";
 import {createMockStore} from "../../mocks/mockStore";
 import {mockAdminState, mockAuthState} from "../../mocks/mockStates";
 import {ButtonLink} from "../../../main/shared/components/ButtonLink";
+import {AuthState} from "../../../main/shared/reducers/authReducer";
 
 
 describe("Admin main menu tests", () => {
 
-    function createStoreWithPermissions(permissions: string[]) {
+    function createStoreWithAuth(auth: Partial<AuthState>) {
         return createMockStore(mockAdminState({
-            auth: mockAuthState({
-                permissions: permissions
-            })
+            auth: mockAuthState(auth)
         }));
     }
 
@@ -28,7 +27,7 @@ describe("Admin main menu tests", () => {
 
     it("show touchstone button if user has permission", () => {
 
-        const store = createStoreWithPermissions(["*/touchstones.read"]);
+        const store = createStoreWithAuth({canViewTouchstones: true});
 
         const rendered = shallow(<MainMenuList/>, {context: {store}})
             .dive();
@@ -40,7 +39,7 @@ describe("Admin main menu tests", () => {
 
     it("show users button if user has permission", () => {
 
-        const store = createStoreWithPermissions(["*/users.read"]);
+        const store = createStoreWithAuth({canViewUsers: true});
 
         const rendered = shallow(<MainMenuList/>, {context: {store}})
             .dive(); const buttons = rendered.find(ButtonLink);
@@ -51,7 +50,7 @@ describe("Admin main menu tests", () => {
 
     it("show groups button if user has permission", () => {
 
-        const store = createStoreWithPermissions(["*/modelling-groups.read"]);
+        const store = createStoreWithAuth({canViewGroups: true});
 
         const rendered = shallow(<MainMenuList/>, {context: {store}})
             .dive();

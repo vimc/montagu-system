@@ -36,7 +36,7 @@ const mapStateToProps = (state: AdminAppState) :Partial<ModellingGroupDetailsCon
     return {
         group: state.groups.currentGroupDetails,
         members: state.groups.currentGroupMembers,
-        canManageGroupMembers: state.auth.permissions.indexOf("*/modelling-groups.manage-members") > -1
+        canManageGroupMembers: state.auth.canManageGroupMembers
     }
 };
 

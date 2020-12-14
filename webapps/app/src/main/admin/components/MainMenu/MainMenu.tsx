@@ -40,9 +40,9 @@ class MainMenuListComponent extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: AdminAppState): Props => ({
-    canViewGroups: state.auth.permissions.indexOf("*/modelling-groups.read") > -1,
-    canViewTouchstones: state.auth.permissions.indexOf("*/touchstones.read") > -1,
-    canViewUsers: state.auth.permissions.indexOf("*/users.read") > -1
+    canViewGroups: state.auth.canViewGroups,
+    canViewTouchstones: state.auth.canViewTouchstones,
+    canViewUsers: state.auth.canViewUsers
 });
 
 export const MainMenuList = compose(

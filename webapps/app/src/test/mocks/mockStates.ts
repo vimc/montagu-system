@@ -31,11 +31,19 @@ export const mockAuthStateObject: AuthState = {
     loggedIn: true,
     username: 'test.user',
     bearerToken: 'TEST-TOKEN',
-    permissions: [],
     modellingGroups: [],
     isAccountActive: true,
     isModeller: false,
-    canUploadCoverage: false
+    canUploadCoverage: false,
+    canDownloadCoverage: false,
+    canViewGroups: false,
+    canViewTouchstones: false,
+    canViewUsers: false,
+    canReadRoles: false,
+    canWriteRoles: false,
+    canCreateUsers: false,
+    canCreateModellingGroups: false,
+    canManageGroupMembers: false
 };
 
 export const mockAuthState = (props?: RecursivePartial<AuthState>) => {

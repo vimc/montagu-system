@@ -31,7 +31,7 @@ export class CreateUserSectionComponent extends React.Component<Partial<CreateUs
 export const mapStateToProps = (state: AdminAppState): Partial<CreateUserSectionProps> => {
     return {
         show: state.users.showCreateUser,
-        canCreateUsers: state.auth.permissions.indexOf("*/users.create") > -1
+        canCreateUsers: state.auth.canCreateUsers
     }
 };
 

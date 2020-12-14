@@ -28,7 +28,7 @@ export const CreateModellingGroupSectionComponent = (props: CreateModellingGroup
 
 export const mapStateToProps = (state: AdminAppState): Partial<CreateModellingGroupSectionProps> => {
     return {
-        canCreateModellingGroups: state.auth.permissions.indexOf("*/users.create") > -1,
+        canCreateModellingGroups: state.auth.canCreateModellingGroups,
         show: state.groups.showCreateGroupForm
     }
 };
