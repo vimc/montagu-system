@@ -96,7 +96,7 @@ management.
 
 # User permissions
 
-Users can access some areas of the portals dependent on the permissions they possess. Raw user permissions from the [Montagu
+Users can access some areas of the admin portal dependent on the permissions they possess. Raw user permissions from the [Montagu
 database](https://github.com/vimc/montagu-db) are converted into properties on the `AuthState` interface, indicating what
 the user is allowed to do in the portals. These properties are used by the components to determine whether links and
 controls should be shown to the user. In addition, the [Montagu API](https://github.com/vimc/montagu-api) will prevent 
