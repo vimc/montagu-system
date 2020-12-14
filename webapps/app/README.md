@@ -93,3 +93,27 @@ Short name: `admin`
 This portal allows administrative staff to set up touchstones with all the
 necessary input data, responsibilities and recipes. It's also where we do user
 management.
+
+# User permissions
+
+Users can access some areas of the portals dependent on the permissions they possess. Raw user permissions from the [Montagu
+database](https://github.com/vimc/montagu-db) are converted into properties on the `AuthState` interface, indicating what
+the user is allowed to do in the portals. These properties are used by the components to determine whether links and
+controls should be shown to the user. In addition, the [Montagu API](https://github.com/vimc/montagu-api) will prevent 
+the user taking any actions for which they do not have permissions.
+
+The `AuthState` properties, and their corresponding permissions are:
+
+| Property | Permission | Used in
+| --- | --- | --- |
+| `canDownloadCoverage` | `*/coverage.read` | Touchstone scenarios page
+| `canUploadCoverage` | `*/coverage.write` | Touchstone coverage upload page
+| `canViewGroups` | `*/modelling-groups.read` | Main menu 
+| `canViewTouchstones` | `*/touchstones.read` | Main menu
+| `canViewUsers` | `*/users.read` | Main Menu
+| `canReadRoles` | `*/roles.read` | User details page
+| `canWriteRoles` | `*/roles.write` | User details page
+| `canCreateUsers` | `*/users.create` | Users page (CreateUsersSection component)
+| `canCreateModellingGroups` | `*/modelling-groups.write` | Modelling Groups page (CreateModellingGroupSection component)
+| `canManageGroupMembers` | `*/modelling-groups.manage-members` | Modelling Group details page (several components)
+

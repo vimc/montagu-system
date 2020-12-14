@@ -66,7 +66,7 @@ export function loadAuthState(options: AuthStateOptions): AuthState {
         canReadRoles: permissionsInclude(options.permissions,"*/roles.read"),
         canWriteRoles: permissionsInclude(options.permissions,"*/roles.write"),
         canCreateUsers: permissionsInclude(options.permissions,"*/users.create"),
-        canCreateModellingGroups: permissionsInclude(options.permissions,"*/users.create"),
+        canCreateModellingGroups: permissionsInclude(options.permissions,"*/modelling-groups.write"),
         canManageGroupMembers: permissionsInclude(options.permissions,"*/modelling-groups.manage-members")
     }
 }

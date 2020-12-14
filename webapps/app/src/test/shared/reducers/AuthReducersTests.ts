@@ -168,7 +168,7 @@ describe ('loadAuthState tests', () => {
     });
 
     it('sets canCreateModellingGroups if users create permission present', () => {
-        expect(loadAuthStateWithPermission("*/users.create").canCreateModellingGroups).toBe(true);
+        expect(loadAuthStateWithPermission("*/modelling-groups.write").canCreateModellingGroups).toBe(true);
     });
 
     it('sets canManageGroupMembers if modelling groups manage members permission present', () => {
