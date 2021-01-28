@@ -67,6 +67,6 @@ describe("AdminRouter", () => {
         expect(rendered.find(UserDetailsPage)).toHaveLength(1);
 
         rendered = renderComponent({auth: {loggedIn: true, canViewUsers: false}}, userRoute);
-        expect(rendered.find(UsersListPage)).toHaveLength(0);
+        expect(rendered.find(UserDetailsPage)).toHaveLength(0);
     });
 });
