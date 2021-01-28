@@ -14,6 +14,8 @@ import {createMockAdminStore} from "../../mocks/mockStore";
 import {RecursivePartial} from "../../mocks/mockStates";
 import {AdminAppState} from "../../../main/admin/reducers/adminAppReducers";
 import {CoveragePage} from "../../../main/admin/components/Touchstones/Coverage/CoveragePage";
+import {UsersListPage} from "../../../main/admin/components/Users/List/UsersListPage";
+import {UserDetailsPage} from "../../../main/admin/components/Users/SingleUser/UserDetailsPage";
 
 describe("AdminRouter", () => {
 
@@ -48,5 +50,23 @@ describe("AdminRouter", () => {
 
         rendered = renderComponent({auth: {loggedIn: true, canUploadCoverage: false}}, coverageRoute);
         expect(rendered.find(CoveragePage)).toHaveLength(0);
+    });
+
+    it("includes users page only when current user can view users", () => {
+        const usersRoute = "/users/";
+        let rendered = renderComponent({auth: {loggedIn: true, canViewUsers: true}}, usersRoute);
+        expect(rendered.find(UsersListPage)).toHaveLength(1);
+
+        rendered = renderComponent({auth: {loggedIn: true, canViewUsers: false}}, usersRoute);
+        expect(rendered.find(UsersListPage)).toHaveLength(0);
+    });
+
+    it("includes user page only when current user can view users", () => {
+        const userRoute = "/users/test-user/";
+        let rendered = renderComponent({auth: {loggedIn: true, canViewUsers: true}}, userRoute);
+        expect(rendered.find(UserDetailsPage)).toHaveLength(1);
+
+        rendered = renderComponent({auth: {loggedIn: true, canViewUsers: false}}, userRoute);
+        expect(rendered.find(UsersListPage)).toHaveLength(0);
     });
 });
