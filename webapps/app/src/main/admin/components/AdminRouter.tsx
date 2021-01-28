@@ -29,6 +29,7 @@ interface AdminRouterProps {
     loggedIn: boolean;
     history: History;
     canUploadCoverage: boolean;
+    canViewUsers: boolean;
 }
 
 export const AdminRouterComponent: React.FunctionComponent<AdminRouterProps> = (props: AdminRouterProps) => {
@@ -51,8 +52,12 @@ export const AdminRouterComponent: React.FunctionComponent<AdminRouterProps> = (
             <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage/" component={CoveragePage}/>
         }
         <Route exact path="/touchstones/:touchstoneId/:touchstoneVersionId/coverage/coverage-variables/" component={CoverageVariablesPage}/>
-        <Route exact path="/users/" component={UsersListPage}/>
-        <Route exact path="/users/:username/" component={UserDetailsPage}/>
+        { props.canViewUsers &&
+            <Route exact path="/users/" component={UsersListPage}/>
+        }
+        { props.canViewUsers &&
+            <Route exact path="/users/:username/" component={UserDetailsPage}/>
+        }
         <Route component={AdminNoRouteFoundPage}/>
     </Switch>;
 
@@ -74,7 +79,8 @@ export const mapStateToProps = (state: AdminAppState, props: Partial<AdminRouter
     return {
         history: props.history,
         loggedIn: state.auth.loggedIn,
-        canUploadCoverage: state.auth.canUploadCoverage
+        canUploadCoverage: state.auth.canUploadCoverage,
+        canViewUsers: state.auth.canViewUsers
     }
 };
 
