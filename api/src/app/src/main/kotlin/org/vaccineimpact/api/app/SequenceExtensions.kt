@@ -1,6 +1,7 @@
 package org.vaccineimpact.api.app
 
 import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.BurdenEstimateOutcomeError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
 import org.vaccineimpact.api.models.expectations.RowLookup
@@ -35,6 +36,13 @@ fun Sequence<BurdenEstimateWithRunId>.validate(expectedRows: RowLookup
         if (years[it.year]!!){
             throw InconsistentDataError("Duplicate entry for country:${it.country} age:${it.age} year:${it.year}")
         }
+
+        it.outcomes.forEach{ (k, v) ->
+            if (v != null && v < 0) {
+                throw BurdenEstimateOutcomeError(
+                        "Negative value for country:${it.country} age:${it.age} year:${it.year} outcome:$k")
+            }
+        };
 
         expectedRows[it.country]!![it.age]!![it.year] = true
     }
