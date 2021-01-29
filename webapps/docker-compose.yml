@@ -27,3 +27,11 @@ services:
     volumes:
       - $ROOT/demo:/orderly
       - $ROOT/config/orderlyweb:/etc/orderly/web
+  mq:
+    image: redis:6
+  flower:
+    image: mher/flower:0.9.5
+    environment:
+      - FLOWER_PORT=5555
+      - CELERY_BROKER_URL=redis://guest@mq//
+      - CELERY_RESULT_BACKEND=redis://guest@mq/0
