@@ -28,14 +28,10 @@ services:
       - $ROOT/demo:/orderly
       - $ROOT/config/orderlyweb:/etc/orderly/web
   mq:
-    image: redis
-    ports:
-      - "6379:6379"
+    image: redis:6
   flower:
     image: mher/flower:0.9.5
-    ports:
-      - "5555:5555"
     environment:
       - FLOWER_PORT=5555
-      - CELERY_BROKER_URL=redis://guest@montagu_mq_1//
-      - CELERY_RESULT_BACKEND=redis://guest@montagu_mq_1/0
+      - CELERY_BROKER_URL=redis://guest@mq//
+      - CELERY_RESULT_BACKEND=redis://guest@mq/0
