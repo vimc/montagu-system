@@ -88,6 +88,7 @@ class ValidateBurdenEstimateSequenceTests : MontaguTests()
         val outcomes = mapOf(
           "deaths" to 1F,
           "cases" to 0F,
+          "severe_cases" to null,
           "dalys" to -1F
         );
         val source = listOf(BurdenEstimateWithRunId("d1", null, 2000, 1, "AFG", "", 10000F, outcomes))
@@ -98,19 +99,6 @@ class ValidateBurdenEstimateSequenceTests : MontaguTests()
                "Negative value for country:AFG age:1 year:2000 outcome:dalys")
     }
 
-    @Test
-    fun `throws exception on null value`()
-    {
-        val outcomes = mapOf(
-                "deaths" to null
-        );
-        val source = listOf(BurdenEstimateWithRunId("d1", null, 2000, 1, "AFG", "", 10000F, outcomes))
-
-        assertThatThrownBy {
-            source.asSequence().validate(expectations.expectedRowLookup()).toList()
-        }.isInstanceOf(BurdenEstimateOutcomeError::class.java).hasMessageContaining(
-                "Missing value for country:AFG age:1 year:2000 outcome:deaths")
-    }
 
     @Test
     fun `sequence remains lazy when checking all values`()

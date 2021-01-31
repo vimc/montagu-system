@@ -39,11 +39,7 @@ fun Sequence<BurdenEstimateWithRunId>.validate(expectedRows: RowLookup
 
         it.outcomes.forEach{ (k, v) ->
             val outcomeDescription = { "country:${it.country} age:${it.age} year:${it.year} outcome:$k" }
-            if (v == null)
-            {
-                throw BurdenEstimateOutcomeError("Missing value for ${outcomeDescription()}")
-            }
-            else if (v < 0)
+            if (v != null && v < 0)
             {
                 throw BurdenEstimateOutcomeError("Negative value for ${outcomeDescription()}")
             }
