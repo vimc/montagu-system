@@ -103,6 +103,8 @@ based on which outcomes you wish to upload values for. More or fewer columns
 are allowed so long as all the outcome columns correspond to allowed burden
 outcomes in the database.
 
+Negative values are not allowed in outcome columns.
+
     "disease", "year", "age", "country", "country_name", "cohort_size", "deaths", "cases", "dalys"
        "Hib3",   1996,    50,     "AFG",  "Afghanistan",         10000,     1000,    2000,      NA
        "Hib3",   1997,    50,     "AFG",  "Afghanistan",         10500,      900,    2000,      NA
