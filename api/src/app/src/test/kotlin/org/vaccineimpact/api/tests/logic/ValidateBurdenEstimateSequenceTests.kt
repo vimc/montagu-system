@@ -3,6 +3,7 @@ package org.vaccineimpact.api.tests.logic
 import org.assertj.core.api.Assertions.*
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.BadRequest
+import org.vaccineimpact.api.app.errors.BurdenEstimateOutcomeError
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.validate
 import org.vaccineimpact.api.models.BurdenEstimateWithRunId
@@ -80,6 +81,25 @@ class ValidateBurdenEstimateSequenceTests : MontaguTests()
             source.asSequence().validate(expectations.expectedRowLookup()).toList()
         }.isInstanceOf(InconsistentDataError::class.java).hasMessageContaining("Duplicate")
     }
+
+    @Test
+    fun `throws exception on negative value`()
+    {
+        val outcomes = mapOf(
+          "deaths" to 1F,
+          "cases" to 0F,
+          "severe_cases" to null,
+          "dalys" to -1F
+        );
+        val source = listOf(BurdenEstimateWithRunId("d1", null, 2000, 1, "AFG", "", 10000F, outcomes))
+
+        assertThatThrownBy {
+            source.asSequence().validate(expectations.expectedRowLookup()).toList()
+        }.isInstanceOf(BurdenEstimateOutcomeError::class.java).hasMessageContaining(
+               "Negative value for country:AFG age:1 year:2000 outcome:dalys")
+    }
+
+
     @Test
     fun `sequence remains lazy when checking all values`()
     {
