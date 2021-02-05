@@ -53,6 +53,7 @@ docker cp workspace/certificate.pem reverse-proxy:/etc/montagu/proxy/
 docker cp workspace/ssl_key.pem reverse-proxy:/etc/montagu/proxy/
 docker cp workspace/dhparam.pem reverse-proxy:/etc/montagu/proxy/
 docker cp $here/../2020 reverse-proxy:/usr/share/nginx/html
+docker cp $here/../2021 reverse-proxy:/usr/share/nginx/html
 rm -rf workspace
 
 sleep 2s
