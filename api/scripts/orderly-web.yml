@@ -7,6 +7,12 @@ volumes:
   orderly: orderly_volume
   redis: orderly_web_redis_data
 
+redis:
+  image:
+    name: redis
+    tag: "5.0"
+  volume: orderly_web_redis_data
+
 orderly:
   image:
     repo: vimc
