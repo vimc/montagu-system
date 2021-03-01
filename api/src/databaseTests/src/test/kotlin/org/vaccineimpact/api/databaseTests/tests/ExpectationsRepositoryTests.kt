@@ -257,6 +257,32 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     }
 
     @Test
+    fun `getting expectations for a responsibility set does not return expectations for closed responsibilities`()
+    {
+        withDatabase { db ->
+            db.addTouchstoneVersion("touchstone", 1, addTouchstone = true)
+            db.addScenarioDescription(scenarioId, "desc", "YF", addDisease = true)
+            db.addScenarioDescription(otherScenarioId, "other desc", "YF")
+            db.addGroup(groupId)
+            val setId = db.addResponsibilitySet(groupId, touchstoneVersionId)
+            val r1 = db.addResponsibility(setId, touchstoneVersionId, scenarioId, false) //closed resp
+            val r2 = db.addResponsibility(setId, touchstoneVersionId, otherScenarioId)
+            db.addExpectations(r1)
+            db.addExpectations(r2)
+        }
+        withRepo { repo ->
+            val result = repo.getExpectationsForResponsibilitySet(groupId, touchstoneVersionId)
+            assertThat(result).isEqualTo(listOf(
+                    ExpectationMapping(
+                            exampleExpectations(2),
+                            listOf(otherScenarioId),
+                            disease
+                    )
+            ))
+        }
+    }
+
+    @Test
     fun `can get all expectations`()
     {
         val deathsOutcome = Outcome("test_deaths", "test deaths name")
