@@ -74,6 +74,7 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 .where(
                         RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersion)
                                 .and(RESPONSIBILITY_SET.MODELLING_GROUP.eq(modellingGroup))
+                                .and(RESPONSIBILITY.IS_OPEN)
                 )
                 .groupBy { it[Tables.expectations.ID] }
                 .map { getBasicDataAndMappingFromRecords(it.value) }
