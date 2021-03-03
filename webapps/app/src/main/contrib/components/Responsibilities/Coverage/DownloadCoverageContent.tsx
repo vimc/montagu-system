@@ -56,6 +56,13 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
 
         const showWideFormat = !settings.hideWideFormat(this.props.scenario.disease);
         return <div>
+            <p className="text-danger">
+                <strong>Reminder: All data on Montagu is confidential and must not be shared
+                    outside VIMC or used for non-VIMC purposes without prior written permission
+                    from Imperial College.
+                </strong> Please contact <a href={`mailto:${settings.supportContact}`}>{settings.supportContact}</a> with
+                any questions.
+            </p>
             <p>
                 Each scenario is based on vaccination coverage from up to 3 different
                 coverage sets (eg. routine and campaign). The datasets to download
