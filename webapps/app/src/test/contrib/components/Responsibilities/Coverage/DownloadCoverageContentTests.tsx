@@ -130,6 +130,14 @@ describe("Download Coverage Content Component", () => {
         expect(tooltips.at(1).props().target).toEqual("countries-tooltip");
     });
 
+    it("renders usage warning", () => {
+        const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
+            .dive().dive().dive();
+        const p = rendered.find("p.text-danger");
+        expect(p.text()).toContain("Reminder: All data on Montagu is confidential and must not be shared outside VIMC");
+        expect(p.find("a").props().href).toEqual("mailto:montagu-help@imperial.ac.uk");
+    });
+
     it("calling onSelectFormat triggers set format", () => {
         const rendered = shallow(<DownloadCoverageContent/>, {context: {store}}).dive().dive().dive()
             .dive().dive().dive();
