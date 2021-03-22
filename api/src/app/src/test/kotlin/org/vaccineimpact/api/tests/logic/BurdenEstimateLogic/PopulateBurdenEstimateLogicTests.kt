@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.vaccineimpact.api.app.errors.InconsistentDataError
 import org.vaccineimpact.api.app.errors.InvalidOperationError
-import org.vaccineimpact.api.app.logic.Notifier
 import org.vaccineimpact.api.app.logic.RepositoriesBurdenEstimateLogic
 import org.vaccineimpact.api.app.repositories.BurdenEstimateRepository
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo

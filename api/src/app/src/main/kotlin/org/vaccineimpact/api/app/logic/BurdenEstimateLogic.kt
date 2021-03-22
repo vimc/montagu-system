@@ -57,7 +57,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
                                       private val notifier: Notifier) : BurdenEstimateLogic
 {
 
-    constructor(repositories: Repositories, notifier: Notifier = SlackNotifier()) : this(
+    constructor(repositories: Repositories, notifier: Notifier = FlowNotifier()) : this(
             repositories.modellingGroup,
             repositories.burdenEstimates,
             repositories.expectations,
@@ -189,27 +189,21 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
             if (countriesWithMissingRows.any())
             {
                 burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
-                notifier.notify("A burden estimate set with missing rows has just been uploaded for $identifier")
+                notifier.notify(groupId, responsibilityInfo.disease, scenarioId,
+                        BurdenEstimateSetStatus.INVALID, false, touchstoneVersionId)
                 throw MissingRowsError(rowErrorMessage(countriesWithMissingRows))
             }
             burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
-            notifier.notify("A complete burden estimate set has just been uploaded for $identifier")
-            notifyIfResponsibilitySetIsComplete(modellingGroup.id, responsibilityInfo.disease, touchstoneVersionId)
-        }
-    }
 
-    private fun notifyIfResponsibilitySetIsComplete(groupId: String, disease: String, touchstoneVersionId: String)
-    {
-        val responsibilities = responsibilitiesRepository.getResponsibilitiesForGroup(groupId,
-                touchstoneVersionId,
-                ScenarioFilterParameters(null, disease))
-
-        if (responsibilities.responsibilities.all {
-                    it.currentEstimateSet != null &&
-                            it.currentEstimateSet?.status == BurdenEstimateSetStatus.COMPLETE
-                })
-        {
-            notifier.notify("Group $groupId have uploaded complete estimate sets for all $disease scenarios in $touchstoneVersionId")
+            val responsibilities = responsibilitiesRepository.getResponsibilitiesForGroup(groupId,
+                    touchstoneVersionId,
+                    ScenarioFilterParameters(null, responsibilityInfo.disease))
+            val responsibilitySetComplete = responsibilities.responsibilities.all {
+                it.currentEstimateSet != null &&
+                        it.currentEstimateSet?.status == BurdenEstimateSetStatus.COMPLETE
+            }
+            notifier.notify(groupId, responsibilityInfo.disease, scenarioId,
+                    BurdenEstimateSetStatus.COMPLETE, responsibilitySetComplete, touchstoneVersionId)
         }
     }
 

@@ -101,6 +101,8 @@ To make use of a built image, run:
     docker pull vimc/montagu-api:master
     docker run --rm -p 8080:8080 vimc/montagu-api:master
 
-Subsitute a different branch or 7-character commit hash in place of 'master' to get a different version.
+Substitute a different branch or 7-character commit hash in place of 'master' to get a different version.
 
+## Burden estimate upload notifications
 
+See [KB article](https://mrc-ide.myjetbrains.com/youtrack/articles/VIMC-A-55/Burden-estimate-upload-notifications) for further details of this feature

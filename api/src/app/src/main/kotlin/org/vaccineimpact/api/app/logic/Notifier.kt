@@ -3,27 +3,46 @@ package org.vaccineimpact.api.app.logic
 import org.slf4j.LoggerFactory
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.ConfigWrapper
-import org.vaccineimpact.api.models.helpers.ContentTypes
+import org.vaccineimpact.api.models.BurdenEstimateSetStatus
 
 interface Notifier
 {
-    fun notify(message: String)
+    fun notify(
+            groupId: String, disease: String, scenarioId: String, burdenEstimateSetStatus: BurdenEstimateSetStatus,
+            responsibilitySetComplete: Boolean, touchstone: String
+    )
 }
 
-class SlackNotifier(private val client: HttpClient = KHttpClient(),
-                    private val appConfig: ConfigWrapper = Config) : Notifier
+class FlowNotifier(
+        private val client: HttpClient = KHttpClient(),
+        private val appConfig: ConfigWrapper = Config
+) : Notifier
 {
-    private val logger = LoggerFactory.getLogger(SlackNotifier::class.java)
-    override fun notify(message: String)
+    private val logger = LoggerFactory.getLogger(FlowNotifier::class.java)
+
+    override fun notify(
+            groupId: String,
+            disease: String,
+            scenarioId: String,
+            burdenEstimateSetStatus: BurdenEstimateSetStatus,
+            responsibilitySetComplete: Boolean,
+            touchstone: String
+    )
     {
         try
         {
-            val headers = mapOf("Content-type" to ContentTypes.json)
-            client.post(appConfig["slack.url"], headers, mapOf("text" to message))
+            client.post(appConfig["flow.url"], emptyMap(), mapOf(
+                    "groupId" to groupId,
+                    "disease" to disease,
+                    "scenarioId" to scenarioId,
+                    "burdenEstimateSetStatus" to burdenEstimateSetStatus.name,
+                    "responsibilitySetComplete" to responsibilitySetComplete,
+                    "touchstone" to touchstone
+            ))
         }
         catch (e: Exception)
         {
-            logger.warn("There was a problem sending the Slack message: ${e.message}")
+            logger.warn("There was a problem sending the Flow message: ${e.message}")
         }
     }
 }

@@ -166,7 +166,7 @@ AGO, age 12, year 2005""")
                 mock(), getResponsibilitiesRepository(), mockNotifier)
 
         sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        verify(mockNotifier).notify("A complete burden estimate set has just been uploaded for $groupId - $disease - $scenarioId")
+        verify(mockNotifier).notify(groupId, disease, scenarioId, BurdenEstimateSetStatus.COMPLETE,true, touchstoneVersionId)
     }
 
     @Test
@@ -183,7 +183,7 @@ AGO, age 12, year 2005""")
             sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
         }.isInstanceOf(MissingRowsError::class.java)
         verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
-        verify(mockNotifier).notify("A burden estimate set with missing rows has just been uploaded for $groupId - $disease - $scenarioId")
+        verify(mockNotifier).notify(groupId, disease, scenarioId, BurdenEstimateSetStatus.INVALID,false, touchstoneVersionId)
     }
 
     @Test
@@ -202,7 +202,7 @@ AGO, age 12, year 2005""")
                 mock(), responsibilitiesRepository, mockNotifier)
 
         sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        verify(mockNotifier).notify("Group $groupId have uploaded complete estimate sets for all $disease scenarios in $touchstoneVersionId")
+        verify(mockNotifier).notify(groupId, disease, scenarioId, BurdenEstimateSetStatus.COMPLETE,true, touchstoneVersionId)
     }
 
     @Test
@@ -222,8 +222,8 @@ AGO, age 12, year 2005""")
                 mock(), responsibilitiesRepository, mockNotifier)
 
         sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
-        verify(mockNotifier).notify("A complete burden estimate set has just been uploaded for $groupId - $disease - $scenarioId")
-        verify(mockNotifier, Times(1)).notify(any())
+        verify(mockNotifier).notify(groupId, disease, scenarioId, BurdenEstimateSetStatus.COMPLETE,false, touchstoneVersionId)
+        verify(mockNotifier, Times(1)).notify(any(), any(), any(), any(), any(), any())
     }
 
     private val responsibilityWithCompleteEstimateSet = Responsibility(Scenario("s1", "desc", "d1", listOf()),
