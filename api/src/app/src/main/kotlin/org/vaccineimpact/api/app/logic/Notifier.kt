@@ -42,7 +42,7 @@ class FlowNotifier(
         }
         catch (e: Exception)
         {
-            logger.warn("There was a problem sending the Flow message")
+            logger.warn("There was a problem sending the Flow message: ${e.message}")
         }
     }
 }
