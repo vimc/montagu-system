@@ -24,7 +24,8 @@ class TouchstoneResponsibilitiesPageActionCreators
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
             const touchstones = getState().touchstones.touchstones;
             dispatch(touchstonesActionCreators.setCurrentTouchstoneVersion(params.touchstoneVersionId, touchstones));
-            dispatch(adminTouchstoneActionCreators.getResponsibilitiesForTouchstoneVersion(params.touchstoneVersionId))
+            dispatch(adminTouchstoneActionCreators.getResponsibilitiesForTouchstoneVersion(params.touchstoneVersionId));
+            dispatch(adminTouchstoneActionCreators.getResponsibilityCommentsForTouchstoneVersion(params.touchstoneVersionId));
         }
     }
 

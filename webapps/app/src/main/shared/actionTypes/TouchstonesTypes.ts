@@ -1,8 +1,15 @@
-import {ErrorInfo, ResponsibilitySetWithExpectations, Touchstone, TouchstoneVersion} from "../models/Generated";
+import {
+    ErrorInfo,
+    ResponsibilitySetWithComments,
+    ResponsibilitySetWithExpectations,
+    Touchstone,
+    TouchstoneVersion
+} from "../models/Generated";
 
 export enum TouchstoneTypes {
     ALL_TOUCHSTONES_FETCHED = "ALL_TOUCHSTONES_FETCHED",
     RESPONSIBILITIES_FOR_TOUCHSTONE_VERSION_FETCHED = "RESPONSIBILITIES_FOR_TOUCHSTONE_VERSION_FETCHED",
+    RESPONSIBILITY_COMMENTS_FOR_TOUCHSTONE_VERSION_FETCHED = "RESPONSIBILITY_COMMENTS_FOR_TOUCHSTONE_VERSION_FETCHED",
     TOUCHSTONES_FETCHED_FOR_GROUP = "TOUCHSTONES_FETCHED_FOR_GROUP",
     SET_CURRENT_TOUCHSTONE_VERSION = "SET_CURRENT_TOUCHSTONE_VERSION",
     NEW_TOUCHSTONE_CREATED = "NEW_TOUCHSTONE_CREATED",
@@ -35,6 +42,11 @@ export interface ResponsibilitiesForTouchstoneVersionFetched {
     data: ResponsibilitySetWithExpectations[];
 }
 
+export interface ResponsibilityCommentsForTouchstoneVersionFetched {
+    type: TouchstoneTypes.RESPONSIBILITY_COMMENTS_FOR_TOUCHSTONE_VERSION_FETCHED;
+    data: ResponsibilitySetWithComments[];
+}
+
 export interface NewTouchstoneCreated {
     type: TouchstoneTypes.NEW_TOUCHSTONE_CREATED;
     data: Touchstone;
@@ -51,5 +63,6 @@ export type TouchstonesAction =
     | SetCurrentTouchstone
     | SetCurrentTouchstoneVersion
     | ResponsibilitiesForTouchstoneVersionFetched
+    | ResponsibilityCommentsForTouchstoneVersionFetched
     | NewTouchstoneCreated
     | SetCreateTouchstoneError

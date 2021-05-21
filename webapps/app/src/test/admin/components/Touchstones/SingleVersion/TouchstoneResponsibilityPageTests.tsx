@@ -18,12 +18,21 @@ import {touchstoneResponsibilitiesPageActionCreators} from
 
 describe("ResponsibilitiesPage", () => {
 
-    const mockResponsibilitySets = [mockResponsibilitySetWithExpectations(), mockResponsibilitySetWithExpectations()];
+    const mockResponsibilitySets = [
+        mockResponsibilitySetWithExpectations({modelling_group_id: "g1"}),
+        mockResponsibilitySetWithExpectations({modelling_group_id: "g2"})
+    ];
 
     let store = createMockAdminStore(mockAdminState({
         touchstones: {
             currentResponsibilitySets: mockResponsibilitySets,
-            currentTouchstoneVersion: mockTouchstoneVersion()
+            currentTouchstoneVersion: mockTouchstoneVersion(),
+            currentResponsibilityComments: mockResponsibilitySets.map(rs => ({
+                modelling_group_id: rs.modelling_group_id,
+                responsibilities: rs.responsibilities.map(r => ({
+                    scenario_id: r.scenario.id
+                }))
+            }))
         }
     }));
 

@@ -1,19 +1,10 @@
-import {Responsibility} from "../../../../shared/models/Generated";
 import * as React from "react";
+import {ResponsibilityListItem} from "./ResponsibilityListItem";
+import {AnnotatedResponsibility} from "../../../models/AnnotatedResponsibility";
 
 interface ResponsibilityListProps {
-    responsibilities: Responsibility[]
-}
-
-export class ResponsibilityListItem extends React.Component<Responsibility, undefined> {
-    render() {
-        return <tr>
-            <td>{this.props.scenario.description}</td>
-            <td>{this.props.scenario.disease}</td>
-            <td>{this.props.status}</td>
-            <td>{this.props.current_estimate_set ? this.props.current_estimate_set.uploaded_on: "None"}</td>
-        </tr>;
-    }
+    responsibilities: AnnotatedResponsibility[];
+    selectResponsibility: (responsibility: AnnotatedResponsibility) => void
 }
 
 export const ResponsibilityList: React.FunctionComponent<ResponsibilityListProps> = (props: ResponsibilityListProps) => {
@@ -24,10 +15,11 @@ export const ResponsibilityList: React.FunctionComponent<ResponsibilityListProps
             <th>Disease</th>
             <th>Status</th>
             <th>Latest estimate set</th>
+            <th>Comment</th>
         </tr>
         </thead>
         <tbody>
-        {props.responsibilities.map(r => <ResponsibilityListItem {...r} key={r.scenario.id}/>)}
+        {props.responsibilities.map(r => <ResponsibilityListItem responsibility={r} selectResponsibility={props.selectResponsibility} key={r.scenario.id}/>)}
         </tbody>
     </table>;
 };
