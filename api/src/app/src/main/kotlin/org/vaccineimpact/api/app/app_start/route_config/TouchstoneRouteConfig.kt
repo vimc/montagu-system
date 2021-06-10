@@ -13,6 +13,7 @@ object TouchstoneRouteConfig : RouteConfig
     private val scenarioPermissions = permissions + setOf("*/scenarios.read")
     private val demographicPermissions = permissions + setOf("*/demographics.read")
     private val responsibilityPermissions = permissions + setOf("*/scenarios.read", "*/responsibilities.read")
+    private val responsibilityReviewPermissions = permissions + setOf("*/responsibilities.review")
 
     override val endpoints: List<EndpointDefinition> = listOf(
             Endpoint(baseUrl, controller, "getTouchstones")
@@ -22,6 +23,15 @@ object TouchstoneRouteConfig : RouteConfig
             Endpoint("$baseUrl:touchstone-version-id/responsibilities/", controller, "getResponsibilities")
                     .json()
                     .secure(responsibilityPermissions),
+
+            Endpoint("$baseUrl:touchstone-version-id/responsibilities/comments/", controller, "getResponsibilitiesWithComments")
+                    .json()
+                    .secure(responsibilityReviewPermissions),
+
+            Endpoint("$baseUrl:touchstone-version-id/responsibilities/comments/", controller, "addResponsibilityComment")
+                    .post()
+                    .json()
+                    .secure(responsibilityReviewPermissions),
 
             Endpoint("$baseUrl:touchstone-version-id/scenarios/", controller, "getScenarios")
                     .json()
