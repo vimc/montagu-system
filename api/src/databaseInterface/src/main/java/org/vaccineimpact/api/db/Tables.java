@@ -43,6 +43,7 @@ import org.vaccineimpact.api.db.tables.DemographicSource;
 import org.vaccineimpact.api.db.tables.DemographicStatistic;
 import org.vaccineimpact.api.db.tables.DemographicStatisticType;
 import org.vaccineimpact.api.db.tables.DemographicStatisticTypeVariant;
+import org.vaccineimpact.api.db.tables.DemographicSubnationalStatistic;
 import org.vaccineimpact.api.db.tables.DemographicValueUnit;
 import org.vaccineimpact.api.db.tables.DemographicVariant;
 import org.vaccineimpact.api.db.tables.DisabilityWeight;
@@ -72,7 +73,9 @@ import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.NormalRand;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
 import org.vaccineimpact.api.db.tables.Permission;
+import org.vaccineimpact.api.db.tables.RegionSubnational;
 import org.vaccineimpact.api.db.tables.Responsibility;
+import org.vaccineimpact.api.db.tables.ResponsibilityComment;
 import org.vaccineimpact.api.db.tables.ResponsibilitySet;
 import org.vaccineimpact.api.db.tables.ResponsibilitySetStatus;
 import org.vaccineimpact.api.db.tables.Role;
@@ -288,21 +291,21 @@ public class Tables {
     /**
      * Call <code>public.crosstab</code>.
      */
-    public static Result<CrosstabRecord> CROSSTAB(Configuration configuration, String __1, Integer __2) {
+    public static Result<CrosstabRecord> CROSSTAB(Configuration configuration, String __1, String __2) {
         return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2)).fetch();
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab CROSSTAB(String __1, Integer __2) {
+    public static Crosstab CROSSTAB(String __1, String __2) {
         return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab CROSSTAB(Field<String> __1, Field<Integer> __2) {
+    public static Crosstab CROSSTAB(Field<String> __1, Field<String> __2) {
         return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
@@ -408,6 +411,11 @@ public class Tables {
      * The table <code>public.demographic_statistic_type_variant</code>.
      */
     public static final DemographicStatisticTypeVariant DEMOGRAPHIC_STATISTIC_TYPE_VARIANT = org.vaccineimpact.api.db.tables.DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT;
+
+    /**
+     * The table <code>public.demographic_subnational_statistic</code>.
+     */
+    public static final DemographicSubnationalStatistic DEMOGRAPHIC_SUBNATIONAL_STATISTIC = org.vaccineimpact.api.db.tables.DemographicSubnationalStatistic.DEMOGRAPHIC_SUBNATIONAL_STATISTIC;
 
     /**
      * The table <code>public.demographic_value_unit</code>.
@@ -576,9 +584,19 @@ public class Tables {
     public static final Permission PERMISSION = org.vaccineimpact.api.db.tables.Permission.PERMISSION;
 
     /**
+     * The table <code>public.region_subnational</code>.
+     */
+    public static final RegionSubnational REGION_SUBNATIONAL = org.vaccineimpact.api.db.tables.RegionSubnational.REGION_SUBNATIONAL;
+
+    /**
      * The table <code>public.responsibility</code>.
      */
     public static final Responsibility RESPONSIBILITY = org.vaccineimpact.api.db.tables.Responsibility.RESPONSIBILITY;
+
+    /**
+     * The table <code>public.responsibility_comment</code>.
+     */
+    public static final ResponsibilityComment RESPONSIBILITY_COMMENT = org.vaccineimpact.api.db.tables.ResponsibilityComment.RESPONSIBILITY_COMMENT;
 
     /**
      * The table <code>public.responsibility_set</code>.
