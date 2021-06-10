@@ -14,3 +14,8 @@ data class ResponsibilityWithDatabaseId(
         val id: Int,
         val responsibility: Responsibility
 )
+
+data class ResponsibilityWithComment(
+        val scenarioId: String,
+        val comment: ResponsibilityComment?
+)
