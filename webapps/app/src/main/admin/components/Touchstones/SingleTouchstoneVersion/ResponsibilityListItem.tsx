@@ -1,20 +1,21 @@
 import * as React from "react";
 import {AnnotatedResponsibility} from "../../../models/AnnotatedResponsibility";
+import {Dispatch} from "redux";
+import {AdminAppState} from "../../../reducers/adminAppReducers";
+import {adminTouchstoneActionCreators} from "../../../actions/adminTouchstoneActionCreators";
+import {compose} from "recompose";
+import {connect} from "react-redux";
 
 export interface ResponsibilityListItemProps {
-    responsibility: AnnotatedResponsibility
-    selectResponsibility: (responsibility: AnnotatedResponsibility) => void
+    responsibility: AnnotatedResponsibility;
+    setCurrentTouchstoneResponsibility: (responsibility: AnnotatedResponsibility) => void;
 }
 
-export class ResponsibilityListItem extends React.Component<ResponsibilityListItemProps, undefined> {
-    constructor(props: ResponsibilityListItemProps) {
-        super(props);
-        this.handleClick = this.handleClick.bind(this);
-    }
+export class ResponsibilityListItemComponent extends React.Component<ResponsibilityListItemProps> {
 
     handleClick(event: React.MouseEvent<HTMLAnchorElement>) {
         event.preventDefault();
-        this.props.selectResponsibility(this.props.responsibility);
+        this.props.setCurrentTouchstoneResponsibility(this.props.responsibility);
     }
 
     render() {
@@ -35,9 +36,20 @@ export class ResponsibilityListItem extends React.Component<ResponsibilityListIt
                     {this.props.responsibility.comment && this.props.responsibility.comment.comment}
                 </div>
                 <div style={{display: "table-cell", textAlign: "right"}}>
-                    <a href="#" className="small" style={{marginLeft: "2em"}} onClick={this.handleClick}>Edit</a>
+                    <a href="#" className="small" style={{marginLeft: "2em"}} onClick={this.handleClick.bind(this)}>Edit</a>
                 </div>
             </td>
         </tr>;
     }
 }
+
+export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<ResponsibilityListItemProps> => {
+    return {
+        setCurrentTouchstoneResponsibility: (responsibility: AnnotatedResponsibility) =>
+            dispatch(adminTouchstoneActionCreators.setCurrentTouchstoneResponsibility(responsibility))
+    };
+};
+
+export const ResponsibilityListItem = compose(
+    connect(state => state, mapDispatchToProps))
+(ResponsibilityListItemComponent) as React.ComponentClass<Partial<ResponsibilityListItemProps>>;

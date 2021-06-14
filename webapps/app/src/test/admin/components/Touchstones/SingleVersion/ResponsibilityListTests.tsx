@@ -13,7 +13,7 @@ describe("ResponsibilityList", () => {
                 ...mockResponsibility()
             }
         ];
-        const rendered = shallow(<ResponsibilityList responsibilities={r} selectResponsibility={jest.fn()}/>);
+        const rendered = shallow(<ResponsibilityList responsibilities={r}/>);
         const cells = rendered.find("th");
         expect(cells).toHaveLength(5);
         expect(cells.at(0).text()).toEqual("Scenario");

@@ -4,7 +4,6 @@ import {AnnotatedResponsibility} from "../../../models/AnnotatedResponsibility";
 
 interface ResponsibilityListProps {
     responsibilities: AnnotatedResponsibility[];
-    selectResponsibility: (responsibility: AnnotatedResponsibility) => void
 }
 
 export const ResponsibilityList: React.FunctionComponent<ResponsibilityListProps> = (props: ResponsibilityListProps) => {
@@ -19,7 +18,7 @@ export const ResponsibilityList: React.FunctionComponent<ResponsibilityListProps
         </tr>
         </thead>
         <tbody>
-        {props.responsibilities.map(r => <ResponsibilityListItem responsibility={r} selectResponsibility={props.selectResponsibility} key={r.scenario.id}/>)}
+        {props.responsibilities.map(r => <ResponsibilityListItem responsibility={r} key={r.scenario.id}/>)}
         </tbody>
     </table>;
 };

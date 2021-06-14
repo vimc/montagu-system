@@ -15,6 +15,7 @@ import {
     TouchstoneTypes
 } from "../../shared/actionTypes/TouchstonesTypes";
 import {TouchstoneCreation} from "../components/Touchstones/Create/CreateTouchstoneForm";
+import {AnnotatedResponsibility} from "../models/AnnotatedResponsibility";
 
 export const adminTouchstoneActionCreators = {
     getAllTouchstones() {
@@ -38,6 +39,13 @@ export const adminTouchstoneActionCreators = {
         }
     },
 
+    setCurrentTouchstoneResponsibility(responsibility: AnnotatedResponsibility) {
+        return {
+            type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_RESPONSIBILITY,
+            data: responsibility
+        };
+    },
+
     getResponsibilityCommentsForTouchstoneVersion(touchstoneVersion: string) {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
                 const responsibilityCommentSets: ResponsibilitySetWithComments[] = await (new TouchstonesService(dispatch, getState))
@@ -54,6 +62,7 @@ export const adminTouchstoneActionCreators = {
             const service = new TouchstonesService(dispatch, getState);
             const result = await service.addResponsibilityComment(touchstoneVersion, modellingGroupId, scenarioId, comment);
             if (result) {
+                dispatch(this.setCurrentTouchstoneResponsibility(null));
                 service.clearCacheForTouchstoneResponsibilityComments(touchstoneVersion);
                 dispatch(this.getResponsibilityCommentsForTouchstoneVersion(touchstoneVersion));
             }

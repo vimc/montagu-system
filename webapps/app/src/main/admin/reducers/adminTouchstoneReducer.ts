@@ -1,10 +1,12 @@
 import {
-    ErrorInfo, ResponsibilitySetWithComments,
+    ErrorInfo,
+    ResponsibilitySetWithComments,
     ResponsibilitySetWithExpectations,
     Touchstone,
     TouchstoneVersion
 } from "../../shared/models/Generated";
 import {TouchstonesAction, TouchstoneTypes} from "../../shared/actionTypes/TouchstonesTypes";
+import {AnnotatedResponsibility} from "../models/AnnotatedResponsibility";
 
 export interface AdminTouchstoneState {
     touchstones: Touchstone[];
@@ -12,6 +14,7 @@ export interface AdminTouchstoneState {
     currentTouchstoneVersion: TouchstoneVersion;
     currentResponsibilitySets: ResponsibilitySetWithExpectations[];
     currentResponsibilityComments: ResponsibilitySetWithComments[];
+    currentResponsibility: AnnotatedResponsibility;
     createTouchstoneErrors: ErrorInfo[]
 }
 
@@ -21,6 +24,7 @@ export const adminTouchstonesInitialState: AdminTouchstoneState = {
     currentTouchstoneVersion: null,
     currentResponsibilitySets: [],
     currentResponsibilityComments: [],
+    currentResponsibility: null,
     createTouchstoneErrors: []
 };
 export const adminTouchstoneReducer
@@ -36,6 +40,8 @@ export const adminTouchstoneReducer
             return {...state, currentResponsibilitySets: action.data};
         case TouchstoneTypes.RESPONSIBILITY_COMMENTS_FOR_TOUCHSTONE_VERSION_FETCHED:
             return {...state, currentResponsibilityComments: action.data};
+        case TouchstoneTypes.SET_CURRENT_TOUCHSTONE_RESPONSIBILITY:
+            return {...state, currentResponsibility: action.data};
         case TouchstoneTypes.NEW_TOUCHSTONE_CREATED:
             return {...state, touchstones: [...state.touchstones, action.data]};
         case TouchstoneTypes.SET_CREATE_TOUCHSTONE_ERROR:
