@@ -59,4 +59,25 @@ describe("ResponsibilityCommentModal", () => {
         expect(cancelCallback.mock.calls[0]).toEqual([null]);
     })
 
+    it("updates modal", async () => {
+        const rendered = mount(
+            <ResponsibilityCommentModalComponent
+                addResponsibilityComment={jest.fn()}
+                setCurrentTouchstoneResponsibility={jest.fn()}
+                responsibility={mockAnnotatedResponsibility()}
+                currentTouchstoneVersion={mockTouchstoneVersion().id}
+            />
+        );
+        expect(rendered.find(".modal-body textarea").at(0).props().value).toEqual("Lorem ipsum");
+        expect(rendered.find(".modal-footer span").at(0).text()).toEqual("Last updated by test.user at 2017-07-13 13:55:29 +0100");
+        const responsibility = mockAnnotatedResponsibility(null, {
+            comment: "Ut enim",
+            added_by: "test.user2",
+            added_on: "2018-07-13 13:55:29 +0100"
+        });
+        rendered.setProps({responsibility});
+        expect(rendered.find(".modal-body textarea").at(0).props().value).toEqual("Ut enim");
+        expect(rendered.find(".modal-footer span").at(0).text()).toEqual("Last updated by test.user2 at 2018-07-13 13:55:29 +0100");
+    })
+
 });
