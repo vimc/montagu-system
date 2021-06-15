@@ -137,6 +137,37 @@ Schema: [`ResponsibilitySets.schema.json`](../schemas/ResponsibilitySets.schema.
             }
         ]
     }]
+
+## GET /touchstones/{touchstone-id}/responsibilities/comments/
+Returns the latest annotations for responsibility sets associated with the touchstone.
+
+Required permissions: `touchstones.read`, `responsibilities.review`.
+
+Schema: [`ResponsibilitySetsWithComments.schema.json`](../schemas/ResponsibilitySetsWithComments.schema.json)
+
+### Example
+    [{
+        "touchstone_version": "2017-op-1",
+        "modelling_group_id": "IC-Garske",
+        "responsibilities": [
+            {
+                "scenario_id": "menA-novacc",
+                "comment": {
+                    "comment": "An annotation for novacc",
+                    "updated_by": "test.user",
+                    "updated_on": "2017-10-06T11:18:06Z"
+                }
+            },
+            {
+                "scenario_id": "menA-gavi",
+                "comment": {
+                    "comment": "An annotation for gavi",
+                    "updated_by": "test.user",
+                    "updated_on": "2017-10-06T11:19:10Z"
+                }
+            }
+        ]
+    }]
     
 ## GET /touchstones/{touchstone-id}/scenarios/
 Returns all scenarios associated with the touchstone.
