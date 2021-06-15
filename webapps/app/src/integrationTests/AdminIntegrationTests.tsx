@@ -376,6 +376,14 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             // just check it's the format we're expecting
             expect(headers).toEqual("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\", \"subnational\"")
         })
+
+        it("can annotate responsibility", async() => {
+            await addResponsibilities(this.db);
+            const touchstoneService = new TouchstonesService(this.store.dispatch, this.store.getState);
+            const result = await touchstoneService
+                .addResponsibilityComment(touchstoneVersionId, "g1", scenarioId, "comment 1");
+            expect(result).toEqual("OK")
+        })
     }
 }
 
