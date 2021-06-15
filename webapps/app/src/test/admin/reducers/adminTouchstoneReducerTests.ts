@@ -4,8 +4,11 @@ import {
     AdminTouchstoneState
 } from "../../../main/admin/reducers/adminTouchstoneReducer";
 import {TouchstonesAction, TouchstoneTypes} from "../../../main/shared/actionTypes/TouchstonesTypes";
-import {mockResponsibilitySetWithExpectations, mockTouchstone} from "../../mocks/mockModels";
-import {AnnotatedResponsibility} from "../../../main/admin/models/AnnotatedResponsibility";
+import {
+    mockAnnotatedResponsibility,
+    mockResponsibilitySetWithExpectations,
+    mockTouchstone
+} from "../../mocks/mockModels";
 import {ResponsibilitySetWithComments} from "../../../main/shared/models/Generated";
 
 describe("adminTouchstoneReducer", () => {
@@ -62,11 +65,7 @@ describe("adminTouchstoneReducer", () => {
     });
 
     it("sets current responsibility", () => {
-        const testResponsibilitySet = mockResponsibilitySetWithExpectations();
-        const data: AnnotatedResponsibility = {
-            ...testResponsibilitySet.responsibilities[0],
-            modellingGroup: testResponsibilitySet.modelling_group_id,
-        };
+        const data = mockAnnotatedResponsibility()
         const action: TouchstonesAction = {
             type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_RESPONSIBILITY,
             data
