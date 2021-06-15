@@ -188,19 +188,11 @@ class TouchstoneControllerTests : MontaguTests()
     }
 
     @Test
-    fun `addResponsibilityComment succeeds`()
-    {
-        val sets = listOf(
-                ResponsibilitySetWithComments(openTouchstoneVersion.id, "gId", listOf(
-                        ResponsibilityWithComment("dId", null)
-                ))
-        )
+    fun `addResponsibilityComment succeeds`() {
         val repo = mock<TouchstoneRepository> {
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
         }
-        val responsibilityRepo = mock<ResponsibilitiesRepository> {
-            on { it.getResponsibilitiesWithCommentsForTouchstone(any()) } doReturn sets
-        }
+        val responsibilityRepo = mock<ResponsibilitiesRepository>()
         val context = mock<ActionContext> {
             on { username } doReturn "test.user"
             on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
@@ -210,6 +202,14 @@ class TouchstoneControllerTests : MontaguTests()
         }
         val result = TouchstoneController(context, repo, mock(), responsibilityRepo, mock()).addResponsibilityComment()
         assertThat(result).isEqualTo("OK")
+        verify(responsibilityRepo).addResponsibilityCommentForTouchstone(
+                eq(openTouchstoneVersion.id),
+                eq("group-1"),
+                eq("scenario-1"),
+                eq("comment 1"),
+                eq("test.user"),
+                any()
+        )
     }
 
     @Test
