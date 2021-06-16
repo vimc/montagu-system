@@ -1,6 +1,6 @@
 import {AbstractLocalService} from "./AbstractLocalService";
 import {
-    ResponsibilityComment,
+    ResponsibilityCommentPayload,
     ResponsibilitySetWithComments,
     ResponsibilitySetWithExpectations,
     ScenarioAndCoverageSets,
@@ -29,7 +29,7 @@ export class TouchstonesService extends AbstractLocalService {
     }
 
     addResponsibilityComment(touchstoneVersion: string, modellingGroupId: string, scenarioId: string, comment: string) {
-        const responsibilityComment: ResponsibilityComment = { comment, added_by: undefined, added_on: undefined };
+        const responsibilityComment: ResponsibilityCommentPayload = { comment };
         return this.post(
             `/touchstones/${touchstoneVersion}/responsibilities/${modellingGroupId}/${scenarioId}/comments/`,
             JSON.stringify(responsibilityComment)

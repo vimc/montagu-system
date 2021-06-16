@@ -128,8 +128,12 @@ export interface ResearchModelDetails {
     modelling_group: string;
 }
 
+export interface ResponsibilityCommentPayload {
+    comment: string;
+}
+
 export interface ResponsibilityComment {
-    added_by: string | null;
+    added_by: string;
     added_on: string;
     comment: string;
 }
