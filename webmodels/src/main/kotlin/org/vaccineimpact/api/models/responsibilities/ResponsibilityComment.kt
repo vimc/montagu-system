@@ -7,6 +7,6 @@ data class ResponsibilityComment
 @ConstructorProperties("comment", "addedBy", "addedOn")
 constructor(
         val comment: String,
-        val addedBy: String,
-        val addedOn: Instant
+        val addedBy: String?,
+        val addedOn: Instant?
 )
