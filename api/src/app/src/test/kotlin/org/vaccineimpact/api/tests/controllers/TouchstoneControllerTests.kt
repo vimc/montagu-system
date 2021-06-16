@@ -18,6 +18,7 @@ import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityComment
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityCommentPayload
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithComments
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityWithComment
 import org.vaccineimpact.api.serialization.DataTable
@@ -196,13 +197,13 @@ class TouchstoneControllerTests : MontaguTests()
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
         }
         val responsibilityRepo = mock<ResponsibilitiesRepository>()
-        val comment = ResponsibilityComment("comment 1", "test.user", Instant.now())
+        val comment = ResponsibilityCommentPayload("comment 1")
         val context = mock<ActionContext> {
             on { username } doReturn "test.user"
             on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
             on { params(":group-id") } doReturn "group-1"
             on { params(":scenario-id") } doReturn "scenario-1"
-            on { postData<ResponsibilityComment>() } doReturn comment
+            on { postData<ResponsibilityCommentPayload>() } doReturn comment
         }
         val result = TouchstoneController(context, repo, mock(), responsibilityRepo, mock()).addResponsibilityComment()
         assertThat(result).isEqualTo("OK")
