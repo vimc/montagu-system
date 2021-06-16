@@ -52,6 +52,7 @@ import org.vaccineimpact.api.db.tables.DemographicSource;
 import org.vaccineimpact.api.db.tables.DemographicStatistic;
 import org.vaccineimpact.api.db.tables.DemographicStatisticType;
 import org.vaccineimpact.api.db.tables.DemographicStatisticTypeVariant;
+import org.vaccineimpact.api.db.tables.DemographicSubnationalStatistic;
 import org.vaccineimpact.api.db.tables.DemographicValueUnit;
 import org.vaccineimpact.api.db.tables.DemographicVariant;
 import org.vaccineimpact.api.db.tables.DisabilityWeight;
@@ -81,7 +82,9 @@ import org.vaccineimpact.api.db.tables.ModellingGroup;
 import org.vaccineimpact.api.db.tables.NormalRand;
 import org.vaccineimpact.api.db.tables.OnetimeToken;
 import org.vaccineimpact.api.db.tables.Permission;
+import org.vaccineimpact.api.db.tables.RegionSubnational;
 import org.vaccineimpact.api.db.tables.Responsibility;
+import org.vaccineimpact.api.db.tables.ResponsibilityComment;
 import org.vaccineimpact.api.db.tables.ResponsibilitySet;
 import org.vaccineimpact.api.db.tables.ResponsibilitySetStatus;
 import org.vaccineimpact.api.db.tables.Role;
@@ -151,7 +154,7 @@ import org.vaccineimpact.api.db.udt.TablefuncCrosstab_4;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1387003986;
+    private static final long serialVersionUID = -179352459;
 
     /**
      * The reference instance of <code>public</code>
@@ -307,21 +310,21 @@ public class Public extends SchemaImpl {
     /**
      * Call <code>public.crosstab</code>.
      */
-    public static Result<CrosstabRecord> CROSSTAB(Configuration configuration, String __1, Integer __2) {
+    public static Result<CrosstabRecord> CROSSTAB(Configuration configuration, String __1, String __2) {
         return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2)).fetch();
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab CROSSTAB(String __1, Integer __2) {
+    public static Crosstab CROSSTAB(String __1, String __2) {
         return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab CROSSTAB(Field<String> __1, Field<Integer> __2) {
+    public static Crosstab CROSSTAB(Field<String> __1, Field<String> __2) {
         return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
@@ -427,6 +430,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.demographic_statistic_type_variant</code>.
      */
     public final DemographicStatisticTypeVariant DEMOGRAPHIC_STATISTIC_TYPE_VARIANT = org.vaccineimpact.api.db.tables.DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT;
+
+    /**
+     * The table <code>public.demographic_subnational_statistic</code>.
+     */
+    public final DemographicSubnationalStatistic DEMOGRAPHIC_SUBNATIONAL_STATISTIC = org.vaccineimpact.api.db.tables.DemographicSubnationalStatistic.DEMOGRAPHIC_SUBNATIONAL_STATISTIC;
 
     /**
      * The table <code>public.demographic_value_unit</code>.
@@ -595,9 +603,19 @@ public class Public extends SchemaImpl {
     public final Permission PERMISSION = org.vaccineimpact.api.db.tables.Permission.PERMISSION;
 
     /**
+     * The table <code>public.region_subnational</code>.
+     */
+    public final RegionSubnational REGION_SUBNATIONAL = org.vaccineimpact.api.db.tables.RegionSubnational.REGION_SUBNATIONAL;
+
+    /**
      * The table <code>public.responsibility</code>.
      */
     public final Responsibility RESPONSIBILITY = org.vaccineimpact.api.db.tables.Responsibility.RESPONSIBILITY;
+
+    /**
+     * The table <code>public.responsibility_comment</code>.
+     */
+    public final ResponsibilityComment RESPONSIBILITY_COMMENT = org.vaccineimpact.api.db.tables.ResponsibilityComment.RESPONSIBILITY_COMMENT;
 
     /**
      * The table <code>public.responsibility_set</code>.
@@ -1011,6 +1029,7 @@ public class Public extends SchemaImpl {
             Sequences.DEMOGRAPHIC_SOURCE_ID_SEQ,
             Sequences.DEMOGRAPHIC_STATISTIC_ID_SEQ,
             Sequences.DEMOGRAPHIC_STATISTIC_TYPE_ID_SEQ,
+            Sequences.DEMOGRAPHIC_SUBNATIONAL_STATISTIC_ID_SEQ,
             Sequences.DEMOGRAPHIC_VALUE_UNIT_ID_SEQ,
             Sequences.DEMOGRAPHIC_VARIANT_ID_SEQ,
             Sequences.DISABILITY_WEIGHT_ID_SEQ,
@@ -1028,6 +1047,8 @@ public class Public extends SchemaImpl {
             Sequences.MODEL_RUN_PARAMETER_VALUE_ID_SEQ,
             Sequences.MODEL_VERSION_ID_SEQ,
             Sequences.ONETIME_TOKEN_ID_SEQ,
+            Sequences.REGION_SUBNATIONAL_ID_SEQ,
+            Sequences.RESPONSIBILITY_COMMENT_ID_SEQ,
             Sequences.RESPONSIBILITY_ID_SEQ,
             Sequences.RESPONSIBILITY_SET_ID_SEQ,
             Sequences.ROLE_ID_SEQ,
@@ -1083,6 +1104,7 @@ public class Public extends SchemaImpl {
             DemographicStatistic.DEMOGRAPHIC_STATISTIC,
             DemographicStatisticType.DEMOGRAPHIC_STATISTIC_TYPE,
             DemographicStatisticTypeVariant.DEMOGRAPHIC_STATISTIC_TYPE_VARIANT,
+            DemographicSubnationalStatistic.DEMOGRAPHIC_SUBNATIONAL_STATISTIC,
             DemographicValueUnit.DEMOGRAPHIC_VALUE_UNIT,
             DemographicVariant.DEMOGRAPHIC_VARIANT,
             DisabilityWeight.DISABILITY_WEIGHT,
@@ -1112,7 +1134,9 @@ public class Public extends SchemaImpl {
             NormalRand.NORMAL_RAND,
             OnetimeToken.ONETIME_TOKEN,
             Permission.PERMISSION,
+            RegionSubnational.REGION_SUBNATIONAL,
             Responsibility.RESPONSIBILITY,
+            ResponsibilityComment.RESPONSIBILITY_COMMENT,
             ResponsibilitySet.RESPONSIBILITY_SET,
             ResponsibilitySetStatus.RESPONSIBILITY_SET_STATUS,
             Role.ROLE,

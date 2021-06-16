@@ -1,0 +1,57 @@
+{
+    "id": "ResponsibilitySetsWithComments",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "touchstone_version": {
+                "type": "string"
+            },
+            "modelling_group_id": {
+                "type": "string"
+            },
+            "responsibilities": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "scenario_id": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "object",
+                            "properties": {
+                                "comment": {
+                                    "type": "string"
+                                },
+                                "added_by": {
+                                    "type": "string"
+                                },
+                                "added_on": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "comment",
+                                "added_by",
+                                "added_on"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "scenario_id",
+                        "comment"
+                    ]
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "touchstone_version",
+            "modelling_group_id",
+            "responsibilities"
+        ]
+    }
+}

@@ -887,3 +887,18 @@ fun JooqContext.addExistingExpectationsToResponsibility(
             .where(RESPONSIBILITY.ID.eq(responsibilityId))
             .execute()
 }
+
+fun JooqContext.addResponsibilityComment(
+        responsibilityId: Int,
+        comment: String,
+        addedBy: String,
+        addedOn: Instant
+)
+{
+    this.dsl.newRecord(RESPONSIBILITY_COMMENT).apply {
+        this.responsibility = responsibilityId
+        this.comment = comment
+        this.addedBy = addedBy
+        this.addedOn = Timestamp.from(addedOn)
+    }.store()
+}

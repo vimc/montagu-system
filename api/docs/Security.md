@@ -1,5 +1,5 @@
 ## Full list of permissions
-This is manually kept in sync with [spec.md](Spec.md).
+This is manually kept in sync with [spec/spec.md](Spec.md).
 
 * `can-login`
 * `countries.[read|write]`
@@ -15,7 +15,7 @@ This is manually kept in sync with [spec.md](Spec.md).
 * `modelling-groups.read`
 * `modelling-groups.write`
 * `models.[read|write]`
-* `responsibilities.[read|write]`
+* `responsibilities.[read|write|review]`
 * `roles.[read|write]`
 * `scenarios.[read|write]`
 * `touchstones.finish`
@@ -138,7 +138,7 @@ also with a numeric primary key.
             "name": "admin",
             "scope_prefix": null,
             "description": "Consortium admin team ",
-            "permissions": [ "coverage.read", "touchstones.prepare", "reports.read" ]
+            "permissions": [ "coverage.read", "touchstones.prepare", "reports.read", "responsibilities.review" ]
         },
         {
             "name": "developer",

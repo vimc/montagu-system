@@ -114,6 +114,11 @@ public class Sequences {
     public static final Sequence<Integer> DEMOGRAPHIC_STATISTIC_TYPE_ID_SEQ = new SequenceImpl<Integer>("demographic_statistic_type_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
 
     /**
+     * The sequence <code>public.demographic_subnational_statistic_id_seq</code>
+     */
+    public static final Sequence<Integer> DEMOGRAPHIC_SUBNATIONAL_STATISTIC_ID_SEQ = new SequenceImpl<Integer>("demographic_subnational_statistic_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
      * The sequence <code>public.demographic_value_unit_id_seq</code>
      */
     public static final Sequence<Integer> DEMOGRAPHIC_VALUE_UNIT_ID_SEQ = new SequenceImpl<Integer>("demographic_value_unit_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
@@ -197,6 +202,16 @@ public class Sequences {
      * The sequence <code>public.onetime_token_id_seq</code>
      */
     public static final Sequence<Integer> ONETIME_TOKEN_ID_SEQ = new SequenceImpl<Integer>("onetime_token_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
+     * The sequence <code>public.region_subnational_id_seq</code>
+     */
+    public static final Sequence<Integer> REGION_SUBNATIONAL_ID_SEQ = new SequenceImpl<Integer>("region_subnational_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
+     * The sequence <code>public.responsibility_comment_id_seq</code>
+     */
+    public static final Sequence<Integer> RESPONSIBILITY_COMMENT_ID_SEQ = new SequenceImpl<Integer>("responsibility_comment_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
 
     /**
      * The sequence <code>public.responsibility_id_seq</code>

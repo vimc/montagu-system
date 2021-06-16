@@ -137,7 +137,50 @@ Schema: [`ResponsibilitySets.schema.json`](../schemas/ResponsibilitySets.schema.
             }
         ]
     }]
-    
+
+## GET /touchstones/{touchstone-id}/responsibilities/comments/
+Returns the latest annotations for responsibility sets associated with the touchstone.
+
+Required permissions: `touchstones.read`, `responsibilities.review`.
+
+Schema: [`ResponsibilitySetsWithComments.schema.json`](../schemas/ResponsibilitySetsWithComments.schema.json)
+
+### Example
+    [{
+        "touchstone_version": "2017-op-1",
+        "modelling_group_id": "IC-Garske",
+        "responsibilities": [
+            {
+                "scenario_id": "menA-novacc",
+                "comment": {
+                    "comment": "An annotation for novacc",
+                    "added_by": "test.user",
+                    "added_on": "2017-10-06T11:18:06Z"
+                }
+            },
+            {
+                "scenario_id": "menA-gavi",
+                "comment": {
+                    "comment": "An annotation for gavi",
+                    "added_by": "test.user",
+                    "added_on": "2017-10-06T11:19:10Z"
+                }
+            }
+        ]
+    }]
+
+## POST /touchstones/{touchstone-id}/responsibilities/{group-id}/{scenario-id}/comments/
+Adds an annotation to the responsibility associated with the touchstone, modelling group and scenario.
+
+Required permissions: `touchstones.read`, `responsibilities.review`.
+
+Schema: [`ResponsibilityComment.schema.json`](../schemas/ResponsibilityComment.schema.json)
+
+### Example
+    {
+        "comment": "An annotation for novacc"
+    }
+
 ## GET /touchstones/{touchstone-id}/scenarios/
 Returns all scenarios associated with the touchstone.
 

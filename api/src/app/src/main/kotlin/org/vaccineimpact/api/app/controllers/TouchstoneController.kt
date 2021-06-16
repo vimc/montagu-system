@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.logic.ExpectationsLogic
@@ -9,17 +10,23 @@ import org.vaccineimpact.api.app.logic.RepositoriesExpectationsLogic
 import org.vaccineimpact.api.app.logic.RepositoriesScenarioLogic
 import org.vaccineimpact.api.app.logic.ScenarioLogic
 import org.vaccineimpact.api.app.repositories.Repositories
+import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityCommentPayload
+import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithComments
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
-import org.vaccineimpact.api.serialization.*
+import org.vaccineimpact.api.serialization.FlexibleDataTable
+import org.vaccineimpact.api.serialization.SplitData
+import org.vaccineimpact.api.serialization.StreamSerializable
 
 class TouchstoneController(
         context: ActionContext,
         private val touchstoneRepo: TouchstoneRepository,
         private val scenarioLogic: ScenarioLogic,
+        private val responsibilitiesRepo: ResponsibilitiesRepository,
         private val expectationsLogic: ExpectationsLogic
 ) : Controller(context)
 {
@@ -30,6 +37,7 @@ class TouchstoneController(
                     repositories.touchstone,
                     repositories.modellingGroup,
                     repositories.scenario),
+            repositories.responsibilities,
             RepositoriesExpectationsLogic(
                     repositories.responsibilities,
                     repositories.expectations,
@@ -72,6 +80,29 @@ class TouchstoneController(
     {
         val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
         return expectationsLogic.getResponsibilitySetsWithExpectations(touchstoneVersion.id)
+    }
+
+    fun getResponsibilitiesWithComments(): List<ResponsibilitySetWithComments>
+    {
+        val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
+        return responsibilitiesRepo.getResponsibilitiesWithCommentsForTouchstone(touchstoneVersion.id)
+    }
+
+    fun addResponsibilityComment(): String
+    {
+        val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
+        val groupId = context.params(":group-id")
+        val comment = context.postData<ResponsibilityCommentPayload>().comment
+        val scenarioDescriptionId: String = context.params(":scenario-id")
+        val userName = context.username!!
+        responsibilitiesRepo.addResponsibilityCommentForTouchstone(
+                touchstoneVersion.id,
+                groupId,
+                scenarioDescriptionId,
+                comment,
+                userName
+        )
+        return okayResponse()
     }
 
     fun getDemographicDatasets(): List<DemographicDataset>

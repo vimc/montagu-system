@@ -1,0 +1,13 @@
+{
+    "id": "ResponsibilityComment",
+    "type": "object",
+    "properties": {
+        "comment": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "comment"
+    ]
+}
