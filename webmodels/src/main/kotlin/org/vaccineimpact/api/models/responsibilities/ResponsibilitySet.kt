@@ -9,3 +9,9 @@ data class ResponsibilitySet(
 {
     override fun iterator() = responsibilities.iterator()
 }
+
+data class ResponsibilitySetWithComments(
+        val touchstoneVersion: String,
+        val modellingGroupId: String,
+        val responsibilities: List<ResponsibilityWithComment>
+)

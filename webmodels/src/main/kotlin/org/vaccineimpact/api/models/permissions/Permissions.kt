@@ -19,6 +19,7 @@ val allPermissions = listOf(
     "models.write",
     "responsibilities.read",
     "responsibilities.write",
+    "responsibilities.review",
     "roles.read",
     "roles.write",
     "scenarios.read",
