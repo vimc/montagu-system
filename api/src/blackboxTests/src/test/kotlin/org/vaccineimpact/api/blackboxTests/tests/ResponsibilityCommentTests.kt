@@ -4,6 +4,7 @@ import com.beust.klaxon.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
+import org.vaccineimpact.api.blackboxTests.helpers.toJsonObject
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
@@ -64,11 +65,13 @@ class ResponsibilityCommentTests : DatabaseTest()
     @Test
     fun `can add comment`()
     {
-        validate("/touchstones/touchstone-1/responsibilities/comments/?group_id=$modellingGroupId&scenario_id=$scenarioId&comment=comment%202", HttpMethod.post) given {
+        validate("/touchstones/touchstone-1/responsibilities/$modellingGroupId/$scenarioId/comments/", HttpMethod.post) given {
             it.setupResponsibilities()
+        } sendingJSON {
+            mapOf("comment" to "comment 2").toJsonObject()
         } withPermissions {
             PermissionSet("*/touchstones.read", "*/responsibilities.review")
-        } withRequestSchema "" andCheckString {
+        } withRequestSchema "ResponsibilityComment" andCheckString {
             assertThat(it).isEqualTo("OK")
         }
     }

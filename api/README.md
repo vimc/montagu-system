@@ -46,7 +46,7 @@ To run the Blackbox tests, you will need to start the dependencies and run the a
 
 To run Blackbox tests from the command line, after running the above 2 commands, from the same folder run
 
-     ./gradlew :blackboxTests:run
+     ./gradlew :blackboxTests:test
 
 ## Upgrading dependencies
 Run `./gradlew dependencyUpdates` and then manually update as required.

@@ -2,6 +2,7 @@ package org.vaccineimpact.api.app.controllers
 
 import org.vaccineimpact.api.app.app_start.Controller
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.logic.ExpectationsLogic
@@ -14,6 +15,7 @@ import org.vaccineimpact.api.app.repositories.TouchstoneRepository
 import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityComment
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithComments
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import org.vaccineimpact.api.serialization.FlexibleDataTable
@@ -89,9 +91,9 @@ class TouchstoneController(
     fun addResponsibilityComment(): String
     {
         val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
-        val groupId = context.queryParams("group_id")!!
-        val scenarioDescriptionId: String = context.queryParams("scenario_id")!!
-        val comment = context.queryParams("comment")!!
+        val groupId = context.params(":group-id")
+        val comment = context.postData<ResponsibilityComment>().comment
+        val scenarioDescriptionId: String = context.params(":scenario-id")
         val userName = context.username!!
         responsibilitiesRepo.addResponsibilityCommentForTouchstone(
                 touchstoneVersion.id,

@@ -28,7 +28,7 @@ object TouchstoneRouteConfig : RouteConfig
                     .json()
                     .secure(responsibilityReviewPermissions),
 
-            Endpoint("$baseUrl:touchstone-version-id/responsibilities/comments/", controller, "addResponsibilityComment")
+            Endpoint("$baseUrl:touchstone-version-id/responsibilities/:group-id/:scenario-id/comments/", controller, "addResponsibilityComment")
                     .post()
                     .json()
                     .secure(responsibilityReviewPermissions),

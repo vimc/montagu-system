@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.controllers.TouchstoneController
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
@@ -16,6 +17,7 @@ import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityComment
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithComments
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityWithComment
 import org.vaccineimpact.api.serialization.DataTable
@@ -23,6 +25,7 @@ import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.test_helpers.exampleResponsibilitySetWithExpectations
 import java.math.BigDecimal
+import java.time.Instant
 
 class TouchstoneControllerTests : MontaguTests()
 {
@@ -193,12 +196,13 @@ class TouchstoneControllerTests : MontaguTests()
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
         }
         val responsibilityRepo = mock<ResponsibilitiesRepository>()
+        val comment = ResponsibilityComment("comment 1", "test.user", Instant.now())
         val context = mock<ActionContext> {
             on { username } doReturn "test.user"
             on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
-            on { queryParams("group_id") } doReturn "group-1"
-            on { queryParams("scenario_id") } doReturn "scenario-1"
-            on { queryParams("comment") } doReturn "comment 1"
+            on { params(":group-id") } doReturn "group-1"
+            on { params(":scenario-id") } doReturn "scenario-1"
+            on { postData<ResponsibilityComment>() } doReturn comment
         }
         val result = TouchstoneController(context, repo, mock(), responsibilityRepo, mock()).addResponsibilityComment()
         assertThat(result).isEqualTo("OK")
@@ -206,8 +210,8 @@ class TouchstoneControllerTests : MontaguTests()
                 eq(openTouchstoneVersion.id),
                 eq("group-1"),
                 eq("scenario-1"),
-                eq("comment 1"),
-                eq("test.user"),
+                eq(comment.comment),
+                any(),
                 any()
         )
     }
