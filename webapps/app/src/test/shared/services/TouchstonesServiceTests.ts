@@ -49,6 +49,7 @@ describe('Touchstones service tests', () => {
 
         touchstoneService.getResponsibilityCommentsForTouchstoneVersion('touchstone-1');
 
+        expect(getStub.mock.calls.length).toEqual(1);
         expect(getStub.mock.calls[0][0]).toEqual('/touchstones/touchstone-1/responsibilities/comments/');
         expect(setOptionsSpy.mock.calls[0][0]).toEqual({cacheKey: 'responsibilityComments'});
     });
@@ -62,6 +63,8 @@ describe('Touchstones service tests', () => {
 
         touchstoneService.addResponsibilityComment("touchstone-1", "group-1", "scenario-1", "comment 1");
 
-        expect(getStub.mock.calls[0][0]).toEqual('/touchstones/touchstone-1/responsibilities/comments/?group_id=group-1&scenario_id=scenario-1&comment=comment%201');
+        expect(getStub.mock.calls.length).toEqual(1);
+        expect(getStub.mock.calls[0][0]).toEqual('/touchstones/touchstone-1/responsibilities/group-1/scenario-1/comments/');
+        expect(getStub.mock.calls[0][1]).toEqual('{"comment":"comment 1"}');
     });
 });

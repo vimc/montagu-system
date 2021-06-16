@@ -129,7 +129,7 @@ export interface ResearchModelDetails {
 }
 
 export interface ResponsibilityComment {
-    added_by: string;
+    added_by: string | null;
     added_on: string;
     comment: string;
 }

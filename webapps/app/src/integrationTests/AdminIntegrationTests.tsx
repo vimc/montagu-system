@@ -7,7 +7,8 @@ import {shallow} from "enzyme";
 import {Client, QueryResult} from "pg";
 import {
     ModellingGroup,
-    ResponsibilitySetWithExpectations, Result,
+    ResponsibilitySetWithExpectations,
+    Result,
     RoleAssignment,
     Scenario,
     User
@@ -22,13 +23,13 @@ import {ScenarioGroupComponent} from "../main/admin/components/Touchstones/Scena
 import {FileDownloadButton, FileDownloadLink} from "../main/shared/components/FileDownloadLink";
 import {ExpectationsService} from "../main/shared/services/ExpectationsService";
 import {CoverageService} from "../main/admin/services/CoverageService";
-import FormData = require("form-data");
 import {CoveragePage} from "../main/admin/components/Touchstones/Coverage/CoveragePage";
 import {createMockAdminStore} from "../test/mocks/mockStore";
 import {mockMatch} from "../test/mocks/mocks";
 import {TouchstoneVersionPageLocationProps} from "../main/admin/components/Touchstones/SingleTouchstoneVersion/TouchstoneVersionPage";
 import {coveragePageActionCreators} from "../main/admin/actions/pages/CoveragePageActionCreators";
 import {Sandbox} from "../test/Sandbox";
+import FormData = require("form-data");
 
 const touchstoneVersionId = "test-1";
 const scenarioId = "yf-1";
@@ -377,12 +378,37 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             expect(headers).toEqual("\"vaccine\", \"country\", \"activity_type\", \"gavi_support\", \"year\", \"age_first\", \"age_last\", \"gender\", \"target\", \"coverage\", \"subnational\"")
         })
 
-        it("can annotate responsibility", async() => {
+        it("can annotate responsibility", async () => {
             await addResponsibilities(this.db);
             const touchstoneService = new TouchstonesService(this.store.dispatch, this.store.getState);
             const result = await touchstoneService
                 .addResponsibilityComment(touchstoneVersionId, "g1", scenarioId, "comment 1");
             expect(result).toEqual("OK")
+        })
+
+        it("can retrieve annotated responsibilities", async () => {
+            await addAnnotatedResponsibilities(this.db);
+            const touchstoneService = new TouchstonesService(this.store.dispatch, this.store.getState);
+            const result = await touchstoneService
+                .getResponsibilityCommentsForTouchstoneVersion(touchstoneVersionId);
+            expect(result).toEqual(
+                [
+                    {
+                        "modelling_group_id": "g1",
+                        "responsibilities": [
+                            {
+                                "comment": {
+                                    "added_by": "bob",
+                                    "added_on": "2021-06-17T08:58:32.233Z",
+                                    "comment": "comment 2",
+                                },
+                                "scenario_id": "yf-1",
+                            },
+                        ],
+                        "touchstone_version": "test-1",
+                    },
+                ]
+            );
         })
     }
 }
@@ -476,6 +502,21 @@ function addResponsibilities(db: Client) {
                 
                 INSERT INTO responsibility (responsibility_set, scenario, is_open, expectations)
                 VALUES (set_id, scenario_id, true, burden_estimate_expectation_id);
+            END $$;
+    `))
+}
+
+function addAnnotatedResponsibilities(db: Client) {
+    return addResponsibilities(db)
+        .then(() => db.query(`
+            DO $$
+                DECLARE responsibility_id integer;
+            BEGIN
+                SELECT id INTO responsibility_id FROM responsibility LIMIT 1;
+
+                INSERT INTO responsibility_comment (responsibility, comment, added_by, added_on)
+                VALUES (responsibility_id, 'comment 1', 'bob', '2021-06-16T08:58:32.233Z'),
+                       (responsibility_id, 'comment 2', 'bob', '2021-06-17T08:58:32.233Z');
             END $$;
     `))
 }
