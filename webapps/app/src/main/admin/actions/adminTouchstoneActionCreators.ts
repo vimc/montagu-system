@@ -62,7 +62,6 @@ export const adminTouchstoneActionCreators = {
             const service = new TouchstonesService(dispatch, getState);
             const result = await service.addResponsibilityComment(touchstoneVersion, modellingGroupId, scenarioId, comment);
             if (result) {
-                dispatch(this.setCurrentTouchstoneResponsibility(null));
                 service.clearCacheForTouchstoneResponsibilityComments(touchstoneVersion);
                 dispatch(this.getResponsibilityCommentsForTouchstoneVersion(touchstoneVersion));
             }

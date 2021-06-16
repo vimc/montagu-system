@@ -30,11 +30,11 @@ describe("ResponsibilityCommentModal", () => {
         const touchstone = mockTouchstoneVersion();
         const responsibility = mockAnnotatedResponsibility();
         const submitCallback = jest.fn();
-        const cancelCallback = jest.fn();
+        const closeCallback = jest.fn();
         const rendered = mount(
             <ResponsibilityCommentModalComponent
                 addResponsibilityComment={submitCallback}
-                setCurrentTouchstoneResponsibility={cancelCallback}
+                setCurrentTouchstoneResponsibility={closeCallback}
                 responsibility={responsibility}
                 currentTouchstoneVersion={touchstone.id}
             />
@@ -43,20 +43,28 @@ describe("ResponsibilityCommentModal", () => {
         rendered.find(".btn-primary").simulate("click", mockEvent());
         expect(submitCallback.mock.calls.length).toEqual(1);
         expect(submitCallback.mock.calls[0]).toEqual([touchstone.id, responsibility, "Ut enim"]);
-        expect(cancelCallback.mock.calls.length).toEqual(0);
+        expect(closeCallback.mock.calls.length).toEqual(1);
+        expect(closeCallback.mock.calls[0]).toEqual([null]);
     })
 
     it("cancels comment", () => {
         const touchstone = mockTouchstoneVersion();
         const responsibility = mockAnnotatedResponsibility();
         const submitCallback = jest.fn();
-        const cancelCallback = jest.fn();
-        const rendered = mount(<ResponsibilityCommentModalComponent addResponsibilityComment={submitCallback} setCurrentTouchstoneResponsibility={cancelCallback} responsibility={responsibility} currentTouchstoneVersion={touchstone.id}/>);
+        const closeCallback = jest.fn();
+        const rendered = mount(
+            <ResponsibilityCommentModalComponent
+                addResponsibilityComment={submitCallback}
+                setCurrentTouchstoneResponsibility={closeCallback}
+                responsibility={responsibility}
+                currentTouchstoneVersion={touchstone.id}
+            />
+        );
         rendered.find(".modal-body textarea").at(0).simulate("change", {target: {value: "Ut enim"}});
         rendered.find(".btn-secondary").simulate("click", mockEvent());
         expect(submitCallback.mock.calls.length).toEqual(0);
-        expect(cancelCallback.mock.calls.length).toEqual(1);
-        expect(cancelCallback.mock.calls[0]).toEqual([null]);
+        expect(closeCallback.mock.calls.length).toEqual(1);
+        expect(closeCallback.mock.calls[0]).toEqual([null]);
     })
 
     it("updates modal", async () => {

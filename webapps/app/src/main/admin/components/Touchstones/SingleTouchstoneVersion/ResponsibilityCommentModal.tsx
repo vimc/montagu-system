@@ -35,6 +35,7 @@ export class ResponsibilityCommentModalComponent extends React.Component<Respons
     }
     handleSave() {
         this.props.addResponsibilityComment(this.props.currentTouchstoneVersion, this.props.responsibility, this.state.commentText);
+        this.props.setCurrentTouchstoneResponsibility(null);
     }
     componentWillReceiveProps(nextProps: Readonly<ResponsibilityCommentModalProps>) {
         this.setState({

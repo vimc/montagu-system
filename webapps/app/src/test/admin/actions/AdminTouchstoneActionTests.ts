@@ -111,7 +111,6 @@ describe("Admin touchstone action tests", () => {
             },
             callActionCreator: () => adminTouchstoneActionCreators.addResponsibilityComment("t1", "m1", "s1", "c"),
             expectTheseActions: [
-                {type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_RESPONSIBILITY, data: null},
                 {type: TouchstoneTypes.RESPONSIBILITY_COMMENTS_FOR_TOUCHSTONE_VERSION_FETCHED, data: "default_result"}
             ]
         });
