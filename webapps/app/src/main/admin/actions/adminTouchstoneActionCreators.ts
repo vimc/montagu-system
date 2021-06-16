@@ -1,12 +1,21 @@
 import {Dispatch} from "redux";
-import {ResponsibilitySetWithExpectations, Touchstone} from "../../shared/models/Generated";
+import {
+    ResponsibilitySetWithComments,
+    ResponsibilitySetWithExpectations,
+    Touchstone
+} from "../../shared/models/Generated";
 import {AdminAppState} from "../reducers/adminAppReducers";
 import {TouchstonesService} from "../../shared/services/TouchstonesService";
 import {
-    AllTouchstonesFetched, NewTouchstoneCreated, ResponsibilitiesForTouchstoneVersionFetched, SetCreateTouchstoneError,
+    AllTouchstonesFetched,
+    NewTouchstoneCreated,
+    ResponsibilitiesForTouchstoneVersionFetched,
+    ResponsibilityCommentsForTouchstoneVersionFetched,
+    SetCreateTouchstoneError,
     TouchstoneTypes
 } from "../../shared/actionTypes/TouchstonesTypes";
 import {TouchstoneCreation} from "../components/Touchstones/Create/CreateTouchstoneForm";
+import {AnnotatedResponsibility} from "../models/AnnotatedResponsibility";
 
 export const adminTouchstoneActionCreators = {
     getAllTouchstones() {
@@ -27,6 +36,35 @@ export const adminTouchstoneActionCreators = {
                 type: TouchstoneTypes.RESPONSIBILITIES_FOR_TOUCHSTONE_VERSION_FETCHED,
                 data: responsibilitySets
             } as ResponsibilitiesForTouchstoneVersionFetched);
+        }
+    },
+
+    setCurrentTouchstoneResponsibility(responsibility: AnnotatedResponsibility) {
+        return {
+            type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_RESPONSIBILITY,
+            data: responsibility
+        };
+    },
+
+    getResponsibilityCommentsForTouchstoneVersion(touchstoneVersion: string) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+                const responsibilityCommentSets: ResponsibilitySetWithComments[] = await (new TouchstonesService(dispatch, getState))
+                        .getResponsibilityCommentsForTouchstoneVersion(touchstoneVersion);
+                dispatch({
+                        type: TouchstoneTypes.RESPONSIBILITY_COMMENTS_FOR_TOUCHSTONE_VERSION_FETCHED,
+                        data: responsibilityCommentSets
+                } as ResponsibilityCommentsForTouchstoneVersionFetched);
+            }
+    },
+
+    addResponsibilityComment(touchstoneVersion: string, modellingGroupId: string, scenarioId: string, comment: string) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const service = new TouchstonesService(dispatch, getState);
+            const result = await service.addResponsibilityComment(touchstoneVersion, modellingGroupId, scenarioId, comment);
+            if (result) {
+                service.clearCacheForTouchstoneResponsibilityComments(touchstoneVersion);
+                dispatch(this.getResponsibilityCommentsForTouchstoneVersion(touchstoneVersion));
+            }
         }
     },
 

@@ -22,12 +22,15 @@ describe("Touchstone responsibility page actions tests", () => {
         const setCurrentStub = sandbox.setStubReduxAction(touchstonesActionCreators, "setCurrentTouchstoneVersion");
         const responsibilitiesStub =
             sandbox.setStubReduxAction(adminTouchstoneActionCreators, "getResponsibilitiesForTouchstoneVersion");
+        const responsibilitiesCommentsStub =
+            sandbox.setStubReduxAction(adminTouchstoneActionCreators, "getResponsibilityCommentsForTouchstoneVersion");
 
         store.dispatch(touchstoneResponsibilitiesPageActionCreators
             .loadData({touchstoneVersionId: "t1", touchstoneId: "whatever"}));
         setTimeout(() => {
             expect(setCurrentStub.mock.calls.length).toBe(1);
             expect(responsibilitiesStub.mock.calls.length).toBe(1);
+            expect(responsibilitiesCommentsStub.mock.calls.length).toBe(1);
             done();
         });
     });

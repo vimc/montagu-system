@@ -2,13 +2,12 @@ import * as models from "../../main/shared/models/Generated";
 import {
     ExpectationMapping,
     ModellingGroupCreation,
+    ResponsibilityComment,
     TouchstoneVersion
 } from "../../main/shared/models/Generated";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
 import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageProperties";
-import {OutcomeExpectations} from "../../main/shared/models/Generated";
-import {NumberRange} from "../../main/shared/models/Generated";
-import {CohortRestriction} from "../../main/shared/models/Generated";
+import {AnnotatedResponsibility} from "../../main/admin/models/AnnotatedResponsibility";
 
 let counter = 0;
 
@@ -320,4 +319,24 @@ export function mockPageBreadcrumb() {
 
 export function mockBreadcrumbs() {
     return [{url: '/', name: 'A'}, {url: '/b/', name: 'B'}];
+}
+
+export function mockAnnotatedResponsibility(
+    responsibility?: models.Responsibility,
+    comment?: ResponsibilityComment
+)
+    : AnnotatedResponsibility {
+    const responsibilitySet = mockResponsibilitySetWithExpectations(
+        null,
+        [responsibility || mockResponsibility()]
+    );
+    return {
+        ...responsibilitySet.responsibilities[0],
+        modellingGroup: responsibilitySet.modelling_group_id,
+        comment: comment || {
+            comment: "Lorem ipsum",
+            added_by: "test.user",
+            added_on: "2017-07-13 13:55:29 +0100"
+        }
+    };
 }

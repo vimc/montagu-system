@@ -128,6 +128,27 @@ export interface ResearchModelDetails {
     modelling_group: string;
 }
 
+export interface ResponsibilityCommentPayload {
+    comment: string;
+}
+
+export interface ResponsibilityComment {
+    added_by: string;
+    added_on: string;
+    comment: string;
+}
+
+export interface ResponsibilityWithComment {
+    comment: ResponsibilityComment | null;
+    scenario_id: string;
+}
+
+export interface ResponsibilitySetWithComments {
+    modelling_group_id: string;
+    responsibilities: ResponsibilityWithComment[];
+    touchstone_version: string;
+}
+
 export interface Outcome {
     code: string;
     name: string;

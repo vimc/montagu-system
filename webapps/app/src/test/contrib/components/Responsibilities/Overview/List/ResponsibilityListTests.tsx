@@ -40,8 +40,8 @@ describe('Responsibility Overview List Component tests', () => {
 
     it("renders one ResponsibilityComponent per responsibility", () => {
         const props = makeProps([
-            mockResponsibility({}, mockScenario({ id: "scenario-1", disease: "d1" })),
-            mockResponsibility({}, mockScenario({ id: "scenario-2", disease: "d2" }))
+            mockResponsibility({}, mockScenario({ id: "scenario-1", disease: "d1", description: "A" })),
+            mockResponsibility({}, mockScenario({ id: "scenario-2", disease: "d2", description: "B" }))
         ]);
         const rendered = shallow(<ResponsibilityList {...props} />);
         const children = rendered.find(ResponsibilityScenario);

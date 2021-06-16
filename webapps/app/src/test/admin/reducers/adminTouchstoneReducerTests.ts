@@ -1,10 +1,15 @@
-
 import {
     adminTouchstoneReducer,
-    adminTouchstonesInitialState, AdminTouchstoneState
+    adminTouchstonesInitialState,
+    AdminTouchstoneState
 } from "../../../main/admin/reducers/adminTouchstoneReducer";
 import {TouchstonesAction, TouchstoneTypes} from "../../../main/shared/actionTypes/TouchstonesTypes";
-import {mockTouchstone} from "../../mocks/mockModels";
+import {
+    mockAnnotatedResponsibility,
+    mockResponsibilitySetWithExpectations,
+    mockTouchstone
+} from "../../mocks/mockModels";
+import {ResponsibilitySetWithComments} from "../../../main/shared/models/Generated";
 
 describe("adminTouchstoneReducer", () => {
     it("sets fetched touchstones", () => {
@@ -55,6 +60,41 @@ describe("adminTouchstoneReducer", () => {
         const expected: AdminTouchstoneState = {
             ...adminTouchstonesInitialState,
             touchstones: [touchstone]
+        };
+        expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
+    });
+
+    it("sets current responsibility", () => {
+        const data = mockAnnotatedResponsibility()
+        const action: TouchstonesAction = {
+            type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_RESPONSIBILITY,
+            data
+        };
+        const expected: AdminTouchstoneState = {
+            ...adminTouchstonesInitialState,
+            currentResponsibility: data
+        };
+        expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
+    });
+
+    it("sets annotated responsibility set", () => {
+        const testResponsibilitySet = mockResponsibilitySetWithExpectations();
+        const data: ResponsibilitySetWithComments[] = [{
+            modelling_group_id: testResponsibilitySet.modelling_group_id,
+            touchstone_version: testResponsibilitySet.touchstone_version,
+            responsibilities: testResponsibilitySet.responsibilities.map(r => ({
+                scenario_id: r.scenario.id,
+                comment: null,
+                ...r
+            }))
+        }];
+        const action: TouchstonesAction = {
+            type: TouchstoneTypes.RESPONSIBILITY_COMMENTS_FOR_TOUCHSTONE_VERSION_FETCHED,
+            data
+        };
+        const expected: AdminTouchstoneState = {
+            ...adminTouchstonesInitialState,
+            currentResponsibilityComments: data
         };
         expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
     });
