@@ -11,7 +11,7 @@ OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
 OW_CLI_IMAGE="vimc/orderly-web-user-cli:master"
 MONTAGU_MIGRATE_IMAGE="vimc/montagu-migrate:$MONTAGU_DB_VERSION"
 
-if [[ -d demo ]]
+if [[ -d $ROOT/demo ]]
 then
   echo "Orderly demo folder already exists, not re-creating it."
 else
