@@ -13,5 +13,6 @@ data class ResponsibilitySet(
 data class ResponsibilitySetWithComments(
         val touchstoneVersion: String,
         val modellingGroupId: String,
+        val comment: ResponsibilityComment?,
         val responsibilities: List<ResponsibilityWithComment>
 )
