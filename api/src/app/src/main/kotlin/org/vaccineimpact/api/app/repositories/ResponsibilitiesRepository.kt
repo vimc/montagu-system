@@ -17,6 +17,11 @@ interface ResponsibilitiesRepository: Repository {
                                               comment: String,
                                               addedBy: String,
                                               addedOn: Instant? = Instant.now())
+    fun addResponsibilitySetCommentForTouchstone(touchstoneVersionId: String,
+                                                 groupId: String,
+                                                 comment: String,
+                                                 addedBy: String,
+                                                 addedOn: Instant? = Instant.now())
     fun getResponsibilities(responsibilitySet: ResponsibilitySetRecord?,
                             scenarioFilterParameters: ScenarioFilterParameters,
                             touchstoneVersionId: String,

@@ -1,5 +1,4 @@
 {
-    "id": "ResponsibilitySetsWithComments",
     "type": "array",
     "items": {
         "type": "object",
@@ -10,6 +9,9 @@
             "modelling_group_id": {
                 "type": "string"
             },
+            "comment": {
+                "$ref": "#/definitions/comment"
+            },
             "responsibilities": {
                 "type": "array",
                 "items": {
@@ -19,24 +21,7 @@
                             "type": "string"
                         },
                         "comment": {
-                            "type": "object",
-                            "properties": {
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "added_by": {
-                                    "type": "string"
-                                },
-                                "added_on": {
-                                    "type": "string"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "comment",
-                                "added_by",
-                                "added_on"
-                            ]
+                            "$ref": "#/definitions/comment"
                         }
                     },
                     "additionalProperties": false,
@@ -53,5 +38,27 @@
             "modelling_group_id",
             "responsibilities"
         ]
+    },
+    "definitions": {
+        "comment": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "added_by": {
+                    "type": "string"
+                },
+                "added_on": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "comment",
+                "added_by",
+                "added_on"
+            ]
+        }
     }
 }

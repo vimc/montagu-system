@@ -189,15 +189,15 @@ class JooqResponsibilitiesRepository(
     }
 
     override fun getResponsibilitiesWithCommentsForTouchstone(touchstoneVersionId: String): List<ResponsibilitySetWithComments> =
-            this.dsl.select(Tables.MODELLING_GROUP.ID, Tables.RESPONSIBILITY.ID, Tables.SCENARIO.SCENARIO_DESCRIPTION)
+            this.dsl.select(Tables.MODELLING_GROUP.ID, Tables.RESPONSIBILITY_SET.ID, Tables.RESPONSIBILITY.ID, Tables.SCENARIO.SCENARIO_DESCRIPTION)
                     .fromJoinPath(Tables.MODELLING_GROUP, Tables.RESPONSIBILITY_SET, Tables.RESPONSIBILITY, Tables.SCENARIO)
                     .where(Tables.RESPONSIBILITY_SET.TOUCHSTONE.eq(touchstoneVersionId))
                     .and(Tables.RESPONSIBILITY.IS_OPEN)
                     .fetch()
-                    .groupBy { it[Tables.MODELLING_GROUP.ID] }
+                    .groupBy { Pair(it[Tables.MODELLING_GROUP.ID], it[Tables.RESPONSIBILITY_SET.ID]) }
                     .map { entry ->
                         val responsibilities = entry.value.map {
-                            val latestComment = dsl
+                            val latestResponsibilityComment = dsl
                                     .select(
                                             Tables.RESPONSIBILITY_COMMENT.COMMENT,
                                             Tables.RESPONSIBILITY_COMMENT.ADDED_BY,
@@ -207,15 +207,35 @@ class JooqResponsibilitiesRepository(
                                     .where(Tables.RESPONSIBILITY_COMMENT.RESPONSIBILITY.eq(it[Tables.RESPONSIBILITY.ID]))
                                     .orderBy(Tables.RESPONSIBILITY_COMMENT.ADDED_ON.desc())
                                     .fetchAnyInto(ResponsibilityComment::class.java)
-                            ResponsibilityWithComment(it[Tables.SCENARIO.SCENARIO_DESCRIPTION], latestComment)
+                            ResponsibilityWithComment(it[Tables.SCENARIO.SCENARIO_DESCRIPTION], latestResponsibilityComment)
                         }
-                        ResponsibilitySetWithComments(touchstoneVersionId, entry.key, responsibilities)
+                        val latestResponsibilitySetComment = dsl
+                                .select(
+                                        Tables.RESPONSIBILITY_SET_COMMENT.COMMENT,
+                                        Tables.RESPONSIBILITY_SET_COMMENT.ADDED_BY,
+                                        Tables.RESPONSIBILITY_SET_COMMENT.ADDED_ON
+                                )
+                                .from(Tables.RESPONSIBILITY_SET_COMMENT)
+                                .where(Tables.RESPONSIBILITY_SET_COMMENT.RESPONSIBILITY_SET.eq(entry.key.second))
+                                .orderBy(Tables.RESPONSIBILITY_SET_COMMENT.ADDED_ON.desc())
+                                .fetchAnyInto(ResponsibilityComment::class.java)
+                        ResponsibilitySetWithComments(touchstoneVersionId, entry.key.first, latestResponsibilitySetComment, responsibilities)
                     }
 
     override fun addResponsibilityCommentForTouchstone(touchstoneVersionId: String, groupId: String, scenarioId: String, comment: String, addedBy: String, addedOn: Instant?)
     {
         this.dsl.newRecord(Tables.RESPONSIBILITY_COMMENT).apply {
             this.responsibility = getResponsibilityId(groupId, touchstoneVersionId, scenarioId)
+            this.comment = comment
+            this.addedBy = addedBy
+            this.addedOn = Timestamp.from(addedOn)
+        }.store()
+    }
+
+    override fun addResponsibilitySetCommentForTouchstone(touchstoneVersionId: String, groupId: String, comment: String, addedBy: String, addedOn: Instant?)
+    {
+        this.dsl.newRecord(Tables.RESPONSIBILITY_SET_COMMENT).apply {
+            this.responsibilitySet = getResponsibilitySet(groupId, touchstoneVersionId)!!.id
             this.comment = comment
             this.addedBy = addedBy
             this.addedOn = Timestamp.from(addedOn)

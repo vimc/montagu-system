@@ -219,6 +219,11 @@ public class Sequences {
     public static final Sequence<Integer> RESPONSIBILITY_ID_SEQ = new SequenceImpl<Integer>("responsibility_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
 
     /**
+     * The sequence <code>public.responsibility_set_comment_id_seq</code>
+     */
+    public static final Sequence<Integer> RESPONSIBILITY_SET_COMMENT_ID_SEQ = new SequenceImpl<Integer>("responsibility_set_comment_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
      * The sequence <code>public.responsibility_set_id_seq</code>
      */
     public static final Sequence<Integer> RESPONSIBILITY_SET_ID_SEQ = new SequenceImpl<Integer>("responsibility_set_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
