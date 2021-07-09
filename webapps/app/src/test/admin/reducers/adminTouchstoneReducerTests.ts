@@ -6,6 +6,7 @@ import {
 import {TouchstonesAction, TouchstoneTypes} from "../../../main/shared/actionTypes/TouchstonesTypes";
 import {
     mockAnnotatedResponsibility,
+    mockAnnotatedResponsibilitySet,
     mockResponsibilitySetWithExpectations,
     mockTouchstone
 } from "../../mocks/mockModels";
@@ -37,6 +38,7 @@ describe("adminTouchstoneReducer", () => {
         };
         expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
     });
+
 
     it("sets create touchstone errors", () => {
         const errors = [{code: "e", message: "error"}];
@@ -77,11 +79,25 @@ describe("adminTouchstoneReducer", () => {
         expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
     });
 
+    it("sets current responsibility set", () => {
+        const data = mockAnnotatedResponsibilitySet();
+        const action: TouchstonesAction = {
+            type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_RESPONSIBILITY_SET,
+            data
+        };
+        const expected: AdminTouchstoneState = {
+            ...adminTouchstonesInitialState,
+            currentResponsibilitySet: data
+        };
+        expect(adminTouchstoneReducer(undefined, action)).toEqual(expected);
+    });
+
     it("sets annotated responsibility set", () => {
         const testResponsibilitySet = mockResponsibilitySetWithExpectations();
         const data: ResponsibilitySetWithComments[] = [{
             modelling_group_id: testResponsibilitySet.modelling_group_id,
             touchstone_version: testResponsibilitySet.touchstone_version,
+            comment: null,
             responsibilities: testResponsibilitySet.responsibilities.map(r => ({
                 scenario_id: r.scenario.id,
                 comment: null,

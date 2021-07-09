@@ -5,13 +5,14 @@ import {
     Touchstone,
     TouchstoneVersion
 } from "../models/Generated";
-import {AnnotatedResponsibility} from "../../admin/models/AnnotatedResponsibility";
+import {AnnotatedResponsibility, AnnotatedResponsibilitySet} from "../../admin/models/AnnotatedResponsibility";
 
 export enum TouchstoneTypes {
     ALL_TOUCHSTONES_FETCHED = "ALL_TOUCHSTONES_FETCHED",
     RESPONSIBILITIES_FOR_TOUCHSTONE_VERSION_FETCHED = "RESPONSIBILITIES_FOR_TOUCHSTONE_VERSION_FETCHED",
     RESPONSIBILITY_COMMENTS_FOR_TOUCHSTONE_VERSION_FETCHED = "RESPONSIBILITY_COMMENTS_FOR_TOUCHSTONE_VERSION_FETCHED",
     SET_CURRENT_TOUCHSTONE_RESPONSIBILITY = "SET_CURRENT_TOUCHSTONE_RESPONSIBILITY",
+    SET_CURRENT_TOUCHSTONE_RESPONSIBILITY_SET = "SET_CURRENT_TOUCHSTONE_RESPONSIBILITY_SET",
     TOUCHSTONES_FETCHED_FOR_GROUP = "TOUCHSTONES_FETCHED_FOR_GROUP",
     SET_CURRENT_TOUCHSTONE_VERSION = "SET_CURRENT_TOUCHSTONE_VERSION",
     NEW_TOUCHSTONE_CREATED = "NEW_TOUCHSTONE_CREATED",
@@ -54,6 +55,11 @@ export interface SetCurrentTouchstoneResponsibility {
     data: AnnotatedResponsibility;
 }
 
+export interface SetCurrentTouchstoneResponsibilitySet {
+    type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_RESPONSIBILITY_SET;
+    data: AnnotatedResponsibilitySet;
+}
+
 export interface NewTouchstoneCreated {
     type: TouchstoneTypes.NEW_TOUCHSTONE_CREATED;
     data: Touchstone;
@@ -72,5 +78,6 @@ export type TouchstonesAction =
     | ResponsibilitiesForTouchstoneVersionFetched
     | ResponsibilityCommentsForTouchstoneVersionFetched
     | SetCurrentTouchstoneResponsibility
+    | SetCurrentTouchstoneResponsibilitySet
     | NewTouchstoneCreated
     | SetCreateTouchstoneError

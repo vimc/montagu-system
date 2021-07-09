@@ -5,12 +5,14 @@ import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {touchstoneResponsibilitiesPageActionCreators} from "../../../actions/pages/TouchstoneResponsibilityPageActionCreators";
-import {ResponsibilityList} from "./ResponsibilityList";
 import {ResponsibilitySetWithComments, ResponsibilitySetWithExpectations} from "../../../../shared/models/Generated";
-import {compose} from "recompose";
+import {branch, compose, renderComponent} from "recompose";
 import {TouchstoneVersionPageLocationProps} from "./TouchstoneVersionPage";
 import {ResponsibilityCommentModal} from "./ResponsibilityCommentModal";
-import {AnnotatedResponsibility} from "../../../models/AnnotatedResponsibility";
+import {AnnotatedResponsibilitySet} from "../../../models/AnnotatedResponsibility";
+import {ResponsibilitySetCommentModal} from "./ResponsibilitySetCommentModal";
+import {ResponsibilitySet} from "./ResponsibilitySet";
+import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 
 export interface ResponsibilitiesPageProps extends PageProperties<TouchstoneVersionPageLocationProps> {
     currentTouchstoneVersionId: string;
@@ -24,33 +26,46 @@ export class ResponsibilitiesPageComponent extends React.Component<Responsibilit
         this.props.onLoad(this.props.match.params)
     }
 
-    toAnnotatedResponsibilities(responsibilitySet: ResponsibilitySetWithExpectations): AnnotatedResponsibility[] {
-        return responsibilitySet.responsibilities.map(r => {
-            const responsibilitySetWithComments = this.props.responsibilityComments
-                .find(e => e.modelling_group_id === responsibilitySet.modelling_group_id)
-            return {
-                modellingGroup: responsibilitySet.modelling_group_id,
-                comment: responsibilitySetWithComments &&
-                    responsibilitySetWithComments.responsibilities.find(e => e.scenario_id === r.scenario.id).comment,
-                ...r
-            }
-        });
-    }
-
     render(): JSX.Element {
         return <PageArticle title={`Responsibility sets in ${this.props.currentTouchstoneVersionId}`}>
-            {this.props.responsibilitySets.map(s => <div key={s.modelling_group_id}>
-                <h4>{s.modelling_group_id} (<span>{s.status}</span>)</h4>
-                <ResponsibilityList responsibilities={this.toAnnotatedResponsibilities(s)}/>
-            </div>)}
+            {this.props.responsibilitySets.map(s =>
+                <ResponsibilitySet
+                    key={s.modelling_group_id}
+                    responsibilitySet={toAnnotatedResponsibilitySet(s, this.props.responsibilityComments)}
+                />
+            )}
             <ResponsibilityCommentModal/>
+            <ResponsibilitySetCommentModal/>
         </PageArticle>;
     }
+
+}
+
+function toAnnotatedResponsibilitySet(
+    responsibilitySet: ResponsibilitySetWithExpectations,
+    responsibilityComments: ResponsibilitySetWithComments[]
+): AnnotatedResponsibilitySet {
+    const responsibilitySetWithComments = responsibilityComments
+        .find(e => e.modelling_group_id === responsibilitySet.modelling_group_id)
+    return {
+        comment: responsibilitySetWithComments && responsibilitySetWithComments.comment,
+        ...responsibilitySet,
+        responsibilities: responsibilitySet.responsibilities.map(r => (
+            {
+                modellingGroup: responsibilitySet.modelling_group_id,
+                comment: responsibilitySetWithComments && responsibilitySetWithComments.responsibilities
+                    .find(e => e.scenario_id === r.scenario.id).comment,
+                ...r
+            }
+        ))
+    };
 }
 
 const mapStateToProps = (state: AdminAppState): Partial<ResponsibilitiesPageProps> => {
     return {
-        currentTouchstoneVersionId: state.touchstones.currentTouchstoneVersion ? state.touchstones.currentTouchstoneVersion.id : '',
+        currentTouchstoneVersionId: state.touchstones.currentTouchstoneVersion
+            ? state.touchstones.currentTouchstoneVersion.id
+            : '',
         responsibilitySets: state.touchstones.currentResponsibilitySets,
         responsibilityComments: state.touchstones.currentResponsibilityComments
     }
@@ -63,6 +78,9 @@ export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<R
     };
 };
 
-export const ResponsibilitiesPage =
-    compose<{}, PageProperties<TouchstoneVersionPageLocationProps>>(connect(mapStateToProps, mapDispatchToProps))
-    (ResponsibilitiesPageComponent);
+const enhance = compose<{}, PageProperties<ResponsibilitiesPageProps>>(
+    connect(mapStateToProps, mapDispatchToProps),
+    branch((props: ResponsibilitiesPageProps) => !props.responsibilityComments, renderComponent(LoadingElement))
+);
+
+export const ResponsibilitiesPage = enhance(ResponsibilitiesPageComponent);

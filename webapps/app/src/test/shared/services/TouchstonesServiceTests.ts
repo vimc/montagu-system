@@ -67,4 +67,18 @@ describe('Touchstones service tests', () => {
         expect(getStub.mock.calls[0][0]).toEqual('/touchstones/touchstone-1/comments/group-1/scenario-1/');
         expect(getStub.mock.calls[0][1]).toEqual('{"comment":"comment 1"}');
     });
+
+    it('annotates a responsibility set', () => {
+        const touchstoneService = new TouchstonesService(store.dispatch, store.getState);
+
+        const getStub = sandbox.setStubFunc(touchstoneService, "post", () => {
+            return Promise.resolve();
+        });
+
+        touchstoneService.addResponsibilitySetComment("touchstone-1", "group-1", "comment 1");
+
+        expect(getStub.mock.calls.length).toEqual(1);
+        expect(getStub.mock.calls[0][0]).toEqual('/touchstones/touchstone-1/comments/group-1/');
+        expect(getStub.mock.calls[0][1]).toEqual('{"comment":"comment 1"}');
+    });
 });

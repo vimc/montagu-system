@@ -1,20 +1,14 @@
-import {
-    mockTouchstoneVersion,
-    mockResponsibilitySetWithExpectations
-} from "../../../../mocks/mockModels";
+import {mockResponsibilitySetWithExpectations} from "../../../../mocks/mockModels";
 import {shallow} from "enzyme";
 
 import * as React from "react";
 import {createMockAdminStore} from "../../../../mocks/mockStore";
 import {mockAdminState} from "../../../../mocks/mockStates";
-import {ResponsibilityList} from
-    "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/ResponsibilityList";
-import {ResponsibilitiesPage} from
-    "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
+import {ResponsibilitiesPage} from "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/ResponsibilitiesPage";
 import {mockMatch} from "../../../../mocks/mocks";
 import {Sandbox} from "../../../../Sandbox";
-import {touchstoneResponsibilitiesPageActionCreators} from
-    "../../../../../main/admin/actions/pages/TouchstoneResponsibilityPageActionCreators";
+import {touchstoneResponsibilitiesPageActionCreators} from "../../../../../main/admin/actions/pages/TouchstoneResponsibilityPageActionCreators";
+import {ResponsibilitySet} from "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/ResponsibilitySet";
 
 describe("ResponsibilitiesPage", () => {
 
@@ -26,11 +20,10 @@ describe("ResponsibilitiesPage", () => {
     let store = createMockAdminStore(mockAdminState({
         touchstones: {
             currentResponsibilitySets: mockResponsibilitySets,
-            currentTouchstoneVersion: mockTouchstoneVersion(),
             currentResponsibilityComments: mockResponsibilitySets.map(rs => ({
                 modelling_group_id: rs.modelling_group_id,
                 responsibilities: rs.responsibilities.map(r => ({
-                    scenario_id: r.scenario.id
+                    scenario_id: r.scenario.id,
                 }))
             }))
         }
@@ -46,24 +39,11 @@ describe("ResponsibilitiesPage", () => {
         sandbox.restore();
     });
 
-    it("renders responsibility list for each responsibility set", () => {
+    it("renders responsibility set for each responsibility set", () => {
 
         const rendered = shallow(<ResponsibilitiesPage location={null} router={null} history={null}
-                                                       match={mockMatch()}/>, {context: {store}})
-            .dive();
-        expect(rendered.find(ResponsibilityList)).toHaveLength(2);
-
-    });
-
-    it("renders modelling group name and set status for each set", () => {
-
-        const rendered = shallow(<ResponsibilitiesPage location={null} router={null} history={null}
-                                                       match={mockMatch()}/>, {context: {store}})
-            .dive();
-
-        expect(rendered.find("h4").at(0).text()).toEqual("g1 (incomplete)");
-
-
+                                                       match={mockMatch()}/>, {context: {store}}).dive().dive();
+        expect(rendered.find(ResponsibilitySet)).toHaveLength(2);
     });
 
 });

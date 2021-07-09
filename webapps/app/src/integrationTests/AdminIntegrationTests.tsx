@@ -384,10 +384,18 @@ class AdminIntegrationTests extends IntegrationTestSuite {
             const result = await touchstoneService
                 .addResponsibilityComment(touchstoneVersionId, "g1", scenarioId, "comment 1");
             expect(result).toEqual("OK")
-        })
+        });
+
+        it("can annotate responsibility set", async () => {
+            await addResponsibilities(this.db);
+            const touchstoneService = new TouchstonesService(this.store.dispatch, this.store.getState);
+            const result = await touchstoneService
+                .addResponsibilitySetComment(touchstoneVersionId, "g1", "comment 1");
+            expect(result).toEqual("OK")
+        });
 
         it("can retrieve annotated responsibilities", async () => {
-            await addAnnotatedResponsibilities(this.db);
+            await addResponsibilityComments(this.db);
             const touchstoneService = new TouchstonesService(this.store.dispatch, this.store.getState);
             const result = await touchstoneService
                 .getResponsibilityCommentsForTouchstoneVersion(touchstoneVersionId);
@@ -407,6 +415,32 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                             },
                         ],
                         "touchstone_version": "test-1",
+                    },
+                ]
+            );
+        });
+
+        it("can retrieve annotated responsibility set", async () => {
+            await addResponsibilitySetComments(this.db);
+            const touchstoneService = new TouchstonesService(this.store.dispatch, this.store.getState);
+            const result = await touchstoneService
+                .getResponsibilityCommentsForTouchstoneVersion(touchstoneVersionId);
+            expect(result).toEqual(
+                [
+                    {
+                        "modelling_group_id": "g1",
+                        "responsibilities": [
+                            {
+                                "comment": null,
+                                "scenario_id": "yf-1",
+                            },
+                        ],
+                        "touchstone_version": "test-1",
+                        "comment": {
+                            "added_by": "bob",
+                            "added_on": "2021-06-17T08:58:32.233Z",
+                            "comment": "comment B",
+                        },
                     },
                 ]
             );
@@ -507,7 +541,7 @@ function addResponsibilities(db: Client) {
     `))
 }
 
-function addAnnotatedResponsibilities(db: Client) {
+function addResponsibilityComments(db: Client) {
     return addResponsibilities(db)
         .then(() => db.query(`
             DO $$
@@ -518,6 +552,21 @@ function addAnnotatedResponsibilities(db: Client) {
                 INSERT INTO responsibility_comment (responsibility, comment, added_by, added_on)
                 VALUES (responsibility_id, 'comment 1', 'bob', '2021-06-16T08:58:32.233Z'),
                        (responsibility_id, 'comment 2', 'bob', '2021-06-17T08:58:32.233Z');
+            END $$;
+    `))
+}
+
+function addResponsibilitySetComments(db: Client) {
+    return addResponsibilities(db)
+        .then(() => db.query(`
+            DO $$
+                DECLARE responsibility_set_id integer;
+            BEGIN
+                SELECT id INTO responsibility_set_id FROM responsibility_set LIMIT 1;
+
+                INSERT INTO responsibility_set_comment (responsibility_set, comment, added_by, added_on)
+                VALUES (responsibility_set_id, 'comment A', 'bob', '2021-06-16T08:58:32.233Z'),
+                       (responsibility_set_id, 'comment B', 'bob', '2021-06-17T08:58:32.233Z');
             END $$;
     `))
 }
