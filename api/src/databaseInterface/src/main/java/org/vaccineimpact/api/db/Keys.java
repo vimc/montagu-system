@@ -71,6 +71,7 @@ import org.vaccineimpact.api.db.tables.RegionSubnational;
 import org.vaccineimpact.api.db.tables.Responsibility;
 import org.vaccineimpact.api.db.tables.ResponsibilityComment;
 import org.vaccineimpact.api.db.tables.ResponsibilitySet;
+import org.vaccineimpact.api.db.tables.ResponsibilitySetComment;
 import org.vaccineimpact.api.db.tables.ResponsibilitySetStatus;
 import org.vaccineimpact.api.db.tables.Role;
 import org.vaccineimpact.api.db.tables.RolePermission;
@@ -155,6 +156,7 @@ import org.vaccineimpact.api.db.tables.records.PermissionRecord;
 import org.vaccineimpact.api.db.tables.records.RegionSubnationalRecord;
 import org.vaccineimpact.api.db.tables.records.ResponsibilityCommentRecord;
 import org.vaccineimpact.api.db.tables.records.ResponsibilityRecord;
+import org.vaccineimpact.api.db.tables.records.ResponsibilitySetCommentRecord;
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetRecord;
 import org.vaccineimpact.api.db.tables.records.ResponsibilitySetStatusRecord;
 import org.vaccineimpact.api.db.tables.records.RolePermissionRecord;
@@ -240,6 +242,7 @@ public class Keys {
     public static final Identity<ResponsibilityRecord, Integer> IDENTITY_RESPONSIBILITY = Identities0.IDENTITY_RESPONSIBILITY;
     public static final Identity<ResponsibilityCommentRecord, Integer> IDENTITY_RESPONSIBILITY_COMMENT = Identities0.IDENTITY_RESPONSIBILITY_COMMENT;
     public static final Identity<ResponsibilitySetRecord, Integer> IDENTITY_RESPONSIBILITY_SET = Identities0.IDENTITY_RESPONSIBILITY_SET;
+    public static final Identity<ResponsibilitySetCommentRecord, Integer> IDENTITY_RESPONSIBILITY_SET_COMMENT = Identities0.IDENTITY_RESPONSIBILITY_SET_COMMENT;
     public static final Identity<RoleRecord, Integer> IDENTITY_ROLE = Identities0.IDENTITY_ROLE;
     public static final Identity<ScenarioRecord, Integer> IDENTITY_SCENARIO = Identities0.IDENTITY_SCENARIO;
     public static final Identity<ScenarioCoverageSetRecord, Integer> IDENTITY_SCENARIO_COVERAGE_SET = Identities0.IDENTITY_SCENARIO_COVERAGE_SET;
@@ -326,6 +329,7 @@ public class Keys {
     public static final UniqueKey<ResponsibilityCommentRecord> RESPONSIBILITY_COMMENT_PKEY = UniqueKeys0.RESPONSIBILITY_COMMENT_PKEY;
     public static final UniqueKey<ResponsibilitySetRecord> RESPONSIBILITY_SET_PKEY = UniqueKeys0.RESPONSIBILITY_SET_PKEY;
     public static final UniqueKey<ResponsibilitySetRecord> RESPONSIBILITY_SET_MODELLING_GROUP_TOUCHSTONE_KEY = UniqueKeys0.RESPONSIBILITY_SET_MODELLING_GROUP_TOUCHSTONE_KEY;
+    public static final UniqueKey<ResponsibilitySetCommentRecord> RESPONSIBILITY_SET_COMMENT_PKEY = UniqueKeys0.RESPONSIBILITY_SET_COMMENT_PKEY;
     public static final UniqueKey<ResponsibilitySetStatusRecord> RESPONSIBILITY_SET_STATUS_PKEY = UniqueKeys0.RESPONSIBILITY_SET_STATUS_PKEY;
     public static final UniqueKey<RoleRecord> ROLE_PKEY = UniqueKeys0.ROLE_PKEY;
     public static final UniqueKey<RolePermissionRecord> ROLE_PERMISSION_PKEY = UniqueKeys0.ROLE_PERMISSION_PKEY;
@@ -471,6 +475,8 @@ public class Keys {
     public static final ForeignKey<ResponsibilitySetRecord, ModellingGroupRecord> RESPONSIBILITY_SET__RESPONSIBILITY_SET_MODELLING_GROUP_FKEY = ForeignKeys0.RESPONSIBILITY_SET__RESPONSIBILITY_SET_MODELLING_GROUP_FKEY;
     public static final ForeignKey<ResponsibilitySetRecord, TouchstoneRecord> RESPONSIBILITY_SET__RESPONSIBILITY_SET_TOUCHSTONE_FKEY = ForeignKeys0.RESPONSIBILITY_SET__RESPONSIBILITY_SET_TOUCHSTONE_FKEY;
     public static final ForeignKey<ResponsibilitySetRecord, ResponsibilitySetStatusRecord> RESPONSIBILITY_SET__RESPONSIBILITY_SET_STATUS_FKEY = ForeignKeys0.RESPONSIBILITY_SET__RESPONSIBILITY_SET_STATUS_FKEY;
+    public static final ForeignKey<ResponsibilitySetCommentRecord, ResponsibilitySetRecord> RESPONSIBILITY_SET_COMMENT__RESPONSIBILITY_SET_COMMENT_RESPONSIBILITY_SET_FKEY = ForeignKeys0.RESPONSIBILITY_SET_COMMENT__RESPONSIBILITY_SET_COMMENT_RESPONSIBILITY_SET_FKEY;
+    public static final ForeignKey<ResponsibilitySetCommentRecord, AppUserRecord> RESPONSIBILITY_SET_COMMENT__RESPONSIBILITY_SET_COMMENT_ADDED_BY_FKEY = ForeignKeys0.RESPONSIBILITY_SET_COMMENT__RESPONSIBILITY_SET_COMMENT_ADDED_BY_FKEY;
     public static final ForeignKey<RolePermissionRecord, RoleRecord> ROLE_PERMISSION__ROLE_PERMISSION_ROLE_FKEY = ForeignKeys0.ROLE_PERMISSION__ROLE_PERMISSION_ROLE_FKEY;
     public static final ForeignKey<RolePermissionRecord, PermissionRecord> ROLE_PERMISSION__ROLE_PERMISSION_PERMISSION_FKEY = ForeignKeys0.ROLE_PERMISSION__ROLE_PERMISSION_PERMISSION_FKEY;
     public static final ForeignKey<ScenarioRecord, TouchstoneRecord> SCENARIO__SCENARIO_TOUCHSTONE_FKEY = ForeignKeys0.SCENARIO__SCENARIO_TOUCHSTONE_FKEY;
@@ -544,6 +550,7 @@ public class Keys {
         public static Identity<ResponsibilityRecord, Integer> IDENTITY_RESPONSIBILITY = Internal.createIdentity(Responsibility.RESPONSIBILITY, Responsibility.RESPONSIBILITY.ID);
         public static Identity<ResponsibilityCommentRecord, Integer> IDENTITY_RESPONSIBILITY_COMMENT = Internal.createIdentity(ResponsibilityComment.RESPONSIBILITY_COMMENT, ResponsibilityComment.RESPONSIBILITY_COMMENT.ID);
         public static Identity<ResponsibilitySetRecord, Integer> IDENTITY_RESPONSIBILITY_SET = Internal.createIdentity(ResponsibilitySet.RESPONSIBILITY_SET, ResponsibilitySet.RESPONSIBILITY_SET.ID);
+        public static Identity<ResponsibilitySetCommentRecord, Integer> IDENTITY_RESPONSIBILITY_SET_COMMENT = Internal.createIdentity(ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT, ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT.ID);
         public static Identity<RoleRecord, Integer> IDENTITY_ROLE = Internal.createIdentity(Role.ROLE, Role.ROLE.ID);
         public static Identity<ScenarioRecord, Integer> IDENTITY_SCENARIO = Internal.createIdentity(Scenario.SCENARIO, Scenario.SCENARIO.ID);
         public static Identity<ScenarioCoverageSetRecord, Integer> IDENTITY_SCENARIO_COVERAGE_SET = Internal.createIdentity(ScenarioCoverageSet.SCENARIO_COVERAGE_SET, ScenarioCoverageSet.SCENARIO_COVERAGE_SET.ID);
@@ -628,6 +635,7 @@ public class Keys {
         public static final UniqueKey<ResponsibilityCommentRecord> RESPONSIBILITY_COMMENT_PKEY = Internal.createUniqueKey(ResponsibilityComment.RESPONSIBILITY_COMMENT, "responsibility_comment_pkey", ResponsibilityComment.RESPONSIBILITY_COMMENT.ID);
         public static final UniqueKey<ResponsibilitySetRecord> RESPONSIBILITY_SET_PKEY = Internal.createUniqueKey(ResponsibilitySet.RESPONSIBILITY_SET, "responsibility_set_pkey", ResponsibilitySet.RESPONSIBILITY_SET.ID);
         public static final UniqueKey<ResponsibilitySetRecord> RESPONSIBILITY_SET_MODELLING_GROUP_TOUCHSTONE_KEY = Internal.createUniqueKey(ResponsibilitySet.RESPONSIBILITY_SET, "responsibility_set_modelling_group_touchstone_key", ResponsibilitySet.RESPONSIBILITY_SET.MODELLING_GROUP, ResponsibilitySet.RESPONSIBILITY_SET.TOUCHSTONE);
+        public static final UniqueKey<ResponsibilitySetCommentRecord> RESPONSIBILITY_SET_COMMENT_PKEY = Internal.createUniqueKey(ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT, "responsibility_set_comment_pkey", ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT.ID);
         public static final UniqueKey<ResponsibilitySetStatusRecord> RESPONSIBILITY_SET_STATUS_PKEY = Internal.createUniqueKey(ResponsibilitySetStatus.RESPONSIBILITY_SET_STATUS, "responsibility_set_status_pkey", ResponsibilitySetStatus.RESPONSIBILITY_SET_STATUS.ID);
         public static final UniqueKey<RoleRecord> ROLE_PKEY = Internal.createUniqueKey(Role.ROLE, "role_pkey", Role.ROLE.ID);
         public static final UniqueKey<RolePermissionRecord> ROLE_PERMISSION_PKEY = Internal.createUniqueKey(RolePermission.ROLE_PERMISSION, "role_permission_pkey", RolePermission.ROLE_PERMISSION.ROLE, RolePermission.ROLE_PERMISSION.PERMISSION);
@@ -771,6 +779,8 @@ public class Keys {
         public static final ForeignKey<ResponsibilitySetRecord, ModellingGroupRecord> RESPONSIBILITY_SET__RESPONSIBILITY_SET_MODELLING_GROUP_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.MODELLING_GROUP_PKEY, ResponsibilitySet.RESPONSIBILITY_SET, "responsibility_set__responsibility_set_modelling_group_fkey", ResponsibilitySet.RESPONSIBILITY_SET.MODELLING_GROUP);
         public static final ForeignKey<ResponsibilitySetRecord, TouchstoneRecord> RESPONSIBILITY_SET__RESPONSIBILITY_SET_TOUCHSTONE_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_PKEY, ResponsibilitySet.RESPONSIBILITY_SET, "responsibility_set__responsibility_set_touchstone_fkey", ResponsibilitySet.RESPONSIBILITY_SET.TOUCHSTONE);
         public static final ForeignKey<ResponsibilitySetRecord, ResponsibilitySetStatusRecord> RESPONSIBILITY_SET__RESPONSIBILITY_SET_STATUS_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.RESPONSIBILITY_SET_STATUS_PKEY, ResponsibilitySet.RESPONSIBILITY_SET, "responsibility_set__responsibility_set_status_fkey", ResponsibilitySet.RESPONSIBILITY_SET.STATUS);
+        public static final ForeignKey<ResponsibilitySetCommentRecord, ResponsibilitySetRecord> RESPONSIBILITY_SET_COMMENT__RESPONSIBILITY_SET_COMMENT_RESPONSIBILITY_SET_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.RESPONSIBILITY_SET_PKEY, ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT, "responsibility_set_comment__responsibility_set_comment_responsibility_set_fkey", ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT.RESPONSIBILITY_SET);
+        public static final ForeignKey<ResponsibilitySetCommentRecord, AppUserRecord> RESPONSIBILITY_SET_COMMENT__RESPONSIBILITY_SET_COMMENT_ADDED_BY_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.APP_USER_PKEY, ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT, "responsibility_set_comment__responsibility_set_comment_added_by_fkey", ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT.ADDED_BY);
         public static final ForeignKey<RolePermissionRecord, RoleRecord> ROLE_PERMISSION__ROLE_PERMISSION_ROLE_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.ROLE_PKEY, RolePermission.ROLE_PERMISSION, "role_permission__role_permission_role_fkey", RolePermission.ROLE_PERMISSION.ROLE);
         public static final ForeignKey<RolePermissionRecord, PermissionRecord> ROLE_PERMISSION__ROLE_PERMISSION_PERMISSION_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.PERMISSION_PKEY, RolePermission.ROLE_PERMISSION, "role_permission__role_permission_permission_fkey", RolePermission.ROLE_PERMISSION.PERMISSION);
         public static final ForeignKey<ScenarioRecord, TouchstoneRecord> SCENARIO__SCENARIO_TOUCHSTONE_FKEY = Internal.createForeignKey(org.vaccineimpact.api.db.Keys.TOUCHSTONE_PKEY, Scenario.SCENARIO, "scenario__scenario_touchstone_fkey", Scenario.SCENARIO.TOUCHSTONE);

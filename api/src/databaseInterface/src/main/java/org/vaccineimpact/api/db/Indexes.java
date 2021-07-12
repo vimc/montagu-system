@@ -69,6 +69,7 @@ import org.vaccineimpact.api.db.tables.RegionSubnational;
 import org.vaccineimpact.api.db.tables.Responsibility;
 import org.vaccineimpact.api.db.tables.ResponsibilityComment;
 import org.vaccineimpact.api.db.tables.ResponsibilitySet;
+import org.vaccineimpact.api.db.tables.ResponsibilitySetComment;
 import org.vaccineimpact.api.db.tables.ResponsibilitySetStatus;
 import org.vaccineimpact.api.db.tables.Role;
 import org.vaccineimpact.api.db.tables.RolePermission;
@@ -194,6 +195,7 @@ public class Indexes {
     public static final Index RESPONSIBILITY_COMMENT_PKEY = Indexes0.RESPONSIBILITY_COMMENT_PKEY;
     public static final Index RESPONSIBILITY_SET_MODELLING_GROUP_TOUCHSTONE_KEY = Indexes0.RESPONSIBILITY_SET_MODELLING_GROUP_TOUCHSTONE_KEY;
     public static final Index RESPONSIBILITY_SET_PKEY = Indexes0.RESPONSIBILITY_SET_PKEY;
+    public static final Index RESPONSIBILITY_SET_COMMENT_PKEY = Indexes0.RESPONSIBILITY_SET_COMMENT_PKEY;
     public static final Index RESPONSIBILITY_SET_STATUS_PKEY = Indexes0.RESPONSIBILITY_SET_STATUS_PKEY;
     public static final Index ROLE_PKEY = Indexes0.ROLE_PKEY;
     public static final Index ROLE_PERMISSION_PKEY = Indexes0.ROLE_PERMISSION_PKEY;
@@ -309,6 +311,7 @@ public class Indexes {
         public static Index RESPONSIBILITY_COMMENT_PKEY = Internal.createIndex("responsibility_comment_pkey", ResponsibilityComment.RESPONSIBILITY_COMMENT, new OrderField[] { ResponsibilityComment.RESPONSIBILITY_COMMENT.ID }, true);
         public static Index RESPONSIBILITY_SET_MODELLING_GROUP_TOUCHSTONE_KEY = Internal.createIndex("responsibility_set_modelling_group_touchstone_key", ResponsibilitySet.RESPONSIBILITY_SET, new OrderField[] { ResponsibilitySet.RESPONSIBILITY_SET.MODELLING_GROUP, ResponsibilitySet.RESPONSIBILITY_SET.TOUCHSTONE }, true);
         public static Index RESPONSIBILITY_SET_PKEY = Internal.createIndex("responsibility_set_pkey", ResponsibilitySet.RESPONSIBILITY_SET, new OrderField[] { ResponsibilitySet.RESPONSIBILITY_SET.ID }, true);
+        public static Index RESPONSIBILITY_SET_COMMENT_PKEY = Internal.createIndex("responsibility_set_comment_pkey", ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT, new OrderField[] { ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT.ID }, true);
         public static Index RESPONSIBILITY_SET_STATUS_PKEY = Internal.createIndex("responsibility_set_status_pkey", ResponsibilitySetStatus.RESPONSIBILITY_SET_STATUS, new OrderField[] { ResponsibilitySetStatus.RESPONSIBILITY_SET_STATUS.ID }, true);
         public static Index ROLE_PKEY = Internal.createIndex("role_pkey", Role.ROLE, new OrderField[] { Role.ROLE.ID }, true);
         public static Index ROLE_PERMISSION_PKEY = Internal.createIndex("role_permission_pkey", RolePermission.ROLE_PERMISSION, new OrderField[] { RolePermission.ROLE_PERMISSION.ROLE, RolePermission.ROLE_PERMISSION.PERMISSION }, true);

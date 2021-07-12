@@ -169,8 +169,20 @@ Schema: [`ResponsibilitySetsWithComments.schema.json`](../schemas/Responsibility
         ]
     }]
 
-## POST /touchstones/{touchstone-id}/responsibilities/{group-id}/{scenario-id}/comments/
+## POST /touchstones/{touchstone-id}/comments/{group-id}/{scenario-id}/
 Adds an annotation to the responsibility associated with the touchstone, modelling group and scenario.
+
+Required permissions: `touchstones.read`, `responsibilities.review`.
+
+Schema: [`ResponsibilityComment.schema.json`](../schemas/ResponsibilityComment.schema.json)
+
+### Example
+    {
+        "comment": "An annotation for novacc"
+    }
+
+## POST /touchstones/{touchstone-id}/comments/{group-id}/
+Adds an annotation to the responsibility set associated with the touchstone and modelling group.
 
 Required permissions: `touchstones.read`, `responsibilities.review`.
 

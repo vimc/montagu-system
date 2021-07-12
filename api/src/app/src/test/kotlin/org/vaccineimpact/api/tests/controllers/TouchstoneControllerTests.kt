@@ -17,7 +17,6 @@ import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.models.responsibilities.ResponsibilityComment
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityCommentPayload
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithComments
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityWithComment
@@ -26,7 +25,6 @@ import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.test_helpers.exampleResponsibilitySetWithExpectations
 import java.math.BigDecimal
-import java.time.Instant
 
 class TouchstoneControllerTests : MontaguTests()
 {
@@ -218,10 +216,34 @@ class TouchstoneControllerTests : MontaguTests()
     }
 
     @Test
+    fun `addResponsibilitySetComment succeeds`() {
+        val repo = mock<TouchstoneRepository> {
+            on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
+        }
+        val responsibilityRepo = mock<ResponsibilitiesRepository>()
+        val comment = ResponsibilityCommentPayload("comment 1")
+        val context = mock<ActionContext> {
+            on { username } doReturn "test.user"
+            on { params(":touchstone-version-id") } doReturn openTouchstoneVersion.id
+            on { params(":group-id") } doReturn "group-1"
+            on { postData<ResponsibilityCommentPayload>() } doReturn comment
+        }
+        val result = TouchstoneController(context, repo, mock(), responsibilityRepo, mock()).addResponsibilitySetComment()
+        assertThat(result).isEqualTo("OK")
+        verify(responsibilityRepo).addResponsibilitySetCommentForTouchstone(
+                eq(openTouchstoneVersion.id),
+                eq("group-1"),
+                eq(comment.comment),
+                any(),
+                any()
+        )
+    }
+
+    @Test
     fun `getResponsibilityComments returns comments`()
     {
         val sets = listOf(
-                ResponsibilitySetWithComments(openTouchstoneVersion.id, "gId", listOf(
+                ResponsibilitySetWithComments(openTouchstoneVersion.id, "gId", null, listOf(
                         ResponsibilityWithComment("dId", null)
                 ))
         )

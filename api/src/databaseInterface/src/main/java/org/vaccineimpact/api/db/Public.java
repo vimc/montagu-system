@@ -86,6 +86,7 @@ import org.vaccineimpact.api.db.tables.RegionSubnational;
 import org.vaccineimpact.api.db.tables.Responsibility;
 import org.vaccineimpact.api.db.tables.ResponsibilityComment;
 import org.vaccineimpact.api.db.tables.ResponsibilitySet;
+import org.vaccineimpact.api.db.tables.ResponsibilitySetComment;
 import org.vaccineimpact.api.db.tables.ResponsibilitySetStatus;
 import org.vaccineimpact.api.db.tables.Role;
 import org.vaccineimpact.api.db.tables.RolePermission;
@@ -154,7 +155,7 @@ import org.vaccineimpact.api.db.udt.TablefuncCrosstab_4;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -179352459;
+    private static final long serialVersionUID = 1030495630;
 
     /**
      * The reference instance of <code>public</code>
@@ -234,21 +235,21 @@ public class Public extends SchemaImpl {
     /**
      * Call <code>public.connectby</code>.
      */
-    public static Result<ConnectbyRecord> CONNECTBY(Configuration configuration, String __1, String __2, String __3, String __4, String __5, Integer __6) {
+    public static Result<ConnectbyRecord> CONNECTBY(Configuration configuration, String __1, String __2, String __3, String __4, Integer __5, String __6) {
         return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6)).fetch();
     }
 
     /**
      * Get <code>public.connectby</code> as a table.
      */
-    public static Connectby CONNECTBY(String __1, String __2, String __3, String __4, String __5, Integer __6) {
+    public static Connectby CONNECTBY(String __1, String __2, String __3, String __4, Integer __5, String __6) {
         return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6);
     }
 
     /**
      * Get <code>public.connectby</code> as a table.
      */
-    public static Connectby CONNECTBY(Field<String> __1, Field<String> __2, Field<String> __3, Field<String> __4, Field<String> __5, Field<Integer> __6) {
+    public static Connectby CONNECTBY(Field<String> __1, Field<String> __2, Field<String> __3, Field<String> __4, Field<Integer> __5, Field<String> __6) {
         return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6);
     }
 
@@ -621,6 +622,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.responsibility_set</code>.
      */
     public final ResponsibilitySet RESPONSIBILITY_SET = org.vaccineimpact.api.db.tables.ResponsibilitySet.RESPONSIBILITY_SET;
+
+    /**
+     * The table <code>public.responsibility_set_comment</code>.
+     */
+    public final ResponsibilitySetComment RESPONSIBILITY_SET_COMMENT = org.vaccineimpact.api.db.tables.ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT;
 
     /**
      * Possible values {incomplete, submitted, approved}
@@ -1050,6 +1056,7 @@ public class Public extends SchemaImpl {
             Sequences.REGION_SUBNATIONAL_ID_SEQ,
             Sequences.RESPONSIBILITY_COMMENT_ID_SEQ,
             Sequences.RESPONSIBILITY_ID_SEQ,
+            Sequences.RESPONSIBILITY_SET_COMMENT_ID_SEQ,
             Sequences.RESPONSIBILITY_SET_ID_SEQ,
             Sequences.ROLE_ID_SEQ,
             Sequences.SCENARIO_COVERAGE_SET_ID_SEQ,
@@ -1138,6 +1145,7 @@ public class Public extends SchemaImpl {
             Responsibility.RESPONSIBILITY,
             ResponsibilityComment.RESPONSIBILITY_COMMENT,
             ResponsibilitySet.RESPONSIBILITY_SET,
+            ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT,
             ResponsibilitySetStatus.RESPONSIBILITY_SET_STATUS,
             Role.ROLE,
             RolePermission.ROLE_PERMISSION,

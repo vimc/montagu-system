@@ -77,6 +77,7 @@ import org.vaccineimpact.api.db.tables.RegionSubnational;
 import org.vaccineimpact.api.db.tables.Responsibility;
 import org.vaccineimpact.api.db.tables.ResponsibilityComment;
 import org.vaccineimpact.api.db.tables.ResponsibilitySet;
+import org.vaccineimpact.api.db.tables.ResponsibilitySetComment;
 import org.vaccineimpact.api.db.tables.ResponsibilitySetStatus;
 import org.vaccineimpact.api.db.tables.Role;
 import org.vaccineimpact.api.db.tables.RolePermission;
@@ -215,21 +216,21 @@ public class Tables {
     /**
      * Call <code>public.connectby</code>.
      */
-    public static Result<ConnectbyRecord> CONNECTBY(Configuration configuration, String __1, String __2, String __3, String __4, String __5, Integer __6) {
+    public static Result<ConnectbyRecord> CONNECTBY(Configuration configuration, String __1, String __2, String __3, String __4, Integer __5, String __6) {
         return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6)).fetch();
     }
 
     /**
      * Get <code>public.connectby</code> as a table.
      */
-    public static Connectby CONNECTBY(String __1, String __2, String __3, String __4, String __5, Integer __6) {
+    public static Connectby CONNECTBY(String __1, String __2, String __3, String __4, Integer __5, String __6) {
         return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6);
     }
 
     /**
      * Get <code>public.connectby</code> as a table.
      */
-    public static Connectby CONNECTBY(Field<String> __1, Field<String> __2, Field<String> __3, Field<String> __4, Field<String> __5, Field<Integer> __6) {
+    public static Connectby CONNECTBY(Field<String> __1, Field<String> __2, Field<String> __3, Field<String> __4, Field<Integer> __5, Field<String> __6) {
         return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6);
     }
 
@@ -602,6 +603,11 @@ public class Tables {
      * The table <code>public.responsibility_set</code>.
      */
     public static final ResponsibilitySet RESPONSIBILITY_SET = org.vaccineimpact.api.db.tables.ResponsibilitySet.RESPONSIBILITY_SET;
+
+    /**
+     * The table <code>public.responsibility_set_comment</code>.
+     */
+    public static final ResponsibilitySetComment RESPONSIBILITY_SET_COMMENT = org.vaccineimpact.api.db.tables.ResponsibilitySetComment.RESPONSIBILITY_SET_COMMENT;
 
     /**
      * Possible values {incomplete, submitted, approved}

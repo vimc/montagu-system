@@ -105,6 +105,21 @@ class TouchstoneController(
         return okayResponse()
     }
 
+    fun addResponsibilitySetComment(): String
+    {
+        val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
+        val groupId = context.params(":group-id")
+        val comment = context.postData<ResponsibilityCommentPayload>().comment
+        val userName = context.username!!
+        responsibilitiesRepo.addResponsibilitySetCommentForTouchstone(
+                touchstoneVersion.id,
+                groupId,
+                comment,
+                userName
+        )
+        return okayResponse()
+    }
+
     fun getDemographicDatasets(): List<DemographicDataset>
     {
         val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)

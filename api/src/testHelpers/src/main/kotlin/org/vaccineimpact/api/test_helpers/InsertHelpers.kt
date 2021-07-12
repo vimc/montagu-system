@@ -902,3 +902,18 @@ fun JooqContext.addResponsibilityComment(
         this.addedOn = Timestamp.from(addedOn)
     }.store()
 }
+
+fun JooqContext.addResponsibilitySetComment(
+        responsibilitySetId: Int,
+        comment: String,
+        addedBy: String,
+        addedOn: Instant
+)
+{
+    this.dsl.newRecord(RESPONSIBILITY_SET_COMMENT).apply {
+        this.responsibilitySet = responsibilitySetId
+        this.comment = comment
+        this.addedBy = addedBy
+        this.addedOn = Timestamp.from(addedOn)
+    }.store()
+}
