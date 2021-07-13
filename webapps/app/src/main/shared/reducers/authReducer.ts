@@ -18,6 +18,7 @@ export interface AuthState {
     canWriteRoles: boolean;
     canCreateUsers: boolean;
     canCreateModellingGroups: boolean;
+    canReviewResponsibilities: boolean;
     canManageGroupMembers: boolean;
 }
 
@@ -36,6 +37,7 @@ export const initialAuthState: AuthState = {
     canWriteRoles: false,
     canCreateUsers: false,
     canCreateModellingGroups: false,
+    canReviewResponsibilities: false,
     canManageGroupMembers: false
 };
 
@@ -67,6 +69,7 @@ export function loadAuthState(options: AuthStateOptions): AuthState {
         canWriteRoles: permissionsInclude(options.permissions,"*/roles.write"),
         canCreateUsers: permissionsInclude(options.permissions,"*/users.create"),
         canCreateModellingGroups: permissionsInclude(options.permissions,"*/modelling-groups.write"),
+        canReviewResponsibilities: permissionsInclude(options.permissions, "*/responsibilities.review"),
         canManageGroupMembers: permissionsInclude(options.permissions,"*/modelling-groups.manage-members")
     }
 }

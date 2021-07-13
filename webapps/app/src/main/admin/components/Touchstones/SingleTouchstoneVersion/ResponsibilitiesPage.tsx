@@ -6,10 +6,7 @@ import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {touchstoneResponsibilitiesPageActionCreators} from "../../../actions/pages/TouchstoneResponsibilityPageActionCreators";
 import {ResponsibilityList} from "./ResponsibilityList";
-import {
-    ResponsibilitySetWithComments,
-    ResponsibilitySetWithExpectations
-} from "../../../../shared/models/Generated";
+import {ResponsibilitySetWithComments, ResponsibilitySetWithExpectations} from "../../../../shared/models/Generated";
 import {compose} from "recompose";
 import {TouchstoneVersionPageLocationProps} from "./TouchstoneVersionPage";
 import {ResponsibilityCommentModal} from "./ResponsibilityCommentModal";
@@ -28,21 +25,21 @@ export class ResponsibilitiesPageComponent extends React.Component<Responsibilit
     }
 
     toAnnotatedResponsibilities(responsibilitySet: ResponsibilitySetWithExpectations): AnnotatedResponsibility[] {
-        return responsibilitySet.responsibilities.map(r => (
-            {
+        return responsibilitySet.responsibilities.map(r => {
+            const responsibilitySetWithComments = this.props.responsibilityComments
+                .find(e => e.modelling_group_id === responsibilitySet.modelling_group_id)
+            return {
                 modellingGroup: responsibilitySet.modelling_group_id,
-                comment: this.props.responsibilityComments
-                    .find(e => e.modelling_group_id === responsibilitySet.modelling_group_id)
-                    .responsibilities
-                    .find(e => e.scenario_id === r.scenario.id).comment,
+                comment: responsibilitySetWithComments &&
+                    responsibilitySetWithComments.responsibilities.find(e => e.scenario_id === r.scenario.id).comment,
                 ...r
             }
-        ));
+        });
     }
 
     render(): JSX.Element {
         return <PageArticle title={`Responsibility sets in ${this.props.currentTouchstoneVersionId}`}>
-            {this.props.responsibilityComments.length && this.props.responsibilitySets.map(s => <div key={s.modelling_group_id}>
+            {this.props.responsibilitySets.map(s => <div key={s.modelling_group_id}>
                 <h4>{s.modelling_group_id} (<span>{s.status}</span>)</h4>
                 <ResponsibilityList responsibilities={this.toAnnotatedResponsibilities(s)}/>
             </div>)}

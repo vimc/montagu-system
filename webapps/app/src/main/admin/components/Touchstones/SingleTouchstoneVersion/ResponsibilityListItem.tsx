@@ -8,6 +8,7 @@ import {connect} from "react-redux";
 
 export interface ResponsibilityListItemProps {
     responsibility: AnnotatedResponsibility;
+    canReviewResponsibilities: boolean;
     setCurrentTouchstoneResponsibility: (responsibility: AnnotatedResponsibility) => void;
 }
 
@@ -24,6 +25,7 @@ export class ResponsibilityListItemComponent extends React.Component<Responsibil
             <td>{this.props.responsibility.scenario.disease}</td>
             <td>{this.props.responsibility.status}</td>
             <td>{this.props.responsibility.current_estimate_set ? this.props.responsibility.current_estimate_set.uploaded_on : "None"}</td>
+            {this.props.canReviewResponsibilities &&
             <td>
                 <div style={{
                     display: "table-cell",
@@ -36,12 +38,20 @@ export class ResponsibilityListItemComponent extends React.Component<Responsibil
                     {this.props.responsibility.comment && this.props.responsibility.comment.comment}
                 </div>
                 <div style={{display: "table-cell", textAlign: "right"}}>
-                    <a href="#" className="small" style={{marginLeft: "2em"}} onClick={this.handleClick.bind(this)}>Edit</a>
+                    <a href="#" className="small" style={{marginLeft: "2em"}}
+                       onClick={this.handleClick.bind(this)}>Edit</a>
                 </div>
             </td>
+            }
         </tr>;
     }
 }
+
+const mapStateToProps = (state: AdminAppState): Partial<ResponsibilityListItemProps> => {
+    return {
+        canReviewResponsibilities: state.auth.canReviewResponsibilities,
+    }
+};
 
 export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<ResponsibilityListItemProps> => {
     return {
@@ -51,5 +61,5 @@ export const mapDispatchToProps = (dispatch: Dispatch<AdminAppState>): Partial<R
 };
 
 export const ResponsibilityListItem = compose(
-    connect(state => state, mapDispatchToProps))
+    connect(mapStateToProps, mapDispatchToProps))
 (ResponsibilityListItemComponent) as React.ComponentClass<Partial<ResponsibilityListItemProps>>;

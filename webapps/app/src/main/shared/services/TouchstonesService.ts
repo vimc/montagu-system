@@ -31,7 +31,7 @@ export class TouchstonesService extends AbstractLocalService {
     addResponsibilityComment(touchstoneVersion: string, modellingGroupId: string, scenarioId: string, comment: string) {
         const responsibilityComment: ResponsibilityCommentPayload = { comment };
         return this.post(
-            `/touchstones/${touchstoneVersion}/responsibilities/${modellingGroupId}/${scenarioId}/comments/`,
+            `/touchstones/${touchstoneVersion}/comments/${modellingGroupId}/${scenarioId}/`,
             JSON.stringify(responsibilityComment)
         );
     }

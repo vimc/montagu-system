@@ -395,6 +395,7 @@ class AdminIntegrationTests extends IntegrationTestSuite {
                 [
                     {
                         "modelling_group_id": "g1",
+                        "comment": null,
                         "responsibilities": [
                             {
                                 "comment": {

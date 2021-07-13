@@ -20,6 +20,7 @@ const testAuthData: AuthState = {
     canWriteRoles: false,
     canCreateUsers: false,
     canCreateModellingGroups: false,
+    canReviewResponsibilities: false,
     canManageGroupMembers: false
 };
 
