@@ -20,6 +20,7 @@ const testAuthData: AuthState = {
     canWriteRoles: false,
     canCreateUsers: false,
     canCreateModellingGroups: false,
+    canReviewResponsibilities: false,
     canManageGroupMembers: false
 };
 
@@ -98,6 +99,7 @@ describe ('loadAuthState tests', () => {
             result.canWriteRoles,
             result.canCreateUsers,
             result.canCreateModellingGroups,
+            result.canReviewResponsibilities,
             result.canManageGroupMembers
         );
     });
@@ -173,5 +175,9 @@ describe ('loadAuthState tests', () => {
 
     it('sets canManageGroupMembers if modelling groups manage members permission present', () => {
         expect(loadAuthStateWithPermission("*/modelling-groups.manage-members").canManageGroupMembers).toBe(true);
+    });
+
+    it('sets canReviewResponsibilities if responsibilities review permission present', () => {
+        expect(loadAuthStateWithPermission("*/responsibilities.review").canReviewResponsibilities).toBe(true);
     });
 });

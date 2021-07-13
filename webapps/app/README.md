@@ -116,4 +116,4 @@ The `AuthState` properties, and their corresponding permissions are:
 | `canCreateUsers` | `*/users.create` | Users page (CreateUsersSection component)
 | `canCreateModellingGroups` | `*/modelling-groups.write` | Modelling Groups page (CreateModellingGroupSection component)
 | `canManageGroupMembers` | `*/modelling-groups.manage-members` | Modelling Group details page (several components)
-
+| `canReviewResponsibilities` | `*/responsibilities.review` | Touchstone responsibilities page (to view/edit annotations)

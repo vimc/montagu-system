@@ -25,7 +25,9 @@ class TouchstoneResponsibilitiesPageActionCreators
             const touchstones = getState().touchstones.touchstones;
             dispatch(touchstonesActionCreators.setCurrentTouchstoneVersion(params.touchstoneVersionId, touchstones));
             dispatch(adminTouchstoneActionCreators.getResponsibilitiesForTouchstoneVersion(params.touchstoneVersionId));
-            dispatch(adminTouchstoneActionCreators.getResponsibilityCommentsForTouchstoneVersion(params.touchstoneVersionId));
+            if (getState().auth.canReviewResponsibilities) {
+                dispatch(adminTouchstoneActionCreators.getResponsibilityCommentsForTouchstoneVersion(params.touchstoneVersionId));
+            }
         }
     }
 

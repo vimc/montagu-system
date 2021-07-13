@@ -43,6 +43,7 @@ export const mockAuthStateObject: AuthState = {
     canWriteRoles: false,
     canCreateUsers: false,
     canCreateModellingGroups: false,
+    canReviewResponsibilities: false,
     canManageGroupMembers: false
 };
 
