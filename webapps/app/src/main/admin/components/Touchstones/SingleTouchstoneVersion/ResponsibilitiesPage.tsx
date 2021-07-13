@@ -29,36 +29,13 @@ export class ResponsibilitiesPageComponent extends React.Component<Responsibilit
     render(): JSX.Element {
         return <PageArticle title={`Responsibility sets in ${this.props.currentTouchstoneVersionId}`}>
             {this.props.responsibilitySets.map(s =>
-                <ResponsibilitySet
-                    key={s.modelling_group_id}
-                    responsibilitySet={toAnnotatedResponsibilitySet(s, this.props.responsibilityComments)}
-                />
+                <ResponsibilitySet key={s.modelling_group_id} responsibilitySet={s}/>
             )}
             <ResponsibilityCommentModal/>
             <ResponsibilitySetCommentModal/>
         </PageArticle>;
     }
 
-}
-
-function toAnnotatedResponsibilitySet(
-    responsibilitySet: ResponsibilitySetWithExpectations,
-    responsibilityComments: ResponsibilitySetWithComments[]
-): AnnotatedResponsibilitySet {
-    const responsibilitySetWithComments = responsibilityComments
-        .find(e => e.modelling_group_id === responsibilitySet.modelling_group_id)
-    return {
-        comment: responsibilitySetWithComments && responsibilitySetWithComments.comment,
-        ...responsibilitySet,
-        responsibilities: responsibilitySet.responsibilities.map(r => (
-            {
-                modellingGroup: responsibilitySet.modelling_group_id,
-                comment: responsibilitySetWithComments && responsibilitySetWithComments.responsibilities
-                    .find(e => e.scenario_id === r.scenario.id).comment,
-                ...r
-            }
-        ))
-    };
 }
 
 const mapStateToProps = (state: AdminAppState): Partial<ResponsibilitiesPageProps> => {
