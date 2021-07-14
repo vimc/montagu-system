@@ -43,14 +43,14 @@ class ResponsibilitySetComponent extends React.Component<ResponsibilitySetProps,
         return <div>
             <h4>{responsibilitySet.modelling_group_id} (<span>{responsibilitySet.status}</span>)</h4>
             {this.props.canReviewResponsibilities &&
-            <div style={{marginBottom: "0.5em", display: "flex"}}>
+            <div className="mb-2" style={{display: "flex"}}>
                 <span className="font-weight-bold">Comment:</span>
-                <span style={{marginLeft: "0.5em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}
+                <span className="ml-1" style={{whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}
                       title={responsibilitySet.comment && responsibilitySet.comment.comment}>
                             {responsibilitySet.comment && responsibilitySet.comment.comment}
                 </span>
-                <span className="small" style={{marginLeft: "0.5em"}}>
-                    <a href="#" style={{marginLeft: "0.5em"}} onClick={this.handleClick.bind(this)}>Edit</a>
+                <span className="small ml-2">
+                    <a href="#" onClick={this.handleClick.bind(this)}>Edit</a>
                 </span>
             </div>
             }
