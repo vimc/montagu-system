@@ -144,6 +144,7 @@ export interface ResponsibilityWithComment {
 }
 
 export interface ResponsibilitySetWithComments {
+    comment: ResponsibilityComment | null;
     modelling_group_id: string;
     responsibilities: ResponsibilityWithComment[];
     touchstone_version: string;

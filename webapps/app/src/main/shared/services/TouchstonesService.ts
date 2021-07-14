@@ -36,6 +36,14 @@ export class TouchstonesService extends AbstractLocalService {
         );
     }
 
+    addResponsibilitySetComment(touchstoneVersion: string, modellingGroupId: string, comment: string) {
+        const responsibilityComment: ResponsibilityCommentPayload = { comment };
+        return this.post(
+            `/touchstones/${touchstoneVersion}/comments/${modellingGroupId}/`,
+            JSON.stringify(responsibilityComment)
+        );
+    }
+
     clearCacheForTouchstoneResponsibilityComments(touchstoneVersion: string) {
         return this.clearCache(TouchstonesCacheKeysEnum.responsibilityComments, `/touchstones/${touchstoneVersion}/responsibilities/comments/`);
     }

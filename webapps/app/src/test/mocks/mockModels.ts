@@ -7,7 +7,7 @@ import {
 } from "../../main/shared/models/Generated";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
 import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageProperties";
-import {AnnotatedResponsibility} from "../../main/admin/models/AnnotatedResponsibility";
+import {AnnotatedResponsibility, AnnotatedResponsibilitySet} from "../../main/admin/models/AnnotatedResponsibility";
 
 let counter = 0;
 
@@ -338,5 +338,21 @@ export function mockAnnotatedResponsibility(
             added_by: "test.user",
             added_on: "2017-07-13 13:55:29 +0100"
         }
+    };
+}
+
+export function mockAnnotatedResponsibilitySet(comment?: ResponsibilityComment): AnnotatedResponsibilitySet {
+    const responsibilitySet = mockResponsibilitySetWithExpectations();
+    return {
+        comment: comment || {
+            comment: "Duis aute",
+            added_by: "test.user",
+            added_on: "2018-07-13 13:55:29 +0100"
+        },
+        ...responsibilitySet,
+        responsibilities: responsibilitySet.responsibilities.map(r => ({
+            modellingGroup: responsibilitySet.modelling_group_id,
+            ...r
+        }))
     };
 }

@@ -38,8 +38,7 @@ export class ResponsibilityListItemComponent extends React.Component<Responsibil
                     {this.props.responsibility.comment && this.props.responsibility.comment.comment}
                 </div>
                 <div style={{display: "table-cell", textAlign: "right"}}>
-                    <a href="#" className="small" style={{marginLeft: "2em"}}
-                       onClick={this.handleClick.bind(this)}>Edit</a>
+                    <a href="#" className="small ml-2" onClick={this.handleClick.bind(this)}>Edit</a>
                 </div>
             </td>
             }

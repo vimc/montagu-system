@@ -15,7 +15,7 @@ import {
     TouchstoneTypes
 } from "../../shared/actionTypes/TouchstonesTypes";
 import {TouchstoneCreation} from "../components/Touchstones/Create/CreateTouchstoneForm";
-import {AnnotatedResponsibility} from "../models/AnnotatedResponsibility";
+import {AnnotatedResponsibility, AnnotatedResponsibilitySet} from "../models/AnnotatedResponsibility";
 
 export const adminTouchstoneActionCreators = {
     getAllTouchstones() {
@@ -46,6 +46,13 @@ export const adminTouchstoneActionCreators = {
         };
     },
 
+    setCurrentTouchstoneResponsibilitySet(responsibilitySet: AnnotatedResponsibilitySet) {
+        return {
+            type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_RESPONSIBILITY_SET,
+            data: responsibilitySet
+        };
+    },
+
     getResponsibilityCommentsForTouchstoneVersion(touchstoneVersion: string) {
         return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
                 const responsibilityCommentSets: ResponsibilitySetWithComments[] = await (new TouchstonesService(dispatch, getState))
@@ -63,7 +70,18 @@ export const adminTouchstoneActionCreators = {
             const result = await service.addResponsibilityComment(touchstoneVersion, modellingGroupId, scenarioId, comment);
             if (result) {
                 service.clearCacheForTouchstoneResponsibilityComments(touchstoneVersion);
-                dispatch(this.getResponsibilityCommentsForTouchstoneVersion(touchstoneVersion));
+                await dispatch(this.getResponsibilityCommentsForTouchstoneVersion(touchstoneVersion));
+            }
+        }
+    },
+
+    addResponsibilitySetComment(touchstoneVersion: string, modellingGroupId: string, comment: string) {
+        return async (dispatch: Dispatch<AdminAppState>, getState: () => AdminAppState) => {
+            const service = new TouchstonesService(dispatch, getState);
+            const result = await service.addResponsibilitySetComment(touchstoneVersion, modellingGroupId, comment);
+            if (result) {
+                service.clearCacheForTouchstoneResponsibilityComments(touchstoneVersion);
+                await dispatch(this.getResponsibilityCommentsForTouchstoneVersion(touchstoneVersion));
             }
         }
     },

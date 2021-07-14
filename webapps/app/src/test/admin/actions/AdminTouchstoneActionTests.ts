@@ -82,7 +82,7 @@ describe("Admin touchstone action tests", () => {
         }
     );
 
-    it("set currents responsibility", () => {
+    it("sets current responsibility", () => {
         const responsibilitySet = mockResponsibilitySetWithExpectations();
         const responsibility = {
             ...responsibilitySet.responsibilities[0],
@@ -91,6 +91,21 @@ describe("Admin touchstone action tests", () => {
         expect(adminTouchstoneActionCreators.setCurrentTouchstoneResponsibility(responsibility)).toEqual({
             type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_RESPONSIBILITY,
             data: responsibility
+        });
+    });
+
+    it("sets current responsibility set", () => {
+        const responsibilitySet = mockResponsibilitySetWithExpectations();
+        const annotatedResponsibilitySet = {
+            ...responsibilitySet,
+            responsibilities: responsibilitySet.responsibilities.map( r => ({
+                modellingGroup: responsibilitySet.modelling_group_id,
+                ...r
+            }))
+        };
+        expect(adminTouchstoneActionCreators.setCurrentTouchstoneResponsibilitySet(annotatedResponsibilitySet)).toEqual({
+            type: TouchstoneTypes.SET_CURRENT_TOUCHSTONE_RESPONSIBILITY_SET,
+            data: annotatedResponsibilitySet
         });
     });
 
@@ -110,6 +125,24 @@ describe("Admin touchstone action tests", () => {
                 sandbox.stubService(TouchstonesService.prototype, "getResponsibilityCommentsForTouchstoneVersion");
             },
             callActionCreator: () => adminTouchstoneActionCreators.addResponsibilityComment("t1", "m1", "s1", "c"),
+            expectTheseActions: [
+                {type: TouchstoneTypes.RESPONSIBILITY_COMMENTS_FOR_TOUCHSTONE_VERSION_FETCHED, data: "default_result"}
+            ]
+        });
+        setTimeout(() => {
+            expect(clearCacheStub.mock.calls.length).toBe(1);
+            done();
+        });
+    });
+
+    it("annotates a responsibility set", (done: DoneCallback) => {
+        const clearCacheStub = sandbox.setStubReduxAction(TouchstonesService.prototype, "clearCacheForTouchstoneResponsibilityComments");
+        verifyActionThatCallsService(done, {
+            mockServices: () => {
+                sandbox.stubService(TouchstonesService.prototype, "addResponsibilitySetComment");
+                sandbox.stubService(TouchstonesService.prototype, "getResponsibilityCommentsForTouchstoneVersion");
+            },
+            callActionCreator: () => adminTouchstoneActionCreators.addResponsibilitySetComment("t1", "m1", "c"),
             expectTheseActions: [
                 {type: TouchstoneTypes.RESPONSIBILITY_COMMENTS_FOR_TOUCHSTONE_VERSION_FETCHED, data: "default_result"}
             ]
