@@ -52,7 +52,7 @@ class BurdenEstimateUploadController(context: ActionContext,
     constructor(context: ActionContext, repos: Repositories)
             : this(context,
             RepositoriesBurdenEstimateLogic(repos),
-            RepositoriesResponsibilitiesLogic(repos.modellingGroup, repos.scenario, repos.touchstone),
+            RepositoriesResponsibilitiesLogic(repos.modellingGroup, repos.scenario, repos.touchstone, repos.responsibilities, repos.burdenEstimates, repos.expectations),
             repos.burdenEstimates,
             repos.user)
 

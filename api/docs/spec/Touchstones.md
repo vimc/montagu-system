@@ -138,6 +138,17 @@ Schema: [`ResponsibilitySets.schema.json`](../schemas/ResponsibilitySets.schema.
         ]
     }]
 
+## GET /touchstones/{touchstone-id}/responsibilities/csv/
+Returns all responsibilities for a touchstone version in CSV format
+
+Required permissions: `touchstones.read`, `responsibilities.review`.
+
+See [`ResponsibilitySetsWithComments.csvschema.json`](../schemas/ResponsibilitySetsWithComments.csvschema.json)
+
+### Example
+    touchstone_version_id, modelling_group_id, responsibility_set_missing_burden_estimate_sets, responsibility_set_comment_comment, responsibility_set_comment_added_on, responsibility_set_comment_added_by, scenario_description, scenario_disease, current_estimate_set_id, current_estimate_set_uploaded_on, current_estimate_set_uploaded_by, current_estimate_set_type_type, current_estimate_set_type_details, current_estimate_set_missing_estimates, responsibility_comment_comment, responsibility_comment_added_on, responsibility_comment_added_by
+                2017-op-1,          IC-Garske,                                               1,                 Completion overdue,            2021-07-12T14:49:31.689Z,                            john.doe,            menA-gavi,             menA,                       1,         2021-07-19T14:49:31.689Z,                      tini.garske,               central-averaged,     Mean over all stochastic runs,                                      0,            Review in two weeks,        2021-07-19T14:49:31.689Z,                      jane.smith
+
 ## GET /touchstones/{touchstone-id}/responsibilities/comments/
 Returns the latest annotations for responsibility sets associated with the touchstone.
 

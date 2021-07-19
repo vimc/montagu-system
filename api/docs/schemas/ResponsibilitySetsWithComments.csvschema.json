@@ -1,0 +1,23 @@
+{
+    "columns": {
+        "touchstone_version_id": "String",
+        "modelling_group_id": "String",
+        "responsibility_set_missing_burden_estimate_sets": "Int",
+        "responsibility_set_comment_comment": "String",
+        "responsibility_set_comment_added_on": "String",
+        "responsibility_set_comment_added_by": "String",
+        "scenario_description": "String",
+        "scenario_disease": "String",
+        "current_estimate_set_id": "Int",
+        "current_estimate_set_uploaded_on": "String",
+        "current_estimate_set_uploaded_by": "String",
+        "current_estimate_set_type_type": ["central-single-run", "central-averaged", "central-unknown", "stochastic"],
+        "current_estimate_set_type_details": "String",
+        "current_estimate_set_missing_estimates": "Int",
+        "responsibility_comment_comment": "String",
+        "responsibility_comment_added_on": "String",
+        "responsibility_comment_added_by": "String"
+
+    },
+    "additionalColumnsAllowed": false
+}
