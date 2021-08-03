@@ -9,6 +9,7 @@ import {mockMatch} from "../../../../mocks/mocks";
 import {Sandbox} from "../../../../Sandbox";
 import {touchstoneResponsibilitiesPageActionCreators} from "../../../../../main/admin/actions/pages/TouchstoneResponsibilityPageActionCreators";
 import {ResponsibilitySet} from "../../../../../main/admin/components/Touchstones/SingleTouchstoneVersion/ResponsibilitySet";
+import {FileDownloadButton} from "../../../../../main/shared/components/FileDownloadLink";
 
 describe("ResponsibilitiesPage", () => {
 
@@ -25,7 +26,13 @@ describe("ResponsibilitiesPage", () => {
                 responsibilities: rs.responsibilities.map(r => ({
                     scenario_id: r.scenario.id,
                 }))
-            }))
+            })),
+            currentTouchstoneVersion: {
+                id: "v1"
+            }
+        },
+        auth: {
+            canReviewResponsibilities: true
         }
     }));
 
@@ -43,6 +50,8 @@ describe("ResponsibilitiesPage", () => {
 
         const rendered = shallow(<ResponsibilitiesPage location={null} router={null} history={null}
                                                        match={mockMatch()}/>, {context: {store}}).dive().dive();
+        expect(rendered.find(FileDownloadButton)).toHaveLength(1);
+        expect(rendered.find(FileDownloadButton).props().href).toEqual("/touchstones/v1/responsibilities/csv/");
         expect(rendered.find(ResponsibilitySet)).toHaveLength(2);
     });
 

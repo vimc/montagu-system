@@ -53,7 +53,7 @@ export class CommentModal extends React.Component<CommentModalProps, CommentModa
                         <Button color="primary" onClick={this.props.handleSubmit.bind(this, this.state.commentText)}>Save changes</Button>
                     </ModalFooter>
                 </Modal>
-9            </div>
+            </div>
         );
     }
 }
