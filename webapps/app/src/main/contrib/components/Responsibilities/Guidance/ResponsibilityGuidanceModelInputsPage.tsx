@@ -11,6 +11,7 @@ import {responsibilityGuidanceModelInputsPageActionCreators} from "../../../acti
 
 import {ResponsibilityGuidancePageProps} from "./ResponsibilityGuidancePageProps";
 import {ResponsibilityGuidanceModelInputsContent2017} from "./content/ResponsibilityGuidanceModelInputsContent2017";
+import {ResponsibilityGuidanceModelInputsContent2021} from "./content/ResponsibilityGuidanceModelInputsContent2021";
 import {ResponsibilityGuidanceModelInputsContentLatest} from "./content/ResponsibilityGuidanceModelInputsContentLatest";
 import {ResponsibilityGuidanceTouchstoneNotOpenContent} from "./content/ResponsibilityGuidanceTouchstoneNotOpenContent";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
@@ -36,14 +37,15 @@ export class ResponsibilityGuidanceModelInputsPageComponent extends React.Compon
                     Guidance on model inputs: coverage and demographic data
                 </a>
             </PageArticle>
+        } else if (settings.is2021Touchstone(this.props.touchstoneVersion.id)) {
+            return <ResponsibilityGuidanceModelInputsContent2021/>
         } else {
             return <ResponsibilityGuidanceModelInputsContentLatest/>
         }
     }
 }
 
-export const mapStateToProps = (state: ContribAppState, props: Partial<ResponsibilityGuidancePageProps>):
-    Partial<ResponsibilityGuidancePageProps> => {
+export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityGuidancePageProps> => {
     return {
         touchstoneVersion: state.touchstones.currentTouchstoneVersion,
     }

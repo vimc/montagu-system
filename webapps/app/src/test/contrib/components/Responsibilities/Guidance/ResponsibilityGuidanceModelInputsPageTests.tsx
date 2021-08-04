@@ -16,6 +16,7 @@ import {ResponsibilityGuidancePageLocationProps} from "../../../../../main/contr
 import {ResponsibilityGuidanceModelInputsContentLatest} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceModelInputsContentLatest";
 import {ResponsibilityGuidanceModelInputsContent2017} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceModelInputsContent2017";
 import {ResponsibilityGuidanceTouchstoneNotOpenContent} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceTouchstoneNotOpenContent";
+import {ResponsibilityGuidanceModelInputsContent2021} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceModelInputsContent2021";
 
 describe("Guidance Model Inputs Page Component tests", () => {
 
@@ -126,6 +127,26 @@ describe("Guidance Model Inputs Page Component tests", () => {
 
         const link = rendered.find("a");
         expect(link.prop("href")).toContain("guidance-2019-inputs.pdf");
+    });
+
+    it("renders component for 2017 touchstone", () => {
+        const testTouchstone = mockTouchstoneVersion({id: "202108test"});
+
+        const store = createMockContribStore({
+            touchstones: {currentTouchstoneVersion: testTouchstone}
+        });
+
+        const testMatch = mockMatch<ResponsibilityGuidancePageLocationProps>({
+            touchstoneId: testTouchstone.id
+        });
+
+        const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelInputsPageActionCreators, "onLoad");
+        const rendered = shallow(<ResponsibilityGuidanceModelInputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
+
+        expect(onLoadStub.mock.calls.length).toBe(1);
+
+        const content = rendered.find(ResponsibilityGuidanceModelInputsContent2021);
+        expect(content.getElements().length).toBe(1);
     });
 
 });

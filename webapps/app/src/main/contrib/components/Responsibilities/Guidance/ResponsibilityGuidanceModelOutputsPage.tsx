@@ -10,6 +10,7 @@ import {responsibilityGuidanceModelOutputsPageActionCreators} from "../../../act
 
 import {ResponsibilityGuidancePageProps} from "./ResponsibilityGuidancePageProps";
 import {ResponsibilityGuidanceModelOutputsContent2017} from "./content/ResponsibilityGuidanceModelOutputsContent2017";
+import {ResponsibilityGuidanceModelOutputsContent2021} from "./content/ResponsibilityGuidanceModelOutputsContent2021";
 import {ResponsibilityGuidanceModelOutputsContentLatest} from "./content/ResponsibilityGuidanceModelOutputsContentLatest";
 import {ResponsibilityGuidanceTouchstoneNotOpenContent} from "./content/ResponsibilityGuidanceTouchstoneNotOpenContent";
 import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArticle";
@@ -35,14 +36,15 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
                     Guidance on model outputs: how to generate and upload central estimates
                 </a>
             </PageArticle>
+        } else if (settings.is2021Touchstone(this.props.touchstoneVersion.id)) {
+            return <ResponsibilityGuidanceModelOutputsContent2021/>
         } else {
             return <ResponsibilityGuidanceModelOutputsContentLatest/>
         }
     }
 }
 
-export const mapStateToProps = (state: ContribAppState, props: Partial<ResponsibilityGuidancePageProps>):
-    Partial<ResponsibilityGuidancePageProps> => {
+export const mapStateToProps = (state: ContribAppState): Partial<ResponsibilityGuidancePageProps> => {
     return {
         touchstoneVersion: state.touchstones.currentTouchstoneVersion,
     }
