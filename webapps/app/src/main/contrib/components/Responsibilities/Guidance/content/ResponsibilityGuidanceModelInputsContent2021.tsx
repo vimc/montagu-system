@@ -31,7 +31,7 @@ export class ResponsibilityGuidanceModelInputsContent2021Component extends React
             <p><b>age_range_verbatim</b> is a description of the age range. We have used this to
                 infer <b>age_first</b> and <b>age_last</b>. Where age_range_verbatim is ‘NA’, this indicates the default
                 age_first and age_last value for that vaccine.</p>
-            <p><b>coverage</b> shows the level of vaccination coverage</p>
+            <p><b>coverage</b> shows the level of vaccination coverage, ranging from 0 (0%) to 1 (100%).</p>
             <p>Coverage and target population are now always specified at a national level. For example, where a
                 campaign targets all ages in Region A (population 1,000,000) and achieves 90% coverage, and where the
                 population of the whole country is 5,000,000, the coverage would appear on Montagu as 0.18 (18%) and the

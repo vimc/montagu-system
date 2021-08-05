@@ -129,7 +129,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
         expect(link.prop("href")).toContain("guidance-2019-inputs.pdf");
     });
 
-    it("renders component for 2017 touchstone", () => {
+    it("renders component for 2021 touchstone", () => {
         const testTouchstone = mockTouchstoneVersion({id: "202108test"});
 
         const store = createMockContribStore({

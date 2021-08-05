@@ -25,7 +25,7 @@ export class ResponsibilityGuidanceModelOutputsContent2021Component extends Reac
             <div className="largeSectionTitle">Countries</div>
             <ul>
                 <li>JE groups: China, Pakistan, India</li>
-                <li>Men A & YF groups: Ethiopia, Nigeria</li>
+                <li>Men A and YF groups: Ethiopia, Nigeria</li>
                 <li>Typhoid and cholera groups: Pakistan, India, Nigeria, Ethiopia</li>
                 <li>All other groups: China, Pakistan, India, Nigeria, Ethiopia</li>
             </ul>
