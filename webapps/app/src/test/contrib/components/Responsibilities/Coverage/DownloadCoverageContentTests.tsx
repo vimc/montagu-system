@@ -148,17 +148,20 @@ describe("Download Coverage Content Component", () => {
     });
 
     it("does not show format control for prohibited diseases", () => {
+        const expectFormatControlNotShownForDisease = (disease: string) => {
+            const rendered = shallow(<DownloadCoverageContentComponent
+                coverageSets={[testCoverageSet]}
+                group={testGroup}
+                scenario={{...testScenario, disease}}
+                selectedFormat={"long"}
+                setFormat={() => {
+                }}
+                touchstone={testTouchstone}/>);
 
-        const rendered = shallow(<DownloadCoverageContentComponent
-            coverageSets={[testCoverageSet]}
-            group={testGroup}
-            scenario={{...testScenario, disease: "measles"}}
-            selectedFormat={"long"}
-            setFormat={() => {
-            }}
-            touchstone={testTouchstone}/>);
-
-        expect(rendered.find(FormatControl).length).toEqual(0);
+            expect(rendered.find(FormatControl).length).toEqual(0);
+        };
+        ["MenA", "JE", "YF", "HPV", "measles", "rubella", "cholera", "typhoid"]
+            .forEach((disease: string) => expectFormatControlNotShownForDisease(disease));
     });
 
     it("filterToExpectations is selected by default", () => {
