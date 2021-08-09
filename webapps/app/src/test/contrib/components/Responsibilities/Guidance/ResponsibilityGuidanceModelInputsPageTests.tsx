@@ -130,7 +130,7 @@ describe("Guidance Model Inputs Page Component tests", () => {
     });
 
     it("renders component for 2021 touchstone", () => {
-        const testTouchstone = mockTouchstoneVersion({id: "202108test"});
+        const testTouchstone = mockTouchstoneVersion({id: "202108test-1"});
 
         const store = createMockContribStore({
             touchstones: {currentTouchstoneVersion: testTouchstone}
