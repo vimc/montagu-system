@@ -10,7 +10,6 @@ import org.junit.Test
 import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.logic.RepositoriesResponsibilitiesLogic
-import org.vaccineimpact.api.app.logic.ResponsibilitiesRow
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.app.repositories.jooq.ResponsibilityInfo
 import org.vaccineimpact.api.models.*
@@ -132,7 +131,7 @@ class ResponsibilitiesLogicTests : MontaguTests()
         val sut = RepositoriesResponsibilitiesLogic(mock(), mock(), mock(), responsibilitiesRepo, burdenEstimateRepo, expectationsRepo)
         val result = sut.getTouchstoneResponsibilitiesData("202002rfp-1")
         assertThat(result).isEqualTo(listOf(
-                ResponsibilitiesRow(
+                ResponsibilityRow(
                         "202002rfp-1",
                         "VIMC",
                         1,

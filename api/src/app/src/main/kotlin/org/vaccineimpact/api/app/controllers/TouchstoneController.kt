@@ -13,6 +13,7 @@ import org.vaccineimpact.api.app.security.filterByPermission
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.models.responsibilities.ResponsibilityCommentPayload
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityRow
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithComments
 import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithExpectations
 import org.vaccineimpact.api.serialization.DataTable
@@ -127,7 +128,7 @@ class TouchstoneController(
         return okayResponse()
     }
 
-    fun getResponsibilitiesData(): StreamSerializable<ResponsibilitiesRow>
+    fun getResponsibilitiesData(): StreamSerializable<ResponsibilityRow>
     {
         val touchstoneVersion = touchstoneVersion(context, touchstoneRepo)
         val filename = "responsibilities_${touchstoneVersion.id}.csv"

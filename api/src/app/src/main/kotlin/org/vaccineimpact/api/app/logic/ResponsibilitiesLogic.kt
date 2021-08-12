@@ -4,12 +4,12 @@ import org.vaccineimpact.api.app.controllers.helpers.ResponsibilityPath
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.repositories.*
 import org.vaccineimpact.api.models.*
-import java.time.Instant
+import org.vaccineimpact.api.models.responsibilities.ResponsibilityRow
 
 interface ResponsibilitiesLogic
 {
     fun validateResponsibilityPath(path: ResponsibilityPath, validTouchstoneStatusList: List<TouchstoneStatus>)
-    fun getTouchstoneResponsibilitiesData(touchstoneVersionId: String): List<ResponsibilitiesRow>
+    fun getTouchstoneResponsibilitiesData(touchstoneVersionId: String): List<ResponsibilityRow>
 }
 
 class RepositoriesResponsibilitiesLogic(
@@ -39,7 +39,7 @@ class RepositoriesResponsibilitiesLogic(
         scenarioRepository.checkScenarioDescriptionExists(path.scenarioId)
     }
 
-    override fun getTouchstoneResponsibilitiesData(touchstoneVersionId: String): List<ResponsibilitiesRow>
+    override fun getTouchstoneResponsibilitiesData(touchstoneVersionId: String): List<ResponsibilityRow>
     {
         val comments = responsibilitiesRepository.getResponsibilitiesWithCommentsForTouchstone(touchstoneVersionId)
         val sets = responsibilitiesRepository.getResponsibilitiesForTouchstone(touchstoneVersionId)
@@ -54,7 +54,7 @@ class RepositoriesResponsibilitiesLogic(
                 val expectationMapping = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
                 // And from that we can establish which of the expectations have been fulfilled, giving a Map<Country, Map<Age, Map<Year, Boolean>>>
                 val validatedRowMap = if (currentEstimateSet != null) burdenEstimateRepository.validateEstimates(currentEstimateSet, expectationMapping.expectation.expectedRowLookup()) else null
-                ResponsibilitiesRow(
+                ResponsibilityRow(
                         set.touchstoneVersion,
                         set.modellingGroupId,
                         set.responsibilities.size - set.responsibilities.count { it.currentEstimateSet?.status == BurdenEstimateSetStatus.COMPLETE },
@@ -78,23 +78,3 @@ class RepositoriesResponsibilitiesLogic(
         }
     }
 }
-
-data class ResponsibilitiesRow(
-        val touchstoneVersionId: String,
-        val modellingGroupId: String,
-        val responsibilitySetMissingBurdenEstimateSets: Int,
-        val responsibilitySetCommentComment: String?,
-        val responsibilitySetCommentAddedOn: Instant?,
-        val responsibilitySetCommentAddedBy: String?,
-        val scenarioDescription: String,
-        val scenarioDisease: String,
-        val currentEstimateSetId: Int?,
-        val currentEstimateSetUploadedOn: Instant?,
-        val currentEstimateSetUploadedBy: String?,
-        val currentEstimateSetTypeType: BurdenEstimateSetTypeCode?,
-        val currentEstimateSetTypeDetails: String?,
-        val currentEstimateSetMissingEstimates: Int?,
-        val responsibilityCommentComment: String?,
-        val responsibilityCommentAddedOn: Instant?,
-        val responsibilityCommentAddedBy: String?
-)

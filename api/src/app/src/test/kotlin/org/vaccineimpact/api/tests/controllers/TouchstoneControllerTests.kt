@@ -11,7 +11,6 @@ import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
 import org.vaccineimpact.api.app.logic.ExpectationsLogic
 import org.vaccineimpact.api.app.logic.ResponsibilitiesLogic
-import org.vaccineimpact.api.app.logic.ResponsibilitiesRow
 import org.vaccineimpact.api.app.logic.ScenarioLogic
 import org.vaccineimpact.api.app.repositories.ResponsibilitiesRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
@@ -19,9 +18,7 @@ import org.vaccineimpact.api.app.repositories.inmemory.InMemoryDataSet
 import org.vaccineimpact.api.models.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
-import org.vaccineimpact.api.models.responsibilities.ResponsibilityCommentPayload
-import org.vaccineimpact.api.models.responsibilities.ResponsibilitySetWithComments
-import org.vaccineimpact.api.models.responsibilities.ResponsibilityWithComment
+import org.vaccineimpact.api.models.responsibilities.*
 import org.vaccineimpact.api.serialization.DataTable
 import org.vaccineimpact.api.serialization.SplitData
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -360,9 +357,9 @@ class TouchstoneControllerTests : MontaguTests()
         val repo = mock<TouchstoneRepository> {
             on { touchstoneVersions } doReturn InMemoryDataSet(listOf(openTouchstoneVersion))
         }
-        val mockResponsibilitiesLogic = mock<ResponsibilitiesLogic>() {
+        val mockResponsibilitiesLogic = mock<ResponsibilitiesLogic> {
             on { getTouchstoneResponsibilitiesData("t-1") } doReturn listOf(
-                    ResponsibilitiesRow("t-1", "", 0, null, null, null, "", "", null, null,
+                    ResponsibilityRow("t-1", "", 0, null, null, null, "", "", null, null,
                             null, null, null, null, null, null, null)
             )
         }
