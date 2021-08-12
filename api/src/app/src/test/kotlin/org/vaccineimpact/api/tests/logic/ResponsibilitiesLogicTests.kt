@@ -96,6 +96,7 @@ class ResponsibilitiesLogicTests : MontaguTests()
                             ResponsibilityWithComment("scenario-1", ResponsibilityComment("Note for VIMC, Campaign, Cholera for 202002rfp-1", "test.user2", then))
                     ))
             )
+            // Declare this this touchstone has a single responsibility set containing a single responsibility, and that it has had a burden estimate set uploaded
             on { getResponsibilitiesForTouchstone("202002rfp-1") } doReturn listOf(
                     ResponsibilitySet("202002rfp-1", "VIMC", ResponsibilitySetStatus.INCOMPLETE, listOf(
                             Responsibility(
@@ -115,12 +116,15 @@ class ResponsibilitiesLogicTests : MontaguTests()
                     ))
             )
         }
+        // Declare that the responsibility is associated with 6 expectations: 1 country * 2 years * 3 ages. We therefore require 6 burden estimates.
         val expectationMapping = ExpectationMapping(CountryOutcomeExpectations(77, "", 2001..2002, 97..99, CohortRestriction(), listOf(Country("UK", "United Kingdom")), listOf()), listOf(""), "Cholera")
         val expectationsRepo = mock<ExpectationsRepository> {
             on { getExpectationsForResponsibility(42) } doReturn expectationMapping
         }
         val burdenEstimateRepo = mock<BurdenEstimateRepository> {
+            // Define the database entry that corresponds to the touchstone's single responsibility
             on { getResponsibilityInfo("VIMC", "202002rfp-1", "scenario-1") } doReturn ResponsibilityInfo(42, "Cholera", "open", 100)
+            // Declare that one burden estimate has been provided i.e. 5 responsibilities remain unfulfilled
             on { validateEstimates(any(), any()) } doReturn expectationMapping.expectation.copy().expectedRowLookup().apply {
                 this["UK"]!![97]!![2001] = true
             }

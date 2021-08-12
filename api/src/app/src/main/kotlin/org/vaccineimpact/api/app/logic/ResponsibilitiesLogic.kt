@@ -48,8 +48,11 @@ class RepositoriesResponsibilitiesLogic(
             set.responsibilities.map { responsibility ->
                 val currentEstimateSet = responsibility.currentEstimateSet
                 val responsibilityComment = comments.find { it.modellingGroupId == set.modellingGroupId }?.responsibilities?.find { it.scenarioId == responsibility.scenario.id }?.comment
+                // At this point we have a responsibility (a specific scenario within a responsibility set), but not its database identifier relating to a particular touchstone version
                 val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(set.modellingGroupId, touchstoneVersionId, responsibility.scenario.id)
+                // Now that we have a concrete responsibility we can identify its corresponding expectations i.e. countries/ages/years
                 val expectationMapping = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
+                // And from that we can establish which of the expectations have been fulfilled, giving a Map<Country, Map<Age, Map<Year, Boolean>>>
                 val validatedRowMap = if (currentEstimateSet != null) burdenEstimateRepository.validateEstimates(currentEstimateSet, expectationMapping.expectation.expectedRowLookup()) else null
                 ResponsibilitiesRow(
                         set.touchstoneVersion,
@@ -65,6 +68,7 @@ class RepositoriesResponsibilitiesLogic(
                         currentEstimateSet?.uploadedBy,
                         currentEstimateSet?.type?.type,
                         currentEstimateSet?.type?.details,
+                        // Here we're effectively counting the number of false leaf nodes in the tree (nested map) of expectations
                         validatedRowMap?.values?.flatMap { age -> age.values.flatMap { year -> year.values } }?.count { !it },
                         responsibilityComment?.comment,
                         responsibilityComment?.addedOn,
