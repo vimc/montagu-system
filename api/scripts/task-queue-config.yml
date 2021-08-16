@@ -19,7 +19,7 @@ tasks:
     reports:
       testGroup:
         testDisease:
-          - report_name: minimal
+          - report_name: diagnostic
             success_email:
               recipients:
                 - minimal_modeller@example.com
