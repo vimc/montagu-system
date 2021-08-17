@@ -9,15 +9,16 @@ import {ResponsibilitySetWithComments, ResponsibilitySetWithExpectations} from "
 import {branch, compose, renderComponent} from "recompose";
 import {TouchstoneVersionPageLocationProps} from "./TouchstoneVersionPage";
 import {ResponsibilityCommentModal} from "./ResponsibilityCommentModal";
-import {AnnotatedResponsibilitySet} from "../../../models/AnnotatedResponsibility";
 import {ResponsibilitySetCommentModal} from "./ResponsibilitySetCommentModal";
 import {ResponsibilitySet} from "./ResponsibilitySet";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
+import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
 
 export interface ResponsibilitiesPageProps extends PageProperties<TouchstoneVersionPageLocationProps> {
     currentTouchstoneVersionId: string;
     responsibilitySets: ResponsibilitySetWithExpectations[];
     responsibilityComments: ResponsibilitySetWithComments[];
+    canReviewResponsibilities: boolean;
 }
 
 export class ResponsibilitiesPageComponent extends React.Component<ResponsibilitiesPageProps> {
@@ -28,6 +29,12 @@ export class ResponsibilitiesPageComponent extends React.Component<Responsibilit
 
     render(): JSX.Element {
         return <PageArticle title={`Responsibility sets in ${this.props.currentTouchstoneVersionId}`}>
+            {this.props.canReviewResponsibilities &&
+            <FileDownloadButton href={`/touchstones/${this.props.currentTouchstoneVersionId}/responsibilities/csv/`}
+                                className="mb-4">
+                Responsibilities summary
+            </FileDownloadButton>
+            }
             {this.props.responsibilitySets.map(s =>
                 <ResponsibilitySet key={s.modelling_group_id} responsibilitySet={s}/>
             )}
@@ -44,7 +51,8 @@ const mapStateToProps = (state: AdminAppState): Partial<ResponsibilitiesPageProp
             ? state.touchstones.currentTouchstoneVersion.id
             : '',
         responsibilitySets: state.touchstones.currentResponsibilitySets,
-        responsibilityComments: state.touchstones.currentResponsibilityComments
+        responsibilityComments: state.touchstones.currentResponsibilityComments,
+        canReviewResponsibilities: state.auth.canReviewResponsibilities
     }
 };
 
