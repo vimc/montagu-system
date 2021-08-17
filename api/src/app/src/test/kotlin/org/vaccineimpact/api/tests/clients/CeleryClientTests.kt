@@ -21,7 +21,7 @@ class CeleryClientTests : MontaguTests()
     fun `can call task`()
     {
         val client = CeleryClient()
-        val response = client.runDiagnosticReport("testGroup", "testDisease", "testTouchstone",
+        val response = client.runDiagnosticReport("testGroup", "testDisease", "testTouchstone-1",
                 "testScenario",
                 "test.user@example.com")
 
