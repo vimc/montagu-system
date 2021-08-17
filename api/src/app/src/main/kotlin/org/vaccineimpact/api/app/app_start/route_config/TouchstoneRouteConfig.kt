@@ -24,6 +24,10 @@ object TouchstoneRouteConfig : RouteConfig
                     .json()
                     .secure(responsibilityPermissions),
 
+            Endpoint("$baseUrl:touchstone-version-id/responsibilities/csv/", controller, "getResponsibilitiesData")
+                    .csv().streamed()
+                    .secure(responsibilityReviewPermissions),
+
             Endpoint("$baseUrl:touchstone-version-id/responsibilities/comments/", controller, "getResponsibilitiesWithComments")
                     .json()
                     .secure(responsibilityReviewPermissions),

@@ -1,16 +1,20 @@
 package org.vaccineimpact.api.blackboxTests.tests
 
 import com.beust.klaxon.json
+import com.opencsv.CSVReader
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.toJsonObject
 import org.vaccineimpact.api.blackboxTests.helpers.validate
+import org.vaccineimpact.api.blackboxTests.schemas.CSVSchema
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 import spark.route.HttpMethod
+import java.io.StringReader
 import java.time.Instant
 
 class ResponsibilityCommentTests : DatabaseTest() {
@@ -30,12 +34,17 @@ class ResponsibilityCommentTests : DatabaseTest() {
                 TestUserHelper.username,
                 now
         )
+        val responsibilityId = addResponsibility(responsibilitySet, "touchstone-1", scenarioId)
         addResponsibilityComment(
-                addResponsibility(responsibilitySet, "touchstone-1", scenarioId),
+                responsibilityId,
                 "comment 2",
                 TestUserHelper.username,
                 now
         )
+        val modelVersionId = addModel("model-1", modellingGroupId, "disease-1", versions = listOf("version-1"))
+        addExpectations(responsibilityId)
+        val burdenId = addBurdenEstimateSet(responsibilityId, modelVersionId, "test.user", setTypeDetails = "unknown", timestamp = now)
+        updateCurrentEstimate(responsibilityId, burdenId)
     }
 
     @Test
@@ -95,5 +104,50 @@ class ResponsibilityCommentTests : DatabaseTest() {
         } withRequestSchema "ResponsibilityComment" andCheckString {
             assertThat(it).isEqualTo("OK")
         }
+    }
+
+    @Test
+    fun `can get responsibilities data for touchstone`(){
+        JooqContext().use {
+            it.setupResponsibilities()
+        }
+
+        val responsibilitiesUrl = "/touchstones/touchstone-1/responsibilities/csv/"
+        val permissions = PermissionSet(
+                "*/can-login",
+                "*/touchstones.read",
+                "*/responsibilities.review"
+        )
+        val response = RequestHelper().get(responsibilitiesUrl, permissions, acceptsContentType = "text/csv")
+
+        assertThat(response.headers["Content-Type"]).isEqualTo("text/csv")
+        assertThat(response.headers["Content-Disposition"])
+                .isEqualTo("attachment; filename=\"responsibilities_touchstone-1.csv\"")
+
+        val schema = CSVSchema("ResponsibilitySetsWithComments")
+        schema.validate(response.text)
+
+        val csv = StringReader(response.text)
+                .use { CSVReader(it).readAll() }
+        val dataRow = csv.drop(1).first().toList()
+        assertThat(dataRow).isEqualTo(listOf(
+                "touchstone-1",
+                "group-1",
+                "1",
+                "comment 1",
+                now.toString(),
+                "test.user",
+                "description 1",
+                "disease-1",
+                "1",
+                now.toString(),
+                "test.user",
+                "central-single-run",
+                "unknown",
+                "0",
+                "comment 2",
+                now.toString(),
+                "test.user"
+        ))
     }
 }
