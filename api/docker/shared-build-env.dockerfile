@@ -1,4 +1,4 @@
-FROM vimc/openjdk-libsodium:vimc-4258
+FROM vimc/openjdk-libsodium:master
 
 # Install docker
 RUN apt-get update

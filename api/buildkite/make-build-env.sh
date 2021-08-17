@@ -3,7 +3,7 @@ set -e
 HERE=$(dirname $0)
 . $HERE/common
 
-docker pull vimc/openjdk-libsodium:vimc-4258
+docker pull vimc/openjdk-libsodium:master
 docker build -f ./docker/shared-build-env.dockerfile \
     -t $BUILD_ENV_TAG \
     .
