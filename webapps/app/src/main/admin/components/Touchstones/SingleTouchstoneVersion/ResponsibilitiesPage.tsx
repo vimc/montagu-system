@@ -29,7 +29,7 @@ export class ResponsibilitiesPageComponent extends React.Component<Responsibilit
 
     render(): JSX.Element {
         return <PageArticle title={`Responsibility sets in ${this.props.currentTouchstoneVersionId}`}>
-            {this.props.canReviewResponsibilities &&
+            {this.props.canReviewResponsibilities && false /* TODO re-enable in VIMC-4835 */ &&
             <FileDownloadButton href={`/touchstones/${this.props.currentTouchstoneVersionId}/responsibilities/csv/`}
                                 className="mb-4">
                 Responsibilities summary

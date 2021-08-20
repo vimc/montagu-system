@@ -50,8 +50,10 @@ describe("ResponsibilitiesPage", () => {
 
         const rendered = shallow(<ResponsibilitiesPage location={null} router={null} history={null}
                                                        match={mockMatch()}/>, {context: {store}}).dive().dive();
-        expect(rendered.find(FileDownloadButton)).toHaveLength(1);
-        expect(rendered.find(FileDownloadButton).props().href).toEqual("/touchstones/v1/responsibilities/csv/");
+        // TODO re-enable in VIMC-4835
+        // expect(rendered.find(FileDownloadButton)).toHaveLength(1);
+        // expect(rendered.find(FileDownloadButton).props().href).toEqual("/touchstones/v1/responsibilities/csv/");
+        expect(rendered.find(FileDownloadButton)).toHaveLength(0);
         expect(rendered.find(ResponsibilitySet)).toHaveLength(2);
     });
 
