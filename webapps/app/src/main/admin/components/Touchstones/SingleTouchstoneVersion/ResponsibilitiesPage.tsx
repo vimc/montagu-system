@@ -31,7 +31,7 @@ export class ResponsibilitiesPageComponent extends React.Component<Responsibilit
         return <PageArticle title={`Responsibility sets in ${this.props.currentTouchstoneVersionId}`}>
             {this.props.canReviewResponsibilities &&
             <FileDownloadButton href={`/touchstones/${this.props.currentTouchstoneVersionId}/responsibilities/csv/`}
-                                className="mb-4">
+                                className="mb-4" delayBeforeReenable={600}>
                 Responsibilities summary
             </FileDownloadButton>
             }
