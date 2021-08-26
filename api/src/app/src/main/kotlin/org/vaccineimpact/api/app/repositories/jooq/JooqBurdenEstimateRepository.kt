@@ -513,6 +513,12 @@ class JooqBurdenEstimateRepository(
                 .execute()
     }
 
+    override fun addBurdenEstimateSetProblem(setId: Int, problem: String) =
+            dsl.newRecord(BURDEN_ESTIMATE_SET_PROBLEM).apply {
+                this.burdenEstimateSet = setId
+                this.problem = problem
+            }.insert()
+
     private fun getResponsibilitySetId(groupId: String, touchstoneVersionId: String): Int
     {
         // Get responsibility ID

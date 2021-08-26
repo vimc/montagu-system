@@ -55,6 +55,7 @@ class CloseBurdenEstimateSetLogicTests : BaseBurdenEstimateLogicTests()
                 getResponsibilitiesRepository(), mock())
         sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
         verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)
+        verify(repo, never()).addBurdenEstimateSetProblem(any(), any())
     }
 
     @Test
@@ -88,7 +89,7 @@ class CloseBurdenEstimateSetLogicTests : BaseBurdenEstimateLogicTests()
     }
 
     @Test
-    fun `closing a burden estimate set with missing rows marks it as invalid`()
+    fun `closing a burden estimate set with missing rows marks it as invalid and adds a problem`()
     {
         val writer = mockWriter()
         Mockito.`when`(writer.isSetEmpty(defaultEstimateSet.id)).doReturn(false)
@@ -100,6 +101,7 @@ class CloseBurdenEstimateSetLogicTests : BaseBurdenEstimateLogicTests()
             sut.closeBurdenEstimateSet(setId, groupId, touchstoneVersionId, scenarioId)
         }.isInstanceOf(MissingRowsError::class.java)
         verify(repo).changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
+        verify(repo).addBurdenEstimateSetProblem(setId, "4 missing estimate(s)")
     }
 
     @Test

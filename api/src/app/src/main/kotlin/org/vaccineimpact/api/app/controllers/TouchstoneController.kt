@@ -48,9 +48,7 @@ class TouchstoneController(
                     repositories.modellingGroup,
                     repositories.scenario,
                     repositories.touchstone,
-                    repositories.responsibilities,
-                    repositories.burdenEstimates,
-                    repositories.expectations
+                    repositories.responsibilities
             )
     )
 

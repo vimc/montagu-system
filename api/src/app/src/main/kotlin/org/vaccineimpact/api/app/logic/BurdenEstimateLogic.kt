@@ -181,7 +181,6 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         }
         else
         {
-            val identifier = "${modellingGroup.id} - ${responsibilityInfo.disease} - $scenarioId"
             val expectedRows = expectationsRepository.getExpectationsForResponsibility(responsibilityInfo.id)
                     .expectation.expectedRowLookup()
             val validatedRowMap = burdenEstimateRepository.validateEstimates(set, expectedRows)
@@ -189,8 +188,13 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
             if (countriesWithMissingRows.any())
             {
                 burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
+                // Adding problem to estimate set also marks ResponsibilityStatus as INVALID via convertScenarioToResponsibility()
+                val missingEstimateCount = validatedRowMap?.values?.flatMap { age -> age.values.flatMap { year -> year.values } }?.count { !it }
+                burdenEstimateRepository.addBurdenEstimateSetProblem(setId, "$missingEstimateCount missing estimate(s)")
+
                 notifier.notify(groupId, responsibilityInfo.disease, scenarioId,
                         BurdenEstimateSetStatus.INVALID, false, touchstoneVersionId)
+
                 throw MissingRowsError(rowErrorMessage(countriesWithMissingRows))
             }
             burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.COMPLETE)

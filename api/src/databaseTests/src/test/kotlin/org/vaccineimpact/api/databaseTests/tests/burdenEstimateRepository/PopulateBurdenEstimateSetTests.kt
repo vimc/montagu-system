@@ -137,4 +137,27 @@ class PopulateBurdenEstimateSetTests : BurdenEstimateRepositoryTests()
         }
     }
 
+    @Test
+    fun `can add problems to burden estimate set`()
+    {
+        val setId = withDatabase { db ->
+            setupDatabaseWithBurdenEstimateSet(db)
+        }
+
+        withDatabase { db ->
+            val t = Tables.BURDEN_ESTIMATE_SET_PROBLEM
+            assertThat(db.dsl.fetchCount(t, t.BURDEN_ESTIMATE_SET.eq(setId))).isEqualTo(0)
+        }
+
+        withRepo {
+            it.addBurdenEstimateSetProblem(setId, "a problem")
+            it.addBurdenEstimateSetProblem(setId, "yet another problem")
+        }
+
+        withDatabase { db ->
+            val t = Tables.BURDEN_ESTIMATE_SET_PROBLEM
+            assertThat(db.dsl.fetchCount(t, t.BURDEN_ESTIMATE_SET.eq(setId))).isEqualTo(2)
+        }
+    }
+
 }

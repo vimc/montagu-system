@@ -360,7 +360,7 @@ class TouchstoneControllerTests : MontaguTests()
         val mockResponsibilitiesLogic = mock<ResponsibilitiesLogic> {
             on { getTouchstoneResponsibilitiesData("t-1") } doReturn listOf(
                     ResponsibilityRow("t-1", "", 0, null, null, null, "", "", null, null,
-                            null, null, null, null, null, null, null)
+                            null, null, null, null, null, null, null, null)
             )
         }
         val mockContext = mock<ActionContext> {

@@ -43,8 +43,9 @@ class ResponsibilityCommentTests : DatabaseTest() {
         )
         val modelVersionId = addModel("model-1", modellingGroupId, "disease-1", versions = listOf("version-1"))
         addExpectations(responsibilityId)
-        val burdenId = addBurdenEstimateSet(responsibilityId, modelVersionId, "test.user", setTypeDetails = "unknown", timestamp = now)
+        val burdenId = addBurdenEstimateSet(responsibilityId, modelVersionId, "test.user", "invalid", setTypeDetails = "unknown", timestamp = now)
         updateCurrentEstimate(responsibilityId, burdenId)
+        addBurdenEstimateProblem("42 missing estimate(s)", burdenId)
     }
 
     @Test
@@ -144,7 +145,8 @@ class ResponsibilityCommentTests : DatabaseTest() {
                 "test.user",
                 "central-single-run",
                 "unknown",
-                "0",
+                "invalid",
+                "42 missing estimate(s)",
                 "comment 2",
                 now.toString(),
                 "test.user"
