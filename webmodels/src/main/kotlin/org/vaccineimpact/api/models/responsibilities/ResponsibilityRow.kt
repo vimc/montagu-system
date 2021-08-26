@@ -1,5 +1,6 @@
 package org.vaccineimpact.api.models.responsibilities
 
+import org.vaccineimpact.api.models.BurdenEstimateSetStatus
 import org.vaccineimpact.api.models.BurdenEstimateSetTypeCode
 import java.time.Instant
 
@@ -17,7 +18,8 @@ data class ResponsibilityRow(
         val currentEstimateSetUploadedBy: String?,
         val currentEstimateSetTypeType: BurdenEstimateSetTypeCode?,
         val currentEstimateSetTypeDetails: String?,
-        val currentEstimateSetMissingEstimates: Int?,
+        val currentEstimateSetStatus: BurdenEstimateSetStatus?,
+        val currentEstimateSetProblems: String?,
         val responsibilityCommentText: String?,
         val responsibilityCommentAddedOn: Instant?,
         val responsibilityCommentAddedBy: String?
