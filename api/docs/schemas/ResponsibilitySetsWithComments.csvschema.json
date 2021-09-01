@@ -13,11 +13,11 @@
         "current_estimate_set_uploaded_by": "String",
         "current_estimate_set_type_type": ["central-single-run", "central-averaged", "central-unknown", "stochastic"],
         "current_estimate_set_type_details": "String",
-        "current_estimate_set_missing_estimates": "Int",
+        "current_estimate_set_status": "String",
+        "current_estimate_set_problems": "String",
         "responsibility_comment_text": "String",
         "responsibility_comment_added_on": "String",
         "responsibility_comment_added_by": "String"
-
     },
     "additionalColumnsAllowed": false
 }
