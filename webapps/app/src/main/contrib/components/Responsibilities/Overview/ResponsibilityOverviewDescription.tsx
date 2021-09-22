@@ -80,6 +80,9 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
         if (settings.is2019Touchstone(props.currentTouchstoneId)) {
             guidanceOutputsUrl = require("../Guidance/content/guidance-2019-outputs.pdf");
             guidanceInputsUrl = require("../Guidance/content/guidance-2019-inputs.pdf");
+        } else if (settings.is2021GaviTouchstone(props.currentTouchstoneId)) {
+            guidanceOutputsUrl = require("../Guidance/content/guidance-2021-outputs.pdf");
+            guidanceInputsUrl = require("../Guidance/content/guidance-2021-inputs.pdf");
         }
 
         let templatesInfo;
@@ -87,7 +90,7 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
         let stochasticEstimatesText;
 
         const omitGuidance = settings.isNoGuidanceTouchstone(props.currentTouchstoneId);
-        const guidanceAsPdfs = settings.is2019Touchstone(props.currentTouchstoneId);
+        const guidanceAsPdfs = settings.is2019Touchstone(props.currentTouchstoneId) || settings.is2021GaviTouchstone(props.currentTouchstoneId);
 
         if (settings.isVersionOfStochasticTouchstone(props.currentTouchstoneId)) {
             templatesInfo = <li>

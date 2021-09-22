@@ -14,6 +14,7 @@ import {ResponsibilityGuidanceModelOutputsContentLatest} from "../../../../../ma
 import {ResponsibilityGuidanceModelOutputsContent2017} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceModelOutputsContent2017";
 import {ResponsibilityGuidanceTouchstoneNotOpenContent} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceTouchstoneNotOpenContent";
 import {ResponsibilityGuidanceModelOutputsContent2021} from "../../../../../main/contrib/components/Responsibilities/Guidance/content/ResponsibilityGuidanceModelOutputsContent2021";
+import {settings} from "../../../../../main/shared/Settings";
 
 
 describe("Guidance Model Outputs Page Component tests", () => {
@@ -128,7 +129,28 @@ describe("Guidance Model Outputs Page Component tests", () => {
         expect(link.prop("href")).toContain("guidance-2019-outputs.pdf");
     });
 
-    it("renders component for 2021 touchstone", () => {
+    it("renders component for 2021 gavi touchstone", () => {
+        const testTouchstone = mockTouchstoneVersion({id: "202110gavi"});
+
+        const store = createMockContribStore({
+            touchstones: {currentTouchstoneVersion: testTouchstone}
+        });
+
+        const testMatch = mockMatch<ResponsibilityGuidancePageLocationProps>({
+            touchstoneId: testTouchstone.id
+        });
+
+        const onLoadStub = sandbox.setStubReduxAction(responsibilityGuidanceModelOutputsPageActionCreators, "onLoad");
+        sandbox.setStubFunc(settings, "is2021GaviTouchstone", (id: string) => id.indexOf("202110gavi") === 0);
+        const rendered = shallow(<ResponsibilityGuidanceModelOutputsPage match={testMatch}/>, {context: {store}}).dive().dive().dive();
+
+        expect(onLoadStub.mock.calls.length).toBe(1);
+
+        const link = rendered.find("a");
+        expect(link.prop("href")).toContain("guidance-2021-outputs.pdf");
+    });
+
+    it("renders component for 2021 test touchstone", () => {
         const testTouchstone = mockTouchstoneVersion({id: "202108test-1"});
 
         const store = createMockContribStore({

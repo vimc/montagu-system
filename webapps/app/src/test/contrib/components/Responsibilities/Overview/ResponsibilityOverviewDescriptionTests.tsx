@@ -78,6 +78,22 @@ describe("Responsibility Overview Description Component", () => {
         expect(rendered.find(InternalLink).length).toBe(0);
     });
 
+    it("renders guidance links for 2021 gavi touchstone", () => {
+        sandbox.setStubFunc(settings, "is2021GaviTouchstone", (id: string) => id.indexOf("202110gavi") === 0);
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={"202110gavi-1"}
+                                                                   groupId={itGroupId}
+                                                                   touchstoneStatus={"open"}/>);
+
+        const linksTitle = rendered.find("#useful-links");
+        expect(linksTitle.length).toBe(1);
+
+        const link = rendered.find("a");
+
+        expect(link.at(0).prop("href")).toContain("guidance-2021-inputs.pdf");
+        expect(link.at(1).prop("href")).toContain("guidance-2021-outputs.pdf");
+        expect(rendered.find(InternalLink).length).toBe(0);
+    });
+
     it("renders stochastic content when touchstone is stochastic", () => {
         const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => true );
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={itTouchstoneId1} groupId={itGroupId} touchstoneStatus={touchstoneStatus}/>);
