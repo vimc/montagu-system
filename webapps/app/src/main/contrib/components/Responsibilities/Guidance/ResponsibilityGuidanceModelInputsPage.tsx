@@ -28,16 +28,18 @@ export class ResponsibilityGuidanceModelInputsPageComponent extends React.Compon
             return <ResponsibilityGuidanceTouchstoneNotOpenContent/>
         }
 
-        if (settings.is2017Touchstone(this.props.touchstoneVersion.id)) {
+        const touchstoneId = this.props.touchstoneVersion.id;
+        if (settings.is2017Touchstone(touchstoneId)) {
             return <ResponsibilityGuidanceModelInputsContent2017/>
-        } else if (settings.is2019Touchstone(this.props.touchstoneVersion.id)) {
-            const inputsPdf = require("./content/guidance-2019-inputs.pdf");
+        } else if (settings.is2019Touchstone(touchstoneId) || settings.is2021GaviTouchstone(touchstoneId)) {
+            const inputsPdfFile = settings.is2019Touchstone(touchstoneId) ? "guidance-2019-inputs.pdf" : "guidance-2021-inputs.pdf";
+            const inputsPdf = require(`./content/${inputsPdfFile}`);
             return <PageArticle title={"Guidance on model inputs: coverage and demographic data"}>
                 <a href={inputsPdf} target={"_blank"}>
                     Guidance on model inputs: coverage and demographic data
                 </a>
             </PageArticle>
-        } else if (settings.is2021Touchstone(this.props.touchstoneVersion.id)) {
+        } else if (settings.is2021TestTouchstone(touchstoneId)) {
             return <ResponsibilityGuidanceModelInputsContent2021/>
         } else {
             return <ResponsibilityGuidanceModelInputsContentLatest/>

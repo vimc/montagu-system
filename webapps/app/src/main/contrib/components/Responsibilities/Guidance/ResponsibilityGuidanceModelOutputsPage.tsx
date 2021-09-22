@@ -27,16 +27,18 @@ export class ResponsibilityGuidanceModelOutputsPageComponent extends React.Compo
             return <ResponsibilityGuidanceTouchstoneNotOpenContent/>
         }
 
-        if (settings.is2017Touchstone(this.props.touchstoneVersion.id)) {
+        const touchstoneId = this.props.touchstoneVersion.id;
+        if (settings.is2017Touchstone(touchstoneId)) {
             return <ResponsibilityGuidanceModelOutputsContent2017/>
-        } else if (settings.is2019Touchstone(this.props.touchstoneVersion.id)) {
-            const outputsPdf = require("./content/guidance-2019-outputs.pdf");
+        } else if (settings.is2019Touchstone(touchstoneId) || settings.is2021GaviTouchstone(touchstoneId)) {
+            const outputsPdfFile = settings.is2019Touchstone(touchstoneId) ? "guidance-2019-outputs.pdf" : "guidance-2021-outputs.pdf";
+            const outputsPdf = require(`./content/${outputsPdfFile}`);
             return <PageArticle title={"Guidance on model outputs: how to generate and upload central estimates"}>
                 <a href={outputsPdf} target={"_blank"}>
                     Guidance on model outputs: how to generate and upload central estimates
                 </a>
             </PageArticle>
-        } else if (settings.is2021Touchstone(this.props.touchstoneVersion.id)) {
+        } else if (settings.is2021TestTouchstone(touchstoneId)) {
             return <ResponsibilityGuidanceModelOutputsContent2021/>
         } else {
             return <ResponsibilityGuidanceModelOutputsContentLatest/>
