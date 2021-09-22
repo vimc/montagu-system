@@ -90,7 +90,7 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
         let stochasticEstimatesText;
 
         const omitGuidance = settings.isNoGuidanceTouchstone(props.currentTouchstoneId);
-        const guidanceAsPdfs = settings.is2019Touchstone(props.currentTouchstoneId);
+        const guidanceAsPdfs = settings.is2019Touchstone(props.currentTouchstoneId) || settings.is2021GaviTouchstone(props.currentTouchstoneId);
 
         if (settings.isVersionOfStochasticTouchstone(props.currentTouchstoneId)) {
             templatesInfo = <li>
