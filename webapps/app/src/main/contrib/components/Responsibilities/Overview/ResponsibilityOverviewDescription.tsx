@@ -14,10 +14,7 @@ const ContactDetails = () => {
         If you have any questions or anything is not as you expected, please email&nbsp;
         <a href={`mailto:${settings.supportContact}`}>
             {settings.supportContact}
-        </a>
-        &nbsp;or use the #montagu-help
-        channel on&nbsp;
-        <a href={settings.slackUrl} target="_blank">Slack</a>.
+        </a>.
     </div>
 };
 
@@ -98,7 +95,7 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
                 and for underlying parameter values.
             </li>;
             outputGuidanceLinkText = "Guidance on model outputs: how to generate and upload central and stochastic estimates";
-            stochasticEstimatesText = "In the future, you will also be able to upload stochastic burden estimates for each scenario."
+            stochasticEstimatesText = "";
         } else {
             templatesInfo = <li>
                 Download csv templates for central burden estimates.

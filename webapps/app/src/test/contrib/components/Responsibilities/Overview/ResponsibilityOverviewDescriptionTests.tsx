@@ -1,5 +1,5 @@
 import * as React from "react";
-import { shallow } from "enzyme";
+import {mount, shallow} from "enzyme";
 import "../../../../helper";
 import { Sandbox } from "../../../../Sandbox";
 import {ResponsibilityOverviewDescription} from "../../../../../main/contrib/components/Responsibilities/Overview/ResponsibilityOverviewDescription";
@@ -98,7 +98,7 @@ describe("Responsibility Overview Description Component", () => {
         const stub = sandbox.setStubFunc(settings, "isVersionOfStochasticTouchstone", () => true );
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={itTouchstoneId1} groupId={itGroupId} touchstoneStatus={touchstoneStatus}/>);
         expect(rendered.text().indexOf("Download csv templates for central and stochastic burden estimates")).toBeGreaterThan(-1);
-        expect(rendered.text().indexOf("upload stochastic burden estimates for each scenario")).toBeGreaterThan(-1);
+        expect(rendered.text().indexOf("Stochastic estimates are not required for this touchstone")).toEqual(-1);
         expect(rendered.text().indexOf("Upload your parameters file")).toBeGreaterThan(-1);
     });
 
@@ -113,5 +113,13 @@ describe("Responsibility Overview Description Component", () => {
             expect(rendered.text().indexOf("Upload your parameters file")).toEqual(-1);
         }
     );
+
+    it("renders contact details", () => {
+        const rendered = mount(<ResponsibilityOverviewDescription currentTouchstoneId={"t1"}
+                                                                    groupId={itGroupId}
+                                                                    touchstoneStatus={"open"}/>);
+        expect(rendered.text().indexOf("If you have any questions or anything is not as you expected, please email montagu-help@imperial.ac.uk."))
+            .toBeGreaterThan(-1);
+    });
 });
 
