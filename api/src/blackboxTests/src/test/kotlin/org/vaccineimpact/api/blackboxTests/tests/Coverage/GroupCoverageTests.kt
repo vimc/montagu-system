@@ -134,7 +134,7 @@ class GroupCoverageTests : CoverageTests()
                 .use { CSVReader(it).readAll() }
 
         val headers = csv.first()
-        Assertions.assertThat(headers.count()).isEqualTo(13)
+        Assertions.assertThat(headers.count()).isEqualTo(14)
     }
 
     @Test
@@ -323,7 +323,7 @@ class GroupCoverageTests : CoverageTests()
         val headers = csv.first().toList()
         val expectedHeaders = listOf("scenario", "set_name", "vaccine", "gavi_support", "activity_type",
                 "country_code", "country", "year", "age_first", "age_last", "age_range_verbatim", "target",
-                "coverage", "gender")
+                "coverage", "gender", "proportion_risk")
         headers.forEachIndexed { index, h ->
             Assertions.assertThat(h).isEqualTo(expectedHeaders[index])
         }
