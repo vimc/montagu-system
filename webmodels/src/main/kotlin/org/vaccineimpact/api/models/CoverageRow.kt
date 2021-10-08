@@ -43,6 +43,7 @@ interface LongCoverageRow: CoverageRow {
         val ageRangeVerbatim: String?
         val target: BigDecimal?
         val coverage: BigDecimal?
+        val proportionRisk: BigDecimal?
 }
 
 data class NoGenderLongCoverageRow(
@@ -58,7 +59,8 @@ data class NoGenderLongCoverageRow(
         override val ageLast: BigDecimal?,
         override val ageRangeVerbatim: String?,
         override val target: BigDecimal?,
-        override val coverage: BigDecimal?
+        override val coverage: BigDecimal?,
+        override val proportionRisk: BigDecimal? = null
 ) : LongCoverageRow
 
 data class GenderedLongCoverageRow(
@@ -75,7 +77,8 @@ data class GenderedLongCoverageRow(
         override val ageRangeVerbatim: String?,
         override val target: BigDecimal?,
         override val coverage: BigDecimal?,
-        val gender: String
+        val gender: String,
+        override val proportionRisk: BigDecimal? = null
 ) : LongCoverageRow
 
 
