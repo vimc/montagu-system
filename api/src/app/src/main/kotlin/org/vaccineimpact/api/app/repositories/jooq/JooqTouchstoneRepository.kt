@@ -2,7 +2,6 @@ package org.vaccineimpact.api.app.repositories.jooq
 
 import org.jooq.*
 import org.jooq.Result
-import org.jooq.exception.DataAccessException
 import org.jooq.impl.DSL.*
 import org.vaccineimpact.api.app.errors.UnknownObjectError
 import org.vaccineimpact.api.app.filters.ScenarioFilterParameters
@@ -297,7 +296,8 @@ class JooqTouchstoneRepository(
                 COVERAGE.AGE_TO,
                 COVERAGE.AGE_RANGE_VERBATIM,
                 COVERAGE.GAVI_SUPPORT,
-                COVERAGE.GENDER)
+                COVERAGE.GENDER,
+                COVERAGE.PROPORTION_RISK)
     }
 
     private fun aggregatedValues(): List<Field<*>>
@@ -595,7 +595,8 @@ class JooqTouchstoneRepository(
                         record[COVERAGE.AGE_RANGE_VERBATIM],
                         record[COVERAGE.TARGET],
                         record[COVERAGE.COVERAGE_],
-                        (record[GENDER.NAME] ?: defaultGender(diseaseId)).toLowerCase()
+                        (record[GENDER.NAME] ?: defaultGender(diseaseId)).toLowerCase(),
+                        record[COVERAGE.PROPORTION_RISK]
                 )
             }
             else
@@ -613,7 +614,8 @@ class JooqTouchstoneRepository(
                         record[COVERAGE.AGE_TO],
                         record[COVERAGE.AGE_RANGE_VERBATIM],
                         record[COVERAGE.TARGET],
-                        record[COVERAGE.COVERAGE_]
+                        record[COVERAGE.COVERAGE_],
+                        record[COVERAGE.PROPORTION_RISK]
                 )
             }
 

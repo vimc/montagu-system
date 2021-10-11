@@ -583,7 +583,7 @@ class TouchstoneCoverageTests : CoverageTests()
                 .use { CSVReader(it).readAll() }
 
         val headers = csv.first()
-        Assertions.assertThat(headers.count()).isEqualTo(13)
+        Assertions.assertThat(headers.count()).isEqualTo(14)
     }
 
 }

@@ -13,6 +13,7 @@
         "age_range_verbatim": "String?",
         "target": "Decimal?",
         "coverage": "Decimal?",
-        "gender": "String"
+        "gender": "String",
+        "proportion_risk": "Decimal?"
     }
 }
