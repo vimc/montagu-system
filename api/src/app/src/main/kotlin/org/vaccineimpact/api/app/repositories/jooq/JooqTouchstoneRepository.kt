@@ -296,15 +296,15 @@ class JooqTouchstoneRepository(
                 COVERAGE.AGE_TO,
                 COVERAGE.AGE_RANGE_VERBATIM,
                 COVERAGE.GAVI_SUPPORT,
-                COVERAGE.GENDER)
+                COVERAGE.GENDER,
+                COVERAGE.PROPORTION_RISK)
     }
 
     private fun aggregatedValues(): List<Field<*>>
     {
         return arrayOf(
                 aggregatedCoverage().`as`("coverage"),
-                aggregatedTarget().`as`("target"),
-                max(COVERAGE.PROPORTION_RISK).`as`("proportion_risk")
+                aggregatedTarget().`as`("target")
         ).toList()
     }
 

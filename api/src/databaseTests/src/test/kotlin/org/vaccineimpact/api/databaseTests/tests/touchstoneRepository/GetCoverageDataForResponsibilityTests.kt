@@ -568,6 +568,46 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
         }
     }
 
+    @Test
+    fun `can get expected grouped coverage data for proportion risk`()
+    {
+        var responsibilityId = 0
+        given {
+            val countries = listOf("AAA", "BBB")
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+
+            it.addCountries(countries)
+
+            addABCoverageSets(it);
+
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 100.toDecimal(), 0.2.toDecimal(), proportionRisk = 0.1.toDecimal())
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 200.toDecimal(), 0.6.toDecimal(), proportionRisk = 0.1.toDecimal())
+            it.addCoverageRow(setA, "AAA", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 300.toDecimal(), 0.8.toDecimal(), proportionRisk = 0.1.toDecimal())
+
+            it.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 400.toDecimal(), 0.1.toDecimal())
+            it.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 500.toDecimal(), 0.2.toDecimal())
+            it.addCoverageRow(setA, "BBB", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", 600.toDecimal(), 0.3.toDecimal())
+
+            it.addExpectations(responsibilityId, countries = countries)
+
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId, responsibilityId, scenarioId).toList()
+
+            assertLongCoverageRowListEqual(
+                    result.toList(),
+                    listOf(
+                            GenderedLongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "AAA", "AAA-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(600), 0.6333333333.toDecimal(), "both", 0.1.toDecimal()),
+                            GenderedLongCoverageRow(scenarioId, "First", "AF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
+                                    "BBB", "BBB-Name", 2001, 1.toDecimal(), 2.toDecimal(), "1-2", BigDecimal(1500), 0.2133333333.toDecimal(), "both", null)
+                    ))
+        }
+    }
+
+
     //This set of tests confirm that new SQL grouping logic in TouchstoneRepo does not interfere with cases where only
     //a single row per group is present, and where target and coverage values for that row should be output unmolested
     //whether or not they include zeroes or nulls
