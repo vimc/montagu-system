@@ -186,7 +186,7 @@ export function addCoverageSets(db: Client, scenarioId: String, touchstoneVersio
 export function addCoverageData(db: Client, coverageSetId: number): Promise<QueryResult> {
     return db.query(`
                 INSERT INTO country (id, name) VALUES ('ATL', 'Atlantis');
-                INSERT INTO coverage (coverage_set, country, year, age_from, age_to, age_range_verbatim, target, coverage)
-                VALUES (${coverageSetId}, 'ATL', 1970, 1, 2, '1-2', 1000, 1000);
+                INSERT INTO coverage (coverage_set, country, year, age_from, age_to, age_range_verbatim, target, coverage, proportion_risk)
+                VALUES (${coverageSetId}, 'ATL', 1970, 1, 2, '1-2', 1000, 1000, 0.5);
         `)
 }
