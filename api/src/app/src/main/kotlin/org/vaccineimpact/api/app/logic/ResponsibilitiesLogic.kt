@@ -16,9 +16,13 @@ class RepositoriesResponsibilitiesLogic(
         private val modellingGroupRepository: ModellingGroupRepository,
         private val scenarioRepository: ScenarioRepository,
         private val touchstoneRepository: TouchstoneRepository,
-        private val responsibilitiesRepository: ResponsibilitiesRepository
+        private val responsibilitiesRepository: ResponsibilitiesRepository,
+        private val burdenEstimateRepository: BurdenEstimateRepository
 ) : ResponsibilitiesLogic
 {
+
+    constructor(repositories: Repositories) : this(repositories.modellingGroup, repositories.scenario,
+            repositories.touchstone, repositories.responsibilities, repositories.burdenEstimates)
 
     override fun validateResponsibilityPath(
             path: ResponsibilityPath,
@@ -42,32 +46,36 @@ class RepositoriesResponsibilitiesLogic(
         val comments = responsibilitiesRepository.getResponsibilitiesWithCommentsForTouchstone(touchstoneVersionId)
         val sets = responsibilitiesRepository.getResponsibilitiesForTouchstone(touchstoneVersionId)
         return sets.flatMap { set ->
-            val responsibilitySetComment = comments.find { it.modellingGroupId == set.modellingGroupId}?.comment
-            set.responsibilities.map { responsibility ->
-                val currentEstimateSet = responsibility.currentEstimateSet
-                val responsibilityComment = comments.find { it.modellingGroupId == set.modellingGroupId }?.responsibilities?.find { it.scenarioId == responsibility.scenario.id }?.comment
-                ResponsibilityRow(
-                        set.touchstoneVersion,
-                        set.modellingGroupId,
-                        set.responsibilities.size - set.responsibilities.count { it.currentEstimateSet?.status == BurdenEstimateSetStatus.COMPLETE },
-                        responsibilitySetComment?.comment,
-                        responsibilitySetComment?.addedOn,
-                        responsibilitySetComment?.addedBy,
-                        responsibility.scenario.description,
-                        responsibility.scenario.disease,
-                        currentEstimateSet?.id,
-                        currentEstimateSet?.uploadedOn,
-                        currentEstimateSet?.uploadedBy,
-                        currentEstimateSet?.type?.type,
-                        currentEstimateSet?.type?.details,
-                        currentEstimateSet?.status,
-                        currentEstimateSet?.problems.let {
-                            if (!it.isNullOrEmpty()) it.joinToString() else null
-                        },
-                        responsibilityComment?.comment,
-                        responsibilityComment?.addedOn,
-                        responsibilityComment?.addedBy
-                )
+            val responsibilitySetComment = comments.find { it.modellingGroupId == set.modellingGroupId }?.comment
+            set.responsibilities.flatMap { responsibility ->
+                val burdenEstimateSets = burdenEstimateRepository.getBurdenEstimateSets(set.modellingGroupId,
+                        touchstoneVersionId,
+                        responsibility.scenario.id)
+                val responsibilityComment = comments.find { it.modellingGroupId == set.modellingGroupId }
+                        ?.responsibilities?.find { it.scenarioId == responsibility.scenario.id }?.comment
+                burdenEstimateSets.map { estimates ->
+                    ResponsibilityRow(
+                            set.touchstoneVersion,
+                            set.modellingGroupId,
+                            set.responsibilities.size - set.responsibilities.count { it.currentEstimateSet?.status == BurdenEstimateSetStatus.COMPLETE },
+                            responsibilitySetComment?.comment,
+                            responsibilitySetComment?.addedOn,
+                            responsibilitySetComment?.addedBy,
+                            responsibility.scenario.description,
+                            responsibility.scenario.disease,
+                            estimates.id,
+                            estimates.uploadedOn,
+                            estimates.uploadedBy,
+                            estimates.type.type,
+                            estimates.type.details,
+                            estimates.status,
+                            estimates.problems.joinToString(),
+                            responsibilityComment?.comment,
+                            responsibilityComment?.addedOn,
+                            responsibilityComment?.addedBy
+                    )
+                }
+
             }
         }
     }

@@ -44,12 +44,7 @@ class TouchstoneController(
                     repositories.modellingGroup,
                     repositories.touchstone
             ),
-            RepositoriesResponsibilitiesLogic(
-                    repositories.modellingGroup,
-                    repositories.scenario,
-                    repositories.touchstone,
-                    repositories.responsibilities
-            )
+            RepositoriesResponsibilitiesLogic(repositories)
     )
 
     private val touchstonePreparer = ReifiedPermission("touchstones.prepare", Scope.Global())
