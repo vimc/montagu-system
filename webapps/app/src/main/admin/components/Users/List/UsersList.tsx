@@ -21,6 +21,7 @@ export const UsersListComponent: React.FunctionComponent<UsersListProps> = (prop
             <th>Name</th>
             <th>Email</th>
             <th>Last logged in</th>
+            <th>Active</th>
         </tr>
         </thead>
         <tbody>
