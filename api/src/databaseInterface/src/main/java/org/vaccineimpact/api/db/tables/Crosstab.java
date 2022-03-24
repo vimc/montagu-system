@@ -31,7 +31,7 @@ import org.vaccineimpact.api.db.tables.records.CrosstabRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Crosstab extends TableImpl<CrosstabRecord> {
 
-    private static final long serialVersionUID = 1535337045;
+    private static final long serialVersionUID = -1463074068;
 
     /**
      * The reference instance of <code>public.crosstab</code>
@@ -73,7 +73,7 @@ public class Crosstab extends TableImpl<CrosstabRecord> {
     }
 
     private Crosstab(Name alias, Table<CrosstabRecord> aliased) {
-        this(alias, aliased, new Field[2]);
+        this(alias, aliased, new Field[1]);
     }
 
     private Crosstab(Name alias, Table<CrosstabRecord> aliased, Field<?>[] parameters) {
@@ -123,20 +123,18 @@ public class Crosstab extends TableImpl<CrosstabRecord> {
     /**
      * Call this table-valued function
      */
-    public Crosstab call(String __1, String __2) {
+    public Crosstab call(String __1) {
         return new Crosstab(DSL.name(getName()), null, new Field[] { 
               DSL.val(__1, org.jooq.impl.SQLDataType.CLOB)
-            , DSL.val(__2, org.jooq.impl.SQLDataType.CLOB)
         });
     }
 
     /**
      * Call this table-valued function
      */
-    public Crosstab call(Field<String> __1, Field<String> __2) {
+    public Crosstab call(Field<String> __1) {
         return new Crosstab(DSL.name(getName()), null, new Field[] { 
               __1
-            , __2
         });
     }
 }
