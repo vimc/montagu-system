@@ -141,9 +141,9 @@ class JooqExpectationsRepository(dsl: DSLContext)
 
     override fun getExpectedGAVICoverageCountries(): List<String>
     {
+        // No current restrictions on expected GAVI countries, as long as they are in the db
         return dsl.selectDistinct(COUNTRY.ID)
                 .fromJoinPath(COUNTRY, COUNTRY_METADATA)
-                .where(COUNTRY_METADATA.GAVI73)
                 .orderBy(COUNTRY.ID)
                 .fetchInto(String::class.java)
                 .toList()
