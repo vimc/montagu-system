@@ -6,6 +6,8 @@ servers:
     password: password
   orderlyweb:
     url: http://orderly_web_web:8888
+  youtrack:
+    token: 123
   smtp:
     host: localhost
     port: 1025
@@ -25,3 +27,4 @@ tasks:
                 - minimal_modeller@example.com
                 - science@example.com
               subject: "New version of Orderly report"
+            assignee: test.user
