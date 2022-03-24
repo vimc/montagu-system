@@ -40,7 +40,7 @@ import org.vaccineimpact.api.db.tables.records.CoverageRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Coverage extends TableImpl<CoverageRecord> {
 
-    private static final long serialVersionUID = 227861092;
+    private static final long serialVersionUID = -872933954;
 
     /**
      * The reference instance of <code>public.coverage</code>
@@ -119,6 +119,11 @@ public class Coverage extends TableImpl<CoverageRecord> {
      * The column <code>public.coverage.proportion_risk</code>.
      */
     public final TableField<CoverageRecord, BigDecimal> PROPORTION_RISK = createField("proportion_risk", org.jooq.impl.SQLDataType.NUMERIC, this, "");
+
+    /**
+     * The column <code>public.coverage.source_from</code>.
+     */
+    public final TableField<CoverageRecord, String> SOURCE_FROM = createField("source_from", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * Create a <code>public.coverage</code> table reference

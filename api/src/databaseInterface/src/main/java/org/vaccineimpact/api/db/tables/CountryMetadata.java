@@ -39,7 +39,7 @@ import org.vaccineimpact.api.db.tables.records.CountryMetadataRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CountryMetadata extends TableImpl<CountryMetadataRecord> {
 
-    private static final long serialVersionUID = -363536004;
+    private static final long serialVersionUID = -1880317189;
 
     /**
      * The reference instance of <code>public.country_metadata</code>
@@ -143,6 +143,11 @@ public class CountryMetadata extends TableImpl<CountryMetadataRecord> {
      * The column <code>public.country_metadata.gavi_pef_tier</code>. Gavi Partners engagement framework; Tier 1, 2 or 3 (stored as integer). NULL values indicate "Not PEF"
      */
     public final TableField<CountryMetadataRecord, Integer> GAVI_PEF_TIER = createField("gavi_pef_tier", org.jooq.impl.SQLDataType.INTEGER, this, "Gavi Partners engagement framework; Tier 1, 2 or 3 (stored as integer). NULL values indicate \"Not PEF\"");
+
+    /**
+     * The column <code>public.country_metadata.gavi74</code>.
+     */
+    public final TableField<CountryMetadataRecord, Boolean> GAVI74 = createField("gavi74", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * Create a <code>public.country_metadata</code> table reference
