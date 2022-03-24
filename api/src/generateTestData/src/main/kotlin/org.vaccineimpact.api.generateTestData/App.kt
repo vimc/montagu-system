@@ -83,6 +83,7 @@ fun addGAVI73Countries(db: JooqContext) {
                     this.gavi68 = false
                     this.gavi72 = false
                     this.gavi77 = false
+                    this.gavi74 = false
                 }
             }
     db.dsl.batchStore(countryRecords).execute()
