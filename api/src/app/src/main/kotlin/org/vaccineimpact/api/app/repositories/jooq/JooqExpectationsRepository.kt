@@ -143,7 +143,7 @@ class JooqExpectationsRepository(dsl: DSLContext)
     {
         // No current restrictions on expected GAVI countries, as long as they are in the db
         return dsl.selectDistinct(COUNTRY.ID)
-                .fromJoinPath(COUNTRY, COUNTRY_METADATA)
+                .from(COUNTRY)
                 .orderBy(COUNTRY.ID)
                 .fetchInto(String::class.java)
                 .toList()
