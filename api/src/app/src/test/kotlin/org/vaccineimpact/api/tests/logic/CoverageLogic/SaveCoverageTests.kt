@@ -9,7 +9,6 @@ import org.vaccineimpact.api.app.errors.MissingRowsError
 import org.vaccineimpact.api.app.logic.RepositoriesCoverageLogic
 import org.vaccineimpact.api.app.repositories.ExpectationsRepository
 import org.vaccineimpact.api.app.repositories.TouchstoneRepository
-import org.vaccineimpact.api.db.tables.Coverage
 import org.vaccineimpact.api.models.ActivityType
 import org.vaccineimpact.api.models.CoverageIngestionRow
 import org.vaccineimpact.api.models.GAVISupportLevel
@@ -143,11 +142,24 @@ and 13 others"""
         val mockRepo = mock<TouchstoneRepository> {
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
         }
-        val testSequence = sequenceOf(
+
+        val allowedCountryList = listOf(
                 CoverageIngestionRow("HepB", "SYR", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
                 CoverageIngestionRow("HepB", "SYR", ActivityType.ROUTINE, true, 2031, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
                 CoverageIngestionRow("YF", "SYR", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
                 CoverageIngestionRow("Measles", "SYR", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false))
+
+        // include full sets for required countries
+        val requiredCountryList = (2021..2030).flatMap {
+            listOf(
+                    CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, it,
+                            1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                    CoverageIngestionRow("Measles", "AFG", ActivityType.ROUTINE, true, it,
+                            1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
+            )
+        }
+        val testSequence = (requiredCountryList + allowedCountryList).asSequence()
+
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
 
         val expectedMessage = """Missing 18 rows for vaccines HepB, Measles:
@@ -171,14 +183,21 @@ and 13 others"""
             on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
         }
 
-        val testSequence = (2021..2030).map {
-            CoverageIngestionRow("HepB", "SYR", ActivityType.ROUTINE, true, it, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+        val testSequence = (2021..2030).flatMap {
+            listOf(
+                CoverageIngestionRow("HepB", "SYR", ActivityType.ROUTINE, true, it,
+                        1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+
+                // Need to include required country too
+                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, it,
+                        1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
+            )
         }.asSequence()
 
         val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
 
         sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
-        verify(mockRepo).saveCoverageForTouchstone("t1", any())
+        verify(mockRepo).saveCoverageForTouchstone(eq("t1"), any())
     }
 
     @Test
