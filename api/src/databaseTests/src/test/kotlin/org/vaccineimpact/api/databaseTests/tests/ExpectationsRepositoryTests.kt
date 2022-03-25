@@ -436,6 +436,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
                             this.gavi68 = false
                             this.gavi72 = false
                             this.gavi77 = false
+                            this.gavi74 = false
                         }
                     }
             db.dsl.batchStore(countryRecords).execute()
@@ -458,6 +459,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
                 this.gavi68 = false
                 this.gavi72 = false
                 this.gavi77 = false
+                this.gavi74 = false
             }.store()
         }
 
