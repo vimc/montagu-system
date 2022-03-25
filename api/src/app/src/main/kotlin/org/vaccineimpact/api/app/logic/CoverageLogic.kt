@@ -70,14 +70,26 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         val map = CountryLookup()
         for (country in countries)
         {
-            val yearMap = YearLookup()
-            for (year in mandatoryGAVICoverageYears)
-            {
-                yearMap[year.toShort()] = false
-            }
-            map[country] = yearMap
+            map[country] = generateYearLookup()
         }
         return map
+    }
+
+    private fun addAllowedCountryToLookup(country: String, countryLookup: CountryLookup): YearLookup
+    {
+        val yearLookup = generateYearLookup()
+        countryLookup[country] = yearLookup
+        return yearLookup
+    }
+
+    private fun generateYearLookup(): YearLookup
+    {
+        val yearMap = YearLookup()
+        for (year in mandatoryGAVICoverageYears)
+        {
+            yearMap[year.toShort()] = false
+        }
+        return yearMap
     }
 
     override fun saveCoverageForTouchstone(touchstoneVersionId: String,
@@ -91,7 +103,8 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
         val setDeterminants = mutableListOf<Pair<ActivityType, String>>()
         val setIds = mutableListOf<Int>()
         var expectedRowLookup = mutableMapOf<String, CountryLookup>()
-        val countries = expectationsRepository.getExpectedGAVICoverageCountries()
+        val requiredCountries = expectationsRepository.getExpectedGAVICoverageCountries()
+        val allowedCountries = expectationsRepository.getAllowedGAVICoverageCountries()
         val metadataId = touchstoneRepository.createCoverageSetMetadata(description, uploader, timestamp)
         val records = rows.flatMap { row ->
 
@@ -113,7 +126,7 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
                 }
                 if (validate)
                 {
-                    expectedRowLookup = validate(vaccine, row, countries, expectedRowLookup)
+                    expectedRowLookup = validate(vaccine, row, requiredCountries, allowedCountries, expectedRowLookup)
                 }
                 val id = setIds[setIndex]
                 touchstoneRepository.newCoverageRowRecord(
@@ -141,22 +154,23 @@ class RepositoriesCoverageLogic(private val modellingGroupRepository: ModellingG
 
     private fun validate(vaccine: String,
                          row: CoverageIngestionRow,
-                         countries: List<String>,
+                         requiredCountries: List<String>,
+                         allowedCountries: List<String>,
                          expectedRowLookup: CoverageRowLookup): CoverageRowLookup
     {
         if (!allowedGAVICoverageYears.contains(row.year))
         {
             throw BadRequest("Unexpected year: ${row.year}")
         }
-        if (!countries.contains(row.country))
+        if (!allowedCountries.contains(row.country))
         {
             throw BadRequest("Unrecognised or unexpected country: ${row.country}")
         }
         if (row.activityType == ActivityType.ROUTINE)
         {
-            val countryLookup = expectedRowLookup[vaccine] ?: generateCountryLookup(countries)
+            val countryLookup = expectedRowLookup[vaccine] ?: generateCountryLookup(requiredCountries)
             val year = row.year.toShort()
-            val yearLookup = countryLookup[row.country]!!
+            val yearLookup = countryLookup[row.country] ?: addAllowedCountryToLookup(row.country, countryLookup)
             if (yearLookup[year] == true)
             {
                 throw BadRequest("Duplicate row detected: ${row.year}, ${row.vaccine}, ${row.country}")

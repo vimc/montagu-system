@@ -394,7 +394,81 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     }
 
     @Test
-    fun `can get countries for GAVI coverage`()
+    fun `can get expected countries for GAVI coverage`()
+    {
+        withDatabase { db ->
+            db.addTouchstoneVersion("t", 1, addTouchstone = true)
+            db.addTouchstoneVersion("t", 2, addTouchstone = false)
+            db.dsl.newRecord(FRANCOPHONE_STATUS)
+                    .apply {
+                        id = "fff"
+                    }.store()
+            db.dsl.newRecord(VXDEL_SEGMENT)
+                    .apply {
+                        id = "v1"
+                    }.store()
+
+            db.dsl.newRecord(GAVI_REGION)
+                    .apply {
+                        id = "g1"
+                        name = "gaviregion"
+                    }.store()
+
+            val countryRecords = db.dsl.select(COUNTRY.ID)
+                    .from(COUNTRY)
+                    .limit(73)
+                    .fetchInto(String::class.java)
+                    .map {
+                        db.dsl.newRecord(COUNTRY_METADATA).apply {
+                            this.country = it
+                            this.gavi73 = true
+                            this.touchstone = "t-1"
+                            this.whoRegion = "123"
+                            this.continent = "aaa"
+                            this.region = "bbb"
+                            this.francophone = "fff"
+                            this.vxdelSegment = "v1"
+                            this.gaviRegion = "g1"
+                            this.wuenicCoverage = false
+                            this.pine_5 = false
+                            this.dove94 = false
+                            this.dove96 = false
+                            this.gavi68 = false
+                            this.gavi72 = false
+                            this.gavi77 = false
+                        }
+                    }
+            db.dsl.batchStore(countryRecords).execute()
+
+            // add one duplicate for another touchstone
+            db.dsl.newRecord(COUNTRY_METADATA).apply {
+                this.country = "AFG"
+                this.gavi73 = true
+                this.touchstone = "t-2"
+                this.whoRegion = "123"
+                this.continent = "aaa"
+                this.region = "bbb"
+                this.francophone = "fff"
+                this.vxdelSegment = "v1"
+                this.gaviRegion = "g1"
+                this.wuenicCoverage = false
+                this.pine_5 = false
+                this.dove94 = false
+                this.dove96 = false
+                this.gavi68 = false
+                this.gavi72 = false
+                this.gavi77 = false
+            }.store()
+        }
+
+        val countries = withRepo {
+            it.getExpectedGAVICoverageCountries()
+        }
+        assertThat(countries.count()).isEqualTo(73)
+    }
+
+    @Test
+    fun `can get allowed countries for GAVI coverage`()
     {
         withDatabase { db ->
             val countriesInDB = db.dsl.select(COUNTRY.ID)
@@ -405,7 +479,6 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             val countries = withRepo {
                 it.getExpectedGAVICoverageCountries()
             }
-            assertThat(countries.count()).isGreaterThan(73)
             assertThat(countries).containsExactlyElementsOf(countriesInDB)
         }
     }
