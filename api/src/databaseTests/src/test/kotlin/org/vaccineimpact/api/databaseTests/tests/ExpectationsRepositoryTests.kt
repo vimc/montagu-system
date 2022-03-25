@@ -472,17 +472,18 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     @Test
     fun `can get allowed countries for GAVI coverage`()
     {
-        withDatabase { db ->
-            val countriesInDB = db.dsl.select(COUNTRY.ID)
+        val countriesInDB = withDatabase { db ->
+             db.dsl.select(COUNTRY.ID)
                     .from(COUNTRY)
                     .orderBy(COUNTRY.ID)
                     .fetchInto(String::class.java)
-
-            val countries = withRepo {
-                it.getExpectedGAVICoverageCountries()
-            }
-            assertThat(countries).containsExactlyElementsOf(countriesInDB)
         }
+
+        val countries = withRepo {
+            it.getAllowedGAVICoverageCountries()
+        }
+
+        assertThat(countries).containsExactlyElementsOf(countriesInDB)
     }
 
     private fun addResponsibilityAnd(action: (JooqContext, Int, Int) -> Int) = withDatabase { db ->
