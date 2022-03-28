@@ -394,7 +394,7 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
     }
 
     @Test
-    fun `can get countries for GAVI coverage`()
+    fun `can get expected countries for GAVI coverage`()
     {
         withDatabase { db ->
             db.addTouchstoneVersion("t", 1, addTouchstone = true)
@@ -467,6 +467,23 @@ class ExpectationsRepositoryTests : RepositoryTests<ExpectationsRepository>()
             it.getExpectedGAVICoverageCountries()
         }
         assertThat(countries.count()).isEqualTo(73)
+    }
+
+    @Test
+    fun `can get allowed countries for GAVI coverage`()
+    {
+        val countriesInDB = withDatabase { db ->
+             db.dsl.select(COUNTRY.ID)
+                    .from(COUNTRY)
+                    .orderBy(COUNTRY.ID)
+                    .fetchInto(String::class.java)
+        }
+
+        val countries = withRepo {
+            it.getAllowedGAVICoverageCountries()
+        }
+
+        assertThat(countries).containsExactlyElementsOf(countriesInDB)
     }
 
     private fun addResponsibilityAnd(action: (JooqContext, Int, Int) -> Int) = withDatabase { db ->

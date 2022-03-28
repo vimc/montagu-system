@@ -149,6 +149,15 @@ class JooqExpectationsRepository(dsl: DSLContext)
                 .toList()
     }
 
+    override fun getAllowedGAVICoverageCountries(): List<String>
+    {
+        return dsl.selectDistinct(COUNTRY.ID)
+                .from(COUNTRY)
+                .orderBy(COUNTRY.ID)
+                .fetchInto(String::class.java)
+                .toList()
+    }
+
     private fun getBasicDataAndMappingFromRecords(records: List<Record>): Pair<BurdenEstimateExpectationRecord, ApplicableScenariosAndDisease>
     {
         val basicData = records.first().into(BurdenEstimateExpectationRecord::class.java)

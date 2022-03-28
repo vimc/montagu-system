@@ -32,6 +32,7 @@ class SaveCoverageTests : MontaguTests()
 
     private val mockExpectationsRepo = mock<ExpectationsRepository> {
         on { getExpectedGAVICoverageCountries() } doReturn listOf("AFG")
+        on { getAllowedGAVICoverageCountries() } doReturn  listOf("AFG", "SYR")
     }
 
     private val now = Instant.now()
@@ -133,6 +134,70 @@ and 13 others"""
             sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
         }.isInstanceOf(MissingRowsError::class.java)
                 .hasMessageContaining(expectedMessage)
+    }
+
+    @Test
+    fun `validation detects missing routine rows for country which is allowed but not required`()
+    {
+        val mockRepo = mock<TouchstoneRepository> {
+            on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
+        }
+
+        val allowedCountryList = listOf(
+                CoverageIngestionRow("HepB", "SYR", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("HepB", "SYR", ActivityType.ROUTINE, true, 2031, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("YF", "SYR", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                CoverageIngestionRow("Measles", "SYR", ActivityType.ROUTINE, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false))
+
+        // include full sets for required countries
+        val requiredCountryList = (2021..2030).flatMap {
+            listOf(
+                    CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, it,
+                            1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+                    CoverageIngestionRow("Measles", "AFG", ActivityType.ROUTINE, true, it,
+                            1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
+            )
+        }
+        val testSequence = (requiredCountryList + allowedCountryList).asSequence()
+
+        val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
+
+        val expectedMessage = """Missing 18 rows for vaccines HepB, Measles:
+ *HepB, SYR, 2021
+ *HepB, SYR, 2022
+ *HepB, SYR, 2023
+ *HepB, SYR, 2024
+ *HepB, SYR, 2026
+and 13 others"""
+
+        assertThatThrownBy {
+            sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
+        }.isInstanceOf(MissingRowsError::class.java)
+                .hasMessageContaining(expectedMessage)
+    }
+
+    @Test
+    fun `validation accepts routine rows for all mandatory years for country which is allowed but not required`()
+    {
+        val mockRepo = mock<TouchstoneRepository> {
+            on { getGenders() } doReturn mapOf(GenderEnum.BOTH to 111)
+        }
+
+        val testSequence = (2021..2030).flatMap {
+            listOf(
+                CoverageIngestionRow("HepB", "SYR", ActivityType.ROUTINE, true, it,
+                        1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+
+                // Need to include required country too
+                CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, it,
+                        1, 10, GenderEnum.BOTH, 100F, 65.5F, false)
+            )
+        }.asSequence()
+
+        val sut = RepositoriesCoverageLogic(mock(), mock(), mockRepo, mock(), mockExpectationsRepo)
+
+        sut.saveCoverageForTouchstone("t1", testSequence, "", "", now)
+        verify(mockRepo).saveCoverageForTouchstone(eq("t1"), any())
     }
 
     @Test

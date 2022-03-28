@@ -11,4 +11,5 @@ interface ExpectationsRepository : Repository
     fun getExpectationIdsForGroupAndTouchstone(groupId: String, touchstoneVersionId: String): List<Int>
     fun getAllExpectations(): List<TouchstoneModelExpectations>
     fun getExpectedGAVICoverageCountries() : List<String>
+    fun getAllowedGAVICoverageCountries() : List<String>
 }
