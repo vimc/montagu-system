@@ -12,12 +12,12 @@ files are stored in the vault and all 3 are copied into the running proxy contai
 Secrets are stored in the vault at:
 
 ```
-vault list secret/ssl/v2/support/key
+vault list secret/vimc/ssl/v2/support/key
 ```
 and
 
 ```
-vault list secret/ssl/v2/support/dhparam
+vault list secret/vimc/ssl/v2/support/dhparam
 ```
 
 ### Generating new DHE parameters
