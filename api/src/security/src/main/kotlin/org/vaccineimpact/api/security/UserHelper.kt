@@ -40,7 +40,7 @@ object UserHelper
 
     fun suggestUsername(name: String): String
     {
-        val names = name.toLowerCase().split(' ')
+        val names = name.lowercase().split(' ')
         var username = names.first()
         if (names.size > 1)
         {

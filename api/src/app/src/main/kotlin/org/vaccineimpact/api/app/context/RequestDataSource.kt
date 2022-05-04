@@ -19,7 +19,7 @@ interface RequestDataSource
          */
         fun fromContentType(context: ActionContext, partNameToUseForMultipart: String = "file"): RequestDataSource
         {
-            val type = context.contentType().toLowerCase()
+            val type = context.contentType().lowercase()
             return when
             {
                 type.startsWith("multipart/form-data") -> MultipartStreamSource(partNameToUseForMultipart, context)

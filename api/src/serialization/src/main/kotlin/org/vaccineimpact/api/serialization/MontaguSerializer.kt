@@ -103,7 +103,7 @@ open class MontaguSerializer : Serializer
         {
             if (char.isUpperCase())
             {
-                builder.append("_" + char.toLowerCase())
+                builder.append("_" + char.lowercaseChar())
             }
             else
             {
@@ -120,7 +120,7 @@ open class MontaguSerializer : Serializer
             is GAVISupportLevel -> mapGAVISupportLevel(value)
             else -> value.toString()
         }
-        return text.toLowerCase().replace('_', '-')
+        return text.lowercase().replace('_', '-')
     }
 
     override val serializeNullsTo = "<NA>"

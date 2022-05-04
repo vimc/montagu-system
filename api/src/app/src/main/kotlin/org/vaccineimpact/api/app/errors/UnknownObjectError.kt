@@ -13,7 +13,7 @@ class UnknownObjectError(val id: Any, val typeName: String) : MontaguError(404, 
     companion object
     {
         fun mangleTypeName(typeName: String) = typeName
-                .replace(Regex("[A-Z]"), { "-" + it.value.toLowerCase() })
+                .replace(Regex("[A-Z]"), { "-" + it.value.lowercase() })
                 .trim('-')
     }
 }

@@ -228,8 +228,8 @@ class JooqTouchstoneRepository(
                                    supportLevel: GAVISupportLevel,
                                    metadataId: Int): Int
     {
-        val support = supportLevel.toString().toLowerCase()
-        val activity = activityType.toString().toLowerCase().replace('_', '-')
+        val support = supportLevel.toString().lowercase()
+        val activity = activityType.toString().lowercase().replace('_', '-')
         val record = this.dsl.newRecord(COVERAGE_SET).apply {
             this.touchstone = touchstoneVersionId
             this.name = "$vaccine: $vaccine, $support, $activity"
@@ -255,7 +255,7 @@ class JooqTouchstoneRepository(
                 .fetchInto(CoverageUploadMetadata::class.java)
                 .groupBy { Pair(it.vaccine, it.activityType) }
                 .map { g ->
-                    g.value.maxBy { it.uploadedOn }!!
+                    g.value.maxByOrNull { it.uploadedOn }!!
                 }
     }
 
@@ -509,7 +509,7 @@ class JooqTouchstoneRepository(
     override fun getGenders(): Map<GenderEnum, Int>
     {
         return dsl.fetch(GENDER).associate {
-            GenderEnum.valueOf(it.name.toUpperCase()) to it.id
+            GenderEnum.valueOf(it.name.uppercase()) to it.id
         }
     }
 
@@ -595,7 +595,7 @@ class JooqTouchstoneRepository(
                         record[COVERAGE.AGE_RANGE_VERBATIM],
                         record[COVERAGE.TARGET],
                         record[COVERAGE.COVERAGE_],
-                        (record[GENDER.NAME] ?: defaultGender(diseaseId)).toLowerCase(),
+                        (record[GENDER.NAME] ?: defaultGender(diseaseId)).lowercase(),
                         record[COVERAGE.PROPORTION_RISK]
                 )
             }

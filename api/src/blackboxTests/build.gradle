@@ -2,25 +2,27 @@ apply plugin: 'application'
 mainClassName = "org.vaccineimpact.api.blackboxTests.AppKt"
 
 dependencies {
-    compile project(":testHelpers")
+    implementation project(":testHelpers")
 
-    testCompile "junit:junit:4.12"
-    testCompile "org.assertj:assertj-core:3.9.1"
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.assertj:assertj-core:3.9.1"
+    testImplementation "com.sparkjava:spark-kotlin:1.0.0-alpha"
+    testImplementation "org.slf4j:slf4j-simple:1.7.25"
+    testImplementation "com.github.jkcclemens:khttp:0.1.0"
+    testImplementation 'com.beust:klaxon:5.5'
+    testImplementation "com.opencsv:opencsv:4.1"
+    testImplementation "com.auth0:java-jwt:3.3.0"
+    testImplementation "com.github.fge:json-schema-validator:2.2.8"
+    testImplementation "org.jooq:jooq:3.10.5"
+    testImplementation "org.bouncycastle:bcprov-jdk15on:1.59"
 
-    testCompile "org.slf4j:slf4j-simple:1.7.25"
-
-    testCompile "khttp:khttp:0.1.0"
-    testCompile "com.beust:klaxon:2.1.8"
-    testCompile "com.opencsv:opencsv:4.1"
-    testCompile "com.auth0:java-jwt:3.3.0"
-
-    testCompile "com.github.fge:json-schema-validator:2.2.8"
-
-    testCompile project(":testHelpers")
-    testCompile project(":databaseInterface")
-    testCompile project(":security")
-    testCompile project(":validateSchema")
-    testCompile project(":emails")
+    testImplementation project(":testHelpers")
+    testImplementation project(":databaseInterface")
+    testImplementation project(":security")
+    testImplementation project(":serialization")
+    testImplementation project(":validateSchema")
+    testImplementation project(":emails")
+    testImplementation project(":models")
 }
 
 test {

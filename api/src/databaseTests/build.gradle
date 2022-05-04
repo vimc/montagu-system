@@ -2,20 +2,25 @@ apply plugin: 'application'
 mainClassName = "org.vaccineimpact.api.databaseTests.AppKt"
 
 dependencies {
-    compile project(":testHelpers")
+    implementation project(":testHelpers")
 
-    testCompile "junit:junit:4.12"
-    testCompile "org.mockito:mockito-core:2.+"
-    testCompile "com.nhaarman:mockito-kotlin:1.5.0"
-    testCompile "org.assertj:assertj-core:3.9.1"
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.mockito:mockito-core:2.+"
+    testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
+    testImplementation "org.assertj:assertj-core:3.9.1"
 
-    testCompile "org.jooq:jooq:3.10.5"
-    testCompile "org.jooq:jooq-meta:3.10.5"
+    testImplementation "org.jooq:jooq:3.10.5"
+    testImplementation "org.jooq:jooq-meta:3.10.5"
+    testImplementation "com.sparkjava:spark-kotlin:1.0.0-alpha"
+    testImplementation "org.pac4j:pac4j-http:2.2.1"
+    testImplementation "org.postgresql:postgresql:42.2.1"
 
-    testCompile project(":app")
-    testCompile project(":models")
-    testCompile project(":databaseInterface")
-    testCompile project(":testHelpers")
+    testImplementation project(":app")
+    testImplementation project(":models")
+    testImplementation project(":databaseInterface")
+    testImplementation project(":testHelpers")
+    testImplementation project(":security")
+    testImplementation project(":serialization")
 }
 
 test {
