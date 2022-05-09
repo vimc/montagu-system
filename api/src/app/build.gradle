@@ -52,6 +52,7 @@ dependencies {
     testImplementation "com.github.fge:json-schema-validator:2.2.8"
 
     testImplementation project(":testHelpers")
+
 }
 
 docker {
