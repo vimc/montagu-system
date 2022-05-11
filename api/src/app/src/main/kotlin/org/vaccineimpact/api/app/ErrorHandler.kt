@@ -14,7 +14,6 @@ import org.vaccineimpact.api.serialization.Serializer
 import org.vaccineimpact.api.serialization.validation.ValidationException
 import spark.Request
 import spark.Response
-import spark.Spark as spk
 
 @Suppress("RemoveExplicitTypeArguments")
 open class ErrorHandler(private val logger: Logger = LoggerFactory.getLogger(ErrorHandler::class.java),

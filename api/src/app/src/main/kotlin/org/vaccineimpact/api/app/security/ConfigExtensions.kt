@@ -11,7 +11,7 @@ fun Config.addMethodMatchers()
 {
     for (pac4jMethod in HTTP_METHOD.values())
     {
-        val sparkMethod = HttpMethod.valueOf(pac4jMethod.name.toLowerCase())
+        val sparkMethod = HttpMethod.valueOf(pac4jMethod.name.lowercase())
         addMatcher("method:$sparkMethod", HttpMethodMatcher(pac4jMethod))
     }
 }

@@ -73,15 +73,15 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
         val modellingGroup = modellingGroupRepository.getModellingGroup(groupId)
 
         val responsibilityInfo = burdenEstimateRepository.getResponsibilityInfo(modellingGroup.id, touchstoneVersionId, scenarioId)
-        val status = responsibilityInfo.setStatus.toLowerCase()
+        val status = responsibilityInfo.setStatus.lowercase()
 
-        if (status == ResponsibilitySetStatus.SUBMITTED.name.toLowerCase())
+        if (status == ResponsibilitySetStatus.SUBMITTED.name.lowercase())
         {
             throw InvalidOperationError("The burden estimates uploaded for this touchstone have been submitted " +
                     "for review. You cannot upload any new estimates.")
         }
 
-        if (status == ResponsibilitySetStatus.APPROVED.name.toLowerCase())
+        if (status == ResponsibilitySetStatus.APPROVED.name.lowercase())
         {
             throw InvalidOperationError("The burden estimates uploaded for this touchstone have been reviewed" +
                     " and approved. You cannot upload any new estimates.")
@@ -189,7 +189,7 @@ class RepositoriesBurdenEstimateLogic(private val modellingGroupRepository: Mode
             {
                 burdenEstimateRepository.changeBurdenEstimateStatus(setId, BurdenEstimateSetStatus.INVALID)
                 // Adding problem to estimate set also marks ResponsibilityStatus as INVALID via convertScenarioToResponsibility()
-                val missingEstimateCount = validatedRowMap?.values?.flatMap { age -> age.values.flatMap { year -> year.values } }?.count { !it }
+                val missingEstimateCount = validatedRowMap.values.flatMap { age -> age.values.flatMap { year -> year.values } }.count { !it }
                 burdenEstimateRepository.addBurdenEstimateSetProblem(setId, "$missingEstimateCount missing estimate(s)")
 
                 notifier.notify(groupId, responsibilityInfo.disease, scenarioId,

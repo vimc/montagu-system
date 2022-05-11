@@ -11,8 +11,8 @@ class JooqScenarioFilter : JooqFilterSet<ScenarioFilterParameters>()
     private val table = Tables.SCENARIO_DESCRIPTION
 
     override val filters: Iterable<JooqFilter<ScenarioFilterParameters>>
-        get() = listOf<JooqEqualityFilter<ScenarioFilterParameters, Any>>(
-                JooqEqualityFilter(table.ID, { it.scenarioId }),
-                JooqEqualityFilter(table.DISEASE, { it.disease })
+        get() = listOf(
+                JooqEqualityFilter(table.ID) { it.scenarioId },
+                JooqEqualityFilter(table.DISEASE) { it.disease }
         )
 }

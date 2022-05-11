@@ -254,10 +254,10 @@ class JooqUserRepository(dsl: DSLContext) : JooqRepository(dsl), UserRepository
     }
 
     private fun caseInsensitiveEmailMatch(email: String)
-            = APP_USER.EMAIL.lower().eq(email.toLowerCase())
+            = APP_USER.EMAIL.lower().eq(email.lowercase())
 
     private fun caseInsensitiveUsernameMatch(username: String)
-            = APP_USER.USERNAME.lower().eq(username.toLowerCase())
+            = APP_USER.USERNAME.lower().eq(username.lowercase())
 
     private fun mapPermission(record: Record) = ReifiedPermission(record[PERMISSION.NAME], mapScope(record))
 

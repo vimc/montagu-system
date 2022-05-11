@@ -17,8 +17,8 @@ data class SplitData<out Metadata, out DataRow : Any>(
     {
         val metadata = serializer.toResult(structuredMetadata)
         stream.writer().let {
-            it.appendln(metadata)
-            it.appendln("---")
+            it.appendLine(metadata)
+            it.appendLine("---")
             // We want to flush this writer, but we don't want to close the underlying stream, as there
             // be more to write to it
             it.flush()

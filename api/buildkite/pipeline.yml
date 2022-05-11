@@ -20,5 +20,8 @@ steps:
 
   - wait
 
+  - label: ":mag: Smoke test cli"
+    command: buildkite/test-cli.sh
+
   - label: ":mag: Run blackbox tests"
     command: buildkite/run-blackbox-tests.sh

@@ -43,7 +43,7 @@ class CreateBurdenEstimateLogicTests : MontaguTests()
             on {
                 getResponsibilityInfo(realGroupId, touchstoneVersionId, scenarioId)
             } doReturn
-                    ResponsibilityInfo(responsibilityId, disease, responsibilitySetStatus.toString().toLowerCase(), 100)
+                    ResponsibilityInfo(responsibilityId, disease, responsibilitySetStatus.toString().lowercase(), 100)
             on {
                 createBurdenEstimateSet(eq(responsibilityId), eq(modelVersionId), any(), eq("uploader"), any())
             } doReturn 123
