@@ -38,9 +38,7 @@ class ChunkedFileCache(private val flushInterval: Long = TimeUnit.HOURS.toMillis
 
     override fun remove(uniqueIdentifier: String)
     {
-        val item = memoryCache[uniqueIdentifier]
         memoryCache.remove(uniqueIdentifier)
-        item?.left?.cleanUp()
     }
 
     private fun recycle()
