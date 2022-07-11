@@ -8,6 +8,11 @@ import java.io.RandomAccessFile
 
 open class ChunkedFileManager
 {
+    init
+    {
+        File(UPLOAD_DIR).mkdir()
+    }
+
     // Note: currentChunk is 1-indexed
     open fun writeChunk(inputStream: InputStream, contentLength: Int, metadata: ChunkedFile, currentChunk: Int)
     {
