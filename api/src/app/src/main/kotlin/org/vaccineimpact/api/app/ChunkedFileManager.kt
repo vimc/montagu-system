@@ -1,16 +1,21 @@
 package org.vaccineimpact.api.app
 
 import org.vaccineimpact.api.app.models.ChunkedFile
+import org.vaccineimpact.api.db.Config
 import java.io.File
 import java.io.InputStream
 import java.io.RandomAccessFile
 
 open class ChunkedFileManager
 {
+    init
+    {
+        File(UPLOAD_DIR).mkdir()
+    }
+
     // Note: currentChunk is 1-indexed
     open fun writeChunk(inputStream: InputStream, contentLength: Int, metadata: ChunkedFile, currentChunk: Int)
     {
-        File(UPLOAD_DIR).mkdir()
         val uploadPath = "$UPLOAD_DIR/${metadata.uniqueIdentifier}.temp"
         val raf = RandomAccessFile(uploadPath, "rw")
 
@@ -46,6 +51,6 @@ open class ChunkedFileManager
 
     companion object
     {
-        const val UPLOAD_DIR = "upload_dir"
+        val UPLOAD_DIR = Config["upload.dir"]
     }
 }
