@@ -31,7 +31,7 @@ import org.vaccineimpact.api.db.tables.records.ConnectbyRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Connectby extends TableImpl<ConnectbyRecord> {
 
-    private static final long serialVersionUID = 1050311332;
+    private static final long serialVersionUID = 1419020015;
 
     /**
      * The reference instance of <code>public.connectby</code>
@@ -73,7 +73,7 @@ public class Connectby extends TableImpl<ConnectbyRecord> {
     }
 
     private Connectby(Name alias, Table<ConnectbyRecord> aliased) {
-        this(alias, aliased, new Field[7]);
+        this(alias, aliased, new Field[6]);
     }
 
     private Connectby(Name alias, Table<ConnectbyRecord> aliased, Field<?>[] parameters) {
@@ -123,7 +123,7 @@ public class Connectby extends TableImpl<ConnectbyRecord> {
     /**
      * Call this table-valued function
      */
-    public Connectby call(String __1, String __2, String __3, String __4, String __5, Integer __6, String __7) {
+    public Connectby call(String __1, String __2, String __3, String __4, String __5, Integer __6) {
         return new Connectby(DSL.name(getName()), null, new Field[] { 
               DSL.val(__1, org.jooq.impl.SQLDataType.CLOB)
             , DSL.val(__2, org.jooq.impl.SQLDataType.CLOB)
@@ -131,14 +131,13 @@ public class Connectby extends TableImpl<ConnectbyRecord> {
             , DSL.val(__4, org.jooq.impl.SQLDataType.CLOB)
             , DSL.val(__5, org.jooq.impl.SQLDataType.CLOB)
             , DSL.val(__6, org.jooq.impl.SQLDataType.INTEGER)
-            , DSL.val(__7, org.jooq.impl.SQLDataType.CLOB)
         });
     }
 
     /**
      * Call this table-valued function
      */
-    public Connectby call(Field<String> __1, Field<String> __2, Field<String> __3, Field<String> __4, Field<String> __5, Field<Integer> __6, Field<String> __7) {
+    public Connectby call(Field<String> __1, Field<String> __2, Field<String> __3, Field<String> __4, Field<String> __5, Field<Integer> __6) {
         return new Connectby(DSL.name(getName()), null, new Field[] { 
               __1
             , __2
@@ -146,7 +145,6 @@ public class Connectby extends TableImpl<ConnectbyRecord> {
             , __4
             , __5
             , __6
-            , __7
         });
     }
 }

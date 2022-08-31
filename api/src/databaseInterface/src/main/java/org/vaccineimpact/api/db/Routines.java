@@ -82,43 +82,43 @@ public class Routines {
     /**
      * Call <code>public.connectby</code>.
      */
-    public static Result<ConnectbyRecord> connectby(Configuration configuration, String __1, String __2, String __3, String __4, String __5, Integer __6, String __7) {
-        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6, __7)).fetch();
+    public static Result<ConnectbyRecord> connectby(Configuration configuration, String __1, String __2, String __3, String __4, String __5, Integer __6) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6)).fetch();
     }
 
     /**
      * Get <code>public.connectby</code> as a table.
      */
-    public static Connectby connectby(String __1, String __2, String __3, String __4, String __5, Integer __6, String __7) {
-        return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6, __7);
+    public static Connectby connectby(String __1, String __2, String __3, String __4, String __5, Integer __6) {
+        return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6);
     }
 
     /**
      * Get <code>public.connectby</code> as a table.
      */
-    public static Connectby connectby(Field<String> __1, Field<String> __2, Field<String> __3, Field<String> __4, Field<String> __5, Field<Integer> __6, Field<String> __7) {
-        return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6, __7);
+    public static Connectby connectby(Field<String> __1, Field<String> __2, Field<String> __3, Field<String> __4, Field<String> __5, Field<Integer> __6) {
+        return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6);
     }
 
     /**
      * Call <code>public.crosstab</code>.
      */
-    public static Result<CrosstabRecord> crosstab(Configuration configuration, String __1) {
-        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1)).fetch();
+    public static Result<CrosstabRecord> crosstab(Configuration configuration, String __1, Integer __2) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2)).fetch();
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab crosstab(String __1) {
-        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    public static Crosstab crosstab(String __1, Integer __2) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab crosstab(Field<String> __1) {
-        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    public static Crosstab crosstab(Field<String> __1, Field<Integer> __2) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
     /**
