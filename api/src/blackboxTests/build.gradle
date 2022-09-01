@@ -6,7 +6,7 @@ dependencies {
 
     testImplementation "junit:junit:4.12"
     testImplementation "org.assertj:assertj-core:3.9.1"
-    testImplementation "com.sparkjava:spark-kotlin:1.0.0-alpha"
+    testImplementation "com.sparkjava:spark-core:2.9.3"
     testImplementation "org.slf4j:slf4j-simple:1.7.25"
     testImplementation "com.github.jkcclemens:khttp:0.1.0"
     testImplementation 'com.beust:klaxon:5.5'
