@@ -2,7 +2,7 @@ package org.vaccineimpact.api.app.security
 
 import org.pac4j.core.config.Config
 import org.pac4j.core.context.HttpConstants.HTTP_METHOD
-import org.pac4j.core.matching.HttpMethodMatcher
+import org.pac4j.core.matching.matcher.HttpMethodMatcher
 import spark.route.HttpMethod
 
 // For every HttpMethod, make sure we have a matcher with a well-known name

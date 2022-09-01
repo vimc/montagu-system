@@ -1,8 +1,8 @@
 package org.vaccineimpact.api.app.security
 
-import org.pac4j.sparkjava.DefaultHttpActionAdapter
+import org.pac4j.core.exception.http.HttpAction
+import org.pac4j.sparkjava.SparkHttpActionAdapter
 import org.pac4j.sparkjava.SparkWebContext
-import org.vaccineimpact.api.app.RequestLogger
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.models.ErrorInfo
@@ -13,16 +13,16 @@ import org.vaccineimpact.api.serialization.Serializer
 
 abstract class MontaguHttpActionAdapter(private val repositoryFactory: RepositoryFactory,
                                         protected val serializer: Serializer = MontaguSerializer.instance)
-    : DefaultHttpActionAdapter()
+    : SparkHttpActionAdapter()
 {
-    protected fun haltWithError(code: Int, context: SparkWebContext, errors: List<ErrorInfo>)
+    protected fun haltWithError(action: HttpAction, context: SparkWebContext, errors: List<ErrorInfo>)
     {
-        haltWithError(code, context, serializer.toJson(Result(ResultStatus.FAILURE, null, errors)))
+        haltWithError(action, context, serializer.toJson(Result(ResultStatus.FAILURE, null, errors)))
     }
 
-    protected fun haltWithError(code: Int, context: SparkWebContext, response: String)
+    protected fun haltWithError(action: HttpAction,  context: SparkWebContext, response: String)
     {
-        addDefaultResponseHeaders(context.sparkRequest, context.response)
-        spark.Spark.halt(code, response)
+        addDefaultResponseHeaders(context.sparkRequest, context.sparkResponse)
+        spark.Spark.halt(action.code, response)
     }
 }

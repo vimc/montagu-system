@@ -6,18 +6,17 @@ import org.apache.commons.fileupload.FileItemStream
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
-import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.core.profile.CommonProfile
+import org.pac4j.core.profile.ProfileManager
+import org.pac4j.core.profile.UserProfile
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.context.postData
 import org.vaccineimpact.api.app.errors.BadRequest
 import org.vaccineimpact.api.app.errors.MissingRequiredMultipartParameterError
 import org.vaccineimpact.api.app.requests.MultipartData
-import org.vaccineimpact.api.app.security.montaguPermissions
 import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.models.Scope
-import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.models.permissions.ReifiedPermission
 import org.vaccineimpact.api.security.CookieName
 import org.vaccineimpact.api.test_helpers.MontaguTests
@@ -28,11 +27,12 @@ import javax.servlet.http.HttpServletRequest
 
 class DirectActionContextTests : MontaguTests()
 {
+
     @Test
     fun `can get user profile`()
     {
         val profile = CommonProfile()
-        val context = DirectActionContext(mockWebContext(profile))
+        val context = DirectActionContext(mockWebContext(), mockProfileManager(profile))
         assertThat(context.userProfile).isEqualTo(profile)
     }
 
@@ -40,12 +40,12 @@ class DirectActionContextTests : MontaguTests()
     fun `can get user permissions`()
     {
         val profile = CommonProfile().apply {
-            this.montaguPermissions = PermissionSet(
+            this.permissions = setOf(
                     "*/can-login",
                     "modelling-group:IC-Garske/coverage.read"
             )
         }
-        val context = DirectActionContext(mockWebContext(profile))
+        val context = DirectActionContext(mockWebContext(), mockProfileManager(profile))
         assertThat(context.permissions).hasSameElementsAs(listOf(
                 ReifiedPermission("can-login", Scope.Global()),
                 ReifiedPermission("coverage.read", Scope.Specific("modelling-group", "IC-Garske"))
@@ -56,9 +56,9 @@ class DirectActionContextTests : MontaguTests()
     fun `requirePermission throws exception is user does not have permission`()
     {
         val profile = CommonProfile().apply {
-            this.montaguPermissions = PermissionSet("*/can-login")
+            this.permissions = setOf("*/can-login")
         }
-        val context = DirectActionContext(mockWebContext(profile))
+        val context = DirectActionContext(mockWebContext(), mockProfileManager(profile))
         // Does not throw exception
         context.requirePermission(ReifiedPermission.parse("*/can-login"))
         assertThatThrownBy { context.requirePermission(ReifiedPermission.parse("*/can-dance")) }
@@ -208,7 +208,7 @@ class DirectActionContextTests : MontaguTests()
         }
     }
 
-    private fun mockWebContext(profile: CommonProfile? = null, contentType: String? = null): SparkWebContext
+    private fun mockWebContext(contentType: String? = null): SparkWebContext
     {
         val mockServletRequest = mock<HttpServletRequest>()
         val mockRequest = mock<Request> {
@@ -217,7 +217,12 @@ class DirectActionContextTests : MontaguTests()
         }
         return mock {
             on { sparkRequest } doReturn mockRequest
-            on { getRequestAttribute(Pac4jConstants.USER_PROFILES) } doReturn profile
+        }
+    }
+
+    private fun mockProfileManager(profile: UserProfile? = null): ProfileManager {
+        return mock<ProfileManager> {
+            on { it.profiles } doReturn listOf(profile)
         }
     }
 }

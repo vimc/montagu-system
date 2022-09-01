@@ -3,6 +3,9 @@ package org.vaccineimpact.api.app.security
 import org.pac4j.core.config.Config
 import org.pac4j.core.config.ConfigFactory
 import org.pac4j.core.context.HttpConstants
+import org.pac4j.core.context.WebContext
+import org.pac4j.core.context.session.SessionStore
+import org.pac4j.core.exception.http.HttpAction
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.context.DirectActionContext
 import org.vaccineimpact.api.app.errors.MissingRequiredPermissionError
@@ -59,17 +62,19 @@ class TokenActionAdapter(wrappedClients: List<MontaguSecurityClientWrapper>, rep
         return errors
     }
 
-    override fun adapt(code: Int, context: SparkWebContext): Any? = when (code)
+    override fun adapt(action: HttpAction, context: WebContext): Any? = when (action.code)
     {
         HttpConstants.UNAUTHORIZED ->
         {
-            haltWithError(code, context, unauthorizedResponse)
+            context as SparkWebContext
+            haltWithError(action, context, unauthorizedResponse)
         }
         HttpConstants.FORBIDDEN ->
         {
+            context as SparkWebContext
             val profile = DirectActionContext(context).userProfile!!
-            haltWithError(code, context, forbiddenResponse(profile.missingPermissions, profile.mismatchedURL))
+            haltWithError(action, context, forbiddenResponse(profile.missingPermissions, profile.mismatchedURL))
         }
-        else -> super.adapt(code, context)
+        else -> super.adapt(action, context)
     }
 }

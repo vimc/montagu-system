@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.security
 
 import com.nimbusds.jwt.JWT
+import org.pac4j.core.context.WebContext
+import org.pac4j.core.context.session.SessionStore
 import org.pac4j.core.credentials.TokenCredentials
 import org.pac4j.core.exception.CredentialsException
 
@@ -9,9 +11,10 @@ class OneTimeTokenAuthenticator(
         private val oneTimeTokenChecker: OneTimeTokenChecker
 ) : MontaguTokenAuthenticator(tokenHelper, TokenType.ONETIME)
 {
-    override fun createJwtProfile(credentials: TokenCredentials, jwt: JWT)
+    override fun createJwtProfile(credentials: TokenCredentials, jwt: JWT,
+                                  webContext: WebContext?, sessionStore: SessionStore?)
     {
-        super.createJwtProfile(credentials, jwt)
+        super.createJwtProfile(credentials, jwt, webContext, sessionStore)
         checkTokenAgainstRepository(credentials)
     }
 

@@ -3,13 +3,14 @@ package org.vaccineimpact.api.app.security
 import org.pac4j.core.config.Config
 import org.pac4j.core.config.ConfigFactory
 import org.pac4j.core.context.HttpConstants
+import org.pac4j.core.context.WebContext
+import org.pac4j.core.exception.http.HttpAction
 import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.models.FailedAuthentication
 import org.vaccineimpact.api.serialization.MontaguSerializer
 import org.vaccineimpact.api.serialization.Serializer
-import spark.Spark as spk
 
 class TokenIssuingConfigFactory(private val repositoryFactory: RepositoryFactory,
                                 private val serializer: Serializer = MontaguSerializer.instance) : ConfigFactory
@@ -29,13 +30,13 @@ class BasicAuthActionAdapter(repositoryFactory: RepositoryFactory, serializer: S
 {
     private val unauthorizedResponse: String = serializer.gson.toJson(FailedAuthentication("invalid_client"))
 
-    override fun adapt(code: Int, context: SparkWebContext): Any? = when (code)
+    override fun adapt(action: HttpAction, context: WebContext): Any? = when (action.code)
     {
         HttpConstants.UNAUTHORIZED ->
         {
-            context.response.addHeader("x-WWW-Authenticate", "Basic")
-            haltWithError(code, context, unauthorizedResponse)
+            (context as SparkWebContext).sparkResponse.raw().addHeader("x-WWW-Authenticate", "Basic")
+            haltWithError(action, context, unauthorizedResponse)
         }
-        else -> super.adapt(code, context)
+        else -> super.adapt(action, context)
     }
 }
