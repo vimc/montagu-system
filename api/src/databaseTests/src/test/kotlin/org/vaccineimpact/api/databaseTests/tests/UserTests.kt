@@ -44,7 +44,7 @@ class UserTests : RepositoryTests<UserRepository>()
     {
         given(this::addTestUser).check { repo ->
             checkUser(getUser(repo, email))
-            checkUser(getUser(repo, email.toUpperCase()))
+            checkUser(getUser(repo, email.uppercase()))
         }
     }
 
@@ -407,7 +407,7 @@ class UserTests : RepositoryTests<UserRepository>()
     fun `can update last logged in`()
     {
         given(this::addTestUser).check { repo ->
-            val then = Instant.now()
+            val then = Instant.ofEpochMilli(1661959847620)
             repo.updateLastLoggedIn(username)
             val lastLoggedIn = repo.getUserByUsername(username).lastLoggedIn
             assertThat(lastLoggedIn).isNotNull()

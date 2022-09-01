@@ -18,7 +18,7 @@ import java.io.StringReader
 import java.time.Instant
 
 class ResponsibilityCommentTests : DatabaseTest() {
-    private val now = Instant.now()
+    private val now = Instant.ofEpochMilli(1661959847620)
     private val modellingGroupId = "group-1"
     private val scenarioId = "scenario-1"
 

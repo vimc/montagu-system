@@ -214,8 +214,8 @@ class SaveCoverageTests : TouchstoneRepositoryTests()
     @Test
     fun `can get latest coverage upload metadata ordered by vaccine name`()
     {
-        val then = Instant.now()
-        val now = Instant.now()
+        val then = Instant.ofEpochMilli(1661959847620)
+        val now = then.plusSeconds(60)
         withDatabase {
             it.addTouchstoneVersion("t", 1, addTouchstone = true)
             it.addUserForTesting("test.user")

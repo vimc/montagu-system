@@ -1,14 +1,11 @@
 package org.vaccineimpact.api.blackboxTests.tests.BurdenEstimates
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.vaccineimpact.api.blackboxTests.helpers.*
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.*
 import org.vaccineimpact.api.models.Outcome
 import org.vaccineimpact.api.models.permissions.PermissionSet
 import org.vaccineimpact.api.test_helpers.DatabaseTest
-import org.vaccineimpact.api.validateSchema.JSONValidator
-
 
 abstract class BurdenEstimateTests : DatabaseTest()
 {
