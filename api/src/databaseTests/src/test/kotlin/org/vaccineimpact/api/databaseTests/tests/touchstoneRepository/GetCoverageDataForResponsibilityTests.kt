@@ -10,6 +10,51 @@ import org.vaccineimpact.api.models.*
 class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
 {
     @Test
+    fun `all activity types are valid`()
+    {
+        var responsibilityId = 0
+        given {
+            val countries = listOf("AAA")
+            it.addGroup(groupId)
+            createTouchstoneAndScenarioDescriptions(it, touchstoneName)
+            it.addScenarioToTouchstone(touchstoneVersionId, scenarioId)
+            responsibilityId = it.addResponsibilityInNewSet(groupId, touchstoneVersionId, scenarioId)
+
+            it.addCountries(countries)
+            it.addCoverageSet(touchstoneVersionId, "First", "YF", "without", "routine", id = 1)
+            it.addCoverageSet(touchstoneVersionId, "First", "YF", "without", "routine-intensified", id = 2)
+            it.addCoverageSet(touchstoneVersionId, "First", "YF", "without", "campaign", id = 3)
+            it.addCoverageSet(touchstoneVersionId, "First", "YF", "without", "campaign-reactive", id = 4)
+            it.addCoverageSet(touchstoneVersionId, "First", "YF", "without", "none", id = 5)
+
+            it.addCoverageSetToScenario(scenarioId, touchstoneVersionId, 1, 0)
+            it.addCoverageSetToScenario(scenarioId, touchstoneVersionId, 2, 1)
+            it.addCoverageSetToScenario(scenarioId, touchstoneVersionId, 3, 2)
+            it.addCoverageSetToScenario(scenarioId, touchstoneVersionId, 4, 3)
+            it.addCoverageSetToScenario(scenarioId, touchstoneVersionId, 5, 4)
+
+            it.addCoverageRow(1, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+            it.addCoverageRow(2, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+            it.addCoverageRow(3, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+            it.addCoverageRow(4, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+            it.addCoverageRow(5, "AAA", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null)
+
+            it.addExpectations(responsibilityId, countries = countries)
+
+        } check {
+            val result = it.getCoverageDataForResponsibility(touchstoneVersionId,
+                    responsibilityId,
+                    scenarioId)
+            assertThat(result.map { it.activityType }.toList()).containsExactlyInAnyOrder(
+                    ActivityType.ROUTINE,
+                    ActivityType.ROUTINE_INTENSIFIED,
+                    ActivityType.CAMPAIGN_REACTIVE,
+                    ActivityType.CAMPAIGN,
+                    ActivityType.NONE)
+        }
+    }
+
+    @Test
     fun `can get ordered coverage data for responsibility for 2019 touchstone`()
     {
         canGetOrderedCoverageDataForResponsibility(touchstoneName2019)
@@ -71,7 +116,7 @@ class GetCoverageDataForResponsibilityTests : TouchstoneRepositoryTests()
                             "BBB", "BBB-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null, "both"),
                     // then by gender
                     GenderedLongCoverageRow(scenarioId, "Third", "BF", GAVISupportLevel.WITHOUT, ActivityType.ROUTINE,
-                    "BBB", "BBB-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null, "female")
+                            "BBB", "BBB-Name", 2001, 2.toDecimal(), 4.toDecimal(), null, null, null, "female")
 
             ))
         }
