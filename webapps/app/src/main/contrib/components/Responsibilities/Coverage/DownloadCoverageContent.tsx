@@ -54,7 +54,7 @@ export class DownloadCoverageContentComponent extends React.Component<DownloadCo
         const url = `/modelling-groups/${group.id}/responsibilities/${touchstone.id}/${scenario.id}/coverage/csv/`
             + `?format=${selectedFormat}&all-countries=${!this.state.filterToExpectations}`;
 
-        const showWideFormat = !settings.hideWideFormat(this.props.scenario.disease);
+        const showWideFormat = !settings.hideWideFormat(scenario.disease, touchstone.name);
         return <div>
             <p className="text-danger">
                 <strong>Reminder: All data on Montagu is confidential and must not be shared

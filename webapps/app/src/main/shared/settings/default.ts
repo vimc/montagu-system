@@ -15,10 +15,10 @@ export const settings: Settings = {
         //is touchstone id NOT a version of any name in array of non-stochastic touchstones
         return !this.nonStochasticTouchstones.some((ts: string) => touchstoneId.indexOf(ts) === 0);
     },
-    hideWideFormat: function (disease) {
+    hideWideFormat: function (disease, touchstone) {
         return ["MenA", "JE", "YF", "HPV", "measles", "rubella", "cholera", "typhoid"]
             .map(d => d.toLocaleLowerCase())
-            .indexOf(disease.toLowerCase()) > -1
+            .indexOf(disease.toLowerCase()) > -1 || touchstone.indexOf("202212") > -1
     },
     showTouchstoneCreation: false,
     admin: {

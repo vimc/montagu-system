@@ -16,7 +16,7 @@ interface Settings {
     contrib: ContribSettings;
     test: AppSpecificSettings;
     showTouchstoneCreation: boolean;
-    hideWideFormat: (disease: string) => boolean;
+    hideWideFormat: (disease: string, touchstone: string) => boolean;
 }
 
 interface AppSpecificSettings {
