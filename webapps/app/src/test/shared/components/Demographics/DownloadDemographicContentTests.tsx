@@ -76,7 +76,7 @@ describe("Download Demographic Content Component", () => {
 
     it("renders expected content for 2022 rfp touchstone", () => {
         const touchstone = mockTouchstoneVersion({id: "202212rfp-1"});
-        const rfpStore = createMockContribStore({
+        store = createMockContribStore({
             touchstones: {currentTouchstoneVersion: touchstone},
             demographics: {
                 dataSets: [testDemographicSet],
@@ -85,7 +85,7 @@ describe("Download Demographic Content Component", () => {
                 selectedFormat: "long"
             }
         });
-        const rendered = shallow(<DownloadDemographicsContent/>, {context: {rfpStore}}).dive().dive();
+        const rendered = shallow(<DownloadDemographicsContent/>, {context: {store}}).dive().dive();
         expect(rendered.find("div.sectionTitle").text()).toEqual(`Demographic data for ${touchstone.description}`);
         expect(rendered.find(DemographicOptions).length).toEqual(1);
         expect(rendered.text().indexOf("All available datasets pertain only to the anonymous pre-defined country")).toBeGreaterThan(-1);
