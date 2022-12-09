@@ -31,6 +31,13 @@ describe("Responsibility Overview Description Component", () => {
         expect(rendered.text().indexOf("test country named 'RFP'") > -1).toEqual(true);
     });
 
+    it("renders component for 2022 applicants touchstone", () => {
+        const touchstoneId = "202212rfp-1";
+        const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={touchstoneId} groupId={itGroupId} touchstoneStatus={touchstoneStatus}/>);
+        expect(rendered.text().indexOf("the anonymous pre-defined country")).toBeGreaterThan(-1);
+        expect(rendered.text().indexOf("https://www.vaccineimpact.org/2022-11-23-rfp")).toBeGreaterThan(-1);
+    });
+
     it("renders component on touchstone is not open", () => {
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={itTouchstoneId2} groupId={itGroupId} touchstoneStatus="finished"/>);
         expect(rendered.text().indexOf("This touchstone is no longer open")).toBeGreaterThan(-1);
@@ -118,7 +125,9 @@ describe("Responsibility Overview Description Component", () => {
         const rendered = mount(<ResponsibilityOverviewDescription currentTouchstoneId={"t1"}
                                                                     groupId={itGroupId}
                                                                     touchstoneStatus={"open"}/>);
-        expect(rendered.text().indexOf("If you have any questions or anything is not as you expected, please email montagu-help@imperial.ac.uk."))
+        expect(rendered.text().indexOf("If you have any questions about using Montagu, please email montagu-help@imperial.ac.uk."))
+            .toBeGreaterThan(-1);
+        expect(rendered.text().indexOf("For more general queries, please email vimc@imperial.ac.uk"))
             .toBeGreaterThan(-1);
     });
 });
