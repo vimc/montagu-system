@@ -27,23 +27,40 @@ export class DownloadDemographicsContentComponent extends React.Component<Downlo
             }
         }
 
+        const defaultDescription = <div>
+            <p>
+                All available datasets are based on the UNWPP 2019 release, with the
+                exception of neonatal (28 day) mortality which is a hybrid between the
+                UNWPP infant mortality (available 1950 to 2100) and neonatal mortality
+                from IGME/childmortality.org, released in September 2019.
+            </p>
+            <p>
+                Select the following options to download a CSV file containing
+                demographic data for this touchstone. Not all data sets are expected
+                to be relevant to all modellers.
+            </p>
+        </div>
+
+        const rfp2022Description = <div>
+            <p>
+                All available datasets pertain only to the anonymous pre-defined country (labelled here as 'RfP').
+            </p>
+            <p>
+                You must use these standardised demographic datasets, rather than demography from other sources.
+            </p>
+            <p>
+                Select the following options to download a CSV file containing demographic data for this touchstone.
+                Not all datasets are expected to be relevant to all modellers.
+            </p>
+        </div>
+
+        const description = touchstone.id.indexOf("202212rfp") > -1 ? rfp2022Description : defaultDescription;
+
         return <div className="demographics">
             <div className="sectionTitle">
                 Demographic data for {this.props.touchstone.description}
             </div>
-            <div>
-                <p>
-                    All available datasets are based on the UNWPP 2019 release, with the
-                    exception of neonatal (28 day) mortality which is a hybrid between the
-                    UNWPP infant mortality (available 1950 to 2100) and neonatal mortality
-                    from IGME/childmortality.org, released in September 2019.
-                </p>
-                <p>
-                    Select the following options to download a CSV file containing
-                    demographic data for this touchstone. Not all data sets are expected
-                    to be relevant to all modellers.
-                </p>
-            </div>
+            {description}
             <DemographicOptions/>
             <FileDownloadButton
                 href={url}

@@ -85,7 +85,7 @@ export const ResponsibilityOverviewDescription = (props: ResponsibilityOverviewD
 
     if (settings.isApplicantTouchstone(props.currentTouchstoneId)) {
         if (props.currentTouchstoneId.indexOf("2022") > -1) {
-            return TwentyTwentyTwoRfpTouchstone
+            return TwentyTwentyTwoRfpTouchstone()
         } else
         if (props.currentTouchstoneId.indexOf("2020") > -1) {
             return TwentyTwentyRfpTouchstone()
