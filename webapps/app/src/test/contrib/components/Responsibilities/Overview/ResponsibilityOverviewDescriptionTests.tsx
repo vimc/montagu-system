@@ -32,7 +32,7 @@ describe("Responsibility Overview Description Component", () => {
     });
 
     it("renders component for 2022 applicants touchstone", () => {
-        const touchstoneId = "202212rfp";
+        const touchstoneId = "202212rfp-1";
         const rendered = shallow(<ResponsibilityOverviewDescription currentTouchstoneId={touchstoneId} groupId={itGroupId} touchstoneStatus={touchstoneStatus}/>);
         expect(rendered.text().indexOf("the anonymous pre-defined country")).toBeGreaterThan(-1);
         expect(rendered.text().indexOf("https://www.vaccineimpact.org/2022-11-23-rfp")).toBeGreaterThan(-1);
