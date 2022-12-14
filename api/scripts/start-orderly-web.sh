@@ -18,6 +18,7 @@ fi
 if which -a orderly-web > /dev/null; then
   echo "orderly-web already installed"
 else
+  pip3 install constellation
   pip3 install orderly-web --user
 fi
 
