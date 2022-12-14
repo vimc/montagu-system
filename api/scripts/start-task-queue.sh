@@ -29,8 +29,8 @@ docker run --rm -d \
 docker run -d \
   $NETWORK_MAPPING \
   -p 5555:5555 \
-  -e CELERY_BROKER_URL=redis://guest@mq// \
-  -e CELERY_RESULT_BACKEND=redis://guest@mq/0/ \
+  -e CELERY_BROKER_URL=redis://mq// \
+  -e CELERY_RESULT_BACKEND=redis://mq/0/ \
   -e FLOWER_PORT=5555 \
   --name flower \
   mher/flower:0.9.5
