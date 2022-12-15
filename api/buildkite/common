@@ -29,6 +29,9 @@ export DB_PORT=5432
 export NETWORK=test_nw
 export GIT_SHA=$GIT_SHA
 
+# Temporary measure to install constellation on all build steps - required by orderly-web install
+pip3 install constellation
+
 # Teardown on exit
 function cleanup() {
   $HERE/../scripts/stop-database.sh
