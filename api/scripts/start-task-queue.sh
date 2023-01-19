@@ -18,7 +18,7 @@ docker run --rm -d \
   --name mq \
   redis
 
-docker pull vimc/task-queue-worker:master
+docker pull vimc/task-queue-worker:vimc-6927
 docker run --rm -d \
   $NETWORK_MAPPING \
   -v $ROOT/scripts/task-queue-config.yml:/home/worker/config/config.yml \
