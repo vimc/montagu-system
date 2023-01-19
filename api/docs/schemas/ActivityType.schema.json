@@ -1,4 +1,4 @@
 {
 	"id": "ActivityType",
-	"enum": [ "none", "routine", "campaign" ]
+	"enum": [ "none", "routine", "campaign", "routine-intensified", "campaign-reactive" ]
 }

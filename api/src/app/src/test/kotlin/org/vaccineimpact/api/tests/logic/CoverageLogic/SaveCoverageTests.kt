@@ -23,7 +23,7 @@ class SaveCoverageTests : MontaguTests()
             // each of these belongs to a new coverage set
             CoverageIngestionRow("HepB_BD", "AFG", ActivityType.CAMPAIGN, true, 2021, 1, 10, GenderEnum.BOTH, 100F, 78.8F, true),
             CoverageIngestionRow("HepB_BD", "AFG", ActivityType.ROUTINE, false, 2022, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
-            CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN, true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
+            CoverageIngestionRow("HepB", "AFG", ActivityType.CAMPAIGN , true, 2025, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
             CoverageIngestionRow("HepB", "AFG", ActivityType.ROUTINE, true, 2026, 1, 10, GenderEnum.BOTH, 100F, 65.5F, false),
 
             // belongs to same coverage set as the first row
