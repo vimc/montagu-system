@@ -46,6 +46,8 @@ import org.vaccineimpact.api.db.tables.GaviEligibility;
 import org.vaccineimpact.api.db.tables.GaviEligibilityStatus;
 import org.vaccineimpact.api.db.tables.GaviFocalModel;
 import org.vaccineimpact.api.db.tables.GaviRegion;
+import org.vaccineimpact.api.db.tables.GaviSupportEligibility;
+import org.vaccineimpact.api.db.tables.GaviSupportEligibilityStatus;
 import org.vaccineimpact.api.db.tables.GaviSupportLevel;
 import org.vaccineimpact.api.db.tables.Gender;
 import org.vaccineimpact.api.db.tables.ImpactEstimate;
@@ -164,6 +166,9 @@ public class Indexes {
     public static final Index GAVI_ELIGIBILITY_STATUS_PKEY = Indexes0.GAVI_ELIGIBILITY_STATUS_PKEY;
     public static final Index GAVI_FOCAL_MODEL_PKEY = Indexes0.GAVI_FOCAL_MODEL_PKEY;
     public static final Index GAVI_REGION_PKEY = Indexes0.GAVI_REGION_PKEY;
+    public static final Index GAVI_SUPPORT_ELIGIBILITY_PKEY = Indexes0.GAVI_SUPPORT_ELIGIBILITY_PKEY;
+    public static final Index GAVI_SUPPORT_ELIGIBILITY_TOUCHSTONE_COUNTRY_YEAR_KEY = Indexes0.GAVI_SUPPORT_ELIGIBILITY_TOUCHSTONE_COUNTRY_YEAR_KEY;
+    public static final Index GAVI_SUPPORT_ELIGIBILITY_STATUS_PKEY = Indexes0.GAVI_SUPPORT_ELIGIBILITY_STATUS_PKEY;
     public static final Index GAVI_SUPPORT_LEVEL_PKEY = Indexes0.GAVI_SUPPORT_LEVEL_PKEY;
     public static final Index GENDER_PKEY = Indexes0.GENDER_PKEY;
     public static final Index IMPACT_ESTIMATE_PKEY = Indexes0.IMPACT_ESTIMATE_PKEY;
@@ -280,6 +285,9 @@ public class Indexes {
         public static Index GAVI_ELIGIBILITY_STATUS_PKEY = Internal.createIndex("gavi_eligibility_status_pkey", GaviEligibilityStatus.GAVI_ELIGIBILITY_STATUS, new OrderField[] { GaviEligibilityStatus.GAVI_ELIGIBILITY_STATUS.ID }, true);
         public static Index GAVI_FOCAL_MODEL_PKEY = Internal.createIndex("gavi_focal_model_pkey", GaviFocalModel.GAVI_FOCAL_MODEL, new OrderField[] { GaviFocalModel.GAVI_FOCAL_MODEL.ID }, true);
         public static Index GAVI_REGION_PKEY = Internal.createIndex("gavi_region_pkey", GaviRegion.GAVI_REGION, new OrderField[] { GaviRegion.GAVI_REGION.ID }, true);
+        public static Index GAVI_SUPPORT_ELIGIBILITY_PKEY = Internal.createIndex("gavi_support_eligibility_pkey", GaviSupportEligibility.GAVI_SUPPORT_ELIGIBILITY, new OrderField[] { GaviSupportEligibility.GAVI_SUPPORT_ELIGIBILITY.ID }, true);
+        public static Index GAVI_SUPPORT_ELIGIBILITY_TOUCHSTONE_COUNTRY_YEAR_KEY = Internal.createIndex("gavi_support_eligibility_touchstone_country_year_key", GaviSupportEligibility.GAVI_SUPPORT_ELIGIBILITY, new OrderField[] { GaviSupportEligibility.GAVI_SUPPORT_ELIGIBILITY.TOUCHSTONE, GaviSupportEligibility.GAVI_SUPPORT_ELIGIBILITY.COUNTRY, GaviSupportEligibility.GAVI_SUPPORT_ELIGIBILITY.YEAR }, true);
+        public static Index GAVI_SUPPORT_ELIGIBILITY_STATUS_PKEY = Internal.createIndex("gavi_support_eligibility_status_pkey", GaviSupportEligibilityStatus.GAVI_SUPPORT_ELIGIBILITY_STATUS, new OrderField[] { GaviSupportEligibilityStatus.GAVI_SUPPORT_ELIGIBILITY_STATUS.ID }, true);
         public static Index GAVI_SUPPORT_LEVEL_PKEY = Internal.createIndex("gavi_support_level_pkey", GaviSupportLevel.GAVI_SUPPORT_LEVEL, new OrderField[] { GaviSupportLevel.GAVI_SUPPORT_LEVEL.ID }, true);
         public static Index GENDER_PKEY = Internal.createIndex("gender_pkey", Gender.GENDER, new OrderField[] { Gender.GENDER.ID }, true);
         public static Index IMPACT_ESTIMATE_PKEY = Internal.createIndex("impact_estimate_pkey", ImpactEstimate.IMPACT_ESTIMATE, new OrderField[] { ImpactEstimate.IMPACT_ESTIMATE.ID }, true);

@@ -64,6 +64,8 @@ import org.vaccineimpact.api.db.tables.GaviEligibility;
 import org.vaccineimpact.api.db.tables.GaviEligibilityStatus;
 import org.vaccineimpact.api.db.tables.GaviFocalModel;
 import org.vaccineimpact.api.db.tables.GaviRegion;
+import org.vaccineimpact.api.db.tables.GaviSupportEligibility;
+import org.vaccineimpact.api.db.tables.GaviSupportEligibilityStatus;
 import org.vaccineimpact.api.db.tables.GaviSupportLevel;
 import org.vaccineimpact.api.db.tables.Gender;
 import org.vaccineimpact.api.db.tables.ImpactEstimate;
@@ -157,7 +159,7 @@ import org.vaccineimpact.api.db.udt.TablefuncCrosstab_4;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -2053188250;
+    private static final long serialVersionUID = -1767701410;
 
     /**
      * The reference instance of <code>public</code>
@@ -247,22 +249,22 @@ public class Public extends SchemaImpl {
     /**
      * Call <code>public.connectby</code>.
      */
-    public static Result<ConnectbyRecord> CONNECTBY(Configuration configuration, String __1, String __2, String __3, String __4, String __5, Integer __6, String __7) {
-        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6, __7)).fetch();
+    public static Result<ConnectbyRecord> CONNECTBY(Configuration configuration, String __1, String __2, String __3, String __4, String __5, Integer __6) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6)).fetch();
     }
 
     /**
      * Get <code>public.connectby</code> as a table.
      */
-    public static Connectby CONNECTBY(String __1, String __2, String __3, String __4, String __5, Integer __6, String __7) {
-        return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6, __7);
+    public static Connectby CONNECTBY(String __1, String __2, String __3, String __4, String __5, Integer __6) {
+        return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6);
     }
 
     /**
      * Get <code>public.connectby</code> as a table.
      */
-    public static Connectby CONNECTBY(Field<String> __1, Field<String> __2, Field<String> __3, Field<String> __4, Field<String> __5, Field<Integer> __6, Field<String> __7) {
-        return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6, __7);
+    public static Connectby CONNECTBY(Field<String> __1, Field<String> __2, Field<String> __3, Field<String> __4, Field<String> __5, Field<Integer> __6) {
+        return org.vaccineimpact.api.db.tables.Connectby.CONNECTBY.call(__1, __2, __3, __4, __5, __6);
     }
 
     /**
@@ -323,22 +325,22 @@ public class Public extends SchemaImpl {
     /**
      * Call <code>public.crosstab</code>.
      */
-    public static Result<CrosstabRecord> CROSSTAB(Configuration configuration, String __1) {
-        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1)).fetch();
+    public static Result<CrosstabRecord> CROSSTAB(Configuration configuration, String __1, Integer __2) {
+        return DSL.using(configuration).selectFrom(org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2)).fetch();
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab CROSSTAB(String __1) {
-        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    public static Crosstab CROSSTAB(String __1, Integer __2) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
     /**
      * Get <code>public.crosstab</code> as a table.
      */
-    public static Crosstab CROSSTAB(Field<String> __1) {
-        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1);
+    public static Crosstab CROSSTAB(Field<String> __1, Field<Integer> __2) {
+        return org.vaccineimpact.api.db.tables.Crosstab.CROSSTAB.call(__1, __2);
     }
 
     /**
@@ -493,6 +495,16 @@ public class Public extends SchemaImpl {
      * include four types of gavi region interested by gavi donors
      */
     public final GaviRegion GAVI_REGION = org.vaccineimpact.api.db.tables.GaviRegion.GAVI_REGION;
+
+    /**
+     * The table <code>public.gavi_support_eligibility</code>.
+     */
+    public final GaviSupportEligibility GAVI_SUPPORT_ELIGIBILITY = org.vaccineimpact.api.db.tables.GaviSupportEligibility.GAVI_SUPPORT_ELIGIBILITY;
+
+    /**
+     * The table <code>public.gavi_support_eligibility_status</code>.
+     */
+    public final GaviSupportEligibilityStatus GAVI_SUPPORT_ELIGIBILITY_STATUS = org.vaccineimpact.api.db.tables.GaviSupportEligibilityStatus.GAVI_SUPPORT_ELIGIBILITY_STATUS;
 
     /**
      * Enum table. Possible values: none (No vaccination), without (Vaccination without GAVI support), with (Vaccination with GAVI support)
@@ -1053,6 +1065,7 @@ public class Public extends SchemaImpl {
             Sequences.DISABILITY_WEIGHT_ID_SEQ,
             Sequences.GAVI_ELIGIBILITY_ID_SEQ,
             Sequences.GAVI_FOCAL_MODEL_ID_SEQ,
+            Sequences.GAVI_SUPPORT_ELIGIBILITY_ID_SEQ,
             Sequences.GENDER_ID_SEQ,
             Sequences.IMPACT_ESTIMATE_ID_SEQ,
             Sequences.IMPACT_ESTIMATE_INGREDIENT_ID_SEQ,
@@ -1135,6 +1148,8 @@ public class Public extends SchemaImpl {
             GaviEligibilityStatus.GAVI_ELIGIBILITY_STATUS,
             GaviFocalModel.GAVI_FOCAL_MODEL,
             GaviRegion.GAVI_REGION,
+            GaviSupportEligibility.GAVI_SUPPORT_ELIGIBILITY,
+            GaviSupportEligibilityStatus.GAVI_SUPPORT_ELIGIBILITY_STATUS,
             GaviSupportLevel.GAVI_SUPPORT_LEVEL,
             Gender.GENDER,
             ImpactEstimate.IMPACT_ESTIMATE,

@@ -26,7 +26,7 @@ class ResponsibilityCommentTests : ResponsibilitiesRepositoryTests() {
 
     @Test
     fun `can annotate responsibility`() {
-        val now = Instant.now()
+        val now = Instant.ofEpochMilli(1661959847620)
         given {
             val responsibilityId = setupDatabase(it).responsibilityId
             it.addResponsibilityComment(responsibilityId, "comment 0", "test.user", now.minusSeconds(1))
@@ -43,7 +43,7 @@ class ResponsibilityCommentTests : ResponsibilitiesRepositoryTests() {
 
     @Test
     fun `can annotate responsibility set`() {
-        val now = Instant.now()
+        val now = Instant.ofEpochMilli(1661959847620)
         given {
             val responsibilitySetId = setupDatabase(it).responsibilitySetId
             it.addResponsibilitySetComment(responsibilitySetId, "comment 0", "test.user", now.minusSeconds(1))
@@ -60,7 +60,7 @@ class ResponsibilityCommentTests : ResponsibilitiesRepositoryTests() {
 
     @Test
     fun `can get annotated responsibility set with unannotated responsibilities`() {
-        val now = Instant.now()
+        val now = Instant.ofEpochMilli(1661959847620)
         given {
             val responsibilitySetId = setupDatabase(it).responsibilitySetId
             it.addResponsibilitySetComment(responsibilitySetId, "comment 1", "test.user", now.minusSeconds(1))
@@ -112,7 +112,7 @@ class ResponsibilityCommentTests : ResponsibilitiesRepositoryTests() {
 
     @Test
     fun `can get annotated responsibility set with annotated responsibilities`() {
-        val now = Instant.now()
+        val now = Instant.ofEpochMilli(1661959847620)
         given {
             val (responsibilitySetId, responsibilityId) = setupDatabase(it)
             it.addResponsibilitySetComment(responsibilitySetId, "comment 1", "test.user", now.minusSeconds(1))

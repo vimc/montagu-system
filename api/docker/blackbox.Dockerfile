@@ -1,4 +1,4 @@
-FROM vimc/openjdk-libsodium:master
+FROM vimc/openjdk-libsodium:master-11
 
 # Setup gradle
 COPY src/gradlew /api/src/

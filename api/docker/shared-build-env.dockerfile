@@ -1,4 +1,4 @@
-FROM vimc/openjdk-libsodium:master
+FROM vimc/openjdk-libsodium:master-11
 
 # Install docker
 RUN apt-get update
@@ -16,7 +16,7 @@ RUN apt-get update
 # This outputs available Docker versions - useful for choosing a new version
 # if the pinned version is deprecated
 RUN apt-cache madison docker-ce
-RUN apt-get install -y docker-ce=17.12.1~ce-0~debian
+RUN apt-get install -y docker-ce=5:20.10.14~3-0~debian-bullseye
 
 # Setup gradle
 COPY src/gradlew /api/src/

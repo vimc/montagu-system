@@ -144,6 +144,11 @@ public class Sequences {
     public static final Sequence<Integer> GAVI_FOCAL_MODEL_ID_SEQ = new SequenceImpl<Integer>("gavi_focal_model_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
 
     /**
+     * The sequence <code>public.gavi_support_eligibility_id_seq</code>
+     */
+    public static final Sequence<Integer> GAVI_SUPPORT_ELIGIBILITY_ID_SEQ = new SequenceImpl<Integer>("gavi_support_eligibility_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
+
+    /**
      * The sequence <code>public.gender_id_seq</code>
      */
     public static final Sequence<Integer> GENDER_ID_SEQ = new SequenceImpl<Integer>("gender_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false));
