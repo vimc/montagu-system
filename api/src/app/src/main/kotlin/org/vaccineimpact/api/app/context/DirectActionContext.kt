@@ -3,6 +3,7 @@ package org.vaccineimpact.api.app.context
 import org.apache.commons.fileupload.FileItemStream
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.ProfileManager
+import org.pac4j.jee.context.session.JEESessionStore
 import org.pac4j.sparkjava.SparkWebContext
 import org.vaccineimpact.api.app.addDefaultResponseHeaders
 import org.vaccineimpact.api.app.errors.BadRequest
@@ -23,7 +24,7 @@ import java.io.*
 import java.util.zip.GZIPOutputStream
 
 
-class DirectActionContext(private val context: SparkWebContext) : ActionContext
+class DirectActionContext(private val context: SparkWebContext, private val profileManager: ProfileManager? = null) : ActionContext
 {
     override val request
         get() = context.sparkRequest
@@ -129,8 +130,8 @@ class DirectActionContext(private val context: SparkWebContext) : ActionContext
     }
 
     override val userProfile: CommonProfile? by lazy {
-        val manager = ProfileManager<CommonProfile>(context)
-        manager.getAll(false).singleOrNull()
+        val manager = profileManager ?: ProfileManager(context, JEESessionStore.INSTANCE)
+        manager.profiles.singleOrNull() as CommonProfile?
     }
     override val username by lazy {
         userProfile?.id

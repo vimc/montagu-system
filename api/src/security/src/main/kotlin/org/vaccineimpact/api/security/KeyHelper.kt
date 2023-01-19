@@ -52,7 +52,7 @@ object KeyHelper
         logger.info("RSA keypair for token signing. If other applications need to")
         logger.info("verify tokens they should use the following public key:")
         val generator = KeyPairGenerator.getInstance("RSA").apply {
-            initialize(1024)
+            initialize(2048)
         }
         val keypair = generator.generateKeyPair()
         val publicKey = Base64.getEncoder().encode(keypair.public.encoded)

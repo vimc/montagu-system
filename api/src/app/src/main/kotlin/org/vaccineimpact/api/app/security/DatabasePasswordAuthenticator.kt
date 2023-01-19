@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app.security
 
 import org.pac4j.core.context.WebContext
+import org.pac4j.core.context.session.SessionStore
+import org.pac4j.core.credentials.Credentials
 import org.pac4j.core.credentials.UsernamePasswordCredentials
 import org.pac4j.core.credentials.authenticator.Authenticator
 import org.pac4j.core.exception.CredentialsException
@@ -11,16 +13,18 @@ import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.security.InternalUser
 import org.vaccineimpact.api.security.UserHelper
 
-class DatabasePasswordAuthenticator : Authenticator<UsernamePasswordCredentials>
+class DatabasePasswordAuthenticator : Authenticator
 {
-    override fun validate(credentials: UsernamePasswordCredentials?, context: WebContext?)
+    override fun validate(credentials: Credentials?,
+                          context: WebContext?,
+                          sessionStore: SessionStore)
     {
         if (credentials == null)
         {
             throwsException("No credentials supplied")
         }
         else
-        {
+        {   credentials as UsernamePasswordCredentials
             val email = credentials.username
             val password = credentials.password
             if (CommonHelper.isBlank(email))

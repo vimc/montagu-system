@@ -7,7 +7,6 @@ import org.vaccineimpact.api.security.InternalUser
 
 private const val USER_OBJECT = "userObject"
 private const val MISSING_PERMISSIONS = "missingPermissions"
-private const val PERMISSIONS = "montaguPermissions"
 private const val MISMATCHED_URL = "mismatchedURL"
 
 var CommonProfile.internalUser: InternalUser?
@@ -28,9 +27,12 @@ var CommonProfile.internalUser: InternalUser?
 val CommonProfile.missingPermissions: MutableSet<ReifiedPermission>
     get() = this.getAttributeOrDefault(MISSING_PERMISSIONS, default = mutableSetOf())
 
-var CommonProfile.montaguPermissions: PermissionSet
-    get() = this.getAttributeOrDefault(PERMISSIONS, PermissionSet())
-    set(value) = this.addAttribute(PERMISSIONS, value)
+val CommonProfile.montaguPermissions: PermissionSet
+    get()
+    {
+        val perms = this.permissions
+        return PermissionSet(perms)
+    }
 
 var CommonProfile.mismatchedURL: String?
     get() = this.getAttribute(MISMATCHED_URL) as String?

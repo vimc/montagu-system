@@ -37,9 +37,9 @@ class MontaguAuthorizationGeneratorTests : DatabaseTest()
                 ReifiedPermission("p2", Scope.Global())
         ).toSet()).toString()
 
-        val sut = MontaguAuthorizationGenerator<CommonProfile>(RepositoryFactory())
+        val sut = MontaguAuthorizationGenerator(RepositoryFactory())
         val profile = CommonProfile().apply { setId("test.user") }
-        sut.generate(mock(), profile)
+        sut.generate(mock(), mock(), profile)
         assertThat(profile.montaguPermissions.toString()).isEqualTo(expectedPermissions)
     }
 

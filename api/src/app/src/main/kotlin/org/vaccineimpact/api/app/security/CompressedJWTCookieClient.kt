@@ -1,6 +1,8 @@
 package org.vaccineimpact.api.app.security
 
 import org.pac4j.core.context.WebContext
+import org.pac4j.core.context.session.SessionStore
+import org.pac4j.core.credentials.Credentials
 import org.pac4j.core.credentials.TokenCredentials
 import org.pac4j.core.credentials.extractor.HeaderExtractor
 import org.pac4j.http.client.direct.CookieClient
@@ -8,6 +10,7 @@ import org.pac4j.http.client.direct.HeaderClient
 import org.pac4j.http.credentials.extractor.CookieExtractor
 import org.vaccineimpact.api.models.ErrorInfo
 import org.vaccineimpact.api.security.*
+import java.util.*
 
 // This client receives the token as TokenCredentials and stores the result as JwtProfile
 class CompressedJWTCookieClient(helper: WebTokenHelper)
@@ -15,7 +18,7 @@ class CompressedJWTCookieClient(helper: WebTokenHelper)
 {
     init
     {
-        credentialsExtractor = CompressedCookieExtractor(cookie, name)
+        credentialsExtractor = CompressedCookieExtractor(cookie)
     }
 
     class Wrapper(helper: WebTokenHelper) : MontaguSecurityClientWrapper
@@ -33,16 +36,17 @@ class CompressedJWTCookieClient(helper: WebTokenHelper)
     }
 }
 
-class CompressedCookieExtractor(cookieName: CookieName, name: String)
-    : CookieExtractor(cookieName.cookieName, name)
+class CompressedCookieExtractor(cookieName: CookieName)
+    : CookieExtractor(cookieName.cookieName)
 {
-    override fun extract(context: WebContext?): TokenCredentials?
+    override fun extract(context: WebContext, sessionStore: SessionStore): Optional<Credentials>
     {
-        val wrapped = super.extract(context)
-        return if (wrapped != null)
+        val wrapped = super.extract(context, sessionStore)
+        return if (wrapped.isPresent)
         {
-            TokenCredentials(inflate(wrapped.token), wrapped.clientName)
+            val credentials = wrapped.get() as TokenCredentials
+            Optional.of(TokenCredentials(inflate(credentials.token)))
         }
-        else null
+        else Optional.empty()
     }
 }

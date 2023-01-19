@@ -1,6 +1,6 @@
 dependencies {
-    implementation 'org.pac4j:spark-pac4j:2.2.0'
-    implementation 'org.pac4j:pac4j-jwt:2.2.1'
+    implementation 'org.pac4j:spark-pac4j:5.0.0'
+    implementation 'org.pac4j:pac4j-jwt:5.4.0'
     implementation 'commons-codec:commons-codec:1.11'
     implementation 'org.apache.httpcomponents:httpclient:4.5.6'
     implementation 'org.abstractj.kalium:kalium:0.7.0'

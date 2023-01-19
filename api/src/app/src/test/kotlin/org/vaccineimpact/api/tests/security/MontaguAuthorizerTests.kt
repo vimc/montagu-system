@@ -22,7 +22,7 @@ class MontaguAuthorizerTests : MontaguTests()
         }
 
         val sut = MontaguAuthorizer(setOf())
-        val result = sut.isAuthorized(fakeContext, listOf(profile))
+        val result = sut.isAuthorized(fakeContext, mock(), listOf(profile))
         Assertions.assertThat(result).isFalse()
 
     }
@@ -38,7 +38,7 @@ class MontaguAuthorizerTests : MontaguTests()
         }
 
         val sut = MontaguAuthorizer(setOf())
-        val result = sut.isAuthorized(fakeContext, listOf(profile))
+        val result = sut.isAuthorized(fakeContext, mock(), listOf(profile))
         Assertions.assertThat(result).isTrue()
     }
 
@@ -55,7 +55,7 @@ class MontaguAuthorizerTests : MontaguTests()
             on(it.requestParameters) doReturn mapOf("query" to arrayOf("whatever"))
         }
 
-        val result = sut.isAuthorized(fakeContext, listOf(profile))
+        val result = sut.isAuthorized(fakeContext, mock(), listOf(profile))
 
         Assertions.assertThat(result).isTrue()
     }
@@ -73,7 +73,7 @@ class MontaguAuthorizerTests : MontaguTests()
             on(it.requestParameters) doReturn emptyMap()
         }
 
-        val result = sut.isAuthorized(fakeContext, listOf(profile))
+        val result = sut.isAuthorized(fakeContext, mock(), listOf(profile))
 
         Assertions.assertThat(result).isFalse()
     }
@@ -91,7 +91,7 @@ class MontaguAuthorizerTests : MontaguTests()
             on(it.requestParameters) doReturn mapOf("query" to arrayOf("whatever"))
         }
 
-        val result = sut.isAuthorized(fakeContext, listOf(profile))
+        val result = sut.isAuthorized(fakeContext, mock(), listOf(profile))
 
         Assertions.assertThat(result).isFalse()
     }
@@ -109,7 +109,7 @@ class MontaguAuthorizerTests : MontaguTests()
             on(it.requestParameters) doReturn mapOf("query" to arrayOf("somethingelse"))
         }
 
-        val result = sut.isAuthorized(fakeContext, listOf(profile))
+        val result = sut.isAuthorized(fakeContext, mock(), listOf(profile))
 
         Assertions.assertThat(result).isFalse()
     }
