@@ -38,7 +38,7 @@ docker run -d \
 
 # add task q user
 CLI=vimc/montagu-cli:master
-#docker pull $CLI
+docker pull $CLI
 docker run --rm \
   $NETWORK_MAPPING \
   $CLI \
