@@ -18,7 +18,7 @@ docker run --rm -d \
   --name mq \
   redis
 
-TASK_QUEUE_WORKER=vimc/task-queue-worker:vimc-6927
+TASK_QUEUE_WORKER=vimc/task-queue-worker:master
 docker pull $TASK_QUEUE_WORKER
 docker run --rm -d \
   $NETWORK_MAPPING \
