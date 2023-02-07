@@ -18,12 +18,13 @@ docker run --rm -d \
   --name mq \
   redis
 
-docker pull vimc/task-queue-worker:master
+TASK_QUEUE_WORKER=vimc/task-queue-worker:master
+docker pull $TASK_QUEUE_WORKER
 docker run --rm -d \
   $NETWORK_MAPPING \
   -v $ROOT/scripts/task-queue-config.yml:/home/worker/config/config.yml \
   --name task_queue_worker \
-  vimc/task-queue-worker:master
+  $TASK_QUEUE_WORKER
 
 # flower provides an http api for interacting with/monitoring celery
 docker run -d \
