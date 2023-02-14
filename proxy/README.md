@@ -34,8 +34,8 @@ Run unit tests with `npm run test`. Jest will pick up test in files with the `.t
 
 To run integration tests:
  
-1. First install chromedriver `./scripts/install-chromedriver.sh`
-1. Make sure you also have a compatible version of chrome (88)
+1. First install chromedriver `sudo ./scripts/install-chromedriver.sh`
+1. Make sure you also have a compatible version of chrome (110)
 1. Run the proxy and dependencies with `./scripts/dev.sh`
 1. Then run tests with `npm run integration-test`
 

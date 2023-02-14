@@ -47,7 +47,7 @@ docker run -d \
     -nginx.scrape-uri "http://reverse-proxy/basic_status"
 
 # the real dhparam will be 4096 bits but that takes ages to generate
-openssl dhparam -out workspace/dhparam.pem 1024
+openssl dhparam -out workspace/dhparam.pem 2048
 
 docker cp workspace/certificate.pem reverse-proxy:/etc/montagu/proxy/
 docker cp workspace/ssl_key.pem reverse-proxy:/etc/montagu/proxy/
