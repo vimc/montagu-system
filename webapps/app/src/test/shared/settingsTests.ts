@@ -13,9 +13,16 @@ describe("settings", () => {
         expect(settings.hideWideFormat("", "202112")).toEqual(false);
     });
 
-    it("all post 2022 touchstones have no guidance", () => {
+    it("2022 touchstones have no guidance", () => {
         expect(settings.isNoGuidanceTouchstone("2021blahblah")).toEqual(false);
         expect(settings.isNoGuidanceTouchstone("2022blahbalh")).toEqual(true);
-        expect(settings.isNoGuidanceTouchstone("2023sblahbalh")).toEqual(true);
+        expect(settings.isNoGuidanceTouchstone("2023sblahbalh")).toEqual(false);
+    });
+
+    it("all post-2022 touchstones have latest guidance", () => {
+        expect(settings.isLatestGuidanceTouchstone("2021blah")).toEqual(false);
+        expect(settings.isLatestGuidanceTouchstone("2022blah")).toEqual(false);
+        expect(settings.isLatestGuidanceTouchstone("2023blah")).toEqual(true);
+        expect(settings.isLatestGuidanceTouchstone("2024blah")).toEqual(true);
     });
 });

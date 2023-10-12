@@ -9,7 +9,8 @@ export const settings: Settings = {
     is2019Touchstone: (id: string) => id.indexOf("201910") === 0,
     is2021TestTouchstone: (id: string) => id.indexOf("202108test-") === 0,
     is2021GaviTouchstone: (id: string) => id.indexOf("202110gavi") === 0,
-    isNoGuidanceTouchstone: (id: string) => id.indexOf("202005covid") > -1 || parseInt(id.substr(0, 4)) >= 2022,
+    isNoGuidanceTouchstone: (id: string) => id.indexOf("202005covid") > -1 || parseInt(id.substr(0, 4)) === 2022,
+    isLatestGuidanceTouchstone: (id: string) => parseInt(id.substr(0, 4)) > 2022,
     nonStochasticTouchstones: ["201810synthetic"],
     isVersionOfStochasticTouchstone: function (touchstoneId: string) {
         //is touchstone id NOT a version of any name in array of non-stochastic touchstones

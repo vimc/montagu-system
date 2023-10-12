@@ -81,10 +81,15 @@ function commonConfig(name, public_path) {
                             }
                         }
                     ],
-                    exclude: [/index.html$/, /guidance-2019-inputs.pdf$/, /guidance-2019-outputs.pdf$/, /guidance-2021-inputs.pdf$/, /guidance-2021-outputs.pdf$/],
+                    exclude: [
+                        /index.html$/,
+                        /guidance-2019-inputs.pdf$/, /guidance-2019-outputs.pdf$/,
+                        /guidance-2021-inputs.pdf$/, /guidance-2021-outputs.pdf$/,
+                        /guidance-2023-inputs.pdf$/, /guidance-2023-outputs.pdf$/
+                    ],
                 },
                 {
-                    test: /(stochastic_template_params.csv|guidance-2019-inputs.pdf|guidance-2019-outputs.pdf|guidance-2021-inputs.pdf|guidance-2021-outputs.pdf)$/,
+                    test: /(stochastic_template_params.csv|guidance-2019-inputs.pdf|guidance-2019-outputs.pdf|guidance-2021-inputs.pdf|guidance-2021-outputs.pdf|guidance-2023-inputs.pdf|guidance-2023-outputs.pdf)$/,
                     loaders: [
                     {
                         loader: "file-loader",
