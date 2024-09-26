@@ -34,6 +34,8 @@ docker compose --project-name montagu up -d
 # Start the APIs
 docker exec montagu-api-1 mkdir -p /etc/montagu/api/
 docker exec montagu-api-1 touch /etc/montagu/api/go_signal
+# test extra wait
+sleep 30
 # Wait for the database
 docker exec montagu-db-1 montagu-wait.sh
 
