@@ -36,7 +36,7 @@ docker exec montagu-api-1 mkdir -p /etc/montagu/api/
 docker exec montagu-api-1 touch /etc/montagu/api/go_signal
 
 # Wait for the database
-docker exec montagu-db-1 montagu-wait.sh
+docker exec montagu-db-1 montagu-wait.sh 1800
 
 # Migrate the database
 docker pull $MONTAGU_MIGRATE_IMAGE
