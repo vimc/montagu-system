@@ -33,10 +33,11 @@ docker compose --project-name montagu up -d
 
 # Start the APIs
 docker exec montagu-api-1 mkdir -p /etc/montagu/api/
+docker container cp $here/montagu-api.config.properties montagu-api-1:/etc/montagu/api/config.properties
 docker exec montagu-api-1 touch /etc/montagu/api/go_signal
 
-# Wait for the database
-docker exec montagu-db-1 montagu-wait.sh 1800
+# Wait for the database - this can take a while on buildkite
+docker exec montagu-db-1 montagu-wait.sh 300
 
 # Migrate the database
 docker pull $MONTAGU_MIGRATE_IMAGE
