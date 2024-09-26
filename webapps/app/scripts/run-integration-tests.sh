@@ -17,7 +17,7 @@ export PGPORT=5432
 # script
 
 # Setup template database
-docker exec montagu_db_1 psql -U vimc -d postgres -c \
+docker exec montagu-db-1 psql -U vimc -d postgres -c \
     "ALTER DATABASE $PGDATABASE RENAME TO $PGTEMPLATE"
 
 # Run the tests
@@ -27,8 +27,8 @@ result=$?
 
 # ------- Teardown -----------
 # Restore the database
-docker exec montagu_db_1 psql -U vimc -d postgres -c \
+docker exec montagu-db-1 psql -U vimc -d postgres -c \
     "ALTER DATABASE $PGTEMPLATE RENAME TO $PGDATABASE"
 
-docker logs montagu_api_1 > api.log 2> api.log
+docker logs montagu-api-1 > api.log 2> api.log
 exit $result

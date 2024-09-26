@@ -28,19 +28,19 @@ docker run -v $ROOT/demo:/orderly $OW_CLI_IMAGE add-users test.user@example.com
 docker run -v $ROOT/demo:/orderly $OW_CLI_IMAGE grant test.user@example.com */users.manage
 
 # Run the APIs and database
-docker-compose pull
-docker-compose --project-name montagu up -d
+docker compose pull
+docker compose --project-name montagu up -d
 
 # Start the APIs
-docker exec montagu_api_1 mkdir -p /etc/montagu/api/
-docker exec montagu_api_1 touch /etc/montagu/api/go_signal
+docker exec montagu-api-1 mkdir -p /etc/montagu/api/
+docker exec montagu-api-1 touch /etc/montagu/api/go_signal
 # Wait for the database
-docker exec montagu_db_1 montagu-wait.sh
+docker exec montagu-db-1 montagu-wait.sh
 
 # Migrate the database
 docker pull $MONTAGU_MIGRATE_IMAGE
 docker run --network=montagu_default $MONTAGU_MIGRATE_IMAGE
 
 #start orderly web
-docker exec montagu_orderly_web_1 mkdir -p /etc/orderly/web
-docker exec montagu_orderly_web_1 touch /etc/orderly/web/go_signal
+docker exec montagu-orderly_web-1 mkdir -p /etc/orderly/web
+docker exec montagu-orderly_web-1 touch /etc/orderly/web/go_signal
