@@ -1,5 +1,4 @@
-ARG MONTAGU_GIT_ID="UNKNOWN"
-FROM vimc/montagu-reverse-proxy-shared-build-env:$MONTAGU_GIT_ID
+FROM node:16-buster
 
 RUN apt-get update && apt-get install -yq \
                 default-jre \
@@ -47,9 +46,13 @@ RUN apt-get update && apt-get install -yq \
                 xdg-utils \
                 wget
 
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
+# Pick the version from https://googlechromelabs.github.io/chrome-for-testing/
+ARG CHROME_VERSION="131.0.6778.85"
 
 RUN ./scripts/install-chromedriver.sh
 
+WORKDIR /workspace
+COPY . /workspace
+
+RUN npm install
 CMD npm run integration-test

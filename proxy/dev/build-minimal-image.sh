@@ -1,19 +1,16 @@
 #!/usr/bin/env bash
 set -ex
 
-org=vimc
-name=montagu-reverse-proxy-minimal
+HERE=$(dirname $0)
+. $HERE/../scripts/common
 
-# Deal with dependabot tags which look like
-#
-#   dependabot/npm_and_yarn/app/lodash-4.17.19
-#
-# But docker does not like
-MONTAGU_GIT_BRANCH=$(echo $MONTAGU_GIT_BRANCH | sed 's;/;-;g')
+MINIMAL_BRANCH_TAG=$ORG/montagu-reverse-proxy-minimal:$GIT_BRANCH
+MINIMAL_SHA_TAG=$ORG/montagu-reverse-proxy-minimal:$GIT_SHA
 
-commit_tag=$org/$name:$MONTAGU_GIT_ID
-branch_tag=$org/$name:$MONTAGU_GIT_BRANCH
+docker build \
+    -t $MINIMAL_BRANCH_TAG \
+    -t $MINIMAL_SHA_TAG \
+    .
 
-docker build -t $commit_tag -t $branch_tag .
-docker push $commit_tag
-docker push $branch_tag
+docker push $MINIMAL_SHA_TAG
+docker push $MINIMAL_BRANCH_TAG
