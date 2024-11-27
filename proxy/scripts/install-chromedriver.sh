@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-apt-get update
-apt-get install -y unzip xvfb libxi6 libgconf-2-4
+set -eu
 
-wget https://chromedriver.storage.googleapis.com/113.0.5672.63/chromedriver_linux64.zip
-unzip chromedriver_linux64.zip
-mv chromedriver /usr/bin/chromedriver
+VERSION=$(google-chrome --product-version)
+
+wget https://storage.googleapis.com/chrome-for-testing-public/$VERSION/linux64/chromedriver-linux64.zip
+unzip -j -d /usr/bin chromedriver-linux64.zip chromedriver-linux64/chromedriver
+
 chown root:root /usr/bin/chromedriver
 chmod +x /usr/bin/chromedriver
