@@ -12,5 +12,7 @@ docker build \
     -t $MINIMAL_SHA_TAG \
     .
 
-docker push $MINIMAL_SHA_TAG
-docker push $MINIMAL_BRANCH_TAG
+if [[ "$BUILDKITE" = "true" ]]; then
+    docker push $MINIMAL_SHA_TAG
+    docker push $MINIMAL_BRANCH_TAG
+fi

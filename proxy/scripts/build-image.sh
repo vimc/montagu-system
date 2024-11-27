@@ -9,5 +9,7 @@ docker build \
     -t $SHA_TAG \
     .
 
-docker push $SHA_TAG
-docker push $BRANCH_TAG
+if [[ "$BUILDKITE" = "true" ]]; then
+    docker push $SHA_TAG
+    docker push $BRANCH_TAG
+fi

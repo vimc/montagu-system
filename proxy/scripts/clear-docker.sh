@@ -1,4 +1,4 @@
-docker stop $(docker ps -aq)
-docker rm $(docker ps -aq)
+docker ps -aq | xargs -r docker stop
+docker container prune --force
 docker volume prune --force
 docker network prune --force
