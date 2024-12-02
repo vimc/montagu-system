@@ -10,6 +10,7 @@ MINIMAL_SHA_TAG=$ORG/montagu-reverse-proxy-minimal:$GIT_SHA
 docker build \
     -t $MINIMAL_BRANCH_TAG \
     -t $MINIMAL_SHA_TAG \
+    -f dev/minimal.dockerfile \
     .
 
 if [[ "$BUILDKITE" = "true" ]]; then
