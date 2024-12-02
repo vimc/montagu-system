@@ -10,7 +10,7 @@ function cleanup() {
     docker rm reverse-proxy || true
     docker stop montagu-metrics || true
     docker rm montagu-metrics || true
-    docker-compose --project-name montagu down || true
+    docker compose down || true
 }
 
 export ORG=vimc
