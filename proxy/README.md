@@ -41,7 +41,6 @@ To run integration tests:
 Jest will pick up tests in files with the `.itest.js` extension.
 
 ## Buildkite
-1. `./scripts/make-shared-build-env.sh`: makes a shared base image containing all npm dependencies
 1. `./scripts/make-integration-test-image.sh` makes the integration tests image which contains all selenium test 
 dependencies
 1. `./scripts/build-image.sh`: builds and pushes the main app image to docker hub
