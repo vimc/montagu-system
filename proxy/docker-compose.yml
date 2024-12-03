@@ -1,4 +1,4 @@
-version: '2'
+name: 'montagu'
 
 x-logging: &log-journald
   driver: journald
@@ -7,7 +7,7 @@ x-logging: &log-journald
 
 services:
   api:
-    image: ${ORG}/montagu-api:abf39a2
+    image: ${ORG}/montagu-api:master
     ports:
      - "8080:8080"
     networks:
@@ -17,7 +17,10 @@ services:
     volumes:
      - token_key_volume:/etc/montagu/api/token_key
      - ${PWD}/montagu_emails:/tmp/montagu_emails
-  orderly_web_web:
+
+  # The stutter in the name is needed to match the constellation deployment,
+  # which uses orderly-web as the container prefix, and web as the suffix.
+  orderly-web-web:
     image: ${ORG}/orderly-web:master
     networks:
      - proxy
@@ -54,19 +57,10 @@ services:
      - proxy
     depends_on:
      - api
-  static:
-    image: ${ORG}/montagu-static:master
-    networks:
-     - proxy
-    volumes:
-    - static_volume:/www
-    - static_logs:/var/log/caddy
 volumes:
   orderly_volume:
   template_volume:
   guidance_volume:
-  static_logs:
-  static_volume:
   token_key_volume:
 networks:
   proxy:

@@ -7,28 +7,28 @@ export ORG=vimc
 export TOKEN_KEY_PATH=$PWD/token_key
 
 function cleanup() {
-    docker-compose --project-name montagu logs
-    docker-compose --project-name montagu down || true
+    docker compose logs
+    docker compose down || true
 }
 
 trap cleanup ERR
 
 # Run up all the APIs and Portals which are to be proxied
 docker volume rm montagu_orderly_volume -f
-docker-compose pull
-docker-compose --project-name montagu up -d
+docker compose pull
+docker compose up -d
 
 # Start the APIs
-docker exec montagu_api_1 mkdir -p /etc/montagu/api/
-docker exec montagu_api_1 touch /etc/montagu/api/go_signal
-docker exec montagu_orderly_web_web_1 mkdir -p /etc/orderly/web
-docker cp $here/orderlywebconfig.properties montagu_orderly_web_web_1:/etc/orderly/web/config.properties
-docker exec montagu_orderly_web_web_1 touch /etc/orderly/web/go_signal
-docker exec montagu_orderly_web_web_1 touch /etc/orderly/web/go_signal
-docker exec montagu_orderly_1 touch /orderly_go
+docker compose exec api mkdir -p /etc/montagu/api/
+docker compose exec api touch /etc/montagu/api/go_signal
+docker compose exec orderly-web-web mkdir -p /etc/orderly/web
+docker compose cp $here/orderlywebconfig.properties orderly-web-web:/etc/orderly/web/config.properties
+docker compose exec orderly-web-web touch /etc/orderly/web/go_signal
+docker compose exec orderly-web-web touch /etc/orderly/web/go_signal
+docker compose exec orderly touch /orderly_go
 
 # Wait for the database
-docker exec montagu_db_1 montagu-wait.sh 120
+docker compose exec db montagu-wait.sh 120
 
 # Migrate the database
 migrate_image=$ORG/montagu-migrate:master
@@ -55,7 +55,7 @@ docker run --rm \
   "."
 
 # Copy the demo db file to top level
-docker cp $PWD/demo/orderly.sqlite montagu_orderly_web_web_1:/orderly/orderly.sqlite
+docker compose cp $PWD/demo/orderly.sqlite orderly-web-web:/orderly/orderly.sqlite
 
 # Migrate the orderlyweb tables
 ow_migrate_image=$ORG/orderlyweb-migrate:master
