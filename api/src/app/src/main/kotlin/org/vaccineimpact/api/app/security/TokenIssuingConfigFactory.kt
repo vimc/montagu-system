@@ -17,11 +17,25 @@ class TokenIssuingConfigFactory(private val repositoryFactory: RepositoryFactory
 {
     override fun build(vararg parameters: Any?): Config
     {
-        val authClient = DirectBasicAuthClient(DatabasePasswordAuthenticator())
+        val authClient = TokenIssuingBasicAuthClient(DatabasePasswordAuthenticator())
         return Config(authClient).apply {
             httpActionAdapter = BasicAuthActionAdapter(repositoryFactory, serializer)
             addMethodMatchers()
         }
+    }
+}
+
+class TokenIssuingBasicAuthClient(authenticator: DatabasePasswordAuthenticator) : DirectBasicAuthClient(authenticator) {
+    override fun addAuthenticateHeader(context: WebContext) {
+        // By default DirectBasicAuthClient adds an "WWW-Authenticate: Basic".
+        // header to unauthorized requests, but this causes some browsers
+        // (namely Chrome) to open a password popup, even on requests made by
+        // XHR.
+        //
+        // We override that behaviour with a non-standard scheme to avoid this
+        // issue. pac4j forces a `WWW-Authenticate` on 401 errors, so doing
+        // nothing here wouldn't be enough.
+        context.setResponseHeader("WWW-Authenticate", "X-Basic");
     }
 }
 
@@ -32,11 +46,7 @@ class BasicAuthActionAdapter(repositoryFactory: RepositoryFactory, serializer: S
 
     override fun adapt(action: HttpAction, context: WebContext): Any? = when (action.code)
     {
-        HttpConstants.UNAUTHORIZED ->
-        {
-            (context as SparkWebContext).sparkResponse.raw().addHeader("x-WWW-Authenticate", "Basic")
-            haltWithError(action, context, unauthorizedResponse)
-        }
+        HttpConstants.UNAUTHORIZED -> haltWithError(action, context as SparkWebContext, unauthorizedResponse)
         else -> super.adapt(action, context)
     }
 }

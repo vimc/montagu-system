@@ -8,6 +8,7 @@ import org.vaccineimpact.api.app.repositories.RepositoryFactory
 import org.vaccineimpact.api.app.security.MontaguAuthorizer
 import org.vaccineimpact.api.app.security.PermissionRequirement
 import org.vaccineimpact.api.app.security.TokenIssuingConfigFactory
+import org.vaccineimpact.api.app.security.TokenIssuingBasicAuthClient
 import org.vaccineimpact.api.app.security.TokenVerifyingConfigFactory
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.helpers.ContentTypes
@@ -75,7 +76,7 @@ data class Endpoint(
             val config = TokenIssuingConfigFactory(repositoryFactory).build()
             Spark.before(url, SecurityFilter(
                     config,
-                    DirectBasicAuthClient::class.java.simpleName,
+                    TokenIssuingBasicAuthClient::class.java.simpleName,
                     null,
                     "method:${HttpMethod.post}"
             ))

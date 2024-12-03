@@ -15,14 +15,9 @@ if [[ ! -z $HOST ]]; then
 fi
 
 # Install orderly-web
-pip3 install constellation
-if which -a orderly-web > /dev/null; then
-  echo "orderly-web already installed"
-else
-  pip3 install orderly-web --user
-fi
+pip3 install --user -U orderly-web
 
-orderly-web start $HERE $OPTION_MAPPING
+orderly-web start --pull $HERE $OPTION_MAPPING
 
 $HERE/orderly-web-cli.sh add-users user@test.com
 $HERE/orderly-web-cli.sh grant user@test.com */users.manage

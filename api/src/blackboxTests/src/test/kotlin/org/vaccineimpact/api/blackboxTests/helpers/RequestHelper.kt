@@ -54,10 +54,33 @@ class RequestHelper
 
     fun getOneTimeToken(url: String, token: TokenLiteral? = null): String
     {
+        // The version of khttp we use does not cope with request URLs that
+        // contain percent-encoding, which we definitely need for some of these
+        // tests (`url` may contain a & character).
+        //
+        // We use OkHttp instead to implement this function. Ideally we would
+        // port all our tests to it since it is actually maintained, but that
+        // would be a big endeavour.
+
         val encodedUrl = URLEncoder.encode("/v1$url", "UTF-8")
-        val response = get("/onetime_token/?url=$encodedUrl", token)
-        JSONValidator().validateSuccess(response.text)
-        return response.montaguData()!!
+
+        val headers = headersWithoutGzip(ContentTypes.json, token)
+        val headersBuilder = okhttp3.Headers.Builder()
+        headers.forEach { k, v ->  headersBuilder.add(k, v)}
+
+        val request = okhttp3.Request.Builder()
+            .url(EndpointBuilder.build("/onetime_token/?url=$encodedUrl"))
+            .headers(headersBuilder.build())
+            .build()
+
+        val bodyText = okhttp3.OkHttpClient().newCall(request).execute().use {
+            it.body!!.string()
+        }
+
+        JSONValidator().validateSuccess(bodyText)
+
+        val body = Parser().parse(StringBuilder(bodyText)) as JsonObject
+        return body["data"] as String
     }
 
     fun post(url: String, permissions: Set<ReifiedPermission>, data: JsonObject): Response

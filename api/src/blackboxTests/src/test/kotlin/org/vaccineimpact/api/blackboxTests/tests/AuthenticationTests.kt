@@ -105,6 +105,18 @@ class AuthenticationTests : DatabaseTest()
     }
 
     @Test
+    fun `incorrect authentication returns not-standard scheme`()
+    {
+        val auth = BasicAuthorization("email@example.com", "bad_password")
+        val response = post(url,
+            data = mapOf("grant_type" to "client_credentials"),
+            auth = auth
+        )
+        assertThat(response.statusCode).isEqualTo(401)
+        assertThat(response.headers["WWW-Authenticate"]).isEqualTo("X-Basic")
+    }
+
+    @Test
     fun `cannot login if use does not have password`()
     {
         JooqContext().use {

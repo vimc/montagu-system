@@ -5,7 +5,7 @@ servers:
     user: task.user@example.com
     password: password
   orderlyweb:
-    url: http://orderly_web_web:8888
+    url: http://orderly_web-web:8888
   youtrack:
     token: 123
   smtp:
