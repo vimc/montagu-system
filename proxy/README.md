@@ -34,20 +34,18 @@ Run unit tests with `npm run test`. Jest will pick up test in files with the `.t
 
 To run integration tests:
  
-1. First install chromedriver `sudo ./scripts/install-chromedriver.sh`
-1. Make sure you also have a compatible version of chrome (110)
+1. Make sure you have Chrome (or Chromium) installed. Depending on the platform you may also need to install chromedriver.
+    - On Ubuntu, `sudo apt install chromium-browser chromium-chromedriver` will install both.
 1. Run the proxy and dependencies with `./scripts/dev.sh`
 1. Then run tests with `npm run integration-test`
 
 Jest will pick up tests in files with the `.itest.js` extension.
 
 ## Buildkite
-1. `./scripts/make-shared-build-env.sh`: makes a shared base image containing all npm dependencies
 1. `./scripts/make-integration-test-image.sh` makes the integration tests image which contains all selenium test 
 dependencies
-1. `./scripts/run-build.sh`: creates and runs the main build env image which dockerises and pushes the app image 
-to docker hub
+1. `./scripts/build-image.sh`: builds and pushes the main app image to docker hub
 1. `./scripts/run-integration-tests.sh`: runs the app image created in the previous step along with all dependencies and 
 then runs the integration tests image created in step 2.
-1. `./dev/run-build-minimal.sh`: builds an image `montagu-reverse-proxy-minimal` that just provides login functionality.
+1. `./dev/build-minimal-image.sh`: builds an image `montagu-reverse-proxy-minimal` that just provides login functionality.
  This is used for testing OrderlyWeb login integration without having to run an entire Montagu deployment.

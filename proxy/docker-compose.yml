@@ -7,7 +7,7 @@ x-logging: &log-journald
 
 services:
   api:
-    image: ${ORG}/montagu-api:master
+    image: ${ORG}/montagu-api:abf39a2
     ports:
      - "8080:8080"
     networks:

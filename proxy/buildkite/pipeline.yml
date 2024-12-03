@@ -1,14 +1,9 @@
 steps:
-  - label: ":construction_worker: Build shared build env image"
-    command: scripts/make-shared-build-env.sh
-
-  - wait
-
   - label: ":construction_worker: Build integration test image"
     command: scripts/make-integration-test-image.sh
 
   - label: ":shipit: Build and push main image"
-    command: scripts/run-build.sh
+    command: scripts/build-image.sh
 
   - wait
 
@@ -16,4 +11,4 @@ steps:
     command: scripts/run-integration-tests.sh
 
   - label: ":shipit: Build minimal test image"
-    command: dev/run-build-minimal.sh
+    command: dev/build-minimal-image.sh

@@ -7,6 +7,7 @@ export ORG=vimc
 export TOKEN_KEY_PATH=$PWD/token_key
 
 function cleanup() {
+    docker-compose --project-name montagu logs
     docker-compose --project-name montagu down || true
 }
 
@@ -27,12 +28,12 @@ docker exec montagu_orderly_web_web_1 touch /etc/orderly/web/go_signal
 docker exec montagu_orderly_1 touch /orderly_go
 
 # Wait for the database
-docker exec montagu_db_1 montagu-wait.sh
+docker exec montagu_db_1 montagu-wait.sh 120
 
 # Migrate the database
 migrate_image=$ORG/montagu-migrate:master
 docker pull $migrate_image
-docker run --network=montagu_proxy $migrate_image
+docker run --rm --network=montagu_proxy $migrate_image
 
 # Generate test data if 'data' present as first param
 if [ "$1" = "data" ]; then

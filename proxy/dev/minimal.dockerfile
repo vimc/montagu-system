@@ -9,7 +9,7 @@ RUN npm run test
 FROM nginx:stable
 
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY nginx.montagu.conf /etc/nginx/conf.d/montagu.conf.template
+COPY dev/nginx.minimal.conf /etc/nginx/conf.d/montagu.conf
 COPY index.html /usr/share/nginx/html/index.html
 COPY 404.html /usr/share/nginx/html/404.html
 COPY resources /usr/share/nginx/html/resources
@@ -27,7 +27,4 @@ COPY --from=0 /workspace/node_modules/bootstrap/dist/css/bootstrap.min.css.map /
 
 RUN rm /etc/nginx/conf.d/default.conf
 
-WORKDIR /app
-COPY entrypoint.sh .
-
-ENTRYPOINT ["/app/entrypoint.sh"]
+CMD exec nginx -g "daemon off;"
