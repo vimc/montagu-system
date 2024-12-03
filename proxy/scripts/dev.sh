@@ -28,7 +28,7 @@ docker run --rm \
     $ORG/montagu-cert-tool:master \
     gen-self-signed /workspace > /dev/null 2> /dev/null
 
-$here/run-dependencies.sh
+$here/run-dependencies.sh "$@"
 
 # Build and run the proxy and metrics containers
 docker build -t reverse-proxy .
