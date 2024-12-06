@@ -20,13 +20,7 @@ cleanup
 # This traps errors and Ctrl+C
 trap cleanup EXIT
 
-echo "Generating SSL keypair"
-mkdir workspace
 mkdir montagu_emails
-docker run --rm \
-    -v $PWD/workspace:/workspace \
-    $ORG/montagu-cert-tool:master \
-    gen-self-signed /workspace > /dev/null 2> /dev/null
 
 $here/run-dependencies.sh "$@"
 
@@ -46,15 +40,8 @@ docker run -d \
     nginx/nginx-prometheus-exporter:0.2.0 \
     -nginx.scrape-uri "http://reverse-proxy/basic_status"
 
-# the real dhparam will be 4096 bits but that takes ages to generate
-openssl dhparam -out workspace/dhparam.pem 2048
-
-docker cp workspace/certificate.pem reverse-proxy:/etc/montagu/proxy/
-docker cp workspace/ssl_key.pem reverse-proxy:/etc/montagu/proxy/
-docker cp workspace/dhparam.pem reverse-proxy:/etc/montagu/proxy/
 docker cp $here/../2020 reverse-proxy:/usr/share/nginx/html
 docker cp $here/../2021 reverse-proxy:/usr/share/nginx/html
-rm -rf workspace
 
 sleep 2s
 docker logs reverse-proxy

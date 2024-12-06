@@ -21,7 +21,7 @@ mkdir -p $root
 if [[ ! -f $root/certificate.pem ]]; then
   echo "Generating self-signed certificate for $host"
 
-  openssl req -quiet -x509 -newkey rsa:4096 \
+  openssl req -quiet -x509 -newkey rsa:2048 \
     -sha256 -days 365 -noenc \
     -subj "/C=GB/L=Location/O=Vaccine Impact Modelling Consortium/OU=Montagu/CN=$host" \
     -keyout "$root/ssl_key.pem" -out "$root/certificate.pem"
