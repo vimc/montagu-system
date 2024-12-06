@@ -29,6 +29,7 @@ COPY --from=0 /workspace/node_modules/bootstrap/dist/css/bootstrap.min.css.map /
 
 RUN rm /etc/nginx/conf.d/default.conf
 RUN mkdir -p /etc/montagu/proxy
+RUN mkdir -p /var/www
 
 WORKDIR /app
 COPY entrypoint.sh .
