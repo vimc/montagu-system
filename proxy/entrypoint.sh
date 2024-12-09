@@ -18,18 +18,14 @@ sed -e "s/_PORT_/$port/g" \
 root="/etc/montagu/proxy"
 mkdir -p $root
 
-a="$root/certificate.pem"
-b="$root/ssl_key.pem"
-c="$root/dhparam.pem"
+if [[ ! -f $root/certificate.pem ]]; then
+  echo "Generating self-signed certificate for $host"
 
-echo "Waiting for SSL certificate files at:"
-echo "- $a"
-echo "- $b"
-echo "- $c"
+  openssl req -quiet -x509 -newkey rsa:2048 \
+    -sha256 -days 365 -noenc \
+    -subj "/C=GB/L=Location/O=Vaccine Impact Modelling Consortium/OU=Montagu/CN=$host" \
+    -keyout "$root/ssl_key.pem" -out "$root/certificate.pem"
+fi
 
-while [ ! -e $a ] || [ ! -e $b ] || [ ! -e $c ]; do
-  sleep 2
-done
-
-echo "Certificate files detected. Running nginx"
+echo "Starting nginx"
 exec nginx -g "daemon off;"
