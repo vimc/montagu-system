@@ -20,14 +20,14 @@ services:
 
   # The stutter in the name is needed to match the constellation deployment,
   # which uses orderly-web as the container prefix, and web as the suffix.
-  orderly-web-web:
-    image: ${ORG}/orderly-web:master
-    networks:
-     - proxy
-    depends_on:
-      - api
-    volumes:
-     - orderly_volume:/orderly
+  #orderly-web-web:
+  #  image: ${ORG}/orderly-web:master
+  #  networks:
+  #   - proxy
+  #  depends_on:
+  #    - api
+  #  volumes:
+  #   - orderly_volume:/orderly
   db:
     image: ${ORG}/montagu-db:master
     ports:
