@@ -14,6 +14,7 @@
     <script src="resources/js/montagu-login.js"></script>
     <script src="resources/js/montagu-auth.js"></script>
     <script src="resources/js/montagu-utils.js"></script>
+    <script src="resources/js/packit-auth.js"></script>
     <script src="resources/js/components/montagu-login-status.vue.js"></script>
     <script src="resources/js/components/montagu-login-form.vue.js"></script>
 </head>
@@ -47,7 +48,7 @@
             <h1>Portals</h1>
             <table>
                 <tr>
-                    <td class="portal"><a class="button" href="/reports/">Reporting portal</a></td>
+                    <td class="portal"><a class="button" href="/packit/">Reporting portal</a></td>
                     <td>
                         Access reports and figures summarising results, as well
                         as the underlying data.
@@ -94,12 +95,12 @@
 <script>
     const utils = MontaguUtils;
     const auth = new MontaguAuth(utils.getApiRoot());
+    const packitAuth = new PackitAuth(utils.getPackitApiRoot(), jwt_decode);
     const logic = new MontaguLogin(
         auth,
         jwt_decode,
         pako
     );
-
 
     new Vue({
         el: "#app",
@@ -114,11 +115,19 @@
                 logic.getUserName().then((result) => {
                     data.username = result;
 
-                    const redirectLocation = utils.paramFromQueryString(location.search, "redirectTo");
-                    if (result && redirectLocation) {
-                        data.redirectMessage = `Redirecting you back to ${redirectLocation}.
-                            If you are not automatically redirected in a few seconds please click <a href="${redirectLocation}">here</a>`;
-                        window.location.href = redirectLocation
+                    // If we have loggingOut param set, it means we're logging out from packit therefore should logout
+                    // from Montagu too
+                    const loggingOut = utils.paramFromQueryString(location.search, "loggingOut");
+                    if (loggingOut) {
+                        this.logout();
+                    } else {
+                        // Do any post-login redirection
+                        const redirectLocation = utils.paramFromQueryString(location.search, "redirectTo");
+                        if (result && redirectLocation) {
+                            data.redirectMessage = `Redirecting you back to ${redirectLocation}.
+                        If you are not automatically redirected in a few seconds please click <a href="${redirectLocation}">here</a>`;
+                            window.location.href = redirectLocation
+                        }
                     }
                 })
             },
