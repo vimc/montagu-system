@@ -7,7 +7,7 @@ class PackitAuth {
     // TODO: We should be using Authorization header here instead, like Montagu does - update after mrc-5176
     login(email, password) {
         const data = JSON.stringify({email, password});
-        const loginUrl = this.packitApiRoot + "auth/login/basic"; // TODO; has this changed?
+        const loginUrl = this.packitApiRoot + "auth/login/basic";
         return $.ajax({
             type: "POST",
             url: loginUrl,
