@@ -28,6 +28,26 @@ services:
   #    - api
   #  volumes:
   #   - orderly_volume:/orderly
+  packit:
+    image: mrcide/packit:mrc-5140-support-montagu-redirect
+    networks:
+      - proxy
+  packit-api:
+    image: mrcide/packit-api:mrc-5140-support-montagu-redirect
+    networks:
+      - proxy
+    depends_on:
+      - packit-db
+  packit-db:
+    image: mrcide/packit-db:main
+    networks:
+      - proxy
+  outpack_server:
+    image: mrcide/outpack_server:main
+    volumes:
+      - ./../packit/demos/orderly:/outpack # This requires packit repo to be cloned in same dir as montagu-proxy!
+    networks:
+      - proxy
   db:
     image: ${ORG}/montagu-db:master
     ports:
@@ -35,13 +55,13 @@ services:
     command: /etc/montagu/postgresql.test.conf
     networks:
      - proxy
-  orderly:
-    image: ${ORG}/orderly.server:master
-    volumes:
-     - orderly_volume:/orderly
-    command: --port 8321 --go-signal /orderly_go /orderly
-    networks:
-     - proxy
+ # orderly:
+ #   image: ${ORG}/orderly.server:master
+ #   volumes:
+ #    - orderly_volume:/orderly
+ #   command: --port 8321 --go-signal /orderly_go /orderly
+ #   networks:
+ #    - proxy
   contrib:
     image: ${ORG}/montagu-contrib-portal:master
     networks:
@@ -58,7 +78,6 @@ services:
     depends_on:
      - api
 volumes:
-  orderly_volume:
   template_volume:
   guidance_volume:
   token_key_volume:
