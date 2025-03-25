@@ -25,9 +25,9 @@ class PackitAuth {
             token,
             exp: decoded.exp ?? 0,
             displayName: decoded.displayName ?? "",
-            userName: decoded.userName ?? ""
+            userName: decoded.userName ?? "",
+            authorities: decoded.au ?? []
         };
-        // TODO: has this changed?
         localStorage.setItem("user", JSON.stringify(user)); // TODO: don't save prototype!
     }
 

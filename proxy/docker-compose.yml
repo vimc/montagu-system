@@ -29,12 +29,9 @@ services:
   #  volumes:
   #   - orderly_volume:/orderly
   packit:
-    image: mrcide/packit:mrc-5140-support-montagu-redirect
+    image: mrcide/montagu-packit:mrc-5140-support-montagu-redirect
     networks:
       - proxy
-    environment:
-      - PUBLIC_URL=/packit
-      - REACT_APP_PACKIT_API_URL=/packit/api
   packit-api:
     image: mrcide/packit-api:mrc-5140-support-montagu-redirect
     networks:

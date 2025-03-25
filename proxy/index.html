@@ -98,6 +98,7 @@
     const packitAuth = new PackitAuth(utils.getPackitApiRoot(), jwt_decode);
     const logic = new MontaguLogin(
         auth,
+        packitAuth,
         jwt_decode,
         pako
     );
