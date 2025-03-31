@@ -120,6 +120,12 @@ class UserController(
         return internalUser.toUser(includePermissions).copy(roles = null) //don't return any role information back to the current user
     }
 
+    fun verifyCurrentUser(): Unit
+    {
+        val userName = context.username!!
+        context.addResponseHeader("X-Remote-User", username)
+    }
+
     fun getUsers(): List<User>
     {
         val roleReadingScopes = roleReadingScopes(context)
