@@ -12,7 +12,7 @@ object UserRouteConfig : RouteConfig
     private val controller = UserController::class
     private val urlBase = "/users/"
     private val urlCurrentUser = "/user/"
-    private val urlVerifyCurrentUser "/verify/"
+    private val urlVerifyCurrentUser = "/verify/"
 
     private val readRoles = setOf("*/roles.read")
     private val readUsers = setOf("*/users.read")
