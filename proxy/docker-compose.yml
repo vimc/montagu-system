@@ -7,7 +7,7 @@ x-logging: &log-journald
 
 services:
   api:
-    image: ${ORG}/montagu-api:master
+    image: ${ORG}/montagu-api:mrc-6381-verify-endpoint
     ports:
      - "8080:8080"
     networks:
@@ -33,7 +33,7 @@ services:
     networks:
       - proxy
   packit-api:
-    image: mrcide/packit-api:mrc-5140-support-montagu-redirect
+    image: mrcide/packit-api:mrc-5140-trusted-headers
     networks:
       - proxy
     depends_on:

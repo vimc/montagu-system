@@ -36,7 +36,8 @@ class MontaguLogin {
 
         // Allow possibility for Montagu login to succeed but Packit login to fail
         // TODO: if this happens, show error on page (throw packitLoginError as for montagu pattern)
-        await this.packitAuth.login(email, password)
+        const montaguToken = data.access_token;
+        await this.packitAuth.login(montaguToken)
             .then((data) => this.packitAuth.saveUser(data))
             .catch((jqXHR) => {
                 console.log(`Packit login error: ${JSON.stringify(jqXHR)}`);
