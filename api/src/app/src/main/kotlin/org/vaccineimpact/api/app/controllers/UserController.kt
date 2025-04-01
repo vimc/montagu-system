@@ -120,7 +120,7 @@ class UserController(
         return internalUser.toUser(includePermissions).copy(roles = null) //don't return any role information back to the current user
     }
 
-    fun verifyCurrentUser(): Unit
+    fun verifyCurrentUser(): String
     {
         println("verifying current user")
         val userName = context.username!!
