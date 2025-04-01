@@ -122,8 +122,10 @@ class UserController(
 
     fun verifyCurrentUser(): Unit
     {
+        println("verifying current user")
         val userName = context.username!!
         context.addResponseHeader("X-Remote-User", userName)
+        return okayResponse()
     }
 
     fun getUsers(): List<User>

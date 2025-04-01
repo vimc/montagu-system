@@ -39,9 +39,11 @@ class CompressedHeaderExtractor(headerName: String, prefixHeader: String)
     {
         println("Extracting header")
         val wrapped = super.extract(context, sessionStore)
+        println("got wrapped")
         return if (wrapped.isPresent)
         {
             val credentials = wrapped.get() as TokenCredentials
+            println("got credentials")
             Optional.of(TokenCredentials(inflate(credentials.token)))
         }
         else Optional.empty()
