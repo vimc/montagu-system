@@ -37,6 +37,7 @@ class CompressedHeaderExtractor(headerName: String, prefixHeader: String)
 {
     override fun extract(context: WebContext, sessionStore: SessionStore): Optional<Credentials>
     {
+        println("Extracting header")
         val wrapped = super.extract(context, sessionStore)
         return if (wrapped.isPresent)
         {
