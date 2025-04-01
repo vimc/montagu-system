@@ -171,11 +171,14 @@ class DirectActionContext(private val context: SparkWebContext, private val prof
         var token = this.request.cookie(CookieName.Main.cookieName)
         if (token == null)
         {
+            println("Getting token from header")
             token = this.request.headers("Authorization")
             if (token != null)
             {
                 token = token.substring("Bearer ".length)
             }
+        } else {
+            println("Getting token from cookie")
         }
         return token
     }
