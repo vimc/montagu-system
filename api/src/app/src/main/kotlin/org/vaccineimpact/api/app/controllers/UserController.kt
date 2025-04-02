@@ -124,12 +124,12 @@ class UserController(
     {
         println("verifying current user")
         val userName = context.username!!
+        val userProfile = context.userProfile!!
         println("userName is")
         println(userName)
         context.addResponseHeader("X-Remote-User", userName)
-        // TODO: set real header values!
-        context.addResponseHeader("X-Remote-Name", userName)
-        context.addResponseHeader("X-Remote-Email", userName)
+        context.addResponseHeader("X-Remote-Name", userProfile.displayName)
+        context.addResponseHeader("X-Remote-Email", userProfile.email)
         println("added headers")
         return okayResponse()
     }
