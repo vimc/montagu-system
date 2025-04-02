@@ -27,18 +27,26 @@ class MontaguLogin {
         return expiry > now
     }
 
+    // Logs into Montagu and returns the username
     async login(email, password) {
-        const result = await this.montaguAuth.login(email, password)
-            .then((data) => this.montaguLoginSuccess(data))
+        const responseData = await this.montaguAuth.login(email, password)
+            .then((data) => data)
             .catch((jqXHR) => {
                 throw MontaguLogin.montaguApiError(jqXHR)
             });
 
+        console.log(JSON.stringify(responseData));
+        const result = this.montaguLoginSuccess(responseData);
+        console.log("done montagu login")
+        const montaguToken = responseData.access_token;
+        console.log("got token")
         // Allow possibility for Montagu login to succeed but Packit login to fail
         // TODO: if this happens, show error on page (throw packitLoginError as for montagu pattern)
-        const montaguToken = data.access_token;
         await this.packitAuth.login(montaguToken)
-            .then((data) => this.packitAuth.saveUser(data))
+            .then((data) => {
+                console.log("got packit response");
+                this.packitAuth.saveUser(data);
+            })
             .catch((jqXHR) => {
                 console.log(`Packit login error: ${JSON.stringify(jqXHR)}`);
             });

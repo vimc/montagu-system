@@ -24,9 +24,6 @@ docker compose up -d
 docker compose exec api mkdir -p /etc/montagu/api/
 docker compose exec api touch /etc/montagu/api/go_signal
 
-# TODO: need this on CI?
-sleep 30
-
 # Wait for the database
 docker compose exec db montagu-wait.sh 120
 
@@ -57,6 +54,3 @@ $here/cli.sh add "Password Reset Test User" passwordtest.user \
     --if-not-exists
 
 $here/cli.sh addRole passwordtest.user user
-
-# Add user to packit
-$here/packit-create-test-user.sh

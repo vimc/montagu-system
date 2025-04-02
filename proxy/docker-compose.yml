@@ -29,7 +29,7 @@ services:
   #  volumes:
   #   - orderly_volume:/orderly
   packit:
-    image: mrcide/montagu-packit:mrc-5140-support-montagu-redirect
+    image: mrcide/montagu-packit:mrc-5140-trusted-headers
     networks:
       - proxy
   packit-api:
@@ -48,7 +48,7 @@ services:
       - PACKIT_DB_PASSWORD=changeme
       - PACKIT_JWT_SECRET=changesecretkey
       - PACKIT_AUTH_REDIRECT_URL=
-      - PACKIT_AUTH_METHOD=basic
+      - PACKIT_AUTH_METHOD=preauth
       - PACKIT_JWT_EXPIRY_DAYS=1 # Set this to the same as Montagu token expiry!
       - PACKIT_AUTH_ENABLED=true
       - PACKIT_AUTH_GITHUB_ORG=none

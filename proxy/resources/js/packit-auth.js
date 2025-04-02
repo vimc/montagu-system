@@ -5,14 +5,13 @@ class PackitAuth {
     }
 
     login(montaguToken) {
+        console.log("doing packit login")
         // This route configured in nginx for headers preauth login
         const loginUrl = this.packitApiRoot + "auth/login/montagu";
         return $.ajax({
             type: "GET",
             url: loginUrl,
-            data,
             headers: {
-                "Content-Type": "application/json",
                 "Authorization": `Bearer ${montaguToken}`
             }
         });
