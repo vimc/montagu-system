@@ -127,6 +127,10 @@ class UserController(
         val userProfile = context.userProfile!!
         println("userName is")
         println(userName)
+        println("displayName is")
+        println(userProfile.displayName)
+        println("email is")
+        println(userProfile.email)
         context.addResponseHeader("X-Remote-User", userName)
         context.addResponseHeader("X-Remote-Name", userProfile.displayName)
         context.addResponseHeader("X-Remote-Email", userProfile.email)
