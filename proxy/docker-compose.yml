@@ -54,7 +54,7 @@ services:
       - PACKIT_AUTH_GITHUB_ORG=none
       - PACKIT_AUTH_GITHUB_TEAM=none
   packit-db:
-    image: mrcide/packit-db:main
+    image: mrcide/packit-db:mrc-5140-trusted-headers
     networks:
       - proxy
     healthcheck:
