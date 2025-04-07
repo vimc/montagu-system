@@ -130,7 +130,6 @@ class DirectActionContext(private val context: SparkWebContext, private val prof
     }
 
     override val userProfile: CommonProfile? by lazy {
-        println("getting user profile")
         val manager = profileManager ?: ProfileManager(context, JEESessionStore.INSTANCE)
         manager.profiles.singleOrNull() as CommonProfile?
     }
@@ -169,18 +168,14 @@ class DirectActionContext(private val context: SparkWebContext, private val prof
 
     override fun authenticationToken(): String?
     {
-        println("getting token")
         var token = this.request.cookie(CookieName.Main.cookieName)
         if (token == null)
         {
-            println("Getting token from header")
             token = this.request.headers("Authorization")
             if (token != null)
             {
                 token = token.substring("Bearer ".length)
             }
-        } else {
-            println("Getting token from cookie")
         }
         return token
     }

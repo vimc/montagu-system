@@ -122,22 +122,11 @@ class UserController(
 
     fun verifyCurrentUser(): String
     {
-        println("verifying current user")
         val userName = context.username!!
-
         val internalUser = userRepository.getUserByUsername(userName)
-        val name = internalUser.name
-        val email = internalUser.email
-        println("userName is")
-        println(userName)
-        println("displayName is")
-        println(name)
-        println("email is")
-        println(email)
         context.addResponseHeader("X-Remote-User", userName)
-        context.addResponseHeader("X-Remote-Name", name)
-        context.addResponseHeader("X-Remote-Email", email)
-        println("added headers")
+        context.addResponseHeader("X-Remote-Name", internalUser.name)
+        context.addResponseHeader("X-Remote-Email", internalUser.email)
         return okayResponse()
     }
 

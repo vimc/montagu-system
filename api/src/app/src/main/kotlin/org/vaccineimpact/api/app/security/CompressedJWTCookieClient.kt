@@ -41,7 +41,6 @@ class CompressedCookieExtractor(cookieName: CookieName)
 {
     override fun extract(context: WebContext, sessionStore: SessionStore): Optional<Credentials>
     {
-        println("extracting cookie")
         val wrapped = super.extract(context, sessionStore)
         return if (wrapped.isPresent)
         {
