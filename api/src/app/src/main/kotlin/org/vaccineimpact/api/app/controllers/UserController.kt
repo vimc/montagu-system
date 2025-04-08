@@ -120,6 +120,8 @@ class UserController(
         return internalUser.toUser(includePermissions).copy(roles = null) //don't return any role information back to the current user
     }
 
+    // This endpoint is used by the proxy to get user details to forward to packit via nginx's auth_request module, when
+    // used with packit's preauth authentication method (trusted headers).
     fun verifyCurrentUser(): String
     {
         val userName = context.username!!
