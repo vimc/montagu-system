@@ -14,11 +14,8 @@ function cleanup() {
 trap cleanup ERR
 
 # Run up all the APIs and Portals which are to be proxied
-#docker volume rm montagu_orderly_volume -f
 docker compose pull
 docker compose up -d
-
-#docker exec montagu-packit-db-1 wait-for-db
 
 # Start the API
 docker compose exec api mkdir -p /etc/montagu/api/

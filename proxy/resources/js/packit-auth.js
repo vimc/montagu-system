@@ -5,7 +5,6 @@ class PackitAuth {
     }
 
     login(montaguToken) {
-        console.log("doing packit login")
         // This route configured in nginx for headers preauth login
         const loginUrl = this.packitApiRoot + "auth/login/montagu";
         return $.ajax({
@@ -17,6 +16,7 @@ class PackitAuth {
         });
     }
 
+    // Save packit user details to local storage where packit will find them
     saveUser(loginResponse) {
         const token = loginResponse.token;
         const decoded = this.jwt_decode(token);
@@ -33,5 +33,4 @@ class PackitAuth {
     deleteUser() {
         localStorage.removeItem("user");
     }
-
 }

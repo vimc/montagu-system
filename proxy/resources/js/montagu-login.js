@@ -35,16 +35,12 @@ class MontaguLogin {
                 throw MontaguLogin.montaguApiError(jqXHR)
             });
 
-        console.log(JSON.stringify(responseData));
         const result = this.montaguLoginSuccess(responseData);
-        console.log("done montagu login")
         const montaguToken = responseData.access_token;
-        console.log("got token")
         // Allow possibility for Montagu login to succeed but Packit login to fail
         // TODO: if this happens, show error on page (throw packitLoginError as for montagu pattern)
         await this.packitAuth.login(montaguToken)
             .then((data) => {
-                console.log("got packit response");
                 this.packitAuth.saveUser(data);
             })
             .catch((jqXHR) => {
