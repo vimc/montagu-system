@@ -29,25 +29,25 @@ class MontaguLogin {
 
     // Logs into Montagu and returns the username
     async login(email, password) {
-        const responseData = await this.montaguAuth.login(email, password)
-            .then((data) => data)
-            .catch((jqXHR) => {
-                throw MontaguLogin.montaguApiError(jqXHR)
-            });
-
-        const result = this.montaguLoginSuccess(responseData);
+        let responseData, username;
+        try {
+            responseData = await this.montaguAuth.login(email, password);
+            username = await this.montaguLoginSuccess(responseData);
+        } catch (jqXHR) {
+            throw MontaguLogin.montaguApiError(jqXHR)
+        }
         const montaguToken = responseData.access_token;
-        // Allow possibility for Montagu login to succeed but Packit login to fail
-        // TODO: if this happens, show error on page (throw packitLoginError as for montagu pattern)
-        await this.packitAuth.login(montaguToken)
-            .then((data) => {
-                this.packitAuth.saveUser(data);
-            })
-            .catch((jqXHR) => {
-                console.log(`Packit login error: ${JSON.stringify(jqXHR)}`);
-            });
+        // Allow possibility for Montagu login to succeed but Packit login to fail - do not throw error,
+        // preventing Montagu login, but do return packitLoginError to be displayed
+        let packitLoginError = '';
+        try {
+            const packitUser = await this.packitAuth.login(montaguToken)
+            this.packitAuth.saveUser(packitUser);
+        } catch(jqXHR) {
+            packitLoginError = 'Montagu login succeeded, but Packit login failed.'
+        }
 
-        return result;
+        return {username, packitLoginError};
     }
 
     montaguLoginSuccess(data) {

@@ -27,7 +27,7 @@ class PackitAuth {
             userName: decoded.userName ?? "",
             authorities: decoded.au ?? []
         };
-        localStorage.setItem("user", JSON.stringify(user)); // TODO: don't save prototype!
+        localStorage.setItem("user", JSON.stringify(user));
     }
 
     deleteUser() {

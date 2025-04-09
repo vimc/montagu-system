@@ -17,7 +17,7 @@ test('can decode jwt token', () => {
     const mockInflate = jest.fn(x => x + "inflated");
     const mockDecode = jest.fn(x => x + "decoded");
 
-    const sut = new MontaguLogin(null, mockDecode, {inflate: mockInflate});
+    const sut = new MontaguLogin(null, null, mockDecode, {inflate: mockInflate});
     const result = sut.decodeToken(toDecode);
 
     const expected = atob("test/+") + "inflateddecoded";
@@ -78,7 +78,17 @@ test('can login', (done) => {
         resolve();
     }));
 
+    const mockPackitUserData = {token: "test"};
+    const mockPackitSaveUser = jest.fn();
+    const mockPackitLogin = jest.fn(x => new Promise((resolve, reject) => {
+        resolve(mockPackitUserData);
+    }));
+
     const sut = new MontaguLogin({login: mockLogin, setCookies: mockSetCookies}, //mock auth
+        {
+            login: mockPackitLogin,
+            saveUser: mockPackitSaveUser
+        },
         mockDecode, //mock jwt_decode
         {inflate: mockInflate} //mock pako
     );
@@ -87,13 +97,17 @@ test('can login', (done) => {
     //resolve immediately
     sut.login("test email", "test password").then(
         (result) => {
-            expect(result).toBe("test user name");
+            expect(result.username).toBe("test user name");
+            expect(result.packitLoginError).toBe("");
             //Expected mocks were called
             expect(mockInflate.mock.calls.length).toBe(1);
             expect(mockDecode.mock.calls.length).toBe(1);
 
             expect(mockLogin.mock.calls.length).toBe(1);
             expect(mockSetCookies.mock.calls.length).toBe(1);
+
+            expect(mockPackitLogin).toHaveBeenCalledWith(encodedToken);
+            expect(mockPackitSaveUser).toHaveBeenCalledWith(mockPackitUserData);
             done();
         },
         (error) => {
@@ -115,6 +129,9 @@ test('returns error message when authentication fails', (done) => {
     }));
 
     const sut = new MontaguLogin({login: mockLogin, setCookies: mockSetCookies}, //mock auth
+        {
+            login: jest.fn()
+        }, // mock packit auth
         mockDecode, //mock jwt_decode
         {inflate: mockInflate} //mock pako
     );
@@ -155,6 +172,10 @@ test('returns error message when setCookies fails', (done) => {
     }));
 
     const sut = new MontaguLogin({login: mockLogin, setCookies: mockSetCookies}, //mock auth
+        {
+            login: jest.fn(x => new Promise((resolve) => {resolve()})),
+            saveUser: jest.fn()
+        },// mock packit auth
         mockDecode, //mock jwt_decode
         {inflate: mockInflate} //mock pako
     );
@@ -187,7 +208,11 @@ test('can logout', (done) => {
         resolve();
     }));
 
-    const sut = new MontaguLogin({logout: mockLogout}, //mock auth
+    const mockDeleteUser = jest.fn();
+
+    const sut = new MontaguLogin(
+        {logout: mockLogout}, //mock auth
+        {deleteUser: mockDeleteUser}, // mock packit auth
     );
 
     //This returns a promise - invoking the promise will call auth login methods via further promises, here mocked to
@@ -195,7 +220,8 @@ test('can logout', (done) => {
     sut.logout().then(
         () => {
             //Expected mocks were called
-            expect(mockLogout.mock.calls.length).toBe(1);
+            expect(mockDeleteUser).toHaveBeenCalledTimes(1);
+            expect(mockLogout).toHaveBeenCalledTimes(1);
             done();
         },
         (error) => {

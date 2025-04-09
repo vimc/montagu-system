@@ -44,6 +44,9 @@
         <montagu-login-form v-bind:username="username" v-bind:login-error="loginError"
                             v-bind:redirect-message="redirectMessage"
                             v-on:login="login" class="login-form"></montagu-login-form>
+        <div v-if="packitLoginError" class="text-danger">
+             {{packitLoginError}}
+        </div>
         <div class="portals">
             <h1>Portals</h1>
             <table>
@@ -108,6 +111,7 @@
         data: {
             username: "",
             loginError: "",
+            packitLoginError: "",
             redirectMessage: ""
         },
         methods: {
@@ -138,6 +142,7 @@
                     () => {
                         data.username = '';
                         data.loginError = '';
+                        data.packitLoginError = '';
                     },
                     (error) => {
                         data.username = '';
@@ -149,10 +154,11 @@
                 const data = this;
                 logic.login(email, password).then(
                     (result) => {
-                        data.username = result;
+                        data.username = result.username;
                         data.loginError = '';
+                        data.packitLoginError = result.packitLoginError;
                         const redirectLocation = utils.paramFromQueryString(location.search, "redirectTo");
-                        if (redirectLocation) {
+                        if (redirectLocation && !(data.packitLoginError && utils.isPackitUrl(redirectLocation))) {
                             data.redirectMessage = `Redirecting you back to ${redirectLocation}.
                             If you are not automatically redirected in a few seconds please click <a href="${redirectLocation}">here</a>`;
                             window.location.href = redirectLocation
