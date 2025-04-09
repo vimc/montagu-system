@@ -24,6 +24,16 @@ When a new the certificate is obtained and written to `/etc/montagu/proxy`,
 nginx needs to be reloaded by entering the container and running
 `nginx -s reload`.
 
+## Packit authentication
+
+Montagu integrates with Packit via Packit's `preauth` authentication method, using Montagu as the auth provider. 
+`nginx.montagu.conf` is configured to redirect `/packit` requests to the packit containers. Requests for Packit's login
+page are redirected to Montagu's homepage (`index.html`). When the user has logged into Montagu, the page make a request
+to `/packit/api/auth/login/montagu` providing the Montagu token. This route is configured in nginx to verify the token
+with Montagu, then send user details to the `/packit/api/auth/login/preauth` endpoint in request headers. This is the "trusted
+headers" approach - Packit assumes that these user details are valid without its own means of verifying them, so this endpoint
+must not be externally available - nginx will return a 404 for any such external request.
+
 ## Build and run locally
 Run `./scripts/dev.sh`. This runs up the proxy along with the apis and portals, in order to manually test links, logins etc. 
 The test user with email `test.user@example.com` and password `password` is added by default.
