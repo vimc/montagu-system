@@ -4,8 +4,7 @@ WORKDIR /workspace
 COPY . /workspace
 
 RUN npm install
-# TODO: reinstate!
-#RUN npm run test
+RUN npm run test
 
 FROM nginx:stable
 

@@ -63,7 +63,7 @@ const TestHelper = {
         return token;
     },
 
-    ensureLoggedIn: async function (browser) {
+    doLogin: async function (browser) {
         const emailField = browser.wait(webDriver.until.elementLocated(webDriver.By.id("email-input")));
         const pwField = browser.wait(webDriver.until.elementLocated(webDriver.By.id("password-input")));
 
@@ -72,6 +72,10 @@ const TestHelper = {
 
         await browser.findElement(webDriver.By.id("login-button"))
             .click();
+    },
+
+    ensureLoggedIn: async function (browser) {
+        await this.doLogin(browser);
 
         const loggedInBox = browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
 

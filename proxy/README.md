@@ -50,6 +50,7 @@ To run integration tests:
 1. Make sure you have Chrome (or Chromium) installed. Depending on the platform you may also need to install chromedriver.
     - On Ubuntu, `sudo apt install chromium-browser chromium-chromedriver` will install both.
 1. Run the proxy and dependencies with `./scripts/dev.sh`
+1. Ensure test user can access packit data with `./scripts/packit-create-test-user.sh`
 1. Then run tests with `npm run integration-test`
 
 Jest will pick up tests in files with the `.itest.js` extension.
