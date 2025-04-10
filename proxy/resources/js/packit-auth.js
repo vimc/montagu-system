@@ -22,10 +22,10 @@ class PackitAuth {
         const decoded = this.jwt_decode(token);
         const user = {
             token,
-            exp: decoded.exp ?? 0,
-            displayName: decoded.displayName ?? "",
-            userName: decoded.userName ?? "",
-            authorities: decoded.au ?? []
+            exp: decoded.exp || 0,
+            displayName: decoded.displayName || "",
+            userName: decoded.userName || "",
+            authorities: decoded.au || []
         };
         localStorage.setItem("user", JSON.stringify(user));
     }
@@ -34,3 +34,5 @@ class PackitAuth {
         localStorage.removeItem("user");
     }
 }
+
+if (typeof module !== 'undefined') module.exports = PackitAuth;
