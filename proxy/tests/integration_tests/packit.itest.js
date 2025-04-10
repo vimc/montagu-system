@@ -34,8 +34,8 @@ test('can access packit', async () => {
     expect(await title.getText()).toBe("Packit");
 }, 8000);
 
-test('redirects to requested packit resource on login', async () => {
-    const packetUrl = "https://localhost/packit/parameters/20250122-105917-077d041a";
+test('redirects to requested packit page on login', async () => {
+    const packetUrl = "https://localhost/packit/runner";
     await browser.get(packetUrl);
     await TestHelper.doLogin(browser);
 
@@ -46,8 +46,7 @@ test('redirects to requested packit resource on login', async () => {
     });
 
     const header = await browser.findElement(webDriver.By.css("h2"));
-    expect(await header.getText()).toBe("parameters");
-    // check packet id is in page content somewhere as there's no semantically obvious selector
+    expect(await header.getText()).toBe("Run");
     const app = await browser.findElement(webDriver.By.css(".app"));
-    expect(await app.getText()).toMatch(/20250122-105917-077d041a/);
+    expect(await app.getText()).toMatch(/Run a packet group to create a new packet/);
 });
