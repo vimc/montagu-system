@@ -7,13 +7,11 @@ beforeEach(async () => {
     await TestHelper.ensureLoggedOut(browser);
 });
 
-test('can access orderly web', async () => {
-
-    browser.get("https://localhost/reports/");
-
+test('can access packit', async () => {
+    browser.get("https://localhost/packit/");
     await browser.wait(() => {
         return browser.getCurrentUrl().then((url) => {
-            return url.indexOf("?redirectTo=") > -1;
+            return url.indexOf("redirectTo=") > -1;
         });
     });
 
@@ -28,14 +26,16 @@ test('can access orderly web', async () => {
 
     await browser.wait(() => {
         return browser.getCurrentUrl().then((url) => {
-            return url.indexOf("https://localhost/reports") > -1;
+            return url.indexOf("https://localhost/packit") > -1;
         });
     });
 
-    const title = await browser.findElement(webDriver.By.className("site-title"));
-    expect(await title.getText()).toBe("Reporting portal")
+    const title = await browser.findElement(webDriver.By.className("text-xl"));
+    expect(await title.getText()).toBe("Packit");
 }, 8000);
 
+/*
+// TODO: REPLACE THIS WITH A TEST TO REDIRECT TO A DEMO PACKIT - REQUIRE ADD PACKIT USER SCRIPT TO HAVE BEEN CALLED
 test('old report page urls are redirected', async () => {
     await browser.get("https://localhost");
     await TestHelper.ensureLoggedIn(browser);
@@ -49,4 +49,4 @@ test('old report page urls are redirected', async () => {
 
     expect(await browser.getCurrentUrl()).toBe("https://localhost/reports/report/r1/20170516-134824-a16bab9d")
 
-});
+});*/

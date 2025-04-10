@@ -43,7 +43,7 @@ class MontaguLogin {
         try {
             const packitUser = await this.packitAuth.login(montaguToken)
             this.packitAuth.saveUser(packitUser);
-        } catch(jqXHR) {
+        } catch(e) {
             packitLoginError = 'Montagu login succeeded, but Packit login failed.'
         }
 
