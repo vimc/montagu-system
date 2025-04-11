@@ -2,6 +2,8 @@ const webDriver = require("selenium-webdriver");
 const chrome = require('selenium-webdriver/chrome');
 const fs = require('fs');
 const path = require('path');
+const fetch = require('cross-fetch');
+const https = require('https');
 
 const emailsDir = path.resolve(__dirname, "../../montagu_emails");
 
@@ -93,6 +95,17 @@ const TestHelper = {
         }
 
         browser.wait(webDriver.until.elementLocated(webDriver.By.id("email-input")));
+    },
+
+    apiFetch: async function (url, headers = {}) {
+        // We need to use a custom agent here which will allow testing localhost with self-signed certificates
+        const agent = new https.Agent({
+            rejectUnauthorized: false,
+        });
+        return await fetch(`https://localhost${url}`, {
+            headers,
+            agent
+        });
     }
 };
 
