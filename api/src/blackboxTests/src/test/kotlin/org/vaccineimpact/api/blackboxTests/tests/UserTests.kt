@@ -306,7 +306,7 @@ class UserTests : DatabaseTest()
         }
         val requestHelper = RequestHelper()
         val response = requestHelper.get("/users/verify/",
-            PermissionSet("*/can-login"), acceptsContentType = "application/json")
+            PermissionSet("*/can-login"), acceptsContentType = "*/*")
 
         Assertions.assertThat(response.statusCode).isEqualTo(200)
         Assertions.assertThat(response.headers.get("X-Remote-User")).isEqualTo("test.user")
