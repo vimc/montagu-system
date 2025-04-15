@@ -299,9 +299,15 @@ class UserTests : DatabaseTest()
     @Test
     fun `can verify user`()
     {
+        val userHelper = TestUserHelper()
+
+        JooqContext().use {
+            userHelper.setupTestUser(it)
+        }
         val requestHelper = RequestHelper()
         val response = requestHelper.get("/users/verify/",
-            PermissionSet(), acceptsContentType = "application/json")
+            PermissionSet("*/can-login"), acceptsContentType = "application/json")
+
         Assertions.assertThat(response.statusCode).isEqualTo(200)
         Assertions.assertThat(response.headers.get("X-Remote-User")).isEqualTo("test.user")
         Assertions.assertThat(response.headers.get("X-Remote-Name")).isEqualTo("Test User")
