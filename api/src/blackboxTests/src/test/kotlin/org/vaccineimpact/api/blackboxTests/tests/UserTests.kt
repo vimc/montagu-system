@@ -305,7 +305,7 @@ class UserTests : DatabaseTest()
             userHelper.setupTestUser(it)
         }
         val requestHelper = RequestHelper()
-        val response = requestHelper.get("/users/verify/",
+        val response = requestHelper.get("/verify/",
             PermissionSet("*/can-login"), acceptsContentType = "*/*")
 
         Assertions.assertThat(response.statusCode).isEqualTo(200)
@@ -318,7 +318,7 @@ class UserTests : DatabaseTest()
     fun `verify user returns 401 if token is invalid`()
     {
         val requestHelper = RequestHelper()
-        val response = requestHelper.get("/users/verify/", TokenLiteral("invalid_token"))
+        val response = requestHelper.get("/verify/", TokenLiteral("invalid_token"))
         Assertions.assertThat(response.statusCode).isEqualTo(401)
         Assertions.assertThat(response.headers.get("X-Remote-User")).isNull()
         Assertions.assertThat(response.headers.get("X-Remote-Name")).isNull()
