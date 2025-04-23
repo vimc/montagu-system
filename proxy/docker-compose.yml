@@ -17,6 +17,16 @@ services:
     volumes:
      - token_key_volume:/etc/montagu/api/token_key
      - ${PWD}/montagu_emails:/tmp/montagu_emails
+    # The stutter in the name is needed to match the constellation deployment,
+    # which uses orderly-web as the container prefix, and web as the suffix.
+  orderly-web-web:
+    image: ${ORG}/orderly-web:master
+    networks:
+      - proxy
+    depends_on:
+      - api
+    volumes:
+      - orderly_volume:/orderly
   packit:
     image: mrcide/montagu-packit:mrc-5140-trusted-headers
     networks:
@@ -61,6 +71,13 @@ services:
     command: /etc/montagu/postgresql.test.conf
     networks:
      - proxy
+  orderly:
+    image: ${ORG}/orderly.server:master
+    volumes:
+      - orderly_volume:/orderly
+    command: --port 8321 --go-signal /orderly_go /orderly
+    networks:
+      - proxy
   contrib:
     image: ${ORG}/montagu-contrib-portal:master
     networks:
@@ -77,6 +94,7 @@ services:
     depends_on:
      - api
 volumes:
+  orderly_volume:
   template_volume:
   guidance_volume:
   token_key_volume:

@@ -37,7 +37,8 @@ must not be externally available - nginx will return a 404 for any such external
 ## Build and run locally
 Run `./scripts/dev.sh`. This runs up the proxy along with the apis and portals, in order to manually test links, logins etc. 
 The test user with email `test.user@example.com` and password `password` is added by default.
-Optionally include 'data' parameter (`./scripts/dev.sh data`) to include generating Montagu test data. 
+Optionally include 'data' parameter (`./scripts/dev.sh data`) to include generating Montagu test data.
+Orderly test data is always generated.
 
 Demo orderly data is expected to be found in `../packit/demos/orderly` so it is necessary to have 
 [packit](https://github.com/mrc-ide/packit) cloned in the same parent directory as this repo.

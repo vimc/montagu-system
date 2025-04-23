@@ -154,8 +154,6 @@ test('sets packitLoginError if Packit auth fails after Montagu auth succeds', as
 });
 
 test('returns error message when authentication fails', (done) => {
-
-    //const mockInflate = jest.fn();
     const mockLogin = jest.fn(x => new Promise((resolve, reject) => {
         reject({status: 401})
     }));
@@ -197,8 +195,6 @@ test('returns error message when setCookies fails', (done) => {
 
     const encodedToken = getEncodedToken();
 
-    //const mockInflate = jest.fn(x => x);
-    //const mockDecode = jest.fn(x => JSON.parse(x));
     const mockLogin = jest.fn(x => new Promise((resolve, reject) => {
         resolve({"access_token": encodedToken});
     }));
