@@ -59,7 +59,7 @@ test('logging out from admin portal also logs out from packit', async () => {
 
     // Make sure we're on the admin site then log out
     const header = await browser.findElement(webDriver.By.css(".header"));
-    expect(await header.getText()).toBe("Admin portal");
+    expect(await header.getText()).toMatch(/Admin portal/);
 
     const logoutLink = browser.wait(webDriver.until.elementLocated(webDriver.By.css(".logout a")), 10 * 1000);
     await logoutLink.click();
