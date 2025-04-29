@@ -61,11 +61,11 @@ test('logging out from admin portal also logs out from packit', async () => {
     const header = await browser.findElement(webDriver.By.css(".header"));
     expect(await header.getText()).toBe("Admin portal");
 
-    const logoutLink = browser.wait(webDriver.until.elementLocated(webDriver.By.css(".logout a")), 10000);
+    const logoutLink = browser.wait(webDriver.until.elementLocated(webDriver.By.css(".logout a")), 10 * 1000);
     await logoutLink.click();
 
     // see index page
-    const packitButton = browser.wait(webDriver.until.elementLocated(webDriver.By.id("packit-button")), 10000);
+    const packitButton = browser.wait(webDriver.until.elementLocated(webDriver.By.id("packit-button")), 10 * 1000);
 
     // click Packit button - should get redirected back to index page, with redirectTo set
     await packitButton.click();
@@ -75,4 +75,4 @@ test('logging out from admin portal also logs out from packit', async () => {
             return url === "https://localhost/?loggingOut=1&redirectTo=packit/redirect";
         });
     });
-}, 60 * 1000);
+}, 30 * 1000);
