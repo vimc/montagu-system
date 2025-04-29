@@ -1,3 +1,6 @@
+// The local storage key which packit uses to store its current user details
+const USER_KEY = "user";
+
 class PackitAuth {
     constructor(packitApiRoot, jwt_decode) {
         this.packitApiRoot = packitApiRoot;
@@ -16,6 +19,10 @@ class PackitAuth {
         });
     }
 
+    isLoggedIn() {
+        return !!localStorage.getItem(USER_KEY);
+    }
+
     // Save packit user details to local storage where packit will find them
     saveUser(loginResponse) {
         const token = loginResponse.token;
@@ -27,11 +34,11 @@ class PackitAuth {
             userName: decoded.userName || "",
             authorities: decoded.au || []
         };
-        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
     }
 
     deleteUser() {
-        localStorage.removeItem("user");
+        localStorage.removeItem(USER_KEY);
     }
 }
 

@@ -58,7 +58,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="portal"><a class="button" href="/packit/">Packit</a></td>
+                    <td class="portal"><a class="button" id="packit-button" href="/packit/">Packit</a></td>
                     <td>
                         The new reporting portal, currently experimental. <br/>
                     </td>
@@ -122,6 +122,9 @@
                     const loggingOut = utils.paramFromQueryString(location.search, "loggingOut");
                     if (loggingOut) {
                         this.logout();
+                    } else if (!result && packitAuth.isLoggedIn()) {
+                        // We've logged out from a Montagu app but still need to log out from packit
+                        packitAuth.deleteUser();
                     } else {
                         // Do any post-login redirection
                         const redirectLocation = utils.paramFromQueryString(location.search, "redirectTo");

@@ -50,3 +50,29 @@ test('redirects to requested packit page on login', async () => {
     const app = await browser.findElement(webDriver.By.css(".app"));
     expect(await app.getText()).toMatch(/Run a packet group to create a new packet/);
 });
+
+test('logging out from admin portal also logs out from packit', async () => {
+    // Adding some longer timeouts in this test as it can take a while to run..
+
+    await TestHelper.ensureLoggedIn(browser);
+    browser.get("https://localhost/admin/");
+
+    // Make sure we're on the admin site then log out
+    const header = await browser.findElement(webDriver.By.css(".header"));
+    expect(await header.getText()).toBe("Admin portal");
+
+    const logoutLink = browser.wait(webDriver.until.elementLocated(webDriver.By.css(".logout a")), 10000);
+    await logoutLink.click();
+
+    // see index page
+    const packitButton = browser.wait(webDriver.until.elementLocated(webDriver.By.id("packit-button")), 10000);
+
+    // click Packit button - should get redirected back to index page, with redirectTo set
+    await packitButton.click();
+
+    await browser.wait(() => {
+        return browser.getCurrentUrl().then((url) => {
+            return url === "https://localhost/?loggingOut=1&redirectTo=packit/redirect";
+        });
+    });
+}, 60 * 1000);
