@@ -7,7 +7,7 @@ x-logging: &log-journald
 
 services:
   api:
-    image: ${ORG}/montagu-api:mrc-6381-verify-endpoint
+    image: ${ORG}/montagu-api:master
     ports:
      - "8080:8080"
     networks:
@@ -28,11 +28,11 @@ services:
     volumes:
       - orderly_volume:/orderly
   orderly-web-packit:
-    image: mrcide/montagu-packit:mrc-5140-trusted-headers
+    image: mrcide/montagu-packit:main
     networks:
       - proxy
   orderly-web-packit-api:
-    image: mrcide/packit-api:mrc-5140-trusted-headers
+    image: mrcide/packit-api:main
     networks:
       - proxy
     depends_on:
@@ -53,7 +53,7 @@ services:
       - PACKIT_AUTH_GITHUB_ORG=none
       - PACKIT_AUTH_GITHUB_TEAM=none
   orderly-web-packit-db:
-    image: mrcide/packit-db:mrc-5140-trusted-headers
+    image: mrcide/packit-db:main
     networks:
       - proxy
     healthcheck:
