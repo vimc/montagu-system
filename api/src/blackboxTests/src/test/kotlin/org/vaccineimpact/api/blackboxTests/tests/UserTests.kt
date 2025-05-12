@@ -7,6 +7,7 @@ import org.junit.Test
 import org.vaccineimpact.api.blackboxTests.helpers.RequestHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper
 import org.vaccineimpact.api.blackboxTests.helpers.TestUserHelper.Companion.username
+import org.vaccineimpact.api.blackboxTests.helpers.TokenLiteral
 import org.vaccineimpact.api.blackboxTests.helpers.montaguData
 import org.vaccineimpact.api.blackboxTests.helpers.validate
 import org.vaccineimpact.api.blackboxTests.schemas.JSONSchema
@@ -293,6 +294,35 @@ class UserTests : DatabaseTest()
             Assertions.assertThat(it.containsKey("roles")).isFalse() //should not get roles returned
             Assertions.assertThat(it.containsKey("permissions")).isFalse() //should not get roles returned
         }
+    }
+
+    @Test
+    fun `can verify user`()
+    {
+        val userHelper = TestUserHelper()
+
+        JooqContext().use {
+            userHelper.setupTestUser(it)
+        }
+        val requestHelper = RequestHelper()
+        val response = requestHelper.get("/verify/",
+            PermissionSet("*/can-login"), acceptsContentType = "*/*")
+
+        Assertions.assertThat(response.statusCode).isEqualTo(200)
+        Assertions.assertThat(response.headers.get("X-Remote-User")).isEqualTo("test.user")
+        Assertions.assertThat(response.headers.get("X-Remote-Name")).isEqualTo("Test User")
+        Assertions.assertThat(response.headers.get("X-Remote-Email")).isEqualTo("user@test.com")
+    }
+
+    @Test
+    fun `verify user returns 401 if token is invalid`()
+    {
+        val requestHelper = RequestHelper()
+        val response = requestHelper.get("/verify/", TokenLiteral("invalid_token"))
+        Assertions.assertThat(response.statusCode).isEqualTo(401)
+        Assertions.assertThat(response.headers.get("X-Remote-User")).isNull()
+        Assertions.assertThat(response.headers.get("X-Remote-Name")).isNull()
+        Assertions.assertThat(response.headers.get("X-Remote-Email")).isNull()
     }
 
     @Test
