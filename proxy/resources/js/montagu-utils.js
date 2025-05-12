@@ -4,6 +4,15 @@ class MontaguUtils {
         return "/api/v1/";
     }
 
+    static getPackitApiRoot() {
+        return "/packit/api/";
+    }
+
+    static isPackitUrl(url) {
+        const fullUrl = new URL(url, window.location.origin);
+        return fullUrl.pathname.toLowerCase().startsWith("/packit");
+    }
+
     static paramFromQueryString(queryString, param) {
 
         if (!queryString) return null;

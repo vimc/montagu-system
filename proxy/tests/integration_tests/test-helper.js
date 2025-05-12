@@ -2,6 +2,8 @@ const webDriver = require("selenium-webdriver");
 const chrome = require('selenium-webdriver/chrome');
 const fs = require('fs');
 const path = require('path');
+const fetch = require('cross-fetch');
+const https = require('https');
 
 const emailsDir = path.resolve(__dirname, "../../montagu_emails");
 
@@ -63,7 +65,7 @@ const TestHelper = {
         return token;
     },
 
-    ensureLoggedIn: async function (browser) {
+    doLogin: async function (browser) {
         const emailField = browser.wait(webDriver.until.elementLocated(webDriver.By.id("email-input")));
         const pwField = browser.wait(webDriver.until.elementLocated(webDriver.By.id("password-input")));
 
@@ -72,6 +74,10 @@ const TestHelper = {
 
         await browser.findElement(webDriver.By.id("login-button"))
             .click();
+    },
+
+    ensureLoggedIn: async function (browser) {
+        await this.doLogin(browser);
 
         const loggedInBox = browser.wait(webDriver.until.elementLocated(webDriver.By.id('login-status')));
 
@@ -89,6 +95,17 @@ const TestHelper = {
         }
 
         browser.wait(webDriver.until.elementLocated(webDriver.By.id("email-input")));
+    },
+
+    apiFetch: async function (url, headers = {}) {
+        // We need to use a custom agent here which will allow testing localhost with self-signed certificates
+        const agent = new https.Agent({
+            rejectUnauthorized: false,
+        });
+        return await fetch(`https://localhost${url}`, {
+            headers,
+            agent
+        });
     }
 };
 

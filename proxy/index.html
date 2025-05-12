@@ -14,6 +14,7 @@
     <script src="resources/js/montagu-login.js"></script>
     <script src="resources/js/montagu-auth.js"></script>
     <script src="resources/js/montagu-utils.js"></script>
+    <script src="resources/js/packit-auth.js"></script>
     <script src="resources/js/components/montagu-login-status.vue.js"></script>
     <script src="resources/js/components/montagu-login-form.vue.js"></script>
 </head>
@@ -43,6 +44,9 @@
         <montagu-login-form v-bind:username="username" v-bind:login-error="loginError"
                             v-bind:redirect-message="redirectMessage"
                             v-on:login="login" class="login-form"></montagu-login-form>
+        <div v-if="packitLoginError" class="text-danger">
+             {{packitLoginError}}
+        </div>
         <div class="portals">
             <h1>Portals</h1>
             <table>
@@ -50,7 +54,13 @@
                     <td class="portal"><a class="button" href="/reports/">Reporting portal</a></td>
                     <td>
                         Access reports and figures summarising results, as well
-                        as the underlying data.
+                        as the underlying data. <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="portal"><a class="button" id="packit-button" href="/packit/">Packit</a></td>
+                    <td>
+                        The new reporting portal, currently experimental. <br/>
                     </td>
                 </tr>
                 <tr>
@@ -65,15 +75,6 @@
                     <td class="portal"><a class="button" href="/admin/">Admin portal</a></td>
                     <td>
                         For internal use by the consortium admin staff.
-                    </td>
-                </tr>
-            </table>
-            <h1>Resources</h1>
-            <table>
-                <tr>
-                    <td class="portal"><a class="button" href="/reports/project-docs/">Key project documents</a></td>
-                    <td>
-                        Access all VIMC documentation.
                     </td>
                 </tr>
             </table>
@@ -94,18 +95,20 @@
 <script>
     const utils = MontaguUtils;
     const auth = new MontaguAuth(utils.getApiRoot());
+    const packitAuth = new PackitAuth(utils.getPackitApiRoot(), jwt_decode);
     const logic = new MontaguLogin(
         auth,
+        packitAuth,
         jwt_decode,
         pako
     );
-
 
     new Vue({
         el: "#app",
         data: {
             username: "",
             loginError: "",
+            packitLoginError: "",
             redirectMessage: ""
         },
         methods: {
@@ -114,11 +117,22 @@
                 logic.getUserName().then((result) => {
                     data.username = result;
 
-                    const redirectLocation = utils.paramFromQueryString(location.search, "redirectTo");
-                    if (result && redirectLocation) {
-                        data.redirectMessage = `Redirecting you back to ${redirectLocation}.
-                            If you are not automatically redirected in a few seconds please click <a href="${redirectLocation}">here</a>`;
-                        window.location.href = redirectLocation
+                    // If we have loggingOut param set, it means we're logging out from packit therefore should logout
+                    // from Montagu too
+                    const loggingOut = utils.paramFromQueryString(location.search, "loggingOut");
+                    if (loggingOut) {
+                        this.logout();
+                    } else if (!result && packitAuth.isLoggedIn()) {
+                        // We've logged out from a Montagu app but still need to log out from packit
+                        packitAuth.deleteUser();
+                    } else {
+                        // Do any post-login redirection
+                        const redirectLocation = utils.paramFromQueryString(location.search, "redirectTo");
+                        if (result && redirectLocation) {
+                            data.redirectMessage = `Redirecting you back to ${redirectLocation}.
+                        If you are not automatically redirected in a few seconds please click <a href="${redirectLocation}">here</a>`;
+                            window.location.href = redirectLocation
+                        }
                     }
                 })
             },
@@ -128,6 +142,7 @@
                     () => {
                         data.username = '';
                         data.loginError = '';
+                        data.packitLoginError = '';
                     },
                     (error) => {
                         data.username = '';
@@ -139,10 +154,11 @@
                 const data = this;
                 logic.login(email, password).then(
                     (result) => {
-                        data.username = result;
+                        data.username = result.username;
                         data.loginError = '';
+                        data.packitLoginError = result.packitLoginError;
                         const redirectLocation = utils.paramFromQueryString(location.search, "redirectTo");
-                        if (redirectLocation) {
+                        if (redirectLocation && !(data.packitLoginError && utils.isPackitUrl(redirectLocation))) {
                             data.redirectMessage = `Redirecting you back to ${redirectLocation}.
                             If you are not automatically redirected in a few seconds please click <a href="${redirectLocation}">here</a>`;
                             window.location.href = redirectLocation
