@@ -27,8 +27,7 @@ test("can save user", () => {
     const mockDecode = jest.fn(() => ({
         exp: 100,
         displayName: "Test User",
-        userName: "test.user",
-        au: ["packet.read"]
+        userName: "test.user"
     }));
     const token = "test_token";
     const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
@@ -39,7 +38,6 @@ test("can save user", () => {
         exp: 100,
         displayName: "Test User",
         userName: "test.user",
-        authorities: ["packet.read"]
     });
     expect(setItemSpy).toHaveBeenCalledWith("user", expectedSavedUser);
 });

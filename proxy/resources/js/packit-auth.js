@@ -32,7 +32,6 @@ class PackitAuth {
             exp: decoded.exp || 0,
             displayName: decoded.displayName || "",
             userName: decoded.userName || "",
-            authorities: decoded.au || []
         };
         localStorage.setItem(USER_KEY, JSON.stringify(user));
     }
