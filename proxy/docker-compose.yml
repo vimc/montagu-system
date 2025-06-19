@@ -27,7 +27,7 @@ services:
       - api
     volumes:
       - orderly_volume:/orderly
-  packit-app:
+  packit:
     image: mrcide/montagu-packit:main
     networks:
       - proxy
