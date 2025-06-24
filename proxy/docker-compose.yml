@@ -28,11 +28,11 @@ services:
     volumes:
       - orderly_volume:/orderly
   packit:
-    image: mrcide/montagu-packit:main
+    image: ghcr.io/mrc-ide/montagu-packit:main
     networks:
       - proxy
   packit-api:
-    image: mrcide/packit-api:main
+    image: ghcr.io/mrc-ide/packit-api:main
     networks:
       - proxy
     depends_on:
@@ -53,13 +53,13 @@ services:
       - PACKIT_AUTH_GITHUB_ORG=none
       - PACKIT_AUTH_GITHUB_TEAM=none
   packit-db:
-    image: mrcide/packit-db:main
+    image: ghcr.io/mrc-ide/packit-db:main
     networks:
       - proxy
     healthcheck:
       test: ["CMD", "wait-for-db"]
   outpack_server:
-    image: mrcide/outpack_server:main
+    image: ghcr.io/mrc-ide/outpack_server:main
     volumes:
       - ./../packit/demos/orderly:/outpack # This requires packit repo to be cloned in same dir as montagu-proxy!
     networks:
