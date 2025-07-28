@@ -5,68 +5,68 @@ import com.google.gson.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.vaccineimpact.api.app.errors.OrderlyWebError
+import org.vaccineimpact.api.app.errors.PackitError
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.ConfigWrapper
 import java.security.cert.X509Certificate
 import javax.net.ssl.*
 
-interface OrderlyWebAPIClient
+interface PackitAPIClient
 {
-    @Throws(OrderlyWebError::class)
+    @Throws(PackitError::class)
     fun addUser(email: String, username: String, displayName: String)
 }
 
-data class OrderlyWebLoginResult(val access_token: String, val token_type: String, val expires_in: Int)
-data class OrderlyWebUserDetails(val email: String, val username: String, val displayName: String, val source: String)
+data class PackitLoginResult(val token: String)
+data class PackitUserDetails(val email: String, val username: String, val displayName: String, val userRoles: List<String>)
 
-abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String,
-                                         private val config: ConfigWrapper = Config): OrderlyWebAPIClient {
+abstract class OkHttpPackitAPIClient(private val montaguToken: String,
+                                         private val config: ConfigWrapper = Config): PackitAPIClient {
 
     companion object
     {
-        fun create(montaguToken: String): OkHttpOrderlyWebAPIClient
+        fun create(montaguToken: String): OkHttpPackitAPIClient
         {
             return if (Config.getBool("allow.localhost"))
-                LocalOkHttpMontaguApiClient(montaguToken)
+                LocalOkHttpPackitAPIClient(montaguToken)
             else
-                RemoteHttpMontaguApiClient(montaguToken)
+                RemoteHttpPackitAPIClient(montaguToken)
         }
     }
 
-    private val baseUrl = config["orderlyweb.api.url"];
-    private var orderlyWebToken: String? = null;
+    private val baseUrl = config["packit.api.url"];
+    private var packitToken: String? = null;
 
     private val gson = GsonBuilder().create()
 
     override fun addUser(email: String, username: String, displayName: String) {
-        val orderlyWebToken = getOrderlyWebToken()
-        val userDetails = OrderlyWebUserDetails(email, username, displayName, "Montagu")
+        val packitToken = getPackitToken()
+        val userDetails = OrderlyWebUserDetails(email, username, displayName, listOf())
         val postBody = gson.toJson(userDetails)
-        val postResponse = post("$baseUrl/user/add", mapOf("Authorization" to "Bearer $orderlyWebToken"), postBody)
+        val postResponse = post("$baseUrl/user/external", mapOf("Authorization" to "Bearer $packitToken"), postBody)
         val code = postResponse.code
         if (code != 200) {
-            throw OrderlyWebError("Error adding user to OrderlyWeb. Code: $code")
+            throw PackitError("Error adding user to Packit. Code: $code")
         }
     }
 
-    private fun getOrderlyWebToken(): String
+    private fun getPackitToken(): String
     {
-        if (orderlyWebToken == null) {
+        if (packitToken == null) {
             val requestHeaders = mapOf(
-                    "Authorization" to "token $montaguToken",
+                    "Authorization" to "Bearer $montaguToken",
                     "Accept" to "application/json"
             )
 
-            post("$baseUrl/login", requestHeaders, "")
+            post("$baseUrl/auth/login/montagu", requestHeaders, "")
                     .use { response ->
                         val body = response.body!!.string()
 
                         val loginResult = parseLoginResult(body)
-                        orderlyWebToken = loginResult.access_token;
+                        packitToken = loginResult.token;
                     }
         }
-        return orderlyWebToken!!
+        return packitToken!!
     }
 
     private fun post(url: String, headersMap: Map<String, String>, body: String): Response
@@ -90,15 +90,15 @@ abstract class OkHttpOrderlyWebAPIClient(private val montaguToken: String,
         return headersBuilder.build()
     }
 
-    private fun parseLoginResult(jsonString: String): OrderlyWebLoginResult
+    private fun parseLoginResult(jsonString: String): PackitLoginResult
     {
         return try
         {
-            gson.fromJson<OrderlyWebLoginResult>(jsonString, OrderlyWebLoginResult::class.java);
+            gson.fromJson<PackitLoginResult>(jsonString, PackitLoginResult::class.java);
         }
         catch(e: JsonSyntaxException)
         {
-            throw OrderlyWebError("Failed to parse text as JSON.\nText was: $jsonString\n\n$e")
+            throw PackitError("Failed to parse text as JSON.\nText was: $jsonString")
         }
     }
 
@@ -139,7 +139,7 @@ class LocalOkHttpMontaguApiClient(montaguToken: String): OkHttpOrderlyWebAPIClie
     }
 }
 
-class RemoteHttpMontaguApiClient(montaguToken: String): OkHttpOrderlyWebAPIClient(montaguToken)
+class RemoteHttpPackitApiClient(montaguToken: String): OkHttpPackitAPIClient(montaguToken)
 {
     override fun getHttpClient(): OkHttpClient
     {
