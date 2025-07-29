@@ -1,4 +1,4 @@
-FROM node:16-buster
+FROM node:24
 
 WORKDIR /workspace
 COPY . /workspace
