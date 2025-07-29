@@ -17,7 +17,7 @@ docker build --tag montagu-api-app-build \
 
 # Run test dependencies
 $HERE/../scripts/start-database.sh
-$HERE/../scripts/start-orderly-web.sh
+$HERE/../scripts/start-packit.sh
 $HERE/../scripts/start-api.sh
 $HERE/../scripts/start-task-queue.sh
 

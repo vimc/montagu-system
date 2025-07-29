@@ -10,7 +10,7 @@ BRANCH_TAG=$TAG:$GIT_BRANCH
 
 # Run test dependencies
 $HERE/../scripts/start-database.sh
-$HERE/../scripts/start-orderly-web.sh
+$HERE/../scripts/start-packit.sh
 $HERE/../scripts/start-api.sh $GIT_SHA
 $HERE/../scripts/start-task-queue.sh
 

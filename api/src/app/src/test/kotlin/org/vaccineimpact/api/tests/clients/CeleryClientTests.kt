@@ -9,11 +9,11 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.helpers.ContentTypes
 
-// You must have the database, orderly-web, task-queue and api running for this test suite
+// You must have the database, packit, task-queue and api running for this test suite
 // to pass.
 // :startDatabase
 // :startTestAPI
-// :startOrderlyWeb
+// :startPackit
 // :startTaskQueue
 class CeleryClientTests : MontaguTests()
 {

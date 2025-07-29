@@ -77,8 +77,8 @@ task startDatabase(type: Exec, dependsOn: ':loadPropertiesTask') {
     commandLine 'bash', '../scripts/start-database.sh'
 }
 
-task startOrderlyWeb(type: Exec) {
-    commandLine 'bash', '../scripts/start-orderly-web.sh'
+task startPackit(type: Exec) {
+    commandLine 'bash', '../scripts/start-packit.sh'
 }
 
 task startTaskQueue(type: Exec) {
