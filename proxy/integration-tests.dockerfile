@@ -1,4 +1,4 @@
-FROM node:16-buster
+FROM node:24
 
 RUN apt-get update && apt-get install -yq \
                 fonts-liberation \
