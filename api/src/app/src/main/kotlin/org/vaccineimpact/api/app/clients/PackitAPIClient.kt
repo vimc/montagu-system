@@ -7,7 +7,9 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.vaccineimpact.api.app.errors.PackitError
 import org.vaccineimpact.api.db.Config
-import org.vaccineimpact.api.db.ConfigWrapper
+import org.vaccineimpact.api.db.
+import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.context.ActionContext
 import java.security.cert.X509Certificate
 import javax.net.ssl.*
 
@@ -20,7 +22,8 @@ interface PackitAPIClient
 data class PackitLoginResult(val token: String)
 data class PackitUserDetails(val email: String, val username: String, val displayName: String, val userRoles: List<String>)
 
-abstract class OkHttpPackitAPIClient(private val montaguToken: String,
+abstract class OkHttpPackitAPIClient(private val context: ActionContext,
+                                     private val userRepository: UserRepository,
                                          private val config: ConfigWrapper = Config): PackitAPIClient {
 
     companion object
@@ -52,18 +55,33 @@ abstract class OkHttpPackitAPIClient(private val montaguToken: String,
 
     private fun getPackitToken(): String
     {
+        // We hit the unsecured endpoint here, rather than the proxy-protected /auth/login/montagu
+        // - since this Montagu api is the auth provider for Packit, we can assume that if we can access
+        // packit over http within the docker network to access the /preauth endpoint then our montaguToken
+        // should be valid authentiation for packit. This means this client should only be used in authenticated
+        // endpoints.
+        // TODO: Actually, it would be nicer to go via the proxy so only one thing uses the trustd headers..
+        // so add that later once this is working! Revert this and use montaguToken (authenticationToken() from the
+        // context, and pass as Authorization: Bearer token, not the X headers.
+        val username = context.username
+        if (username == null) {
+            throw PackitError("Cannot access Packit when not authenticated")
+        }
+        val user = userRepository.getUserByUsername(userName)
         if (packitToken == null) {
             val requestHeaders = mapOf(
-                    "Authorization" to "Bearer $montaguToken",
-                    "Accept" to "application/json"
+                    "Accept" to "application/json",
+                    "X-Remote-User" to username,
+                    "X-Remote-Name" to user.name,
+                    "X-Remote-Email" to user.email
             )
 
-            post("$baseUrl/auth/login/montagu", requestHeaders, "")
+            post("$baseUrl/auth/login/preauth", requestHeaders, "")
                     .use { response ->
                         val body = response.body!!.string()
 
                         val loginResult = parseLoginResult(body)
-                        packitToken = loginResult.token;
+                        packitToken = loginResult.token
                     }
         }
         return packitToken!!

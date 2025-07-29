@@ -26,7 +26,8 @@ class UserController(
         private val userRepository: UserRepository,
         private val oneTimeTokenGenerator: OneTimeTokenGenerator,
         private val emailManager: EmailManager = getEmailManager(),
-        private val packitAPIClient: PackitAPIClient = OkHttpPackitAPIClient.create(context.authenticationToken()!!)
+        // TODO: revert to token here when use proxy
+        private val packitAPIClient: PackitAPIClient = OkHttpPackitAPIClient.create(context, userRepository)
 ) : Controller(context)
 {
 
