@@ -7,7 +7,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.vaccineimpact.api.app.errors.PackitError
 import org.vaccineimpact.api.db.Config
-import org.vaccineimpact.api.db.
+import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.context.ActionContext
 import java.security.cert.X509Certificate
@@ -24,16 +24,16 @@ data class PackitUserDetails(val email: String, val username: String, val displa
 
 abstract class OkHttpPackitAPIClient(private val context: ActionContext,
                                      private val userRepository: UserRepository,
-                                         private val config: ConfigWrapper = Config): PackitAPIClient {
+                                     private val config: ConfigWrapper = Config): PackitAPIClient {
 
     companion object
     {
-        fun create(montaguToken: String): OkHttpPackitAPIClient
+        fun create(context: ActionContext, userRepository: UserRepository): OkHttpPackitAPIClient
         {
             return if (Config.getBool("allow.localhost"))
-                LocalOkHttpPackitAPIClient(montaguToken)
+                LocalOkHttpPackitAPIClient(context, userRepository)
             else
-                RemoteHttpPackitAPIClient(montaguToken)
+                RemoteHttpPackitAPIClient(context, userRepository)
         }
     }
 
@@ -44,7 +44,7 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
 
     override fun addUser(email: String, username: String, displayName: String) {
         val packitToken = getPackitToken()
-        val userDetails = OrderlyWebUserDetails(email, username, displayName, listOf())
+        val userDetails = PackitUserDetails(email, username, displayName, listOf())
         val postBody = gson.toJson(userDetails)
         val postResponse = post("$baseUrl/user/external", mapOf("Authorization" to "Bearer $packitToken"), postBody)
         val code = postResponse.code
@@ -69,7 +69,7 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
         if (username == null) {
             throw PackitError("Cannot access Packit when not authenticated")
         }
-        val user = userRepository.getUserByUsername(userName)
+        val user = userRepository.getUserByUsername(username)
         if (packitToken == null) {
             val requestHeaders = mapOf(
                     "Accept" to "application/json",
@@ -125,7 +125,7 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
     protected abstract fun getHttpClient(): OkHttpClient
 }
 
-class LocalOkHttpMontaguApiClient(montaguToken: String): OkHttpOrderlyWebAPIClient(montaguToken)
+class LocalOkHttpPackitAPIClient(context: ActionContext, userRepository: UserRepository): OkHttpPackitAPIClient(context, userRepository)
 {
     override fun getHttpClient(): OkHttpClient
     {
@@ -159,7 +159,7 @@ class LocalOkHttpMontaguApiClient(montaguToken: String): OkHttpOrderlyWebAPIClie
     }
 }
 
-class RemoteHttpPackitApiClient(montaguToken: String): OkHttpPackitAPIClient(montaguToken)
+class RemoteHttpPackitAPIClient(context: ActionContext, userRepository: UserRepository): OkHttpPackitAPIClient(context, userRepository)
 {
     override fun getHttpClient(): OkHttpClient
     {
