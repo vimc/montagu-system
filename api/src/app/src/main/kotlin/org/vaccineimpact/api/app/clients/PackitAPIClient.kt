@@ -63,6 +63,8 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
         // TODO: Actually, it would be nicer to go via the proxy so only one thing uses the trustd headers..
         // so add that later once this is working! Revert this and use montaguToken (authenticationToken() from the
         // context, and pass as Authorization: Bearer token, not the X headers.
+        // NB when update this will need to use https://localhost or reverse-proxy configured packit urls
+        // OR Do bypass the proxy and make an XRemoteHeadersFromUserName utils that both use
         val username = context.username
         if (username == null) {
             throw PackitError("Cannot access Packit when not authenticated")

@@ -7,15 +7,18 @@ import okio.Buffer
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.mockito.ArgumentCaptor
-import org.vaccineimpact.api.app.clients.OkHttpOrderlyWebAPIClient
+import org.vaccineimpact.api.app.clients.OkHttpPackitAPIClient
 import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import com.github.fge.jackson.JsonLoader
-import org.vaccineimpact.api.app.errors.OrderlyWebError
+import org.vaccineimpact.api.app.errors.PackitError
 
 
-class TestOkHttpOrderlyWebAPIClient(private val client: OkHttpClient, val config: ConfigWrapper):
-        OkHttpOrderlyWebAPIClient("test_montagu_token", config)
+class TestOkHttpPackitAPIClient(private val client: OkHttpClient,
+                                    val context: ActionContext,
+                                    val userRepository: UserRepository
+                                    val config: ConfigWrapper):
+        OkHttpPackitAPIClient(context, userRepository, config)
 {
    protected override fun getHttpClient(): OkHttpClient
    {
@@ -23,18 +26,31 @@ class TestOkHttpOrderlyWebAPIClient(private val client: OkHttpClient, val config
    }
 }
 
-class OkHttpOrderlyWebAPIClientTests: MontaguTests()
+class OkHttpPackitAPIClientTests: MontaguTests()
 {
+    private val packitTokenresponseBody = "{\"token\": \"test_packit_token\"}"
+        .toResponseBody()
+
+    private val mockContext = mock<ActionContext> {
+        on { username } doReturn "admin.user"
+    }
+
+    private val adminUser = InternalUser(UserProperties("admin.user", "Admin User", "admin.user@example.com"), listOf(), listOf())
+    val mockUserRepository = mock<UserRepository> {
+        on { getUserByUsername("admin.user") } doReturn adminUser
+    }
+
+    private val mockConfig = mock<ConfigWrapper>{
+        on{ get("packit.api.url") } doReturn "http://test-packit"
+    }
+
     @Test
     fun `can add user`()
     {
-        val responseBody = "{access_token: \"test_orderly_web_token\", token_type: \"test\", expires_in: 1000}"
-                .toResponseBody()
-
-        val request = Request.Builder().url("http://test-orderly-web").build()
+        val request = Request.Builder().url("http://test-packit").build()
 
         val response = Response.Builder()
-                .body(responseBody)
+                .body(packitTokenresponseBody)
                 .code(200)
                 .request(request)
                 .protocol(Protocol.HTTP_2)
@@ -49,23 +65,21 @@ class OkHttpOrderlyWebAPIClientTests: MontaguTests()
             on {newCall(any())} doReturn(mockCall)
         }
 
-        val mockConfig = mock<ConfigWrapper>{
-            on{ get("orderlyweb.api.url") } doReturn "http://test-orderly-web"
-        }
         val sut = TestOkHttpOrderlyWebAPIClient(mockClient, mockConfig)
-
         sut.addUser("test@example.com", "test.user", "Test User")
 
         val requestArg : ArgumentCaptor<Request> = ArgumentCaptor.forClass(Request::class.java)
         verify(mockClient, times(2)).newCall(capture(requestArg))
         val allRequests = requestArg.allValues
 
-        //Test GetOrderlyWebToken
+        //Test GetPackitToken
         val tokenRequest = allRequests[0]
-        Assertions.assertThat(tokenRequest.url.toString()).isEqualTo("http://test-orderly-web/login")
+        Assertions.assertThat(tokenRequest.url.toString()).isEqualTo("http://test-packit/login/preauth")
         var headers = tokenRequest.headers
-        Assertions.assertThat(headers["Authorization"]).isEqualTo("token test_montagu_token")
         Assertions.assertThat(headers["Accept"]).isEqualTo("application/json")
+        Assertions.assertThat(headers["X-Remote-User"]).isEqualTo("admin.user")
+        Assertions.assertThat(headers["X-Remote-Name"]).isEqualTo("Admin User")
+        Assertions.assertThat(headers["X-Remote-Email"]).isEqualTo("admin.user@example.com")
 
         var buffer = Buffer()
         tokenRequest.body!!.writeTo(buffer)
@@ -74,9 +88,9 @@ class OkHttpOrderlyWebAPIClientTests: MontaguTests()
 
         //Test post userDetails
         val postUserRequest = allRequests[1]
-        Assertions.assertThat(postUserRequest.url.toString()).isEqualTo("http://test-orderly-web/user/add")
+        Assertions.assertThat(postUserRequest.url.toString()).isEqualTo("http://test-packit/user/external")
         headers = postUserRequest.headers
-        Assertions.assertThat(headers["Authorization"]).isEqualTo("Bearer test_orderly_web_token")
+        Assertions.assertThat(headers["Authorization"]).isEqualTo("Bearer test_packit_token")
 
         buffer = Buffer()
         postUserRequest.body!!.writeTo(buffer)
@@ -86,19 +100,15 @@ class OkHttpOrderlyWebAPIClientTests: MontaguTests()
         Assertions.assertThat(userDetailsJson["email"].asText()).isEqualTo("test@example.com")
         Assertions.assertThat(userDetailsJson["username"].asText()).isEqualTo("test.user")
         Assertions.assertThat(userDetailsJson["displayName"].asText()).isEqualTo("Test User")
-        Assertions.assertThat(userDetailsJson["source"].asText()).isEqualTo("Montagu")
     }
 
     @Test
-    fun `throws OrderlyWebError if unsuccessful call to add user`()
+    fun `throws PackitError if unsuccessful call to add user`()
     {
-        val responseBody = "{access_token: \"test_orderly_web_token\", token_type: \"test\", expires_in: 1000}"
-                .toResponseBody()
-
-        val request = Request.Builder().url("http://test-orderly-web").build()
+        val request = Request.Builder().url("http://test-packit").build()
 
         val response = Response.Builder()
-                .body(responseBody)
+                .body(packitTokenResponseBody)
                 .code(500)
                 .request(request)
                 .protocol(Protocol.HTTP_2)
@@ -113,12 +123,9 @@ class OkHttpOrderlyWebAPIClientTests: MontaguTests()
             on {newCall(any())} doReturn(mockCall)
         }
 
-        val mockConfig = mock<ConfigWrapper>{
-            on{ get("orderlyweb.api.url") } doReturn "http://test-orderly-web"
-        }
         val sut = TestOkHttpOrderlyWebAPIClient(mockClient, mockConfig)
 
         Assertions.assertThatThrownBy {  sut.addUser("test@example.com", "test.user", "Test User") }
-                .isInstanceOf(OrderlyWebError::class.java)
+                .isInstanceOf(PackitError::class.java)
     }
 }
