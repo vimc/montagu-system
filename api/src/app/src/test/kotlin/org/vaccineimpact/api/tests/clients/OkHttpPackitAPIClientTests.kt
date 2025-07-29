@@ -8,6 +8,10 @@ import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.mockito.ArgumentCaptor
 import org.vaccineimpact.api.app.clients.OkHttpPackitAPIClient
+import org.vaccineimpact.api.app.repositories.UserRepository
+import org.vaccineimpact.api.app.context.ActionContext
+import org.vaccineimpact.api.security.InternalUser
+import org.vaccineimpact.api.security.UserProperties
 import org.vaccineimpact.api.db.ConfigWrapper
 import org.vaccineimpact.api.test_helpers.MontaguTests
 import com.github.fge.jackson.JsonLoader
@@ -16,7 +20,7 @@ import org.vaccineimpact.api.app.errors.PackitError
 
 class TestOkHttpPackitAPIClient(private val client: OkHttpClient,
                                     val context: ActionContext,
-                                    val userRepository: UserRepository
+                                    val userRepository: UserRepository,
                                     val config: ConfigWrapper):
         OkHttpPackitAPIClient(context, userRepository, config)
 {
@@ -28,14 +32,14 @@ class TestOkHttpPackitAPIClient(private val client: OkHttpClient,
 
 class OkHttpPackitAPIClientTests: MontaguTests()
 {
-    private val packitTokenresponseBody = "{\"token\": \"test_packit_token\"}"
+    private val packitTokenResponseBody = "{\"token\": \"test_packit_token\"}"
         .toResponseBody()
 
     private val mockContext = mock<ActionContext> {
         on { username } doReturn "admin.user"
     }
 
-    private val adminUser = InternalUser(UserProperties("admin.user", "Admin User", "admin.user@example.com"), listOf(), listOf())
+    private val adminUser = InternalUser(UserProperties("admin.user", "Admin User", "admin.user@example.com", null, null), listOf(), listOf())
     val mockUserRepository = mock<UserRepository> {
         on { getUserByUsername("admin.user") } doReturn adminUser
     }
@@ -50,7 +54,7 @@ class OkHttpPackitAPIClientTests: MontaguTests()
         val request = Request.Builder().url("http://test-packit").build()
 
         val response = Response.Builder()
-                .body(packitTokenresponseBody)
+                .body(packitTokenResponseBody)
                 .code(200)
                 .request(request)
                 .protocol(Protocol.HTTP_2)
@@ -65,7 +69,7 @@ class OkHttpPackitAPIClientTests: MontaguTests()
             on {newCall(any())} doReturn(mockCall)
         }
 
-        val sut = TestOkHttpOrderlyWebAPIClient(mockClient, mockConfig)
+        val sut = TestOkHttpPackitAPIClient(mockClient, mockContext, mockUserRepository, mockConfig)
         sut.addUser("test@example.com", "test.user", "Test User")
 
         val requestArg : ArgumentCaptor<Request> = ArgumentCaptor.forClass(Request::class.java)
@@ -123,7 +127,7 @@ class OkHttpPackitAPIClientTests: MontaguTests()
             on {newCall(any())} doReturn(mockCall)
         }
 
-        val sut = TestOkHttpOrderlyWebAPIClient(mockClient, mockConfig)
+        val sut = TestOkHttpPackitAPIClient(mockClient, mockContext, mockUserRepository, mockConfig)
 
         Assertions.assertThatThrownBy {  sut.addUser("test@example.com", "test.user", "Test User") }
                 .isInstanceOf(PackitError::class.java)

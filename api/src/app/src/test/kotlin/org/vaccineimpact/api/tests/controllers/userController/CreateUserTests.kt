@@ -45,7 +45,7 @@ class CreateUserTests : MontaguTests()
     fun `create user adds user to Packit`()
     {
         val mockPackitClient = mock<PackitAPIClient>()
-        postToUserCreate(orderlyWebClient = mockPackitClient, userRepo = userRepo())
+        postToUserCreate(packitAPIClient = mockPackitClient, userRepo = userRepo())
         verify(mockPackitClient).addUser(email, username, name)
     }
 
@@ -78,7 +78,7 @@ class CreateUserTests : MontaguTests()
     private fun postToUserCreate(
             userRepo: UserRepository = mock<UserRepository>(),
             emailManager: EmailManager = getEmailManager(),
-            orderlyWebClient: OrderlyWebAPIClient = mock()
+            packitAPIClient: PackitAPIClient = mock()
     ): String
     {
         val model = CreateUser(username, name, email)
@@ -95,7 +95,7 @@ class CreateUserTests : MontaguTests()
                 userRepo,
                 tokenGenerator,
                 emailManager,
-                orderlyWebClient)
+                packitAPIClient)
 
         return sut.createUser()
     }
