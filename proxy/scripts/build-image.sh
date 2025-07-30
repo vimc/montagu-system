@@ -4,7 +4,7 @@ set -ex
 HERE=$(dirname $0)
 . $HERE/common
 
-docker build \
+docker build --pull \
     -t $BRANCH_TAG \
     -t $SHA_TAG \
     .
