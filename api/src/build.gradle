@@ -93,8 +93,8 @@ task stopDatabase(type: Exec) {
     commandLine 'bash', '../scripts/stop-database.sh'
 }
 
-task stopOrderlyWeb(type: Exec) {
-    commandLine 'bash', '../scripts/stop-orderly-web.sh'
+task stopPackit(type: Exec) {
+    commandLine 'bash', '../scripts/stop-packit.sh'
 }
 
 task stopTaskQueue(type: Exec) {

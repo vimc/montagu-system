@@ -43,4 +43,5 @@ test-data\.sql
 docs/.idea
 .idea
 src/*/coverage/**
-.venv
+**/.venv
+**/.packit_identity

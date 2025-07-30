@@ -1,10 +1,11 @@
+# TODO: is this actually different from the docker config?
 container_prefix: montagu
 
 protect_data: false
 
 repo: ghcr.io/mrc-ide
 
-network: host
+network: db_nw
 
 volumes:
   outpack: montagu_outpack_volume
