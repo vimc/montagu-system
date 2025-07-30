@@ -4,7 +4,7 @@ protect_data: false
 
 repo: ghcr.io/mrc-ide
 
-network: db_nw
+network: test_nw
 
 volumes:
   outpack: montagu_outpack_volume

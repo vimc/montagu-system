@@ -29,15 +29,12 @@ export DB_PORT=5432
 export NETWORK=test_nw
 export GIT_SHA=$GIT_SHA
 
-# Temporary measure to install constellation on all build steps - required by orderly-web install
-pip3 install constellation
-
 # Teardown on exit
 function cleanup() {
-  $HERE/../scripts/stop-database.sh
-  $HERE/../scripts/stop-api.sh
-  $HERE/../scripts/stop-packit.sh
-  $HERE/../scripts/stop-task-queue.sh
+  $HERE/../scripts/stop-database.sh || true
+  $HERE/../scripts/stop-api.sh || true
+  $HERE/../scripts/stop-packit.sh || true
+  $HERE/../scripts/stop-task-queue.sh || true
   docker network rm $NETWORK || true
 }
 trap cleanup EXIT
