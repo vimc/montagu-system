@@ -22,7 +22,11 @@ packit start --pull
 
 
 # give the db a moment...
-sleep 5
+if [ "$BUILDKITE" = "true" ]; then
+    sleep 60
+else
+    sleep 5
+fi
 
 USERNAME='test.user'
 EMAIL='user@test.com'
