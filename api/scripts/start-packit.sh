@@ -11,8 +11,10 @@ if [[ -z $CONFIG ]]; then
 fi
 
 # Install packit
-python3 -m venv .venv
-source .venv/bin/activate
+if [ "$BUILDKITE" != "true" ]; then
+  python3 -m venv .venv
+  source .venv/bin/activate
+fi
 pip3 install constellation packit-deploy
 
 packit configure $HERE/$CONFIG
