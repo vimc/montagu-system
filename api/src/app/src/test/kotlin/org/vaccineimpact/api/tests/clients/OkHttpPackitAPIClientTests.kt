@@ -78,7 +78,7 @@ class OkHttpPackitAPIClientTests: MontaguTests()
 
         //Test GetPackitToken
         val tokenRequest = allRequests[0]
-        Assertions.assertThat(tokenRequest.url.toString()).isEqualTo("http://test-packit/login/preauth")
+        Assertions.assertThat(tokenRequest.url.toString()).isEqualTo("http://test-packit/auth/login/preauth")
         var headers = tokenRequest.headers
         Assertions.assertThat(headers["Accept"]).isEqualTo("application/json")
         Assertions.assertThat(headers["X-Remote-User"]).isEqualTo("admin.user")

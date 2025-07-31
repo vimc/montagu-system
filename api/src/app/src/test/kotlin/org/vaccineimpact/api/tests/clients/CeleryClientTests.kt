@@ -39,10 +39,12 @@ class CeleryClientTests : MontaguTests()
         while ((!success) && (tries < 60))
         {
             val taskResponse = httpClient.get(statusUrl, mapOf("Content-type" to ContentTypes.json))
+
             val responseJson = JsonLoader.fromString(taskResponse.text)
             val state = responseJson["state"].asText()
             if (state == "SUCCESS")
             {
+                assertThat(taskResponse.text).isEqualTo("test")
                 success = true
 
                 val result = responseJson["result"]
