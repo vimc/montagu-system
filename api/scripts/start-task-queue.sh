@@ -23,7 +23,7 @@ docker pull $TASK_QUEUE_WORKER
 docker run --rm -d \
   $NETWORK_MAPPING \
   -v $ROOT/scripts/task-queue-config.yml:/home/worker/config/config.yml \
-  --name task_queue_worker \
+  --name task-queue-worker \
   $TASK_QUEUE_WORKER
 
 # flower provides an http api for interacting with/monitoring celery

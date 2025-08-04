@@ -85,12 +85,20 @@ task startTaskQueue(type: Exec) {
     commandLine 'bash', '../scripts/start-task-queue.sh'
 }
 
+task startProxy(type: Exec) {
+    commandLine 'bash', '../scripts/start-proxy.sh'
+}
+
 task startTestAPI(type: Exec) {
     commandLine 'bash', '../scripts/start-api.sh'
 }
 
 task stopDatabase(type: Exec) {
     commandLine 'bash', '../scripts/stop-database.sh'
+}
+
+task stopProxy(type: Exec) {
+    commandLine 'bash', '../scripts/stop-proxy.sh'
 }
 
 task stopPackit(type: Exec) {

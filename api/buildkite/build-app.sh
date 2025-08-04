@@ -19,6 +19,7 @@ docker build --tag montagu-api-app-build \
 $HERE/../scripts/start-database.sh
 $HERE/../scripts/start-packit.sh docker-packit
 $HERE/../scripts/start-api.sh
+$HERE/../scripts/start-proxy.sh
 $HERE/../scripts/start-task-queue.sh
 
 # Run the created image

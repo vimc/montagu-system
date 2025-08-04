@@ -2,6 +2,6 @@
 set -ex
 
 docker kill mq || true
-docker logs task_queue_worker # TODO: remove!
-docker kill task_queue_worker || true
+docker logs task-queue-worker # TODO: remove!
+docker kill task-queue-worker || true
 docker kill flower || true
