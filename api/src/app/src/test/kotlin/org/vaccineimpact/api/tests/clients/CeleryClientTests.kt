@@ -14,8 +14,8 @@ import org.vaccineimpact.api.models.helpers.ContentTypes
 // :startDatabase
 // :startTestAPI
 // :startPackit
-// :startProxy
 // :startTaskQueue
+// :startProxy
 class CeleryClientTests : MontaguTests()
 {
     @Test
