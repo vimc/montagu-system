@@ -82,6 +82,9 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
             post("$baseUrl/auth/login/preauth", requestHeaders, "")
                     .use { response ->
                         val body = response.body!!.string()
+                        if (response.code != 200) {
+                            throw PackitError("Error getting Packit token. Code: ${response.code}. Body: $body")
+                        }
 
                         val loginResult = parseLoginResult(body)
                         packitToken = loginResult.token
