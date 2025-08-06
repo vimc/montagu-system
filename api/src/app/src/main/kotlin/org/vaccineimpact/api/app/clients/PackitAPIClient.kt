@@ -48,8 +48,9 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
         val postBody = gson.toJson(userDetails)
         val postResponse = post("$baseUrl/user/external", mapOf("Authorization" to "Bearer $packitToken"), postBody)
         val code = postResponse.code
-        if (code != 200) {
-            throw PackitError("Error adding user to Packit. Code: $code")
+        if (code != 201) {
+            val body = postResponse.body!!.string()
+            throw PackitError("Error adding user to Packit. Code: $code. Body: $body")
         }
     }
 

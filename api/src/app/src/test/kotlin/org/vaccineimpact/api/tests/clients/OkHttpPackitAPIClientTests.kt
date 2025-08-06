@@ -51,8 +51,6 @@ class OkHttpPackitAPIClientTests: MontaguTests()
     @Test
     fun `can add user`()
     {
-        // TODO: test method!!
-
         val request = Request.Builder().url("http://test-packit").build()
 
         val response = Response.Builder()
@@ -80,6 +78,7 @@ class OkHttpPackitAPIClientTests: MontaguTests()
 
         //Test GetPackitToken
         val tokenRequest = allRequests[0]
+        Assertions.assertThat(tokenRequest.method).isEqualTo("GET")
         Assertions.assertThat(tokenRequest.url.toString()).isEqualTo("http://test-packit/auth/login/preauth")
         var headers = tokenRequest.headers
         Assertions.assertThat(headers["Accept"]).isEqualTo("application/json")
@@ -89,6 +88,7 @@ class OkHttpPackitAPIClientTests: MontaguTests()
 
         //Test post userDetails
         val postUserRequest = allRequests[1]
+        Assertions.assertThat(postUserRequest.method).isEqualTo("POST")
         Assertions.assertThat(postUserRequest.url.toString()).isEqualTo("http://test-packit/user/external")
         headers = postUserRequest.headers
         Assertions.assertThat(headers["Authorization"]).isEqualTo("Bearer test_packit_token")
