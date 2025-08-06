@@ -33,7 +33,7 @@ export GIT_SHA=$GIT_SHA
 function cleanup() {
   docker ps
   docker logs api || true
-  docker exec api curl http://packit-api:8080/auth/login/preauth
+  docker exec api curl http://packit-api:8080/auth/login/preauth || true
   $HERE/../scripts/stop-database.sh || true
   $HERE/../scripts/stop-api.sh || true
   $HERE/../scripts/stop-packit.sh || true
