@@ -78,6 +78,7 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
                     "X-Remote-Email" to user.email
             )
 
+            prinln("GETTING TOKEN FROM $baseUrl")
             post("$baseUrl/auth/login/preauth", requestHeaders, "")
                     .use { response ->
                         val body = response.body!!.string()
