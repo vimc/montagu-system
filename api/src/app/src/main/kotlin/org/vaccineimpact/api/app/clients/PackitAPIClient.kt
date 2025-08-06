@@ -79,7 +79,7 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
             )
 
             println("GETTING TOKEN FROM $baseUrl")
-            post("$baseUrl/auth/login/preauth", requestHeaders, "")
+            get("$baseUrl/auth/login/preauth", requestHeaders)
                     .use { response ->
                         val body = response.body!!.string()
                         if (response.code != 200) {
@@ -88,6 +88,7 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
 
                         val loginResult = parseLoginResult(body)
                         packitToken = loginResult.token
+                        println("got token $packitToken")
                     }
         }
         return packitToken!!
@@ -104,6 +105,19 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
                 .headers(headers)
                 .post(requestBody)
                 .build()
+        return client.newCall(request).execute()
+    }
+
+    private fun get(url: String, headersMap: Map<String, String>): Response
+    {
+        val client = getHttpClient();
+        val headers = buildHeaders(headersMap);
+
+        val request = Request.Builder()
+            .url(url)
+            .headers(headers)
+            .get()
+            .build()
         return client.newCall(request).execute()
     }
 
