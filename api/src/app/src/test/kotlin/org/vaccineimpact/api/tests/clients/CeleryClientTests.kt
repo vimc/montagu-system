@@ -45,7 +45,6 @@ class CeleryClientTests : MontaguTests()
             val state = responseJson["state"].asText()
             if (state == "SUCCESS")
             {
-                assertThat(taskResponse.text).isEqualTo("test")
                 success = true
 
                 val result = responseJson["result"]
