@@ -38,7 +38,7 @@ function cleanup() {
   $HERE/../scripts/stop-database.sh || true
   $HERE/../scripts/stop-api.sh || true
   $HERE/../scripts/stop-packit.sh || true
-  docker volume rm montagu_packit_db
+  docker volume rm montagu_packit_db || true
   $HERE/../scripts/stop-task-queue.sh || true
   $HERE/../scripts/stop-proxy.sh || true
   docker network rm $NETWORK || true
