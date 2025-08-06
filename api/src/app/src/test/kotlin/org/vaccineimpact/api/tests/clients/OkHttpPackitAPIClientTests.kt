@@ -93,7 +93,7 @@ class OkHttpPackitAPIClientTests: MontaguTests()
         headers = postUserRequest.headers
         Assertions.assertThat(headers["Authorization"]).isEqualTo("Bearer test_packit_token")
 
-        buffer = Buffer()
+        val buffer = Buffer()
         postUserRequest.body!!.writeTo(buffer)
         val postUserBodyString = buffer.readUtf8()
 
