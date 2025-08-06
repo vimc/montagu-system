@@ -32,7 +32,7 @@ export GIT_SHA=$GIT_SHA
 # Teardown on exit
 function cleanup() {
   docker ps
-  docker logs api
+  docker logs api || true
   $HERE/../scripts/stop-database.sh || true
   $HERE/../scripts/stop-api.sh || true
   $HERE/../scripts/stop-packit.sh || true
