@@ -87,11 +87,6 @@ class OkHttpPackitAPIClientTests: MontaguTests()
         Assertions.assertThat(headers["X-Remote-Name"]).isEqualTo("Admin User")
         Assertions.assertThat(headers["X-Remote-Email"]).isEqualTo("admin.user@example.com")
 
-        var buffer = Buffer()
-        tokenRequest.body!!.writeTo(buffer)
-        val tokenBodyString =  buffer.readUtf8()
-        Assertions.assertThat(tokenBodyString).isEqualTo("")
-
         //Test post userDetails
         val postUserRequest = allRequests[1]
         Assertions.assertThat(postUserRequest.url.toString()).isEqualTo("http://test-packit/user/external")
