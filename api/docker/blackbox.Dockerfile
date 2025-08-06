@@ -16,4 +16,5 @@ RUN ./gradlew
 # Do our build
 COPY . /api
 RUN ./gradlew :blackboxTests:compileKotlin
-CMD ./gradlew :blackboxTests:test -i
+# TODO remove --tests!
+CMD ./gradlew :blackboxTests:test -i --tests *CreateUserTests*

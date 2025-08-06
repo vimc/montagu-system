@@ -30,6 +30,7 @@ export NETWORK=test_nw
 export GIT_SHA=$GIT_SHA
 
 # Teardown on exit
+# TODO: remove debug
 function cleanup() {
   docker ps
   docker logs api || true
@@ -37,6 +38,7 @@ function cleanup() {
   $HERE/../scripts/stop-database.sh || true
   $HERE/../scripts/stop-api.sh || true
   $HERE/../scripts/stop-packit.sh || true
+  docker volume rm montagu_packit_db
   $HERE/../scripts/stop-task-queue.sh || true
   $HERE/../scripts/stop-proxy.sh || true
   docker network rm $NETWORK || true
