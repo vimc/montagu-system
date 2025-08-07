@@ -101,7 +101,7 @@ class CreateUserTests : DatabaseTest()
         TestUserHelper.setupTestUser()
         val response = requestHelper.post("/users/", creationPermissions, json {
             obj(
-                    "username" to "bob",
+                    "username" to "bob.smith",
                     "name" to " ",
                     "email" to "email@example.com"
             )
@@ -131,7 +131,7 @@ class CreateUserTests : DatabaseTest()
         TestUserHelper.setupTestUser()
         val response = requestHelper.post("/users/", creationPermissions, json {
             obj(
-                    "username" to "a.b.c",
+                    "username" to "john.smith",
                     "name" to "john@example.com",
                     "email" to "John Smith"
             )
@@ -145,6 +145,13 @@ class CreateUserTests : DatabaseTest()
         val postData = getPostData(suffix)
         val token = TestUserHelper.setupTestUserAndGetToken(creationPermissions)
         val r1 = requestHelper.post("/users/", token = token, data = postData.toJsonObject())
+
+        // TODO: remove!
+        if (r1.statusCode != 201)
+        {
+            throw Exception("ERROR CREATING PRE_DUP: ${r1.text}")
+        }
+
         assertThat(r1.statusCode).isEqualTo(201)
 
         val differentData = mapOf(
