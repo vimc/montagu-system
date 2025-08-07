@@ -22,7 +22,7 @@ class CreateUserTests : DatabaseTest()
     val creationPermissions = PermissionSet("*/can-login", "*/users.create")
 
     private fun getPostData(suffix: String) = mapOf(
-            "username" to "gandalf.grey.$suffix",
+            "username" to "gandalf.grey$suffix",
             "name" to "Gandalf the Grey $suffix",
             "email" to "gandalf.$suffix@example.com"
     )
@@ -30,9 +30,8 @@ class CreateUserTests : DatabaseTest()
     @Test
     fun `can create user`()
     {
-        val objectUrl = "/users/gandalf.grey/"
-
         val postData = getPostData("create")
+        val objectUrl = "/users/${postData["username"]}/"
         validate("/users/", HttpMethod.post) sendingJSON {
             postData.toJsonObject()
         } withRequestSchema "CreateUser" requiringPermissions {
