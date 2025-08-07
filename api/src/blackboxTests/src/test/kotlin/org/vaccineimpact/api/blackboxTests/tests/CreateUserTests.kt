@@ -72,7 +72,7 @@ class CreateUserTests : DatabaseTest()
     @Test
     fun `cannot create two users with the same username`()
     {
-        assertCannotCreateDuplicate("username", "dupuname"," duplicate-key:username")
+        assertCannotCreateDuplicate("username", "dupuname", "duplicate-key:username")
     }
 
     @Test
@@ -145,12 +145,6 @@ class CreateUserTests : DatabaseTest()
         val postData = getPostData(suffix)
         val token = TestUserHelper.setupTestUserAndGetToken(creationPermissions)
         val r1 = requestHelper.post("/users/", token = token, data = postData.toJsonObject())
-
-        // TODO: remove!
-        if (r1.statusCode != 201)
-        {
-            throw Exception("ERROR CREATING PRE_DUP: ${r1.text}")
-        }
 
         assertThat(r1.statusCode).isEqualTo(201)
 
