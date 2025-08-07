@@ -22,18 +22,18 @@ interface PackitAPIClient
 data class PackitLoginResult(val token: String)
 data class PackitUserDetails(val email: String, val username: String, val displayName: String, val userRoles: List<String>)
 
-abstract class OkHttpPackitAPIClient(private val context: ActionContext,
-                                     private val userRepository: UserRepository,
+abstract class OkHttpPackitAPIClient(private val montaguToken: String,
                                      private val config: ConfigWrapper = Config): PackitAPIClient {
 
     companion object
     {
-        fun create(context: ActionContext, userRepository: UserRepository): OkHttpPackitAPIClient
+        fun create(token: String): OkHttpPackitAPIClient
         {
+            // TODO: replace with config
             return if (Config.getBool("allow.localhost"))
-                LocalOkHttpPackitAPIClient(context, userRepository)
+                LocalOkHttpPackitAPIClient(token)
             else
-                RemoteHttpPackitAPIClient(context, userRepository)
+                RemoteHttpPackitAPIClient(token)
         }
     }
 
@@ -57,31 +57,14 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
 
     private fun getPackitToken(): String
     {
-        // We hit the unsecured endpoint here, rather than the proxy-protected /auth/login/montagu
-        // - since this Montagu api is the auth provider for Packit, we can assume that if we can access
-        // packit over http within the docker network to access the /preauth endpoint then our montaguToken
-        // should be valid authentiation for packit. This means this client should only be used in authenticated
-        // endpoints.
-        // TODO: Actually, it would be nicer to go via the proxy so only one thing uses the trustd headers..
-        // so add that later once this is working! Revert this and use montaguToken (authenticationToken() from the
-        // context, and pass as Authorization: Bearer token, not the X headers.
-        // NB when update this will need to use https://localhost or reverse-proxy configured packit urls
-        // OR Do bypass the proxy and make an XRemoteHeadersFromUserName utils that both use
-        val username = context.username
-        if (username == null) {
-            throw PackitError("Cannot access Packit when not authenticated")
-        }
-        val user = userRepository.getUserByUsername(username)
         if (packitToken == null) {
-            val requestHeaders = mapOf(
-                    "Accept" to "application/json",
-                    "X-Remote-User" to username,
-                    "X-Remote-Name" to user.name,
-                    "X-Remote-Email" to user.email
-            )
-
+            // TODO: remove
             println("GETTING TOKEN FROM $baseUrl")
-            get("$baseUrl/auth/login/preauth", requestHeaders)
+            val requestHeaders= mapOf(
+                "Accept" to "application/json",
+                "Authorization" to "Bearer $montaguToken"
+            )
+            get("$baseUrl/auth/login/montagu", requestHeaders)
                     .use { response ->
                         val body = response.body!!.string()
                         if (response.code != 200) {
@@ -90,6 +73,7 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
 
                         val loginResult = parseLoginResult(body)
                         packitToken = loginResult.token
+                        // TODO: and this..
                         println("got token $packitToken")
                     }
         }
@@ -145,7 +129,7 @@ abstract class OkHttpPackitAPIClient(private val context: ActionContext,
     protected abstract fun getHttpClient(): OkHttpClient
 }
 
-class LocalOkHttpPackitAPIClient(context: ActionContext, userRepository: UserRepository): OkHttpPackitAPIClient(context, userRepository)
+class LocalOkHttpPackitAPIClient(montaguToken: String): OkHttpPackitAPIClient(montaguToken)
 {
     override fun getHttpClient(): OkHttpClient
     {
@@ -179,7 +163,7 @@ class LocalOkHttpPackitAPIClient(context: ActionContext, userRepository: UserRep
     }
 }
 
-class RemoteHttpPackitAPIClient(context: ActionContext, userRepository: UserRepository): OkHttpPackitAPIClient(context, userRepository)
+class RemoteHttpPackitAPIClient(montaguToken: String): OkHttpPackitAPIClient(montaguToken)
 {
     override fun getHttpClient(): OkHttpClient
     {

@@ -19,10 +19,9 @@ import org.vaccineimpact.api.app.errors.PackitError
 
 
 class TestOkHttpPackitAPIClient(private val client: OkHttpClient,
-                                    val context: ActionContext,
-                                    val userRepository: UserRepository,
+                                    val montaguToken: String,
                                     val config: ConfigWrapper):
-        OkHttpPackitAPIClient(context, userRepository, config)
+        OkHttpPackitAPIClient(montaguToken, config)
 {
    protected override fun getHttpClient(): OkHttpClient
    {
@@ -32,17 +31,10 @@ class TestOkHttpPackitAPIClient(private val client: OkHttpClient,
 
 class OkHttpPackitAPIClientTests: MontaguTests()
 {
+
+    private val montyToken = "test-montagu-token";
     private val packitTokenResponseBody = "{\"token\": \"test_packit_token\"}"
         .toResponseBody()
-
-    private val mockContext = mock<ActionContext> {
-        on { username } doReturn "admin.user"
-    }
-
-    private val adminUser = InternalUser(UserProperties("admin.user", "Admin User", "admin.user@example.com", null, null), listOf(), listOf())
-    val mockUserRepository = mock<UserRepository> {
-        on { getUserByUsername("admin.user") } doReturn adminUser
-    }
 
     private val mockConfig = mock<ConfigWrapper>{
         on{ get("packit.api.url") } doReturn "http://test-packit"
@@ -69,7 +61,7 @@ class OkHttpPackitAPIClientTests: MontaguTests()
             on {newCall(any())} doReturn(mockCall)
         }
 
-        val sut = TestOkHttpPackitAPIClient(mockClient, mockContext, mockUserRepository, mockConfig)
+        val sut = TestOkHttpPackitAPIClient(mockClient, montyToken, mockConfig)
         sut.addUser("test@example.com", "test.user", "Test User")
 
         val requestArg : ArgumentCaptor<Request> = ArgumentCaptor.forClass(Request::class.java)
@@ -79,12 +71,10 @@ class OkHttpPackitAPIClientTests: MontaguTests()
         //Test GetPackitToken
         val tokenRequest = allRequests[0]
         Assertions.assertThat(tokenRequest.method).isEqualTo("GET")
-        Assertions.assertThat(tokenRequest.url.toString()).isEqualTo("http://test-packit/auth/login/preauth")
+        Assertions.assertThat(tokenRequest.url.toString()).isEqualTo("http://test-packit/auth/login/montagu")
         var headers = tokenRequest.headers
         Assertions.assertThat(headers["Accept"]).isEqualTo("application/json")
-        Assertions.assertThat(headers["X-Remote-User"]).isEqualTo("admin.user")
-        Assertions.assertThat(headers["X-Remote-Name"]).isEqualTo("Admin User")
-        Assertions.assertThat(headers["X-Remote-Email"]).isEqualTo("admin.user@example.com")
+        Assertions.assertThat(headers["Authorization"]).isEqualTo("Bearer $montyToken")
 
         //Test post userDetails
         val postUserRequest = allRequests[1]
@@ -124,7 +114,7 @@ class OkHttpPackitAPIClientTests: MontaguTests()
             on {newCall(any())} doReturn(mockCall)
         }
 
-        val sut = TestOkHttpPackitAPIClient(mockClient, mockContext, mockUserRepository, mockConfig)
+        val sut = TestOkHttpPackitAPIClient(mockClient, montyToken, mockConfig)
 
         Assertions.assertThatThrownBy {  sut.addUser("test@example.com", "test.user", "Test User") }
                 .isInstanceOf(PackitError::class.java)
