@@ -72,13 +72,13 @@ class CreateUserTests : DatabaseTest()
     @Test
     fun `cannot create two users with the same username`()
     {
-        assertCannotCreateDuplicate("username", "dupUsername"," duplicate-key:username")
+        assertCannotCreateDuplicate("username", "dupuname"," duplicate-key:username")
     }
 
     @Test
     fun `cannot create two users with the same email`()
     {
-        assertCannotCreateDuplicate("email", "dupEmail", "duplicate-key:email")
+        assertCannotCreateDuplicate("email", "dupemail", "duplicate-key:email")
     }
 
     @Test
