@@ -13,6 +13,7 @@ $HERE/../scripts/start-database.sh
 $HERE/../scripts/start-packit.sh docker-packit
 $HERE/../scripts/start-api.sh $GIT_SHA
 $HERE/../scripts/start-task-queue.sh
+$HERE/../scripts/start-proxy.sh
 
 # Build an image that can run blackbox tests
 docker build -f ./docker/blackbox.Dockerfile -t $NAME .
