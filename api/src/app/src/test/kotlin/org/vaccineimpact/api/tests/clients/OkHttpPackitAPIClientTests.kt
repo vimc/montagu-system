@@ -7,6 +7,7 @@ import okio.Buffer
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatcher
 import org.vaccineimpact.api.app.clients.OkHttpPackitAPIClient
 import org.vaccineimpact.api.app.repositories.UserRepository
 import org.vaccineimpact.api.app.context.ActionContext
@@ -43,22 +44,36 @@ class OkHttpPackitAPIClientTests: MontaguTests()
     @Test
     fun `can add user`()
     {
-        val request = Request.Builder().url("http://test-packit").build()
+        val tokenRequest = Request.Builder().url("http://test-packit/auth/login/montagu").build()
 
-        val response = Response.Builder()
+        val tokenResponse = Response.Builder()
                 .body(packitTokenResponseBody)
                 .code(200)
-                .request(request)
-                .protocol(Protocol.HTTP_2)
                 .message("test message")
+                .request(tokenRequest)
+                .protocol(Protocol.HTTP_2)
                 .build()
 
-        val mockCall = mock<Call>{
-            on { execute() } doReturn response
+        val addUserRequest = Request.Builder().url("http://test-packit/user/external").build()
+        val addUserResponse = Response.Builder()
+            .body("ok".toResponseBody())
+            .code(201)
+            .message("test message")
+            .request(addUserRequest)
+            .protocol(Protocol.HTTP_2)
+            .build()
+
+        val mockTokenCall = mock<Call>{
+            on { execute() } doReturn tokenResponse
+        }
+
+        val mockAddUserCall = mock<Call>{
+            on { execute() } doReturn addUserResponse
         }
 
         val mockClient = mock<OkHttpClient>{
-            on {newCall(any())} doReturn(mockCall)
+            on { newCall(argThat { this.url.toString().endsWith("/auth/login/montagu") }) } doReturn(mockTokenCall)
+            on { newCall(argThat { this.url.toString().endsWith("/user/external") }) } doReturn(mockAddUserCall)
         }
 
         val sut = TestOkHttpPackitAPIClient(mockClient, montyToken, mockConfig)
@@ -69,10 +84,10 @@ class OkHttpPackitAPIClientTests: MontaguTests()
         val allRequests = requestArg.allValues
 
         //Test GetPackitToken
-        val tokenRequest = allRequests[0]
-        Assertions.assertThat(tokenRequest.method).isEqualTo("GET")
-        Assertions.assertThat(tokenRequest.url.toString()).isEqualTo("http://test-packit/auth/login/montagu")
-        var headers = tokenRequest.headers
+        val actualTokenRequest = allRequests[0]
+        Assertions.assertThat(actualTokenRequest.method).isEqualTo("GET")
+        Assertions.assertThat(actualTokenRequest.url.toString()).isEqualTo("http://test-packit/auth/login/montagu")
+        var headers = actualTokenRequest.headers
         Assertions.assertThat(headers["Accept"]).isEqualTo("application/json")
         Assertions.assertThat(headers["Authorization"]).isEqualTo("Bearer $montyToken")
 
