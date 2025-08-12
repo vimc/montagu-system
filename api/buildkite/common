@@ -30,11 +30,7 @@ export NETWORK=test_nw
 export GIT_SHA=$GIT_SHA
 
 # Teardown on exit
-# TODO: remove debug
 function cleanup() {
-  docker ps
-  docker logs api || true
-  docker exec api curl https://reverse-proxy/packit/api/auth/login/montagu || true
   $HERE/../scripts/stop-database.sh || true
   $HERE/../scripts/stop-api.sh || true
   $HERE/../scripts/stop-packit.sh || true

@@ -57,8 +57,6 @@ abstract class OkHttpPackitAPIClient(private val montaguToken: String,
     private fun getPackitToken(): String
     {
         if (packitToken == null) {
-            // TODO: remove
-            println("GETTING TOKEN FROM $baseUrl")
             val requestHeaders= mapOf(
                 "Accept" to "application/json",
                 "Authorization" to "Bearer $montaguToken"
@@ -72,8 +70,6 @@ abstract class OkHttpPackitAPIClient(private val montaguToken: String,
 
                         val loginResult = parseLoginResult(body)
                         packitToken = loginResult.token
-                        // TODO: and this..
-                        println("got token $packitToken")
                     }
         }
         return packitToken!!
