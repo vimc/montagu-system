@@ -21,11 +21,11 @@ docker compose up -d
 # Start the APIs
 docker compose exec api mkdir -p /etc/montagu/api/
 docker compose exec api touch /etc/montagu/api/go_signal
-docker compose exec orderly-web-web mkdir -p /etc/orderly/web
-docker compose cp $here/orderlywebconfig.properties orderly-web-web:/etc/orderly/web/config.properties
-docker compose exec orderly-web-web touch /etc/orderly/web/go_signal
-docker compose exec orderly-web-web touch /etc/orderly/web/go_signal
-docker compose exec orderly touch /orderly_go
+#docker compose exec orderly-web-web mkdir -p /etc/orderly/web
+#docker compose cp $here/orderlywebconfig.properties orderly-web-web:/etc/orderly/web/config.properties
+#docker compose exec orderly-web-web touch /etc/orderly/web/go_signal
+#docker compose exec orderly-web-web touch /etc/orderly/web/go_signal
+#docker compose exec orderly touch /orderly_go
 
 # Wait for the database
 docker compose exec db montagu-wait.sh 120
@@ -43,29 +43,34 @@ if [ "$1" = "data" ]; then
 fi
 
 # Always generate report test database
-rm demo -rf
-rm git -rf
-docker pull $ORG/orderly:master
-docker run --rm \
-  --entrypoint create_orderly_demo.sh \
-  -u $UID \
-  -v $PWD:/orderly \
-  -w "/orderly" \
-  $ORG/orderly:master \
-  "."
+#rm demo -rf
+#rm git -rf
+#docker pull $ORG/orderly:master
+#docker run --rm \
+#  --entrypoint create_orderly_demo.sh \
+#  -u $UID \
+#  -v $PWD:/orderly \
+#  -w "/orderly" \
+#  $ORG/orderly:master \
+#  "."
 
 # Copy the demo db file to top level
-docker compose cp $PWD/demo/orderly.sqlite orderly-web-web:/orderly/orderly.sqlite
+#docker compose cp $PWD/demo/orderly.sqlite orderly-web-web:/orderly/orderly.sqlite
 
 # Migrate the orderlyweb tables
-ow_migrate_image=$ORG/orderlyweb-migrate:master
-docker pull $ow_migrate_image
-docker run --rm --network=montagu_proxy \
-  -v montagu_orderly_volume:/orderly \
-  $ow_migrate_image
+#ow_migrate_image=$ORG/orderlyweb-migrate:master
+#docker pull $ow_migrate_image
+#docker run --rm --network=montagu_proxy \
+#  -v montagu_orderly_volume:/orderly \
+#  $ow_migrate_image
 
-# Add test user
+
 export NETWORK=montagu_proxy
+
+# Add test user to packit and montagu
+# give packit db some time to start
+sleep 5s
+$here/packit-create-test-user.sh
 
 $here/cli.sh add "Test User" test.user \
     test.user@example.com password \
@@ -81,5 +86,5 @@ $here/cli.sh add "Password Reset Test User" passwordtest.user \
 $here/cli.sh addRole passwordtest.user user
 
 # Add user to orderly_web
-$here/orderly_web_cli.sh add-users test.user@example.com
-$here/orderly_web_cli.sh grant test.user@example.com */reports.read
+#$here/orderly_web_cli.sh add-users test.user@example.com
+#$here/orderly_web_cli.sh grant test.user@example.com */reports.read
