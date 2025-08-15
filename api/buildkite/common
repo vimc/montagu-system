@@ -31,12 +31,13 @@ export GIT_SHA=$GIT_SHA
 
 # Teardown on exit
 function cleanup() {
-  $HERE/../scripts/stop-database.sh || true
-  $HERE/../scripts/stop-api.sh || true
-  $HERE/../scripts/stop-packit.sh || true
-  docker volume rm montagu_packit_db || true
-  $HERE/../scripts/stop-task-queue.sh || true
-  $HERE/../scripts/stop-proxy.sh || true
-  docker network rm $NETWORK || true
+  set +e
+  $HERE/../scripts/stop-database.sh
+  $HERE/../scripts/stop-api.sh
+  $HERE/../scripts/stop-packit.sh
+  docker volume rm montagu_packit_db
+  $HERE/../scripts/stop-task-queue.sh
+  $HERE/../scripts/stop-proxy.sh
+  docker network rm $NETWORK
 }
 trap cleanup EXIT

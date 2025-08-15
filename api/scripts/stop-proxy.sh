@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-set -ex
+set -x
 
-docker kill reverse-proxy || true
-docker rm reverse-proxy || true
-docker kill admin || true
-docker rm admin || true
-docker kill contrib || true
-docker rm contrib || true
+docker kill reverse-proxy
+docker rm reverse-proxy
+docker kill admin
+docker rm admin
+docker kill contrib
+docker rm contrib
