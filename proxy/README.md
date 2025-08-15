@@ -38,7 +38,6 @@ must not be externally available - nginx will return a 404 for any such external
 Run `./scripts/dev.sh`. This runs up the proxy along with the apis and portals, in order to manually test links, logins etc. 
 The test user with email `test.user@example.com` and password `password` is added by default.
 Optionally include 'data' parameter (`./scripts/dev.sh data`) to include generating Montagu test data.
-Orderly test data is always generated.
 
 Demo orderly data is expected to be found in `../packit/demos/orderly` so it is necessary to have 
 [packit](https://github.com/mrc-ide/packit) cloned in the same parent directory as this repo.
@@ -51,7 +50,6 @@ To run integration tests:
 1. Make sure you have Chrome (or Chromium) installed. Depending on the platform you may also need to install chromedriver.
     - On Ubuntu, `sudo apt install chromium-browser chromium-chromedriver` will install both.
 1. Run the proxy and dependencies with `./scripts/dev.sh`
-1. Ensure test user can access packit data with `./scripts/packit-create-test-user.sh`
 1. Then run tests with `npm run integration-test`
 
 Jest will pick up tests in files with the `.itest.js` extension.

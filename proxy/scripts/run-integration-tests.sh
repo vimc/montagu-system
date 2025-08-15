@@ -15,7 +15,6 @@ trap cleanup EXIT
 
 mkdir montagu_emails
 $HERE/run-dependencies.sh
-$HERE/packit-create-test-user.sh
 
 export ORG=vimc
 

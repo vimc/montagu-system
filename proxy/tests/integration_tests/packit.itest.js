@@ -76,3 +76,18 @@ test('logging out from admin portal also logs out from packit', async () => {
         });
     });
 }, 30 * 1000);
+
+test('old report page urls are redirected', async () => {
+    await browser.get("https://localhost");
+    await TestHelper.ensureLoggedIn(browser);
+    await browser.get("https://localhost/reports/r1/20170516-134824-a16bab9d");
+
+    await browser.wait(() => {
+        return browser.getCurrentUrl().then((url) => {
+            return url === "https://localhost/packit/r1/20170516-134824-a16bab9d";
+        });
+    });
+
+    expect(await browser.getCurrentUrl()).toBe("https://localhost/packit/r1/20170516-134824-a16bab9d");
+
+});
