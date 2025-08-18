@@ -2,5 +2,5 @@
 set -ex
 
 docker kill mq || true
-docker kill task_queue_worker || true
+docker kill task-queue-worker || true
 docker kill flower || true

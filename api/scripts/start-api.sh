@@ -15,7 +15,7 @@ else
    NETWORK_MAPPING="--network=db_nw"
 fi
 
-# need this config to be able to talk to orderlyweb
+# need this config to be able to talk to packit
 CONFIG_PATH=$(realpath $HERE/../src/config/blackboxTests/config.properties)
 
 API_IMAGE=vimc/montagu-api:$VERSION

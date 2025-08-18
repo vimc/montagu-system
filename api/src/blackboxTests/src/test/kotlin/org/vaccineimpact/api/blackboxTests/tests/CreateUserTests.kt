@@ -20,19 +20,18 @@ class CreateUserTests : DatabaseTest()
     val requestHelper = RequestHelper()
     val validator = JSONValidator()
     val creationPermissions = PermissionSet("*/can-login", "*/users.create")
-    private val username = "gandalf.grey"
-    private val email = "gandalf@example.com"
-    private val postData = mapOf(
-            "username" to username,
-            "name" to "Gandalf the Grey",
-            "email" to email
+
+    private fun getPostData(suffix: String) = mapOf(
+            "username" to "gandalf.grey$suffix",
+            "name" to "Gandalf the Grey $suffix",
+            "email" to "gandalf.$suffix@example.com"
     )
 
     @Test
     fun `can create user`()
     {
-        val objectUrl = "/users/gandalf.grey/"
-
+        val postData = getPostData("create")
+        val objectUrl = "/users/${postData["username"]}/"
         validate("/users/", HttpMethod.post) sendingJSON {
             postData.toJsonObject()
         } withRequestSchema "CreateUser" requiringPermissions {
@@ -47,6 +46,7 @@ class CreateUserTests : DatabaseTest()
     @Test
     fun `can use token from new user email to set password for the first time`()
     {
+        val postData = getPostData("email")
         WriteToDiskEmailManager.cleanOutputDirectory()
         val token = TestUserHelper.setupTestUserAndGetToken(creationPermissions)
         requestHelper.post("/users/", token = token, data = postData.toJsonObject())
@@ -55,7 +55,7 @@ class CreateUserTests : DatabaseTest()
         JooqContext().use {
             val hash = it.dsl.select(APP_USER.PASSWORD_HASH)
                     .from(APP_USER)
-                    .where(APP_USER.USERNAME.eq(username))
+                    .where(APP_USER.USERNAME.eq(postData["username"]))
                     .fetchOne().value1()
             assertThat(hash).isNull()
         }
@@ -65,20 +65,20 @@ class CreateUserTests : DatabaseTest()
             obj("password" to "first_password")
         })
 
-        assertThat(TokenFetcher().getToken(email, "first_password"))
+        assertThat(TokenFetcher().getToken(postData["email"]!!, "first_password"))
                 .isInstanceOf(TokenFetcher.TokenResponse.Token::class.java)
     }
 
     @Test
     fun `cannot create two users with the same username`()
     {
-        assertCannotCreateDuplicate("username" to "gandalf.grey", "duplicate-key:username")
+        assertCannotCreateDuplicate("username", "dupuname", "duplicate-key:username")
     }
 
     @Test
     fun `cannot create two users with the same email`()
     {
-        assertCannotCreateDuplicate("email" to "gandalf@example.com", "duplicate-key:email")
+        assertCannotCreateDuplicate("email", "dupemail", "duplicate-key:email")
     }
 
     @Test
@@ -101,7 +101,7 @@ class CreateUserTests : DatabaseTest()
         TestUserHelper.setupTestUser()
         val response = requestHelper.post("/users/", creationPermissions, json {
             obj(
-                    "username" to "bob",
+                    "username" to "bob.smith",
                     "name" to " ",
                     "email" to "email@example.com"
             )
@@ -131,7 +131,7 @@ class CreateUserTests : DatabaseTest()
         TestUserHelper.setupTestUser()
         val response = requestHelper.post("/users/", creationPermissions, json {
             obj(
-                    "username" to "a.b.c",
+                    "username" to "john.smith",
                     "name" to "john@example.com",
                     "email" to "John Smith"
             )
@@ -140,10 +140,12 @@ class CreateUserTests : DatabaseTest()
         validator.validateError(response.text, "invalid-field:email:bad-format")
     }
 
-    fun assertCannotCreateDuplicate(sharedProperty: Pair<String, *>, expectedErrorCode: String)
+    fun assertCannotCreateDuplicate(sharedProperty: String, suffix: String, expectedErrorCode: String)
     {
+        val postData = getPostData(suffix)
         val token = TestUserHelper.setupTestUserAndGetToken(creationPermissions)
         val r1 = requestHelper.post("/users/", token = token, data = postData.toJsonObject())
+
         assertThat(r1.statusCode).isEqualTo(201)
 
         val differentData = mapOf(
@@ -151,7 +153,7 @@ class CreateUserTests : DatabaseTest()
                 "name" to "different name",
                 "email" to "different@example.com"
         )
-        val clashingData = differentData + mapOf(sharedProperty)
+        val clashingData = differentData + mapOf(sharedProperty to postData[sharedProperty])
         val r2 = requestHelper.post("/users/", token = token, data = clashingData.toJsonObject())
         assertThat(r2.statusCode).isEqualTo(409)
         validator.validateError(r2.text, expectedErrorCode)

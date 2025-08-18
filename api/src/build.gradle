@@ -77,12 +77,16 @@ task startDatabase(type: Exec, dependsOn: ':loadPropertiesTask') {
     commandLine 'bash', '../scripts/start-database.sh'
 }
 
-task startOrderlyWeb(type: Exec) {
-    commandLine 'bash', '../scripts/start-orderly-web.sh'
+task startPackit(type: Exec) {
+    commandLine 'bash', '../scripts/start-packit.sh'
 }
 
 task startTaskQueue(type: Exec) {
     commandLine 'bash', '../scripts/start-task-queue.sh'
+}
+
+task startProxy(type: Exec) {
+    commandLine 'bash', '../scripts/start-proxy.sh'
 }
 
 task startTestAPI(type: Exec) {
@@ -93,8 +97,12 @@ task stopDatabase(type: Exec) {
     commandLine 'bash', '../scripts/stop-database.sh'
 }
 
-task stopOrderlyWeb(type: Exec) {
-    commandLine 'bash', '../scripts/stop-orderly-web.sh'
+task stopProxy(type: Exec) {
+    commandLine 'bash', '../scripts/stop-proxy.sh'
+}
+
+task stopPackit(type: Exec) {
+    commandLine 'bash', '../scripts/stop-packit.sh'
 }
 
 task stopTaskQueue(type: Exec) {
@@ -122,7 +130,7 @@ subprojects {
     }
 
     jacoco {
-        toolVersion = "0.8.3"
+        toolVersion = "0.8.8"
         reportsDir = file("$projectDir/coverage")
     }
 

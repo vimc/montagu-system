@@ -9,12 +9,13 @@ import org.vaccineimpact.api.test_helpers.MontaguTests
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.models.helpers.ContentTypes
 
-// You must have the database, orderly-web, task-queue and api running for this test suite
+// You must have the database, packit, proxy, task-queue and api running for this test suite
 // to pass.
 // :startDatabase
 // :startTestAPI
-// :startOrderlyWeb
+// :startPackit
 // :startTaskQueue
+// :startProxy
 class CeleryClientTests : MontaguTests()
 {
     @Test
@@ -39,6 +40,7 @@ class CeleryClientTests : MontaguTests()
         while ((!success) && (tries < 60))
         {
             val taskResponse = httpClient.get(statusUrl, mapOf("Content-type" to ContentTypes.json))
+
             val responseJson = JsonLoader.fromString(taskResponse.text)
             val state = responseJson["state"].asText()
             if (state == "SUCCESS")

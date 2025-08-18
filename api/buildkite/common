@@ -29,15 +29,15 @@ export DB_PORT=5432
 export NETWORK=test_nw
 export GIT_SHA=$GIT_SHA
 
-# Temporary measure to install constellation on all build steps - required by orderly-web install
-pip3 install constellation
-
 # Teardown on exit
 function cleanup() {
+  set +e
   $HERE/../scripts/stop-database.sh
   $HERE/../scripts/stop-api.sh
-  $HERE/../scripts/stop-orderly-web.sh
+  $HERE/../scripts/stop-packit.sh
+  docker volume rm montagu_packit_db
   $HERE/../scripts/stop-task-queue.sh
-  docker network rm $NETWORK || true
+  $HERE/../scripts/stop-proxy.sh
+  docker network rm $NETWORK
 }
 trap cleanup EXIT

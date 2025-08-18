@@ -23,7 +23,7 @@ docker pull $TASK_QUEUE_WORKER
 docker run --rm -d \
   $NETWORK_MAPPING \
   -v $ROOT/scripts/task-queue-config.yml:/home/worker/config/config.yml \
-  --name task_queue_worker \
+  --name task-queue-worker \
   $TASK_QUEUE_WORKER
 
 # flower provides an http api for interacting with/monitoring celery
@@ -48,5 +48,8 @@ docker run --rm \
   $NETWORK_MAPPING \
   $CLI addRole task.user user
 
-$HERE/orderly-web-cli.sh add-users task.user@example.com
-$HERE/orderly-web-cli.sh grant task.user@example.com */reports.read */reports.run */reports.review
+USERNAME='task.user'
+EMAIL='task.user@example.com'
+DISPLAY_NAME='Task User'
+ROLE='ADMIN'
+docker exec montagu-packit-db create-preauth-user --username "$USERNAME" --email "$EMAIL" --displayname "$DISPLAY_NAME" --role "$ROLE"
