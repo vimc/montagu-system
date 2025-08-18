@@ -37,28 +37,11 @@ abstract class OkHttpPackitAPIClient(private val montaguToken: String,
     }
 
     private val baseUrl = config["packit.api.url"]
-    private val packitToken: String;
+    private var packitToken: String? = null
     private val gson = GsonBuilder().create()
 
-    init {
-        // Get packit token
-        val requestHeaders= mapOf(
-            "Accept" to "application/json",
-            "Authorization" to "Bearer $montaguToken"
-        )
-        get("$baseUrl/auth/login/montagu", requestHeaders)
-            .use { response ->
-                val body = response.body!!.string()
-                if (response.code != 200) {
-                    throw PackitError("Error getting Packit token. Code: ${response.code}")
-                }
-
-                val loginResult = parseLoginResult(body)
-                packitToken = loginResult.token
-            }
-    }
-
     override fun addUser(email: String, username: String, displayName: String) {
+        ensurePackitToken()
         val userDetails = PackitUserDetails(email, username, displayName, listOf())
         val postBody = gson.toJson(userDetails)
         val postResponse = post("$baseUrl/user/external", mapOf("Authorization" to "Bearer $packitToken"), postBody)
@@ -66,6 +49,25 @@ abstract class OkHttpPackitAPIClient(private val montaguToken: String,
         if (code != 201) {
             val body = postResponse.body!!.string()
             throw PackitError("Error adding user to Packit. Code: $code")
+        }
+    }
+
+    private fun ensurePackitToken() {
+        if (packitToken == null) {
+            val requestHeaders = mapOf(
+                "Accept" to "application/json",
+                "Authorization" to "Bearer $montaguToken"
+            )
+            get("$baseUrl/auth/login/montagu", requestHeaders)
+                .use { response ->
+                    val body = response.body!!.string()
+                    if (response.code != 200) {
+                        throw PackitError("Error getting Packit token. Code: ${response.code}")
+                    }
+
+                    val loginResult = parseLoginResult(body)
+                    packitToken = loginResult.token
+                }
         }
     }
 
