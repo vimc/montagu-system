@@ -29,7 +29,6 @@ abstract class OkHttpPackitAPIClient(private val montaguToken: String,
     {
         fun create(token: String): OkHttpPackitAPIClient
         {
-            // TODO: replace with config
             return if (Config.getBool("allow.localhost"))
                 LocalOkHttpPackitAPIClient(token)
             else
@@ -37,13 +36,29 @@ abstract class OkHttpPackitAPIClient(private val montaguToken: String,
         }
     }
 
-    private val baseUrl = config["packit.api.url"];
-    private var packitToken: String? = null;
-
+    private val baseUrl = config["packit.api.url"]
+    private val packitToken: String;
     private val gson = GsonBuilder().create()
 
+    init {
+        // Get packit token
+        val requestHeaders= mapOf(
+            "Accept" to "application/json",
+            "Authorization" to "Bearer $montaguToken"
+        )
+        get("$baseUrl/auth/login/montagu", requestHeaders)
+            .use { response ->
+                val body = response.body!!.string()
+                if (response.code != 200) {
+                    throw PackitError("Error getting Packit token. Code: ${response.code}. Body: $body")
+                }
+
+                val loginResult = parseLoginResult(body)
+                packitToken = loginResult.token
+            }
+    }
+
     override fun addUser(email: String, username: String, displayName: String) {
-        val packitToken = getPackitToken()
         val userDetails = PackitUserDetails(email, username, displayName, listOf())
         val postBody = gson.toJson(userDetails)
         val postResponse = post("$baseUrl/user/external", mapOf("Authorization" to "Bearer $packitToken"), postBody)
@@ -52,27 +67,6 @@ abstract class OkHttpPackitAPIClient(private val montaguToken: String,
             val body = postResponse.body!!.string()
             throw PackitError("Error adding user to Packit. Code: $code. Body: $body")
         }
-    }
-
-    private fun getPackitToken(): String
-    {
-        if (packitToken == null) {
-            val requestHeaders= mapOf(
-                "Accept" to "application/json",
-                "Authorization" to "Bearer $montaguToken"
-            )
-            get("$baseUrl/auth/login/montagu", requestHeaders)
-                    .use { response ->
-                        val body = response.body!!.string()
-                        if (response.code != 200) {
-                            throw PackitError("Error getting Packit token. Code: ${response.code}. Body: $body")
-                        }
-
-                        val loginResult = parseLoginResult(body)
-                        packitToken = loginResult.token
-                    }
-        }
-        return packitToken!!
     }
 
     private fun post(url: String, headersMap: Map<String, String>, body: String): Response
