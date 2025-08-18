@@ -50,7 +50,7 @@ abstract class OkHttpPackitAPIClient(private val montaguToken: String,
             .use { response ->
                 val body = response.body!!.string()
                 if (response.code != 200) {
-                    throw PackitError("Error getting Packit token. Code: ${response.code}. Body: $body")
+                    throw PackitError("Error getting Packit token. Code: ${response.code}")
                 }
 
                 val loginResult = parseLoginResult(body)
@@ -65,7 +65,7 @@ abstract class OkHttpPackitAPIClient(private val montaguToken: String,
         val code = postResponse.code
         if (code != 201) {
             val body = postResponse.body!!.string()
-            throw PackitError("Error adding user to Packit. Code: $code. Body: $body")
+            throw PackitError("Error adding user to Packit. Code: $code")
         }
     }
 
@@ -111,7 +111,7 @@ abstract class OkHttpPackitAPIClient(private val montaguToken: String,
         }
         catch(e: JsonSyntaxException)
         {
-            throw PackitError("Failed to parse text as JSON.\nText was: $jsonString")
+            throw PackitError("Failed to parse Packit login response as JSON.")
         }
     }
 
