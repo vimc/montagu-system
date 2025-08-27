@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 here=$(dirname $0)
+. $here/common
 
 function cleanup() {
     # Pull down old containers
@@ -12,8 +13,6 @@ function cleanup() {
     docker rm montagu-metrics || true
     docker compose down || true
 }
-
-export ORG=vimc
 
 cleanup
 
