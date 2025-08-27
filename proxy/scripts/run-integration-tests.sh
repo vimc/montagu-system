@@ -32,6 +32,10 @@ docker run -d \
   nginx/nginx-prometheus-exporter:0.2.0 \
   -nginx.scrape-uri "http://reverse-proxy/basic_status"
 
+#TODO: remove debug
+docker ps
+docker exec reverse-proxy curl http://outpack_server:8000/metrics
+
 docker run \
   --rm \
 	--network host \
