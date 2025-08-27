@@ -13,6 +13,17 @@ else
     GIT_BRANCH=$(git symbolic-ref --short HEAD)
 fi
 
+# if we're not running on buildkite, assume we have a local clone of
+# the packit repo we can point outpack server so we can see some
+# packets when running locally - otherwise use the minimal orderly
+# config in the buildkite folder so the outpack server container
+# starts up successfully for integration testing
+if [ "$BUILDKITE" = "true" ]; then
+    OUTPACK_ROOT=./buildkite/demos/orderly
+else
+    OUTPACK_ROOT=./../packit/demos/orderly
+fi
+
 # Deal with dependabot tags which look like
 #
 #   dependabot/npm_and_yarn/app/lodash-4.17.19
