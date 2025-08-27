@@ -34,6 +34,7 @@ docker run -d \
 
 #TODO: remove debug
 docker ps
+docker logs montagu-outpack_server-1
 docker exec reverse-proxy curl http://outpack_server:8000/metrics
 
 docker run \
