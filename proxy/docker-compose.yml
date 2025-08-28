@@ -28,10 +28,10 @@ services:
     depends_on:
       packit-db:
         condition: service_healthy
-      outpack_server:
+      outpack-server:
         condition: service_started
     environment:
-      - PACKIT_OUTPACK_SERVER_URL=http://outpack_server:8000
+      - PACKIT_OUTPACK_SERVER_URL=http://outpack-server:8000
       - PACKIT_DB_URL=jdbc:postgresql://packit-db:5432/packit?stringtype=unspecified
       - PACKIT_DB_USER=packituser
       - PACKIT_DB_PASSWORD=changeme
@@ -48,7 +48,7 @@ services:
       - proxy
     healthcheck:
       test: ["CMD", "wait-for-db"]
-  outpack_server:
+  outpack-server:
     image: ghcr.io/mrc-ide/outpack_server:main
     volumes:
       - ${OUTPACK_ROOT}:/outpack
