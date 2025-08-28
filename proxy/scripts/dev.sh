@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 here=$(dirname $0)
+. $here/common
 
 function cleanup() {
     # Pull down old containers
@@ -12,8 +13,6 @@ function cleanup() {
     docker rm montagu-metrics || true
     docker compose down || true
 }
-
-export ORG=vimc
 
 cleanup
 
@@ -27,7 +26,7 @@ $here/run-dependencies.sh "$@"
 # Build and run the proxy and metrics containers
 docker build -t reverse-proxy .
 docker run -d \
-	-p "443:443" -p "80:80" \
+	-p "443:443" -p "80:80" -p "9000:9000" \
 	--name reverse-proxy \
 	--network montagu_proxy\
 	reverse-proxy 443 localhost

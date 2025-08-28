@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('cross-fetch');
 const https = require('https');
+const http = require('http');
 
 const emailsDir = path.resolve(__dirname, "../../montagu_emails");
 
@@ -104,6 +105,13 @@ const TestHelper = {
         });
         return await fetch(`https://localhost${url}`, {
             headers,
+            agent
+        });
+    },
+
+    metricsFetch: async function (url) {
+        const agent = new http.Agent();
+        return await fetch(`http://localhost:9000${url}`, {
             agent
         });
     }
