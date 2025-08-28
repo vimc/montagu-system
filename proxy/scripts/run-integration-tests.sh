@@ -8,6 +8,7 @@ function cleanup() {
     # Pull down old containers
     rm -rf workspace || true
     rm -rf montagu_emails || true
+    $HERE/clear-docker.sh
 }
 
 trap cleanup EXIT
