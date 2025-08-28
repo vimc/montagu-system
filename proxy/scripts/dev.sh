@@ -26,7 +26,7 @@ $here/run-dependencies.sh "$@"
 # Build and run the proxy and metrics containers
 docker build -t reverse-proxy .
 docker run -d \
-	-p "443:443" -p "80:80" \
+	-p "443:443" -p "80:80" -p "9000:9000" \
 	--name reverse-proxy \
 	--network montagu_proxy\
 	reverse-proxy 443 localhost
