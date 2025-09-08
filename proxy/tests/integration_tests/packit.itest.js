@@ -77,17 +77,27 @@ test('logging out from admin portal also logs out from packit', async () => {
     });
 }, 30 * 1000);
 
-test('old report page urls are redirected', async () => {
-    await browser.get("https://localhost");
+const testExpectedRedirect = async (requestUrl, expectedRedirectUrl) => {
     await TestHelper.ensureLoggedIn(browser);
-    await browser.get("https://localhost/reports/r1/20170516-134824-a16bab9d");
+    await browser.get(requestUrl);
 
     await browser.wait(() => {
         return browser.getCurrentUrl().then((url) => {
-            return url === "https://localhost/packit/r1/20170516-134824-a16bab9d";
+            return url === expectedRedirectUrl;
         });
     });
 
-    expect(await browser.getCurrentUrl()).toBe("https://localhost/packit/r1/20170516-134824-a16bab9d");
+    expect(await browser.getCurrentUrl()).toBe(expectedRedirectUrl);
+}
 
+const reportName = "r1";
+const versionId = "20170516-134824-a16bab9d";
+const packitUrl = `https://localhost/packit/${reportName}/${versionId}`;
+test('old report page urls are redirected', async () => {
+    // Later OrderlyWeb version url
+    await testExpectedRedirect(`https://localhost/reports/report/${reportName}/${versionId}`, packitUrl);
+});
+
+test('very old report page urls are redirected', async () => {
+    await testExpectedRedirect(`https://localhost/reports/${reportName}/${versionId}`, packitUrl);
 });
