@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Vaccine Impact Modelling Consortium - Montagu</title>
+    <link rel="stylesheet" href="resources/css/third_party/bootstrap.min.css"/>
+    <link rel="stylesheet" href="resources/css/montagu.css"/>
+
+    <script src="resources/js/third_party/jquery.min.js"></script>
+    <script src="resources/js/third_party/jwt-decode.min.js"></script>
+    <script src="resources/js/third_party/vue.min.js"></script>
+    <script src="resources/js/third_party/pako.min.js"></script>
+
+    <script src="resources/js/montagu-login.js"></script>
+    <script src="resources/js/montagu-auth.js"></script>
+    <script src="resources/js/montagu-utils.js"></script>
+    <script src="resources/js/packit-auth.js"></script>
+    <script src="resources/js/components/montagu-login-status.vue.js"></script>
+    <script src="resources/js/components/montagu-login-form.vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <header class="header">
+        <a href="https://vaccineimpact.org">
+            <img class="pl-md-1 logo" src="./resources/logo.png" alt="Vaccine Impact Modelling Consortium"/>
+        </a>
+        <div class="siteTitle">Montagu</div>
+        <montagu-login-status v-bind:username="username" v-on:logout="logout"
+                              class="login-status"></montagu-login-status>
+    </header>
+    <div id="content" class="container mt-3">
+        <p>
+            Montagu is the VIMC's digital delivery platform. Authorised
+            users can access Montagu through user-facing portals, and
+            programmatically through REST APIs.
+        </p>
+        <p>
+            Click <a href="/resources/privacy.html">here</a> to view Montagu's privacy policy and terms.
+        </p>
+        <p>
+            Click <a href="https://vaccineimpact.org">here</a> to return to
+            VIMC home page.
+        </p>
+        <montagu-login-form v-bind:username="username" v-bind:login-error="loginError"
+                            v-bind:redirect-message="redirectMessage"
+                            v-on:login="login" class="login-form"></montagu-login-form>
+        <div v-if="packitLoginError" class="text-danger">
+             {{packitLoginError}}
+        </div>
+        <div class="portals">
+            <h1>Portals</h1>
+            <table>
+                <tr>
+                    <td class="portal"><a class="button" id="packit-button" href="/packit/">Reporting portal</a></td>
+                    <td>
+                        Access reports and figures summarising results, as well
+                        as the underlying data. <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="portal"><a class="button" href="/contribution/">Modellers' contribution portal</a></td>
+                    <td>
+                        Focused on modellers and modelling groups, this portal
+                        allows you to download coverage and demographic data,
+                        and to upload burden estimates.
+                    </td>
+                </tr>
+                <tr>
+                    <td class="portal"><a class="button" href="/admin/">Admin portal</a></td>
+                    <td>
+                        For internal use by the consortium admin staff.
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="apis">
+            <h1>APIs</h1>
+            <table>
+                <tr>
+                    <td><a class="button" href="/api/">Montagu API</a></td>
+                    <td><a class="button" href="/reports/api/v1/">Reports API</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    const utils = MontaguUtils;
+    const auth = new MontaguAuth(utils.getApiRoot());
+    const packitAuth = new PackitAuth(utils.getPackitApiRoot(), jwt_decode);
+    const logic = new MontaguLogin(
+        auth,
+        packitAuth,
+        jwt_decode,
+        pako
+    );
+
+    new Vue({
+        el: "#app",
+        data: {
+            username: "",
+            loginError: "",
+            packitLoginError: "",
+            redirectMessage: ""
+        },
+        methods: {
+            initialise: function () {
+                const data = this;
+                logic.getUserName().then((result) => {
+                    data.username = result;
+
+                    // If we have loggingOut param set, it means we're logging out from packit therefore should logout
+                    // from Montagu too
+                    const loggingOut = utils.paramFromQueryString(location.search, "loggingOut");
+                    if (loggingOut) {
+                        this.logout();
+                    } else if (!result && packitAuth.isLoggedIn()) {
+                        // We've logged out from a Montagu app but still need to log out from packit
+                        packitAuth.deleteUser();
+                    } else {
+                        // Do any post-login redirection
+                        const redirectLocation = utils.paramFromQueryString(location.search, "redirectTo");
+                        if (result && redirectLocation) {
+                            data.redirectMessage = `Redirecting you back to ${redirectLocation}.
+                        If you are not automatically redirected in a few seconds please click <a href="${redirectLocation}">here</a>`;
+                            window.location.href = redirectLocation
+                        }
+                    }
+                })
+            },
+            logout: function () {
+                const data = this;
+                logic.logout().then(
+                    () => {
+                        data.username = '';
+                        data.loginError = '';
+                        data.packitLoginError = '';
+                    },
+                    (error) => {
+                        data.username = '';
+                        data.loginError = error
+                    }
+                );
+            },
+            login: function (email, password) {
+                const data = this;
+                logic.login(email, password).then(
+                    (result) => {
+                        data.username = result.username;
+                        data.loginError = '';
+                        data.packitLoginError = result.packitLoginError;
+                        const redirectLocation = utils.paramFromQueryString(location.search, "redirectTo");
+                        if (redirectLocation && !(data.packitLoginError && utils.isPackitUrl(redirectLocation))) {
+                            data.redirectMessage = `Redirecting you back to ${redirectLocation}.
+                            If you are not automatically redirected in a few seconds please click <a href="${redirectLocation}">here</a>`;
+                            window.location.href = redirectLocation
+                        }
+                    },
+                    (error) => {
+                        data.username = '';
+                        data.loginError = error;
+                    }
+                );
+            }
+        },
+        components: {
+            'montagu-login-status': MontaguLoginStatus,
+            'montagu-login-form': MontaguLoginForm
+        }
+    }).initialise();
+</script>
+</html>
