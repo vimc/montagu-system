@@ -17,6 +17,8 @@ git filter-repo --to-subdirectory-filter deploy
 3. Add this local copy as a remote into your local copy of montagu-system (perform this within `montagu-system`)
 
 ```
+git checkout main
+git pull
 git remote add deploy ~/tmp/montagu-deploy/
 git fetch deploy
 ```
@@ -36,6 +38,10 @@ git remote rm deploy
 ```
 
 6. The project can then be pushed to `montagu-system`
+
+```
+git push
+```
 
 The actions will need fixing at this point; they will be in `deploy/.github/` and not in `.github` and they will certainly be broken.  It's probably best to make all these changes on a branch so that the journey can be squashed away if wanted.
 
