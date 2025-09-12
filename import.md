@@ -38,3 +38,17 @@ git remote rm deploy
 6. The project can then be pushed to `montagu-system`
 
 The actions will need fixing at this point; they will be in `deploy/.github/` and not in `.github` and they will certainly be broken.  It's probably best to make all these changes on a branch so that the journey can be squashed away if wanted.
+
+# Updating actions
+
+Adding, as a top-level yaml element:
+
+```
+defaults:
+  run:
+    working-directory: deploy
+```
+
+will cause all `run` steps to run from this directory by default, which is very useful.
+
+**WARNING**: This does not apply to `upload-artefact` which needs to be specified as a full path from the root.

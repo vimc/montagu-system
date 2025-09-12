@@ -32,7 +32,7 @@ jobs:
         with:
           if-no-files-found: error
           name: python-artifacts
-          path: dist
+          path: deploy/dist
 
   # This assumes a PyPI Trusted Publisher has been configured for the `montagu` package.
   # See https://docs.pypi.org/trusted-publishers/ for more details.
