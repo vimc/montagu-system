@@ -39,6 +39,12 @@ git remote rm deploy
 
 The actions will need fixing at this point; they will be in `deploy/.github/` and not in `.github` and they will certainly be broken.  It's probably best to make all these changes on a branch so that the journey can be squashed away if wanted.
 
+7. Get actions passing (or add them if needed); see below for some pointers.  Delete the buildkite steps from the new repo
+
+8. Archive the build from buildkite https://buildkite.com/mrc-ide; this preserves history but prevents any new builds
+
+9. Archive the old repository on github
+
 # Updating actions
 
 Adding, as a top-level yaml element:
