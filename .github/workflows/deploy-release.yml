@@ -5,6 +5,11 @@ on:
   pull_request:
     branches: [ main ]
 
+# All jobs will run, by default, in the deploy/ directory
+defaults:
+  run:
+    working-directory: deploy
+
 name: Publish package
 jobs:
   build:

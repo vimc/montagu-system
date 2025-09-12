@@ -8,6 +8,11 @@ on:
     branches:
       - main
 
+# All jobs will run, by default, in the deploy/ directory
+defaults:
+  run:
+    working-directory: deploy
+
 env:
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
