@@ -1,12 +1,21 @@
-name: Test
+name: Deploy test
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
-    branches:
-      - main
+    branches: [ main ]
+    tags: [ v* ]
+    paths:
+      - deploy/**
+  pull_request:
+    branches: [ main ]
+    paths:
+      - deploy/**
+  workflow_dispatch: ~
+
+# All jobs will run, by default, in the deploy/ directory
+defaults:
+  run:
+    working-directory: deploy
 
 env:
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -45,6 +54,6 @@ jobs:
         run: |
           hatch run cov-ci
       - name: Upload to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: true

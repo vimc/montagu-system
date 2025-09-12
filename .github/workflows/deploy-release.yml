@@ -1,9 +1,21 @@
+name: Deploy release
+
 on:
   push:
     branches: [ main ]
     tags: [ v* ]
+    paths:
+      - deploy/**
   pull_request:
     branches: [ main ]
+    paths:
+      - deploy/**
+  workflow_dispatch: ~
+
+# All jobs will run, by default, in the deploy/ directory
+defaults:
+  run:
+    working-directory: deploy
 
 name: Publish package
 jobs:
@@ -27,7 +39,7 @@ jobs:
         with:
           if-no-files-found: error
           name: python-artifacts
-          path: dist
+          path: deploy/dist
 
   # This assumes a PyPI Trusted Publisher has been configured for the `montagu` package.
   # See https://docs.pypi.org/trusted-publishers/ for more details.

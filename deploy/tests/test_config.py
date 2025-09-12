@@ -109,5 +109,5 @@ def test_config_streaming_replication():
 
 def test_config_validates_db_user_permissions():
     options = {"db": {"users": {"api": {"permissions": "bad", "password": "pw"}}}}
-    with pytest.raises(Exception, match="Invalid database permissions for 'api'."):
+    with pytest.raises(Exception, match="Invalid database permissions for 'api'"):
         MontaguConfig("config/basic", options=options)

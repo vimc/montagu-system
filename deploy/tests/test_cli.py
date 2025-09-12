@@ -60,7 +60,7 @@ def test_parse_args():
 
 def test_version(capsys):
     cli.main(["--version"])
-    out, err = capsys.readouterr()
+    out, _err = capsys.readouterr()
     assert re.match(r"\d+\.\d+\.\d+", out)
 
 
