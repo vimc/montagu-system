@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -e
+
+if [ "$#" -ne 2 ]; then
+    echo "Usage: start.sh <db-image> <migrate-image>"
+    echo "Starts the database using the specified image versions"
+    exit 1
+fi
+
+set -exu
+DB_IMAGE=$1
+MIGRATE_IMAGE=$2
+DB_CONTAINER=db
+DB_NETWORK=db_nw
+DB_PORT=5432
+
+PG_CONFIG=/etc/montagu/postgresql.test.conf
+
+function cleanup {
+    set +e
+    docker stop $DB_CONTAINER
+    docker network rm $DB_NETWORK
+}
+trap cleanup EXIT
+
+docker network create $DB_NETWORK || true
+
+docker pull $DB_IMAGE
+docker pull $MIGRATE_IMAGE
+
+# First the core database:
+docker run --rm --network=$DB_NETWORK -d \
+    --name $DB_CONTAINER -p 5432:5432 $DB_IMAGE $PG_CONFIG
+
+# Wait for things to become responsive - allow two minutes
+docker exec $DB_CONTAINER montagu-wait.sh 120
+
+# Do the migrations
+docker run --rm --network=$DB_NETWORK $MIGRATE_IMAGE
+
+trap - EXIT
