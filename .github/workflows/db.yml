@@ -51,6 +51,7 @@ jobs:
           pull: true
           push: true
           file: ./db/Dockerfile
+          context: ./db
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
