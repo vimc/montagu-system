@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Login to GHCR (GitHub Packages)
         uses: docker/login-action@v3
@@ -81,4 +81,4 @@ jobs:
           annotations: ${{ steps.meta-migrate.outputs.annotations }}
 
       - name: Test db startup and migration
-        run: ./db/scripts/test-db ${{ steps.build.outputs.imageid }} ${{ steps.build-migrate.outputs.imageid }}
+        run: ./db/scripts/test-db ghcr.io/vimc/montagu-db@${{ steps.build.outputs.imageid }} ghcr.io/vimc/montagu-migrate@${{ steps.build-migrate.outputs.imageid }}
