@@ -63,6 +63,6 @@ defaults:
 
 will cause all `run` steps to run from this directory by default, which is very useful.
 
-**WARNING**: This does not apply to `upload-artefact` or `docker/build-push-action` (which use `run`); these need paths to be full paths from the root.
+**WARNING**: This does not apply to `upload-artefact` or `docker/build-push-action` (which use `uses:`); these need paths to be full paths from the root.
 
 For `docker/build-push-action`, the `context` argument is useful (see for example actions for `db`)
