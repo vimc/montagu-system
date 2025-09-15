@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-ORG=vimc
+ORG=ghcr.io/vimc
 
-if [ "$BUILDKITE" = "true" ]; then
-    GIT_SHA=${BUILDKITE_COMMIT:0:7}
+if [[ -v "GITHUB_SHA" ]]; then
+    GIT_SHA=${GITHUB_SHA:0:7}
 else
     GIT_SHA=$(git rev-parse --short=7 HEAD)
 fi
 
-if [ "$BUILDKITE" = "true" ]; then
-    GIT_BRANCH=$BUILDKITE_BRANCH
+if [[ -v "BRANCH_NAME" ]]; then
+    GIT_BRANCH=${BRANCH_NAME}
 else
     GIT_BRANCH=$(git symbolic-ref --short HEAD)
 fi
@@ -20,7 +20,6 @@ fi
 # But docker does not like
 GIT_BRANCH=$(echo $GIT_BRANCH | sed 's;/;-;g')
 
-BUILDKITE_DOCKER_AUTH_PATH=/var/lib/buildkite-agent/.docker/config.json
 BUILD_ENV_TAG=$ORG/montagu-api-shared-build-env:$GIT_SHA
 
 # Export env vars needed for running test dependencies

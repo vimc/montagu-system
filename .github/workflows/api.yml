@@ -1,0 +1,39 @@
+name: API test
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ v* ]
+    paths:
+      - api/**
+  pull_request:
+    branches: [ main ]
+    paths:
+      - api/**
+  workflow_dispatch: ~
+
+# All jobs will run, by default, in the api/ directory
+defaults:
+  run:
+    working-directory: api
+
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+jobs:
+  make-build-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GHCR (GitHub Packages)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout repositorygit
+        uses: actions/checkout@v3
+      - name: ":construction_worker: Make shared build env"
+        run: ci/make-build-env.sh
+  check-schema:
+    needs: [make-build-env]
