@@ -1,0 +1,5 @@
+{
+    "id": "Coverage",
+    "type": "array",
+    "items": { "$ref": "CoverageSet.schema.json" }
+}

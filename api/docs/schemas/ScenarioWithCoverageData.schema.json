@@ -1,0 +1,15 @@
+{
+    "id": "ScenarioWithCoverageData",
+    "type": "object",
+    "properties": {
+        "touchstone_version": { "$ref": "Touchstone.schema.json" },
+        "scenario":  { "$ref": "Scenario.schema.json" },
+        "countries": {
+            "type": "array",
+            "items": { "$ref": "CountryId.schema.json" }
+        },
+        "coverage": { "$ref": "Coverage.schema.json" }
+    },
+    "additionalProperties": false,
+    "required": [ "touchstone_version", "scenario", "coverage" ]
+}

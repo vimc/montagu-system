@@ -1,0 +1,5 @@
+{
+    "id": "Demographics",
+    "type": "array",
+    "items": { "$ref": "DemographicDataset.schema.json" }
+}

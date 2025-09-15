@@ -1,0 +1,5 @@
+{
+    "id": "ResponsibilitySets",
+    "type": "array",
+    "items": { "$ref": "ResponsibilitySet.schema.json" }
+}

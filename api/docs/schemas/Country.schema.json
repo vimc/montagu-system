@@ -1,0 +1,10 @@
+{
+	"id": "Country",
+	"type": "object",
+	"properties": {
+		"id": { "$ref": "CountryId.schema.json" },
+		"name": { "type": "string" }
+	},
+	"additionalProperties": false,
+	"required": [ "id", "name" ]
+}

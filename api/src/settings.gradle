@@ -1,0 +1,16 @@
+rootProject.name = 'api'
+include 'app',
+        'models',
+        'security',
+        'databaseInterface',
+        'emails',
+
+        'generateDatabaseInterface',
+        'generateTestData',
+        'userCLI',
+        'serialization',
+
+        'validateSchema',
+        'testHelpers',
+        'databaseTests',
+        'blackboxTests'

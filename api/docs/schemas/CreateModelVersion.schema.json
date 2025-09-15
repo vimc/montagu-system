@@ -1,0 +1,11 @@
+{
+    "id": "CreateModelVersion",
+    "type": "object",
+    "properties": {
+        "version": { "type": "string" },
+        "note": { "type": "string" },
+        "fingerprint": { "type": [ "string", "null" ] }
+    },
+    "additionalProperties": false,
+    "required": [ "version", "note", "fingerprint" ]
+}

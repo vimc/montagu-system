@@ -1,0 +1,5 @@
+{
+    "id": "Username",
+    "type": "string",
+    "minLength": 1
+}

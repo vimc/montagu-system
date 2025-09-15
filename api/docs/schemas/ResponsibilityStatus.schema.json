@@ -1,0 +1,4 @@
+{
+	"id": "ResponsibilityStatus",
+	"enum": [ "empty", "invalid", "valid" ]
+}

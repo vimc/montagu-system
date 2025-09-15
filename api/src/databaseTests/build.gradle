@@ -1,0 +1,50 @@
+apply plugin: 'application'
+mainClassName = "org.vaccineimpact.api.databaseTests.AppKt"
+
+dependencies {
+    implementation project(":testHelpers")
+
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.mockito:mockito-core:2.+"
+    testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
+    testImplementation "org.assertj:assertj-core:3.9.1"
+
+    testImplementation "org.jooq:jooq:3.10.5"
+    testImplementation "org.jooq:jooq-meta:3.10.5"
+    testImplementation "com.sparkjava:spark-core:2.9.3"
+    testImplementation "org.pac4j:pac4j-http:5.4.0"
+    testImplementation "org.postgresql:postgresql:42.2.1"
+
+    testImplementation project(":app")
+    testImplementation project(":models")
+    testImplementation project(":databaseInterface")
+    testImplementation project(":testHelpers")
+    testImplementation project(":security")
+    testImplementation project(":serialization")
+}
+
+test {
+    dependsOn 'copySpec', 'createTemplateFromDatabase'
+    finalizedBy 'restoreDatabaseFromTemplate'
+}
+
+task createTemplateFromDatabase(type: JavaExec) {
+    main = "org.vaccineimpact.api.databaseTests.AppKt"
+    classpath = sourceSets.main.runtimeClasspath
+    args "createTemplateFromDatabase"
+}
+
+task restoreDatabaseFromTemplate(type: JavaExec) {
+    main = "org.vaccineimpact.api.databaseTests.AppKt"
+    classpath = sourceSets.main.runtimeClasspath
+    args "restoreDatabaseFromTemplate"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+    }
+
+    sourceSets project(':app').sourceSets.main
+}

@@ -1,0 +1,15 @@
+{
+    "id": "BurdenEstimateSet",
+    "type": "object",
+    "properties": {
+        "id": { "type": "integer" },
+        "uploaded_by": { "$ref": "Username.schema.json" },
+        "uploaded_on": { "$ref": "Timestamp.schema.json" },
+        "type": { "$ref": "BurdenEstimateSetType.schema.json" },
+        "status": { "$ref": "BurdenEstimateSetStatus.schema.json" },
+        "problems": { "type": "array","items": { "type": "string" } },
+        "original_filename": { "type": "string" }
+        },
+    "additionalProperties": false,
+    "required": [ "id", "uploaded_by", "uploaded_on", "type", "problems", "status" ]
+}

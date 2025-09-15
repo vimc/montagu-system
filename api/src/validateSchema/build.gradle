@@ -1,0 +1,11 @@
+dependencies {
+    implementation 'com.atlassian.commonmark:commonmark:0.11.0'
+    implementation "org.assertj:assertj-core:3.9.1"
+    implementation "com.github.fge:json-schema-validator:2.2.8"
+
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.assertj:assertj-core:3.9.1"
+    testImplementation project(":testHelpers")
+}
+
+test.dependsOn 'copySpec'

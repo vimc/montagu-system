@@ -1,0 +1,17 @@
+{
+	"id": "AssociateCoverageSet",
+	"type": "object",
+	"properties": {
+		"action": {
+			"enum": [ "add", "remove" ]
+		},
+		"scenario_id": {
+			"$ref": "StandardIdentifier.schema.json"
+		},
+		"coverage_set_id": {
+			"type": "integer"
+		}
+	},
+	"additionalProperties": false,
+	"required": [ "action", "scenario_id", "coverage_set_id" ]
+}

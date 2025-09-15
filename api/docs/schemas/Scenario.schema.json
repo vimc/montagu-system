@@ -1,0 +1,15 @@
+{
+	"id": "Scenario",
+	"type": "object",
+	"properties": {
+		"id": { "$ref": "StandardIdentifier.schema.json" },
+		"touchstones": {
+			"type": "array",
+			"items": { "$ref": "StandardIdentifier.schema.json" }
+		},
+		"description": { "type": "string" },
+    	"disease": { "$ref": "StandardIdentifier.schema.json" }
+	},
+	"additionalProperties": false,
+	"required": [ "id", "touchstones", "description", "disease" ]
+}

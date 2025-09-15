@@ -1,0 +1,196 @@
+buildscript {
+    ext.kotlin_version = "1.9.0"
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id 'com.github.ben-manes.versions' version '0.20.0'
+    id "org.jetbrains.kotlin.jvm" version "$kotlin_version"
+}
+
+group 'org.vaccineimpact'
+version '1.0-SNAPSHOT'
+
+task run(dependsOn: ':app:run')
+task generateDatabaseInterface(dependsOn: ':generateDatabaseInterface:run')
+task generateTestData(dependsOn: ':generateTestData:run')
+task validateSchema(dependsOn: ':validateSchema:test')
+// 'testLibrary' runs things that can be tested without a running API.
+// i.e. everything other than blackboxTests.
+task testLibrary(dependsOn: [':app:test', 'serialization:test', ':databaseTests:test', ':userCLI:test', ':security:test'])
+
+
+def loadPropertiesFile(path) {
+    def props = new Properties()
+    def f = file(path)
+    if (f.exists()) {
+        f.withReader {
+            props.load(it)
+        }
+    }
+    return props
+}
+
+def loadProperties() {
+    println("Loading base configuration from config/default.properties.")
+    def properties = loadPropertiesFile("config/default.properties")
+    def userFile = file("config/current_user")
+    if (userFile.exists()) {
+        def user = userFile.text.trim()
+        println("Using configuration for user $user")
+        def userPropertiesFile = file("config/users/${user}.properties")
+        if (userPropertiesFile.exists()) {
+            println("Found extra configuration in config/users/${user}.properties")
+            def userProperties = loadPropertiesFile(userPropertiesFile.path)
+            properties.putAll(userProperties)
+        } else {
+            throw new Exception("You defined a user file, with user '$user', " +
+                    "but no corresponding properties file exists at $userPropertiesFile.absolutePath")
+        }
+    }
+    return properties
+}
+
+task loadPropertiesTask() {
+    rootProject.ext.props = loadProperties()
+    doLast {
+        println("(Properties were loaded during configuration)")
+    }
+}
+
+task startDatabase(type: Exec, dependsOn: ':loadPropertiesTask') {
+    doFirst {
+        String dbVersion = file("config/db_version").text
+        environment([
+                'PG_TEST_MODE': '1',
+                'DB_VERSION': dbVersion,
+                'DB_PORT': rootProject.ext.props.get('testdb_port')
+        ])
+    }
+    commandLine 'bash', '../scripts/start-database.sh'
+}
+
+task startPackit(type: Exec) {
+    commandLine 'bash', '../scripts/start-packit.sh'
+}
+
+task startTaskQueue(type: Exec) {
+    commandLine 'bash', '../scripts/start-task-queue.sh'
+}
+
+task startProxy(type: Exec) {
+    commandLine 'bash', '../scripts/start-proxy.sh'
+}
+
+task startTestAPI(type: Exec) {
+    commandLine 'bash', '../scripts/start-api.sh'
+}
+
+task stopDatabase(type: Exec) {
+    commandLine 'bash', '../scripts/stop-database.sh'
+}
+
+task stopProxy(type: Exec) {
+    commandLine 'bash', '../scripts/stop-proxy.sh'
+}
+
+task stopPackit(type: Exec) {
+    commandLine 'bash', '../scripts/stop-packit.sh'
+}
+
+task stopTaskQueue(type: Exec) {
+    commandLine 'bash', '../scripts/stop-task-queue.sh'
+}
+
+task stopTestAPI(type: Exec) {
+    commandLine 'bash', '../scripts/stop-api.sh'
+}
+
+subprojects {
+
+    apply plugin: "jacoco"
+    apply plugin: "org.jetbrains.kotlin.jvm"
+
+    repositories {
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+
+    dependencies {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+        implementation "org.slf4j:slf4j-simple:1.7.25"
+        implementation "com.google.code.gson:gson:2.2.4"
+    }
+
+    jacoco {
+        toolVersion = "0.8.8"
+        reportsDir = file("$projectDir/coverage")
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            csv.enabled false
+        }
+    }
+
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+    }
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+    }
+
+    task copyConfig(type: Copy, dependsOn: ':loadPropertiesTask') {
+        from 'src/main/resources'
+        include '*'
+        into 'build/resources/main/'
+        expand(rootProject.ext.props)
+        outputs.upToDateWhen { false }
+    }
+    task copyTestConfig(type: Copy, dependsOn: ':loadPropertiesTask') {
+        from 'src/test/resources'
+        include '*'
+        into 'build/resources/test/'
+        expand(rootProject.ext.props)
+    }
+
+    processResources.finalizedBy 'copyConfig'
+    processTestResources.finalizedBy 'copyTestConfig'
+
+    task showConfig(dependsOn: 'copyConfig') {
+        doLast {
+            println("This is the config being used:")
+            println(file("build/resources/main/config.properties").text)
+        }
+    }
+    task showTestConfig(dependsOn: 'copyTestConfig') {
+        doLast {
+            println("This is the config being used:")
+            println(file("build/resources/test/config.properties").text)
+        }
+    }
+
+    task copySpec(type: Copy) {
+        from 'src/test/resources/spec'
+        include '*.schema.json'
+        include '*.csvschema.json'
+        into 'build/classes/test/spec'
+        outputs.upToDateWhen { false }
+    }
+
+    jar.dependsOn "copySpec"
+    jar.dependsOn "copyConfig"
+    compileTestKotlin.dependsOn "copyConfig"
+}

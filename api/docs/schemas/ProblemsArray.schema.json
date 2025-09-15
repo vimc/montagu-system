@@ -1,0 +1,5 @@
+{
+    "id": "ProblemsArray",
+    "type": "array",
+    "items": { "type": "string" }
+}

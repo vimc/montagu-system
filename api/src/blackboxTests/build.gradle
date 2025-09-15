@@ -1,0 +1,58 @@
+apply plugin: 'application'
+mainClassName = "org.vaccineimpact.api.blackboxTests.AppKt"
+
+dependencies {
+    implementation project(":testHelpers")
+
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.assertj:assertj-core:3.9.1"
+    testImplementation "com.sparkjava:spark-core:2.9.3"
+    testImplementation "org.slf4j:slf4j-simple:1.7.25"
+    testImplementation "org.danilopianini:khttp:1.1.0"
+    testImplementation "com.squareup.okhttp3:okhttp:4.12.0"
+    testImplementation 'com.beust:klaxon:5.5'
+    testImplementation "com.opencsv:opencsv:4.1"
+    testImplementation "com.auth0:java-jwt:3.3.0"
+    testImplementation "com.github.fge:json-schema-validator:2.2.8"
+    testImplementation "org.jooq:jooq:3.10.5"
+    testImplementation "org.bouncycastle:bcprov-jdk15on:1.59"
+
+    testImplementation project(":testHelpers")
+    testImplementation project(":databaseInterface")
+    testImplementation project(":security")
+    testImplementation project(":serialization")
+    testImplementation project(":validateSchema")
+    testImplementation project(":emails")
+    testImplementation project(":models")
+}
+
+test {
+    dependsOn 'copySpec', 'createTemplateFromDatabase'
+    finalizedBy 'restoreDatabaseFromTemplate'
+}
+
+copyTestConfig.finalizedBy 'showTestConfig'
+
+task createTemplateFromDatabase(type: JavaExec) {
+    main = "org.vaccineimpact.api.blackboxTests.AppKt"
+    classpath = sourceSets.main.runtimeClasspath
+    args "createTemplateFromDatabase"
+}
+
+task restoreDatabaseFromTemplate(type: JavaExec) {
+    main = "org.vaccineimpact.api.blackboxTests.AppKt"
+    classpath = sourceSets.main.runtimeClasspath
+    args "restoreDatabaseFromTemplate"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+    }
+
+    sourceSets project(':app').sourceSets.main
+    sourceSets project(':security').sourceSets.main
+    sourceSets project(':emails').sourceSets.main
+    sourceSets project(':models').sourceSets.main
+}

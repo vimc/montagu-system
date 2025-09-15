@@ -1,0 +1,10 @@
+{
+	"id": "Disease",
+	"type": "object",
+    "properties": {
+        "id": { "$ref": "StandardIdentifier.schema.json" },
+        "name": { "type": "string" }
+    },
+    "additionalProperties": false,
+    "required": [ "id", "name" ]
+}

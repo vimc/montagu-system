@@ -1,0 +1,11 @@
+{
+	"id": "Endpoint",
+	"type": "object",
+	"properties": {
+		"full_url": { "type": "string" },
+		"method": { "type": "string" },
+		"content_type": { "type": "string" }
+	},
+	"additionalProperties": false,
+	"required": [ "full_url", "method", "content_type" ]
+}

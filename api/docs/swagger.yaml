@@ -1,0 +1,235 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: VIMC API
+  description: Unifying vaccine impact modelling by providing consistency to input data and to the resulting impact estimates.
+  version: "1.0.0-draft"
+# the domain of the service
+host: vimc.ic.ac.uk
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /diseases/:
+    get:
+      summary: Get all diseases
+      description: All diseases in the system.
+      tags:
+        - Reference data
+      responses:
+        200:
+          description: An array of diseases
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Disease'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Add a new disease
+      description: Adds a new disease to the system.
+      tags:
+       - Reference data
+      responses:
+        201:
+          description: The disease that has been added
+          schema:
+            $ref: '#/definitions/Disease'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /diseases/{disease-id}/:
+    get:
+      summary: A single disease
+      description: Gets the properties ofa single disease
+      tags:
+        - Reference data
+      parameters:
+        - name: disease-id
+          in: path
+          description: ID of disease to fetch
+          required: true
+          type: string
+      responses:
+        200:
+          description: A disease
+          schema:
+            $ref: '#/definitions/Disease'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Update a disease's name
+      description: Updates the properties ofa single disease
+      tags:
+        - Reference data
+      parameters:
+        - name: disease-id
+          in: path
+          description: ID of disease to fetch
+          required: true
+          type: string
+      responses:
+        200:
+          description: A disease
+          schema:
+            $ref: '#/definitions/Disease'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /vaccines/:
+    get:
+      summary: Get all vaccines
+      description: All vaccines in the system.
+      tags:
+        - Reference data
+      responses:
+        200:
+          description: An array of vaccines
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Vaccine'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Add a new vaccine
+      description: Adds a new vaccine to the system.
+      tags:
+       - Reference data
+      responses:
+        201:
+          description: The vaccine that has been added
+          schema:
+            $ref: '#/definitions/Vaccine'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /vaccine/{vaccine-id}/:
+    get:
+      summary: A single vaccine
+      description: Gets the properties ofa single vaccine
+      tags:
+        - Reference data
+      parameters:
+        - name: vaccine-id
+          in: path
+          description: ID of vaccine to fetch
+          required: true
+          type: string
+      responses:
+        200:
+          description: A vaccine
+          schema:
+            $ref: '#/definitions/Vaccine'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Update a vaccine's name
+      description: Updates the properties ofa single vaccine
+      tags:
+        - Reference data
+      parameters:
+        - name: vaccine-id
+          in: path
+          description: ID of vaccine to fetch
+          required: true
+          type: string
+      responses:
+        200:
+          description: A vaccine
+          schema:
+            $ref: '#/definitions/Vaccine'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  
+  /touchstones/:
+    get:
+      summary: All touchstones
+      description: Returns all touchstones in the system. A touchstone is an authoritative set of reference data, published by GAVI at a point in time. In consists of a list of countries (and potentially regions), demographic data for each country, which scenarios are applicable to this round of impact modelling, and coverage data for each country and scenario pair.
+      tags:
+        - Reference data
+      responses:
+        200:
+          description: An array of touchstones
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Touchstone'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'      
+            
+definitions:
+  Disease:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Unique identifier. For example, "HepB", "YF"
+      name:
+        type: string
+        description: Name of disease. For example, "Hepatitis B", "Yellow Fever"
+  Vaccine:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Unique identifier. For example, "HepB", "YF"
+      name:
+        type: string
+        description: Name of vaccine. For example, "Hepatitis B", "Yellow Fever"
+  Touchstone:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Unique identifier. For example, "2017-wuenic", "2017-op"
+      description:
+        type: string
+        description: Human-readable description. For example, "2017 WUENIC Update", "2017 Operational Forecast"
+      published_date:
+        type: date
+        description: Date that the touchstone was made available to modelling groups
+      years:
+        type: 
+          $ref: '#/definitions/YearRange'
+        description: The years covered by the touchstone. There will be no coverage or demographic data outside this range.
+  YearRange:
+    type: object
+    properties:
+      start:
+        type: int
+        description: Start year (inclusive)
+      end:
+        type: int
+        description: End year (inclusive)
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string

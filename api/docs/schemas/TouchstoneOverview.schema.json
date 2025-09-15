@@ -1,0 +1,31 @@
+{
+    "id": "TouchstoneOverview",
+    "type": "object",
+    "properties": {
+        "id": { "$ref": "StandardIdentifier.schema.json" },        
+        "description": { "type": "string" },
+        "status": { "$ref": "TouchstoneStatus.schema.json" },
+        "allowed_state_changes": {
+            "type": "array",
+            "items": { "$ref": "TouchstoneStatus.schema.json" }
+        },
+        "sections": {
+            "type": "object",
+            "properties": {
+                "countries": { "$ref": "TouchstoneOverview_CountriesSection.schema.json" },
+                "scenarios": { "$ref": "TouchstoneOverview_ScenariosSection.schema.json" },
+                "modelling_groups": { "$ref": "TouchstoneOverview_ModellingGroupsSection.schema.json" }
+            },
+            "additionalProperties": false,
+            "required": [ "countries", "scenarios", "modelling_groups" ]
+        }
+    },
+    "additionalProperties": false,
+    "required": [ 
+        "id", 
+        "description",
+        "status", 
+        "allowed_state_changes",
+        "sections"
+    ]
+}

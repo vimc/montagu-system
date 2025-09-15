@@ -1,0 +1,15 @@
+{
+    "id": "ResponsibilityAndTouchstone",
+    "type": "object",
+    "properties": {
+        "touchstone_version": { "$ref": "TouchstoneVersion.schema.json" },
+        "responsibility": { "$ref": "Responsibility.schema.json" },        
+        "expectations": { "$ref": "Expectation.schema.json" }
+    },
+    "additionalProperties": false,
+    "required": [
+        "touchstone_version",
+        "responsibility",
+        "expectations"
+    ]
+}

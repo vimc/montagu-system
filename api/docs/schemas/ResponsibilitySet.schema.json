@@ -1,0 +1,26 @@
+{
+    "id": "ResponsibilitySet",
+    "type": "object",
+    "properties": {
+        "touchstone_version": { "$ref": "StandardIdentifier.schema.json" },
+        "status": { "$ref": "ResponsibilitySetStatus.schema.json" },
+        "modelling_group_id": { "type" : "string" },
+        "problems": { "type": "string" },
+        "responsibilities": {
+            "type": "array",
+            "items": { "$ref": "Responsibility.schema.json" }
+        },
+        "expectations": {
+            "type": "array",
+            "items": { "$ref": "ExpectationMapping.schema.json" }
+        }
+    },
+    "additionalProperties": false,
+    "required": [ 
+        "touchstone_version", 
+        "status", 
+        "modelling_group_id",
+        "responsibilities", 
+        "expectations" 
+    ]
+}

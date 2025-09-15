@@ -1,0 +1,5 @@
+{
+    "id": "ModelRunParameterSets",
+    "type": "array",
+    "items": { "$ref": "ModelRunParameterSet.schema.json" }
+}

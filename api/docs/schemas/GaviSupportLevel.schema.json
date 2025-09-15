@@ -1,0 +1,4 @@
+{
+	"id": "GaviSupportLevel",
+	"enum": [ "no vaccine", "no gavi", "total", "high", "low", "bestcase" ]
+}

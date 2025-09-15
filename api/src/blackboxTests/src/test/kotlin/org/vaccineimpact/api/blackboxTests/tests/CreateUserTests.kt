@@ -1,0 +1,161 @@
+package org.vaccineimpact.api.blackboxTests.tests
+
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.json
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
+import org.vaccineimpact.api.blackboxTests.helpers.*
+import org.vaccineimpact.api.db.JooqContext
+import org.vaccineimpact.api.db.Tables.APP_USER
+import org.vaccineimpact.api.emails.WriteToDiskEmailManager
+import org.vaccineimpact.api.models.permissions.PermissionSet
+import org.vaccineimpact.api.security.UserHelper
+import org.vaccineimpact.api.security.inflate
+import org.vaccineimpact.api.test_helpers.DatabaseTest
+import org.vaccineimpact.api.validateSchema.JSONValidator
+import spark.route.HttpMethod
+
+class CreateUserTests : DatabaseTest()
+{
+    val requestHelper = RequestHelper()
+    val validator = JSONValidator()
+    val creationPermissions = PermissionSet("*/can-login", "*/users.create")
+
+    private fun getPostData(suffix: String) = mapOf(
+            "username" to "gandalf.grey$suffix",
+            "name" to "Gandalf the Grey $suffix",
+            "email" to "gandalf.$suffix@example.com"
+    )
+
+    @Test
+    fun `can create user`()
+    {
+        val postData = getPostData("create")
+        val objectUrl = "/users/${postData["username"]}/"
+        validate("/users/", HttpMethod.post) sendingJSON {
+            postData.toJsonObject()
+        } withRequestSchema "CreateUser" requiringPermissions {
+            creationPermissions
+        } andCheckObjectCreation objectUrl
+
+        val permissions = PermissionSet("*/users.read", "*/can-login")
+        val user = RequestHelper().get(objectUrl, permissions).montaguData<JsonObject>()
+        assertThat(user).isEqualTo((postData + mapOf("last_logged_in" to null)).toJsonObject())
+    }
+
+    @Test
+    fun `can use token from new user email to set password for the first time`()
+    {
+        val postData = getPostData("email")
+        WriteToDiskEmailManager.cleanOutputDirectory()
+        val token = TestUserHelper.setupTestUserAndGetToken(creationPermissions)
+        requestHelper.post("/users/", token = token, data = postData.toJsonObject())
+
+        // User has no password at this point
+        JooqContext().use {
+            val hash = it.dsl.select(APP_USER.PASSWORD_HASH)
+                    .from(APP_USER)
+                    .where(APP_USER.USERNAME.eq(postData["username"]))
+                    .fetchOne().value1()
+            assertThat(hash).isNull()
+        }
+
+        val onetimeToken = PasswordTests.getTokenFromFakeEmail()
+        requestHelper.post("/password/set/?access_token=$onetimeToken", json {
+            obj("password" to "first_password")
+        })
+
+        assertThat(TokenFetcher().getToken(postData["email"]!!, "first_password"))
+                .isInstanceOf(TokenFetcher.TokenResponse.Token::class.java)
+    }
+
+    @Test
+    fun `cannot create two users with the same username`()
+    {
+        assertCannotCreateDuplicate("username", "dupuname", "duplicate-key:username")
+    }
+
+    @Test
+    fun `cannot create two users with the same email`()
+    {
+        assertCannotCreateDuplicate("email", "dupemail", "duplicate-key:email")
+    }
+
+    @Test
+    fun `throws error if required field is missing`()
+    {
+        TestUserHelper.setupTestUser()
+        val response = requestHelper.post("/users/", creationPermissions, json {
+            obj(
+                    "username" to "bob",
+                    "name" to "Robert Smith"
+            )
+        })
+        assertThat(response.statusCode).isEqualTo(400)
+        validator.validateError(response.text, "invalid-field:email:missing")
+    }
+
+    @Test
+    fun `throws error if required field is blank`()
+    {
+        TestUserHelper.setupTestUser()
+        val response = requestHelper.post("/users/", creationPermissions, json {
+            obj(
+                    "username" to "bob.smith",
+                    "name" to " ",
+                    "email" to "email@example.com"
+            )
+        })
+        assertThat(response.statusCode).isEqualTo(400)
+        validator.validateError(response.text, "invalid-field:name:blank")
+    }
+
+    @Test
+    fun `throws error if username is invalid`()
+    {
+        TestUserHelper.setupTestUser()
+        val response = requestHelper.post("/users/", creationPermissions, json {
+            obj(
+                    "username" to "^&*",
+                    "name" to "name",
+                    "email" to "email@example.com"
+            )
+        })
+        assertThat(response.statusCode).isEqualTo(400)
+        validator.validateError(response.text, "invalid-field:username:bad-format")
+    }
+
+    @Test
+    fun `throws error if email is invalid`()
+    {
+        TestUserHelper.setupTestUser()
+        val response = requestHelper.post("/users/", creationPermissions, json {
+            obj(
+                    "username" to "john.smith",
+                    "name" to "john@example.com",
+                    "email" to "John Smith"
+            )
+        })
+        assertThat(response.statusCode).isEqualTo(400)
+        validator.validateError(response.text, "invalid-field:email:bad-format")
+    }
+
+    fun assertCannotCreateDuplicate(sharedProperty: String, suffix: String, expectedErrorCode: String)
+    {
+        val postData = getPostData(suffix)
+        val token = TestUserHelper.setupTestUserAndGetToken(creationPermissions)
+        val r1 = requestHelper.post("/users/", token = token, data = postData.toJsonObject())
+
+        assertThat(r1.statusCode).isEqualTo(201)
+
+        val differentData = mapOf(
+                "username" to "different.username",
+                "name" to "different name",
+                "email" to "different@example.com"
+        )
+        val clashingData = differentData + mapOf(sharedProperty to postData[sharedProperty])
+        val r2 = requestHelper.post("/users/", token = token, data = clashingData.toJsonObject())
+        assertThat(r2.statusCode).isEqualTo(409)
+        validator.validateError(r2.text, expectedErrorCode)
+    }
+}

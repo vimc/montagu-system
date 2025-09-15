@@ -1,0 +1,5 @@
+{
+    "id": "CountriesWithDetails",
+    "type": "array",
+    "items": { "$ref": "CountryWithDetails.schema.json" }
+}

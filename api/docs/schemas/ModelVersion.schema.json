@@ -1,0 +1,16 @@
+{
+    "id": "ModelVersion",
+    "type": "object",
+    "properties": {
+        "id": { "type": "integer" },
+        "model": { "$ref": "StandardIdentifier.schema.json" },
+        "version": { "type": "string" },
+        "note": { "type": "string" },
+        "fingerprint": { "type": [ "string", "null" ] },
+        "code": { "type": ["string", "null"] },
+        "is_dynamic": { "type": ["boolean", "null"] },
+        "countries": { "$ref": "Countries.schema.json" }
+    },
+    "additionalProperties": false,
+    "required": [ "id", "model", "version", "note", "fingerprint" ]
+}

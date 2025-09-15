@@ -1,0 +1,5 @@
+{
+	"id": "ModellingGroups",
+	"type": "array",
+	"items": { "$ref": "ModellingGroup.schema.json" }
+}

@@ -1,0 +1,11 @@
+{
+	"id": "RoleAssignment",
+	"type": "object",
+	"properties": { 
+        "name": { "type": "string" }, 
+        "scope_prefix": { "type": [ "string", "null" ] }, 
+        "scope_id": { "type": [ "string", "null" ] } 
+    },
+    "additionalProperties": false,
+    "required": [ "name", "scope_prefix", "scope_id" ]
+}

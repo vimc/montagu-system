@@ -1,0 +1,26 @@
+{
+	"id": "User",
+	"type": "object",
+	"properties": {
+        "username": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { 
+        	"type": "string",
+        	"format": "email"
+        },
+        "last_logged_in": { "$ref": "NullableTimestamp.schema.json" },
+        "roles": { 
+        	"type": "array",
+        	"items": { "$ref": "RoleAssignment.schema.json" }
+        },
+        "permissions": {
+          "type": "array",
+          "items":
+            {
+              "type": "string"
+            }
+        }
+	},
+    "additionalProperties": false,
+    "required": [ "username", "name", "email", "last_logged_in" ]
+}

@@ -1,0 +1,5 @@
+{
+    "id": "Models",
+    "type": "array",
+    "items": { "$ref": "Model.schema.json" }
+}

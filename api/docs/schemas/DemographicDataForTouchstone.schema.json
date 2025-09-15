@@ -1,0 +1,11 @@
+{
+    "id": "DemographicDataForTouchstone",
+    "type": "object",
+    "properties": {
+        "touchstone_version": { "$ref": "TouchstoneVersion.schema.json" },
+        "demographic_data":
+            { "$ref" : "DemographicMetadata.schema.json" }
+    },
+    "additionalProperties": false,
+    "required": [ "touchstone_version", "demographic_data" ]
+}

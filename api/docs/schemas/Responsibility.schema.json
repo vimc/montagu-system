@@ -1,0 +1,19 @@
+{
+    "id": "Responsibility",
+    "type": "object",
+    "properties": {
+        "scenario": { "$ref": "Scenario.schema.json" },
+        "status": { "$ref": "ResponsibilityStatus.schema.json" },
+        "problems": { "$ref": "ProblemsArray.schema.json" },
+        "current_estimate_set": {
+            "anyOf": [ {"$ref": "BurdenEstimateSet.schema.json"}, {"type": "null"} ]
+        }
+    },
+    "additionalProperties": false,
+    "required": [ 
+        "scenario", 
+        "status", 
+        "problems", 
+        "current_estimate_set"
+    ]
+}

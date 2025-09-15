@@ -1,0 +1,31 @@
+host: mq
+servers:
+  montagu:
+    url: http://api:8080
+    user: task.user@example.com
+    password: password
+  packit:
+    url: https://reverse-proxy/packit
+    disable_certificate_verify: true
+  youtrack:
+    token: 123
+  smtp:
+    host: localhost
+    port: 1025
+    user:
+    password:
+    from: noreply@example.com
+tasks:
+  diagnostic_reports:
+    use_additional_recipients: false
+    poll_seconds: 5
+    reports:
+      testGroup:
+        testDisease:
+          - report_name: diagnostic
+            success_email:
+              recipients:
+                - minimal_modeller@example.com
+                - science@example.com
+              subject: "New version of Orderly report"
+            assignee: test.user

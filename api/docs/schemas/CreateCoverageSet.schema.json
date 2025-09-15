@@ -1,0 +1,12 @@
+{
+	"id": "CreateCoverageSet",
+	"type": "object",
+	"properties": {
+        "name": { "type": "string" },
+		"activity_type": { "enum": [ "routine", "campaign" ] },
+		"vaccine": { "$ref": "StandardIdentifier.schema.json" },
+		"gavi_support": { "$ref": "GaviSupportLevel.schema.json" }
+	},
+	"additionalProperties": false,
+	"required": [ "name", "activity_type", "vaccine", "gavi_support" ]
+}

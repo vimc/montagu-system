@@ -1,0 +1,13 @@
+{
+    "id": "CohortRestriction",
+    "type": "object",
+    "properties": {
+        "minimum_birth_year": { "type": ["number", "null"] },
+        "maximum_birth_year": { "type": ["number", "null"] }
+    },
+    "additionalProperties": false,
+    "required": [ 
+        "minimum_birth_year", 
+        "maximum_birth_year"
+    ]
+}

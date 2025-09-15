@@ -1,0 +1,12 @@
+{
+    "columns": {
+        "disease": "String",
+        "run_id": "String",
+        "year": "Int",
+        "age": "Int",
+        "country": "String",
+        "country_name": "String",
+        "cohort_size": "Int"        
+    },
+    "additionalColumnsAllowed": true
+}

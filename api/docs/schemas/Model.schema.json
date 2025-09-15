@@ -1,0 +1,34 @@
+{
+	"id": "Model",
+	"type": "object",
+	"properties": {
+        "id": { "$ref": "StandardIdentifier.schema.json" },
+        "citation": { 
+            "type": "string"
+        },
+        "description": { 
+            "type": "string",
+            "minLength": 1
+        },
+        "modelling_group": { "$ref": "StandardIdentifier.schema.json" },
+        "disease": { "$ref": "Disease.schema.json"},
+        "gender_specific": {
+          "type": ["boolean", "null"]
+        },
+        "gender": {
+          "type": ["string", "null"]
+        },
+        "current_version": {
+          "oneOf": [
+            {
+              "$ref": "ModelVersion.schema.json"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "id", "citation", "description", "modelling_group" ]
+}

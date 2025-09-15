@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -ex
+HERE=$(dirname $0)
+ROOT=$(realpath $HERE/..)
+
+docker rm flower || true
+
+if [[ ! -z $NETWORK ]]; then
+  NETWORK_MAPPING="--network=$NETWORK"
+else
+  # if no network provided, use db default network
+  NETWORK_MAPPING="--network=db_nw"
+fi
+
+docker run --rm -d \
+  $NETWORK_MAPPING \
+  -p 6379:6379 \
+  --name mq \
+  redis
+
+TASK_QUEUE_WORKER=vimc/task-queue-worker:master
+docker pull $TASK_QUEUE_WORKER
+docker run --rm -d \
+  $NETWORK_MAPPING \
+  -v $ROOT/scripts/task-queue-config.yml:/home/worker/config/config.yml \
+  --name task-queue-worker \
+  $TASK_QUEUE_WORKER
+
+# flower provides an http api for interacting with/monitoring celery
+docker run -d \
+  $NETWORK_MAPPING \
+  -p 5555:5555 \
+  -e CELERY_BROKER_URL=redis://mq// \
+  -e CELERY_RESULT_BACKEND=redis://mq/0/ \
+  -e FLOWER_PORT=5555 \
+  --name flower \
+  mher/flower:0.9.5
+
+# add task q user
+CLI=vimc/montagu-cli:master
+docker pull $CLI
+docker run --rm \
+  $NETWORK_MAPPING \
+  $CLI \
+  add "Task User" task.user task.user@example.com password --if-not-exists
+
+docker run --rm \
+  $NETWORK_MAPPING \
+  $CLI addRole task.user user
+
+USERNAME='task.user'
+EMAIL='task.user@example.com'
+DISPLAY_NAME='Task User'
+ROLE='ADMIN'
+docker exec montagu-packit-db create-preauth-user --username "$USERNAME" --email "$EMAIL" --displayname "$DISPLAY_NAME" --role "$ROLE"

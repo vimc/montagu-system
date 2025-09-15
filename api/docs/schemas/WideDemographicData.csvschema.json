@@ -1,0 +1,12 @@
+{
+    "columns": {
+        "country_code_numeric": "Int",
+        "country_code": "String",
+        "country": "String",
+        "age_from": "Int",
+        "age_to": "Int",
+        "gender": "String"
+    },
+
+    "additionalColumnsAllowed": true
+}

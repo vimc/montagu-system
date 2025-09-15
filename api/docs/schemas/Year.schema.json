@@ -1,0 +1,5 @@
+{
+	"id": "Year",
+	"type": "integer",
+	"minimum": 1
+}

@@ -1,0 +1,13 @@
+{
+    "id": "CountryWithDetails",
+    "type": "object",
+    "properties": {
+        "id": { "$ref": "CountryId.schema.json" },
+        "name": { "type": "string" },
+        "gavi73": { "type": "boolean" },
+        "wuenic": { "type": "boolean" },
+        "who_region": { "type": "string" }
+    },
+    "additionalProperties": false,
+    "required": [ "id", "name", "gavi73", "wuenic", "who_region" ]
+}

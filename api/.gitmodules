@@ -1,0 +1,9 @@
+[submodule "src/models"]
+	path = src/models
+	url = https://github.com/vimc/montagu-webmodels.git
+[submodule "db"]
+	path = db
+	url = https://github.com/vimc/montagu-db
+[submodule "libsodium"]
+	path = libsodium
+	url = https://github.com/vimc/openjdk-libsodium.git

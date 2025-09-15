@@ -1,0 +1,21 @@
+{
+	"id": "CoverageSet",
+	"type": "object",
+	"properties": {
+		"id": { "type": "integer" },
+		"touchstone_version": { "$ref": "StandardIdentifier.schema.json" },
+        "name": { "type": "string" },
+		"activity_type": { "$ref": "ActivityType.schema.json" },
+		"vaccine": { "$ref": "StandardIdentifier.schema.json" },
+		"gavi_support": { "$ref": "GaviSupportLevel.schema.json" }
+	},
+	"additionalProperties": false,
+	"required": [ 
+		"id", 
+		"touchstone_version", 
+		"name", 
+		"activity_type", 
+		"vaccine", 
+		"gavi_support" 
+	]
+}

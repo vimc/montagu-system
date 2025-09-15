@@ -1,0 +1,9 @@
+{
+	"id": "UpdateScenario",
+	"type": "object",
+	"properties": {
+		"description": { "type": "string" },
+    	"disease": { "$ref": "StandardIdentifier.schema.json" }
+	},
+	"additionalProperties": false
+}

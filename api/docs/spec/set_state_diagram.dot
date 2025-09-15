@@ -1,0 +1,19 @@
+digraph {
+    graph[nodesep=1];
+    node[
+        shape="box",
+        fillcolor="#73DCFF",
+        style="filled",
+        fontname="Arial",
+        width=2
+    ];
+    edge[fontname="Arial"];
+
+    null[label="", fillcolor="transparent", shape="point", width=0.25];
+
+    null -> empty[label="create"];
+    empty -> partial[label="populate"];
+    partial:e -> partial:e[label="populate"];
+    partial -> empty[label="clear"];
+    partial -> complete[label="close"];
+}

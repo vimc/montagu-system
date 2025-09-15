@@ -1,0 +1,13 @@
+{
+	"type": "object",
+	"properties": {
+		"action": {
+			"enum": [ "add", "remove" ]
+		},
+		"scenario_id": {
+			"$ref": "StandardIdentifier.schema.json"
+		}
+	},
+	"additionalProperties": false,
+	"required": [ "action", "scenario_id" ]
+}

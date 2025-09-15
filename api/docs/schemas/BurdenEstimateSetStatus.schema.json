@@ -1,0 +1,8 @@
+{
+    "id": "BurdenEstimateSetType",
+    "enum": [ 
+        "empty",
+        "partial",
+        "complete"
+    ]   
+}

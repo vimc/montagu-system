@@ -1,0 +1,7 @@
+{
+    "id": "ResponsibilitySetStatus",
+    "oneOf": [
+        { "enum": [ "not-applicable", "incomplete", "submitted", "approved" ] },
+        { "type": "null" }
+    ]
+}

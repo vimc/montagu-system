@@ -1,0 +1,10 @@
+{
+	"id": "Scenario",
+	"type": "object",
+	"properties": {
+		"scenario": { "$ref": "Scenario.schema.json" },
+		"countries": { "$ref": "Countries.schema.json" }
+	},
+	"additionalProperties": false,
+	"required": [ "scenario", "countries" ]
+}

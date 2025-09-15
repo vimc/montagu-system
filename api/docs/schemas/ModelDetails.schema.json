@@ -1,0 +1,13 @@
+{
+    "id": "ModelDetails",
+    "type": "object",
+    "properties": {
+        "metadata": { "$ref": "Model.schema.json" },
+        "versions": {
+            "type": "array",
+            "items": { "$ref": "ModelVersion.schema.json" }
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "metadata", "versions" ]
+}

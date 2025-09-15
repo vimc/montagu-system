@@ -1,0 +1,18 @@
+{
+	"id": "ModellingGroupDetails",
+	"type": "object",
+	"properties": {
+		"id": { "$ref": "StandardIdentifier.schema.json" },
+        "description": { "type": "string" },
+        "models": { 
+    		"type": "array",
+    		"items": { "$ref": "Model.schema.json" }
+    	},
+        "members": {
+            "type": "array",
+            "items": { "$ref": "Username.schema.json" }
+        }
+	},
+	"additionalProperties": false,
+	"required": [ "id", "description", "models" ]
+}
