@@ -1,10 +1,10 @@
+name: Database Build and Test
+
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
-
-name: Build-and-push
 
 env:
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -50,7 +50,7 @@ jobs:
         with:
           pull: true
           push: true
-          file: ./docker/Dockerfile
+          file: ./db/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
