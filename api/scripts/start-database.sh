@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 set -ex
-HERE=$(dirname $0)
+#HERE=$(dirname $0)
 
 # If the database is already running, stop it
 if docker top db &>/dev/null; then
     echo "Stopping database"
-    $HERE/../db/scripts/stop.sh
+    ./../../db/scripts/stop.sh
     sleep 1s
 fi
 
 echo "Starting database"
 export DB_VERSION=$(<../src/config/db_version)
-$HERE/../../db/scripts/start.sh $DB_VERSION $DB_PORT $NETWORK
+./../../db/scripts/start.sh $DB_VERSION $DB_PORT $NETWORK
 
 echo "-------------------------------------------------------------------------"
 echo "Databases are now running:"
