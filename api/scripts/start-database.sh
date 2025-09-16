@@ -10,7 +10,8 @@ if docker top db &>/dev/null; then
 fi
 
 echo "Starting database"
-$HERE/../db/scripts/start.sh $DB_VERSION $DB_PORT $NETWORK
+export DB_VERSION=$(<../src/config/db_version)
+$HERE/../../db/scripts/start.sh $DB_VERSION $DB_PORT $NETWORK
 
 echo "-------------------------------------------------------------------------"
 echo "Databases are now running:"

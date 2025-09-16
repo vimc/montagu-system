@@ -11,6 +11,10 @@ defaults:
   run:
     working-directory: ./api/src
 
+env:
+  NETWORK: test_nw
+  DB_PORT: 5432
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -33,13 +37,13 @@ jobs:
       - name: Run test dependencies
         # NB These scripts currently run main/master images - we should eventually provide at least the option to run against
         # current branch of deps
+        #./start-api.sh
+        #./start-proxy.sh
+        #./start-task-queue.sh
         working-directory: ./api/scripts
         run: |
           ./start-database.sh
           ./start-packit.sh docker-packit
-          ./start-api.sh
-          ./start-proxy.sh
-          ./start-task-queue.sh
       - name: Generate test data
         run: |
           ./gradlew :generateTestData:installDist
