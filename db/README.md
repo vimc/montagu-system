@@ -1,5 +1,4 @@
 # Montagu Database
-[![Build status](https://badge.buildkite.com/4d056eb9896833e8eec68d737724324f683077ce0d6286dcad.svg?branch=master)](https://buildkite.com/mrc-ide/montagu-db)
 
 ## View the documentation
 You can view the full documentation for the master branch
@@ -12,15 +11,16 @@ any one table you will get a mini diagram explaining its relationships to other
 tables, which is often clearer.
 
 ## Updating the data model and docs
-See [migrations](migrations/README.md).
+
+See [migrations](db/migrations/README.md).
 
 ## Starting an empty copy of the database
 
 Run the empty database mapped to port 8888
 
 ```
-docker pull vimc/montagu-db:master
-docker run --rm -p 8888:5432 vimc/montagu-db:master
+docker pull ghcr.io/vimc/montagu-db:master
+docker run --rm -p 8888:5432 ghcr.io/vimc/montagu-db:master
 ```
 
 ## Restore a dump (from backup)
@@ -28,7 +28,7 @@ docker run --rm -p 8888:5432 vimc/montagu-db:master
 See the [montagu-backup](https://github.com/vimc/montagu-backup) repo for information on backing up and restoring.  Once done, you should have database file at `/montagu/db.dump`
 
 ```
-docker run --rm -d --name montagu_db vimc/montagu-db:master
+docker run --rm -d --name montagu_db ghcr.io/vimc/montagu-db:master
 docker cp /montagu/db.dump montagu_db:/tmp/import.dump
 docker exec montagu_db /montagu-bin/restore-dump.sh /tmp/import.dump
 ```
@@ -38,7 +38,7 @@ docker exec montagu_db /montagu-bin/restore-dump.sh /tmp/import.dump
 There is only one at present `/etc/montagu/postgresql.test.conf`, to use it add this as an argument when running a container, e.g.
 
 ```
-docker run --rm vimc/montagu-db:master /etc/montagu/postgresql.test.conf
+docker run --rm ghcr.io/vimc/montagu-db:master /etc/montagu/postgresql.test.conf
 ```
 
 ## Streaming backups
