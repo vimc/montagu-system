@@ -1,0 +1,33 @@
+name: api
+on:
+  push:
+    branches: [ main ]
+    tags: [ v* ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: ~
+
+# All jobs will run, by default, in the api/ directory
+defaults:
+  run:
+    working-directory: api
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '7.4.2''
+      - name: Test gradle
+        run: ./gradlew :app:compileKotlin
+        working-directory: ./api/src
+
