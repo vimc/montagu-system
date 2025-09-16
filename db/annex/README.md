@@ -40,13 +40,8 @@ The password for su is stored in the vault.
 (this section is needed only if we start from scratch - run as the `montagu` user)
 
 ```
-<<<<<<< HEAD
 git clone https://github.com/vimc/montagu-db ~/annex
 ~/annex/annex/vault-auth
-=======
-git clone https://github.com/vimc/montagu-system ~/annex
-~/annex/db/annex/vault-auth
->>>>>>> d916e76d1 (Fix some old references)
 vault read -field=password /secret/vimc/registry/vimc | \
     docker login -u vimc --password-stdin
 ```
