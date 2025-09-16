@@ -7,7 +7,6 @@ on:
     branches: [ main ]
   workflow_dispatch: ~
 
-# All jobs will run, by default, in the api/ directory
 defaults:
   run:
     working-directory: ./api/src
@@ -36,4 +35,12 @@ jobs:
           ./gradlew :generateTestData:installDist
           ./gradlew :userCLI:installDist
           ./generateTestData/generate.sh
+      - name: Run test dependencies
+        working-directory: ./api/scripts
+        run: |
+          ./start-database.sh
+          ./start-packit.sh docker-packit
+          ./start-api.sh
+          ./start-proxy.sh
+          ./start-task-queue.sh
 
