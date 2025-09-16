@@ -54,8 +54,11 @@ class PasswordTests : DatabaseTest()
     {
         fun getTokenFromFakeEmail(): String
         {
-            val emailFile = WriteToDiskEmailManager.outputDirectory.listFiles().singleOrNull()
-                    ?: throw Exception("No emails were found in ${WriteToDiskEmailManager.outputDirectory}")
+            val files = WriteToDiskEmailManager.outputDirectory.listFiles()
+            if (files.count() != 1) {
+                throw Exception("Expected 1 email file but found ${files.count()} in ${WriteToDiskEmailManager.outputDirectory}")
+            }
+            val emailFile = files[0]
             val text = emailFile.readText()
             val match = Regex("""token=([^\n]+)\n""").find(text)
             return match?.groups?.get(1)?.value

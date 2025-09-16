@@ -40,13 +40,13 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
     fun createTemplateFromDatabase()
     {
         println("Planning to create template ${config.templateName} from ${config.name}")
-        checkDatabaseExists(config.name)
         if (databaseExists(config.templateName, maxAttempts = 1))
         {
             println("Template database already exists")
         }
         else
         {
+            checkDatabaseExists(config.name)
             config.factory("postgres").use {
                 it.dsl.query("ALTER DATABASE ${config.name} RENAME TO ${config.templateName}").execute()
             }
@@ -59,6 +59,7 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
     {
         if (databaseExists(config.templateName, maxAttempts = 1))
         {
+            println("Restoring database ${config.name} from ${config.templateName}")
             config.factory("postgres").use {
                 it.dsl.query("ALTER DATABASE ${config.templateName} RENAME TO ${config.name}").execute()
             }
@@ -72,10 +73,12 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
 
     fun createDatabaseFromTemplate()
     {
+        println("Planning to create database ${config.name} from ${config.templateName}")
         config.factory("postgres").use {
             it.dsl.query("CREATE DATABASE ${config.name} TEMPLATE ${config.templateName};").execute()
         }
         DatabaseCreationHelper(config).checkDatabaseExists(config.name)
+        println("Created database ${config.name}")
     }
 
     fun dropDatabase()

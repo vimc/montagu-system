@@ -2,11 +2,18 @@
 set -ex
 
 HERE=$(dirname $0)
-VERSION=$1
+. $HERE/common
+
+API_IMAGE=$1
 
 if [[ -z $1 ]]; then
-  VERSION=master
+  #TODO: use main on ghcr once building to there
+  API_IMAGE=$OLD_ORG/$API_NAME:master
+  # assume we should use local image if it is specified, pull latest main if not
+  docker pull $API_IMAGE
 fi
+
+CONFIG_PATH=$HERE/docker-config.properties
 
 if [[ ! -z $NETWORK ]]; then
   NETWORK_MAPPING="--network=$NETWORK"
@@ -15,16 +22,14 @@ else
    NETWORK_MAPPING="--network=db_nw"
 fi
 
-# need this config to be able to talk to packit
-CONFIG_PATH=$(realpath $HERE/../src/config/blackboxTests/config.properties)
+EMAILS_FOLDER=/tmp/montagu_emails
 
-API_IMAGE=vimc/montagu-api:$VERSION
+[ -e $EMAILS_FOLDER ] || mkdir $EMAILS_FOLDER
 
-docker pull $API_IMAGE
 docker run -d --rm \
     $NETWORK_MAPPING \
     -p 8080:8080 \
-    -v montagu_emails:/tmp/montagu_emails \
+    --mount type=bind,src="$EMAILS_FOLDER",target="$EMAILS_FOLDER" \
     --name api \
     $API_IMAGE
 

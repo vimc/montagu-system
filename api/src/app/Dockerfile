@@ -1,8 +1,6 @@
-FROM openjdk8
+FROM openjdk:11
 
-# Putting this here as we'll need it later!
-# TODO: CLI
-apt-get update && apt-get install -y --no-install-recommends libsodium23 && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends libsodium23 && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-ADD "app.tar" /
-ENTRYPOINT "/app/bin/app"
+ADD "src/app/build/distributions/app.tar" /
+ENTRYPOINT ["/app/bin/app"]

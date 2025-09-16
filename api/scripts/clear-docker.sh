@@ -1,4 +1,9 @@
-docker stop $(docker ps -aq)
-docker rm $(docker ps -aq)
-docker network prune --force
+#!/usr/bin/env bash
+set -x
+set +e
+docker ps -aq | xargs -r docker stop
+docker container prune --force
+docker volume rm montagu_packit_db
 docker volume prune --force
+docker network prune --force
+set -e

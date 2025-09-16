@@ -5,7 +5,7 @@
 
 ## Running the app locally
 System requirements:
-* openjdk 8
+* openjdk 11
 * Docker
 
 Install Docker and add your user to the Docker group (e.g. https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04.) You may need to restart your machine for changes to take effect.
@@ -13,49 +13,29 @@ Install Docker and add your user to the Docker group (e.g. https://www.digitaloc
 Configure your Docker client to use our registry by following instructions here:
 https://github.com/vimc/montagu-ci#configuring-docker-clients-to-use-the-registry
 
-Start the dependencies (the database and orderly web) by navigating to the `src` folder and running
+Run the app (in docker) and all dependencies using `./dev-run.sh` in the `scripts` folder. 
 
-    ./gradlew :startDatabase
-    ./gradlew :startPackit
-
-Run the app
+For historical reasons you can also run the app (outside docker) from the `src` folder, but will need to make sure
+a dockerised api is not also trying to use port 8080:
 
     ./gradlew :run
-   
-## Generating a root token
-For use with the Ebola work, we wanted to be able to run the [reporting API](https://github.com/vimc/montagu-reporting-api)
-without this main API. To circumvent the normal authorization, we added a mode
-that allows you to run generate a root token with a 1 year expiry that gives 
-access to all reports. This can then be hardcoded into the reporting portal and
-any other code that needs access to this API-less version of Montagu.
-
-To generate, first create a keypair at some TOKEN_KEY_PATH and then run:
-
-```
-docker run --rm \
-    -v $TOKEN_KEY_PATH:/etc/montagu/api/token_key \
-    vimc/montagu-api:$MONTAGU_API_VERSION \
-    generate-token */can-login */reports.read */reports.review
-```
-
-The reporting API needs to be run with the public key from the keypair.
-
+  
 ## Running tests
-To run the Blackbox tests, you will need to start the dependencies and run the app as described above.
- Note that if you want to run individual tests through IntelliJ, you will need to manually run the `copySpec` Gradle task first.
+To run all unit and integration tests, start app and dependencies as described above, then from `src` folder run 
+    
+    ./gradlew :testLibrary
 
-To run Blackbox tests from the command line, after running the above 2 commands, from the same folder run
+To run the Blackbox tests, start app and dependencies as described above, then from `src` folder  run
 
-     ./gradlew :blackboxTests:test
+    ./gradlew :blackboxTests:test
+
+Note that if you want to run individual tests through IntelliJ, you will need to manually run the `copySpec` Gradle task first.
 
 ## Upgrading dependencies
 Run `./gradlew dependencyUpdates` and then manually update as required.
 
 ## Project anatomy
 At the top level we have four folders of note:
-* `buildkite/`: Contains a Buildkite pipeline along with scripts for testing and building the API and CLI.
-* `docker/`: Contains docker files for images used in testing and compiling. None of these files is for the API
-image itself, which is created via the Gradle `distDocker` task.
 * `docs/`: The formal API specification. The API must conform to this. Developers writing clients use this.
 * `scripts/`: Shell scripts used to run dependencies for local development or on CI.
 * `src/`: The source code of the application and its tests and helpers
