@@ -40,9 +40,9 @@ jobs:
         #./start-api.sh
         #./start-proxy.sh
         #./start-task-queue.sh
-        working-directory: ./api/scripts
+        working-directory: ./
         run: |
-          ./start-database.sh
+          cd api/scripts && ./start-database.sh
           ./start-packit.sh docker-packit
       - name: Generate test data
         run: |
