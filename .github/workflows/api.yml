@@ -30,12 +30,9 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libsodium23
       - name: Check schema
         run: ./gradlew :validateSchema -i
-      - name: Generate test data
-        run: |
-          ./gradlew :generateTestData:installDist
-          ./gradlew :userCLI:installDist
-          ./generateTestData/generate.sh
       - name: Run test dependencies
+        # NB These scripts currently run main/master images - we should eventually provide at least the option to run against
+        # current branch of deps
         working-directory: ./api/scripts
         run: |
           ./start-database.sh
@@ -43,4 +40,11 @@ jobs:
           ./start-api.sh
           ./start-proxy.sh
           ./start-task-queue.sh
+      - name: Generate test data
+        run: |
+          ./gradlew :generateTestData:installDist
+          ./gradlew :userCLI:installDist
+          ./generateTestData/generate.sh
+      - name: Run tests
+        run: ./gradlew :testLibrary
 
