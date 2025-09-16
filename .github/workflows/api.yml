@@ -10,7 +10,7 @@ on:
 # All jobs will run, by default, in the api/ directory
 defaults:
   run:
-    working-directory: api
+    working-directory: ./api/src
 
 jobs:
   build-and-test:
@@ -26,8 +26,9 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '7.4.2''
+          gradle-version: '7.4.2'
       - name: Test gradle
         run: ./gradlew :app:compileKotlin
-        working-directory: ./api/src
+      - name: Check schema
+        run: ./gradlew :validateSchema -i
 
