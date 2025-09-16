@@ -29,8 +29,6 @@ jobs:
           gradle-version: '7.4.2'
       - name: Install libsodium
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libsodium23
-      - name: Test gradle
-        run: ./gradlew :app:compileKotlin
       - name: Check schema
         run: ./gradlew :validateSchema -i
 

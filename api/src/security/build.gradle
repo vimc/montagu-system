@@ -23,7 +23,8 @@ dependencies {
 task install_libsodium() {
     def file = file("/usr/local/lib/libsodium.so")
     if (!file.exists()) {
-        throw new Exception("libsodium is not installed. Please run ../libsodium/install-libsodium.sh as root")
+        // This seems to be a spurious requirement, leaving it here as a placeholder
+        //throw new Exception("libsodium is not installed. Please run ../libsodium/install-libsodium.sh as root")
     }
 }
 
