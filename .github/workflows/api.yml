@@ -10,11 +10,6 @@ on:
 defaults:
   run:
     working-directory: ./api/src
-
-env:
-  NETWORK: test_nw
-  DB_PORT: 5432
-
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -40,9 +35,9 @@ jobs:
         #./start-api.sh
         #./start-proxy.sh
         #./start-task-queue.sh
-        working-directory: ./
+        working-directory: ./api/scripts
         run: |
-          cd api/scripts && ./start-database.sh
+          ./start-database.sh
           ./start-packit.sh docker-packit
       - name: Generate test data
         run: |
