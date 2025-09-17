@@ -3,6 +3,8 @@ set -ex
 HERE=$(dirname $0)
 ROOT=$(realpath $HERE/..)
 
+. $HERE/common
+
 docker rm flower || true
 
 if [[ ! -z $NETWORK ]]; then
@@ -18,7 +20,7 @@ docker run --rm -d \
   --name mq \
   redis
 
-TASK_QUEUE_WORKER=vimc/task-queue-worker:master
+TASK_QUEUE_WORKER=$OLD_ORG/task-queue-worker:master
 docker pull $TASK_QUEUE_WORKER
 docker run --rm -d \
   $NETWORK_MAPPING \
@@ -37,7 +39,8 @@ docker run -d \
   mher/flower:0.9.5
 
 # add task q user
-CLI=vimc/montagu-cli:master
+# TODO: change this to new ORG once we're building on main!
+CLI=$OLD_ORG/montagu-cli:master
 docker pull $CLI
 docker run --rm \
   $NETWORK_MAPPING \

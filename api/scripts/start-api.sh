@@ -2,10 +2,12 @@
 set -ex
 
 HERE=$(dirname $0)
+. $HERE/common
+
 VERSION=$1
 
 if [[ -z $1 ]]; then
-  VERSION=master
+  VERSION=master #TODO: use main on ghcr once building to there
 fi
 
 if [[ ! -z $NETWORK ]]; then
@@ -18,7 +20,7 @@ fi
 # need this config to be able to talk to packit
 CONFIG_PATH=$(realpath $HERE/../src/config/blackboxTests/config.properties)
 
-API_IMAGE=vimc/montagu-api:$VERSION
+API_IMAGE=$OLD_ORG/montagu-api:$VERSION
 
 docker pull $API_IMAGE
 docker run -d --rm \

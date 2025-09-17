@@ -14,7 +14,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Login to GHCR (GitHub Packages)
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
          registry: ghcr.io
@@ -37,14 +37,15 @@ jobs:
         run: ./gradlew :validateSchema -i
       - name: Run test dependencies
         # NB These scripts currently run main/master images - we should eventually provide at least the option to run against
-        # current branch of deps
-        #./start-api.sh
-        #./start-proxy.sh
-        #./start-task-queue.sh
+        # It's weird that the API is its own dep, but we do need to run the api in order to run the proxy in order to test
+        # against packit and the task queue...
         working-directory: ./api/scripts
         run: |
           ./start-database.sh
           ./start-packit.sh docker-packit
+          ./start-task-queue.sh
+          ./start-api.sh
+          ./start-proxy.sh
       - name: Generate test data
         run: |
           ./gradlew :generateTestData:installDist

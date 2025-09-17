@@ -19,6 +19,12 @@ open class JooqContext(private val dbName: String? = null) : AutoCloseable
         val url = config.url(dbName)
         try
         {
+            //println("USERNAME")
+            //println(config.username)
+            //println("PASSWORD")
+            //println(config.password)
+            //println("URL")
+            //println(url)
             return DriverManager.getConnection(url, config.username, config.password)
         }
         catch (e: Exception)

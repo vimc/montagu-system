@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -ex
+HERE=$(dirname $0)
+. $HERE/common
 
 docker rm flower || true
 
@@ -10,23 +12,23 @@ else
   NETWORK_MAPPING="--network=db_nw"
 fi
 
-REGISTRY=vimc
+# TODO: get from ghcr once that's migrated
 # we also need to keep the proxy happy by running the web apps
-MONTAGU_ADMIN_TAG=$REGISTRY/montagu-admin-portal:master
+MONTAGU_ADMIN_TAG=$OLD_ORG/montagu-admin-portal:master
 docker pull $MONTAGU_ADMIN_TAG
 docker run -d \
    --name admin \
    $NETWORK_MAPPING \
    $MONTAGU_ADMIN_TAG
 
-MONTAGU_CONTRIB_TAG=$REGISTRY/montagu-contrib-portal:master
+MONTAGU_CONTRIB_TAG=$OLD_ORG/montagu-contrib-portal:master
 docker pull $MONTAGU_CONTRIB_TAG
 docker run -d \
    --name contrib \
    $NETWORK_MAPPING \
    $MONTAGU_CONTRIB_TAG
 
-MONTAGU_PROXY_TAG=$REGISTRY/montagu-reverse-proxy:master
+MONTAGU_PROXY_TAG=$OLD_ORG/montagu-reverse-proxy:master
 docker pull $MONTAGU_PROXY_TAG
 docker run -d \
   -p "443:443" -p "80:80" \
