@@ -22,9 +22,6 @@ class GroupsTests : DatabaseTest()
     @Test
     fun `AllGroups returns all current groups in database`()
     {
-        withDatabase { db ->
-            db.dsl..deleteFrom(USER_GROUP).execute() // delete any existing groups
-        }
         val def = Groups.AllGroups()
         val groups = JooqContext().use { db ->
             db.addGroup("a", "A")

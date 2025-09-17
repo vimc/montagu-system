@@ -74,3 +74,5 @@ jacocoTestReport {
     sourceSets project(':emails').sourceSets.main
     sourceSets project(':models').sourceSets.main
 }
+
+
