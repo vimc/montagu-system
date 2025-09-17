@@ -75,4 +75,4 @@ jacocoTestReport {
     sourceSets project(':models').sourceSets.main
 }
 
-
+test.jvmArgs('--add-opens', 'java.base/java.net=ALL-UNNAMED')
