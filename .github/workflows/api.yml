@@ -53,6 +53,5 @@ jobs:
           ./gradlew :userCLI:installDist
           ./generateTestData/generate.sh
       - name: Run tests
-        run: :
-          ./gradlew :testLibrary
+        run: ./gradlew :testLibrary
 
