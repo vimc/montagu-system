@@ -40,13 +40,13 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
     fun createTemplateFromDatabase()
     {
         println("Planning to create template ${config.templateName} from ${config.name}")
-        checkDatabaseExists(config.name)
         if (databaseExists(config.templateName, maxAttempts = 1))
         {
             println("Template database already exists")
         }
         else
         {
+            checkDatabaseExists(config.name)
             config.factory("postgres").use {
                 it.dsl.query("ALTER DATABASE ${config.name} RENAME TO ${config.templateName}").execute()
             }

@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addGroup
+import org.vaccineimpact.api.db.Tables.USER_GROUP
 import org.vaccineimpact.api.security.Groups
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 
@@ -23,6 +24,7 @@ class GroupsTests : DatabaseTest()
     {
         val def = Groups.AllGroups()
         val groups = JooqContext().use { db ->
+            db.dsl.deleteFrom(USER_GROUP).execute() // delete any existing groups
             db.addGroup("a", "A")
             db.addGroup("b2", "B")
             db.addGroup("b1", "B", current = "b2")

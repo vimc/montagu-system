@@ -45,12 +45,14 @@ jobs:
           ./start-packit.sh docker-packit
           ./start-task-queue.sh
           ./start-api.sh
-          ./start-proxy.sh
+          ./start-proxy.sh    org.junit.ComparisonFailure at GroupsTests.kt:31
+
       - name: Generate test data
         run: |
           ./gradlew :generateTestData:installDist
           ./gradlew :userCLI:installDist
           ./generateTestData/generate.sh
       - name: Run tests
-        run: ./gradlew :testLibrary
+        run: :
+          ./gradlew :testLibrary
 
