@@ -14,6 +14,12 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
+      - name: Login to GHCR (GitHub Packages)
+        uses: docker/login-action@v3
+        with:
+         registry: ghcr.io
+         username: ${{ github.actor }}
+         password: ${{ secrets.GITHUB_TOKEN }}
       - name: Check out source
         uses: actions/checkout@v4
       - name: Set up Java
