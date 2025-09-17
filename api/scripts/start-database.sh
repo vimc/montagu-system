@@ -11,7 +11,7 @@ fi
 
 echo "Starting database"
 export DB_VERSION=$(<../src/config/db_version)
-ls ./../..
+ls ./../../db/scripts
 ./../../db/scripts/start.sh $DB_VERSION $DB_PORT $NETWORK
 
 echo "-------------------------------------------------------------------------"
