@@ -48,9 +48,7 @@ jobs:
             ./gradlew :userCLI:installDist
             ./generateTestData/addTestUser.sh
       - name: Run tests
-        run: |
-             ./gradlew clean
-             ./gradlew :testLibrary
+        run: ./gradlew :testLibrary
       - name: Upload api database test output
         uses: actions/upload-artifact@v4
         if: failure()

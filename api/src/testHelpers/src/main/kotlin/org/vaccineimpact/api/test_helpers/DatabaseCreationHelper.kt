@@ -59,6 +59,7 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
     {
         if (databaseExists(config.templateName, maxAttempts = 1))
         {
+            println("Restoring database ${config.name} from ${config.templateName}")
             config.factory("postgres").use {
                 it.dsl.query("ALTER DATABASE ${config.templateName} RENAME TO ${config.name}").execute()
             }
