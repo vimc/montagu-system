@@ -44,10 +44,6 @@ jobs:
           ./start-dependencies.sh
       - name: Run tests
         run: ./gradlew :testLibrary
-      - name: Upload api database test output
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: api-database-test-report
-          path: api/src/databaseTests/build/reports/tests/test/
+      - name: Build docker image
+        run: ./gradlew :app:docker
 
