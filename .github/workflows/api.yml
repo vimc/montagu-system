@@ -48,5 +48,7 @@ jobs:
             ./gradlew :userCLI:installDist
             ./generateTestData/addTestUser.sh
       - name: Run tests
-        run: ./gradlew :testLibrary
+        run: |
+             ./gradlew clean
+             ./gradlew :testLibrary
 

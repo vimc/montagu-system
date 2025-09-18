@@ -77,7 +77,7 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
             it.dsl.query("CREATE DATABASE ${config.name} TEMPLATE ${config.templateName};").execute()
         }
         DatabaseCreationHelper(config).checkDatabaseExists(config.name)
-        println("Created ${config.name}")
+        println("Created database ${config.name}")
     }
 
     fun dropDatabase()
