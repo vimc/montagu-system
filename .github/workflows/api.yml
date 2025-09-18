@@ -1,4 +1,4 @@
-name: api
+name: API Build and Test
 on:
   push:
     branches: [ main ]
@@ -55,6 +55,16 @@ jobs:
           ./start-dependencies.sh
       - name: Run tests
         run: ./gradlew :testLibrary
-      - name: Build docker image
-        run: ./gradlew :app:docker -i -Pdocker_version=${{ steps.meta.outputs.tags[0] }}
+      - name: Build dist
+        run: ./gradlew :app:distTar
+      - name: Build and push (api)
+        uses: docker/build-push-action@v6
+        with:
+          pull: true
+          push: true
+          file: ./api/src/app/Dockerfile
+          context: ./api
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
 
