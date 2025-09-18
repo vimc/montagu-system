@@ -72,10 +72,12 @@ class DatabaseCreationHelper(private val config: DatabaseConfig)
 
     fun createDatabaseFromTemplate()
     {
+        println("Planning to create database ${config.name} from ${config.templateName}")
         config.factory("postgres").use {
             it.dsl.query("CREATE DATABASE ${config.name} TEMPLATE ${config.templateName};").execute()
         }
         DatabaseCreationHelper(config).checkDatabaseExists(config.name)
+        println("Created ${config.name}")
     }
 
     fun dropDatabase()
