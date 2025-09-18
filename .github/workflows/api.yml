@@ -20,6 +20,17 @@ jobs:
          registry: ghcr.io
          username: ${{ github.actor }}
          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata for Docker (api)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/vimc/montagu-api
+          tags: |
+            type=raw,value=latest,enable={{ is_default_branch }}
+            type=raw,value=${{ github.head_ref }},enable=${{ github.event_name == 'pull_request' }}
+            type=ref,event=branch
+            type=sha,prefix=
       - name: Check out source
         uses: actions/checkout@v4
       - name: Set up Java
@@ -45,5 +56,5 @@ jobs:
       - name: Run tests
         run: ./gradlew :testLibrary
       - name: Build docker image
-        run: ./gradlew :app:docker
+        run: ./gradlew :app:docker -i -Pdocker_version=${{ steps.meta.outputs.tags[0] }}
 
