@@ -4,20 +4,6 @@ buildscript {
     }
 }
 
-plugins {
-    id 'com.palantir.docker' version '0.33.0'
-}
-
-def api_docker_version = 'UNKNOWN'
-if (hasProperty('docker_version')) {
-    api_docker_version = docker_version
-}
-
-def api_docker_name = 'montagu-api'
-if (hasProperty('docker_name')) {
-    api_docker_name = docker_name
-}
-
 apply plugin: 'application'
 
 mainClassName = "org.vaccineimpact.api.app.app_start.MainKt"
@@ -53,12 +39,6 @@ dependencies {
 
     testImplementation project(":testHelpers")
 
-}
-
-docker {
-    name "${api_docker_name}:${api_docker_version}"
-    file('Dockerfile')
-    files tasks.distTar.outputs, "app.jar"
 }
 
 copyConfig.finalizedBy 'showConfig'
