@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM openjdk:17-alpine
 
 RUN apt-get update && apt-get install -y --no-install-recommends libsodium23 && apt-get clean && rm -rf /var/lib/apt/lists/*
 
