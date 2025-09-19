@@ -62,8 +62,7 @@ jobs:
         # It's weird that the API is its own dep, but we do need to run the api in order to run the proxy in order to test
         # against packit and the task queue...
         working-directory: ./api/scripts
-        run: |
-          ./start-dependencies.sh
+        run: ./start-dependencies.sh
       - name: Run unit and integration tests
         run: ./gradlew :testLibrary
       - name: Build api dist
@@ -90,4 +89,10 @@ jobs:
           tags: ${{ steps.meta-cli.outputs.tags }}
           labels: ${{ steps.meta-cli.outputs.labels }}
           annotations: ${{ steps.meta-cli.outputs.annotations }}
-
+      - name: Run branch api
+        working-directory: ./api/scripts
+        # Stop the main branch api container we used for integration tests, and start the
+        # container for this commit tag for blackbox testing
+        run: |
+          ./stop-api.sh
+          ./start-api ${{ steps.meta-cli.outputs.tags[1] }}

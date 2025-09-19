@@ -6,5 +6,5 @@ HERE=$(dirname $0)
 $HERE/start-database.sh
 $HERE/start-packit.sh docker-packit
 $HERE/start-task-queue.sh
-$HERE/start-api.sh
+$HERE/start-api.sh $1
 $HERE/start-proxy.sh
