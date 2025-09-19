@@ -44,7 +44,7 @@ jobs:
             type=sha,prefix=
       - name: Echo tag
         # TODO: remove!
-        run: echo ${{ steps.meta-cli.outputs.json.tags[1] }}
+        run: echo ${{ fromJSON(steps.meta-cli.outputs.json.tags[1]) }}
       - name: Check out source
         uses: actions/checkout@v4
       - name: Set up Java
@@ -95,14 +95,14 @@ jobs:
       - name: Smoke test cli
         working-directory: ./api/scripts
         # Smoke test with the image for this commit for blackbox testing
-        run: ./test-cli.sh ${{ steps.meta-cli.outputs.json.tags[1] }}
+        run: ./test-cli.sh ${{ fromJSON(steps.meta-cli.outputs.json.tags[1]) }}
       - name: Run branch api
         working-directory: ./api/scripts
         # Stop the main branch api container we used for integration tests, and start the
         # image for this commit tag for blackbox testing
         run: |
           ./stop-api.sh
-          ./start-api ${{ steps.meta.outputs.json.tags[1] }}
+          ./start-api ${{ fromJSON(steps.meta.outputs.json.tags[1]) }}
       - name: Run blackbox tests
         # compileKotlin shouldn't be necessary, should be a dep of tests anyway...?
         run: |
