@@ -1,6 +1,6 @@
 FROM openjdk:17-alpine
 
-RUN apt-get update && apt-get install -y --no-install-recommends libsodium23 && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apk update && apk upgrade && apk add libsodium=1.0.18-r0
 
 ADD "src/app/build/distributions/app.tar" /
 ENTRYPOINT ["/app/bin/app"]
