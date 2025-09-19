@@ -42,6 +42,9 @@ jobs:
             type=raw,value=${{ github.head_ref }},enable=${{ github.event_name == 'pull_request' }}
             type=ref,event=branch
             type=sha,prefix=
+      - name: Echo tag
+        # TODO: remove!
+        run: echo ${{ steps.meta-cli.outputs.tags[1] }}
       - name: Check out source
         uses: actions/checkout@v4
       - name: Set up Java
