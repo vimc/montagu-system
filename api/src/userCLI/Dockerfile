@@ -1,6 +1,6 @@
-FROM openjdk:17-alpine
+FROM openjdk:8
 
-RUN apk update && apk upgrade && apk add libsodium=1.0.18-r0
+RUN apt-get update && apt-get install -y --no-install-recommends libsodium23 && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ADD "src/userCLI/build/distributions/userCLI.tar" /
 ENTRYPOINT ["sh", "/userCLI/bin/userCLI"]
