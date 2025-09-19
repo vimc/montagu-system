@@ -31,6 +31,17 @@ jobs:
             type=raw,value=${{ github.head_ref }},enable=${{ github.event_name == 'pull_request' }}
             type=ref,event=branch
             type=sha,prefix=
+      - name: Extract metadata for Docker (cli)
+        id: meta-cli
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/vimc/montagu-cli
+          tags: |
+            type=raw,value=latest,enable={{ is_default_branch }}
+            type=raw,value=${{ github.head_ref }},enable=${{ github.event_name == 'pull_request' }}
+            type=ref,event=branch
+            type=sha,prefix=
       - name: Check out source
         uses: actions/checkout@v4
       - name: Set up Java
@@ -53,9 +64,9 @@ jobs:
         working-directory: ./api/scripts
         run: |
           ./start-dependencies.sh
-      - name: Run tests
+      - name: Run unit and integration tests
         run: ./gradlew :testLibrary
-      - name: Build dist
+      - name: Build api dist
         run: ./gradlew :app:distTar
       - name: Build and push (api)
         uses: docker/build-push-action@v6
@@ -67,4 +78,16 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
+      - name: Build cli dist
+        run: ./gradlew :userCLI:distTar
+      - name: Build and push (cli)
+        uses: docker/build-push-action@v6
+        with:
+          pull: true
+          push: true
+          file: ./api/src/userCLI/Dockerfile
+          context: ./api
+          tags: ${{ steps.meta-cli.outputs.tags }}
+          labels: ${{ steps.meta-cli.outputs.labels }}
+          annotations: ${{ steps.meta-cli.outputs.annotations }}
 
