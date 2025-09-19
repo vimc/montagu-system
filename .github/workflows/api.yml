@@ -92,7 +92,7 @@ jobs:
       - name: Smoke test cli
         working-directory: ./api/scripts
         # Smoke test with the image for this commit for blackbox testing
-        run: ./test.cli ${{ steps.meta-cli.outputs.tags[1] }}
+        run: ./test.cli.sh ${{ steps.meta-cli.outputs.tags[1] }}
       - name: Run branch api
         working-directory: ./api/scripts
         # Stop the main branch api container we used for integration tests, and start the
@@ -100,3 +100,8 @@ jobs:
         run: |
           ./stop-api.sh
           ./start-api ${{ steps.meta.outputs.tags[1] }}
+      - name: Run blackbox tests
+        # compileKotlin shouldn't be necessary, should be a dep of tests anyway...?
+        run: |
+          ./gradlew :blackboxTests:compileKotlin
+          ./gradlew :blackboxTests:test
