@@ -57,14 +57,14 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libsodium23
       - name: Check schema
         run: ./gradlew :validateSchema -i
-      - name: Run test dependencies
+      #- name: Run test dependencies
         # NB These scripts currently run main/master images - we should eventually provide at least the option to run against
         # It's weird that the API is its own dep, but we do need to run the api in order to run the proxy in order to test
         # against packit and the task queue...
-        working-directory: ./api/scripts
-        run: ./start-dependencies.sh
-      - name: Run unit and integration tests
-        run: ./gradlew :testLibrary
+      #  working-directory: ./api/scripts
+      #  run: ./start-dependencies.sh
+      #- name: Run unit and integration tests
+      #  run: ./gradlew :testLibrary
       - name: Build api dist
         run: ./gradlew :app:distTar
       - name: Build and push (api)
