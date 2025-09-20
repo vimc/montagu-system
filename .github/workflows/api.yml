@@ -100,7 +100,7 @@ jobs:
         # image for this commit tag for blackbox testing
         run: |
           ./clear-docker.sh
-          ./start-dependencies.sh ${{ fromdJSON(steps.meta.outputs.json).tags[1] }}
+          ./start-dependencies.sh ${{ fromJSON(steps.meta.outputs.json).tags[1] }}
       - name: Run blackbox tests
         # compileKotlin shouldn't be necessary, should be a dep of tests anyway...?
         run: |
