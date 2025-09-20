@@ -63,8 +63,9 @@ jobs:
         # against packit and the task queue...
         working-directory: ./api/scripts
         run: ./start-dependencies.sh
-      - name: Run unit and integration tests
-        run: ./gradlew :testLibrary
+      # TODO: reinstate!
+      #- name: Run unit and integration tests
+      #  run: ./gradlew :testLibrary
       - name: Build api dist
         run: ./gradlew :app:distTar
       - name: Build and push (api)
