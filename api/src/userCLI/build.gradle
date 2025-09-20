@@ -1,7 +1,3 @@
-plugins {
-    id 'com.palantir.docker' version '0.33.0'
-}
-
 apply plugin: 'application'
 mainClassName = "org.vaccineimpact.api.security.AppKt"
 
@@ -22,21 +18,9 @@ dependencies {
     testImplementation project(":testHelpers")
 }
 
-def cli_docker_version = 'UNKNOWN'
-if (hasProperty('docker_version')) {
-    cli_docker_version = docker_version
-}
-def cli_docker_name = 'montagu-cli'
-if (hasProperty('docker_name')) {
-    cli_docker_name = docker_name
-}
-
-docker {
-    name "${cli_docker_name}:${cli_docker_version}"
-    file('Dockerfile')
-    files tasks.distTar.outputs, "userCLI.jar"
-}
-
 // We run the tests as a suite (see UserCLITestSuite)
 // This line prevents them being run individually as well
 test.exclude "**/org/vaccineimpact/api/security/tests/**"
+test {
+    dependsOn(copyTestConfig)
+}

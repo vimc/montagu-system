@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.vaccineimpact.api.db.JooqContext
 import org.vaccineimpact.api.db.direct.addGroup
+import org.vaccineimpact.api.db.Tables.USER_GROUP
 import org.vaccineimpact.api.security.Groups
 import org.vaccineimpact.api.test_helpers.DatabaseTest
 

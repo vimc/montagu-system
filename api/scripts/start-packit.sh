@@ -11,7 +11,7 @@ if [[ -z $CONFIG ]]; then
 fi
 
 # Install packit
-if [ "$BUILDKITE" != "true" ]; then
+if [ "$GITHUB_ACTIONS" != "true" ]; then
   python3 -m venv .venv
   source .venv/bin/activate
 fi
@@ -22,7 +22,7 @@ packit start --pull
 
 
 # give the db a moment...
-if [ "$BUILDKITE" = "true" ]; then
+if [ "$GITHUB_ACTIONS" = "true" ]; then
     sleep 60
 else
     sleep 5

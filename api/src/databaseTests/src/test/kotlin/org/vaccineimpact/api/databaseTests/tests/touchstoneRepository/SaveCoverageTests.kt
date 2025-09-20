@@ -16,13 +16,14 @@ import org.vaccineimpact.api.models.GenderEnum
 import java.math.BigDecimal
 import java.sql.Timestamp
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 class SaveCoverageTests : TouchstoneRepositoryTests()
 {
     @Test
     fun `can create coverage set and metadata`()
     {
-        val now = Instant.now()
+        val now = Instant.now().truncatedTo(ChronoUnit.MILLIS) // avoid microsecond anomalies in different Java versions
         withDatabase {
             it.addUserForTesting("test.user")
             it.addVaccine("v1")
