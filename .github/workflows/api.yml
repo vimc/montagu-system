@@ -106,3 +106,9 @@ jobs:
         run: |
           ./gradlew :blackboxTests:compileKotlin
           ./gradlew :blackboxTests:test
+      - name: Upload blackbox test output
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: blackbox-test-report
+          path: api/src/blackboxTests/build/reports/tests/test/
