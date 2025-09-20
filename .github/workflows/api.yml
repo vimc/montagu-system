@@ -99,8 +99,8 @@ jobs:
         # Stop the main branch api container we used for integration tests, and start the
         # image for this commit tag for blackbox testing
         run: |
-          ./stop-api.sh
-          ./start-api.sh ${{ fromJSON(steps.meta.outputs.json).tags[1] }}
+          ./clear-docker.sh
+          ./start-dependencies.sh ${{ fromdJSON(steps.meta.outputs.json).tags[1] }}
       - name: Run blackbox tests
         # compileKotlin shouldn't be necessary, should be a dep of tests anyway...?
         run: |
