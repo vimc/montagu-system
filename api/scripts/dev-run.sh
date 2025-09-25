@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 set -ex
-
 HERE=$(dirname $0)
-. $HERE/common
 
-GIT_SHA=$(git rev-parse --short=7 HEAD)
-API_IMAGE=$ORG/$API_NAME:$GIT_SHA
+API_IMAGE=montagu_api_local_dev
 
 (cd $HERE/../src && ./gradlew :app:distTar)
 

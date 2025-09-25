@@ -56,32 +56,17 @@ They define the following subprojects:
   In the last build step it actually uses this built image and runs the tests against the containerised API.
 
 ## CI build
-This is what the CI system does:
 
-1. `./buildkite/make-build-env.sh` - This builds a Docker image that contains OpenJDK, Gradle, Libsodium and the source files
-1. `./buildkite/check-schema.sh` - Inside the Dockerised build environment, runs the `/gradlew :validateSchema` task
-1. `./buildkite/generate-test-data.sh` - Builds an image that executes `./generateTestData/generate.sh` when run. This is used 
-in the [Montagu-Webapps](https://github.com/vimc/montagu-webapps/) project for local development. 
-1. `./buildkite/build-app.sh` - Inside the Dockerised build environment, tests, builds and dockerises the app.
-1. `./buildkite/build-cli.sh` - Similar to previous step, but builds an image containing the [command line tool](#CLI).
-1. `./buildkite/run-blackbox-tests.sh` - Creates and image that runs `/gradlew :blackboxTests:test`, 
-runs the image to actually run tests, then tags and pushes that image to docker hub for reuse in the
- [deploy tool](https://github.com/vimc/montagu/) build.           
- 
-Each script corresponds to one build step and is responsible for bringing up and tearing down any dependencies needed 
-for testing in that step.  
+CI for this project is done through the [API Build and Test](/.github/workflows/api.yml) github action, which: 
+- builds and pushes docker images to ghcr.io for the API and CLI
+- runs the API image and all dependencies
+- smoke tests the CLI
+- runs unit and integration tests
+- runs blackbox tests
  
 ## CLI
-The CLI is used for adding users and permissions. It is used for testing, in this repo and others, and by the 
-[deploy tool](https://github.com/vimc/montagu/). 
-
-## Docker run
-To make use of a built image, run:
-
-    docker pull vimc/montagu-api:master
-    docker run --rm -p 8080:8080 vimc/montagu-api:master
-
-Substitute a different branch or 7-character commit hash in place of 'master' to get a different version.
+The CLI is used for adding users and permissions. It is useful for testing, but should not normally be required on 
+production montagu systems, where there is a web interface for user management.
 
 ## Burden estimate upload notifications
 
