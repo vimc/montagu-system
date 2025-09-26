@@ -1,0 +1,45 @@
+<html>
+	<head>
+		<title>Vaccine Impact Modelling Consortium</title>
+		<link rel="stylesheet" href="style.css" />
+		<script type="text/javascript" src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				$("#file-input").change(function() {
+					var fileName = this.value.split( '\\' ).pop();
+                    $("#file-name-box").val(fileName);
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<header>
+			<img src="resources/logo.png" height="120" alt="VIMC" />
+		</header>
+		<div id="user">
+			You are logged in as <a href="#user">Tini Garske</a>. <a href="#logout">Log out</a>
+		</div>
+		<article>
+			<h2>Upload an impact estimate data set</h2>
+			<p>
+				You are uploading impact estimates for scenario <strong>"HPV, No vaccination"</strong> (hpv-hpv-novaccination)
+			</p>
+			<div class="file-upload">
+                <div class="row">
+                    <div class="text">
+				        <input type="file" id="file-input" />
+                        <input type="text" id="file-name-box" readonly="true" />
+                    </div>
+                    <div class="browse">
+                        <label class="button" for="file-input">Browse</label>
+                    </div>
+                    <div class="upload">                      
+                        <form action="index.html">
+                            <button type="submit">Upload</button>
+                        </form>
+                    </div>
+                </div>
+			</div>
+		</article>
+	</body>
+</html>

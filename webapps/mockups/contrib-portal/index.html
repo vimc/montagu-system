@@ -1,0 +1,167 @@
+<html>
+	<head>
+		<title>Vaccine Impact Modelling Consortium</title>
+		<link rel="stylesheet" href="style.css" />
+		<script type="text/javascript" src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				var scenarios = $(".responsibilities .scenario");
+				scenarios.each(function() {
+					var thisSection = $(this);
+					var content = thisSection.find(".content");
+					var header = thisSection.find(".header");
+					header.click(function() {
+						header.toggleClass("active");
+						content.slideToggle();
+					})
+					content.hide();
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<header>
+			<img src="resources/logo.png" height="120" alt="VIMC" />
+		</header>
+		<div id="user">
+			You are logged in as <a href="#user">Tini Garske</a>. <a href="#logout">Log out</a>
+		</div>
+		<article>
+			<h2>Dashboard</h2>
+			<div>
+				On this page you can:
+				<ol>
+					<li>
+						See an overview of which scenarios your group are responsible for providing
+						impact estimates for. If we have the wrong scenarios listed, please contact us 
+						<a href="mailto:email@example.com">here</a>.
+					</li>
+					<li>Download demographic data which applies to all scenarios</li>
+					<li>Download coverage data for each scenario</li>
+					<li>
+						Upload impact estimates for each scenario, and review any problems the system 
+						has detected in the uploaded data.
+					</li>
+					<li>Track progress towards providing impact estimates for all your scenarios</li>
+				</ol>
+			<div>
+				<h3>Overall progress</h3>
+				<div style="float: right">
+					<button disabled="disabled">Mark all scenarios as complete</button>
+				</div>
+				<svg width="530" height="20" class="progress-bar">
+					<rect x="0" y="0" width="265" height="20" fill="rgb(36, 188, 26)" />
+					<rect x="0" y="0" width="530" height="20" stroke="rgb(127, 127, 127)" fill="none" />
+				</svg>
+			</div>
+			<ul class="responsibilities">
+				<li class="scenario">
+					<div class="header">
+						<span class="name">HPV, No vaccination</span>
+						(ID: hpv-hpv-novaccination)
+						<span class="status-summary no-data">No data</span>
+					</div>
+					<div class="content">
+						<div class="actions">
+							<form action="coverage-data/coverage-data-hpv-hpv-novaccination.csv"><button>Download input data</button></form>
+							<form action="upload.html"><button>Upload a new data set</button></form>
+						</div>
+						<div class="estimates">
+							You have not uploaded any impact estimate sets.
+						<div>
+					</div>
+				</li>
+
+				<li class="scenario">
+					<div class="header">
+						<span class="name">HPV, Routine, without Gavi support</span>
+						(ID: hpv-hpv-routine-nogavi)
+						<span class="status-summary complete">Complete</span>
+					</div>
+					<div class="content">
+						<div class="actions">
+							<form action="coverage-data/coverage-data-hpv-hpv-routine-nogavi.csv"><button>Download input data</button></form>
+							<form action="upload.html"><button>Upload a new data set</button></form>
+						</div>
+						<div class="progress">
+							<div class="problems">
+								You <strong>have</strong> uploaded a data set. There are no detected problems.
+							</div>
+						</div>
+						<div class="estimates">
+							You have uploaded the following impact estimate sets:
+							<table>
+								<thead>
+									<tr>
+										<th>Model version</th>
+										<th>Date uploaded</th>
+										<th>Comment</th>
+										<th>Current?</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>PRIME 2016</td>
+										<td>2017-10-13</td>
+										<td>Initial upload</td>
+										<td>Yes</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</li>
+
+				<li class="scenario">
+					<div class="header">
+						<span class="name">HPV, Routine, with Gavi support</span>
+						(ID: hpv-hpv-routine-gavi)
+						<span class="status-summary problems">Problems detected</span>
+					</div>
+					<div class="content">
+						<div class="actions">
+							<form action="coverage-data/coverage-data-hpv-hpv-routine-gavi.csv"><button>Download input data</button></form>
+							<form action="upload.html"><button>Upload a new data set</button></form>
+						</div>
+						<div class="progress">
+							<div class="problems">
+								You <strong>have</strong> uploaded a data set. However there are some problems with the data. Please upload a new version of the data set that fixes the following issues:
+								<ul>
+									<li>Missing data for these countries: AFG</li>
+									<li>There are negative burden numbers for <a href="#">some outcomes</a>.</li>
+								</ul>
+							</div>
+						</div>
+						<div class="estimates">
+							You have uploaded the following impact estimate sets:
+							<table>
+								<thead>
+									<tr>
+										<th>Model version</th>
+										<th>Date uploaded</th>
+										<th>Comment</th>
+										<th>Current?</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>PRIME 2016</td>
+										<td>2017-10-13</td>
+										<td>Initial upload</td>
+										<td>No</td>
+									</tr>
+									<tr>
+										<td>PRIME 2016v2</td>
+										<td>2017-10-18</td>
+										<td>Corrected small error in model</td>
+										<td>Yes</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</article>
+	</body>
+</html>
