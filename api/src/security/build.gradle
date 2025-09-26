@@ -21,9 +21,9 @@ dependencies {
 }
 
 task install_libsodium() {
-    def file = file("/usr/local/lib/libsodium.so")
+    def file = file("/var/lib/dpkg/info/libsodium23:amd64.list")
     if (!file.exists()) {
-        throw new Exception("libsodium is not installed. Please run ../libsodium/install-libsodium.sh as root")
+        throw new Exception("libsodium is not installed. Please use apt-get to install libsodium23.")
     }
 }
 

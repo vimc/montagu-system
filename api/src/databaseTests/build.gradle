@@ -29,6 +29,7 @@ test {
 }
 
 task createTemplateFromDatabase(type: JavaExec) {
+    dependsOn 'copyConfig'
     main = "org.vaccineimpact.api.databaseTests.AppKt"
     classpath = sourceSets.main.runtimeClasspath
     args "createTemplateFromDatabase"

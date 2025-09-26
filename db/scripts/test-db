@@ -10,5 +10,5 @@ DB_IMAGE=$1
 MIGRATE_IMAGE=$2
 
 HERE=$(realpath $(dirname $0))
-$HERE/start-db $DB_IMAGE $MIGRATE_IMAGE
+$HERE/start-db $DB_IMAGE $MIGRATE_IMAGE db_nw
 $HERE/stop-db

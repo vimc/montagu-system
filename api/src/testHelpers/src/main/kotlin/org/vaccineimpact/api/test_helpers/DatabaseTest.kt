@@ -1,13 +1,29 @@
 package org.vaccineimpact.api.test_helpers
 
-import org.junit.After
-import org.junit.Before
+import org.junit.*
 import org.vaccineimpact.api.db.Config
 import org.vaccineimpact.api.db.JooqContext
 
 abstract class DatabaseTest : MontaguTests()
 {
     private val userName = Config["db.username"]
+
+    companion object
+    {
+        @BeforeClass
+        @JvmStatic
+        fun createTemplateDatabase()
+        {
+            DatabaseCreationHelper.main.createTemplateFromDatabase()
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun restoreDatabaseFromTemplate()
+        {
+            DatabaseCreationHelper.main.restoreDatabaseFromTemplate()
+        }
+    }
 
     @Before
     fun createDatabase()

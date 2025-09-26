@@ -1,0 +1,109 @@
+name: API Build and Test
+on:
+  push:
+    branches: [ main ]
+    tags: [ v* ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: ~
+
+defaults:
+  run:
+    working-directory: ./api/src
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+         registry: ghcr.io
+         username: ${{ github.actor }}
+         password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata for Docker (api)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/vimc/montagu-api
+          tags: |
+            type=raw,value=latest,enable={{ is_default_branch }}
+            type=raw,value=${{ github.head_ref }},enable=${{ github.event_name == 'pull_request' }}
+            type=ref,event=branch
+            type=sha,prefix=
+      - name: Extract metadata for Docker (cli)
+        id: meta-cli
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/vimc/montagu-cli
+          tags: |
+            type=raw,value=latest,enable={{ is_default_branch }}
+            type=raw,value=${{ github.head_ref }},enable=${{ github.event_name == 'pull_request' }}
+            type=ref,event=branch
+            type=sha,prefix=
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11.0.15'
+          distribution: 'temurin'
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '7.4.2'
+      - name: Install libsodium
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libsodium23
+      - name: Check schema
+        run: ./gradlew :validateSchema -i
+      - name: Build api dist
+        run: ./gradlew :app:distTar
+      # Always build and push image before test against it
+      - name: Build and push (api)
+        uses: docker/build-push-action@v6
+        with:
+          pull: true
+          push: true
+          file: ./api/src/app/Dockerfile
+          context: ./api
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+      - name: Build cli dist
+        run: ./gradlew :userCLI:distTar
+      - name: Build and push (cli)
+        uses: docker/build-push-action@v6
+        with:
+          pull: true
+          push: true
+          file: ./api/src/userCLI/Dockerfile
+          context: ./api
+          tags: ${{ steps.meta-cli.outputs.tags }}
+          labels: ${{ steps.meta-cli.outputs.labels }}
+          annotations: ${{ steps.meta-cli.outputs.annotations }}
+      - name: Run dependencies and SHA api
+        working-directory: ./api/scripts
+        run: ./start-all.sh ${{ fromJSON(steps.meta.outputs.json).tags[1] }}
+      - name: Run unit and integration tests
+        run: ./gradlew :testLibrary
+      - name: Smoke test cli
+        working-directory: ./api/scripts
+        run: ./test-cli.sh ${{ fromJSON(steps.meta-cli.outputs.json).tags[1] }}
+      - name: Run blackbox tests
+        run: ./gradlew :blackboxTests:test
+      - name: Upload unit and integration test output
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-integration-test-report
+          path: api/src/app/build/reports/tests/test/
+      - name: Upload blackbox test output
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blackbox-test-report
+          path: api/src/blackboxTests/build/reports/tests/test/
+      - name: Setup tmate session if failure
+        if: failure()
+        uses: mxschmitt/action-tmate@v3
