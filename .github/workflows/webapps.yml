@@ -10,7 +10,7 @@ on:
 defaults:
   run:
     working-directory: ./webapps/app/src
-obs:
+jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
