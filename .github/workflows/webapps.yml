@@ -21,7 +21,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract metadata for Docker (admin)
-        id: meta
+        id: meta-admin
         uses: docker/metadata-action@v5
         with:
           images: |
@@ -32,7 +32,7 @@ jobs:
             type=ref,event=branch
             type=sha,prefix=
       - name: Extract metadata for Docker (contrib)
-        id: meta
+        id: meta-contrib
         uses: docker/metadata-action@v5
         with:
           images: |
