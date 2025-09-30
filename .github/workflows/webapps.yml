@@ -70,3 +70,26 @@ jobs:
         run: |
           export MONTAGU_PORTAL_PROFILE=docker
           webpack
+            - name: Build and push (api)
+      - name: Build and push admin image
+        uses: docker/build-push-action@v6
+        with:
+          pull: true
+          push: true
+          file: ./webapps/app/Dockerfile
+          context: ./webapps/app
+          build-args: APP_NAME=admin
+          tags: ${{ steps.meta-admin.outputs.tags }}
+          labels: ${{ steps.meta-admin.outputs.labels }}
+          annotations: ${{ steps.meta-admin.outputs.annotations }}
+      - name: Build and push contrib image
+        uses: docker/build-push-action@v6
+        with:
+          pull: true
+          push: true
+          file: ./webapps/app/Dockerfile
+          context: ./webapps/app
+          build-args: APP_NAME=contrib
+          tags: ${{ steps.meta-admin.contrib.tags }}
+          labels: ${{ steps.meta-admin.contrib.labels }}
+          annotations: ${{ steps.meta-admin.contrib.annotations }}
