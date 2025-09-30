@@ -9,7 +9,7 @@ export ROOT=$(realpath $here/../..)
 #ORDERLY_IMAGE="vimc/orderly:master"
 #OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
 #OW_CLI_IMAGE="vimc/orderly-web-user-cli:master"
-MONTAGU_MIGRATE_IMAGE="vimc/montagu-migrate:$MONTAGU_DB_VERSION"
+MONTAGU_MIGRATE_IMAGE="ghcr.io/vimc/montagu-migrate:$MONTAGU_DB_VERSION"
 
 #if [[ -d $ROOT/demo ]]
 #then

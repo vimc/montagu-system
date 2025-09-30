@@ -8,7 +8,7 @@ source $here/run-dependencies.sh
 # From now on, if the user presses Ctrl+C we should teardown gracefully
 trap on_interrupt INT
 function on_interrupt() {
-    $here/stop-dependencies.sh
+    $here/clear-docker.sh
 }
 
 # TODO: Might want to restore this so that webapps are manually testable - does this image stil exist?
