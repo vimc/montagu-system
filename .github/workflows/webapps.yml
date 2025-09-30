@@ -54,7 +54,7 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
       - name: Run dependencies
-        working-directory: /webapps/app/scripts
+        working-directory: ./webapps/app/scripts
         run: |
           ./run-dependencies.sh
           ./add-test-accounts-for-integration-tests.sh
