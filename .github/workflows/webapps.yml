@@ -55,3 +55,15 @@ jobs:
         run: |
           ./scripts/run-dependencies.sh
           ./scripts/add-test-accounts-for-integration-tests.sh
+      - name: Run unit tests
+        run: |
+          export MONTAGU_PORTAL_PROFILE=ci
+          npm run test
+      - name: Run integration tests
+        run: |
+          export PGHOST=localhost
+          ./scripts/run-integration-tests.sh
+      - name: Build apps
+        run: |
+          export MONTAGU_PORTAL_PROFILE=docker
+          webpack
