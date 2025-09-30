@@ -5,7 +5,7 @@ import {
     ResponsibilitySetWithExpectations,
     ScenarioAndCoverageSets,
     Touchstone
-} from "../models/Generated";
+} from "../models/APITypes";
 
 export class TouchstonesService extends AbstractLocalService {
     getAllTouchstones(): Promise<Touchstone[]> {

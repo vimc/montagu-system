@@ -5,7 +5,7 @@ import {PageArticle} from "../../../../shared/components/PageWithHeader/PageArti
 import { ResponsibilityOverviewContent } from "./ResponsibilityOverviewContent";
 import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
-import {TouchstoneVersion} from "../../../../shared/models/Generated";
+import {TouchstoneVersion} from "../../../../shared/models/APITypes";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {responsibilityOverviewPageActionCreators} from "../../../actions/pages/responsibilityOverviewPageActionCreators";
 import {ContribPage} from "../../../ContribPage";

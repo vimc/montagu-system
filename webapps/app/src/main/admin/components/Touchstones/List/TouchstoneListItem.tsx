@@ -1,6 +1,6 @@
 import * as React from "react";
 import {InternalLink} from "../../../../shared/components/InternalLink";
-import {Touchstone} from "../../../../shared/models/Generated";
+import {Touchstone} from "../../../../shared/models/APITypes";
 
 export interface TouchstoneListItemProps extends Touchstone {
     showFinished: boolean;

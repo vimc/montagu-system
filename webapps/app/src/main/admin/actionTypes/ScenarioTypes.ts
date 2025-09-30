@@ -1,4 +1,4 @@
-import {Scenario} from "../../shared/models/Generated";
+import {Scenario} from "../../shared/models/APITypes";
 
 export enum ScenarioTypes {
     SOME_SCENARIOS_FETCHED = "SCENARIOS_FETCHED"

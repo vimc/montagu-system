@@ -5,7 +5,7 @@ import {createMockContribStore} from "../../mocks/mockStore";
 import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPropsHelper";
 import {mockModellingGroup, mockResponsibilitySetWithExpectations, mockTouchstone} from "../../mocks/mockModels";
 import {ExtendedResponsibilitySet} from "../../../main/contrib/models/ResponsibilitySet";
-import {BurdenEstimateSetType, ErrorInfo} from "../../../main/shared/models/Generated";
+import {BurdenEstimateSetType, ErrorInfo} from "../../../main/shared/models/APITypes";
 import {BurdenOutcome, EstimateTypes} from "../../../main/contrib/actionTypes/EstimateTypes";
 import {responsibilitiesActionCreators} from "../../../main/contrib/actions/responsibilitiesActionCreators";
 import DoneCallback = jest.DoneCallback;

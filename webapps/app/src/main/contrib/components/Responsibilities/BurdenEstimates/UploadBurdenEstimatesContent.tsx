@@ -2,7 +2,7 @@ import * as React from "react";
 import {branch, compose, renderComponent} from "recompose";
 import {connect} from 'react-redux';
 
-import {ModellingGroup, Responsibility, Scenario, TouchstoneVersion} from "../../../../shared/models/Generated";
+import {ModellingGroup, Responsibility, Scenario, TouchstoneVersion} from "../../../../shared/models/APITypes";
 import {CurrentEstimateSetSummary} from "../Overview/List/CurrentEstimateSetSummary";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {ContribAppState} from "../../../reducers/contribAppReducers";

@@ -5,7 +5,7 @@ import { Action, Dispatch } from "redux";
 
 import { Option, OptionSelector } from "../../../OptionSelector/OptionSelector";
 import {ContribAppState} from "../../../../reducers/contribAppReducers";
-import {Disease, Responsibility} from "../../../../../shared/models/Generated";
+import {Disease, Responsibility} from "../../../../../shared/models/APITypes";
 import {diseasesActionCreators} from "../../../../../shared/actions/diseasesActionCreators";
 
 export interface DiseaseFilterProps {

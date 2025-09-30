@@ -11,7 +11,7 @@ import {
 } from "../actionTypes/AuthTypes";
 import {GlobalState} from "../reducers/GlobalState";
 import {notificationActionCreators} from "./notificationActionCreators";
-import {ModellingGroup} from "../models/Generated";
+import {ModellingGroup} from "../models/APITypes";
 import {ModellingGroupsService} from "../services/ModellingGroupsService";
 
 export const authActionCreators = {

@@ -3,7 +3,7 @@ import {shallow} from "enzyme";
 
 import {UserListItem} from "../../../../../main/admin/components/Users/List/UserListItem";
 import {mockRole, mockUser} from "../../../../mocks/mockModels";
-import {User} from "../../../../../main/shared/models/Generated";
+import {User} from "../../../../../main/shared/models/APITypes";
 
 describe("UserListItem", () => {
     it("can render", () => {

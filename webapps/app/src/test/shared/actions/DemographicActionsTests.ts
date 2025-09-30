@@ -6,7 +6,7 @@ import {DemographicService} from "../../../main/shared/services/DemographicServi
 import {createMockContribStore} from "../../mocks/mockStore";
 import {mockDemographicDataset} from "../../mocks/mockModels";
 import {DemographicTypes} from "../../../main/shared/actionTypes/DemographicTypes";
-import {DemographicDataset} from "../../../main/shared/models/Generated";
+import {DemographicDataset} from "../../../main/shared/models/APITypes";
 
 describe("Demographic actions tests", () => {
     const sandbox = new Sandbox();

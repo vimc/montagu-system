@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from 'react-redux';
 import { compose, branch, renderComponent} from "recompose";
 
-import { User} from "../../../../../shared/models/Generated";
+import { User} from "../../../../../shared/models/APITypes";
 import { ModellingGroupMembersList } from "./ModellingGroupMembersList";
 import { ModellingGroupMembersAdd } from "./ModellingGroupMembersAdd";
 

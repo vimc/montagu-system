@@ -10,7 +10,7 @@ import {
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {modellingGroupsActionCreators} from "../../../actions/modellingGroupsActionCreators";
 import {ReduxFormProps} from "../../../../shared/components/ReduxForm/types";
-import {ModellingGroupCreation} from "../../../../shared/models/Generated";
+import {ModellingGroupCreation} from "../../../../shared/models/APITypes";
 import {ChangeEvent} from "react";
 import {titleCase} from "../../../../shared/Helpers";
 import {montaguForm} from "../../../../shared/components/ReduxForm/MontaguForm";

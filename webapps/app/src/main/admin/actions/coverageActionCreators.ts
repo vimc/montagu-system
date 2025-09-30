@@ -4,7 +4,7 @@ import FormData = require("form-data");
 import {AdminAppState} from "../reducers/adminAppReducers";
 import {CoverageTypes, CoverageUploadStatus} from "../actionTypes/CoverageTypes";
 import {CoverageService} from "../services/CoverageService";
-import {Result} from "../../shared/models/Generated";
+import {Result} from "../../shared/models/APITypes";
 
 export const coverageActionCreators = {
     uploadCoverage(data: FormData) {

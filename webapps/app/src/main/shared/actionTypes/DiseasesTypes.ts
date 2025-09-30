@@ -1,4 +1,4 @@
-import {Disease} from "../models/Generated";
+import {Disease} from "../models/APITypes";
 
 export enum DiseasesTypes {
     DISEASES_FETCHED = "DISEASES_FETCHED",

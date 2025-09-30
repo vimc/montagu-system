@@ -11,7 +11,7 @@ import withLifecycle, {LifecycleMethods} from "@hocs/with-lifecycle";
 import {FormGroup, Input, Label} from "reactstrap";
 import {ILookup} from "../../../../shared/models/Lookup";
 import {DataPoint} from "../../../reducers/estimatesReducer";
-import {NumberRange} from "../../../../shared/models/Generated";
+import {NumberRange} from "../../../../shared/models/APITypes";
 
 export interface DiagnosticSectionPublicProps {
     scenarioId: string,

@@ -1,7 +1,7 @@
 import {Dispatch} from "redux";
 
 import {AdminAppState} from "../reducers/adminAppReducers";
-import {User} from "../../shared/models/Generated";
+import {User} from "../../shared/models/APITypes";
 import {UsersService} from "../services/UsersService";
 import {
     AllGlobalRolesFetched,

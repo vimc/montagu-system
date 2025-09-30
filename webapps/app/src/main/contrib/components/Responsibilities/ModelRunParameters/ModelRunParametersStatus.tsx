@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {branch, compose, renderComponent} from "recompose";
 import {isEqual} from "lodash";
 
-import {ModellingGroup, ModelRunParameterSet, TouchstoneVersion} from "../../../../shared/models/Generated";
+import {ModellingGroup, ModelRunParameterSet, TouchstoneVersion} from "../../../../shared/models/APITypes";
 import {Alert} from 'reactstrap';
 import {longestTimestamp} from "../../../../shared/Helpers";
 import {ModelRunParameterDownloadCertificate} from "./ModelRunParameterDownloadCertificate";

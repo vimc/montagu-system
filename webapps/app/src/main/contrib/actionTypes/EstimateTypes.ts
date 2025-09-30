@@ -1,6 +1,6 @@
 import {ILookup} from "../../shared/models/Lookup";
 import {DataPoint} from "../reducers/estimatesReducer";
-import {BurdenEstimateSetStatus, ErrorInfo} from "../../shared/models/Generated";
+import {BurdenEstimateSetStatus, ErrorInfo} from "../../shared/models/APITypes";
 import SetChartType = Estimates.SetChartType;
 import UploadTokenFetched = Estimates.UploadTokenFetched;
 import EstimateSetPopulated = Estimates.EstimateSetPopulated;

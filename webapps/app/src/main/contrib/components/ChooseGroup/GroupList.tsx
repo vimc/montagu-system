@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { ModellingGroup } from "../../../shared/models/Generated";
+import { ModellingGroup } from "../../../shared/models/APITypes";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 
 export interface GroupListProps {

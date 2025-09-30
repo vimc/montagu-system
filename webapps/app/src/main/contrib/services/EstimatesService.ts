@@ -1,5 +1,5 @@
 import {AbstractLocalService} from "../../shared/services/AbstractLocalService";
-import {CreateBurdenEstimateSet, Result} from "../../shared/models/Generated";
+import {CreateBurdenEstimateSet, Result} from "../../shared/models/APITypes";
 import {ILookup} from "../../shared/models/Lookup";
 import {DataPoint} from "../reducers/estimatesReducer";
 

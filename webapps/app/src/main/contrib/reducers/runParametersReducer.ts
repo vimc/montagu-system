@@ -1,4 +1,4 @@
-import {ModelRunParameterSet} from "../../shared/models/Generated";
+import {ModelRunParameterSet} from "../../shared/models/APITypes";
 import {
     RunParametersAction,
     RunParametersTypes,

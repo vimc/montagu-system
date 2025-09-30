@@ -1,4 +1,4 @@
-import { ErrorInfo, Result, ResultStatus } from "../../main/shared/models/Generated";
+import { ErrorInfo, Result, ResultStatus } from "../../main/shared/models/APITypes";
 
 export function mockResult<T>(data: T,
                               errors?: Array<ErrorInfo>,

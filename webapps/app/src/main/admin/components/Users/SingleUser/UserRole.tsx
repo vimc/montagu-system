@@ -3,7 +3,7 @@ import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {compose} from "recompose";
 
-import { RoleAssignment } from "../../../../shared/models/Generated";
+import { RoleAssignment } from "../../../../shared/models/APITypes";
 import { InternalLink } from "../../../../shared/components/InternalLink";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {usersActionCreators} from "../../../actions/usersActionCreators";

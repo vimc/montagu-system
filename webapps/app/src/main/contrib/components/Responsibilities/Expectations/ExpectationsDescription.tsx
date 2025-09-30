@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ExpectationMapping, NumberRange, Scenario} from "../../../../shared/models/Generated";
+import {ExpectationMapping, NumberRange, Scenario} from "../../../../shared/models/APITypes";
 import {CountriesList} from "./CountriesList";
 import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
 import {settings} from "../../../../shared/Settings"

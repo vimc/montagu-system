@@ -1,4 +1,4 @@
-import {ModelRunParameterSet} from "../../shared/models/Generated";
+import {ModelRunParameterSet} from "../../shared/models/APITypes";
 
 export enum RunParametersTypes {
     RUN_PARAMETERS_SETS_FETCHED = "RUN_PARAMETERS_SETS_FETCHED",

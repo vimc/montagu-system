@@ -3,7 +3,7 @@
 import {createMockStore} from "../../mocks/mockStore";
 import {ModellingGroupsService} from "../../../main/shared/services/ModellingGroupsService";
 import {Sandbox} from "../../Sandbox";
-import {AssociateUser} from "../../../main/shared/models/Generated";
+import {AssociateUser} from "../../../main/shared/models/APITypes";
 
 describe('Modelling Groups service tests', () => {
     const sandbox = new Sandbox();

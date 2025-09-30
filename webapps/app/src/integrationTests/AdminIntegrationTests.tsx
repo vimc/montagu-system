@@ -12,7 +12,7 @@ import {
     RoleAssignment,
     Scenario,
     User
-} from "../main/shared/models/Generated";
+} from "../main/shared/models/APITypes";
 import {createAdminStore} from "../main/admin/stores/createAdminStore";
 import {AuthService} from "../main/shared/services/AuthService";
 import {ModellingGroupsService} from "../main/shared/services/ModellingGroupsService";

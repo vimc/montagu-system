@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ModellingGroup } from "../../../../shared/models/Generated";
+import { ModellingGroup } from "../../../../shared/models/APITypes";
 import { InternalLink } from "../../../../shared/components/InternalLink";
 
 export class ModellingGroupListItem extends React.Component<ModellingGroup, undefined> {

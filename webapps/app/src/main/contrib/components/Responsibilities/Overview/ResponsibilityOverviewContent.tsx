@@ -3,7 +3,7 @@ import {compose, branch, renderComponent} from "recompose";
 import {connect} from 'react-redux';
 
 import {IExtendedResponsibilitySet} from "../../../models/ResponsibilitySet";
-import {ModellingGroup} from "../../../../shared/models/Generated";
+import {ModellingGroup} from "../../../../shared/models/APITypes";
 import {ResponsibilityList} from "./List/ResponsibilityList";
 import {ButtonLink} from "../../../../shared/components/ButtonLink";
 

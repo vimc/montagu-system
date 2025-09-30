@@ -1,5 +1,5 @@
 import {CoverageUploadStatus, CoverageTypes, CoverageUploadState, CoverageAction} from "../actionTypes/CoverageTypes";
-import {CoverageUploadMetadata} from "../../shared/models/Generated";
+import {CoverageUploadMetadata} from "../../shared/models/APITypes";
 
 export interface CoverageState {
     uploadState: CoverageUploadState

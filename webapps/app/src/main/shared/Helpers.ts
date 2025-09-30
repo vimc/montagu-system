@@ -1,5 +1,5 @@
 import {jwtDecoder} from "./sources/JwtDecoder";
-import {Result} from "./models/Generated";
+import {Result} from "./models/APITypes";
 import * as url from "url";
 import * as querystring from "querystring";
 import * as moment from "moment";

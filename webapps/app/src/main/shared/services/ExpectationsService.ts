@@ -1,5 +1,5 @@
 import { AbstractLocalService } from "./AbstractLocalService";
-import {TouchstoneModelExpectations} from "../models/Generated";
+import {TouchstoneModelExpectations} from "../models/APITypes";
 
 export class ExpectationsService extends AbstractLocalService {
 

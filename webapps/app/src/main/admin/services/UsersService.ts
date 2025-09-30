@@ -1,5 +1,5 @@
 import {AbstractLocalService} from "../../shared/services/AbstractLocalService";
-import {AssociateRole, Result} from "../../shared/models/Generated";
+import {AssociateRole, Result} from "../../shared/models/APITypes";
 
 export class UsersService extends AbstractLocalService {
     getAllUsers() {
