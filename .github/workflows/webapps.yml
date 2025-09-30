@@ -51,10 +51,13 @@ jobs:
           node-version: 12
       - name: Install Webpack
         run: npm install webpack@v4.30.0 webpack-cli --global
+      - name: Install npm dependencies
+        run: npm ci
       - name: Run dependencies
+        working-directory: /webapps/app/scripts
         run: |
-          ./scripts/run-dependencies.sh
-          ./scripts/add-test-accounts-for-integration-tests.sh
+          ./run-dependencies.sh
+          ./add-test-accounts-for-integration-tests.sh
       - name: Run unit tests
         run: |
           export MONTAGU_PORTAL_PROFILE=ci

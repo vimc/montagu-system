@@ -14,7 +14,7 @@
 5. Run `npm run SHORT_NAME` to run a development server serving one of the three
    portals on port 5000.
 6. Run `./scripts/run-development-dependencies.sh` to run Montagu
-   with a shared key, and with test data.
+   with a shared key, and with test data. // TODO: Need to run this from ./scripts for rel paths to work!...
 
 ## Generating Typescript classes from Kotlin classes
 This repo shares [montagu-webmodels](https://github.com/vimc/montagu-webmodels) as a submodule with

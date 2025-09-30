@@ -11,10 +11,11 @@ function on_interrupt() {
     $here/stop-dependencies.sh
 }
 
+# TODO: Might want to restore this so that webapps are manually testable - does this image stil exist?
 # Generate test data
-image=vimc/montagu-generate-test-data:$MONTAGU_API_VERSION
-docker pull $image
-docker run --rm --network=montagu_default $image
+#image=vimc/montagu-generate-test-data:$MONTAGU_API_VERSION
+#docker pull $image
+#docker run --rm --network=montagu_default $image
 
 # Add test accounts
 $here/add-test-accounts-for-integration-tests.sh
