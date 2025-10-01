@@ -8,6 +8,9 @@ services:
     command: 443 localhost
     depends_on:
       - api
+      - admin
+      - contrib
+      - db
   api:
     image: ghcr.io/vimc/montagu-api:${MONTAGU_API_VERSION}
     ports:
@@ -30,3 +33,7 @@ services:
       - FLOWER_PORT=5555
       - CELERY_BROKER_URL=redis://guest@mq//
       - CELERY_RESULT_BACKEND=redis://guest@mq/0
+  admin:
+    image: ${ADMIN_IMAGE}
+  contrib:
+    image: ${CONTRIB_IMAGE}
