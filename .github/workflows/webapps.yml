@@ -50,7 +50,7 @@ jobs:
         with:
           node-version: 12
       - name: Install Webpack
-        run: npm install webpack@v4.30.0 webpack-cli --global
+        run: npm install webpack@v4.30.0 webpack-cli@3.3.0 --global
       - name: Install npm dependencies
         run: npm ci
       - name: Run unit tests

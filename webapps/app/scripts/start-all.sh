@@ -6,9 +6,6 @@ export MONTAGU_API_VERSION=$(<$here/../../config/api_version)
 export MONTAGU_DB_VERSION=$(<$here/../../config/db_version)
 export ROOT=$(realpath $here/../..)
 
-ADMIN_IMAGE=$1
-CONTRIB_IMAGE=$2
-
 #ORDERLY_IMAGE="vimc/orderly:master"
 #OW_MIGRATE_IMAGE="vimc/orderlyweb-migrate:master"
 #OW_CLI_IMAGE="vimc/orderly-web-user-cli:master"
@@ -30,9 +27,11 @@ MONTAGU_MIGRATE_IMAGE="ghcr.io/vimc/montagu-migrate:$MONTAGU_DB_VERSION"
 #docker run -v $ROOT/demo:/orderly $OW_CLI_IMAGE add-users test.user@example.com
 #docker run -v $ROOT/demo:/orderly $OW_CLI_IMAGE grant test.user@example.com */users.manage
 
+# pull dependency images - webapp images may be local only so ignore pull failures
+ADMIN_IMAGE=$1 CONTRIB_IMAGE=$2 docker compose pull --ignore-pull-failures
+
 # Run the dependencies and webapps
-docker compose pull
-ADMIN_IMAGE=$ADMIN_IMAGE CONTRIB_IMAGE=$CONTRIB_IMAGE docker compose --project-name montagu up -d
+ADMIN_IMAGE=$1 CONTRIB_IMAGE=$2 docker compose --project-name montagu up -d
 
 # Start the APIs
 docker exec montagu-api-1 mkdir -p /etc/montagu/api/
