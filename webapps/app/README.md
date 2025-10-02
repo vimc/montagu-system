@@ -2,30 +2,15 @@
 
 # Development
 
-1. Install Node.js:
+1. User node 12:
    ```
-   curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-   sudo apt-get install -y nodejs
+   nvm install 12
    ```
 2. Run `npm install` to get dependencies
 3. Run `npm install webpack@v4.30.0 webpack-cli@3.3.0 --global` to install webpack
-4. Run `webpack` to build, or `webpack --watch` to continuously monitor files
-   and rebuild as needed.
-5. Run `npm run SHORT_NAME` to run a development server serving one of the three
-   portals on port 5000.
-6. Run `./scripts/run-development-dependencies.sh` to run Montagu
-   with a shared key, and with test data. // TODO: Need to run this from ./scripts for rel paths to work!...
+4. To run all dependencies and both web apps in docker, run `dev-run.sh` from `app/scripts`.
 
-## Generating Typescript classes from Kotlin classes
-This repo shares [montagu-webmodels](https://github.com/vimc/montagu-webmodels) as a submodule with
-[montagu-api](https://github.com/vimc/montagu-api). When new Kotlin classes are added to `montagu-webmodels`, we
-can generate Typescript interfaces to match them by doing the following:
-
-1. Make sure the latest version of the models repo is checked out here:
- `cd app/src/webmodels/models && git checkout master && git pull`
-1. Add any new models you want to include in the generation to the Kotlin tool, in the
- [`GenerateTypeDefinitions` class](src/webmodels/generate/src/main/kotlin/org/vaccineimpact/api/GenerateTypeDefinitions.kt)
-1. Run the tool to generate new Typescript interfaces: `npm run generate-models`
+Login to montagu at `https://localhost` with `test.user@example.com` and `password` and browse to the portals. 
 
 ## Linting
 1. `npm run tslint` to see all tslint errors
@@ -44,39 +29,6 @@ the API that tests are run against is stored in `./config/api_version`.
 
 *NB be wary about running integration tests directly in your local dev environment. We have scripts which set up some 
 necessary environment variables for accessing the montagu db. Use `run-integration-tests-with-apis.sh` instead.*
-
-The integration tests get run in three different ways:
-
-1. During development, with `run-integration-tests-with-apis.sh`, which also runs dependencies and sets environment variables
-used by postgres for accessing the montagu db.
-2. During the Webapp BuildKite build configuration. This runs the tests in
-   exactly the same way, but does so inside a Docker container that gives a
-   consistent build environment. Additionally, during this same build, another
-   Docker image is built that can be used to run the integration tests
-   separately from the Webapp build environment.
-3. This reusable image is used in the Montagu TeamCity build configuration. It
-   is slightly different, in that it is running as part of a Docker network, and
-   so connects to the API and database at different URLs (e.g. `api` as
-   opposed to `localhost`). Also, because we want the ability for the portals to
-   be pinned at different versions, we run the integration test container once
-   per portal, running just the subset of tests applicable to that portal, and
-   using (potentially) a different version of the image each time.
-
-# Dockerised build & run
-1. Make a containerised build environment: `scripts/make-build-env.sh`
-2. Use the build environment to build (and push) the two containerised apps: `scripts/run-build.sh`
-3. Run a containerised app:
-    ```
-    docker run -p 8080:80 vimc/montagu-contrib-portal:CURRENT_GIT_BRANCH
-
-    ```
-   or
-
-    ```
-    docker run -p 8080:80 vimc/montagu-admin-portal:CURRENT_GIT_BRANCH
-
-    ```
-4. Browse to `http://localhost:8080/`
 
 # Portals
 There are 2 portals.
