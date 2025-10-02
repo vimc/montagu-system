@@ -80,9 +80,9 @@ jobs:
           file: ./webapps/app/Dockerfile
           context: ./webapps/app
           build-args: APP_NAME=contrib
-          tags: ${{ steps.meta-admin.contrib.tags }}
-          labels: ${{ steps.meta-admin.contrib.labels }}
-          annotations: ${{ steps.meta-admin.contrib.annotations }}
+          tags: ${{ steps.meta-contrib.outputs.tags }}
+          labels: ${{ steps.meta-contrib.outputs.labels }}
+          annotations: ${{ steps.meta-contrib.outputs.annotations }}
       - name: Run all containers
         working-directory: ./webapps/app/scripts
         run: |
