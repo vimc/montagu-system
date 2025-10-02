@@ -1,7 +1,7 @@
 {
   "name": "contrib-portal",
   "version": "0.0.0",
-  "description": "Modelling groups burden admin and contribution portals",
+  "description": "Montagu web portals for admin and modellers' contributions",
   "main": "index.js",
   "scripts": {
     "webpack": "webpack",
