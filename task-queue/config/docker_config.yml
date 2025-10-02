@@ -1,0 +1,47 @@
+host: montagu-mq-1
+servers:
+  montagu:
+    url: http://montagu-api-1:8080
+    user: test.user@example.com
+    password: password
+  packit:
+    url: https://reverse-proxy:443/packit
+    disable_certificate_verify: true
+  youtrack:
+    token:
+  smtp:
+    host: montagu-smtp_server-1
+    port: 1025
+    from: noreply@example.com
+tasks:
+  diagnostic_reports:
+    use_additional_recipients: true
+    poll_seconds: 5
+    reports:
+      testGroup:
+        testDisease:
+          - report_name: diagnostic
+            success_email:
+              recipients:
+                - minimal_modeller@example.com
+                - science@example.com
+              subject:  "VIMC diagnostic report: {touchstone} - {group} - {disease}"
+            assignee: a.hill
+            publish_roles:
+              - minimal.modeller
+              - Funders
+          - report_name: diagnostic-param
+            parameters:
+              a: 1
+              b: 2
+              c: 3
+            success_email:
+              recipients:
+                - other_modeller@example.com
+                - science@example.com
+              subject: "New version of another Orderly report"
+            assignee: e.russell
+            publish_roles:
+              - other.modeller
+  archive_folder_contents:
+    min_file_age_seconds: 0

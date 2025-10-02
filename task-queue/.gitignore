@@ -1,0 +1,11 @@
+.idea
+.cache
+.packit_identity
+celerybeat-schedule
+/*/__pycache__/
+/*/*/__pycache__/
+/*/*.pyc
+/test/*/*.pyc
+/demo
+/git
+/test_archive_files

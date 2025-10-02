@@ -1,0 +1,7 @@
+celery[redis]
+future
+pyyaml
+montagu>=0.0.2
+git+https://github.com/reside-ic/youtrack-rest-python-library
+constellation
+requests-mock
