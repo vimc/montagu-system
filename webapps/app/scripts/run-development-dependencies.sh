@@ -11,7 +11,7 @@ function on_interrupt() {
     $here/clear-docker.sh
 }
 
-# TODO: Might want to restore this so that webapps are manually testable - does this image stil exist?
+# TODO: Might want to restore this so that webapps are manually testable - does this image stil exist? Where is it!
 # Generate test data
 #image=vimc/montagu-generate-test-data:$MONTAGU_API_VERSION
 #docker pull $image
