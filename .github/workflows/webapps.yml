@@ -96,6 +96,7 @@ jobs:
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v4
         with:
+          root_dir: ./webapps
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: vimc/montagu-webapps
           fail_ci_if_error: true
