@@ -5,7 +5,7 @@ import {connect} from "react-redux";
 import {branch, compose, renderComponent} from "recompose";
 import {IExtendedResponsibilitySet} from "../../../models/ResponsibilitySet";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
-import {ModellingGroup, TouchstoneVersion} from "../../../../shared/models/Generated";
+import {ModellingGroup, TouchstoneVersion} from "../../../../shared/models/APITypes";
 
 interface Props {
     responsibilitySet: IExtendedResponsibilitySet;

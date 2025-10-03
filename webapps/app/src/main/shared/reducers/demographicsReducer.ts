@@ -1,4 +1,4 @@
-import {DemographicDataset} from "../models/Generated";
+import {DemographicDataset} from "../models/APITypes";
 import {Demographic, DemographicAction, DemographicTypes} from "../actionTypes/DemographicTypes";
 
 export interface DemographicsState {

@@ -2,7 +2,7 @@ import {Dispatch, Action} from "redux";
 import {clone} from "lodash";
 
 import {settings} from "../Settings";
-import {ErrorInfo, Result} from "../models/Generated";
+import {ErrorInfo, Result} from "../models/APITypes";
 import {AuthTypeKeys} from "../actionTypes/AuthTypes";
 import {CacheInterface} from "../modules/cache/CacheInterface";
 import {singletonVariableCache} from "../modules/cache/singletonVariableCache";

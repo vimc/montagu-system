@@ -4,7 +4,7 @@ import {
     ResponsibilitySetWithExpectations,
     Touchstone,
     TouchstoneVersion
-} from "../models/Generated";
+} from "../models/APITypes";
 import {AnnotatedResponsibility, AnnotatedResponsibilitySet} from "../../admin/models/AnnotatedResponsibility";
 
 export enum TouchstoneTypes {

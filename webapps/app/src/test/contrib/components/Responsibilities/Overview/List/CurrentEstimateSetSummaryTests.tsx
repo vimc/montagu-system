@@ -7,7 +7,7 @@ import {
     CurrentEstimateSetSummary,
     ReviewedAndApprovedMessage
 } from "../../../../../../main/contrib/components/Responsibilities/Overview/List/CurrentEstimateSetSummary";
-import {BurdenEstimateSet} from "../../../../../../main/shared/models/Generated";
+import {BurdenEstimateSet} from "../../../../../../main/shared/models/APITypes";
 import {mockBurdenEstimateSet} from "../../../../../mocks/mockModels";
 import {FileDownloadButton} from "../../../../../../main/shared/components/FileDownloadLink";
 

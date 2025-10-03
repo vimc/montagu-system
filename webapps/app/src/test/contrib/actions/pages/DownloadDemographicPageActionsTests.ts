@@ -8,7 +8,7 @@ import {responsibilityOverviewPageActionCreators} from "../../../../main/contrib
 import {mockContribState} from "../../../mocks/mockStates";
 import {downloadDemographicsContribPageActionCreators} from "../../../../main/contrib/actions/pages/downloadDemographicsContribPageActionCreators";
 import {DemographicTypes} from "../../../../main/shared/actionTypes/DemographicTypes";
-import {DemographicDataset} from "../../../../main/shared/models/Generated";
+import {DemographicDataset} from "../../../../main/shared/models/APITypes";
 
 describe("Download Demographic Contrib Page actions tests", () => {
     const sandbox = new Sandbox();

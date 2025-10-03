@@ -104,6 +104,6 @@ jobs:
         with:
           name: blackbox-test-report
           path: api/src/blackboxTests/build/reports/tests/test/
-      - name: Setup tmate session if failure
-        if: failure()
-        uses: mxschmitt/action-tmate@v3
+      #- name: Setup tmate session if failure
+      #  if: failure()
+      #  uses: mxschmitt/action-tmate@v3

@@ -3,7 +3,7 @@ import {compact} from "lodash";
 
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
 import {AdminAppState} from "../reducers/adminAppReducers";
-import {ModellingGroup, ModellingGroupCreation, ModellingGroupDetails, User} from "../../shared/models/Generated";
+import {ModellingGroup, ModellingGroupCreation, ModellingGroupDetails, User} from "../../shared/models/APITypes";
 import {
     GroupsFetched,
     ModellingGroupTypes,

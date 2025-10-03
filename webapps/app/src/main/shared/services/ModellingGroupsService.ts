@@ -1,5 +1,5 @@
 import { AbstractLocalService } from "./AbstractLocalService";
-import {AssociateUser, ModellingGroupCreation, ResearchModelDetails} from "../models/Generated";
+import {AssociateUser, ModellingGroupCreation, ResearchModelDetails} from "../models/APITypes";
 
 export class ModellingGroupsService extends AbstractLocalService {
 

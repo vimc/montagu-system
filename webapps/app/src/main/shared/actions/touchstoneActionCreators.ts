@@ -1,6 +1,6 @@
 import {SetCurrentTouchstone, SetCurrentTouchstoneVersion, TouchstoneTypes} from "../actionTypes/TouchstonesTypes";
 import {flatMap} from "../ArrayHelpers";
-import {Touchstone} from "../models/Generated";
+import {Touchstone} from "../models/APITypes";
 
 export const touchstonesActionCreators = {
     setCurrentTouchstone(touchstoneId: string, touchstones: Touchstone[]) {

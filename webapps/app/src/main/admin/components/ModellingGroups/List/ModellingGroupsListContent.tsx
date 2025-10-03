@@ -3,7 +3,7 @@ import {compose} from "recompose";
 import { connect } from 'react-redux';
 import {orderBy} from "lodash";
 
-import { ModellingGroup } from "../../../../shared/models/Generated";
+import { ModellingGroup } from "../../../../shared/models/APITypes";
 import { ModellingGroupListItem } from "./ModellingGroupListItem";
 
 import {AdminAppState} from "../../../reducers/adminAppReducers";

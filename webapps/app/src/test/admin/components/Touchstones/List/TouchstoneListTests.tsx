@@ -1,6 +1,6 @@
 import {createMockAdminStore} from "../../../../mocks/mockStore";
 import {mockTouchstone, mockTouchstoneVersion} from "../../../../mocks/mockModels";
-import {Touchstone} from "../../../../../main/shared/models/Generated";
+import {Touchstone} from "../../../../../main/shared/models/APITypes";
 import {TouchstoneList} from "../../../../../main/admin/components/Touchstones/List/TouchstoneList";
 import {shallow} from "enzyme";
 import * as React from "react";

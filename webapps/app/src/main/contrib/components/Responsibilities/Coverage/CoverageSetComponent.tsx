@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { CoverageSet } from "../../../../shared/models/Generated";
+import { CoverageSet } from "../../../../shared/models/APITypes";
 
 export interface CoverageSetComponentProps {
     order: number,

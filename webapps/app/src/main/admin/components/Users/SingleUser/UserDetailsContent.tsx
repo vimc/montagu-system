@@ -2,7 +2,7 @@ import * as React from "react";
 import {connect} from 'react-redux';
 import {branch, compose, renderComponent} from "recompose";
 
-import {User} from "../../../../shared/models/Generated";
+import {User} from "../../../../shared/models/APITypes";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";
 import {AddRoles} from "./AddRoles";

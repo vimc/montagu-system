@@ -4,7 +4,7 @@ import {
     ResponsibilitySetWithExpectations,
     Touchstone,
     TouchstoneVersion
-} from "../../shared/models/Generated";
+} from "../../shared/models/APITypes";
 import {TouchstonesAction, TouchstoneTypes} from "../../shared/actionTypes/TouchstonesTypes";
 import {AnnotatedResponsibility, AnnotatedResponsibilitySet} from "../models/AnnotatedResponsibility";
 

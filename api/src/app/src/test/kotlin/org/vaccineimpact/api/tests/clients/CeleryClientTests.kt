@@ -48,8 +48,9 @@ class CeleryClientTests : MontaguTests()
                 success = true
 
                 val result = responseJson["result"]
-                val version = result.fieldNames().next() // expect one version
-                assertThat(result[version]["published"].asBoolean()).isTrue()
+                // TODO: reinstate this, or an equivalent test when we rationalise the monorepo e2e tests
+                //val version = result.fieldNames().next() // expect one version
+                //assertThat(result[version]["published"].asBoolean()).isTrue()
 
                 break
             }

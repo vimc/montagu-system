@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { ModellingGroup, TouchstoneVersion } from "../../../shared/models/Generated";
+import { ModellingGroup, TouchstoneVersion } from "../../../shared/models/APITypes";
 import { ButtonLink } from "../../../shared/components/ButtonLink";
 
 export interface TouchstoneListProps {

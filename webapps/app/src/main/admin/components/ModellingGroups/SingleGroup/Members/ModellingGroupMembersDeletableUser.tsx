@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from "redux";
 import {compose} from "recompose";
 
-import { User } from "../../../../../shared/models/Generated";
+import { User } from "../../../../../shared/models/APITypes";
 import { InternalLink } from "../../../../../shared/components/InternalLink";
 import {modellingGroupsActionCreators} from "../../../../actions/modellingGroupsActionCreators";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";

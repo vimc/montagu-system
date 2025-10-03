@@ -1,4 +1,4 @@
-import {Country} from "../../../../shared/models/Generated";
+import {Country} from "../../../../shared/models/APITypes";
 import * as React from "react";
 import {Popover, PopoverBody} from "reactstrap";
 

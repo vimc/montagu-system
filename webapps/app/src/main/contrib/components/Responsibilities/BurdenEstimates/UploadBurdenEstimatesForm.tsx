@@ -2,7 +2,7 @@ import * as React from "react";
 import {FormEvent} from "react";
 import {Alert} from "reactstrap";
 import {checkFileExtensionIsCSV, CustomValidationResult} from "../../../../shared/validation/FileValidationHelpers";
-import {BurdenEstimateSetType, BurdenEstimateSetTypeCode, ErrorInfo, Result} from "../../../../shared/models/Generated";
+import {BurdenEstimateSetType, BurdenEstimateSetTypeCode, ErrorInfo, Result} from "../../../../shared/models/APITypes";
 import {ConfigurationHash, Resumable, ResumableFile} from "./ResumableTypes";
 import {settings} from "../../../../shared/Settings";
 import {ContribAppState} from "../../../reducers/contribAppReducers";

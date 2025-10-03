@@ -4,7 +4,7 @@ import { compose, branch, renderComponent} from "recompose";
 import { Dispatch } from "redux";
 
 import { GenderControl } from "./GenderControl";
-import {DemographicDataset} from "../../models/Generated";
+import {DemographicDataset} from "../../models/APITypes";
 import {FormatControl} from "../FormatControl";
 import {ContribAppState} from "../../../contrib/reducers/contribAppReducers";
 import {AdminAppState} from "../../../admin/reducers/adminAppReducers";

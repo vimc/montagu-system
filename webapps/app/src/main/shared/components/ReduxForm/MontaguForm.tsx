@@ -3,7 +3,7 @@ import {change} from "redux-form";
 import {connect} from "react-redux";
 import {Dispatch} from "redux";
 import {ReduxFormProps} from "./types";
-import {ErrorInfo} from "../../models/Generated";
+import {ErrorInfo} from "../../models/APITypes";
 
 interface FormConfig<TState, TProps> {
     form: string,

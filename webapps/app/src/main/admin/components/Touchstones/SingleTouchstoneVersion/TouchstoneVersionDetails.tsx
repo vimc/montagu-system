@@ -1,7 +1,7 @@
 import * as React from "react";
 import {connect} from "react-redux";
 
-import {Touchstone, TouchstoneVersion} from "../../../../shared/models/Generated";
+import {Touchstone, TouchstoneVersion} from "../../../../shared/models/APITypes";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {branch, compose, renderComponent} from "recompose";
 import {LoadingElement} from "../../../../shared/partials/LoadingElement/LoadingElement";

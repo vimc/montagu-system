@@ -1,6 +1,6 @@
 import * as React from "react";
 import {PageProperties} from "../../../../shared/components/PageWithHeader/PageProperties";
-import { TouchstoneVersion } from "../../../../shared/models/Generated";
+import { TouchstoneVersion } from "../../../../shared/models/APITypes";
 import {ContribAppState} from "../../../reducers/contribAppReducers";
 
 export interface ResponsibilityGuidancePageLocationProps {

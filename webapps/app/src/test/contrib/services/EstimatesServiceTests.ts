@@ -5,7 +5,7 @@ import {createContribStore} from "../../../main/contrib/createStore";
 import {EstimatesService} from "../../../main/contrib/services/EstimatesService";
 import {Sandbox} from "../../Sandbox";
 import {ContribAppState} from "../../../main/contrib/reducers/contribAppReducers";
-import {CreateBurdenEstimateSet} from "../../../main/shared/models/Generated";
+import {CreateBurdenEstimateSet} from "../../../main/shared/models/APITypes";
 
 describe('Estimates service tests', () => {
     const sandbox = new Sandbox();

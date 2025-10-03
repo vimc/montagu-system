@@ -3,7 +3,7 @@ import {Dispatch} from "redux";
 import {ContribAppState} from "../reducers/contribAppReducers";
 import {TouchstonesService} from "../../shared/services/TouchstonesService";
 import {AllTouchstonesFetched, TouchstonesFetchedForGroup, TouchstoneTypes} from "../../shared/actionTypes/TouchstonesTypes";
-import {Touchstone} from "../../shared/models/Generated";
+import {Touchstone} from "../../shared/models/APITypes";
 import {touchstonesActionCreators} from "../../shared/actions/touchstoneActionCreators";
 
 export const contribTouchstonesActionCreators = {

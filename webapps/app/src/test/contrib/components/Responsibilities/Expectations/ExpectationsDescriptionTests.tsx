@@ -1,4 +1,4 @@
-import {ExpectationMapping} from "../../../../../main/shared/models/Generated";
+import {ExpectationMapping} from "../../../../../main/shared/models/APITypes";
 import {mockCountry, mockExpectationMapping, mockExpectations, mockScenario} from "../../../../mocks/mockModels";
 import {ExpectationsDescription} from "../../../../../main/contrib/components/Responsibilities/Expectations/ExpectationsDescription";
 import {shallow} from "enzyme";

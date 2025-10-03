@@ -8,7 +8,7 @@ import {
 } from "../actionTypes/ResponsibilitiesTypes";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../models/ResponsibilitySet";
 import {ContribAppState} from "../reducers/contribAppReducers";
-import {ResponsibilitySetWithExpectations} from "../../shared/models/Generated";
+import {ResponsibilitySetWithExpectations} from "../../shared/models/APITypes";
 
 export const responsibilitiesActionCreators = {
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Button, Input, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
-import {ResponsibilityComment} from "../../../../shared/models/Generated";
+import {ResponsibilityComment} from "../../../../shared/models/APITypes";
 
 export interface CommentModalProps {
     header: string;

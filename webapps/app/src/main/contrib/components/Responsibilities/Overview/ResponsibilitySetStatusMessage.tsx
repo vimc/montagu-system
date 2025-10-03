@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import {ResponsibilitySetStatus} from "../../../../shared/models/Generated";
+import {ResponsibilitySetStatus} from "../../../../shared/models/APITypes";
 import {ReviewedAndApprovedMessage} from "./List/CurrentEstimateSetSummary";
 import {settings} from "../../../../shared/Settings";
 

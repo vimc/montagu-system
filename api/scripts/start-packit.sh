@@ -20,7 +20,6 @@ pip3 install constellation packit-deploy
 packit configure $HERE/$CONFIG
 packit start --pull
 
-
 # give the db a moment...
 if [ "$GITHUB_ACTIONS" = "true" ]; then
     sleep 60

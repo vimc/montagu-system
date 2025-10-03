@@ -1,6 +1,6 @@
 import * as React from "react";
 import ReactRadioButtonGroup, { RadioButtonOption } from "react-radio-button-group";
-import {DemographicDataset} from "../../models/Generated";
+import {DemographicDataset} from "../../models/APITypes";
 
 interface Props {
     dataSet: DemographicDataset;

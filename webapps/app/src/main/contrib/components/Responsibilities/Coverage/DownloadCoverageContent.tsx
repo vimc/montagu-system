@@ -3,7 +3,7 @@ import {Dispatch} from "redux";
 import {branch, compose, renderComponent} from "recompose";
 import {connect} from 'react-redux';
 
-import {CoverageSet, ModellingGroup, Scenario, TouchstoneVersion} from "../../../../shared/models/Generated";
+import {CoverageSet, ModellingGroup, Scenario, TouchstoneVersion} from "../../../../shared/models/APITypes";
 import {CoverageSetList} from "./CoverageSetList";
 import {FormatControl} from "../../../../shared/components/FormatControl";
 

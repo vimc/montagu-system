@@ -1,4 +1,4 @@
-import {ModelRunParameterSet} from "../../../../shared/models/Generated";
+import {ModelRunParameterSet} from "../../../../shared/models/APITypes";
 import * as React from "react";
 import { Base64 } from 'js-base64';
 

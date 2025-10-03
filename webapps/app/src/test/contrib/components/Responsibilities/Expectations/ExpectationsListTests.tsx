@@ -14,7 +14,7 @@ import {createMockContribStore} from "../../../../mocks/mockStore";
 import * as React from "react";
 
 import {ExpectationsDescription} from "../../../../../main/contrib/components/Responsibilities/Expectations/ExpectationsDescription";
-import {ExpectationMapping} from "../../../../../main/shared/models/Generated";
+import {ExpectationMapping} from "../../../../../main/shared/models/APITypes";
 import {LoadingElement} from "../../../../../main/shared/partials/LoadingElement/LoadingElement";
 import {mockContribState} from "../../../../mocks/mockStates";
 import {ModellingGroupsState} from "../../../../../main/contrib/reducers/modellingGroupsReducer";

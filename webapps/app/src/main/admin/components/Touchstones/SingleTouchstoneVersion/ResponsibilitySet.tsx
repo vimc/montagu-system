@@ -6,7 +6,7 @@ import {ResponsibilityList} from "./ResponsibilityList";
 import {AnnotatedResponsibilitySet} from "../../../models/AnnotatedResponsibility";
 import {adminTouchstoneActionCreators} from "../../../actions/adminTouchstoneActionCreators";
 import {compose} from "recompose";
-import {ResponsibilitySetWithComments, ResponsibilitySetWithExpectations} from "../../../../shared/models/Generated";
+import {ResponsibilitySetWithComments, ResponsibilitySetWithExpectations} from "../../../../shared/models/APITypes";
 
 interface ResponsibilitySetProps {
     responsibilitySet: ResponsibilitySetWithExpectations;

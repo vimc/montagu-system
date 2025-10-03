@@ -1,4 +1,4 @@
-import { ModellingGroup } from "../../shared/models/Generated";
+import { ModellingGroup } from "../../shared/models/APITypes";
 
 export enum ModellingGroupTypes {
     USER_GROUPS_FETCHED = "USER_GROUPS_FETCHED",

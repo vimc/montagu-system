@@ -13,7 +13,7 @@ import {
     Result,
     ScenarioTouchstoneAndCoverageSets,
     Touchstone,
-} from "../main/shared/models/Generated";
+} from "../main/shared/models/APITypes";
 import {
     addCoverageData,
     addCoverageSetsForGroup,

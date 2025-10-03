@@ -1,4 +1,4 @@
-import {Responsibility, ResponsibilityComment, ResponsibilitySetWithExpectations} from "../../shared/models/Generated";
+import {Responsibility, ResponsibilityComment, ResponsibilitySetWithExpectations} from "../../shared/models/APITypes";
 
 export interface AnnotatedResponsibility extends Responsibility {
     modellingGroup: string;

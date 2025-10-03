@@ -3,7 +3,7 @@ import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {connect} from "react-redux";
 import {ILookup} from "../../../../shared/models/Lookup";
 import {UncontrolledTooltip} from "reactstrap";
-import {Country, Outcome, ResearchModelDetails, TouchstoneModelExpectations} from "../../../../shared/models/Generated";
+import {Country, Outcome, ResearchModelDetails, TouchstoneModelExpectations} from "../../../../shared/models/APITypes";
 
 export interface ModelMetaRow {
     code: string | null

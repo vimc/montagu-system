@@ -6,7 +6,7 @@ import {Store} from "redux";
 import "../../../helper";
 import {mockModellingGroup, mockTouchstone} from "../../../mocks/mockModels";
 import {mockContribState} from "../../../mocks/mockStates";
-import {ModellingGroup} from "../../../../main/shared/models/Generated";
+import {ModellingGroup} from "../../../../main/shared/models/APITypes";
 import {Sandbox} from "../../../Sandbox";
 import {createMockContribStore} from "../../../mocks/mockStore";
 import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";

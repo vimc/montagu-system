@@ -5,7 +5,7 @@ import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {touchstoneResponsibilitiesPageActionCreators} from "../../../actions/pages/TouchstoneResponsibilityPageActionCreators";
-import {ResponsibilitySetWithComments, ResponsibilitySetWithExpectations} from "../../../../shared/models/Generated";
+import {ResponsibilitySetWithComments, ResponsibilitySetWithExpectations} from "../../../../shared/models/APITypes";
 import {branch, compose, renderComponent} from "recompose";
 import {TouchstoneVersionPageLocationProps} from "./TouchstoneVersionPage";
 import {ResponsibilityCommentModal} from "./ResponsibilityCommentModal";

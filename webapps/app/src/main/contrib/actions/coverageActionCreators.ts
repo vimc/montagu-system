@@ -4,7 +4,7 @@ import {ContribAppState} from "../reducers/contribAppReducers";
 import {Coverage, CoverageTypes} from "../actionTypes/CoverageTypes";
 import {CoverageService} from "../services/CoverageService";
 import {mapStateToPropsHelper} from "../helpers/mapStateToPropsHelper";
-import { ScenarioAndCoverageSets} from "../../shared/models/Generated";
+import { ScenarioAndCoverageSets} from "../../shared/models/APITypes";
 
 export const coverageActionCreators = {
 

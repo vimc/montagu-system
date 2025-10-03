@@ -1,4 +1,4 @@
-import {CoverageUploadMetadata} from "../../shared/models/Generated";
+import {CoverageUploadMetadata} from "../../shared/models/APITypes";
 
 export enum CoverageTypes {
     COVERAGE_UPLOAD_STATE_CHANGED = "COVERAGE_UPLOAD_STATE_CHANGED",

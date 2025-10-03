@@ -5,7 +5,7 @@ import { shallow } from "enzyme";
 import "../../../helper";
 import { mockModellingGroup, mockTouchstoneVersion } from "../../../mocks/mockModels";
 import { Sandbox } from "../../../Sandbox";
-import { TouchstoneVersion } from "../../../../main/shared/models/Generated";
+import { TouchstoneVersion } from "../../../../main/shared/models/APITypes";
 import { TouchstoneList, TouchstoneListProps } from "../../../../main/contrib/components/ChooseAction/TouchstoneList";
 import { ButtonLink } from "../../../../main/shared/components/ButtonLink";
 

@@ -1,4 +1,4 @@
-import {Scenario} from "../../shared/models/Generated";
+import {Scenario} from "../../shared/models/APITypes";
 import {ScenarioAction, ScenarioTypes} from "../actionTypes/ScenarioTypes";
 import {orderBy} from "lodash";
 

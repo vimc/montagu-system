@@ -2,7 +2,7 @@ import * as React from "react";
 import {shallow} from "enzyme";
 
 import {UserRole, UserRoleComponent} from "../../../../../main/admin/components/Users/SingleUser/UserRole";
-import {RoleAssignment} from "../../../../../main/shared/models/Generated";
+import {RoleAssignment} from "../../../../../main/shared/models/APITypes";
 import {mockRole, mockUser} from "../../../../mocks/mockModels";
 import { InternalLink } from "../../../../../main/shared/components/InternalLink";
 import {createMockStore} from "../../../../mocks/mockStore";

@@ -1,5 +1,5 @@
 import {ModellingGroupsAction, ModellingGroupTypes} from "../actionTypes/ModellingGroupsTypes";
-import {ModellingGroup} from "../../shared/models/Generated";
+import {ModellingGroup} from "../../shared/models/APITypes";
 
 export interface ModellingGroupsState {
     userGroups: ModellingGroup[];

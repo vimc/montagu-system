@@ -4,7 +4,7 @@ import {
     ModellingGroupDetails,
     User,
     TouchstoneModelExpectations
-} from "../../shared/models/Generated";
+} from "../../shared/models/APITypes";
 
 export enum ModellingGroupTypes {
     GROUPS_FETCHED = "GROUPS_FETCHED",

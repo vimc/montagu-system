@@ -1,5 +1,5 @@
 import {Coverage, CoverageAction, CoverageTypes} from "../actionTypes/CoverageTypes";
-import {CoverageSet} from "../../shared/models/Generated";
+import {CoverageSet} from "../../shared/models/APITypes";
 
 export interface CoverageState {
     dataSets: CoverageSet[];

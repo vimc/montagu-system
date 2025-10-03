@@ -3,7 +3,7 @@ import {
     ResponsibilitySetWithComments,
     ResponsibilitySetWithExpectations,
     Touchstone
-} from "../../shared/models/Generated";
+} from "../../shared/models/APITypes";
 import {AdminAppState} from "../reducers/adminAppReducers";
 import {TouchstonesService} from "../../shared/services/TouchstonesService";
 import {

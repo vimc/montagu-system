@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CoverageSet } from "../../../../shared/models/Generated";
+import { CoverageSet } from "../../../../shared/models/APITypes";
 import { CoverageSetComponent } from "./CoverageSetComponent";
 
 interface Props {
