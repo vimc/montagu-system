@@ -63,7 +63,7 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
 
       - name: Run docker worker
-        run: ./scripts/run-docker-worker.sh
+        run: ./scripts/run-docker-worker.sh ${{ fromJSON(steps.meta.outputs.json).tags[1] }}
 
       - name: Run tests
         run: pytest --docker true --cov=src

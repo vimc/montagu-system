@@ -4,6 +4,11 @@ set -ex
 HERE=$(readlink -f "$(dirname $0)")
 . $HERE/common.sh
 
+TQ_IMAGE=$1
+if [[ -z $1 ]]; then
+  TQ_IMAGE=$BRANCH_TAG
+fi
+
 ARCHIVE_DIR=test_archive_files
 LOCAL_ARCHIVE_DIR=$HERE/../$ARCHIVE_DIR
 
@@ -14,5 +19,5 @@ docker run --env YOUTRACK_TOKEN=$YOUTRACK_TOKEN \
     --name $NAME \
     --network=montagu_default \
     -v $LOCAL_ARCHIVE_DIR:/$ARCHIVE_DIR \
-    -d $BRANCH_TAG
+    -d $TQ_IMAGE
 
