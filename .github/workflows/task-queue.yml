@@ -1,0 +1,80 @@
+name: Task Queue Test and Push
+on:
+  push:
+    branches: [ main ]
+    tags: [ v* ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: ~
+
+defaults:
+  run:
+    working-directory: ./task-queue
+jobs:
+  task-queue-build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      YOUTRACK_TOKEN: ${{ secrets.YOUTRACK_TOKEN }}
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/vimc/task-queue-worker
+          tags: |
+            type=raw,value=latest,enable={{ is_default_branch }}
+            type=raw,value=${{ github.head_ref }},enable=${{ github.event_name == 'pull_request' }}
+            type=ref,event=branch
+            type=sha,prefix=
+
+      - name: Check out source
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: |
+          pip3 install pytest-cov pycodestyle codecov hatch
+          pip3 install -r requirements.txt
+
+      - name: Run dependencies
+        run: ./scripts/run-dependencies.sh
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          pull: true
+          push: true
+          file: ./task-queue/Dockerfile
+          context: ./task-queue
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+
+      - name: Run docker worker
+        run: ./scripts/run-docker-worker.sh
+
+      - name: Run tests
+        run: pytest --docker true --cov=src
+
+      - name: Lint
+        run: pycodestyle .
+
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v4
+        with:
+            root_dir: ./task-queue
+            token: ${{ secrets.CODECOV_TOKEN }}
+            slug: vimc/montagu-task-queue
+            fail_ci_if_error: true
