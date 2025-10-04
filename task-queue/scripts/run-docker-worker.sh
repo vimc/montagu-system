@@ -6,7 +6,7 @@ HERE=$(readlink -f "$(dirname $0)")
 
 TQ_IMAGE=$1
 if [[ -z $1 ]]; then
-  TQ_IMAGE=$BRANCH_TAG
+  TQ_IMAGE=$LOCAL_TQ_IMAGE
 fi
 
 ARCHIVE_DIR=test_archive_files
