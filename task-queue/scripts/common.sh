@@ -1,1 +1,2 @@
+NAME=task-queue-worker
 LOCAL_TQ_IMAGE=task_queue_worker_local_dev
