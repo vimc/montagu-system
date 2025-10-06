@@ -10,7 +10,7 @@ execute tasks, coordinated by Celery. Celery supports various message brokers in
 
 ## Installation
 
-Clone the repo anywhere and install dependencies with (from the repo root):
+Install dependencies from the task-queue folder:
 
 ```
 hatch shell
