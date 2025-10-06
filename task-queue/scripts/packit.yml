@@ -46,5 +46,5 @@ orderly-runner:
     name: orderly.runner
     tag: main
   git:
-    url: https://github.com/reside-ic/orderly2-example.git
+    url: https://github.com/reside-ic/orderly-example.git
   workers: 1
