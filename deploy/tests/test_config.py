@@ -29,17 +29,17 @@ def test_config_basic():
 
     assert len(cfg.images) == 12
 
-    assert str(cfg.images["db"]) == "vimc/montagu-db:master"
-    assert str(cfg.images["api"]) == "vimc/montagu-api:master"
-    assert str(cfg.images["admin"]) == "vimc/montagu-admin-portal:master"
-    assert str(cfg.images["api_admin"]) == "vimc/montagu-cli:master"
-    assert str(cfg.images["contrib"]) == "vimc/montagu-contrib-portal:master"
-    assert str(cfg.images["proxy"]) == "vimc/montagu-reverse-proxy:master"
+    assert str(cfg.images["db"]) == "ghcr.io/vimc/montagu-db:master"
+    assert str(cfg.images["api"]) == "ghcr.io/vimc/montagu-api:master"
+    assert str(cfg.images["admin"]) == "ghcr.io/vimc/montagu-admin-portal:master"
+    assert str(cfg.images["api_admin"]) == "ghcr.io/vimc/montagu-cli:master"
+    assert str(cfg.images["contrib"]) == "ghcr.io/vimc/montagu-contrib-portal:master"
+    assert str(cfg.images["proxy"]) == "ghcr.io/vimc/montagu-proxy:master"
     assert str(cfg.images["mq"]) == "docker.io/redis:latest"
     assert str(cfg.images["flower"]) == "mher/flower:0.9.5"
-    assert str(cfg.images["task_queue"]) == "vimc/task-queue-worker:master"
+    assert str(cfg.images["task_queue"]) == "ghcr.io/vimc/task-queue-worker:master"
     assert str(cfg.images["metrics"]) == "nginx/nginx-prometheus-exporter:1.3.0"
-    assert str(cfg.images["db_migrate"]) == "vimc/montagu-migrate:master"
+    assert str(cfg.images["db_migrate"]) == "ghcr.io/vimc/montagu-migrate:master"
     assert str(cfg.images["fake_smtp"]) == "reachfive/fake-smtp-server:latest"
 
     assert cfg.mq_port == 6379
