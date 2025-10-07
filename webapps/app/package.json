@@ -1,12 +1,11 @@
 {
   "name": "contrib-portal",
   "version": "0.0.0",
-  "description": "Modelling groups burden contribution portal",
+  "description": "Montagu web portals for admin and modellers' contributions",
   "main": "index.js",
   "scripts": {
     "webpack": "webpack",
     "watch": "webpack --watch",
-    "generate-models": "cd ./src/webmodels && ./gradlew generateTypeDefinitions",
     "//": "This is a comment: To run just one test, or a subset, use run-test.sh, e.g. ./run-test src/test/components/ErrorLogTests.tsx",
     "test": "jest -c jest.config.js",
     "integration-test": "jest -c jest.integration.config.js --run-in-band",

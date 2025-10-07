@@ -12,7 +12,7 @@ import {
 } from "../../../../main/contrib/components/ChooseGroup/ChooseGroupContent";
 import { GroupList } from "../../../../main/contrib/components/ChooseGroup/GroupList";
 import { mockContribState } from "../../../mocks/mockStates";
-import { ModellingGroup} from "../../../../main/shared/models/Generated";
+import { ModellingGroup} from "../../../../main/shared/models/APITypes";
 import { Sandbox } from "../../../Sandbox";
 import {createMockStore} from "../../../mocks/mockStore";
 import {ContribAppState} from "../../../../main/contrib/reducers/contribAppReducers";

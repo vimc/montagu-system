@@ -22,3 +22,6 @@ src/webmodels/generate/build/**
 src/webmodels/.idea
 token_key/*
 coverage/*
+scripts/.venv
+scripts/.packit_identity
+

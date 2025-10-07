@@ -1,4 +1,4 @@
-import {ErrorInfo, User} from "../../shared/models/Generated";
+import {ErrorInfo, User} from "../../shared/models/APITypes";
 
 export enum UsersTypes {
     ALL_USERS_FETCHED = "ALL_USERS_FETCHED",

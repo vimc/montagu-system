@@ -1,10 +1,10 @@
-import * as models from "../../main/shared/models/Generated";
+import * as models from "../../main/shared/models/APITypes";
 import {
     ExpectationMapping,
     ModellingGroupCreation,
     ResponsibilityComment,
     TouchstoneVersion
-} from "../../main/shared/models/Generated";
+} from "../../main/shared/models/APITypes";
 import {ExtendedResponsibility, ExtendedResponsibilitySet} from "../../main/contrib/models/ResponsibilitySet";
 import {PageBreadcrumb} from "../../main/shared/components/PageWithHeader/PageProperties";
 import {AnnotatedResponsibility, AnnotatedResponsibilitySet} from "../../main/admin/models/AnnotatedResponsibility";

@@ -5,7 +5,7 @@ import { shallow } from "enzyme";
 import "../../../../../helper";
 import { mockModellingGroup, mockResponsibility, mockScenario, mockTouchstoneVersion } from "../../../../../mocks/mockModels";
 import { DiseaseFilter } from "../../../../../../main/contrib/components/Responsibilities/Overview/List/DiseaseFilter";
-import { Responsibility } from "../../../../../../main/shared/models/Generated";
+import { Responsibility } from "../../../../../../main/shared/models/APITypes";
 import { ExtendedResponsibilitySet } from "../../../../../../main/contrib/models/ResponsibilitySet";
 import {
     ResponsibilityList,

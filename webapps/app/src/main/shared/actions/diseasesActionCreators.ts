@@ -2,7 +2,7 @@ import {Dispatch} from "redux";
 
 import {DiseasesService} from "../services/DiseasesService";
 import {DiseasesFetched, DiseasesTypes, SetCurrentDiseaseId} from "../actionTypes/DiseasesTypes";
-import {Disease} from "../models/Generated";
+import {Disease} from "../models/APITypes";
 import {CommonState} from "../reducers/CommonState";
 
 export const diseasesActionCreators = {

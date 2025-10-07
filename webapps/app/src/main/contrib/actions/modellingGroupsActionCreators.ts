@@ -3,7 +3,7 @@ import { Dispatch } from "redux";
 import { ModellingGroupsService } from "../../shared/services/ModellingGroupsService";
 import {UserGroupsFetched, ModellingGroupTypes, SetCurrentUserGroup} from "../actionTypes/ModellingGroupsTypes";
 import {ContribAppState} from "../reducers/contribAppReducers";
-import {ModellingGroup} from "../../shared/models/Generated";
+import {ModellingGroup} from "../../shared/models/APITypes";
 
 export const modellingGroupsActionCreators = {
 

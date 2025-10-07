@@ -1,4 +1,4 @@
-import {Touchstone} from "../../../../shared/models/Generated";
+import {Touchstone} from "../../../../shared/models/APITypes";
 import * as React from "react";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {compose} from "recompose";

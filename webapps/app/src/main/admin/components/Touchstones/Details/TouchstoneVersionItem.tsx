@@ -1,4 +1,4 @@
-import {TouchstoneVersion} from "../../../../shared/models/Generated";
+import {TouchstoneVersion} from "../../../../shared/models/APITypes";
 import * as React from "react";
 import {InternalLink} from "../../../../shared/components/InternalLink";
 

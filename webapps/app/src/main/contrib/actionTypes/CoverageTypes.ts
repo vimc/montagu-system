@@ -1,4 +1,4 @@
-import {CoverageSet} from "../../shared/models/Generated";
+import {CoverageSet} from "../../shared/models/APITypes";
 
 export enum CoverageTypes {
     COVERAGE_DATA_SETS_FETCHED = "COVERAGE_DATA_SETS_FETCHED",

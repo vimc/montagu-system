@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { orderBy } from "lodash";
 
-import { User } from "../../../../../shared/models/Generated";
+import { User } from "../../../../../shared/models/APITypes";
 import { ModellingGroupMembersDeletableUser } from "./ModellingGroupMembersDeletableUser";
 import {AdminAppState} from "../../../../reducers/adminAppReducers";
 import {isNonEmptyArray} from "../../../../../shared/ArrayHelpers";

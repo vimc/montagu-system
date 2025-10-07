@@ -9,7 +9,7 @@ import {
     BurdenEstimateSetType,
     CreateBurdenEstimateSet,
     Result
-} from "../../shared/models/Generated";
+} from "../../shared/models/APITypes";
 import {BurdenOutcome, Estimates, EstimateTypes} from "../actionTypes/EstimateTypes";
 import BurdenEstimatesFetched = Estimates.BurdenEstimatesFetched;
 import UploadTokenFetched = Estimates.UploadTokenFetched;

@@ -6,7 +6,7 @@ import { CoverageService } from "../../../main/contrib/services/CoverageService"
 import {Coverage, CoverageTypes} from "../../../main/contrib/actionTypes/CoverageTypes";
 import {createMockStore} from "../../mocks/mockStore";
 import {mockCoverageSet, mockScenario} from "../../mocks/mockModels";
-import {ScenarioAndCoverageSets} from "../../../main/shared/models/Generated";
+import {ScenarioAndCoverageSets} from "../../../main/shared/models/APITypes";
 import {mapStateToPropsHelper} from "../../../main/contrib/helpers/mapStateToPropsHelper";
 
 describe("Coverage actions tests", () => {

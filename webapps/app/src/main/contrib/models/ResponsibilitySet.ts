@@ -8,7 +8,7 @@ import {
     ResponsibilityStatus,
     Scenario,
     TouchstoneVersion
-} from "../../shared/models/Generated";
+} from "../../shared/models/APITypes";
 
 export class ExtendedResponsibility {
     current_estimate_set: BurdenEstimateSet | null;

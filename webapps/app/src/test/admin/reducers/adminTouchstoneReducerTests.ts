@@ -10,7 +10,7 @@ import {
     mockResponsibilitySetWithExpectations,
     mockTouchstone
 } from "../../mocks/mockModels";
-import {ResponsibilitySetWithComments} from "../../../main/shared/models/Generated";
+import {ResponsibilitySetWithComments} from "../../../main/shared/models/APITypes";
 
 describe("adminTouchstoneReducer", () => {
     it("sets fetched touchstones", () => {

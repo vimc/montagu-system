@@ -1,5 +1,5 @@
 import {DiseasesAction, DiseasesTypes} from "../actionTypes/DiseasesTypes";
-import {Disease} from "../models/Generated";
+import {Disease} from "../models/APITypes";
 import {orderBy} from "lodash";
 
 export interface DiseasesState {

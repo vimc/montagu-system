@@ -1,32 +1,30 @@
 version: '3'
 services:
   proxy:
-    image: vimc/montagu-reverse-proxy-minimal:master
+    image: vimc/montagu-reverse-proxy:master
     ports:
       - 80:80
+      - 443:443
+    command: 443 localhost
     depends_on:
       - api
+      - admin
+      - contrib
+      - db
   api:
-    image: vimc/montagu-api:${MONTAGU_API_VERSION}
+    image: ghcr.io/vimc/montagu-api:${MONTAGU_API_VERSION}
     ports:
       - "8080:8080"
     depends_on:
       - db
   db:
-    image: vimc/montagu-db:${MONTAGU_DB_VERSION}
+    image: ghcr.io/vimc/montagu-db:${MONTAGU_DB_VERSION}
     ports:
       - "5432:5432"
     command: /etc/montagu/postgresql.test.conf
   db_annex:
-    image: vimc/montagu-db:${MONTAGU_DB_VERSION}
+    image: ghcr.io/vimc/montagu-db:${MONTAGU_DB_VERSION}
     command: /etc/montagu/postgresql.test.conf
-  orderly_web:
-    image: vimc/orderly-web:master
-    ports:
-      - "8888:8888"
-    volumes:
-      - $ROOT/demo:/orderly
-      - $ROOT/config/orderlyweb:/etc/orderly/web
   mq:
     image: redis:6
   flower:
@@ -35,3 +33,7 @@ services:
       - FLOWER_PORT=5555
       - CELERY_BROKER_URL=redis://guest@mq//
       - CELERY_RESULT_BACKEND=redis://guest@mq/0
+  admin:
+    image: ${ADMIN_IMAGE}
+  contrib:
+    image: ${CONTRIB_IMAGE}

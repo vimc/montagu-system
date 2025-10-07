@@ -3,7 +3,7 @@ import {compose} from "recompose";
 import { connect } from 'react-redux';
 import {orderBy} from "lodash";
 
-import {User} from "../../../../shared/models/Generated";
+import {User} from "../../../../shared/models/APITypes";
 
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import {UserListItem} from "./UserListItem";

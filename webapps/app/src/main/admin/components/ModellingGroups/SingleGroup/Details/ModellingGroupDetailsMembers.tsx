@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ModellingGroupDetails, User} from "../../../../../shared/models/Generated";
+import {ModellingGroupDetails, User} from "../../../../../shared/models/APITypes";
 import {InternalLink} from "../../../../../shared/components/InternalLink";
 import {intersperse} from "../../../../../shared/components/Helpers";
 import {isNonEmptyArray} from "../../../../../shared/ArrayHelpers";

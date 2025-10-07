@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {branch, compose, renderComponent} from "recompose";
 import {connect} from 'react-redux';
-import {DemographicDataset, TouchstoneVersion} from "../../models/Generated";
+import {DemographicDataset, TouchstoneVersion} from "../../models/APITypes";
 import {DemographicOptions} from "./DemographicOptions";
 import {FileDownloadButton} from "../FileDownloadLink";
 import {ContribAppState} from "../../../contrib/reducers/contribAppReducers";

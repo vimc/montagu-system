@@ -1,5 +1,5 @@
 import * as React from "react";
-import {BurdenEstimateSet} from "../../../../../shared/models/Generated";
+import {BurdenEstimateSet} from "../../../../../shared/models/APITypes";
 import {settings} from "../../../../../shared/Settings";
 import {longTimestamp} from "../../../../../shared/Helpers";
 import {FileDownloadButton} from "../../../../../shared/components/FileDownloadLink";

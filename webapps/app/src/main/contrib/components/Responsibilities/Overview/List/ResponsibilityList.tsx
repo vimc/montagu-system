@@ -3,7 +3,7 @@ import * as React from "react";
 import {DiseaseFilter} from "./DiseaseFilter";
 import {ResponsibilityScenario} from "./ResponsibilityScenario";
 import {IExtendedResponsibilitySet} from "../../../../models/ResponsibilitySet";
-import {ModellingGroup, Responsibility} from "../../../../../shared/models/Generated";
+import {ModellingGroup, Responsibility} from "../../../../../shared/models/APITypes";
 import {settings} from "../../../../../shared/Settings";
 
 export interface ResponsibilityListComponentProps {

@@ -1,7 +1,7 @@
 import * as React from "react";
 import {compose} from "recompose";
 import {connect} from "react-redux";
-import {CoverageUploadMetadata} from "../../../../shared/models/Generated";
+import {CoverageUploadMetadata} from "../../../../shared/models/APITypes";
 import {UncontrolledAlert} from "reactstrap";
 import {longTimestamp} from "../../../../shared/Helpers";
 import {AdminAppState} from "../../../reducers/adminAppReducers";

@@ -13,7 +13,7 @@ import {
     XYPlot,
     YAxis
 } from 'react-vis';
-import {NumberRange} from "../../../../shared/models/Generated";
+import {NumberRange} from "../../../../shared/models/APITypes";
 import {interpolatePlasma} from "d3-scale-chromatic";
 import {DataPoint} from "../../../reducers/estimatesReducer";
 import {isNullOrUndefined} from "util";

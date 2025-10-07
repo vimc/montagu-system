@@ -4,7 +4,7 @@ import {
     ModellingGroup,
     ModellingGroupDetails,
     User, ResearchModelDetails, TouchstoneModelExpectations
-} from "../../shared/models/Generated";
+} from "../../shared/models/APITypes";
 import {isNonEmptyArray} from "../../shared/ArrayHelpers";
 
 export interface ModellingGroupsState {

@@ -1,4 +1,4 @@
-import {Disease, Scenario} from "../../../../shared/models/Generated";
+import {Disease, Scenario} from "../../../../shared/models/APITypes";
 import {AdminAppState} from "../../../reducers/adminAppReducers";
 import * as React from "react";
 import {connect} from "react-redux";

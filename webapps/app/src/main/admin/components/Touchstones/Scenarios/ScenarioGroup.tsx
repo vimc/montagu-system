@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Disease, Scenario} from "../../../../shared/models/Generated";
+import {Disease, Scenario} from "../../../../shared/models/APITypes";
 import {UncontrolledTooltip} from "reactstrap";
 import {FileDownloadButton} from "../../../../shared/components/FileDownloadLink";
 import {branch, renderNothing} from "recompose";

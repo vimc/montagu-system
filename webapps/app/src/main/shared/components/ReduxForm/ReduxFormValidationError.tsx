@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ErrorInfo} from "../../models/Generated";
+import {ErrorInfo} from "../../models/APITypes";
 
 export interface ReduxFormValidationErrorProps {
     errors: ErrorInfo[];

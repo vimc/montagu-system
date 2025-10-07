@@ -1,6 +1,6 @@
 import {BurdenOutcome, EstimatesAction, EstimateTypes} from "../actionTypes/EstimateTypes";
 import {ILookup} from "../../shared/models/Lookup";
-import {ErrorInfo} from "../../shared/models/Generated";
+import {ErrorInfo} from "../../shared/models/APITypes";
 
 export interface DataPoint {
     x: number
