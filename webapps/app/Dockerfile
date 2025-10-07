@@ -6,4 +6,4 @@ COPY out/$APP_NAME /usr/share/nginx/html
 COPY nginxConfig/nginx.conf /etc/nginx/nginx.conf
 COPY nginxConfig/nginx.default.conf /etc/nginx/conf.d/default.conf
 
-ENV MONTAGU_PORTAL_PROFILE docker
+ENV MONTAGU_PORTAL_PROFILE=docker
