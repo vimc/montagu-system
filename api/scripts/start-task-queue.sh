@@ -39,7 +39,8 @@ docker run -d \
   mher/flower:0.9.5
 
 # add task q user
-CLI=$ORG/montagu-cli:main
+CLI=$ORG/montagu-cli:update-repo-docker-config # TODO: revert this to main
+# CLI=$ORG/montagu-cli:main
 docker pull $CLI
 docker run --rm \
   $NETWORK_MAPPING \
