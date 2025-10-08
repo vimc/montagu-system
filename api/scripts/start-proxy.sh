@@ -14,14 +14,14 @@ fi
 
 # TODO: get from ghcr once that's migrated
 # we also need to keep the proxy happy by running the web apps
-MONTAGU_ADMIN_TAG=$OLD_ORG/montagu-admin-portal:master
+MONTAGU_ADMIN_TAG=$ORG/montagu-admin-portal:main
 docker pull $MONTAGU_ADMIN_TAG
 docker run -d \
    --name admin \
    $NETWORK_MAPPING \
    $MONTAGU_ADMIN_TAG
 
-MONTAGU_CONTRIB_TAG=$OLD_ORG/montagu-contrib-portal:master
+MONTAGU_CONTRIB_TAG=$ORG/montagu-contrib-portal:main
 docker pull $MONTAGU_CONTRIB_TAG
 docker run -d \
    --name contrib \

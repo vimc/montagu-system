@@ -7,8 +7,7 @@ HERE=$(dirname $0)
 API_IMAGE=$1
 
 if [[ -z $1 ]]; then
-  #TODO: use main on ghcr once building to there
-  API_IMAGE=$OLD_ORG/$API_NAME:master
+  API_IMAGE=$ORG/$API_NAME:main
   # assume we should use local image if it is specified, pull latest main if not
   docker pull $API_IMAGE
 fi
