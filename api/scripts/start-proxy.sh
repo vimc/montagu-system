@@ -28,7 +28,7 @@ docker run -d \
    $NETWORK_MAPPING \
    $MONTAGU_CONTRIB_TAG
 
-MONTAGU_PROXY_TAG=$OLD_ORG/montagu-reverse-proxy:master
+MONTAGU_PROXY_TAG=$ORG/montagu-proxy:main
 docker pull $MONTAGU_PROXY_TAG
 docker run -d \
   -p "443:443" -p "80:80" \

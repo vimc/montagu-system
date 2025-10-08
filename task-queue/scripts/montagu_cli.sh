@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-image=${REGISTRY}/montagu-cli:master
+image=ghcr.io/vimc/montagu-cli:main
 docker pull $image
 exec docker run --rm --network ${NETWORK} $image "$@"
