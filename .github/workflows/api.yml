@@ -87,6 +87,8 @@ jobs:
       - name: Run dependencies and SHA api
         working-directory: ./api/scripts
         run: ./start-all.sh ${{ fromJSON(steps.meta.outputs.json).tags[1] }}
+      - name: Use default (localhost) config
+        run: rm -f config/current_user
       - name: Run unit and integration tests
         run: ./gradlew :testLibrary
       - name: Smoke test cli
