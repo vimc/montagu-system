@@ -39,7 +39,7 @@ docker run -d \
   mher/flower:0.9.5
 
 # add task q user
-CLI=$ORG/montagu-cli:update-repo-docker-config # TODO: revert this to main
+CLI=$ORG/montagu-cli:update-repo # TODO: revert this to main when branch is merged
 # CLI=$ORG/montagu-cli:main
 docker pull $CLI
 docker run --rm \
