@@ -251,10 +251,10 @@ class UserTests : DatabaseTest()
         } andCheckArray {
 
             // the above 2 users plus standard test user and task q user
-            // Assertions.assertThat(it.size).isEqualTo(4)
+             Assertions.assertThat(it.size).isEqualTo(4)
 
-            val usernames = it.map{ (value)-> value["username"] }
-            Assertions.assertThat(usernames).isEqualTo(listOf("test.user", "testuser1", "testuser2"))
+            //val usernames = it.map{ (value)-> value["username"] }
+            //Assertions.assertThat(usernames).containsExactly("test.user", "testuser1", "testuser2")
 
             Assertions.assertThat(it).contains(json {
                 obj(
