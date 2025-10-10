@@ -12,8 +12,6 @@ else
   NETWORK_MAPPING="--network=db_nw"
 fi
 
-# TODO: get from ghcr once that's migrated
-# we also need to keep the proxy happy by running the web apps
 MONTAGU_ADMIN_TAG=$ORG/montagu-admin-portal:main
 docker pull $MONTAGU_ADMIN_TAG
 docker run -d \
