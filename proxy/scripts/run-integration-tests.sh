@@ -16,8 +16,6 @@ trap cleanup EXIT
 mkdir montagu_emails
 $HERE/run-dependencies.sh
 
-export ORG=vimc
-
 docker run -d \
 	-p "443:443" -p "80:80" -p "9000:9000" \
 	--name reverse-proxy \

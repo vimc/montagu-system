@@ -4,10 +4,10 @@ set -e
 ANNEX_VOLUME_NAME=montagu_db_annex_volume
 ANNEX_CONTAINER_NAME=montagu_db_annex
 ANNEX_IMAGE_NAME=montagu-db
-ANNEX_IMAGE_VERSION=master
+ANNEX_IMAGE_VERSION=main
 ANNEX_PORT=15432
 
-ORG=vimc
+ORG=ghcr.io/vimc
 
 ANNEX_IMAGE=${ORG}/${ANNEX_IMAGE_NAME}:${ANNEX_IMAGE_VERSION}
 

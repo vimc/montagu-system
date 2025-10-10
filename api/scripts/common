@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 export ORG=ghcr.io/vimc
-export OLD_ORG=vimc # TODO: remove when TQ is moved over to montagu-system
 export API_NAME=montagu-api
 export NETWORK=test_nw

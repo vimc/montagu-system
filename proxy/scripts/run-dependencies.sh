@@ -3,7 +3,7 @@ set -ex
 
 here=$(dirname $0)
 
-export ORG=vimc
+export ORG=ghcr.io/vimc
 export TOKEN_KEY_PATH=$PWD/token_key
 
 function cleanup() {
@@ -26,13 +26,13 @@ docker compose exec api touch /etc/montagu/api/go_signal
 docker compose exec db montagu-wait.sh 120
 
 # Migrate the database
-migrate_image=$ORG/montagu-migrate:master
+migrate_image=$ORG/montagu-migrate:main
 docker pull $migrate_image
 docker run --rm --network=montagu_proxy $migrate_image
 
 # Generate test data if 'data' present as first param
 if [ "$1" = "data" ]; then
-  test_data_image=$ORG/montagu-generate-test-data:master
+  test_data_image=$ORG/montagu-generate-test-data:main
   docker pull $test_data_image
   docker run --rm --network=montagu_proxy $test_data_image
 fi

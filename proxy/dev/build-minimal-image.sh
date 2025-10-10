@@ -4,8 +4,8 @@ set -ex
 HERE=$(dirname $0)
 . $HERE/../scripts/common
 
-MINIMAL_BRANCH_TAG=$ORG/montagu-reverse-proxy-minimal:$GIT_BRANCH
-MINIMAL_SHA_TAG=$ORG/montagu-reverse-proxy-minimal:$GIT_SHA
+MINIMAL_BRANCH_TAG=$ORG/montagu-proxy-minimal:$GIT_BRANCH
+MINIMAL_SHA_TAG=$ORG/montagu-proxy-minimal:$GIT_SHA
 
 docker build \
     -t $MINIMAL_BRANCH_TAG \

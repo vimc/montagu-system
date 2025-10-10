@@ -5,7 +5,7 @@ servers:
     user: test.user@example.com
     password: password
   packit:
-    url: https://reverse-proxy:443/packit
+    url: https://proxy:443/packit
     disable_certificate_verify: true
   youtrack:
     token:

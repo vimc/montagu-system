@@ -1,14 +1,24 @@
 #!/usr/bin/env bash
 set -e
-HERE=$(dirname $0)
-. $HERE/common
+
+if [ "$BUILDKITE" = "true" ]; then
+    GIT_ID=${BUILDKITE_COMMIT:0:7}
+else
+    GIT_ID=$(git rev-parse --short=7 HEAD)
+fi
+
+if [ "$BUILDKITE" = "true" ]; then
+    GIT_BRANCH=$BUILDKITE_BRANCH
+else
+    GIT_BRANCH=$(git symbolic-ref --short HEAD)
+fi
 
 ROOT=$(dirname $(dirname $(realpath $0)))
 
 DB_DOCS_PATH=$ROOT/docs/www
 DB_DOCS_REPO=`cat $ROOT/docs/destination_repo`
 
-if [ $GIT_BRANCH != "master" ]; then
+if [ $GIT_BRANCH != "main" ]; then
     echo "Not generating docs for branch $GIT_BRANCH"
     exit 0
 fi
@@ -16,8 +26,8 @@ fi
 if [ -d $DB_DOCS_PATH ]; then
     echo "Updating sources"
     git -C $DB_DOCS_PATH fetch
-    git -C $DB_DOCS_PATH checkout master
-    git -C $DB_DOCS_PATH reset --hard origin/master
+    git -C $DB_DOCS_PATH checkout main
+    git -C $DB_DOCS_PATH reset --hard origin/main
 else
     git clone "$DB_DOCS_REPO" $DB_DOCS_PATH
 fi

@@ -57,6 +57,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libsodium23
       - name: Check schema
         run: ./gradlew :validateSchema -i
+      - name: Use docker config
+        run: echo "docker" > config/current_user
       - name: Build api dist
         run: ./gradlew :app:distTar
       # Always build and push image before test against it
@@ -85,6 +87,8 @@ jobs:
       - name: Run dependencies and SHA api
         working-directory: ./api/scripts
         run: ./start-all.sh ${{ fromJSON(steps.meta.outputs.json).tags[1] }}
+      - name: Use default (localhost) config
+        run: rm -f config/current_user
       - name: Run unit and integration tests
         run: ./gradlew :testLibrary
       - name: Smoke test cli
