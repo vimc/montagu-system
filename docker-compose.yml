@@ -1,0 +1,43 @@
+version: '3'
+services:
+  proxy:
+    image: ${PROXY_IMAGE}
+    ports:
+      - 80:80
+      - 443:443
+    command: 443 localhost
+    depends_on:
+      - api
+      - admin
+      - contrib
+      - db
+  api:
+    image: ${API_IMAGE}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  db:
+    image: ${DB_IMAGE}
+    ports:
+      - "5432:5432"
+    command: /etc/montagu/postgresql.test.conf
+  db_annex:
+    image: ${DB_IMAGE}
+    command: /etc/montagu/postgresql.test.conf
+  mq:
+    image: redis:6
+  flower:
+    image: mher/flower:0.9.5
+    environment:
+      - FLOWER_PORT=5555
+      - CELERY_BROKER_URL=redis://guest@mq//
+      - CELERY_RESULT_BACKEND=redis://guest@mq/0
+  task-queue-worker:
+    image: ${TASK_QUEUE_IMAGE}
+    environment:
+      - YOUTRACK_TOKEN=${YOUTRACK_TOKEN}
+  admin:
+    image: ${ADMIN_IMAGE}
+  contrib:
+    image: ${CONTRIB_IMAGE}

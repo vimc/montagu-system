@@ -101,14 +101,13 @@ CONTRIB_IMAGE=$CONTRIB_IMAGE \
 MIGRATE_IMAGE=$MIGRATE_IMAGE \
 docker compose --project-name montagu up -d
 
-# Start the APIs
+# Start the API
 docker exec montagu-api-1 mkdir -p /etc/montagu/api/
 # TODO: config properties param in webapps client script
 #docker container cp $here/montagu-api.config.properties montagu-api-1:/etc/montagu/api/config.properties
 if [[ -n $API_CONFIG_PATH ]]; then
   docker container cp $API_CONFIG_PATH montagu-api-1:/etc/montagu/api/config.properties
 fi
-
 docker exec montagu-api-1 touch /etc/montagu/api/go_signal
 
 # Wait for the database
