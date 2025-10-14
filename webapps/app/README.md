@@ -2,7 +2,7 @@
 
 # Development
 
-1. User node 12:
+1. Use node 12:
    ```
    nvm install 12
    ```
