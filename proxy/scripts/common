@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-export ORG=vimc
+export ORG=ghcr.io/vimc
 
 if [ "$BUILDKITE" = "true" ]; then
     GIT_SHA=${BUILDKITE_COMMIT:0:7}
