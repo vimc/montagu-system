@@ -6,7 +6,7 @@ container_prefix: montagu
 protect_data: false
 
 ## Docker org for images
-repo: vimc
+repo: ghcr.io/vimc
 
 ## The name of the docker network that containers will be attached to.
 ## If you want to proxy Packit to the host, you will need to
@@ -27,21 +27,21 @@ volumes:
 
 api:
   name: montagu-api
-  tag: master
+  tag: main
   email:
     password: "changeme"
     flow_url: "fakeurl"
   admin:
     name: montagu-cli
-    tag: master
+    tag: main
 db:
   name: montagu-db
-  tag: master
+  tag: main
   root_user: vimc
   root_password: "changeme"
   migrate:
     name: montagu-migrate
-    tag: master
+    tag: main
   users:
     api:
       password: "apipassword"
@@ -75,8 +75,8 @@ db:
     - role
     - role_permission
 proxy:
-  name: montagu-reverse-proxy
-  tag: master
+  name: montagu-proxy
+  tag: main
   port_http: 80
   port_https: 443
   metrics:
@@ -96,10 +96,10 @@ proxy:
     certificate: "cert"
 contrib:
   name: montagu-contrib-portal
-  tag: master
+  tag: main
 admin:
   name: montagu-admin-portal
-  tag: master
+  tag: main
 mq:
   repo: docker.io
   name: redis
@@ -112,7 +112,7 @@ flower:
   port: 5555
 task_queue:
   name: task-queue-worker
-  tag: master
+  tag: main
   youtrack_token: "faketoken"
   servers:
     montagu:

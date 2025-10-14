@@ -12,22 +12,23 @@ services:
       - CELERY_RESULT_BACKEND=redis://montagu-mq-1/0
       - FLOWER_PORT=5555
   api:
-    image: ${REGISTRY}/montagu-api:master
+    # TODO: switch to main when branch is merged
+    image: ghcr.io/vimc/montagu-api:update-repo
     ports:
       - "8080:8080"
     depends_on:
       - db
   db:
-    image: ${REGISTRY}/montagu-db:master
+    image: ghcr.io/vimc/montagu-db:main
     ports:
       - "5432:5432"
     command: /etc/montagu/postgresql.test.conf
   contrib:
-    image: ${REGISTRY}/montagu-contrib-portal:master
+    image: ghcr.io/vimc/montagu-contrib-portal:main
     depends_on:
       - api
   admin:
-      image: ${REGISTRY}/montagu-admin-portal:master
+      image: ghcr.io/vimc/montagu-admin-portal:main
       depends_on:
         - api
   smtp_server:

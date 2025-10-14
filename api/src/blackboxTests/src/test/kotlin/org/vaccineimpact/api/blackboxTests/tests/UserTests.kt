@@ -250,8 +250,8 @@ class UserTests : DatabaseTest()
             PermissionSet("*/users.read")
         } andCheckArray {
 
-            // the above 2 users plus standard test user and task q user
-            Assertions.assertThat(it.size).isEqualTo(4)
+            // the above 2 users plus standard test user, cli user and task q user
+            Assertions.assertThat(it.size).isEqualTo(5)
 
             Assertions.assertThat(it).contains(json {
                 obj(

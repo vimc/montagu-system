@@ -20,7 +20,7 @@ docker run --rm -d \
   --name mq \
   redis
 
-TASK_QUEUE_WORKER=$OLD_ORG/task-queue-worker:master
+TASK_QUEUE_WORKER=$ORG/task-queue-worker:main
 docker pull $TASK_QUEUE_WORKER
 docker run --rm -d \
   $NETWORK_MAPPING \
@@ -39,8 +39,8 @@ docker run -d \
   mher/flower:0.9.5
 
 # add task q user
-# TODO: change this to new ORG once we're building on main!
-CLI=$OLD_ORG/montagu-cli:master
+CLI=$ORG/montagu-cli:update-repo # TODO: revert this to main when branch is merged
+# CLI=$ORG/montagu-cli:main
 docker pull $CLI
 docker run --rm \
   $NETWORK_MAPPING \

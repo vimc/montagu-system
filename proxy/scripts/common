@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-export ORG=vimc
+export ORG=ghcr.io/vimc
 
 if [ "$BUILDKITE" = "true" ]; then
     GIT_SHA=${BUILDKITE_COMMIT:0:7}
@@ -31,7 +31,6 @@ fi
 # But docker does not like
 GIT_BRANCH=$(echo $GIT_BRANCH | sed 's;/;-;g')
 
-SHARED_BUILD_ENV_TAG=$ORG/montagu-reverse-proxy-shared-build-env:$GIT_SHA
-INTEGRATION_TESTS_TAG=$ORG/montagu-reverse-proxy-integration-tests:$GIT_SHA
-BRANCH_TAG=$ORG/montagu-reverse-proxy:$GIT_BRANCH
-SHA_TAG=$ORG/montagu-reverse-proxy:$GIT_SHA
+INTEGRATION_TESTS_TAG=$ORG/montagu-proxy-integration-tests:$GIT_SHA
+BRANCH_TAG=$ORG/montagu-proxy:$GIT_BRANCH
+SHA_TAG=$ORG/montagu-proxy:$GIT_SHA

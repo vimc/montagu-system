@@ -1,7 +1,7 @@
 version: '3'
 services:
   proxy:
-    image: vimc/montagu-reverse-proxy:master
+    image: ghcr.io/vimc/montagu-proxy:main
     ports:
       - 80:80
       - 443:443

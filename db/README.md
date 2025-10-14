@@ -19,8 +19,8 @@ See [migrations](db/migrations/README.md).
 Run the empty database mapped to port 8888
 
 ```
-docker pull ghcr.io/vimc/montagu-db:master
-docker run --rm -p 8888:5432 ghcr.io/vimc/montagu-db:master
+docker pull ghcr.io/vimc/montagu-db:main
+docker run --rm -p 8888:5432 ghcr.io/vimc/montagu-db:main
 ```
 
 ## Restore a dump (from backup)
@@ -28,7 +28,7 @@ docker run --rm -p 8888:5432 ghcr.io/vimc/montagu-db:master
 See the [montagu-backup](https://github.com/vimc/montagu-backup) repo for information on backing up and restoring.  Once done, you should have database file at `/montagu/db.dump`
 
 ```
-docker run --rm -d --name montagu_db ghcr.io/vimc/montagu-db:master
+docker run --rm -d --name montagu_db ghcr.io/vimc/montagu-db:main
 docker cp /montagu/db.dump montagu_db:/tmp/import.dump
 docker exec montagu_db /montagu-bin/restore-dump.sh /tmp/import.dump
 ```
@@ -38,7 +38,7 @@ docker exec montagu_db /montagu-bin/restore-dump.sh /tmp/import.dump
 There is only one at present `/etc/montagu/postgresql.test.conf`, to use it add this as an argument when running a container, e.g.
 
 ```
-docker run --rm ghcr.io/vimc/montagu-db:master /etc/montagu/postgresql.test.conf
+docker run --rm ghcr.io/vimc/montagu-db:main /etc/montagu/postgresql.test.conf
 ```
 
 ## Streaming backups

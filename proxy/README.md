@@ -60,5 +60,5 @@ dependencies
 1. `./scripts/build-image.sh`: builds and pushes the main app image to docker hub
 1. `./scripts/run-integration-tests.sh`: runs the app image created in the previous step along with all dependencies and 
 then runs the integration tests image created in step 2.
-1. `./dev/build-minimal-image.sh`: builds an image `montagu-reverse-proxy-minimal` that just provides login functionality.
+1. `./dev/build-minimal-image.sh`: builds an image `montagu-proxy-minimal` that just provides login functionality.
  This is used for testing OrderlyWeb login integration without having to run an entire Montagu deployment.

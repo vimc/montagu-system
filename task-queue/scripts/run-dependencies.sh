@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -ex
 
-export REGISTRY=vimc
-
 here=$(dirname $0)
 ./scripts/clear-docker.sh
 docker network prune -f
@@ -24,7 +22,7 @@ docker exec montagu-api-1 touch /etc/montagu/api/go_signal
 docker exec montagu-db-1 montagu-wait.sh
 
 # migrate the database
-migrate_image=${REGISTRY}/montagu-migrate:master
+migrate_image=ghcr.io/vimc/montagu-migrate:main
 docker pull $migrate_image
 docker run --network=${NETWORK} $migrate_image
 
@@ -44,11 +42,11 @@ hatch env run -- packit start --pull
 docker exec montagu-packit-db wait-for-db
 
 # Run the proxy here, not through docker compose - it needs packit to be running before it will start up
-MONTAGU_PROXY_TAG=vimc/montagu-reverse-proxy:master
+MONTAGU_PROXY_TAG=ghcr.io/vimc/montagu-proxy:main
 docker pull $MONTAGU_PROXY_TAG
 docker run -d \
   -p "443:443" -p "80:80" \
-	--name reverse-proxy \
+	--name proxy \
 	--network montagu_default\
 	$MONTAGU_PROXY_TAG 443 localhost
 
