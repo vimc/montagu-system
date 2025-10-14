@@ -4,53 +4,53 @@ set -ex
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --api-image)
-            API_IMAGE="$2"
-            shift 2
-            ;;
-          --db-image)
-            DB_IMAGE="$2"
-            shift 2
-            ;;
-          --proxy-image)
-            PROXY_IMAGE="$2"
-            shift 2
-            ;;
-          --task-queue-image)
-            TASK_QUEUE_IMAGE="$2"
-            shift 2
-            ;;
-          --admin-image)
-            ADMIN_IMAGE="$2"
-            shift 2
-            ;;
-          --contrib-image)
-            CONTRIB_IMAGE="$2"
-            shift 2
-            ;;
-          --migrate-image
-            MIGRATE_IMAGE="$2"
-            shift 2
-            ;;
-          --api-config-path
-            API_CONFIG_PATH="$2"
-            shift 2
-            ;;
-          --packit-config
-            PACKIT_CONFIG="$2"
-            shift 2
-            ;;
-        *)
-            echo "Invalid argument: $1"
-            exit 1
-            ;;
+          API_IMAGE="$2"
+          shift 2
+          ;;
+        --db-image)
+          DB_IMAGE="$2"
+          shift 2
+          ;;
+        --proxy-image)
+          PROXY_IMAGE="$2"
+          shift 2
+          ;;
+        --task-queue-image)
+          TASK_QUEUE_IMAGE="$2"
+          shift 2
+          ;;
+        --admin-image)
+          ADMIN_IMAGE="$2"
+          shift 2
+          ;;
+        --contrib-image)
+          CONTRIB_IMAGE="$2"
+          shift 2
+          ;;
+        --migrate-image)
+          MIGRATE_IMAGE="$2"
+          shift 2
+          ;;
+        --api-config-path)
+          API_CONFIG_PATH="$2"
+          shift 2
+          ;;
+        --packit-config)
+          PACKIT_CONFIG="$2"
+          shift 2
+          ;;
+      *)
+          echo "Invalid argument: $1"
+          exit 1
+          ;;
     esac
 done
 
 here=$(dirname $0)
+. $here/common.sh
 
-# TODO: pull these into common
-ORG=ghcr.io/vimc
-DEFAULT_BRANCH=update-repo # TODO: change to main when update-repo is merged.
+echo org is
+echo $ORG
 
 if [[ -z $API_IMAGE ]]; then
   API_IMAGE=${ORG}/montagu-api:${DEFAULT_BRANCH}
@@ -88,7 +88,7 @@ TASK_QUEUE_IMAGE=$TASK_QUEUE_IMAGE \
 ADMIN_IMAGE=$ADMIN_IMAGE \
 CONTRIB_IMAGE=$CONTRIB_IMAGE \
 MIGRATE_IMAGE=$MIGRATE_IMAGE \
-docker compose pull --ignore-pull-failures
+docker compose -f $here/docker-compose.yml pull --ignore-pull-failures
 
 # run docker
 # TODO: is there a nicer way than this!
@@ -99,12 +99,10 @@ TASK_QUEUE_IMAGE=$TASK_QUEUE_IMAGE \
 ADMIN_IMAGE=$ADMIN_IMAGE \
 CONTRIB_IMAGE=$CONTRIB_IMAGE \
 MIGRATE_IMAGE=$MIGRATE_IMAGE \
-docker compose --project-name montagu up -d
+docker compose -f $here/docker-compose.yml --project-name montagu up -d
 
 # Start the API
 docker exec montagu-api-1 mkdir -p /etc/montagu/api/
-# TODO: config properties param in webapps client script
-#docker container cp $here/montagu-api.config.properties montagu-api-1:/etc/montagu/api/config.properties
 if [[ -n $API_CONFIG_PATH ]]; then
   docker container cp $API_CONFIG_PATH montagu-api-1:/etc/montagu/api/config.properties
 fi
@@ -118,7 +116,4 @@ docker pull $MIGRATE_IMAGE || true # Pull will fail if image is local only
 docker run --network=montagu_default $MIGRATE_IMAGE
 
 # Run packit
-# TODO: webapps-packit param in webapps client script
-# TODO: retire the start-packit script and packit configs in api
-#$here/start-packit.sh webapps-packit
 $here/start-packit.sh $PACKIT_CONFIG
