@@ -80,25 +80,18 @@ if [[ -z $MIGRATE_IMAGE ]]; then
   MIGRATE_IMAGE=${ORG}/montagu-migrate:${DEFAULT_BRANCH}
 fi
 
+export API_IMAGE
+export DB_IMAGE
+export PROXY_IMAGE
+export TASK_QUEUE_IMAGE
+export ADMIN_IMAGE
+export CONTRIB_IMAGE
+export MIGRATE_IMAGE
+
 # pull dependency images - some images may be local only so ignore pull failures
-API_IMAGE=$API_IMAGE \
-DB_IMAGE=$DB_IMAGE \
-PROXY_IMAGE=$PROXY_IMAGE \
-TASK_QUEUE_IMAGE=$TASK_QUEUE_IMAGE \
-ADMIN_IMAGE=$ADMIN_IMAGE \
-CONTRIB_IMAGE=$CONTRIB_IMAGE \
-MIGRATE_IMAGE=$MIGRATE_IMAGE \
 docker compose -f $here/docker-compose.yml pull --ignore-pull-failures
 
 # run docker
-# TODO: is there a nicer way than this!
-API_IMAGE=$API_IMAGE \
-DB_IMAGE=$DB_IMAGE \
-PROXY_IMAGE=$PROXY_IMAGE \
-TASK_QUEUE_IMAGE=$TASK_QUEUE_IMAGE \
-ADMIN_IMAGE=$ADMIN_IMAGE \
-CONTRIB_IMAGE=$CONTRIB_IMAGE \
-MIGRATE_IMAGE=$MIGRATE_IMAGE \
 docker compose -f $here/docker-compose.yml --project-name montagu up -d
 
 # Start the API
