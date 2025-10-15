@@ -10,7 +10,7 @@ env:
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
   # By default the SHA for PRs would refer to the temporary merge
   # commit. We want the PR's head sha instead, since it is more useful.
-  DOCKER_METADATA_PR_HEAD_SHA: 1
+  DOCKER_METADATA_PR_HEAD_SHA: true
   DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
 
 jobs:
