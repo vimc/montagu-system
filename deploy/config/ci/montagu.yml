@@ -43,10 +43,10 @@ volumes:
 
 api:
   name: montagu-api
-  tag: update-repo # TODO: revert when branch is merged
+  tag: main
   admin:
     name: montagu-cli
-    tag: update-repo # TODO: revert when branch is merged
+    tag: main
 db:
   name: montagu-db
   tag: main

@@ -12,8 +12,7 @@ services:
       - CELERY_RESULT_BACKEND=redis://montagu-mq-1/0
       - FLOWER_PORT=5555
   api:
-    # TODO: switch to main when branch is merged
-    image: ghcr.io/vimc/montagu-api:update-repo
+    image: ghcr.io/vimc/montagu-api:main
     ports:
       - "8080:8080"
     depends_on:
