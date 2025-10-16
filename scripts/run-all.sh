@@ -91,7 +91,7 @@ export MIGRATE_IMAGE
 # pull dependency images - some images may be local only so ignore pull failures
 docker compose -f $here/docker-compose.yml pull --ignore-pull-failures
 
-# run docker
+# run all montagu system containers
 docker compose -f $here/docker-compose.yml --project-name montagu up -d
 
 # Start the API
