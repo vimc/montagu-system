@@ -2,7 +2,7 @@
 
 # Development
 
-1. User node 12:
+1. Use node 12:
    ```
    nvm install 12
    ```
@@ -11,6 +11,8 @@
 4. To run all dependencies and both web apps in docker, run `dev-run.sh` from `app/scripts`.
 
 Login to montagu at `https://localhost` with `test.user@example.com` and `password` and browse to the portals. 
+
+You can set the version (branch or SHA) of dependencies to use in the `config` folder before running `dev-run.sh`.
 
 ## Linting
 1. `npm run tslint` to see all tslint errors
@@ -24,11 +26,9 @@ If you need more rules to check against, add them in file tslint.json, under sec
 3. `npm test -- -t "foo bar"` runs just the individual test called "foo bar".
 
 ## Integration tests
-`npm run integration-test` runs all integration tests. The version of
-the API that tests are run against is stored in `./config/api_version`. 
 
-*NB be wary about running integration tests directly in your local dev environment. We have scripts which set up some 
-necessary environment variables for accessing the montagu db. Use `run-integration-tests-with-apis.sh` instead.*
+Run integration tests locally with `scripts/run-integration-tests.sh`, having first run `scripts/dev-run.sh` to start
+all containers. 
 
 # Portals
 There are 2 portals.
@@ -49,9 +49,9 @@ management.
 # User permissions
 
 Users can access some areas of the admin portal dependent on the permissions they possess. Raw user permissions from the [Montagu
-database](https://github.com/vimc/montagu-db) are converted into properties on the `AuthState` interface, indicating what
+database](/db) are converted into properties on the `AuthState` interface, indicating what
 the user is allowed to do in the portals. These properties are used by the components to determine whether links and
-controls should be shown to the user. In addition, the [Montagu API](https://github.com/vimc/montagu-api) will prevent 
+controls should be shown to the user. In addition, the [Montagu API](/api) will prevent 
 the user taking any actions for which they do not have permissions.
 
 The `AuthState` properties, and their corresponding permissions are:

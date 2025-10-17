@@ -90,9 +90,7 @@ jobs:
           ./start-all.sh ${{ fromJSON(steps.meta-admin.outputs.json).tags[1] }} ${{ fromJSON(steps.meta-contrib.outputs.json).tags[1] }}
           ./add-test-accounts-for-integration-tests.sh
       - name: Run integration tests
-        run: |
-          export PGHOST=localhost
-          ./scripts/run-integration-tests.sh
+        run: ./scripts/run-integration-tests.sh
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v4
         with:
