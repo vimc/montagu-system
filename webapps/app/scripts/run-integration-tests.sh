@@ -12,9 +12,7 @@ export PGPASSWORD=changeme
 export PGDATABASE=montagu
 export PGTEMPLATE=montagu_template
 export PGPORT=5432
-# We also need PGHOST to be set, but this varies based on whether the tests are
-# being run in a container or not, so we require that to be set by the calling
-# script
+export PGHOST=localhost
 
 # Setup template database
 docker exec montagu-db-1 psql -U vimc -d postgres -c \

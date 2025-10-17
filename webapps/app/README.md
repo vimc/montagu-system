@@ -12,6 +12,8 @@
 
 Login to montagu at `https://localhost` with `test.user@example.com` and `password` and browse to the portals. 
 
+You can set the version (branch or SHA) of dependencies to use in the `config` folder before running `dev-run.sh`.
+
 ## Linting
 1. `npm run tslint` to see all tslint errors
 2. Optionally you can enable tslint plugin in your IDE to see errors in code (for Webstorm users:
@@ -24,11 +26,9 @@ If you need more rules to check against, add them in file tslint.json, under sec
 3. `npm test -- -t "foo bar"` runs just the individual test called "foo bar".
 
 ## Integration tests
-`npm run integration-test` runs all integration tests. The version of
-the API that tests are run against is stored in `./config/api_version`. 
 
-*NB be wary about running integration tests directly in your local dev environment. We have scripts which set up some 
-necessary environment variables for accessing the montagu db. Use `run-integration-tests-with-apis.sh` instead.*
+Run integration tests locally with `scripts/run-integration-tests.sh`, having first run `scripts/dev-run.sh` to start
+all containers. 
 
 # Portals
 There are 2 portals.
