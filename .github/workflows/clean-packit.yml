@@ -1,7 +1,7 @@
 name: clean-packit.yml
 on:
   pull_request:
-    branches: [ mainx ]
+    branches: [ main ]
   workflow_dispatch: ~
 
 jobs:
