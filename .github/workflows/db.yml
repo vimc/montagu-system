@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [mainx]
 
 env:
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}

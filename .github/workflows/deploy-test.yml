@@ -7,7 +7,7 @@ on:
     paths:
       - deploy/**
   pull_request:
-    branches: [ main ]
+    branches: [ mainx ]
     paths:
       - deploy/**
   workflow_dispatch: ~
