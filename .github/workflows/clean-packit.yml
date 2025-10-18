@@ -16,6 +16,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Check out source
         uses: actions/checkout@v4
+      - run: java -version
       - name: start packit
         working-directory: ./api/scripts
         run: ./start-packit.sh docker-packit
