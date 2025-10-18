@@ -1,0 +1,21 @@
+name: clean-packit.yml
+on:
+  pull_request:
+    branches: [ mainx ]
+  workflow_dispatch: ~
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: start packit
+        working-directory: ./api/scripts
+        run: ./start-packit.sh docker-packit
+      - run: docker ps
+      - run: docker logs montagu-packit-api
