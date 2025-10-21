@@ -24,7 +24,7 @@ packit:
   base_url: https://localhost
   api:
     name: packit-api
-    tag: main
+    tag: mrc-6804-upgrade-java
   app:
     name: montagu-packit
     tag: main
