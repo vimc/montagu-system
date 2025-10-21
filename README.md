@@ -18,3 +18,4 @@ because Packit Auth needs to go through the proxy, and because the proxy require
 
 Tests which are currently skipped or commented out:
 - api/src/app/test/kotlin/org/vaccineimpact/api/test/clients/CeleryClientTests.kt "can call task" l.52-53
+
