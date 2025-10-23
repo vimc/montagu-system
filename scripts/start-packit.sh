@@ -24,7 +24,7 @@ packit start --pull
 if [ "$GITHUB_ACTIONS" = "true" ]; then
     sleep 60
 else
-    sleep 5
+    sleep 15
 fi
 
 USERNAME='test.user'
