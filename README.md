@@ -4,10 +4,13 @@ The Montagu Monorepo
 
 ## Directories
 
-* [`api/`](api) - Montagu API. Previously at [`vimc/montagu-api`]()
-* [`deploy/`](deploy) - the deploy tool. Previously at [`vimc/montagu-deploy`](https://github.com/vimc/montagu-deploy) and [on PyPi](https://pypi.org/project/montagu-deploy/)
+* [`api/`](api) - Montagu API. Previously at [`vimc/montagu-api`](https://github.com/vimc/montagu-api)
 * [`db/`](db) - the database. Previously at [`vimc/montagu-db`](https://github.com/vimc/montagu-db)
-* [`webmodels/`](webmodels) - models shared between the API and webapps. Previously at [`vimc/montagu-webmodels`](https://github.com/vimc/montagu-webmodels)
+* [`deploy/`](deploy) - the deploy tool. Previously at [`vimc/montagu-deploy`](https://github.com/vimc/montagu-deploy) and [on PyPi](https://pypi.org/project/montagu-deploy/)
+* [`proxy/`](proxy) - the proxy. Previously at [`vimc/montagu-proxy`](https://github.com/vimc/montagu-proxy)
+* [`task-queue`](task-queue) - the task queue, primarily used to run diagnostic report through Packit on burden estimate upload
+through the API. Previously at [`vimc/monbagu-task-queue`](https://github.com/vimc/montagu-task-queue)
+* [`webapps`](webapps) - the web portals, for Admin and Modellers' contributions. Previously at [`vimc/montag-webapps`](https://github.com/vimc/montagu-webapps) 
 
 ## Still to do
 We need to rationalise e2e tests which are reproduced in several component directories. These tests can be brittle and
