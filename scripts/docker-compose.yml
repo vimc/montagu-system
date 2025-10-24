@@ -1,7 +1,7 @@
 version: '3'
 services:
   proxy:
-    image: ghcr.io/vimc/montagu-proxy:main
+    image: ${PROXY_IMAGE}
     ports:
       - 80:80
       - 443:443
@@ -12,18 +12,18 @@ services:
       - contrib
       - db
   api:
-    image: ghcr.io/vimc/montagu-api:${MONTAGU_API_VERSION}
+    image: ${API_IMAGE}
     ports:
       - "8080:8080"
     depends_on:
       - db
   db:
-    image: ghcr.io/vimc/montagu-db:${MONTAGU_DB_VERSION}
+    image: ${DB_IMAGE}
     ports:
       - "5432:5432"
     command: /etc/montagu/postgresql.test.conf
   db_annex:
-    image: ghcr.io/vimc/montagu-db:${MONTAGU_DB_VERSION}
+    image: ${DB_IMAGE}
     command: /etc/montagu/postgresql.test.conf
   mq:
     image: redis:6
@@ -33,6 +33,10 @@ services:
       - FLOWER_PORT=5555
       - CELERY_BROKER_URL=redis://guest@mq//
       - CELERY_RESULT_BACKEND=redis://guest@mq/0
+  task-queue-worker:
+    image: ${TASK_QUEUE_IMAGE}
+    environment:
+      - YOUTRACK_TOKEN=${YOUTRACK_TOKEN}
   admin:
     image: ${ADMIN_IMAGE}
   contrib:
