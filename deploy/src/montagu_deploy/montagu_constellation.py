@@ -10,17 +10,27 @@ from montagu_deploy import database
 
 
 def montagu_constellation(cfg):
+    proxy = proxy_container(cfg)
     containers = [
         api_container(cfg),
         db_container(cfg),
         admin_container(cfg),
         contrib_container(cfg),
-        proxy_container(cfg),
+        proxy,
         proxy_metrics_container(cfg),
         mq_container(cfg),
         flower_container(cfg),
         task_queue_container(cfg),
     ]
+
+    if cfg.use_acme:
+        acme_container = acme.acme_buddy_container(
+            cfg.acme_config,
+            "acme-buddy",
+            proxy.name_external(cfg.container_prefix),
+            "montagu-tls",
+            cfg.hostname
+        containers.append(acme_container)
 
     if cfg.fake_smtp_ref:
         fake_smtp = fake_smtp_container(cfg)
