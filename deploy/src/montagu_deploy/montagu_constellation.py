@@ -3,7 +3,7 @@ from os.path import join
 import constellation
 import docker
 import yaml
-from constellation import docker_util
+from constellation import acme, docker_util
 from psycopg2 import connect
 
 from montagu_deploy import database
@@ -231,18 +231,8 @@ def proxy_container(cfg):
         cfg.proxy_ref,
         ports=proxy_ports,
         args=[str(cfg.proxy_port_https), cfg.hostname],
-        preconfigure=proxy_preconfigure,
         mounts=mounts,
     )
-
-
-def proxy_preconfigure(container, cfg):
-    # In self-signed mode, the container generates its own certificate on its
-    # own. Similarly, in ACME mode, the container generates its own certificate
-    # and after starting we request a new one.
-    if cfg.ssl_mode == "static":
-        print("[proxy] Configuring reverse proxy")
-        proxy_update_certificate(container, cfg.ssl_certificate, cfg.ssl_key, reload=False)
 
 
 def proxy_metrics_container(cfg):
