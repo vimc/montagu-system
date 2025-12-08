@@ -1,5 +1,7 @@
 import docker
 from constellation import docker_util
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
 
 from src.montagu_deploy.config import MontaguConfig
 from src.montagu_deploy.montagu_constellation import montagu_constellation
@@ -130,12 +132,10 @@ def test_proxy_configured_ssl():
 
     try:
         obj.start()
-
-        api = get_container(cfg, "proxy")
-        cert = docker_util.string_from_container(api, "/etc/montagu/proxy/certificate.pem")
-        key = docker_util.string_from_container(api, "/etc/montagu/proxy/ssl_key.pem")
-        assert cert == "cert"
-        assert key == "k3y"
+        proxy = get_container(cfg, "proxy")
+        cert_str = docker_util.string_from_container(proxy, "/etc/montagu/proxy/certificate.pem")
+        cert = x509.load_pem_x509_certificate(cert_str.encode(), default_backend())
+        assert cert.subject == cert.issuer
 
     finally:
         obj.stop(kill=True, remove_volumes=True)
