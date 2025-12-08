@@ -76,18 +76,11 @@ def test_config_email():
     assert cfg.email_flow_url == "fakeurl"
 
 
-def test_config_ssl():
-    cfg = MontaguConfig("config/complete")
-    assert cfg.ssl_mode == "static"
-    assert cfg.ssl_certificate == "cert"
-    assert cfg.ssl_key == "k3y"
-
-
 def test_config_acme():
-    cfg = MontaguConfig("config/acme")
+    cfg = MontaguConfig("config/acme_buddy")
+    acme_cfg = cfg.acme_buddy
     assert cfg.ssl_mode == "acme"
-    assert cfg.acme_email == "admin@montagu.org"
-    assert cfg.acme_server is None
+    assert acme_cfg.email == "admin@montagu.org"
 
 
 def test_config_generates_root_db_password():
