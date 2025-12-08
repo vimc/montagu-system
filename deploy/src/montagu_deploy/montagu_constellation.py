@@ -222,15 +222,8 @@ def proxy_container(cfg):
 
     mounts = []
 
-    if cfg.ssl_mode == "acme":
-        mounts.extend(
-            [
-                constellation.ConstellationVolumeMount(
-                    "acme-challenge", "/var/www/.well-known/acme-challenge", read_only=True
-                ),
-                constellation.ConstellationVolumeMount("certificates", "/etc/montagu/proxy"),
-            ]
-        )
+    if cfg.use_acme:
+        mounts += [constellation.ConstellationVolumeMount("montagu-tls", "/run/proxy")]
 
     return constellation.ConstellationContainer(
         name,
@@ -240,17 +233,6 @@ def proxy_container(cfg):
         preconfigure=proxy_preconfigure,
         mounts=mounts,
     )
-
-
-def proxy_update_certificate(container, cert, key, *, reload):
-    print("[proxy] Copying ssl certificate and key into proxy")
-    ssl_path = "/etc/montagu/proxy"
-    docker_util.string_into_container(cert, container, join(ssl_path, "certificate.pem"))
-    docker_util.string_into_container(key, container, join(ssl_path, "ssl_key.pem"))
-
-    if reload:
-        print("[proxy] Reloading nginx")
-        docker_util.exec_safely(container, "nginx -s reload")
 
 
 def proxy_preconfigure(container, cfg):
