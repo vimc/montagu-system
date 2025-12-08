@@ -112,7 +112,7 @@ class MontaguConfig:
         if self.use_acme:
             self.acme_config = config.config_acme(dat, acme_key)
             self.containers["acme-buddy"] = "acme-buddy"
-            self.images["accme-buddy" ] self.acme_config.ref
+            self.images["accme-buddy" ] = self.acme_config.ref
             self.volumes["montagu-tls"] = "montagu-tls"
             self.ssl_mode = "acme"
         else:

@@ -30,6 +30,7 @@ def montagu_constellation(cfg):
             proxy.name_external(cfg.container_prefix),
             "montagu-tls",
             cfg.hostname
+        )
         containers.append(acme_container)
 
     if cfg.fake_smtp_ref:
