@@ -25,11 +25,7 @@ def montagu_constellation(cfg):
 
     if cfg.use_acme:
         acme_container = acme.acme_buddy_container(
-            cfg.acme_config,
-            "acme-buddy",
-            proxy.name_external(cfg.container_prefix),
-            "montagu-tls",
-            cfg.hostname
+            cfg.acme_config, "acme-buddy", proxy.name_external(cfg.container_prefix), "montagu-tls", cfg.hostname
         )
         containers.append(acme_container)
 
