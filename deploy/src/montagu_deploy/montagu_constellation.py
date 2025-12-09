@@ -5,9 +5,10 @@ import constellation
 import docker
 import yaml
 from constellation import acme, docker_util
-from psycopg2 import connect, OperationalError
+from psycopg2 import OperationalError, connect
 
 from montagu_deploy import database
+
 
 def montagu_constellation(cfg):
     proxy = proxy_container(cfg)
