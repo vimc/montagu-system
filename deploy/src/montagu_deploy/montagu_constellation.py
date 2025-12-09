@@ -153,11 +153,7 @@ def db_connection(cfg, retries=5):
     while attempt < retries:
         try:
             return connect(
-                user=cfg.db_root_user,
-                dbname="montagu",
-                password=cfg.db_root_password,
-                host="localhost",
-                port=5432
+                user=cfg.db_root_user, dbname="montagu", password=cfg.db_root_password, host="localhost", port=5432
             )
         except OperationalError as _:
             attempt += 1
