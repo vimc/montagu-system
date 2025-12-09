@@ -19,7 +19,9 @@ def create_user(db, user, settings):
           CREATE ROLE {name} {option} LOGIN PASSWORD '{password}';
        END IF;
     END
-    $body$""".format(name=user, password=settings["password"], option=option)
+    $body$""".format(
+        name=user, password=settings["password"], option=option
+    )
     db.execute(sql)
 
 
