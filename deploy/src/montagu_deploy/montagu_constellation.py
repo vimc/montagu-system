@@ -2,9 +2,10 @@ from os.path import join
 
 import constellation
 import docker
+import time
 import yaml
 from constellation import acme, docker_util
-from psycopg2 import connect
+from psycopg2 import connect, OperationalError
 
 from montagu_deploy import database
 
@@ -147,8 +148,23 @@ def db_set_user_permissions(cfg):
         conn.commit()
 
 
-def db_connection(cfg):
-    return connect(user=cfg.db_root_user, dbname="montagu", password=cfg.db_root_password, host="localhost", port=5432)
+def db_connection(cfg, retries = 5):
+    attempt = 0
+    while attempt < retries:
+        try:
+            return connect(
+                user=cfg.db_root_user, 
+                dbname="montagu", 
+                password=cfg.db_root_password, 
+                host="localhost", 
+                port=5432
+            )
+        except OperationalError as e:
+            attempt += 1
+            if attempt == retries:
+                raise
+            print("Connection failed. Retrying in 5 seconds")
+            time.sleep(5)
 
 
 def db_migrate_schema(cfg):
