@@ -41,11 +41,12 @@ packit:
     jwt:
       secret: "0b4g4f8z4mdsrhoxfde2mam8f00vmt0f"
     expiry_days: 1
+  runner:
+    git:
+      url: https://github.com/reside-ic/orderly-example.git
 
 orderly-runner:
   image:
     name: orderly.runner
     tag: main
-  git:
-    url: https://github.com/reside-ic/orderly-example.git
   workers: 1
