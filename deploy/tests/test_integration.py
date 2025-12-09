@@ -15,7 +15,7 @@ from YTClient.YTDataClasses import Command
 from src.montagu_deploy import cli
 from src.montagu_deploy.config import MontaguConfig
 from tests import admin
-from tests.utils import http_get;
+from tests.utils import http_get
 
 
 def test_start_stop_status():
