@@ -1,11 +1,9 @@
-import json
 import ssl
 import time
 import urllib
 from contextlib import contextmanager
 
 import docker
-from constellation import docker_util
 
 
 # Because we wait for a go signal to come up, we might not be able to
