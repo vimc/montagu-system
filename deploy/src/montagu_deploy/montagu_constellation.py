@@ -1,26 +1,34 @@
+import time
 from os.path import join
 
 import constellation
 import docker
 import yaml
-from constellation import docker_util
-from psycopg2 import connect
+from constellation import acme, docker_util
+from psycopg2 import OperationalError, connect
 
 from montagu_deploy import database
 
 
 def montagu_constellation(cfg):
+    proxy = proxy_container(cfg)
     containers = [
         api_container(cfg),
         db_container(cfg),
         admin_container(cfg),
         contrib_container(cfg),
-        proxy_container(cfg),
+        proxy,
         proxy_metrics_container(cfg),
         mq_container(cfg),
         flower_container(cfg),
         task_queue_container(cfg),
     ]
+
+    if cfg.use_acme:
+        acme_container = acme.acme_buddy_container(
+            cfg.acme_config, "acme-buddy", proxy.name_external(cfg.container_prefix), "montagu-tls", cfg.hostname
+        )
+        containers.append(acme_container)
 
     if cfg.fake_smtp_ref:
         fake_smtp = fake_smtp_container(cfg)
@@ -140,8 +148,19 @@ def db_set_user_permissions(cfg):
         conn.commit()
 
 
-def db_connection(cfg):
-    return connect(user=cfg.db_root_user, dbname="montagu", password=cfg.db_root_password, host="localhost", port=5432)
+def db_connection(cfg, retries=5):
+    attempt = 0
+    while attempt < retries:
+        try:
+            return connect(
+                user=cfg.db_root_user, dbname="montagu", password=cfg.db_root_password, host="localhost", port=5432
+            )
+        except OperationalError as _:
+            attempt += 1
+            if attempt == retries:
+                raise
+            print("Connection failed. Retrying in 5 seconds")
+            time.sleep(5)
 
 
 def db_migrate_schema(cfg):
@@ -212,44 +231,16 @@ def proxy_container(cfg):
 
     mounts = []
 
-    if cfg.ssl_mode == "acme":
-        mounts.extend(
-            [
-                constellation.ConstellationVolumeMount(
-                    "acme-challenge", "/var/www/.well-known/acme-challenge", read_only=True
-                ),
-                constellation.ConstellationVolumeMount("certificates", "/etc/montagu/proxy"),
-            ]
-        )
+    if cfg.use_acme:
+        mounts += [constellation.ConstellationVolumeMount("montagu-tls", "/run/proxy")]
 
     return constellation.ConstellationContainer(
         name,
         cfg.proxy_ref,
         ports=proxy_ports,
         args=[str(cfg.proxy_port_https), cfg.hostname],
-        preconfigure=proxy_preconfigure,
         mounts=mounts,
     )
-
-
-def proxy_update_certificate(container, cert, key, *, reload):
-    print("[proxy] Copying ssl certificate and key into proxy")
-    ssl_path = "/etc/montagu/proxy"
-    docker_util.string_into_container(cert, container, join(ssl_path, "certificate.pem"))
-    docker_util.string_into_container(key, container, join(ssl_path, "ssl_key.pem"))
-
-    if reload:
-        print("[proxy] Reloading nginx")
-        docker_util.exec_safely(container, "nginx -s reload")
-
-
-def proxy_preconfigure(container, cfg):
-    # In self-signed mode, the container generates its own certificate on its
-    # own. Similarly, in ACME mode, the container generates its own certificate
-    # and after starting we request a new one.
-    if cfg.ssl_mode == "static":
-        print("[proxy] Configuring reverse proxy")
-        proxy_update_certificate(container, cfg.ssl_certificate, cfg.ssl_key, reload=False)
 
 
 def proxy_metrics_container(cfg):

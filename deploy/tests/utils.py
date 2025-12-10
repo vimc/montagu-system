@@ -1,11 +1,9 @@
-import json
 import ssl
 import time
 import urllib
 from contextlib import contextmanager
 
 import docker
-from constellation import docker_util
 
 
 # Because we wait for a go signal to come up, we might not be able to
@@ -35,29 +33,3 @@ def create_container(image, **kwargs):
     finally:
         container.stop()
         container.remove()
-
-
-# Run the Pebble ACME server.
-@contextmanager
-def run_pebble(**kwargs):
-    env = {
-        "PEBBLE_WFE_NONCEREJECT": 0,
-        "PEBBLE_VA_NOSLEEP": 1,
-    }
-    config = {
-        "pebble": {
-            "listenAddress": "0.0.0.0:443",
-            # These are baked into the docker image already
-            "certificate": "test/certs/localhost/cert.pem",
-            "privateKey": "test/certs/localhost/key.pem",
-            # This is the port pebble connects to to fetch well-known challenges
-            "httpPort": 80,
-        }
-    }
-
-    with create_container(
-        "ghcr.io/letsencrypt/pebble:latest", command=["-config", "/config.json"], environment=env, **kwargs
-    ) as container:
-        docker_util.string_into_container(json.dumps(config), container, "/config.json")
-        container.start()
-        yield

@@ -50,9 +50,6 @@ jobs:
       - name: Lint
         run: |
           hatch run lint:style
-      - name: Pull image required for full deploy (avoid --pull parameter)
-        run: |
-          docker pull ghcr.io/letsencrypt/pebble:latest
       - name: Test
         env:
           VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
@@ -63,3 +60,6 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: true
+      #- name: Setup tmate session if failure
+      #  if: failure()
+      #  uses: mxschmitt/action-tmate@v3

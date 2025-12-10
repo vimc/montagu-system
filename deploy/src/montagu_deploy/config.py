@@ -56,24 +56,6 @@ class MontaguConfig:
         self.proxy_port_metrics = config.config_integer(dat, ["proxy", "port_metrics"], is_optional=True, default=9000)
         self.proxy_metrics_ref = self.build_ref(dat["proxy"], "metrics")
 
-        if "ssl" in dat["proxy"] and "acme" in dat["proxy"]:
-            msg = "Cannot specify both ssl and acme options in proxy options."
-            raise Exception(msg)
-        if "ssl" in dat["proxy"]:
-            self.ssl_mode = "static"
-            self.ssl_certificate = config.config_string(dat, ["proxy", "ssl", "certificate"])
-            self.ssl_key = config.config_string(dat, ["proxy", "ssl", "key"])
-        elif "acme" in dat["proxy"]:
-            self.ssl_mode = "acme"
-            self.acme_email = config.config_string(dat, ["proxy", "acme", "email"])
-            self.acme_server = config.config_string(dat, ["proxy", "acme", "server"], is_optional=True)
-            self.acme_no_verify_ssl = config.config_boolean(dat, ["proxy", "acme", "no_verify_ssl"], is_optional=True)
-            self.acme_additional_domains = config.config_list(
-                dat, ["proxy", "acme", "additional_domains"], is_optional=True, default=[]
-            )
-        else:
-            self.ssl_mode = "self-signed"
-
         # Portals
         self.admin_ref = self.build_ref(dat, "admin")
         self.contrib_ref = self.build_ref(dat, "contrib")
@@ -122,6 +104,18 @@ class MontaguConfig:
 
         if self.fake_smtp_ref:
             self.images["fake_smtp"] = self.fake_smtp_ref
+
+        # Acme-Buddy
+        acme_key = "acme_buddy"
+        self.use_acme = acme_key in dat
+        if self.use_acme:
+            self.acme_config = config.config_acme(dat, acme_key)
+            self.containers["acme-buddy"] = "acme-buddy"
+            self.images["acme-buddy"] = self.acme_config.ref
+            self.volumes["montagu-tls"] = "montagu-tls"
+            self.ssl_mode = "acme"
+        else:
+            self.ssl_mode = "self-signed"
 
     def build_ref(self, dat, section):
         name = config.config_string(dat, [section, "name"])
