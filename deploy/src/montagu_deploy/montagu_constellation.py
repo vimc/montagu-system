@@ -4,7 +4,7 @@ from os.path import join
 import constellation
 import docker
 import yaml
-from constellation import acme, docker_util
+from constellation import acme, docker_util, vault
 from psycopg2 import OperationalError, connect
 
 from montagu_deploy import database
@@ -25,6 +25,8 @@ def montagu_constellation(cfg):
     ]
 
     if cfg.use_acme:
+        if cfg.vault and cfg.vault.url:
+            vault.resolve_secrets(cfg.acme_config, cfg.vault.client())
         acme_container = acme.acme_buddy_container(
             cfg.acme_config, "acme-buddy", proxy.name_external(cfg.container_prefix), "montagu-tls", cfg.hostname
         )
