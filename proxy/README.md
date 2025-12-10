@@ -6,7 +6,7 @@ map different paths to different apps (containers).
 
 `nginx.montagu.conf` contains references to an X509 certificate and a private
 key, which it expects at `/etc/montagu/proxy/certificate.pem` and
-`/etc/montagu/proxy/ssl_key.pem`, respectively. The `/etc/montagu/proxy`
+`/etc/montagu/proxy/key.pem`, respectively. The `/etc/montagu/proxy`
 directory can be mounted from a volume providing these certificates, or they
 can be injected into the container using `docker copy`.
 
