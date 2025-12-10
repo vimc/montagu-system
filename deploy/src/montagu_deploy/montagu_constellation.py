@@ -232,7 +232,7 @@ def proxy_container(cfg):
     mounts = []
 
     if cfg.use_acme:
-        mounts += [constellation.ConstellationVolumeMount("montagu-tls", "/run/proxy")]
+        mounts += [constellation.ConstellationVolumeMount("montagu-tls", "/etc/montagu/proxy")]
 
     return constellation.ConstellationContainer(
         name,
