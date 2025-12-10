@@ -4,7 +4,7 @@ from os.path import join
 import constellation
 import docker
 import yaml
-from constellation import acme, docker_util
+from constellation import acme, docker_util, vault
 from psycopg2 import OperationalError, connect
 
 from montagu_deploy import database
