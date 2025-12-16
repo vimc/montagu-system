@@ -91,7 +91,7 @@ def test_proxy_configured_self_signed():
 
         api = get_container(cfg, "proxy")
         cert = docker_util.string_from_container(api, "/etc/montagu/proxy/certificate.pem")
-        key = docker_util.string_from_container(api, "/etc/montagu/proxy/ssl_key.pem")
+        key = docker_util.string_from_container(api, "/etc/montagu/proxy/key.pem")
         assert cert is not None
         assert key is not None
 
