@@ -43,7 +43,7 @@ docker run -d \
        $ANNEX_IMAGE /etc/montagu/postgresql.production.conf
 
 # Wait for the container to come up
-docker exec $ANNEX_CONTAINER_NAME montagu-wait.sh
+docker exec $ANNEX_CONTAINER_NAME montagu-wait.sh 120
 
 if [ $INITIAL_DEPLOY = 1 ]; then
     echo "Setting vimc password"
