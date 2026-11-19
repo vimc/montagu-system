@@ -19,7 +19,7 @@ docker exec montagu-api-1 mkdir -p /etc/montagu/api/
 docker exec montagu-api-1 touch /etc/montagu/api/go_signal
 
 # Wait for the database
-docker exec montagu-db-1 montagu-wait.sh
+docker exec montagu-db-1 montagu-wait.sh 120
 
 # migrate the database
 migrate_image=ghcr.io/vimc/montagu-migrate:main

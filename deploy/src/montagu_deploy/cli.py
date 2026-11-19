@@ -97,12 +97,10 @@ def verify_data_loss(cfg):
         err = "Cannot remove volumes with this configuration"
         raise Exception(err)
     else:
-        print(
-            """WARNING! PROBABLE IRREVERSIBLE DATA LOSS!
+        print("""WARNING! PROBABLE IRREVERSIBLE DATA LOSS!
 You are about to delete the data volumes. This action cannot be undone
 and will result in the irreversible loss of *all* data associated with
-the application. This includes all databases etc."""
-        )
+the application. This includes all databases etc.""")
     if not prompt_yes_no():
         msg = "Not continuing"
         raise Exception(msg)

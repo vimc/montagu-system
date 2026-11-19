@@ -24,7 +24,7 @@ Here `<path>` is the path to a directory that contains a configuration file `mon
 
 ## Dev requirements
 
-1. [Python3](https://www.python.org/downloads/) (>= 3.7)
+1. [Python3](https://www.python.org/downloads/) (>= 3.11)
 2. [Hatch](https://hatch.pypa.io/latest/install/)
 
 ## Test and lint
